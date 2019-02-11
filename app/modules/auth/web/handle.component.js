@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ShadowButton from 'modules/ui/web/ShadowButton';
 import { browserAlerts } from 'app/utils/alert';
+import { View, Button } from 'modules/styled/uni';
+import FormField from 'modules/styled/form/field.component';
 
 class LoginForm extends Component {
   static propTypes = {
     user: PropTypes.object,
     actions: PropTypes.object,
-    checkUser: PropTypes.object,
+    checkUser: PropTypes.func,
     nameError: PropTypes.string
   };
 
@@ -36,35 +37,30 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <div className="innerForm">
-        <div className="authStatus">Choose your handle:</div>
-        <div>
-          <input
-            className="blueInput special"
-            type="text"
-            placeholder="username"
-            value={'@' + this.state.username}
-            onChange={e => {
-              const username = e.target.value.trim()
-              .replace('@', '');
-              this.props.checkUser(username.trim());
-              this.handleChange('username', username);
-            }}
-            onKeyDown={e => {
-              if (e.keyCode === 13) {
-                this.submit();
-              }
-            }}
-          />
-          {this.props.nameError ? (
-            <div className={'error'}>{this.props.nameError}</div>
-          ) : null}
-        </div>
-
-        <div style={{ width: '100%' }}>
-          <ShadowButton onClick={this.submit}>Finish</ShadowButton>
-        </div>
-      </div>
+      <View>
+        <FormField
+          type="text"
+          placeholder="Username"
+          label="Choose your handle:"
+          value={'@' + this.state.username}
+          onChange={e => {
+            const username = e.target.value.trim().replace('@', '');
+            this.props.checkUser(username.trim());
+            this.handleChange('username', username);
+          }}
+          onKeyDown={e => {
+            if (e.keyCode === 13) {
+              this.submit();
+            }
+          }}
+          error={this.props.nameError}
+        />
+        <View justify="flex-start">
+          <Button onClick={this.submit} ml="auto" mt={4}>
+            Finish
+          </Button>
+        </View>
+      </View>
     );
   }
 }

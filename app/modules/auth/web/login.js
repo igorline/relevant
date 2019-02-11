@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Button, LinkFont, View, Image } from 'modules/styled/uni';
+import FormField from 'modules/styled/form/field.component';
 import ShadowButton from 'modules/ui/web/ShadowButton';
 import { browserAlerts } from 'app/utils/alert';
+import { colors } from 'app/styles';
+import ULink from 'modules/navigation/ULink.component';
+
+const twitterIcon = '/img/icons/twitter_white.png';
 
 class LoginForm extends Component {
   static propTypes = {
@@ -40,53 +46,65 @@ class LoginForm extends Component {
   render() {
     const { username, password } = this.state;
     const local = username.length && password.length;
+    const FORM_FIELDS = [
+      {
+        placeholder: 'Username or email',
+        label: 'Username or email',
+        value: this.state.username,
+        key: 'Username',
+        name: 'Username',
+        onChange: e => {
+          this.setState({ username: e.target.value });
+        },
+        type: 'text'
+      },
+      {
+        key: 'Password',
+        type: 'password',
+        placeholder: 'Password',
+        label: 'Password',
+        value: this.state.password,
+        onChange: Password => {
+          this.handleChange('Password', Password.target.value);
+        },
+        onKeyDown: e => {
+          if (e.keyCode === 13) {
+            this.submit();
+          }
+        }
+      }
+    ];
     return (
-      <div className="innerForm">
-        <input
-          className="blueInput special"
-          value={this.state.username}
-          onChange={e => {
-            this.setState({ username: e.target.value });
-          }}
-          type="text"
-          name="username"
-          placeholder="username or email"
-        />
-        <input
-          className="blueInput special"
-          value={this.state.password}
-          onChange={e => {
-            this.setState({ password: e.target.value });
-          }}
-          onKeyDown={e => {
-            if (e.keyCode === 13) {
-              this.submit();
-            }
-          }}
-          type="password"
-          name="password"
-          placeholder="password"
-        />
-        <a onClick={() => this.props.authNav('forgot')} className="subLink">
-          Forgot Your Password?
-        </a>
-        <div style={{ width: '100%', visibility: !local ? 'visible' : 'hidden' }}>
-          <span className={'or'}>or</span>
-          <a
-            className={'twitterButton'}
-            href={`/auth/twitter?redirect=${this.props.location.pathname}`}
-          >
-            Sign in with Twitter
+      <div>
+        {FORM_FIELDS.map(field => (
+          <FormField {...field} />
+        ))}
+        <View display="flex" fdirection="row" align="center" justify="flex-start">
+          <a onClick={() => this.props.authNav('forgot')}>
+            <LinkFont c={colors.blue} mt={2}>
+              Forgot Your Password?
+            </LinkFont>
           </a>
-        </div>
+        </View>
+        {!local ? (
+          <View display="flex" fdirection="column" mt={6} justify="flex-start" shrink={1}>
+            <ULink to={`/auth/twitter?redirect=${this.props.location.pathname}`}>
+              <Button bg={colors.twitterBlue}>
+                <Image source={twitterIcon} w={2} h={2} mr={2} />
+                Sign In with Twitter
+              </Button>
+            </ULink>
+          </View>
+        ) : null}
 
+        {local ? <Button onClick={this.submit}> Sign In </Button> : null}
         <div style={{ width: '100%', visibility: local ? 'visible' : 'hidden' }}>
           <ShadowButton onClick={this.submit}>Sign In</ShadowButton>
         </div>
 
-        <div className={'smallText'}>
+        <LinkFont>
           Not registered yet? <a onClick={() => this.props.authNav('signup')}>Sign up</a>
-        </div>
+        </LinkFont>
       </div>
     );
   }

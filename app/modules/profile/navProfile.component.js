@@ -35,11 +35,9 @@ const WalletInfo = styled.View`
   flex-shrink: 1;
 `;
 
-
 const ProfileContainer = styled.View`
   padding: ${sizing(4)};
   padding-bottom: ${sizing(5)};
-
 `;
 
 const ProfileDetailsContainer = styled.View`
@@ -48,8 +46,7 @@ const ProfileDetailsContainer = styled.View`
   flex-direction: row;
 `;
 
-const StyledAvatar = styled(UAvatar)`
-`;
+const StyledAvatar = styled(UAvatar)``;
 
 const PendingPayouts = styled.Text`
   display: flex;
@@ -60,7 +57,6 @@ const PendingPayouts = styled.Text`
   line-height: ${sizing(1.5)};
   margin-top: ${sizing(2)};
 `;
-
 
 const linkStyles = `
   display: flex;
@@ -73,7 +69,6 @@ const walletLinkStyles = `
   ${linkStyles}
   color: ${colors.black};
 `;
-
 
 export class NavProfile extends Component {
   static propTypes = {
@@ -91,7 +86,7 @@ export class NavProfile extends Component {
       const r = earnings.entities[id];
       if (r && r.estimatedPostPayout && r.totalPostShares) {
         // TODO include actual rewards here based on % share
-        pendingPayouts += r.estimatedPostPayout * r.shares / r.totalPostShares;
+        pendingPayouts += (r.estimatedPostPayout * r.shares) / r.totalPostShares;
       }
     });
 
@@ -99,7 +94,10 @@ export class NavProfile extends Component {
       <ProfileContainer>
         <View>
           <Header mb={0}>{user.name}</Header>
-          <ULink to="/user/wallet" styles={linkStyles}> My Wallet</ULink>
+          <ULink to="/user/wallet" styles={linkStyles}>
+            {' '}
+            My Wallet
+          </ULink>
         </View>
 
         <ProfileDetailsContainer>
@@ -111,7 +109,7 @@ export class NavProfile extends Component {
             </ULink>
             <PendingPayouts>
               <Text>Pending Rewards: </Text>
-              <CoinStat size={1.5} mr={1.5} inheritfont amount={pendingPayouts} />
+              <CoinStat size={1.5} mr={1.5} inheritfont={1} amount={pendingPayouts} />
             </PendingPayouts>
           </WalletInfo>
         </ProfileDetailsContainer>
@@ -122,10 +120,12 @@ export class NavProfile extends Component {
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  earnings: state.earnings,
+  earnings: state.earnings
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  {}
-)(NavProfile));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    {}
+  )(NavProfile)
+);

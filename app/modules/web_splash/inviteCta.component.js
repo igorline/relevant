@@ -87,7 +87,11 @@ class InviteCta extends Component {
             placeholder="Your email"
           />
 
-          <ShadowButton style={{ margin: '10px 0 10px 0' }} color={'#3E3EFF'} onClick={this.submit}>
+          <ShadowButton
+            style={{ margin: '0 0 0 0' }}
+            color={'#3E3EFF'}
+            onClick={this.submit}
+          >
             Get Invitation
           </ShadowButton>
         </div>
