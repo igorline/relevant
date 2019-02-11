@@ -1,0 +1,567 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot SplashComponent 1`] = `
+.c0 {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+<div
+  className="splashContent"
+  style={
+    Object {
+      "WebkitAlignItems": "center",
+      "WebkitBoxAlign": "center",
+      "WebkitBoxDirection": "normal",
+      "WebkitBoxOrient": "horizontal",
+      "WebkitBoxPack": "start",
+      "WebkitFlexBasis": "auto",
+      "WebkitFlexDirection": "row",
+      "WebkitFlexShrink": 0,
+      "WebkitJustifyContent": "flex-start",
+      "alignItems": "center",
+      "borderBottomColor": "rgba(221,221,221,1.00)",
+      "borderBottomStyle": "solid",
+      "borderBottomWidth": "1px",
+      "borderLeftStyle": "solid",
+      "borderLeftWidth": "0px",
+      "borderRightStyle": "solid",
+      "borderRightWidth": "0px",
+      "borderTopStyle": "solid",
+      "borderTopWidth": "0px",
+      "boxSizing": "border-box",
+      "display": "flex",
+      "flexBasis": "auto",
+      "flexDirection": "row",
+      "flexShrink": 0,
+      "justifyContent": "flex-start",
+      "marginBottom": "0px",
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "marginTop": "0px",
+      "minHeight": "0px",
+      "minWidth": "0px",
+      "msFlexAlign": "center",
+      "msFlexDirection": "row",
+      "msFlexNegative": 0,
+      "msFlexPack": "start",
+      "msFlexPreferredSize": "auto",
+      "overflowX": "hidden",
+      "overflowY": "hidden",
+      "paddingBottom": "0px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "paddingTop": "0px",
+      "position": "relative",
+      "zIndex": 0,
+    }
+  }
+>
+  <div
+    data-focusable={true}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "WebkitAlignItems": "center",
+        "WebkitBoxAlign": "center",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitBoxPack": "center",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexShrink": 0,
+        "WebkitJustifyContent": "center",
+        "alignItems": "center",
+        "backgroundColor": "rgba(0,0,255,1.00)",
+        "borderBottomLeftRadius": "50px",
+        "borderBottomRightRadius": "50px",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopLeftRadius": "50px",
+        "borderTopRightRadius": "50px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "cursor": "pointer",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexShrink": 0,
+        "height": "79.2px",
+        "justifyContent": "center",
+        "marginBottom": "0px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "center",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPack": "center",
+        "msFlexPreferredSize": "auto",
+        "msTouchAction": "manipulation",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "absolute",
+        "right": "21.6px",
+        "top": "21.6px",
+        "touchAction": "manipulation",
+        "width": "79.2px",
+        "zIndex": 100,
+      }
+    }
+    tabIndex="0"
+  >
+    <div
+      c="white"
+      dir="auto"
+      style={
+        Object {
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexShrink": 0,
+          "borderBottomWidth": "0px",
+          "borderLeftWidth": "0px",
+          "borderRightWidth": "0px",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "color": "rgba(255,255,255,1.00)",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexShrink": 0,
+          "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+          "fontSize": "14px",
+          "fontStyle": "inherit",
+          "fontVariant": "inherit",
+          "fontWeight": "inherit",
+          "lineHeight": "inherit",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "0px",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "textDecoration": "none",
+          "whiteSpace": "pre-wrap",
+          "wordWrap": "break-word",
+        }
+      }
+    >
+      CLOSE
+    </div>
+  </div>
+  <div
+    className="mainSection"
+    style={
+      Object {
+        "WebkitAlignItems": "flex-start",
+        "WebkitBoxAlign": "start",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxFlex": 1,
+        "WebkitBoxOrient": "vertical",
+        "WebkitBoxPack": "center",
+        "WebkitFlexBasis": "0px",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexGrow": 1,
+        "WebkitFlexShrink": 1,
+        "WebkitJustifyContent": "center",
+        "alignItems": "flex-start",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "0px",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "justifyContent": "center",
+        "marginBottom": "0px",
+        "marginLeft": "86.4px",
+        "marginRight": "86.4px",
+        "marginTop": "86.4px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "start",
+        "msFlexDirection": "column",
+        "msFlexNegative": 1,
+        "msFlexPack": "center",
+        "msFlexPositive": 1,
+        "msFlexPreferredSize": "0px",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    <section
+      className="body"
+    >
+      <div
+        dir="auto"
+        fs={7}
+        lh={9}
+        style={
+          Object {
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(0,0,0,1.00)",
+            "display": "inline",
+            "fontFamily": "HelveticaNeue-Medium",
+            "fontSize": "50.4px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "64.8px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "textDecoration": "none",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        <span
+          dir="auto"
+          inheritfont={1}
+          m={0}
+          p={0}
+          style={
+            Object {
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "rgba(0,0,0,1.00)",
+              "display": "inline",
+              "fontFamily": "Outline",
+              "fontSize": "inherit",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "0.8px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "textDecoration": "none",
+              "whiteSpace": "inherit",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          Relevant.
+        </span>
+         
+        <span
+          dir="auto"
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "inherit",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "inherit",
+              "fontSize": "inherit",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "inherit",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "inherit",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          Curated by communities.
+        </span>
+        <span
+          dir="auto"
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "inherit",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "inherit",
+              "fontSize": "inherit",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "inherit",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "inherit",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          Not clicks.
+        </span>
+      </div>
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 0,
+            "marginBottom": "57.6px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "36px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "column",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
+      >
+        <div
+          dir="auto"
+          fs={2.5}
+          lh={4}
+          style={
+            Object {
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "inherit",
+              "display": "inline",
+              "fontFamily": "Georgia",
+              "fontSize": "18px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "28.8px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          Join the thought leaders, build trust and earn rewards.
+           
+          <a
+            className="c0"
+            display="inline"
+            href="/https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
+            onClick={[Function]}
+            styles=""
+            td="underline"
+          >
+            Learn More
+          </a>
+        </div>
+      </div>
+    </section>
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "stretch",
+          "WebkitBoxAlign": "stretch",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "vertical",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "column",
+          "WebkitFlexShrink": 0,
+          "alignItems": "stretch",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "column",
+          "flexShrink": 0,
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "0px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "stretch",
+          "msFlexDirection": "column",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "57.6px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
+        }
+      }
+    >
+      <div>
+         CTA WORKS
+      </div>
+    </div>
+  </div>
+  <div
+    className="phone"
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    <img
+      alt="phone"
+      src="/img/hand-transparent.png"
+    />
+  </div>
+</div>
+`;

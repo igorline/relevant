@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ShadowButton from 'modules/ui/web/ShadowButton';
+import { Button, LinkFont, View } from 'modules/styled/uni';
+import { colors } from 'app/styles';
+import FormField from 'modules/styled/form/field.component';
+
+// import ShadowButton from 'modules/ui/web/ShadowButton';
 
 export default class Forgot extends Component {
   static propTypes = {
@@ -32,17 +36,15 @@ export default class Forgot extends Component {
 
     if (this.state.sentEmailTo) {
       content = (
-        <div>
-          We have set an email to {this.state.sentEmailTo}
-          <br />
-          with a link to reset your password.
-        </div>
+        <LinkFont c={colors.black}>
+          We have set an email to {this.state.sentEmailTo} with a link to reset your
+          password.
+        </LinkFont>
       );
     } else {
       content = (
-        <div className="innerForm">
-          <input
-            className="blueInput special"
+        <View>
+          <FormField
             type="text"
             value={this.state.username}
             onChange={username => {
@@ -55,20 +57,16 @@ export default class Forgot extends Component {
               }
             }}
           />
-          <ShadowButton
-            backgroundColor={'white'}
-            color={'#3E3EFF'}
-            onClick={() => this.sendEmail()}
-          >
+          <Button onClick={() => this.sendEmail()} mt={6} ml="auto">
             Send Recovery Email
-          </ShadowButton>
-          <div className={'smallText'}>
+          </Button>
+          <LinkFont mt={2}>
             Back to <a onClick={() => this.props.authNav('login')}>Sign in</a>
-          </div>
-        </div>
+          </LinkFont>
+        </View>
       );
     }
 
-    return <div>{content}</div>;
+    return content;
   }
 }

@@ -8,7 +8,7 @@ export const color = css`
 
 function size(units) {
   if (typeof units === 'number') return sizing(units);
-  if (!units || units.match(/px|rem|em|vh|vw|%/)) return units;
+  if (!units || units.match(/px|rem|em|vh|vw|auto|%/)) return units;
   const uArray = units.split(' ');
   if (uArray.lenght === 1) sizing(Number(units));
   return uArray.map(u => sizing(Number(u))).join(' ');
@@ -103,4 +103,5 @@ export const link = css`
   ${p => (p.ac ? `&.active { color: ${p.ac}; }` : '')};
   ${p => (p.ac ? `&.active * { fill: ${p.ac}; }` : '')};
   ${p => (p.cursor ? `cursor: ${p.cursor}; }` : '')};
+  ${p => (p.td ? `text-decoration: ${p.td}; }` : '')};
 `;

@@ -63,7 +63,7 @@ function CoinStat(props) {
 
 CoinStat.propTypes = {
   mr: PropTypes.number,
-  inheritfont: PropTypes.bool,
+  inheritfont: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   amount: PropTypes.number,
   size: PropTypes.number,
   user: userProps,

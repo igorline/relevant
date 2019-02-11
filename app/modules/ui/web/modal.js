@@ -39,8 +39,8 @@ const Modal = styled(View)`
 
 const CloseButton = styled(Image)`
   position: absolute;
-  top: ${sizing(4)};
-  right: ${sizing(4)};
+  top: ${sizing(6)};
+  right: ${sizing(6)};
   cursor: pointer;
   z-index: 10;
 `;
@@ -52,10 +52,7 @@ export default class ModalComponent extends Component {
     visible: PropTypes.bool,
     close: PropTypes.func,
     children: PropTypes.node,
-    footer: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.func,
-    ]),
+    footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
 
   render() {
@@ -66,7 +63,7 @@ export default class ModalComponent extends Component {
     return (
       <ModalParent>
         <ModalScroll>
-          <Modal bg={colors.white} w={95} p={'4 4 6 4'}>
+          <Modal bg={colors.white} w={95} p={'6'}>
             <Touchable onPress={() => close()}>
               <CloseButton
                 w={3}
@@ -75,11 +72,9 @@ export default class ModalComponent extends Component {
                 source={require('app/public/img/x.png')}
               />
             </Touchable>
-            {header ?
-              <Header>{this.props.header || this.props.title}</Header>
-              : null}
-            <View mt={3}>{children}</View>
-            <View mt={6}>{footerEl}</View>
+            {header ? <Header>{this.props.header || this.props.title}</Header> : null}
+            {children && <View mt={3}>{children}</View>}
+            {footerEl && <View mt={6}>{footerEl}</View>}
           </Modal>
         </ModalScroll>
       </ModalParent>

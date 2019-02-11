@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import AuthContainer from 'modules/auth/web/auth.container';
-import RequestInvite from 'modules/web_splash/requestInvite.component';
+import SplashComponent from 'modules/web_splash/splash.component';
 import { View } from 'modules/styled/uni';
 import styled from 'styled-components';
 import { colors, layout, sizing } from 'app/styles';
@@ -52,7 +52,7 @@ class ContentHeader extends Component {
     );
 
     if (!loggedIn) {
-      cta = <RequestInvite type={'app'} cta={signup} />;
+      cta = <SplashComponent type={'app'} cta={signup} />;
     }
     return cta;
   }

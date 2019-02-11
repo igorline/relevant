@@ -101,6 +101,8 @@ export const Touchable = styled.Touchable``;
 
 export const Button = styled(Text)`
   ${layout.button}
+  ${mixins.background}
+  ${mixins.padding}
 `;
 
 export const NumericalValue = styled(Text)`

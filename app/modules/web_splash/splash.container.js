@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import * as actionCreators from 'modules/admin/admin.actions';
 import Marquee from './marquee.component';
-import RequestInvite from './requestInvite.component';
+import SplashComponent from './splash.component';
 import Mission from './mission.component';
 
 if (process.env.BROWSER === true) {
@@ -16,7 +16,7 @@ export class Splash extends Component {
     return (
       <div className="splashContainer">
         <Marquee {...this.props} />
-        <RequestInvite {...this.props} />
+        <SplashComponent {...this.props} hideCloseButton />
         <Mission />
       </div>
     );

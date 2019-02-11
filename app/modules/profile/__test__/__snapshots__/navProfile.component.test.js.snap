@@ -163,7 +163,8 @@ exports[`Snapshot NavProfile 1`] = `
   color: #0000ff;
 "
     >
-       My Wallet
+       
+      My Wallet
     </a>
   </div>
   <div

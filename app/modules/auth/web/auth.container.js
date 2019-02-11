@@ -12,12 +12,6 @@ import ConfirmEmail from './confirmEmail.component';
 import Forgot from './forgot.component';
 import ResetPassword from './resetPassword.component';
 
-let styles;
-
-if (process.env.BROWSER === true) {
-  require('./auth.css');
-}
-
 class AuthContainer extends Component {
   static propTypes = {
     auth: PropTypes.object,
@@ -86,7 +80,8 @@ class AuthContainer extends Component {
       const user = {
         name: data.username,
         email: data.email,
-        password: data.password
+        password: data.password,
+        image: data.image
       };
       const signedUp = await createUser(user);
       if (signedUp) this.close();
@@ -113,19 +108,19 @@ class AuthContainer extends Component {
   }
 
   render() {
-    const { user, match } = this.props;
+    const { user, match, modal, open } = this.props;
     let confirm;
     let auth;
     let visible = true;
 
-    let path = this.props.modal ? this.state.type : match.path.replace('/user/', '');
+    let path = modal ? this.state.type : match.path.replace('/user/', '');
 
-    if (this.props.user && this.props.user.role === 'temp') {
+    if (user && user.role === 'temp') {
       path = 'signup';
       confirm = true;
     }
-    if (this.props.modal) {
-      visible = this.props.open;
+    if (modal) {
+      visible = open;
     }
 
     let title = '';
@@ -148,7 +143,7 @@ class AuthContainer extends Component {
       auth = (
         <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
       );
-      title = 'Sign Up';
+      title = 'Join the Community';
     } else if (path === 'resetPassword/:token') {
       auth = <ResetPassword authNav={this.authNav} {...this.props} />;
       title = 'Reset Password';
@@ -156,7 +151,7 @@ class AuthContainer extends Component {
 
     return (
       <Modal visible={visible} close={this.close.bind(this)} title={title}>
-        <div className="authContainer" style={styles.authContainer}>
+        <div>
           {user && !confirm ? (
             <div className="authStatus">You are logged in as @{user.handle}</div>
           ) : (
@@ -168,16 +163,6 @@ class AuthContainer extends Component {
     );
   }
 }
-
-styles = {
-  authContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    fontSize: '20px',
-    paddingTop: '20px'
-  }
-};
 
 const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,

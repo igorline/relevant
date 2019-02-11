@@ -8,7 +8,7 @@ import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 // import Activity from 'modules/activity/web/activity.container';
-import RequestInvite from 'modules/web_splash/requestInvite.component';
+import SplashComponent from 'modules/web_splash/splash.component';
 import { matchPath } from 'react-router';
 
 if (process.env.BROWSER === true) {
@@ -144,7 +144,7 @@ class AppHeader extends Component {
     );
 
     if (!loggedIn) {
-      cta = <RequestInvite type={'app'} cta={signup} />;
+      cta = <SplashComponent type={'app'} cta={signup} />;
     }
     return cta;
   }
