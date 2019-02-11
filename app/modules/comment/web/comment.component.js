@@ -175,6 +175,7 @@ class Comment extends Component {
           <Container nesting={nesting}>
             <View fdirection={'row'} justify={'space-between'}>
               <AvatarBox
+                twitter={comment.twitter}
                 user={{ ...user, _id: comment.user }}
                 postTime={comment.createdAt}
                 showRelevance

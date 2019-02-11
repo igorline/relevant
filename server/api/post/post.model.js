@@ -1,7 +1,4 @@
 import { EventEmitter } from 'events';
-import MetaPost from './link.model';
-import User from '../user/user.model';
-import Notification from '../notification/notification.model';
 
 const mongoose = require('mongoose');
 
@@ -24,7 +21,7 @@ const PostSchema = new Schema(
       comment: { type: Schema.Types.ObjectId, ref: 'Post' },
       commentBody: String
     },
-    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+    user: { type: Schema.Types.Mixed, ref: 'User', index: true },
     embeddedUser: {
       _id: String,
       handle: String,
@@ -40,6 +37,7 @@ const PostSchema = new Schema(
     // store link info here
     metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
     url: { type: String, unique: false },
+    image: { type: String },
 
     // TEMP Deprecate remove after migrate 0.20
     link: { type: String, unique: false },
@@ -207,7 +205,7 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
 
     return this;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -232,8 +230,8 @@ async function updateLatestComment({ post, communityId }) {
 
 // TODO work on this
 PostSchema.methods.updateRank = async function updateRank({ communityId, updateTime }) {
+  let post = this;
   try {
-    let post = this;
     if (!post.data) {
       post.data = await post.model('PostData').findOne({ post: post._id, communityId });
     }
@@ -270,7 +268,8 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     await post.save();
     return post;
   } catch (err) {
-    throw new Error(err);
+    console.log(err); // eslint-disable-line
+    return post;
   }
 };
 
@@ -325,7 +324,7 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
 
     return post;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -343,7 +342,7 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
 
     return post;
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 };
 
@@ -358,7 +357,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
       { new: true }
     );
 
-    this.model('CommunityFeed').addToFeed(post, post.data.community);
+    // this.model('CommunityFeed').addToFeed(post, post.data.community);
 
     const newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
@@ -373,22 +372,24 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
 
 PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkObject) {
   try {
+    const MetaPost = this.model('MetaPost');
     let meta;
     if (metaId) {
-      const _id = metaId.id || metaId;
-      if (typeof _id === 'string') meta = await MetaPost.findOne({ _id });
+      const _id = metaId._id || metaId;
+      if (_id) meta = await MetaPost.findOne({ _id });
     }
-    const url = linkObject.url || this.url || this.link;
+    const url = linkObject ? linkObject.url : this.url || this.link;
     if (url && !meta) meta = await MetaPost.findOne({ url });
 
-    if (!meta) meta = new MetaPost();
-    meta.set(linkObject);
+    if (!meta) meta = new MetaPost(linkObject);
+    else meta.set(linkObject);
     meta = await meta.save();
 
     this.metaPost = meta;
     return this.save();
   } catch (err) {
-    return console.log('upsertMetaPost error', err); // eslint-disable-line
+    console.log('upsertMetaPost error', err); // eslint-disable-line
+    return this;
   }
 };
 
@@ -421,7 +422,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
       try {
         const type = comment ? 'comment' : 'post';
 
-        mUser = await User.findOne(
+        mUser = await this.model('User').findOne(
           { _id: mUser._id || mUser },
           'blockedBy blocked name role'
         );
@@ -441,7 +442,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           group = ['everyone'];
         }
 
-        const users = await User.find(query, 'deviceTokens');
+        const users = await this.model('User').find(query, 'deviceTokens');
 
         users.forEach(user => {
           let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
@@ -461,7 +462,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           read: false
         };
 
-        const newDbNotification = new Notification(dbNotificationObj);
+        const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
         const note = await newDbNotification.save();
 
         const newNotifObj = {
@@ -473,7 +474,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
         this.events.emit('postEvent', newNotifObj);
         return null;
       } catch (err) {
-        throw new Error(err);
+        throw err;
       }
     });
 
@@ -554,30 +555,43 @@ async function updateParentPostOnRemovingChild(post) {
 
 // TODO we should replace post with a dummy post if post has
 // comments or replies so we can preserver
-PostSchema.post('remove', async function postRemove(post) {
+PostSchema.post('remove', async function postRemove(post, next) {
   try {
     if (post.linkParent && post.type !== 'comment') {
       await updateParentPostOnRemovingChild(post);
     }
 
     // await this.model('CommunityFeed').removeFromAllFeeds(doc);
-    const note = this.model('Notification').remove({ post: post._id });
-    const feed = this.model('Feed').remove({ post: post._id });
-    const twitterFeed = this.model('TwitterFeed').remove({ post: post._id });
-    const data = this.model('PostData').remove({ post: post._id });
+    const note = this.model('Notification')
+    .remove({ post: post._id })
+    .exec();
+    const feed = this.model('Feed')
+    .remove({ post: post._id })
+    .exec();
+    const twitterFeed = this.model('TwitterFeed')
+    .remove({ post: post._id })
+    .exec();
+    const data = this.model('PostData')
+    .remove({ post: post._id })
+    .exec();
 
     let metaPost;
     let commentNote;
     if (post.type === 'link' && !post.postParent) {
-      metaPost = await this.model('MetaPost').remove({ post: post._id });
+      metaPost = await this.model('MetaPost')
+      .remove({ post: post._id })
+      .exec();
     }
 
     // remove notifications
     if (post.type === 'comment' || post.type === 'repost') {
-      commentNote = this.model('Notification').remove({ comment: post._id });
+      commentNote = this.model('Notification')
+      .remove({ comment: post._id })
+      .exec();
     }
 
     await Promise.all([note, feed, twitterFeed, data, metaPost, commentNote]);
+    return next();
   } catch (err) {
     throw err;
   }

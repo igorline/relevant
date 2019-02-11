@@ -290,7 +290,7 @@ exports[`Snapshot Activity Web 1`] = `
                     "WebkitFlexShrink": 0,
                     "alignItems": "stretch",
                     "backgroundColor": "rgba(0,0,0,0.00)",
-                    "backgroundImage": "url(\\"userImage2.jpg\\")",
+                    "backgroundImage": "url(\\"bob-pic.jpg\\")",
                     "backgroundPosition": "center",
                     "backgroundRepeat": "no-repeat",
                     "backgroundSize": "cover",
@@ -335,7 +335,7 @@ exports[`Snapshot Activity Web 1`] = `
               <img
                 alt=""
                 draggable={false}
-                src="userImage2.jpg"
+                src="bob-pic.jpg"
                 style={
                   Object {
                     "bottom": "0px",
@@ -354,14 +354,14 @@ exports[`Snapshot Activity Web 1`] = `
           </div>
           <a
             className="c0"
-            href="/user/profile/handle2"
+            href="/user/profile/bob"
             ml={1}
             mr={0.5}
             onClick={[Function]}
             styles=""
           >
             @
-            handle2
+            bob
           </a>
           <div
             align="baseline"
@@ -373,11 +373,16 @@ exports[`Snapshot Activity Web 1`] = `
                 "mr": 0.5,
                 "size": 2,
                 "user": Object {
-                  "_id": "222222222222222222222222",
+                  "_id": "b00000000000000000000000",
                   "balance": 222,
-                  "handle": "handle2",
-                  "image": "userImage2.jpg",
-                  "name": "Name2",
+                  "bio": "sup bro!",
+                  "ethAddress": Array [
+                    "0xf17f52151EbEF6C7334FAD080c5704D77216b732",
+                  ],
+                  "handle": "bob",
+                  "image": "bob-pic.jpg",
+                  "lockedTokens": 0,
+                  "name": "Bob",
                   "password": "test",
                   "relevance": Object {
                     "pagerank": 22,
@@ -888,30 +893,40 @@ exports[`Snapshot Activity Web 1`] = `
       hideDivider={true}
       post={
         Object {
-          "_id": "2",
+          "_id": "000000000000000000000002",
           "body": "awesome post #2!",
+          "community": "relevant",
           "data": Object {
             "pagerank": 45,
             "payout": 18000000000000000000,
           },
+          "domain": "link.domain2",
           "embeddedUser": Object {
-            "_id": "111111111111111111111111",
+            "_id": "a00000000000000000000000",
             "balance": 111,
-            "handle": "handle1",
-            "image": "userImage1.jpg",
-            "name": "Name1",
+            "bio": "hi i'm alice!",
+            "ethAddress": Array [
+              "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+            ],
+            "handle": "alice",
+            "image": "alice-pic.jpg",
+            "lockedTokens": 0,
+            "name": "Alice",
             "password": "test",
             "relevance": Object {
               "pagerank": 11,
             },
           },
+          "image": "link_img2.jpg",
           "link": Object {
             "domain": "link.domain2",
             "image": "link_img2.jpg",
             "title": "postTitle2",
             "url": "https://example.com/testPost2",
           },
-          "parentPost": 1111,
+          "parentComment": "000000000000000000000001",
+          "parentPost": "000000000000000000000003",
+          "payoutTime": 2019-02-03T06:01:01.000Z,
           "postDate": Date { NaN },
           "tags": Array [
             "tag21",
@@ -919,7 +934,8 @@ exports[`Snapshot Activity Web 1`] = `
           ],
           "title": "postTitle2",
           "type": "comment",
-          "user": "2",
+          "url": "https://example.com/testPost2",
+          "user": "000000000000000000000002",
         }
       }
     />

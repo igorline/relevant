@@ -10,7 +10,7 @@ import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
-import { alert, text, post } from 'app/utils';
+import { alert, text } from 'app/utils';
 
 import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
@@ -37,7 +37,7 @@ class CreatePostContainer extends Component {
     auth: PropTypes.object,
     close: PropTypes.func,
     location: PropTypes.object,
-    history: PropTypes.object,
+    history: PropTypes.object
   };
 
   constructor(props) {
@@ -245,8 +245,7 @@ class CreatePostContainer extends Component {
   }
 
   addTextFromLink() {
-    const description =
-      '"' + text.stripHTML(this.state.urlPreview.description) + '"';
+    const description = '"' + text.stripHTML(this.state.urlPreview.description) + '"';
     this.setState({
       body: description
     });
@@ -272,7 +271,7 @@ class CreatePostContainer extends Component {
       }
     });
 
-    post.generatePreviewServer(postUrl).then(results => {
+    this.props.actions.generatePreviewServer(postUrl).then(results => {
       if (results && results.url) {
         // console.log('set preview', postUrl);
         let imageURL = results.image;
@@ -292,11 +291,11 @@ class CreatePostContainer extends Component {
             title: results.title || 'Untitled',
             loading: false,
             embeddedUser: auth.user,
-            tags: [],
+            tags: []
           },
           linkPreview: {
             ...results,
-            image: imageURL,
+            image: imageURL
           }
         });
       } else {
@@ -334,7 +333,6 @@ class CreatePostContainer extends Component {
     }
     return (
       <div className="createPostContainer">
-
         <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
 
         <div style={{ position: 'relative' }}>

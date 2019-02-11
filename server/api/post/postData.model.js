@@ -44,7 +44,7 @@ const PostDataSchema = new Schema(
     parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
     parentComment: { type: Schema.Types.ObjectId, ref: 'Post' },
     hidden: { type: Boolean, default: false },
-    tags: [String],
+    tags: [String]
     // parentPost: { type: Schema.Types.ObjectId, ref: 'Post' }
   },
   {
@@ -53,13 +53,14 @@ const PostDataSchema = new Schema(
 );
 
 PostDataSchema.index({ post: 1 });
-
 PostDataSchema.index({ post: 1, community: 1 });
+
 PostDataSchema.index({ latestComment: 1, community: 1 });
 PostDataSchema.index({ isInFeed: 1, community: 1, latestComment: 1 });
 PostDataSchema.index({ isInFeed: 1, community: 1, rank: 1 });
 
 PostDataSchema.index({ post: 1, communityId: 1 });
+PostDataSchema.index({ parentPost: 1, communityId: 1 });
 PostDataSchema.index({ isInFeed: 1, communityId: 1, rank: 1 });
 
 module.exports = mongoose.model('PostData', PostDataSchema);

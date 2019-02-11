@@ -6,7 +6,7 @@ const EarningsSchemaEvents = new EventEmitter();
 
 const EarningsSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.Mixed, ref: 'User' },
     source: { type: String, default: 'post' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     // amount: { type: Number, default: 0 },
@@ -41,7 +41,7 @@ EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(
       { ...earning },
       { new: true, upsert: true }
     );
-    updatedEarning.upcateClient({ actionType: 'UPDATE_EARNING' });
+    updatedEarning.updateClient({ actionType: 'UPDATE_EARNING' });
     return updatedEarning;
   } catch (err) {
     throw err;
@@ -76,7 +76,10 @@ EarningsSchema.statics.updateUserBalance = async function updateBalance(earning)
   }
 };
 
-EarningsSchema.statics.updateEarnings = async function updateEarnings({ post, communityId }) {
+EarningsSchema.statics.updateEarnings = async function updateEarnings({
+  post,
+  communityId
+}) {
   if (!post.data) {
     post.data = await this.model('PostData').find({ post: post._id, communityId });
   }
@@ -84,13 +87,29 @@ EarningsSchema.statics.updateEarnings = async function updateEarnings({ post, co
     { post: post._id, communityId },
     {
       estimatedPostPayout: post.data.expectedPayout,
-      totalPostShares: post.data.shares,
+      totalPostShares: post.data.shares
     },
     { multi: true }
   );
   const earnings = await this.find({ post: post._id, communityId });
   earnings.forEach(e => e.updateClient({ actionType: 'ADD_EARNING' }));
   return earnings;
+};
+
+EarningsSchema.statics.stakedTokens = async function stakedTokens() {
+  try {
+    // this.model('CommunityMember').find({}).then(console.log);
+    return await this.model('Earnings').aggregate([
+      {
+        $group: {
+          _id: '$community',
+          stakedTokens: { $sum: '$stakedTokens' }
+        }
+      }
+    ]);
+  } catch (err) {
+    throw err;
+  }
 };
 
 module.exports = mongoose.model('Earnings', EarningsSchema);

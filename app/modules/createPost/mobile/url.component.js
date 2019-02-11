@@ -15,7 +15,7 @@ import {
   mainPadding,
   fullWidth,
   greyText,
-  borderGrey,
+  borderGrey
 } from 'app/styles/global';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -36,7 +36,6 @@ import TextBody from 'modules/text/mobile/textBody.component';
 import UserSearchComponent from './userSearch.component';
 import UrlPreview from './urlPreview.component';
 
-
 let styles;
 const URL_REGEX = new RegExp(
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/
@@ -53,7 +52,7 @@ class UrlComponent extends Component {
     repost: PropTypes.object,
     users: PropTypes.object,
     user: PropTypes.object,
-    tags: PropTypes.array,
+    tags: PropTypes.array
   };
 
   constructor(props, context) {
@@ -171,7 +170,7 @@ class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    utils.post.generatePreviewServer(postUrl).then(results => {
+    this.props.actions.generatePreviewServer(postUrl).then(results => {
       if (results) {
         const newBody = this.props.postBody
           ? this.props.postBody.replace(`${postUrl}`, '').trim()
@@ -419,7 +418,7 @@ function mapStateToProps(state) {
     postBody: state.createPost.postBody,
     urlPreview: state.createPost.urlPreview,
     repost: state.createPost.repost,
-    tags: state.tags.parentTags,
+    tags: state.tags.parentTags
   };
 }
 
@@ -430,7 +429,7 @@ function mapDispatchToProps(dispatch) {
         ...createPostActions,
         ...tagActions,
         ...userActions,
-        ...tooltipActions,
+        ...tooltipActions
       },
       dispatch
     )

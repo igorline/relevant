@@ -58,6 +58,7 @@ export async function init() {
 }
 
 export async function getBalance(address) {
+  if (!instance) return 0;
   const balance = await instance.balanceOf.call(address);
   return balance.div(10 ** decimals).toNumber();
 }

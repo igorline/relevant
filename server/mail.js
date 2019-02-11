@@ -1,7 +1,9 @@
 const htmlToText = require('html-to-text');
+
+const dummyKey = 'XXXXXXXXXXXXXXXXXXXXXXX';
 const mailgun = require('mailgun-js')({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN
+  apiKey: process.env.MAILGUN_API_KEY || dummyKey,
+  domain: process.env.MAILGUN_DOMAIN || dummyKey
 });
 
 // mailgun.domains.updateTracking('mail.relevant.community', 'click', { active: true })

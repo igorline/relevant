@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const StaticsticsSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.Mixed, ref: 'User' },
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     date: { type: Date, index: true },
     startTime: { type: Date, index: true },

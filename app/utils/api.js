@@ -12,7 +12,7 @@ export function env() {
 }
 env();
 
-if (process.env.BROWSER || process.env.WEB !== 'true') {
+if (process.env.BROWSER || process.env.WEB !== 'true' || process.env.WEB !== true) {
   // this is a weird hack that makes conditional require work in react-native
   // routes.post = require(postApi);
   // routes.user = require(userApi);

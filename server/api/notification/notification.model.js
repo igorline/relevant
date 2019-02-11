@@ -6,9 +6,9 @@ const { Schema } = mongoose;
 const NotificationSchema = new Schema(
   {
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    forUser: { type: Schema.Types.ObjectId, ref: 'User' },
-    byUser: { type: Schema.Types.ObjectId, ref: 'User' },
-    byUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    forUser: { type: Schema.Types.Mixed, ref: 'User' },
+    byUser: { type: Schema.Types.Mixed, ref: 'User' },
+    byUsers: [{ type: Schema.Types.Mixed, ref: 'User' }],
     byUsersHandle: [String],
     group: [String],
     totalUsers: Number,

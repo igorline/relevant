@@ -1,24 +1,51 @@
+import { keys } from './keys';
+
 export const user1 = {
-  _id: '111111111111111111111111',
-  image: 'userImage1.jpg',
-  handle: 'handle1',
-  name: 'Name1',
+  _id: 'a00000000000000000000000',
+  image: 'alice-pic.jpg',
+  handle: 'alice',
+  bio: "hi i'm alice!",
+  name: 'Alice',
   relevance: { pagerank: 11 },
   balance: 111,
-  password: 'test'
+  lockedTokens: 0,
+  password: 'test',
+  ethAddress: [keys[0].address]
 };
 
 export const user2 = {
-  _id: '222222222222222222222222',
-  image: 'userImage2.jpg',
-  handle: 'handle2',
-  name: 'Name2',
+  _id: 'b00000000000000000000000',
+  image: 'bob-pic.jpg',
+  handle: 'bob',
+  bio: 'sup bro!',
+  name: 'Bob',
   relevance: { pagerank: 22 },
   balance: 222,
-  password: 'test'
+  lockedTokens: 0,
+  password: 'test',
+  ethAddress: [keys[1].address]
 };
 
+export const user3 = {
+  _id: 'c00000000000000000000000',
+  image: 'carol-pic.jpg',
+  bio: 'admin of a few communities',
+  handle: 'carol',
+  name: 'Carol',
+  relevance: { pagerank: 33 },
+  balance: 333,
+  lockedTokens: 0,
+  password: 'test',
+  ethAddress: [keys[2].address]
+};
+
+export const allUsers = [user1, user2, user3];
+
 export const usersState = {
-  users: { [user1._id]: user1, [user2._id]: user2 },
-  handleToId: { [user1.handle]: user1._id, [user2.handle]: user2._id }
+  users: { [user1._id]: user1, [user2._id]: user2, [user3._id]: user3 },
+  handleToId: {
+    [user1.handle]: user1._id,
+    [user2.handle]: user2._id,
+    [user3.handle]: user3._id
+  }
 };

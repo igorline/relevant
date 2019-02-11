@@ -3,12 +3,14 @@ import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
 
+const dummyKey = 'XXXXXXXXXXXXXXXXXXXXXXX';
+
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
 const mailgun = require('mailgun-js')({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN
+  apiKey: process.env.MAILGUN_API_KEY || dummyKey,
+  domain: process.env.MAILGUN_DOMAIN || dummyKey
 });
 
 /* eslint no-console: 0 */

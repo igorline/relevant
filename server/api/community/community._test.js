@@ -43,18 +43,15 @@ test.before(async () => {
   token = res.body.token;
 });
 
-
 test.after(async () => {
   await cleanupData();
 });
-
 
 test.serial('Should not create community with bad slug', async t => {
   t.plan(1);
   const res = await r.post(`/api/community?access_token=${token}`).send(community);
   t.is(res.status, 500);
 });
-
 
 test.serial('Should not create community with reserved slug', async t => {
   t.plan(1);
@@ -63,7 +60,6 @@ test.serial('Should not create community with reserved slug', async t => {
   t.is(res.status, 500);
 });
 
-
 test.serial('Should create community with correct slug', async t => {
   t.plan(1);
   community.slug = 'test_community1';
@@ -71,13 +67,11 @@ test.serial('Should create community with correct slug', async t => {
   t.is(res.status, 200);
 });
 
-
 test.serial('Should get communities', async t => {
   t.plan(1);
   const res = await r.get('/api/community').send();
   t.is(res.status, 200);
 });
-
 
 let testBalance;
 let memberships;
@@ -137,7 +131,6 @@ test.serial('Should distribute tokens correctly', async t => {
   .send();
   const { memberCount } = updatedCommunity.body;
 
-
   res = await r
   .put(`/api/community/${community.slug}/leave?access_token=${token}`)
   .send();
@@ -147,7 +140,6 @@ test.serial('Should distribute tokens correctly', async t => {
   .send();
   const { memberCount: updatedMemberCount } = updatedCommunity.body;
   t.is(updatedMemberCount, memberCount - 1, 'should update member count');
-
 
   res = await r
   .get(`/api/community/${community3.slug}/members?access_token=${token}`)
@@ -171,8 +163,9 @@ test.serial('Should join community', async t => {
 
   userToken = res.body.token;
 
-
-  let updatedCommunity = await r.get(`/api/community/${community.slug}?access_token=${token}`).send();
+  let updatedCommunity = await r
+  .get(`/api/community/${community.slug}?access_token=${token}`)
+  .send();
   const { memberCount } = updatedCommunity.body;
 
   res = await r

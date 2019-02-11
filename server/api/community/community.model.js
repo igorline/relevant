@@ -1,7 +1,6 @@
-import { NAME_PATTERN } from '../../../app/utils/text';
-import * as ethUtils from '../../utils/ethereum';
-
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import { NAME_PATTERN } from 'app/utils/text';
+import * as ethUtils from 'server/utils/ethereum';
 
 const { Schema } = mongoose;
 
@@ -61,7 +60,9 @@ CommunitySchema.pre('remove', async function remove(next) {
 
 CommunitySchema.methods.updateMemeberCount = async function updateMemeberCount() {
   try {
-    this.memberCount = await this.model('CommunityMember').count({ communityId: this._id });
+    this.memberCount = await this.model('CommunityMember').count({
+      communityId: this._id
+    });
     return this.save();
   } catch (err) {
     throw err;
@@ -204,7 +205,7 @@ CommunitySchema.statics.getBalances = async function getBalances() {
       {
         $group: {
           _id: '$community',
-          balance: { $sum: '$balance' }
+          stakedTokens: { $sum: '$balance' }
         }
       }
     ]);

@@ -586,9 +586,9 @@ exports[`Snapshot Post Web 1`] = `
           "WebkitAlignItems": "stretch",
           "WebkitBoxAlign": "stretch",
           "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "horizontal",
+          "WebkitBoxOrient": "vertical",
           "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "row",
+          "WebkitFlexDirection": "column",
           "WebkitFlexShrink": 0,
           "alignItems": "stretch",
           "borderBottomStyle": "solid",
@@ -602,7 +602,7 @@ exports[`Snapshot Post Web 1`] = `
           "boxSizing": "border-box",
           "display": "flex",
           "flexBasis": "auto",
-          "flexDirection": "row",
+          "flexDirection": "column",
           "flexShrink": 0,
           "marginBottom": "0px",
           "marginLeft": "0px",
@@ -611,7 +611,7 @@ exports[`Snapshot Post Web 1`] = `
           "minHeight": "0px",
           "minWidth": "0px",
           "msFlexAlign": "stretch",
-          "msFlexDirection": "row",
+          "msFlexDirection": "column",
           "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
           "paddingBottom": "0px",
@@ -623,58 +623,53 @@ exports[`Snapshot Post Web 1`] = `
         }
       }
     >
-      <a
-        className=""
-        target="_blank"
-      >
-        <div
-          style={
-            Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxFlex": 1,
-              "WebkitBoxOrient": "vertical",
-              "WebkitFlexBasis": "0px",
-              "WebkitFlexDirection": "column",
-              "WebkitFlexGrow": 1,
-              "WebkitFlexShrink": 1,
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "display": "flex",
-              "flexBasis": "0px",
-              "flexDirection": "column",
-              "flexGrow": 1,
-              "flexShrink": 1,
-              "height": "72px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "14.4px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
-              "msFlexNegative": 1,
-              "msFlexPositive": 1,
-              "msFlexPreferredSize": "0px",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
-              "position": "relative",
-              "width": "144px",
-              "zIndex": 0,
-            }
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "horizontal",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "row",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "row",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "row",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
           }
+        }
+      >
+        <a
+          className=""
+          href="https://example.com/testPost1"
+          target="_blank"
         >
           <div
             style={
@@ -703,9 +698,10 @@ exports[`Snapshot Post Web 1`] = `
                 "flexDirection": "column",
                 "flexGrow": 1,
                 "flexShrink": 1,
+                "height": "72px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "0px",
+                "marginRight": "14.4px",
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
@@ -714,13 +710,12 @@ exports[`Snapshot Post Web 1`] = `
                 "msFlexNegative": 1,
                 "msFlexPositive": 1,
                 "msFlexPreferredSize": "0px",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
                 "paddingBottom": "0px",
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
+                "width": "144px",
                 "zIndex": 0,
               }
             }
@@ -731,16 +726,13 @@ exports[`Snapshot Post Web 1`] = `
                   "WebkitAlignItems": "stretch",
                   "WebkitBoxAlign": "stretch",
                   "WebkitBoxDirection": "normal",
+                  "WebkitBoxFlex": 1,
                   "WebkitBoxOrient": "vertical",
-                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexBasis": "0px",
                   "WebkitFlexDirection": "column",
-                  "WebkitFlexShrink": 0,
+                  "WebkitFlexGrow": 1,
+                  "WebkitFlexShrink": 1,
                   "alignItems": "stretch",
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"link_img1.jpg\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
                   "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
                   "borderLeftStyle": "solid",
@@ -749,14 +741,12 @@ exports[`Snapshot Post Web 1`] = `
                   "borderRightWidth": "0px",
                   "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
-                  "bottom": "0px",
                   "boxSizing": "border-box",
                   "display": "flex",
-                  "flexBasis": "auto",
+                  "flexBasis": "0px",
                   "flexDirection": "column",
-                  "flexShrink": 0,
-                  "height": "100%",
-                  "left": "0px",
+                  "flexGrow": 1,
+                  "flexShrink": 1,
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -765,126 +755,221 @@ exports[`Snapshot Post Web 1`] = `
                   "minWidth": "0px",
                   "msFlexAlign": "stretch",
                   "msFlexDirection": "column",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
+                  "msFlexNegative": 1,
+                  "msFlexPositive": 1,
+                  "msFlexPreferredSize": "0px",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
                   "paddingBottom": "0px",
                   "paddingLeft": "0px",
                   "paddingRight": "0px",
                   "paddingTop": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
+                  "position": "relative",
+                  "zIndex": 0,
                 }
               }
-            />
-            <img
-              alt=""
-              draggable={false}
-              src="link_img1.jpg"
+            >
+              <div
+                style={
+                  Object {
+                    "WebkitAlignItems": "stretch",
+                    "WebkitBoxAlign": "stretch",
+                    "WebkitBoxDirection": "normal",
+                    "WebkitBoxOrient": "vertical",
+                    "WebkitFlexBasis": "auto",
+                    "WebkitFlexDirection": "column",
+                    "WebkitFlexShrink": 0,
+                    "alignItems": "stretch",
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"link_img1.jpg\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "cover",
+                    "borderBottomStyle": "solid",
+                    "borderBottomWidth": "0px",
+                    "borderLeftStyle": "solid",
+                    "borderLeftWidth": "0px",
+                    "borderRightStyle": "solid",
+                    "borderRightWidth": "0px",
+                    "borderTopStyle": "solid",
+                    "borderTopWidth": "0px",
+                    "bottom": "0px",
+                    "boxSizing": "border-box",
+                    "display": "flex",
+                    "flexBasis": "auto",
+                    "flexDirection": "column",
+                    "flexShrink": 0,
+                    "height": "100%",
+                    "left": "0px",
+                    "marginBottom": "0px",
+                    "marginLeft": "0px",
+                    "marginRight": "0px",
+                    "marginTop": "0px",
+                    "minHeight": "0px",
+                    "minWidth": "0px",
+                    "msFlexAlign": "stretch",
+                    "msFlexDirection": "column",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
+                    "paddingBottom": "0px",
+                    "paddingLeft": "0px",
+                    "paddingRight": "0px",
+                    "paddingTop": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                draggable={false}
+                src="link_img1.jpg"
+                style={
+                  Object {
+                    "bottom": "0px",
+                    "height": "100%",
+                    "left": "0px",
+                    "opacity": 0,
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+            </div>
+          </div>
+        </a>
+        <div
+          style={
+            Object {
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxFlex": 1,
+              "WebkitBoxOrient": "vertical",
+              "WebkitFlexBasis": "0px",
+              "WebkitFlexDirection": "column",
+              "WebkitFlexGrow": 1,
+              "WebkitFlexShrink": 1,
+              "alignItems": "stretch",
+              "borderBottomStyle": "solid",
+              "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
+              "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
+              "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "display": "flex",
+              "flexBasis": "0px",
+              "flexDirection": "column",
+              "flexGrow": 1,
+              "flexShrink": 1,
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "column",
+              "msFlexNegative": 1,
+              "msFlexPositive": 1,
+              "msFlexPreferredSize": "0px",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "zIndex": 0,
+            }
+          }
+        >
+          <a
+            className=""
+            href="/testCommunity/post/000000000000000000000001"
+            onClick={[Function]}
+            styles=""
+          >
+            <div
+              dir="auto"
+              flex={1}
               style={
                 Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
+                  "WebkitBoxFlex": 1,
+                  "WebkitFlexBasis": "0px",
+                  "WebkitFlexGrow": 1,
+                  "WebkitFlexShrink": 1,
+                  "borderBottomWidth": "0px",
+                  "borderLeftWidth": "0px",
+                  "borderRightWidth": "0px",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "color": "rgba(0,0,0,1.00)",
+                  "display": "flex",
+                  "flexBasis": "0px",
+                  "flexGrow": 1,
+                  "flexShrink": 1,
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "18px",
+                  "fontStyle": "inherit",
+                  "fontVariant": "inherit",
+                  "fontWeight": "inherit",
+                  "lineHeight": "24px",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "msFlexNegative": 1,
+                  "msFlexPositive": 1,
+                  "msFlexPreferredSize": "0px",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "textDecoration": "none",
+                  "whiteSpace": "pre-wrap",
+                  "wordWrap": "break-word",
                 }
               }
-            />
-          </div>
-        </div>
-      </a>
-      <div
-        style={
-          Object {
-            "WebkitAlignItems": "stretch",
-            "WebkitBoxAlign": "stretch",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxFlex": 1,
-            "WebkitBoxOrient": "vertical",
-            "WebkitFlexBasis": "0px",
-            "WebkitFlexDirection": "column",
-            "WebkitFlexGrow": 1,
-            "WebkitFlexShrink": 1,
-            "alignItems": "stretch",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "display": "flex",
-            "flexBasis": "0px",
-            "flexDirection": "column",
-            "flexGrow": 1,
-            "flexShrink": 1,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "stretch",
-            "msFlexDirection": "column",
-            "msFlexNegative": 1,
-            "msFlexPositive": 1,
-            "msFlexPreferredSize": "0px",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
-            "position": "relative",
-            "zIndex": 0,
-          }
-        }
-      >
-        <a
-          className=""
-          href="/testCommunity/post/1"
-          onClick={[Function]}
-          styles=""
-        >
+            >
+              postTitle1
+            </div>
+          </a>
           <div
             dir="auto"
-            flex={1}
             style={
               Object {
-                "WebkitBoxFlex": 1,
-                "WebkitFlexBasis": "0px",
-                "WebkitFlexGrow": 1,
-                "WebkitFlexShrink": 1,
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
                 "borderBottomWidth": "0px",
                 "borderLeftWidth": "0px",
                 "borderRightWidth": "0px",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "rgba(0,0,0,1.00)",
+                "color": "rgba(153,153,153,1.00)",
                 "display": "flex",
-                "flexBasis": "0px",
-                "flexGrow": 1,
-                "flexShrink": 1,
-                "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "18px",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "10.8px",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "lineHeight": "24px",
+                "lineHeight": "14.4px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
                 "marginTop": "0px",
-                "msFlexNegative": 1,
-                "msFlexPositive": 1,
-                "msFlexPreferredSize": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
                 "paddingBottom": "0px",
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
@@ -892,78 +977,6 @@ exports[`Snapshot Post Web 1`] = `
                 "position": "relative",
                 "textDecoration": "none",
                 "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
-              }
-            }
-          >
-            postTitle1
-          </div>
-        </a>
-        <div
-          dir="auto"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "HelveticaNeue",
-              "fontSize": "10.8px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "14.4px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
-            }
-          }
-        >
-          <span
-            dir="auto"
-            style={
-              Object {
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
-                "color": "inherit",
-                "display": "inline",
-                "fontFamily": "inherit",
-                "fontSize": "inherit",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "inherit",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "textDecoration": "none",
-                "whiteSpace": "inherit",
                 "wordWrap": "break-word",
               }
             }
@@ -999,26 +1012,6 @@ exports[`Snapshot Post Web 1`] = `
                 }
               }
             >
-              <a
-                className=""
-                href="/testCommunity/top/tag11"
-                onClick={[Function]}
-                styles=""
-              >
-                #
-                tag11
-                 
-              </a>
-              <a
-                className=""
-                href="/testCommunity/top/tag12"
-                onClick={[Function]}
-                styles=""
-              >
-                #
-                tag12
-                 
-              </a>
               <span
                 dir="auto"
                 style={
@@ -1050,91 +1043,104 @@ exports[`Snapshot Post Web 1`] = `
                   }
                 }
               >
-                • 
+                <a
+                  className=""
+                  href="/testCommunity/top/tag11"
+                  onClick={[Function]}
+                  styles=""
+                >
+                  #
+                  tag11
+                   
+                </a>
+                <a
+                  className=""
+                  href="/testCommunity/top/tag12"
+                  onClick={[Function]}
+                  styles=""
+                >
+                  #
+                  tag12
+                   
+                </a>
+                <span
+                  dir="auto"
+                  style={
+                    Object {
+                      "borderBottomWidth": "0px",
+                      "borderLeftWidth": "0px",
+                      "borderRightWidth": "0px",
+                      "borderTopWidth": "0px",
+                      "boxSizing": "border-box",
+                      "color": "inherit",
+                      "display": "inline",
+                      "fontFamily": "inherit",
+                      "fontSize": "inherit",
+                      "fontStyle": "inherit",
+                      "fontVariant": "inherit",
+                      "fontWeight": "inherit",
+                      "lineHeight": "inherit",
+                      "marginBottom": "0px",
+                      "marginLeft": "0px",
+                      "marginRight": "0px",
+                      "marginTop": "0px",
+                      "paddingBottom": "0px",
+                      "paddingLeft": "0px",
+                      "paddingRight": "0px",
+                      "paddingTop": "0px",
+                      "textDecoration": "none",
+                      "whiteSpace": "inherit",
+                      "wordWrap": "break-word",
+                    }
+                  }
+                >
+                  • 
+                </span>
+              </span>
+              <span
+                dir="auto"
+                style={
+                  Object {
+                    "borderBottomWidth": "0px",
+                    "borderLeftWidth": "0px",
+                    "borderRightWidth": "0px",
+                    "borderTopWidth": "0px",
+                    "boxSizing": "border-box",
+                    "color": "inherit",
+                    "display": "inline",
+                    "fontFamily": "inherit",
+                    "fontSize": "inherit",
+                    "fontStyle": "inherit",
+                    "fontVariant": "inherit",
+                    "fontWeight": "inherit",
+                    "lineHeight": "inherit",
+                    "marginBottom": "0px",
+                    "marginLeft": "0px",
+                    "marginRight": "0px",
+                    "marginTop": "0px",
+                    "paddingBottom": "0px",
+                    "paddingLeft": "0px",
+                    "paddingRight": "0px",
+                    "paddingTop": "0px",
+                    "textDecoration": "none",
+                    "whiteSpace": "nowrap",
+                    "wordWrap": "break-word",
+                  }
+                }
+              >
+                <a
+                  className=""
+                  href="https://example.com/testPost1"
+                  target="_blank"
+                >
+                  link.domain1 ↗
+                </a>
               </span>
             </span>
-            <span
-              dir="auto"
-              style={
-                Object {
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "inline",
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "textDecoration": "none",
-                  "whiteSpace": "nowrap",
-                  "wordWrap": "break-word",
-                }
-              }
-            >
-              <a
-                className=""
-                target="_blank"
-              >
-                link.domain1 ↗
-              </a>
-            </span>
-          </span>
+          </div>
         </div>
       </div>
     </div>
-    <SingleCommnetContainer
-      hideBorder={true}
-      hidePostButtons={true}
-      parentPost={
-        Object {
-          "_id": "1",
-          "body": "awesome post #1!",
-          "data": Object {
-            "pagerank": 45,
-            "payout": 18000000000000000000,
-          },
-          "embeddedUser": Object {
-            "_id": "111111111111111111111111",
-            "balance": 111,
-            "handle": "handle1",
-            "image": "userImage1.jpg",
-            "name": "Name1",
-            "password": "test",
-            "relevance": Object {
-              "pagerank": 11,
-            },
-          },
-          "link": Object {
-            "domain": "link.domain1",
-            "image": "link_img1.jpg",
-            "title": "postTitle1",
-            "url": "https://example.com/testPost1",
-          },
-          "postDate": 2019-01-31T06:01:01.000Z,
-          "tags": Array [
-            "tag11",
-            "tag12",
-          ],
-          "title": "postTitle",
-          "type": "post",
-          "user": "1",
-        }
-      }
-      postUrl="/testCommunity/post/1"
-    />
     <div
       style={
         Object {

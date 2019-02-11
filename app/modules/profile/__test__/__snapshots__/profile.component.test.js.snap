@@ -93,7 +93,7 @@ exports[`Snapshot other users Profile 1`] = `
   >
     <a
       className=""
-      href="/user/profile/handle1"
+      href="/user/profile/alice"
       onClick={[Function]}
       styles=""
     >
@@ -160,7 +160,7 @@ exports[`Snapshot other users Profile 1`] = `
               "WebkitFlexShrink": 0,
               "alignItems": "stretch",
               "backgroundColor": "rgba(0,0,0,0.00)",
-              "backgroundImage": "url(\\"userImage1.jpg\\")",
+              "backgroundImage": "url(\\"alice-pic.jpg\\")",
               "backgroundPosition": "center",
               "backgroundRepeat": "no-repeat",
               "backgroundSize": "cover",
@@ -205,7 +205,7 @@ exports[`Snapshot other users Profile 1`] = `
         <img
           alt=""
           draggable={false}
-          src="userImage1.jpg"
+          src="alice-pic.jpg"
           style={
             Object {
               "bottom": "0px",
@@ -399,7 +399,7 @@ exports[`Snapshot other users Profile 1`] = `
             }
           }
         >
-          Name1
+          Alice
         </div>
         <div
           style={
@@ -454,11 +454,16 @@ exports[`Snapshot other users Profile 1`] = `
                 "mr": 2,
                 "size": 2,
                 "user": Object {
-                  "_id": "111111111111111111111111",
+                  "_id": "a00000000000000000000000",
                   "balance": 111,
-                  "handle": "handle1",
-                  "image": "userImage1.jpg",
-                  "name": "Name1",
+                  "bio": "hi i'm alice!",
+                  "ethAddress": Array [
+                    "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                  ],
+                  "handle": "alice",
+                  "image": "alice-pic.jpg",
+                  "lockedTokens": 0,
+                  "name": "Alice",
                   "password": "test",
                   "relevance": Object {
                     "pagerank": 11,
@@ -1049,6 +1054,90 @@ exports[`Snapshot other users Profile 1`] = `
         }
       />
     </div>
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "stretch",
+          "WebkitBoxAlign": "stretch",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "vertical",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "column",
+          "WebkitFlexShrink": 0,
+          "alignItems": "stretch",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "column",
+          "flexShrink": 0,
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "21.6px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "stretch",
+          "msFlexDirection": "column",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
+        }
+      }
+    >
+      <div
+        dir="auto"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(153,153,153,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "textDecoration": "none",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        hi i'm alice!
+      </div>
+    </div>
   </div>
 </div>
 `;
@@ -1169,7 +1258,7 @@ exports[`Snapshot own Profile 1`] = `
   >
     <a
       className=""
-      href="/user/profile/handle1"
+      href="/user/profile/alice"
       onClick={[Function]}
       styles=""
     >
@@ -1236,7 +1325,7 @@ exports[`Snapshot own Profile 1`] = `
               "WebkitFlexShrink": 0,
               "alignItems": "stretch",
               "backgroundColor": "rgba(0,0,0,0.00)",
-              "backgroundImage": "url(\\"userImage1.jpg\\")",
+              "backgroundImage": "url(\\"alice-pic.jpg\\")",
               "backgroundPosition": "center",
               "backgroundRepeat": "no-repeat",
               "backgroundSize": "cover",
@@ -1281,7 +1370,7 @@ exports[`Snapshot own Profile 1`] = `
         <img
           alt=""
           draggable={false}
-          src="userImage1.jpg"
+          src="alice-pic.jpg"
           style={
             Object {
               "bottom": "0px",
@@ -1475,7 +1564,7 @@ exports[`Snapshot own Profile 1`] = `
             }
           }
         >
-          Name1
+          Alice
         </div>
         <div
           style={
@@ -1530,11 +1619,16 @@ exports[`Snapshot own Profile 1`] = `
                 "mr": 2,
                 "size": 2,
                 "user": Object {
-                  "_id": "111111111111111111111111",
+                  "_id": "a00000000000000000000000",
                   "balance": 111,
-                  "handle": "handle1",
-                  "image": "userImage1.jpg",
-                  "name": "Name1",
+                  "bio": "hi i'm alice!",
+                  "ethAddress": Array [
+                    "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                  ],
+                  "handle": "alice",
+                  "image": "alice-pic.jpg",
+                  "lockedTokens": 0,
+                  "name": "Alice",
                   "password": "test",
                   "relevance": Object {
                     "pagerank": 11,
@@ -2133,6 +2227,90 @@ exports[`Snapshot own Profile 1`] = `
         >
           Logout
         </a>
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "stretch",
+          "WebkitBoxAlign": "stretch",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "vertical",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "column",
+          "WebkitFlexShrink": 0,
+          "alignItems": "stretch",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "column",
+          "flexShrink": 0,
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "21.6px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "stretch",
+          "msFlexDirection": "column",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
+        }
+      }
+    >
+      <div
+        dir="auto"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(153,153,153,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "textDecoration": "none",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        hi i'm alice!
       </div>
     </div>
     <div

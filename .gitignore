@@ -6,6 +6,7 @@ app/publicenv.js
 .env
 *.pem
 app/public/dist
+server/test/mongoTestConfig.json
 
 #ios
 ios/Pods/

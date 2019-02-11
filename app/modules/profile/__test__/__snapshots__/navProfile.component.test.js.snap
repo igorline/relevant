@@ -150,7 +150,7 @@ exports[`Snapshot NavProfile 1`] = `
         }
       }
     >
-      Name1
+      Alice
     </div>
     <a
       className="c0"
@@ -255,7 +255,7 @@ exports[`Snapshot NavProfile 1`] = `
     >
       <a
         className=""
-        href="/user/profile/handle1"
+        href="/user/profile/alice"
         onClick={[Function]}
         styles=""
       >
@@ -322,7 +322,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
                 "backgroundColor": "rgba(0,0,0,0.00)",
-                "backgroundImage": "url(\\"userImage1.jpg\\")",
+                "backgroundImage": "url(\\"alice-pic.jpg\\")",
                 "backgroundPosition": "center",
                 "backgroundRepeat": "no-repeat",
                 "backgroundSize": "cover",
@@ -367,7 +367,7 @@ exports[`Snapshot NavProfile 1`] = `
           <img
             alt=""
             draggable={false}
-            src="userImage1.jpg"
+            src="alice-pic.jpg"
             style={
               Object {
                 "bottom": "0px",
@@ -449,11 +449,16 @@ exports[`Snapshot NavProfile 1`] = `
           props={
             Object {
               "user": Object {
-                "_id": "111111111111111111111111",
+                "_id": "a00000000000000000000000",
                 "balance": 111,
-                "handle": "handle1",
-                "image": "userImage1.jpg",
-                "name": "Name1",
+                "bio": "hi i'm alice!",
+                "ethAddress": Array [
+                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                ],
+                "handle": "alice",
+                "image": "alice-pic.jpg",
+                "lockedTokens": 0,
+                "name": "Alice",
                 "password": "test",
                 "relevance": Object {
                   "pagerank": 11,

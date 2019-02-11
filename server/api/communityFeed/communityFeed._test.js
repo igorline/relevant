@@ -140,7 +140,9 @@ test.serial('Should get voter relevance correctly', async t => {
 test.serial('Delete post', async t => {
   t.plan(1);
 
-  const res = await r.delete(`/api/post/${postId}?access_token=${authorToken}&community=crypto`);
+  const res = await r.delete(
+    `/api/post/${postId}?access_token=${authorToken}&community=crypto`
+  );
 
   t.is(res.status, 200, 'should get correct server response');
 });

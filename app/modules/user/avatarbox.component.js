@@ -61,7 +61,7 @@ export default function UserName(props) {
       resizeMode={'contain'}
       w={1.75}
       h={1.75}
-      ml={1.25}
+      ml={0.5}
       mb={-0.1}
       source={require('app/public/img/icons/twitter_blue.png')}
     />
