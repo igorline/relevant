@@ -14,8 +14,7 @@ const path = require('path');
 const app = new Express();
 mongoose.Promise = global.Promise;
 
-require('dotenv')
-.config({ silent: true });
+require('dotenv').config({ silent: true });
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 
@@ -27,11 +26,10 @@ const isDevelopment =
   process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'native';
 
+const relevantEnv = process.env.RELEVANT_ENV;
+
 if (isDevelopment) {
   console.log('in development environment');
-  // can test queue in development
-  require('./queue');
-
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -41,7 +39,7 @@ if (isDevelopment) {
   app.use(
     webpackDevMiddleware(compiler, {
       // noInfo: true,
-      publicPath: webpackConfig.output.publicPath,
+      publicPath: webpackConfig.output.publicPath
       // writeToDisk: filePath => /loadable-stats-dev\.json$/.test(filePath)
     })
   );
@@ -109,8 +107,7 @@ if (process.env.NODE_ENV !== 'test') {
       );
       const now = new Date();
       require('./routes')(app);
-      const time = new Date()
-      .getTime() - now.getTime();
+      const time = new Date().getTime() - now.getTime();
       console.log('done loading routes', time / 1000, 's');
     }
     socketServer(server, { pingTimeout: 30000 });
@@ -120,9 +117,13 @@ if (process.env.NODE_ENV !== 'test') {
 }
 console.log('routes ready');
 
+// in production this is a worker
+if (relevantEnv === 'staging' || isDevelopment) {
+  require('./queue');
+}
+
 require('./utils/updateDB-Community0.3.0');
-require('./utils/ethereum')
-.init();
+require('./utils/ethereum').init();
 
 exports.app = app;
 exports.server = server;
