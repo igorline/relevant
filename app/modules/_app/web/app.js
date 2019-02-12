@@ -12,7 +12,7 @@ import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
 import Modal from 'modules/ui/web/modal';
-import CreatePost from 'modules/createPost/web/createPost.container';
+import CreatePost from 'modules/createPost/createPost.container';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';

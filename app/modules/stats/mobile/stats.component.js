@@ -210,7 +210,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
   state => ({
-    auth: state.auth,
+    auth: state.auth
     // currentView: state.navigation.currentView
   }),
   mapDispatchToProps

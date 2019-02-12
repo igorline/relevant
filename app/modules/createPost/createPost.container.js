@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import RichText from 'modules/text/web/richText.component';
+import get from 'lodash.get';
 
 import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -12,20 +13,25 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text } from 'app/utils';
 
-import AvatarBox from 'modules/user/avatarbox.component';
-import PostInfo from 'modules/post/postinfo.component';
-import CreatePostTeaser from './createPostTeaser.component';
-import TagInput from './TagInput.component';
-import SelectTags from './selectTags.component';
+import { View, Button, Divider } from 'modules/styled/uni';
+import { colors, sizing } from 'app/styles';
 
-if (process.env.BROWSER === true) {
-  require('modules/post/web/post.css');
-  require('./createPost.css');
-}
+import UAvatar from 'modules/user/UAvatar.component';
+import RStat from 'modules/stats/rStat.component';
+import PostInfo from 'modules/post/postinfo.component';
+import CreatePostTeaser from 'modules/createPost/web/createPostTeaser.component';
+import TagInput from 'modules/createPost/web/TagInput.component';
+import SelectTags from 'modules/createPost/web/selectTags.component';
+import styled from 'styled-components/primitives';
 
 const urlPlaceholder = "What's relevant?  Paste article URL.";
 const textPlaceholder =
-  'Add your commentary, opinion, summary \nor a relevant quote from the article';
+  'Add your commentary, opinion, summary or a relevant quote from the article';
+
+const PasteTextFromLink = styled(View)`
+  right: ${sizing(1.5)};
+  top: ${sizing(-3)};
+`;
 
 class CreatePostContainer extends Component {
   static propTypes = {
@@ -37,7 +43,8 @@ class CreatePostContainer extends Component {
     auth: PropTypes.object,
     close: PropTypes.func,
     location: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    community: PropTypes.object
   };
 
   constructor(props) {
@@ -72,7 +79,6 @@ class CreatePostContainer extends Component {
   }
 
   componentDidMount() {
-    // console.log(this.props)
     if (!this.props.tags || !this.props.tags.parentTags.length) {
       this.props.actions.getParentTags();
     }
@@ -273,7 +279,6 @@ class CreatePostContainer extends Component {
 
     this.props.actions.generatePreviewServer(postUrl).then(results => {
       if (results && results.url) {
-        // console.log('set preview', postUrl);
         let imageURL = results.image;
         if (imageURL && imageURL.indexOf(', ')) {
           imageURL = imageURL.split(', ')[0];
@@ -314,15 +319,27 @@ class CreatePostContainer extends Component {
           post={this.state.urlPreview}
           link={this.state.linkPreview}
         />
-        <a onClick={this.clearUrl.bind(this)} className="removeUrl">
-          remove url
-        </a>
+        <View display="flex" justify="flex-end" fdirection="row">
+          <a onClick={this.clearUrl.bind(this)} className="removeUrl">
+            remove url
+          </a>
+        </View>
       </div>
     );
   }
 
   render() {
     const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
+    const { body, url } = this.state;
+    const { community } = this.props;
+    const articleTags = this.state.keywords;
+    let communityTags = [];
+    if (community) {
+      const activeCommunity = get(community.communities, community.active, {}) || {};
+      communityTags = get(activeCommunity, 'topics', []) || [].map(t => t._id);
+    }
+    const allTags = [].concat(articleTags, communityTags);
+
     if (!this.state.active && !this.props.modal) {
       return (
         <CreatePostTeaser
@@ -332,12 +349,14 @@ class CreatePostContainer extends Component {
       );
     }
     return (
-      <div className="createPostContainer">
-        <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
+      <View>
+        <View display="flex" fdirection="row" align="center">
+          <UAvatar user={this.props.auth.user} size={4} />
+          <RStat user={this.props.auth.user} size={2} ml={1.5} />
+        </View>
 
-        <div style={{ position: 'relative' }}>
+        <View mt={2}>
           <RichText
-            className="postInput"
             body={this.state.body}
             placeholder={placeholder}
             onChange={this.handleBodyChange}
@@ -347,76 +366,73 @@ class CreatePostContainer extends Component {
               }
             }}
           />
-          <div className="addFromLink">
+          <PasteTextFromLink display="flex" fdirection="row" justify="flex-end">
             {this.state.urlPreview &&
               this.state.body === '' &&
               this.state.urlPreview.description && (
-              <button onClick={this.addTextFromLink} className="addTextFromLink">
+              <a
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  this.addTextFromLink();
+                }}
+              >
                   Paste article description
-              </button>
+              </a>
             )}
-          </div>
-        </div>
+          </PasteTextFromLink>
+        </View>
 
-        <div className="urlPreview">{this.renderPreview()}</div>
+        <View mt={3}>{this.renderPreview()}</View>
 
-        <div className="createOptions">
-          <TagInput
-            selectedTags={this.state.selectedTags}
-            selectTag={this.selectTags}
-            deselectTag={tag => {
-              let { selectedTags } = this.state;
-              selectedTags = selectedTags.filter(t => t !== tag);
-              this.setState({ selectedTags });
-            }}
-            placeholderText={
-              !this.state.selectedTags ? 'Please add at least one tag' : ''
-            }
-          />
-
-          <div className={'row'}>
-            <button className="basicButton" onClick={this.clearPost}>
-              Clear
-            </button>
-
-            <button
-              className="shadowButton"
-              onClick={() => this.createPost()}
-              disabled={
-                !this.state.selectedTags.length ||
-                (!this.state.body.length && !this.state.postUrl)
+        {body || url ? (
+          <View mt={3}>
+            <TagInput
+              selectedTags={this.state.selectedTags}
+              selectTag={this.selectTags}
+              deselectTag={tag => {
+                let { selectedTags } = this.state;
+                selectedTags = selectedTags.filter(t => t !== tag);
+                this.setState({ selectedTags });
+              }}
+              placeholderText={
+                !this.state.selectedTags.length ? 'Please add at least one tag' : ''
               }
-            >
-              {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
-            </button>
-          </div>
+            />
+            <View mt={4}>
+              <SelectTags
+                text={'Suggested tags'}
+                tags={allTags}
+                selectedTags={this.state.selectedTags}
+                selectTag={this.selectTags}
+                deselectTag={tag => {
+                  let { selectedTags } = this.state.selectedTags;
+                  selectedTags = selectedTags.filter(t => t !== tag);
+                  this.setState({ selectedTags });
+                }}
+              />
+            </View>
+            <Divider mt={4} />
+          </View>
+        ) : null}
+        <View display="flex" fdirection="row" mt={2} justify="flex-end">
+          <Button c={colors.black} bg={colors.white} onClick={this.clearPost}>
+            Clear
+          </Button>
 
-          <SelectTags
-            className="shadowButton"
-            text={'Suggested article tags'}
-            tags={this.state.keywords}
-            selectedTags={this.state.selectedTags}
-            selectTag={this.selectTags}
-            deselectTag={tag => {
-              let { selectedTags } = this.state;
-              selectedTags = selectedTags.filter(t => t !== tag);
-              this.setState({ selectedTags });
-            }}
-          />
-          <SelectTags
-            className="shadowButton"
-            text={'Suggested community tags'}
-            tags={this.props.tags.parentTags.map(t => t._id)}
-            selectedTags={this.state.selectedTags}
-            selectTag={this.selectTags}
-            deselectTag={tag => {
-              let { selectedTags } = this.state.selectedTags;
-              selectedTags = selectedTags.filter(t => t !== tag);
-              this.setState({ selectedTags });
-            }}
-          />
-        </div>
-      </div>
+          <Button
+            onClick={() => this.createPost()}
+            disabled={
+              !this.state.selectedTags.length ||
+              (!this.state.body.length && !this.state.postUrl)
+            }
+            ml={2}
+            bb={1}
+          >
+            {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
+          </Button>
+        </View>
+      </View>
     );
   }
 }
@@ -427,7 +443,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     users: state.user,
     tags: state.tags,
-    userSearch: state.user.search
+    userSearch: state.user.search,
+    community: state.community
   };
 }
 

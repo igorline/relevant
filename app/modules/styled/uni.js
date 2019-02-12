@@ -1,5 +1,5 @@
 import styled from 'styled-components/primitives';
-import { mixins, layout, fonts } from 'app/styles';
+import { mixins, layout, fonts, colors } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
@@ -101,8 +101,30 @@ export const Touchable = styled.Touchable``;
 
 export const Button = styled(Text)`
   ${layout.button}
+  ${p =>
+    p.disabled
+      ? `
+    color: ${colors.white};
+    background: ${colors.grey};
+    `
+      : ''};
   ${mixins.background}
   ${mixins.padding}
+  ${mixins.color}
+`;
+
+export const Tag = styled(Text)`
+  ${layout.tag}
+  ${p =>
+    p.disabled
+      ? `
+    color: ${colors.grey};
+    background: ${colors.secondaryBG};
+    `
+      : ''};
+  ${mixins.background}
+  ${mixins.padding}
+  ${mixins.color}
 `;
 
 export const NumericalValue = styled(Text)`

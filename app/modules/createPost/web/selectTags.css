@@ -1,8 +1,8 @@
 @import 'styles/global.css';
 
 .selectTags {
-  font-family: 'Arial', sans-serif;
-  font-size: 13px;
+  font-family: 'HelveticaNeue', 'Arial', sans-serif;
+  font-size: 12px;
   margin-top: 10px;
   color: #111112;
   span {
@@ -30,7 +30,8 @@
 }
 
 .tagInput input {
-  font-size: 15px;
+  font-size: 12px;
+  font-family: 'HelveticaNeue', 'Arial', sans-serif;
   line-height: 1.5;
   padding: 8px 15px;
   margin: 10px 0 0 0;
@@ -39,7 +40,6 @@
   border-radius: 0px;
   white-space: pre-line;
   border: none;
-  font-size: 15px;
   outline: none;
   width: 100%;
 }

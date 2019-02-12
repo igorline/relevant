@@ -30,7 +30,7 @@ const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
 const AdminWallet = loadable(() => import('modules/admin/web/admin.main.component'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
 const CreatePostContainer = loadable(() =>
-  import('modules/createPost/web/createPost.container')
+  import('modules/createPost/createPost.container')
 );
 
 // community slug blacklist

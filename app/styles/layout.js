@@ -1,11 +1,10 @@
 import * as colors from './colors';
 import sizing from './sizing';
 
-
 // TODO should we keep things consistent? Doesn't seem useful anymore
 export const linkStyle = `
   text-decoration: none;
-  color: ${(props) => props.color || 'black'}
+  color: ${props => props.color || 'black'}
 `;
 
 export const modalShadow = {
@@ -26,7 +25,7 @@ export const universalBorder = (side, color, width) => `
 export const textRow = {
   display: 'flex',
   flexDirection: 'row',
-  alignItems: 'center',
+  alignItems: 'center'
 };
 
 export const button = {
@@ -41,4 +40,13 @@ export const button = {
   padding: `0 ${sizing(2)}`,
   fontSize: sizing(1.5),
   fontFamily: 'HelveticaNeue-Medium'
+};
+
+export const tag = {
+  ...button,
+  cursor: 'pointer',
+  background: colors.blue,
+  minWidth: 0,
+  height: sizing(4),
+  padding: sizing(1.5)
 };

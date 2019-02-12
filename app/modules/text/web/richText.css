@@ -1,6 +1,7 @@
 @import 'styles/global.css';
 
 .editor {
+  min-height: 300px;
   @extend %input;
   p {
     margin: 0;
@@ -11,9 +12,9 @@
   }
   &:empty:before {
     content: attr(placeholder);
-    font-family: system-ui, Arial, sans-serif;
+    font-family: HelveticaNeue, system-ui, Arial, sans-serif;
     display: block;
-    font-size: 15px;
+    font-size: 12px;
     color: $greyText;
   }
 }
