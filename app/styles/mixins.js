@@ -34,6 +34,7 @@ export const font = css`
   ${p => (p.fs ? `font-size: ${size(p.fs)}` : '')};
   ${p => (p.lh ? `line-height: ${size(p.lh)}` : '')};
   ${p => (p.fw ? `font-weight: ${p.fw}` : '')};
+  ${p => (p.ff ? `font-famimly: ${p.ff}` : '')};
 `;
 
 export const inheritfont = css`

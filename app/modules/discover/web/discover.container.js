@@ -11,14 +11,12 @@ import * as userActions from 'modules/user/user.actions';
 // import * as notifActions from 'modules/activity/activity.actions';
 // import * as tagActions from 'modules/tag/tag.actions';
 // import * as investActions from 'modules/post/invest.actions';
-// import CreatePost from 'modules/createPost/web/createPost.container';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import { sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
-
 
 const Wrapper = styled.View`
   display: flex;
@@ -51,9 +49,7 @@ export class Discover extends Component {
     const { params } = this.props.match;
     this.state = {
       tabIndex: 1,
-      routes: params.tag
-        ? discoverHelper.tagRoutes
-        : discoverHelper.standardRoutes
+      routes: params.tag ? discoverHelper.tagRoutes : discoverHelper.standardRoutes
     };
     const { sort } = params;
     if (sort) {
@@ -72,19 +68,15 @@ export class Discover extends Component {
     this.props.actions.setWebView('discover', this.props.match.params);
   }
 
-
   componentDidUpdate(prevProps) {
     let alreadyLoading;
     const { tag, sort, community } = this.props.match.params;
     const prevTag = get(prevProps, 'match.params.tag', null);
     const prevSort = get(prevProps, 'match.params.sort', null);
     const prevCommunity = get(prevProps, 'match.params.community', null);
-    if (tag !== prevTag
-      || sort !== prevSort
-      || community !== prevCommunity) {
+    if (tag !== prevTag || sort !== prevSort || community !== prevCommunity) {
       this.props.actions.setWebView('discover', this.props.match.params);
     }
-
 
     if (this.props.refresh && this.props.refresh > this.lastRefresh) {
       this.lastRefresh = this.props.refresh;
@@ -221,7 +213,7 @@ function mapDispatchToProps(dispatch) {
         ...authActions,
         ...postActions,
         ...userActions,
-        ...navigationActions,
+        ...navigationActions
         // ...notifActions,
         // ...investActions,
         // ...tagActions,
@@ -232,7 +224,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Discover));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Discover)
+);

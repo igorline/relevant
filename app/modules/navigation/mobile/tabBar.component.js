@@ -44,7 +44,9 @@ export default class TabBar extends Component {
   renderTab(tab) {
     const { notif, auth, navigation, changeTab } = this.props;
     const { user } = auth;
-    const currentTab = navigation.state ? navigation.state.routes[navigation.state.index] : null;
+    const currentTab = navigation.state
+      ? navigation.state.routes[navigation.state.index]
+      : null;
     let badge;
     const active = tab.key === currentTab.key;
     let activeText;

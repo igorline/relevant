@@ -1,7 +1,7 @@
 $grey: grey;
 /*$blue: #3E3EFF;*/
 $darkGrey: #242425;
-$blue: #4d4eff;
+$blue: #0000ff;
 $lightGrey: #9C9C9C;
 $greyText: #9C9C9C;
 $green: #196950;
@@ -108,5 +108,3 @@ $postOffsetPadding: 0;
     box-shadow: 0 0 0 .5px $borderGrey, 0 0 0px 1px $blue;
   }
 }
-
-
