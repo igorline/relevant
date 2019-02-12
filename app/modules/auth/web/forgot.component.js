@@ -57,12 +57,14 @@ export default class Forgot extends Component {
               }
             }}
           />
-          <Button onClick={() => this.sendEmail()} mt={6} ml="auto">
-            Send Recovery Email
-          </Button>
-          <LinkFont mt={2}>
-            Back to <a onClick={() => this.props.authNav('login')}>Sign in</a>
-          </LinkFont>
+          <View display="flex" fdirection="row" align="center" mt={7} justify="flex-end">
+            <LinkFont shrink={1}>
+              Back to <a onClick={() => this.props.authNav('login')}>Sign in</a>
+            </LinkFont>
+            <Button onClick={() => this.sendEmail()} m={0} ml={2}>
+              Send Recovery Email
+            </Button>
+          </View>
         </View>
       );
     }
