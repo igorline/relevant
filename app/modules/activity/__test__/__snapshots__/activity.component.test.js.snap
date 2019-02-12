@@ -496,7 +496,7 @@ exports[`Snapshot Activity Web 1`] = `
                     "backgroundImage": "url(\\"r-emoji.png\\")",
                     "backgroundPosition": "center",
                     "backgroundRepeat": "no-repeat",
-                    "backgroundSize": "cover",
+                    "backgroundSize": "contain",
                     "borderBottomStyle": "solid",
                     "borderBottomWidth": "0px",
                     "borderLeftStyle": "solid",
