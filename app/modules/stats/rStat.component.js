@@ -26,6 +26,7 @@ export default function RStat(props) {
         source={iconImage}
         mr={iconSize / 4}
         style={{ bottom: imageMargin }}
+        resizeMode="contain"
       />
       <NumericalValue c={color}>{abbreviateNumber(pagerank) || 0}</NumericalValue>
     </ImageWrapper>

@@ -50,7 +50,7 @@ const StyledAvatar = styled(UAvatar)``;
 
 const PendingPayouts = styled.Text`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   color: ${colors.grey};
   font-size: ${sizing(1.5)};
@@ -109,7 +109,14 @@ export class NavProfile extends Component {
             </ULink>
             <PendingPayouts>
               <Text>Pending Rewards: </Text>
-              <CoinStat size={1.5} mr={1.5} inheritfont={1} amount={pendingPayouts} />
+              <CoinStat
+                size={1.25}
+                size={1.25}
+                mr={1.5}
+                inheritfont={1}
+                amount={pendingPayouts}
+                align="baseline"
+              />
             </PendingPayouts>
           </WalletInfo>
         </ProfileDetailsContainer>
