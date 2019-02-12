@@ -110,7 +110,7 @@ async function createLinkObj(tweet) {
     domain: processed.domain,
     // TODO we are not using this
     shortText: processed.shortText,
-    keywords: processed.keywords,
+    keywords: processed.keywords
   };
   return { linkObject, processed };
 }
@@ -434,7 +434,7 @@ async function getUsers(userId) {
     userCounter = 0;
     processedTweets = 0;
 
-    // await cleanup();
+    await cleanup();
     await processTweets(users);
 
     q.start(async queErr => {
