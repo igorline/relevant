@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, LinkFont, View, Image } from 'modules/styled/uni';
 import FormField from 'modules/styled/form/field.component';
-import ShadowButton from 'modules/ui/web/ShadowButton';
 import { browserAlerts } from 'app/utils/alert';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
@@ -64,8 +63,9 @@ class LoginForm extends Component {
         placeholder: 'Password',
         label: 'Password',
         value: this.state.password,
+        // name: 'Password',
         onChange: Password => {
-          this.handleChange('Password', Password.target.value);
+          this.handleChange('password', Password.target.value);
         },
         onKeyDown: e => {
           if (e.keyCode === 13) {
@@ -98,9 +98,6 @@ class LoginForm extends Component {
         ) : null}
 
         {local ? <Button onClick={this.submit}> Sign In </Button> : null}
-        <div style={{ width: '100%', visibility: local ? 'visible' : 'hidden' }}>
-          <ShadowButton onClick={this.submit}>Sign In</ShadowButton>
-        </div>
 
         <LinkFont>
           Not registered yet? <a onClick={() => this.props.authNav('signup')}>Sign up</a>
