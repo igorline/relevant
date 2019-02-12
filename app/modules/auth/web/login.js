@@ -86,22 +86,33 @@ class LoginForm extends Component {
             </LinkFont>
           </a>
         </View>
-        {!local ? (
-          <View display="flex" fdirection="column" mt={6} justify="flex-start" shrink={1}>
-            <ULink to={`/auth/twitter?redirect=${this.props.location.pathname}`}>
+
+        <View display="flex" fdirection="row" align="center" mt={7} justify="flex-end">
+          {!local ? (
+            <LinkFont shrink={1}>
+              Not registered yet?{' '}
+              <a onClick={() => this.props.authNav('signup')}>Sign up</a>
+            </LinkFont>
+          ) : null}
+          {!local ? (
+            <ULink
+              to={`/auth/twitter?redirect=${this.props.location.pathname}`}
+              external
+              ml={2}
+            >
               <Button bg={colors.twitterBlue}>
                 <Image source={twitterIcon} w={2} h={2} mr={2} />
                 Sign In with Twitter
               </Button>
             </ULink>
-          </View>
-        ) : null}
-
-        {local ? <Button onClick={this.submit}> Sign In </Button> : null}
-
-        <LinkFont>
-          Not registered yet? <a onClick={() => this.props.authNav('signup')}>Sign up</a>
-        </LinkFont>
+          ) : null}
+          {local ? (
+            <Button onClick={this.submit} m={0}>
+              {' '}
+              Sign In{' '}
+            </Button>
+          ) : null}
+        </View>
       </div>
     );
   }
