@@ -16,6 +16,7 @@
     "testClient": "NODE_ENV=test jest ./app",
     "testClient:watch": "NODE_ENV=test jest ./app --watch",
     "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch --",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",
     "android": "react-native run-android",

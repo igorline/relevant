@@ -3,6 +3,7 @@ import { sanitize } from 'server/test/utils';
 import Invest from 'server/api/invest/invest.model';
 import User from 'server/api/user/user.model';
 import Post from 'server/api/post/post.model';
+import PostData from 'server/api/post/postData.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import Notification from 'server/api/notification/notification.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
@@ -23,6 +24,13 @@ describe('ethRewards', () => {
     ({ link1, link2, link3, link4 } = getPosts());
     ({ relevant, crypto } = getCommunities());
     global.console = { log: jest.fn() }; // hides logs
+  });
+
+  describe('No Rewards', () => {
+    test('should not compute rewards', async () => {
+      const payouts = await ethRewards.rewards();
+      expect(payouts).toBe(false);
+    });
   });
 
   describe('Votes', () => {
@@ -102,6 +110,12 @@ describe('ethRewards', () => {
       expect(notification).toMatchSnapshot();
     });
 
+    test('should reset community staked tokens', async () => {
+      const postStake = await PostData.findOne({ post: link4._id });
+      const updatedBalances = await Earnings.stakedTokens();
+      const totalBalance = updatedBalances.reduce((a, c) => c.stakedTokens + a, 0);
+      expect(totalBalance).toBe(postStake.balance);
+    });
     // test('logs should match', async () => {
     //   const logs = console.log.mock.calls
     //   .map(log => log.map(l => JSON.stringify(l)).join(' ').trim())

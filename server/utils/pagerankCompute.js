@@ -346,7 +346,7 @@ function processUpvote(params) {
 
   if (!rankedNodes[userId]) {
     nstart[userId] = user.relevance ? Math.max(user.relevance.pagerankRaw, 0) : 0;
-    rankedNodes[userId] = { handle: user.handle };
+    rankedNodes[userId] = {};
   }
 
   if (authorId && !rankedNodes[userId][authorId]) {

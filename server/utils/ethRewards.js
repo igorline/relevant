@@ -30,6 +30,8 @@ exports.rewards = async () => {
 
     // const stakedTokens = await Community.getBalances();
     const stakedTokens = await Earnings.stakedTokens();
+    const totalBalance = stakedTokens.reduce((a, c) => c.stakedTokens + a, 0);
+    if (totalBalance === 0) return (computingRewards = false);
 
     communities.forEach(community =>
       q.push(async cb => {
@@ -56,7 +58,6 @@ exports.rewards = async () => {
       q.on('success', res => (results[res.community] = res));
       q.start(err => (err ? reject(err) : resolve(results)));
     });
-    computingRewards = false;
 
     const totalDistributedRewards = Object.keys(payoutData).reduce(
       (result, key) => result + payoutData[key].distributedRewards,
@@ -72,11 +73,18 @@ exports.rewards = async () => {
     // const distPool = await Eth.getParam('distributedRewards', { noConvert: true });
     // console.log('distributedRewards Pool', distPool);
     // console.log('Finished distributing rewards, remaining reward fund: ', remainingRewards);
+    const now = new Date();
+    await Earnings.update(
+      { payoutTime: { $lte: now }, status: 'pending' },
+      { status: 'expired' },
+      { multi: true }
+    );
 
+    computingRewards = false;
     return { payoutData, totalDistributedRewards };
   } catch (error) {
     console.log('rewards error', error);
-    computingRewards = true;
+    computingRewards = false;
     // return null;
     throw error;
   }
@@ -90,7 +98,7 @@ async function allocateRewards() {
 
 async function computeCommunityRewards(community, rewardPool, stakedTokens) {
   await computePageRank({ communityId: community._id, community: community.slug, debug });
-  const reward = communityRewardShare({ community, stakedTokens, rewardPool });
+  const reward = await communityRewardShare({ community, stakedTokens, rewardPool });
 
   community.rewardFund = reward;
   community = await community.save();
@@ -99,7 +107,9 @@ async function computeCommunityRewards(community, rewardPool, stakedTokens) {
 
 function communityRewardShare({ community, stakedTokens, rewardPool }) {
   const totalBalance = stakedTokens.reduce((a, c) => c.stakedTokens + a, 0);
-  const communityBalance = stakedTokens.find(c => c._id === community.slug).stakedTokens;
+  let communityBalance = stakedTokens.find(c => c._id === community.slug);
+  if (!communityBalance || !communityBalance.stakedTokens) return 0;
+  communityBalance = communityBalance.stakedTokens;
 
   // compute portion of reward pool allocated to community
   const rewardShare = communityBalance / totalBalance;
