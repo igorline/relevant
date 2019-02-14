@@ -93,7 +93,8 @@ InvestSchema.statics.createVote = async function createVote(props) {
   let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
 
   // can only invest in top-level posts
-  const canInvest = !post.postParent && user.lockedTokens + stakedTokens <= userBalance;
+  let canInvest = !post.postParent && user.lockedTokens + stakedTokens <= userBalance;
+  canInvest = post.data.eligibleForReward && !post.data.paidOut;
 
   if (!canInvest) stakedTokens = 0;
   console.log('canInvest', canInvest);
@@ -175,6 +176,7 @@ async function updateUserEarnings({
       stakedTokens,
       community,
       communityId,
+      payoutTime: post.data.payoutTime,
       estimatedPostPayout: post.data.expectedPayout,
       totalPostShares: post.data.shares,
       status: 'pending'

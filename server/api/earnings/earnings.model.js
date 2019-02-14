@@ -17,6 +17,7 @@ const EarningsSchema = new Schema(
     estimatedPostPayout: { type: Number, default: 0 },
     shares: { type: Number, default: 0 },
     earned: { type: Number, default: 0 },
+    payoutTime: Date,
     status: String,
     type: { type: String, default: 'coins' },
     community: { type: String },
@@ -100,6 +101,7 @@ EarningsSchema.statics.stakedTokens = async function stakedTokens() {
   try {
     // this.model('CommunityMember').find({}).then(console.log);
     return await this.model('Earnings').aggregate([
+      { $match: { status: 'pending' } },
       {
         $group: {
           _id: '$community',
