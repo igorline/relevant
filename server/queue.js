@@ -269,8 +269,8 @@ function startTwitterUpdate() {
 }
 
 // updateUserStats();
-// startStatsUpdate();
 // startTwitterUpdate();
+// startBasicIncomeUpdate();
 
 if (process.env.NODE_ENV === 'production') {
   // start interval on the hour

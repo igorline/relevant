@@ -7,15 +7,17 @@ const { Schema } = mongoose;
 const InviteSchema = new Schema(
   {
     // TODO
-    invitedBy: { type: String, ref: 'User' },
-    registeredAs: { type: String, ref: 'User' },
+    invitedBy: { type: Schema.Types.Mixed, ref: 'User' },
+    registeredAs: { type: Schema.Types.Mixed, ref: 'User' },
     email: { type: String },
     name: { type: String },
     code: { type: String, index: true },
     redeemed: { type: Boolean, default: false },
     number: { type: Number, default: 1 },
     status: { type: String },
-    invitedByString: { type: String }
+    invitedByString: { type: String },
+
+    type: String // endorse / admin / public
   },
   {
     timestamps: true
