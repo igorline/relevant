@@ -531,7 +531,7 @@ async function updateParentPostOnRemovingChild(post) {
     throw new Error('error missing post community id!', post.toObject());
   }
   let parent = await post.model('Post').findOne({ _id: post.linkParent });
-  parent = await parent.pruneFeed({ communityId });
+  if (parent) parent = await parent.pruneFeed({ communityId });
 
   if (!parent) return null;
 
@@ -598,51 +598,3 @@ PostSchema.post('remove', async function postRemove(post, next) {
 });
 
 module.exports = mongoose.model('Post', PostSchema);
-
-// Update parent feed status (only for link posts)
-// PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, post) {
-//   try {
-//     const parentId = parent._id || parent;
-//     if (!post) throw new Error('missing post');
-
-//     const { community, hidden } = post;
-//     if (!community) throw new Error('missing community');
-
-//     // Thread has no children - remove everything
-//     const count = await this.model('Post').count({ parentPost: parentId });
-
-//     if (!count) {
-//       console.log('parentId', parentId, post.toObject());
-//       console.warn('REMOVING POST FROM ALL FEEDS! ', community);
-//       // await this.model('CommunityFeed').removeFromAllFeeds(parentId);
-
-//       await this.model('Post').remove({ _id: parentId });
-//       await this.model('MetaPost').remove({ _id: post.metaPost });
-//       return;
-//     }
-
-//     const communityCount = await this.model('Post').count({
-//       parentPost: parentId,
-//       community
-//     });
-
-//     if (!communityCount && community) {
-//       console.log('REMOVING POST FROM COMMUNITY FEED! ', community, parentId);
-//       // await this.model('CommunityFeed').removeFromCommunityFeed(parentId, community);
-//     } else if (!hidden) {
-//       const linkParent = await this.model('Post')
-//       .findOne({ _id: parentId })
-//       .populate({ path: 'data', match: { community } });
-
-//       // TODO can maybe make this more efficient?
-//       let updateTime;
-//       if (new Date(post.postDate).getTime() === linkParent.data.latestComment) {
-//         updateTime = true;
-//       }
-//       await linkParent.updateRank(community, updateTime);
-//     }
-//   } catch (err) {
-//     throw err;
-//   }
-// };
-//

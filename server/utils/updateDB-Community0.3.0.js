@@ -7,6 +7,7 @@ import Community from 'server/api/community/community.model';
 import Relevance from 'server/api/relevance/relevance.model';
 import Notification from 'server/api/notification/notification.model';
 import Invest from 'server/api/invest/invest.model';
+import Invite from 'server/api/invites/invite.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import Subscription from 'server/api/subscription/subscription.model';
 import Statistics from 'server/api/statistics/statistics.model';
@@ -280,6 +281,25 @@ async function updateUserEmbeds() {
       await User.update(
         { blockedBy: u.handle },
         { $set: { 'blockedBy.$': ObjectId(u._id) } },
+        { multi: true }
+      );
+      return cb();
+    });
+
+    // -------- INVITES ------------
+    q.push(async cb => {
+      await Invite.update(
+        { invitedBy: u.handle },
+        { invitedBy: ObjectId(u._id) },
+        { multi: true }
+      );
+      return cb();
+    });
+
+    q.push(async cb => {
+      await Invite.update(
+        { registeredAs: u.handle },
+        { registeredAs: ObjectId(u._id) },
         { multi: true }
       );
       return cb();
@@ -591,14 +611,28 @@ async function checkEmbeddedUser() {
   return Promise.all(posts);
 }
 
+async function makeSurePostHaveCommunityId() {
+  await PostData.update(
+    { community: DEFAULT_COMMINITY, communityId: { $exists: false } },
+    { communityId: DEFAULT_COMMINITY_ID },
+    { multi: true }
+  );
+  return Post.update(
+    { community: DEFAULT_COMMINITY, communityId: { $exists: false } },
+    { communityId: DEFAULT_COMMINITY_ID },
+    { multi: true }
+  );
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
     DEFAULT_COMMINITY_ID = dc._id;
 
+    // await makeSurePostHaveCommunityId();
     // await updateUserIdType();
 
-    // await updateUserEmbeds();
+    await updateUserEmbeds();
 
     // await checkHiddenPosts();
     // await updatePostData('relevant');

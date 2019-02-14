@@ -176,6 +176,7 @@ async function processTweet(tweet, user) {
       title: processed.title,
       body,
       tags,
+      image: processed.image,
       url: processed.url,
       postDate: originalTweet.created_at,
 
@@ -325,10 +326,9 @@ async function cleanup() {
     {
       twitter: true,
       hidden: true,
-      reputation: { $lte: 0 },
       postDate: { $lt: cutoffDate }
     },
-    'metaPost linkParent parentPost linkPost metaPost type tags community hidden twitter'
+    'metaPost postDate linkParent parentPost linkPost metaPost type tags community communityId hidden twitter data'
   );
 
   console.log('clearing twitter posts ', posts.length, ' posts');
@@ -405,7 +405,7 @@ async function getUsers(userId) {
     })
     .sort({ pagerank: -1 })
     .limit(15);
-    userList = userList.map(u => u.user);
+    userList = userList.map(u => u.user).filter(u => u !== 'undefined');
 
     const query = userId ? { _id: userId } : { _id: { $in: userList } };
 
@@ -446,7 +446,7 @@ async function getUsers(userId) {
       }
     });
   } catch (err) {
-    console.log('twitter error ', err);
+    throw err;
   }
 }
 
