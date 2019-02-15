@@ -69,6 +69,7 @@ export const Title = styled(Text)`
 
 export const LinkFont = styled(Text)`
   ${fonts.link}
+  ${mixins.link}
   ${mixins.color}
   ${mixins.font}
 `;
@@ -129,6 +130,7 @@ export const Tag = styled(Text)`
 
 export const NumericalValue = styled(Text)`
   ${fonts.numericalValue}
+  ${mixins.font}
   ${mixins.inheritfont}
   ${mixins.color}
 `;
