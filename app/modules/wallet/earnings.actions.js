@@ -2,8 +2,7 @@ import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api } from 'app/utils';
 
-const earningScheema = new schema.Entity('earnings', { }, { idAttribute: '_id' });
-
+const earningScheema = new schema.Entity('earnings', {}, { idAttribute: '_id' });
 
 export function setEarnings({ data, status }) {
   return {
@@ -12,7 +11,7 @@ export function setEarnings({ data, status }) {
   };
 }
 
-export function getEarnings(status) {
+export function getEarnings(status, limit, skip) {
   return async dispatch => {
     try {
       const earnings = await api.request({
@@ -20,7 +19,9 @@ export function getEarnings(status) {
         endpoint: 'earnings',
         query: {
           status,
-        },
+          limit,
+          skip
+        }
       });
       const data = normalize(earnings, [earningScheema]);
       return dispatch(setEarnings({ data, status }));

@@ -12,19 +12,19 @@ import { Text } from 'modules/styled/web';
 import { showModal } from 'modules/navigation/navigation.actions';
 
 const SideNavContent = styled.div`
+  position: sticky;
   background: ${colors.secondaryBG};
   width: ${layout.sideNavWidth};
   max-width: ${layout.sideNavWidth};
-  display: flex;
-  flex-direction: column;
   ${layout.universalBorder('right')}
+  display: flex;
+  z-index: 100;
+  height: 100vh;
+  top: 0;
 `;
 
 const SideNavScroll = styled.div`
-  padding-top: ${layout.headerHeight};
-  height: 100vh;
   overflow: scroll;
-  position: fixed;
   width: ${layout.sideNavWidth};
 `;
 
@@ -38,7 +38,6 @@ const LogoContainer = styled(SideNavSection)`
   padding-left: ${sizing(4)};
   align-items: center;
   z-index: 10;
-  position: fixed;
   top: 0;
   left: 0;
   width: ${layout.sideNavWidth};
@@ -61,7 +60,7 @@ const GetStarted = styled(Text)`
   margin-left: ${sizing(1)};
 `;
 
-const SideNav = (props) => {
+const SideNav = props => {
   const openHelpModal = props.actions.showModal;
   const logoLink = '/relevant/new';
   return (
@@ -71,7 +70,7 @@ const SideNav = (props) => {
           <StyledLink to={logoLink}>
             <StyledImg src={'/img/logo.svg'} alt={'Relevant'} />
             <GetStarted onClick={() => openHelpModal('onboarding')}>
-              <img src={'/img/info.svg'}/>
+              <img src={'/img/info.svg'} />
             </GetStarted>
           </StyledLink>
         </LogoContainer>
@@ -87,16 +86,14 @@ const SideNav = (props) => {
   );
 };
 
-
 SideNav.propTypes = {
   className: PropTypes.string,
   actions: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  isAuthenticated: state.auth.isAuthenticated
 });
-
 
 export default connect(
   mapStateToProps,

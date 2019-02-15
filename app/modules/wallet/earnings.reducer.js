@@ -4,7 +4,7 @@ import remove from 'lodash/fp/remove';
 const initialState = {
   list: [],
   entities: {},
-  pending: [],
+  pending: []
 };
 
 export default function earnings(state = initialState, action) {
@@ -12,26 +12,26 @@ export default function earnings(state = initialState, action) {
     case types.SET_EARNINGS: {
       return {
         ...state,
-        [action.payload.status || 'list']: action.payload.data.result,
-        entities: action.payload.data.entities.earnings
+        [action.payload.status || 'list']: [
+          ...state[action.payload.status || 'list'],
+          ...action.payload.data.result
+        ],
+        entities: {
+          ...state.entities,
+          ...action.payload.data.entities.earnings
+        }
       };
     }
 
     case types.ADD_EARNING: {
       return {
         ...state,
-        [action.payload.status]: [
-          action.payload._id,
-          ...state[action.payload.status]
-        ],
+        [action.payload.status]: [action.payload._id, ...state[action.payload.status]],
         entities: {
           ...state.entities,
           [action.payload._id]: action.payload
         },
-        list: [
-          action.payload.earning,
-          ...state.list
-        ]
+        list: [action.payload.earning, ...state.list]
       };
     }
 
@@ -45,7 +45,7 @@ export default function earnings(state = initialState, action) {
         entities: {
           ...state.entities,
           [action.payload._id]: null
-        },
+        }
       };
     }
 
@@ -58,7 +58,7 @@ export default function earnings(state = initialState, action) {
         entities: {
           ...state.entities,
           [action.payload._id]: action.payload
-        },
+        }
       };
     }
 
