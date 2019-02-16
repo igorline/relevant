@@ -369,18 +369,22 @@ UserSchema.methods.updateMeta = async function updateMeta() {
 };
 
 UserSchema.methods.initialCoins = async function initialCoins() {
-  // TODO - update this and tie it to smart contract
-  await this.model('Treasury')
-  .findOneAndUpdate(
-    {},
-    { $inc: { balance: -NEW_USER_COINS } },
-    { new: true, upsert: true }
-  )
-  .exec();
+  try {
+    // TODO - update this and tie it to smart contract
+    await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -NEW_USER_COINS } },
+      { new: true, upsert: true }
+    )
+    .exec();
 
-  // TODO NOTIFICATION!
-  this.balance += NEW_USER_COINS;
-  return this;
+    // TODO NOTIFICATION!
+    this.balance += NEW_USER_COINS;
+    return this;
+  } catch (err) {
+    throw err;
+  }
 };
 
 UserSchema.methods.updateBalance = async function updateBalance() {

@@ -131,6 +131,7 @@ CommunitySchema.methods.leave = async function leave(userId) {
 
 CommunitySchema.methods.join = async function join(userId, role) {
   try {
+    const { _id: communityId, slug: community } = this;
     const user = await this.model('User').findOne(
       { _id: userId },
       'name balance ethAddress image handle'
@@ -140,6 +141,9 @@ CommunitySchema.methods.join = async function join(userId, role) {
       communityId: this._id
     });
     if (member) throw new Error('member already exists ', userId);
+
+    await this.model('Relevance').create({ userId, communityId, community });
+
     let userBalance = user.balance || 0;
     let tokenBalance = 0;
     const ethAddress = user.ethAddress[0];
@@ -171,8 +175,8 @@ CommunitySchema.methods.join = async function join(userId, role) {
       embeddedUser: user,
       weight,
       balance: tokensToAdd,
-      communityId: this._id,
-      community: this.slug,
+      communityId,
+      community,
       reputation: 0,
       role: role || 'user'
     };

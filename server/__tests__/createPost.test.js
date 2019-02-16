@@ -47,6 +47,7 @@ describe('CreatePost', () => {
       expect(apiRes.parentPost).toBeTruthy();
       expect(apiRes.parentPost.data.isInFeed).toBe(true);
       expect(apiRes.data.isInFeed).toBe(false);
+      expect(apiRes.image).toBe(createPost.image);
       linkPostId = apiRes._id;
       linkParentId = apiRes.parentPost._id;
       apiRes = sanitize(apiRes, 'post');

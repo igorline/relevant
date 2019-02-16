@@ -12,6 +12,10 @@ const mongooseOpts = {
   useMongoClient: true // remove this line if you use mongoose 5 and above
 };
 
+process.env.SESSION_SECRET = 'test-secret';
+process.env.TWITTER_ID = 'test-twitter-id';
+process.env.TWITTER_SECRET = 'test-twitter-secret';
+
 beforeAll(async () => {
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect(

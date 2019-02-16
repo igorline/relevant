@@ -1,15 +1,15 @@
-import { user1 } from 'app/mockdata/user';
+import { user2, user3 } from 'app/mockdata/user';
 
 export const post1 = {
   _id: '000000000000000000000001',
-  user: '000000000000000000000001',
+  user: 'b00000000000000000000000',
   title: 'postTitle',
-  embeddedUser: user1,
+  embeddedUser: user2,
   tags: ['tag11', 'tag12'],
   body: 'awesome post #1!',
   postDate: new Date('January 31, 2019 01:01:01'),
   payoutTime: new Date('February 3, 2019 01:01:01'),
-  data: { pagerank: 45, payout: 18 * 10 ** 18 },
+  data: { pagerank: 45, relevance: 45, payout: 18 * 10 ** 18 },
   url: 'https://example.com/testPost1',
   image: 'link_img1.jpg',
   link: {
@@ -21,14 +21,15 @@ export const post1 = {
   parentPost: '000000000000000000000003',
   type: 'post',
   community: 'relevant',
+  communityId: 'c00000000000000000000001',
   domain: 'link.domain1'
 };
 
 export const post2 = {
   _id: '000000000000000000000002',
-  user: '000000000000000000000002',
+  user: 'c00000000000000000000000',
   title: 'postTitle2',
-  embeddedUser: user1,
+  embeddedUser: user3,
   tags: ['tag21', 'tag22'],
   body: 'awesome post #2!',
   postDate: new Date('January 32, 2019 02:02:02'),

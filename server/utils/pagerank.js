@@ -33,6 +33,7 @@ function objectToMatrix(_inputs, params) {
       // eigentrust weights
       w = Math.max(w - n, 0);
       _inputs[el][vote].w = w;
+      // TODO - count only positive in degree and normalize?
       if (w > 0) degree += w;
     });
 

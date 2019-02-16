@@ -195,7 +195,7 @@ export default async function computePageRank(params) {
 
     await Community.findOneAndUpdate(
       { _id: communityId },
-      { maxPostRank: maxPost, maxUserRank: max, numberOfElements: N }
+      { maxPostRank: maxPost || 50, maxUserRank: max || 50, numberOfElements: N }
     );
 
     const maxRel = array.reduce((p, n) => Math.max(p, n.relevance || 0), 0);
@@ -302,13 +302,15 @@ async function updateItemRank(props) {
   }
 
   if (u.type === 'user') {
-    if (Number.isNaN(rank)) {
-      return null;
-    }
+    if (Number.isNaN(rank)) return null;
     return Relevance.findOneAndUpdate(
       { user: u.id, communityId, global: true },
       { pagerank: rank, pagerankRaw: u.rank, community },
-      { new: true, upsert: true, fields: 'pagerank pagerankRaw user rank relevance' }
+      {
+        new: true,
+        upsert: true,
+        fields: 'pagerank pagerankRaw user rank relevance communityId community'
+      }
     );
   } else if (u.type === 'post') {
     if (Number.isNaN(rank)) {
@@ -337,7 +339,7 @@ function processUpvote(params) {
   // this is to make sure we rank twitter posts upvoted by users
   // if (!upvote.author) return;
 
-  let a = amount / Math.abs(amount);
+  let a = amount;
   if (!a) a = 1;
 
   // time discount (RELEVANCE_DECAY month half-life)
@@ -394,7 +396,7 @@ export async function computeApproxPageRank(params) {
       'maxUserRank maxPostRank numberOfElements'
     );
     let amount;
-    if (investment) ({ amount } = investment);
+    if (investment) amount = investment.amount;
     const N = com.numberOfElements;
     const { maxUserRank, maxPostRank } = com;
     // if user relevance object doesn't exist, there is nothing to update
@@ -403,6 +405,13 @@ export async function computeApproxPageRank(params) {
     }
     const userR = user.relevance ? user.relevance.pagerankRaw : 0;
     const authorId = author ? author._id : null;
+    if (author && !author.relevance) {
+      author.relevance = await Relevance.findOne({
+        user: author._id,
+        communityId,
+        global: true
+      });
+    }
 
     // only consider votes from REP_CUTOFF years ago
     const repCutoff = new Date().setFullYear(new Date().getFullYear() - REP_CUTOFF);
@@ -465,7 +474,7 @@ export async function computeApproxPageRank(params) {
       })
     );
 
-    const userObj = rankedNodes[user._id];
+    const userObj = rankedNodes[user._id] || {};
 
     let degree = 0;
 
@@ -475,9 +484,9 @@ export async function computeApproxPageRank(params) {
       const n = userObj[vote].negative || 0;
       // eigentrust++ weights
       // w = Math.max((w - n) / (w + n), 0);
+      if (w > 0) degree += w;
       w = Math.max(w - n, 0);
       userObj[vote].w = w;
-      degree += w;
     });
 
     // Need a way to 0 out post votes and user votes
@@ -501,19 +510,18 @@ export async function computeApproxPageRank(params) {
       }
     }
 
-    // console.log(userObj);
     degree = degree || 1;
-
     const w = userObj[authorId] ? userObj[authorId].w : 0;
     const userWeight = w / degree;
     let postWeight;
     let oldWeight;
 
-    // console.log('degree ', degree);
+    const a = Math.abs(amount);
+    const twoA = 2 * a;
     if (amount >= 0) {
       if (undoInvest) {
-        postWeight = 1 / (degree + 2);
-        oldWeight = (w + 1) / (degree + 2);
+        postWeight = a / (degree + twoA);
+        oldWeight = (w + a) / (degree + twoA);
         if (author) {
           author.relevance.pagerankRaw = Math.max(
             author.relevance.pagerankRaw + userR * (userWeight - oldWeight),
@@ -522,12 +530,12 @@ export async function computeApproxPageRank(params) {
         }
         post.data.pagerankRaw = Math.max(post.data.pagerankRaw - userR * postWeight, 0);
       } else {
-        postWeight = 1 / degree;
-        oldWeight = Math.max(w - 1, 0) / Math.max(degree - 2, 1);
+        postWeight = a / degree;
+        oldWeight = Math.max(w - a, 0) / Math.max(degree - twoA, 1);
         if (userVotes && author) {
           author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         }
-        if (postVotes) post.data.pagerankRaw += userR * postWeight;
+        if (post && postVotes) post.data.pagerankRaw += userR * postWeight;
       }
     } else if (amount < 0) {
       if (undoInvest) {
@@ -537,16 +545,15 @@ export async function computeApproxPageRank(params) {
         // we undo the downvote AFTER pagerank recompute
         // TODO we can avoid this for posts by querying all
         // upvotes for a post and adding them together
-        oldWeight = Math.max(w - 1, 0) / Math.max(degree - 1, 1);
-        postWeight = degree >= 1 ? 1 / (degree - 1) : 0;
-
+        oldWeight = (w - a) / degree;
+        postWeight = a / degree;
         if (userVotes && author) {
           author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         }
-        if (postVotes) post.data.pagerankRaw += userR * postWeight;
+        if (post && postVotes) post.data.pagerankRaw += userR * postWeight;
       } else {
-        oldWeight = (w - 1) / (degree - 1);
-        postWeight = 1 / degree;
+        oldWeight = (w - a) / degree;
+        postWeight = a / degree;
         if (author) author.relevance.pagerankRaw -= userR * (userWeight - oldWeight);
         post.data.pagerankRaw -= userR * postWeight;
       }
@@ -558,10 +565,15 @@ export async function computeApproxPageRank(params) {
         (100 * Math.log(N * rA + 1)) / Math.log(N * maxUserRank + 1);
     }
 
-    const pA = Math.max(post.data.pagerankRaw, 0);
-    post.data.pagerank = (100 * Math.log(N * pA + 1)) / Math.log(N * maxPostRank + 1);
+    if (post) {
+      const pA = Math.max(post.data.pagerankRaw, 0);
+      post.data.pagerank = (100 * Math.log(N * pA + 1)) / Math.log(N * maxPostRank + 1);
+    }
 
-    await Promise.all([post.data.save(), author ? author.relevance.save() : null]);
+    await Promise.all([
+      post ? post.data.save() : null,
+      author ? author.relevance.save() : null
+    ]);
 
     return { author, post };
   } catch (err) {

@@ -902,19 +902,19 @@ exports[`Snapshot Activity Web 1`] = `
           },
           "domain": "link.domain2",
           "embeddedUser": Object {
-            "_id": "a00000000000000000000000",
-            "balance": 111,
-            "bio": "hi i'm alice!",
+            "_id": "c00000000000000000000000",
+            "balance": 333,
+            "bio": "admin of a few communities",
             "ethAddress": Array [
-              "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+              "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef",
             ],
-            "handle": "alice",
-            "image": "alice-pic.jpg",
+            "handle": "carol",
+            "image": "carol-pic.jpg",
             "lockedTokens": 0,
-            "name": "Alice",
+            "name": "Carol",
             "password": "test",
             "relevance": Object {
-              "pagerank": 11,
+              "pagerank": 33,
             },
           },
           "image": "link_img2.jpg",
@@ -935,7 +935,7 @@ exports[`Snapshot Activity Web 1`] = `
           "title": "postTitle2",
           "type": "comment",
           "url": "https://example.com/testPost2",
-          "user": "000000000000000000000002",
+          "user": "c00000000000000000000000",
         }
       }
     />

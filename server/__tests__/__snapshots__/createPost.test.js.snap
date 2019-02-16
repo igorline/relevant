@@ -155,6 +155,7 @@ Object {
   "flaggedBy": Array [],
   "hidden": false,
   "id": "[SANITIZED]",
+  "image": "link_img1.jpg",
   "linkParent": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
@@ -458,6 +459,7 @@ Object {
   "flaggedBy": Array [],
   "hidden": false,
   "id": "[SANITIZED]",
+  "image": "link_img1.jpg",
   "links": Array [],
   "mentions": Array [
     "test",

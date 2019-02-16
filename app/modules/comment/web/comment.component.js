@@ -91,6 +91,13 @@ class Comment extends Component {
     this.props.actions.deleteComment(this.props.comment._id);
   }
 
+  static getDerivedStateFromProps(props) {
+    const { user: userState, comment } = props;
+    const userId = userState.handleToId[comment.embeddedUser.handle];
+    const user = userState.users[userId] || comment.embeddedUser;
+    return { user };
+  }
+
   editPost() {
     this.setState({ editing: true });
   }
@@ -125,7 +132,7 @@ class Comment extends Component {
       post
     } = this.props;
     if (!comment) return null;
-    const { editing, copied } = this.state;
+    const { editing, copied, user } = this.state;
     let popup;
     const isActive = activeComment === comment.id;
 
@@ -158,9 +165,6 @@ class Comment extends Component {
         {...this.props}
       />
     );
-
-    const user =
-      this.props.user.users[comment.embeddedUser.handle] || comment.embeddedUser;
 
     const commentChildren = get(childComments, comment.id) || [];
 

@@ -22,3 +22,15 @@ export const RELEVANCE_DECAY = 90 * DAYS; // half life of relevance
 export const MINIMUM_RANK = 1; // minimum rank to be considered for rewards
 
 export const REP_CUTOFF = 2; // number of years before we ignore votes
+
+export const totalAllowedInvites = pagerank => {
+  if (pagerank < 1) return 0;
+  if (pagerank < 3) return 1;
+  if (pagerank < 5) return 2;
+  if (pagerank < 10) return 3;
+  if (pagerank < 20) return 8;
+  if (pagerank < 40) return 13;
+  if (pagerank < 60) return 23;
+  if (pagerank < 80) return 33;
+  return 100;
+};

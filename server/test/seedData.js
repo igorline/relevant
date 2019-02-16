@@ -3,12 +3,14 @@ import PostData from 'server/api/post/postData.model'; // eslint-disable-line
 import CommunityMember from 'server/api/community/community.member.model'; // eslint-disable-line
 import Earnings from 'server/api/earnings/earnings.model'; // eslint-disable-line
 import CommunityFeed from 'server/api/communityFeed/communityFeed.model'; // eslint-disable-line
+import Relevance from 'server/api/relevance/relevance.model'; // eslint-disable-line
+import Treasury from 'server/api/treasury/treasury.model'; // eslint-disable-line
 
 import Invest from 'server/api/invest/invest.model';
 import Community from 'server/api/community/community.model';
 import User from 'server/api/user/user.model';
 
-import { linkPost1, linkPost2, linkPost3, linkPost4 } from 'app/mockdata/post';
+import { post1, linkPost1, linkPost2, linkPost3, linkPost4 } from 'app/mockdata/post';
 import { allUsers } from 'app/mockdata/user';
 import { allCommunities } from 'app/mockdata/community';
 
@@ -51,11 +53,17 @@ async function setupPosts() {
   await link4.save();
   link4 = await link4.addPostData();
 
-  postInstances = { link1, link2, link3, link4 };
+  delete post1.link;
+  let postI1 = new Post(post1);
+  await postI1.save();
+  postI1 = await postI1.addPostData();
+
+  postInstances = { postI1, link1, link2, link3, link4 };
 }
 
 async function setupUsers() {
   let users = allUsers.map(async _user => {
+    delete _user.relevance;
     const user = new User(_user);
     return user.save();
   });
@@ -92,8 +100,8 @@ async function setupMembers() {
 export async function setupVotes() {
   const { relevant, crypto } = communityInstances;
   const { alice, bob, carol } = userInstances;
-
-  let vote = new Invest({
+  const votes = [];
+  votes[0] = new Invest({
     investor: alice._id,
     author: bob._id,
     amount: 1,
@@ -101,9 +109,8 @@ export async function setupVotes() {
     communityId: relevant._id,
     community: relevant.slug
   });
-  await vote.save();
 
-  vote = new Invest({
+  votes[1] = new Invest({
     investor: alice._id,
     author: bob._id,
     amount: 1,
@@ -112,7 +119,7 @@ export async function setupVotes() {
     community: crypto.slug
   });
 
-  vote = new Invest({
+  votes[2] = new Invest({
     investor: alice._id,
     author: carol._id,
     amount: 1,
@@ -120,9 +127,8 @@ export async function setupVotes() {
     communityId: relevant._id,
     community: relevant.slug
   });
-  await vote.save();
 
-  vote = new Invest({
+  votes[3] = new Invest({
     investor: alice._id,
     author: bob._id,
     amount: 1,
@@ -130,5 +136,6 @@ export async function setupVotes() {
     communityId: crypto._id,
     community: crypto.slug
   });
-  await vote.save();
+
+  return Promise.all(votes.map(v => v.save()));
 }

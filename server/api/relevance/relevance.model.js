@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 // TODO move this to Community Member
 const RelevanceSchema = new Schema(
   {
-    user: { type: Schema.Types.Mixed, ref: 'User', index: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     tag: { type: String, ref: 'Tag' },
     global: { type: Boolean, default: false },
     topTopic: { type: Boolean, deafault: false },
@@ -51,6 +51,22 @@ RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord()
   relevanceRecord = this.relevanceRecord.slice(0, 10);
   this.relevanceRecord = relevanceRecord;
   return this;
+};
+
+RelevanceSchema.statics.create = async function create({
+  userId,
+  community,
+  communityId
+}) {
+  try {
+    return this.model('Relevance').findOneAndUpdate(
+      { user: userId, communityId, global: true },
+      { community },
+      { upsert: true }
+    );
+  } catch (err) {
+    throw err;
+  }
 };
 
 // DEPRECATED
