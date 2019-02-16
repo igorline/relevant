@@ -87,7 +87,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   const userBalance = user.balance + user.tokenBalance;
 
   investment = await this.findOne({ investor: user._id, post: post._id });
-  if (investment && amount > 0) return undoInvest({ post, investment, user });
+  if (investment) return undoInvest({ post, investment, user });
 
   let shares = 0;
   let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;

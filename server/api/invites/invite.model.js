@@ -1,23 +1,26 @@
 import mongoose from 'mongoose';
 import voucherCodes from 'voucher-code-generator';
+import { computeApproxPageRank } from 'server/utils/pagerankCompute';
 import mail from '../../mail';
 
 const { Schema } = mongoose;
 
 const InviteSchema = new Schema(
   {
-    // TODO
     invitedBy: { type: Schema.Types.Mixed, ref: 'User' },
+    invitee: { type: Schema.Types.Mixed, ref: 'User' },
     registeredAs: { type: Schema.Types.Mixed, ref: 'User' },
     email: { type: String },
     name: { type: String },
-    code: { type: String, index: true },
     redeemed: { type: Boolean, default: false },
     number: { type: Number, default: 1 },
     status: { type: String },
     invitedByString: { type: String },
-
-    type: String // endorse / admin / public
+    code: { type: String, index: true },
+    url: String,
+    type: String, // referral / admin
+    community: String,
+    communityId: { type: Schema.Types.ObjectId, ref: 'Community' }
   },
   {
     timestamps: true
@@ -64,14 +67,48 @@ InviteSchema.statics.checkInvite = async function checkInvite(invite) {
   return invite;
 };
 
-InviteSchema.methods.registered = async function registered(user) {
-  this.status = 'registered';
-  this.number -= 1;
-  if (this.number === 0) {
-    this.redeemed = true;
+InviteSchema.methods.referral = async function referral(user) {
+  try {
+    const invite = this;
+    const { communityId, community } = invite;
+    invite.status = 'registered';
+    invite.number -= 1;
+    if (invite.number === 0) invite.redeemed = true;
+    invite.registeredAs = user._id;
+
+    const inviter = await this.model('User')
+    .findOne({ _id: this.invitedBy })
+    .populate({
+      path: 'relevance',
+      match: { communityId, global: true }
+    });
+
+    const communityInstance = await this.model('Community').findOne({ _id: communityId });
+    await communityInstance.join(user);
+
+    const vote = new (this.model('Invest'))({
+      investor: this.invitedBy,
+      author: user._id,
+      amount: Math.min(1, (100 - inviter.relevance.pagerank + 10) / 100),
+      ownPost: false,
+      communityId,
+      community
+    });
+    await vote.save();
+
+    const { author: updatedUser } = await computeApproxPageRank({
+      communityId,
+      author: user,
+      investment: vote,
+      user: inviter
+    });
+    // console.log('updated relevance', updatedUser);
+
+    await invite.save();
+    return updatedUser;
+  } catch (err) {
+    throw err;
   }
-  this.registeredAs = user._id;
-  return this.save();
 };
 
 InviteSchema.statics.generateCodes = async function generateCodes(user) {

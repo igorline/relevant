@@ -653,6 +653,7 @@ exports.create = async (req, res, next) => {
 
     const postObject = {
       url: postUrl,
+      image: req.body.image ? req.body.image : null,
       title: req.body.title ? req.body.title : '',
       body: hasChildComment ? req.body.body : null,
       tags,

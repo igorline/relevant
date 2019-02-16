@@ -1,4 +1,6 @@
-import voucherCodes from 'voucher-code-generator';
+import uuid from 'uuid/v4';
+import Relevance from 'server/api/relevance/relevance.model';
+import { totalAllowedInvites } from 'server/config/globalConstants';
 import Invite from './invite.model';
 import mail from '../../mail';
 
@@ -37,25 +39,8 @@ exports.index = async (req, res, next) => {
 // Takes array of invites;
 exports.createInvites = async invites => {
   invites = invites.map(async invite => {
-    const code = voucherCodes.generate({
-      length: 5,
-      count: 1,
-      charset: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'
-    })[0];
-
-    let existingInvite;
-    if (invite.email) {
-      const email = invite.email.trim();
-      existingInvite = await Invite.findOne({ email });
-      invite = existingInvite || invite;
-    }
-
-    if (!existingInvite) {
-      invite = new Invite({ ...invite, code });
-    } else {
-      invite.invitedBy = invite.invitedBy;
-      invite.invitedByString = invite.invitedByString;
-    }
+    const code = uuid();
+    invite = new Invite({ ...invite, code });
     invite = await invite.save();
     if (invite.email) {
       invite = await exports.sendEmailFunc(invite);
@@ -65,33 +50,65 @@ exports.createInvites = async invites => {
   return Promise.all(invites);
 };
 
-exports.create = async (req, res) => {
-  let invite;
+exports.create = async (req, res, next) => {
   try {
-    const { user } = req;
-    if (!user.confirmed) {
-      throw new Error('please confirm your email before sending invites');
-    }
-    let invites = [];
-    invite = req.body;
-    if (user.role !== 'admin') {
-      invites = await Invite.find({ invitedBy: user._id });
-      if (!invite.email) throw new Error('please provide invite email');
-      if (invite.number > 1) invite.number = 1;
+    const { user, communityMember } = req;
+    const { communityId, community } = communityMember;
+    const { email, name, type, invitee } = req.body;
+    let invite = {
+      invitedBy: user._id,
+      invitedByString: user.name,
+      invitee,
+      email: email ? email.trim() : null,
+      name: name ? name.trim() : null,
+      type,
+      number: 1,
+      community,
+      communityId
+    };
 
-      // limit invites to 10
-      // if (invites.length >= 10) {
-      //   throw Error('You can\'t send more than 10 invites at the moment');
-      // }
+    if (!user.relevance) {
+      user.relevance = await Relevance.findOne({
+        user: user._id.toString(),
+        communityId,
+        global: true
+      });
     }
-    invite.invitedBy = user._id;
-    invites = await exports.createInvites([invite]);
-    invite = invites[0];
+    if (!user.relevance) {
+      throw new Error("You don't have enough reputation to refer new users");
+    }
+
+    const unusedInvites = await computeInviteNumber({ user, communityId });
+    if (unusedInvites <= 0) {
+      throw new Error(
+        'You have used all of your available referrals - earn more reputation to get more!'
+      );
+    }
+
+    // TODO consensus of existing admins
+    if (invite.type === 'admin' && user.role !== 'admin') {
+      throw new Error("You don't have the privileges required to invite an admin");
+    }
+
+    invite = await exports.createInvites([invite]);
+    if (invite.type !== 'admin') communityMember.invites = unusedInvites - 1;
+    await communityMember.save();
+
+    return res.status(200).json(invite);
   } catch (err) {
-    return handleError(res)(err);
+    return next(err);
   }
-  return res.status(200).json(invite);
 };
+
+async function computeInviteNumber({ user, communityId }) {
+  const totalInvites = totalAllowedInvites(user.relevance);
+  const usedInvites = await Invite.count({
+    user: user._id,
+    communityId,
+    type: 'referral'
+  });
+  return totalInvites - usedInvites;
+}
 
 exports.sendEmail = async (req, res) => {
   let invite;

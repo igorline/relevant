@@ -1,6 +1,8 @@
-import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
+import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import { signToken } from 'server/auth/auth.service';
+import Invite from 'server/api/invites/invite.model';
 import User from './user.model';
 import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
@@ -112,9 +114,7 @@ exports.confirm = async (req, res, next) => {
 exports.sendConfirmationCode = async (req, res, next) => {
   try {
     let user = await User.findOne({ handle: req.user.handle }, 'email confirmCode');
-    const rand = await crypto.randomBytes(32);
-    const token = rand.toString('hex');
-    user.confirmCode = token;
+    user.confirmCode = uuid();
     user = await user.save();
     const status = await sendConfirmation(user);
     return res.status(200).json(status);
@@ -343,18 +343,12 @@ exports.list = async (req, res, next) => {
  */
 exports.create = async (req, res, next) => {
   try {
-    const rand = await crypto.randomBytes(32);
-    const confirmCode = rand.toString('hex');
-    let { user } = req.body;
-
-    let invite;
-    // if (community === 'relevant') {
-    //   invite = await Invite.checkInvite(req.body.invite);
-    // }
-
-    const confirmed = invite && invite.email === user.email;
-
+    const confirmCode = uuid();
+    let { user, invite } = req.body;
     if (user.name === 'everyone') throw new Error('username taken');
+
+    if (invite) invite = await Invite.findOne({ code: invite });
+    const confirmed = invite && invite.email === user.email;
 
     const userObj = {
       handle: user.name,
@@ -373,20 +367,18 @@ exports.create = async (req, res, next) => {
     user = new User(userObj);
     user = await user.save();
 
-    if (invite) {
-      await invite.registered(user);
-    }
+    if (invite) await invite.referral(user);
 
-    const token = jwt.sign({ _id: user._id }, process.env.SESSION_SECRET, {
-      expiresIn: 60 * 5 * 60
-    });
+    const token = signToken(user._id, 'user');
 
     if (!confirmed) sendConfirmation(user, true);
-    // else Invite.generateCodes(user);
 
     user = await user.initialCoins();
     user = await user.save();
-
+    user = user.toObject();
+    delete user.hashedPassword;
+    delete user.salt;
+    delete user.password;
     return res.status(200).json({ token, user });
   } catch (err) {
     return next(err);
@@ -540,11 +532,7 @@ exports.update = async (req, res, next) => {
       };
 
       // Do this on a separate thread?
-      await Post.update(
-        { user: user._id },
-        { embeddedUser: newUser },
-        { multi: true }
-      );
+      await Post.update({ user: user._id }, { embeddedUser: newUser }, { multi: true });
 
       await CommunityMember.update(
         { user: user._id },

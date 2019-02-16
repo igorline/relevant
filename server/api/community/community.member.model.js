@@ -16,11 +16,17 @@ const CommunityMemberSchema = new Schema(
     role: { type: String, default: 'user' },
     reputation: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },
-    weight: { type: Number, default: 0 }
+    weight: { type: Number, default: 0 },
+    invites: { type: Number, default: 0 }
   },
   {
     timestamps: true
   }
 );
+
+// TODO rep key to search by
+CommunityMemberSchema.virtual('repKey').get(function getProfile() {
+  return this.user + '_' + this.communityId;
+});
 
 export default mongoose.model('CommunityMember', CommunityMemberSchema);

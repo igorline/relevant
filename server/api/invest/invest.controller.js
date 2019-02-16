@@ -375,6 +375,7 @@ exports.create = async (req, res, next) => {
     const subscription = await updateSubscriptions({ post, user, amount });
 
     res.status(200).json({
+      investment,
       success: true,
       subscription,
       undoInvest
@@ -400,7 +401,7 @@ exports.create = async (req, res, next) => {
       ({ author, post } = updatePageRank);
     }
     if (investment) {
-      investment.rankChange = initialPostRank - post.data.pagerank;
+      investment.rankChange = post.data.pagerank - initialPostRank;
       await investment.save();
     }
 
