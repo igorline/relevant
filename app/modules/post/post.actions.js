@@ -22,7 +22,7 @@ const parentPostSchema = new schema.Entity(
   { idAttribute: '_id' }
 );
 
-const postSchema = new schema.Entity(
+export const postSchema = new schema.Entity(
   'posts',
   {
     user: userSchema,

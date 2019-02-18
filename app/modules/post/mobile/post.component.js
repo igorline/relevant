@@ -3,17 +3,17 @@ import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles } from 'app/styles/global';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as animationActions from 'modules/animation/animation.actions';
 import * as postActions from 'modules/post/post.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as investActions from 'modules/post/invest.actions';
-import PostImage from './postImage.component';
+import PostImage from 'modules/post/imagebg.component';
+// import PostImage from './postImage.component';
+import { getTitle } from 'app/utils/post';
+import { routing } from 'app/utils';
 import Commentary from './commentary.component';
-
-let styles;
 
 class Post extends PureComponent {
   static propTypes = {
@@ -24,11 +24,13 @@ class Post extends PureComponent {
     posts: PropTypes.object,
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
-    navigation: PropTypes.object.isRequired // eslint-disable-line
+    navigation: PropTypes.object.isRequired, // eslint-disable-line
+    myPostInv: PropTypes.object
   };
 
   render() {
-    const { link, commentary } = this.props;
+    const { link, commentary, auth, actions, myPostInv } = this.props;
+    const { community } = auth;
     let { post } = this.props;
     let imageEl;
 
@@ -50,7 +52,7 @@ class Post extends PureComponent {
 
     if (commentary && commentary.length) {
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
-    } else {
+    } else if (post.type !== 'link') {
       commentaryEl = <Commentary {...this.props} commentary={[post]} />;
     }
 
@@ -60,20 +62,27 @@ class Post extends PureComponent {
       post = { ...repost };
     }
 
+    const title = getTitle({ post, link });
+    const postUrl = routing.getPostUrl(community, post);
+
     if (link && (link.url || link.image)) {
       imageEl = (
         <PostImage
           key={link._id}
-          singlePost={this.props.singlePost}
-          actions={this.props.actions}
-          post={link}
+          auth={auth}
+          actions={actions}
+          post={post}
+          link={link}
+          title={title}
+          postUrl={postUrl}
+          myPostInv={myPostInv}
         />
       );
     }
 
     return (
       <View style={{ overflow: 'hidden' }}>
-        <View style={[styles.postContainer]}>
+        <View>
           {imageEl}
           {commentaryEl}
         </View>
@@ -82,22 +91,6 @@ class Post extends PureComponent {
     );
   }
 }
-
-const localStyles = StyleSheet.create({
-  postContainer: {
-    paddingBottom: 20
-  },
-  tagsRow: {
-    flexDirection: 'row',
-    paddingTop: 10,
-    paddingBottom: 10,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    flex: 1
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {
@@ -123,7 +116,6 @@ function mapDispatchToProps(dispatch) {
     )
   };
 }
-
 
 export default connect(
   mapStateToProps,

@@ -89,8 +89,8 @@ export const LinkFont = styled(Text)`
 
 export const SecondaryText = styled(Text)`
   ${fonts.secondaryText}
-  ${mixins.color}
   ${mixins.font}
+  ${mixins.color}
 `;
 
 export const AltLink = styled(Text)`

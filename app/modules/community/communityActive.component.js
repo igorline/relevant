@@ -10,7 +10,8 @@ class CommunityActive extends Component {
   static propTypes = {
     community: PropTypes.object,
     children: PropTypes.node,
-    getCommunityMembers: PropTypes.func
+    getCommunityMembers: PropTypes.func,
+    members: PropTypes.array
   };
 
   componentDidMount() {
@@ -18,9 +19,8 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children } = this.props;
+    const { community, children, members } = this.props;
     const topics = get(community, 'topics', []);
-    const members = get(community, 'members', []);
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, 12);
     return (

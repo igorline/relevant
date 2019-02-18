@@ -19,7 +19,7 @@ export const sideNavWidth = sizing(40);
 export const universalBorder = (side, color, width) => `
   border${side ? `-${side}` : ''}-color: ${color || colors.lineColor};
   border${side ? `-${side}` : ''}-width: ${width || '1px'};
-  border${side ? `-${side}` : ''}-style: solid;
+  border-style: solid;
 `;
 
 export const textRow = {
@@ -49,4 +49,12 @@ export const tag = {
   minWidth: 0,
   height: sizing(4),
   padding: sizing(1.5)
+};
+
+export const animatedElement = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: 10000,
+  backgroundColor: 'transparent'
 };

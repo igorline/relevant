@@ -5,14 +5,14 @@ import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { earnings } from 'app/mockdata';
 
-jest.mock('modules/listview/web/infScroll.component', () => 'infScroll');
+jest.mock('modules/listview/web/infScroll.component');
 
 const props = {
   pageSize: 10,
   earnings: earnings.earnings
 };
 
-test('Snapshot Post Web', () => {
+test('Snapshot Earnings Web', () => {
   const tree = renderer
   .create(
     <MemoryRouter>

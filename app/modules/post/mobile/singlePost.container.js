@@ -61,13 +61,19 @@ class SinglePostContainer extends Component {
     if (!post) return;
 
     const title = post.title || post.body;
-    if (!this.props.navigation.state.params || title !== this.props.navigation.state.params.title) {
+    if (
+      !this.props.navigation.state.params ||
+      title !== this.props.navigation.state.params.title
+    ) {
       this.props.navigation.setParams({ title });
     }
   }
 
   componentDidWillUpdate(next) {
-    if (!this.props.navigation.state.params || !this.props.navigation.state.params.title) {
+    if (
+      !this.props.navigation.state.params ||
+      !this.props.navigation.state.params.title
+    ) {
       this.setTitle(next);
     }
   }
@@ -84,11 +90,10 @@ class SinglePostContainer extends Component {
 
   render() {
     let dataEl = null;
-    const { id } = this.props.navigation.state.params;
-    const { posts } = this.props;
+    const { posts, navigation } = this.props;
+    const { id } = navigation.state.params;
     const post = posts.posts[id];
 
-    const commentIds = this.props.comments.commentsById[id] || {};
     const related = posts.related[id] || [];
     const link = post && posts.links[post.metaPost];
 
@@ -98,7 +103,6 @@ class SinglePostContainer extends Component {
           postId={id}
           post={post}
           link={link}
-          postComments={commentIds}
           actions={this.props.actions}
           singlePostEditing={this.setEditing}
           error={this.error}

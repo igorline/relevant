@@ -535,16 +535,16 @@ exports[`Snapshot other users Profile 1`] = `
                   "borderRightWidth": "0px",
                   "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
-                  "bottom": "-1.4400000000000002px",
+                  "bottom": "-1px",
                   "boxSizing": "border-box",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
                   "height": "14.4px",
-                  "marginBottom": "0px",
+                  "marginBottom": "-0.3px",
                   "marginLeft": "0px",
-                  "marginRight": "3.6px",
+                  "marginRight": "1.4400000000000002px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -559,7 +559,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "14.4px",
+                  "width": "18.720000000000002px",
                   "zIndex": 0,
                 }
               }
@@ -762,6 +762,7 @@ exports[`Snapshot other users Profile 1`] = `
                   Object {
                     "WebkitFlexBasis": "auto",
                     "WebkitFlexShrink": 0,
+                    "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
                     "borderBottomWidth": "0px",
                     "borderLeftWidth": "0px",
                     "borderRightWidth": "0px",
@@ -790,6 +791,7 @@ exports[`Snapshot other users Profile 1`] = `
                     "paddingTop": "0px",
                     "position": "relative",
                     "textDecoration": "none",
+                    "textDecorationColor": "rgba(126,211,33,1.00)",
                     "whiteSpace": "inherit",
                     "wordWrap": "break-word",
                   }
@@ -1156,6 +1158,8 @@ exports[`Snapshot own Profile 1`] = `
   -webkit-text-decoration: underline;
   text-decoration: underline;
   color: #000000;
+  -webkit-text-decoration-color: #000000;
+  text-decoration-color: #000000;
 }
 
 .c1:hover {
@@ -1700,16 +1704,16 @@ exports[`Snapshot own Profile 1`] = `
                   "borderRightWidth": "0px",
                   "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
-                  "bottom": "-1.4400000000000002px",
+                  "bottom": "-1px",
                   "boxSizing": "border-box",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
                   "height": "14.4px",
-                  "marginBottom": "0px",
+                  "marginBottom": "-0.3px",
                   "marginLeft": "0px",
-                  "marginRight": "3.6px",
+                  "marginRight": "1.4400000000000002px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -1724,7 +1728,7 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "14.4px",
+                  "width": "18.720000000000002px",
                   "zIndex": 0,
                 }
               }
@@ -1927,6 +1931,7 @@ exports[`Snapshot own Profile 1`] = `
                   Object {
                     "WebkitFlexBasis": "auto",
                     "WebkitFlexShrink": 0,
+                    "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
                     "borderBottomWidth": "0px",
                     "borderLeftWidth": "0px",
                     "borderRightWidth": "0px",
@@ -1955,6 +1960,7 @@ exports[`Snapshot own Profile 1`] = `
                     "paddingTop": "0px",
                     "position": "relative",
                     "textDecoration": "none",
+                    "textDecorationColor": "rgba(126,211,33,1.00)",
                     "whiteSpace": "inherit",
                     "wordWrap": "break-word",
                   }
@@ -2412,6 +2418,8 @@ exports[`Snapshot own Profile 1`] = `
               " ",
               [Function],
               ";",
+              [Function],
+              ";",
             ]
           }
         >
@@ -2584,6 +2592,8 @@ exports[`Snapshot own Profile 1`] = `
             Array [
               "font-size: 10.8px; line-height: 14.4px; font-family: HelveticaNeue-Medium; color: #999999; padding: 3.6px 0; text-decoration: underline;",
               " ",
+              [Function],
+              ";",
               [Function],
               ";",
             ]

@@ -19,7 +19,7 @@ class CommentInput extends Component {
   static propTypes = {
     actions: PropTypes.object,
     parentPost: PropTypes.object,
-    commentParent: PropTypes.object,
+    parentComment: PropTypes.object,
     auth: PropTypes.object,
     onFocus: PropTypes.func,
     scrollToBottom: PropTypes.func,
@@ -49,7 +49,14 @@ class CommentInput extends Component {
   }
 
   createComment() {
-    const { parentPost, commentParent, auth, actions, onFocus, scrollToBottom } = this.props;
+    const {
+      parentPost,
+      parentComment,
+      auth,
+      actions,
+      onFocus,
+      scrollToBottom
+    } = this.props;
     if (!this.state.comment || !this.state.comment.length) {
       return Alert.alert('no comment');
     }
@@ -57,7 +64,7 @@ class CommentInput extends Component {
     const comment = this.state.comment.trim();
     const commentObj = {
       parentPost: parentPost._id,
-      commentParent: commentParent._id,
+      parentComment: parentComment._id,
       linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: comment,
       tags: this.commentTags,
@@ -70,9 +77,7 @@ class CommentInput extends Component {
     onFocus('new');
     actions.setUserSearch([]);
 
-    return this.props.actions
-    .createComment(commentObj)
-    .then(success => {
+    return this.props.actions.createComment(commentObj).then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
@@ -205,7 +210,7 @@ const localStyles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'lightgrey',
     backgroundColor: 'white',
-    height: 180,
+    height: 180
   },
   inputImage: {
     height: 25,
@@ -218,7 +223,7 @@ const localStyles = StyleSheet.create({
     width: 75,
     justifyContent: 'center',
     alignItems: 'center'
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

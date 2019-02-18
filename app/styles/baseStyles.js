@@ -6,6 +6,7 @@ import sizing from './sizing';
 export const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
+    border-width: 0px;
   }
 
   html {

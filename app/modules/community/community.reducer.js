@@ -2,11 +2,14 @@ import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 
 const CommunitySchema = new schema.Entity('communities', {}, { idAttribute: 'slug' });
+const MemberSchema = new schema.Entity('members', {}, { idAttribute: '_id' });
 
 const initialState = {
   communities: {},
   list: [],
   active: null,
+  members: {},
+  communityMembers: {}
 };
 
 export default function community(state = initialState, action) {
@@ -31,14 +34,17 @@ export default function community(state = initialState, action) {
     }
 
     case types.SET_COMMUNITY_MEMBERS: {
+      const { members, slug } = action.payload;
+      const data = normalize(members, [MemberSchema]);
       return {
         ...state,
-        communities: {
-          ...state.communities,
-          [action.payload.slug]: {
-            ...state.communities[action.payload.slug],
-            members: action.payload.members,
-          }
+        communityMembers: {
+          ...state.communityMembers,
+          [slug]: data.result
+        },
+        members: {
+          ...state.members,
+          ...data.entities.members
         }
       };
     }

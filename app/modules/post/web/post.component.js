@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
+import * as animationActions from 'modules/animation/animation.actions';
 import styled from 'styled-components/primitives';
 import { sizing } from 'app/styles';
 import SingleComment from 'modules/comment/web/singleComment.container';
@@ -142,7 +143,8 @@ export default withRouter(
         {
           ...createPostActions,
           ...postActions,
-          ...investActions
+          ...investActions,
+          ...animationActions
         },
         dispatch
       )

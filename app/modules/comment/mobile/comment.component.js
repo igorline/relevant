@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View,
   ActionSheetIOS,
   TouchableHighlight,
   Platform,
@@ -15,7 +14,7 @@ import TextEdit from 'modules/text/mobile/textEdit.component';
 import { text as textUtil } from 'app/utils';
 import TextBody from 'modules/text/mobile/textBody.component';
 import PostInfo from 'modules/post/mobile/postInfo.component';
-import PostButtons from 'modules/post/mobile/postButtons.component';
+import { View, Image } from 'modules/styled/uni';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -33,10 +32,10 @@ class Comment extends Component {
     navigator: PropTypes.object,
     scrollToComment: PropTypes.func,
     auth: PropTypes.object,
-    myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
     users: PropTypes.object,
-    focusInput: PropTypes.func,
+    nesting: PropTypes.number,
+    renderButtons: PropTypes.func
   };
 
   constructor(props, context) {
@@ -73,8 +72,7 @@ class Comment extends Component {
     comment.body = body;
     comment.mentions = mentions;
     this.setState({ editing: false, editedText: body });
-    return this.props.actions.updateComment(comment)
-    .then(results => {
+    return this.props.actions.updateComment(comment).then(results => {
       if (results) {
         this.setState({ editedText: null });
         Alert.alert('Comment updated');
@@ -123,8 +121,6 @@ class Comment extends Component {
 
   setSelected(user) {
     if (!user) return;
-    // const { params } = this.props.navigation.state;
-    // if (params && params.id === user._id) return;
     this.props.actions.goToProfile(user);
   }
 
@@ -139,7 +135,7 @@ class Comment extends Component {
   }
 
   render() {
-    const { comment, auth } = this.props;
+    const { comment, auth, nesting, renderButtons } = this.props;
     const { user } = auth;
 
     if (!comment) return null;
@@ -178,7 +174,10 @@ class Comment extends Component {
     if (owner) {
       optionsEl = (
         <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
-          <TouchableHighlight underlayColor={'transparent'} onPress={this.showActionSheet}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={this.showActionSheet}
+          >
             <Text style={styles.dots}>...</Text>
           </TouchableHighlight>
         </View>
@@ -186,44 +185,54 @@ class Comment extends Component {
     }
 
     const textBody = (
-      <TextBody {...this.props} style={styles.commentBodyText} post={comment} body={comment.body} />
+      <TextBody
+        {...this.props}
+        style={styles.commentBodyText}
+        post={comment}
+        body={comment.body}
+      />
     );
 
-    const myPostInv = this.props.myPostInv[comment._id];
     return (
       <View
         ref={c => {
           this.singleComment = c;
         }}
         onLayout={() => null}
-        style={[styles.commentContainer]}
+        mr={2}
+        mb={2}
+        ml={nesting ? 2 + nesting * 3 - 3 : 2}
+        flex={1}
+        fdirection={'row'}
       >
-        <View style={styles.commentHeader}>
-          <PostInfo
-            post={comment}
-            actions={this.props.actions}
-            auth={this.props.auth}
-            singlePost={this.props.singlePost}
-            delete={this.deleteComment}
-            edit={this.editComment}
-            users={this.props.users}
+        {nesting ? (
+          <Image
+            h={2}
+            w={2}
+            mt={5}
+            mr={1}
+            resizeMode={'contain'}
+            source={require('app/public/img/reply.png')}
           />
-          {optionsEl}
-        </View>
+        ) : null}
+        <View flex={1}>
+          <View mt={2} fdirection={'row'} align={'center'} justify={'space-between'}>
+            <PostInfo
+              post={comment}
+              actions={this.props.actions}
+              auth={this.props.auth}
+              singlePost={this.props.singlePost}
+              delete={this.deleteComment}
+              edit={this.editComment}
+              users={this.props.users}
+            />
+            {optionsEl}
+          </View>
 
-        <View style={{ paddingLeft: 33, paddingRight: 10 }}>
-          {this.state.editing ? editingEl : textBody}
-        </View>
+          <View mt={1}>{this.state.editing ? editingEl : textBody}</View>
 
-        <PostButtons
-          comment
-          post={comment}
-          isComment
-          actions={this.props.actions}
-          auth={this.props.auth}
-          myPostInv={myPostInv}
-          focusInput={this.props.focusInput}
-        />
+          {renderButtons()}
+        </View>
       </View>
     );
   }
@@ -232,21 +241,6 @@ class Comment extends Component {
 export default Comment;
 
 const localStyles = StyleSheet.create({
-  commentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingBottom: 10
-  },
-  commentContainer: {
-    padding: 15
-  },
-  commentAvatar: {
-    height: 25,
-    width: 25,
-    borderRadius: 12.5,
-    marginRight: 10
-  },
   commentBodyText: {
     color: darkGrey,
     fontFamily: 'Georgia',

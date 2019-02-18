@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'modules/tooltip/web/tooltip.component';
 import EarningsComponent from 'modules/wallet/earnings.component';
 import { colors } from 'app/styles';
 import { numbers } from 'app/utils';
@@ -55,6 +56,7 @@ export default class Balance extends Component {
     }
     return (
       <View m={4}>
+        <Tooltip id="tooltip" />
         <Header>Relevant Tokens</Header>
         <BodyText mt={2}>
           These are tokens you earned as rewards. Once you have more than 100, you can
@@ -81,7 +83,18 @@ export default class Balance extends Component {
         </View>
         <Touchable onClick={this.cashOut} mt={2}>
           <View fdirection="row" align="center">
-            <Image source={'/img/info.png'} s={1.5} h={1.5} w={1.5} m={0} />
+            <Image
+              source={'/img/info.png'}
+              s={1.5}
+              h={1.5}
+              w={1.5}
+              m={0}
+              data-for="tooltip"
+              data-tip={JSON.stringify({
+                type: 'TEXT',
+                props: { text: 'Claim your tokens!' }
+              })}
+            />
             <LinkFont ml={0.5} c={colors.blue} td={'underline'}>
               Claim Tokens
             </LinkFont>

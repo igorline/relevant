@@ -18,5 +18,5 @@ module.exports = {
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
   // for some react-native-web aliasing is causing a
   // console / 'canvas' error - this mocks canvas as a solution
-  setupFiles: ['jest-canvas-mock']
+  setupFiles: ['jest-canvas-mock', '<rootDir>/node_modules/regenerator-runtime/runtime']
 };

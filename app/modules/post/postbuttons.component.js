@@ -15,7 +15,8 @@ class PostButtons extends Component {
     community: PropTypes.object,
     actions: PropTypes.object,
     className: PropTypes.string,
-    earnings: PropTypes.object
+    earnings: PropTypes.object,
+    color: PropTypes.string
   };
 
   constructor(props) {
@@ -28,49 +29,46 @@ class PostButtons extends Component {
 
   async vote(e, vote) {
     try {
+      const { post, auth, actions } = this.props;
       e.preventDefault();
       e.stopPropagation();
 
-      if (!this.props.auth.isAuthenticated) return null;
+      if (!auth.isAuthenticated) throw new Error('You must be logged in to upvote posts');
 
       const amount = 1;
-      await this.props.actions.vote(amount, this.props.post, this.props.auth.user, vote);
-      // browserAlerts.alert('Success!');
+      await actions.vote(amount, post, auth.user, vote);
 
-      // TODO animation & analytics
+      if (vote) return null;
+
+      this.investButton.measureInWindow((x, y, w, h) => {
+        const parent = { x, y, w, h };
+        if (x + y + w + h === 0) return;
+        actions.triggerAnimation('upvote', { parent, amount });
+      });
+
+      // browserAlerts.alert('Success!');
+      // TODO nalytics
       // Analytics.logEvent('upvote');
-      // this.props.actions.triggerAnimation('vote');
-      // setTimeout(() => {
-      //   // this.props.actions.reloadTab('read');
-      //   let name = this.props.post.embeddedUser.name;
-      //   browserAlerts.alert('You have subscribed to receive '
-      //   + results.subscription.amount + ' posts from ' + name);
-      // }, 1500);
+      return true;
     } catch (err) {
-      // TODO error handling
+      return browserAlerts.alert(err.message);
     }
-    return null;
   }
 
   async irrelevant(e, vote) {
     try {
+      const { post, auth, actions } = this.props;
+
       e.preventDefault();
       e.stopPropagation();
 
-      if (!this.props.auth.isAuthenticated) return;
-      // for testing
-      // this.props.actions.triggerAnimation('vote', -1);
-      // this.props.actions.triggerAnimation('irrelevant', -1);
-      // return;
-
-      await this.props.actions.vote(-1, this.props.post, this.props.auth.user, vote);
-      // browserAlerts.alert('Success!');
+      if (!auth.isAuthenticated) return;
+      await actions.vote(-1, post, auth.user, vote);
 
       // TODO animations
       // this.props.actions.triggerAnimation('vote', -1);
       // this.props.actions.triggerAnimation('irrelevant', -1);
     } catch (err) {
-      // TODO error handling
       browserAlerts.alert(err.message);
     }
   }
@@ -81,8 +79,9 @@ class PostButtons extends Component {
   }
 
   render() {
+    // TODO show tooltip here with pending earnigns and other stats
     // eslint-disable-next-line
-    const { post, auth, community, className, earnings, myPostInv } = this.props;
+    const { post, auth, community, className, earnings, myPostInv, color } = this.props;
 
     // let pendingPayouts = 0;
     // if (earnings) {
@@ -93,19 +92,11 @@ class PostButtons extends Component {
     //   });
     // }
 
-    if (post === 'notFound') {
-      return null;
-    }
-    if (!post) return null;
+    if (!post || post === 'notFound') return null;
 
     let vote;
     let votedUp;
     let votedDown;
-    // let buttonOpacity = { opacity: 1 };
-    // let upvoteBtn = '/img/upvote.png';
-    // const upvoteBtn = '/img/uparrow-blue.png';
-
-    // let downVoteBtn = '/img/downvote-red.svg';
 
     if (this.props.myPostInv) {
       vote = myPostInv[post.id] || !this.props.auth.isAuthenticated;
@@ -118,16 +109,17 @@ class PostButtons extends Component {
 
     return (
       <View className={className}>
-        <View align="center">
+        <View ref={c => (this.investButton = c)} align="center">
           <PostButton
             key={`${post.id}-up`}
             imageSet="UPVOTE"
             isActive={votedUp}
             alt="Upvote"
+            color={color}
             onPress={e => this.vote(e, vote)}
           />
-          <View m={'1 0'}>
-            <NumericalValue c={colors.secondaryText} fs={2}>
+          <View m={'.5 0'}>
+            <NumericalValue c={color || colors.secondaryText} fs={2}>
               {post.data ? Math.round(post.data.relevance) : 0}
             </NumericalValue>
           </View>
@@ -136,6 +128,7 @@ class PostButtons extends Component {
             imageSet="DOWNVOTE"
             isActive={votedDown}
             alt="downvote"
+            color={color}
             onPress={e => this.irrelevant(e, vote)}
           />
         </View>

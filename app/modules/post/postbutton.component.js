@@ -4,14 +4,16 @@ import { Image, Touchable } from 'modules/styled/uni';
 
 const BUTTON_IMAGES = {
   UPVOTE: {
-    default: '/img/uparrow-grey-outline.png',
-    active: '/img/uparrow-blue.png',
-    hover: '/img/uparrow-blue-outline.png'
+    white: require('app/public/img/uparrow-white.png'),
+    default: require('app/public/img/uparrow-grey-outline.png'),
+    active: require('app/public/img/uparrow-blue.png'),
+    hover: require('app/public/img/uparrow-blue-outline.png')
   },
   DOWNVOTE: {
-    default: '/img/downarrow-grey-outline.png',
-    active: '/img/downarrow-red.png',
-    hover: '/img/downarrow-blue-outline.png'
+    white: require('app/public/img/downarrow-white.png'),
+    default: require('app/public/img/downarrow-grey-outline.png'),
+    active: require('app/public/img/downarrow-red.png'),
+    hover: require('app/public/img/downarrow-blue-outline.png')
   }
 };
 
@@ -30,9 +32,9 @@ class PostButton extends Component {
     this.setState({ isHovering: false });
   };
   render() {
-    const { alt, isActive, imageSet, onPress } = this.props;
+    const { alt, isActive, imageSet, onPress, color } = this.props;
     const images = BUTTON_IMAGES[imageSet];
-    let source = isActive ? images.active : images.default;
+    let source = isActive ? images.active : images[color] || images.default;
     if (this.state.isHovering) {
       source = images.hover;
     }
@@ -43,10 +45,9 @@ class PostButton extends Component {
           h={2.8}
           alt={alt}
           resizeMode="contain"
-          source={{ uri: source }}
+          source={source}
           onMouseEnter={this.handleOnMouseOver}
           onMouseLeave={this.handleOnMouseOut}
-          cursor="pointer"
         />
       </Touchable>
     );
@@ -54,6 +55,7 @@ class PostButton extends Component {
 }
 
 PostButton.propTypes = {
+  color: PropTypes.string,
   alt: PropTypes.string,
   isActive: PropTypes.bool,
   imageSet: PropTypes.oneOf(['DOWNVOTE', 'UPVOTE']),
