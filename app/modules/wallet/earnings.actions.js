@@ -1,6 +1,7 @@
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api } from 'app/utils';
+// import { postSchema } from 'modules/post/post.actions';
 
 const earningSchema = new schema.Entity(
   'earnings',

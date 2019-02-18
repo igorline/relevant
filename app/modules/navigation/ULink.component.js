@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import { colors, mixins } from 'app/styles';
-import { Touchable } from 'modules/styled/uni';
-
-let { css } = require('styled-components');
+import { css } from 'styled-components';
 
 let styled;
 let StyledLink;
@@ -24,7 +22,7 @@ if (process.env.WEB !== 'true') {
   environment = 'native';
   styled = require('styled-components/primitives').default;
   css = require('styled-components/primitives').css;
-  StyledLink = styled(Touchable)`
+  StyledLink = styled.Touchable`
     ${linkStyles}
   `;
   DisabledLink = styled.Text`
