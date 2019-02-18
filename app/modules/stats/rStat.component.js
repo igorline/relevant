@@ -15,16 +15,17 @@ export default function RStat(props) {
   const { relevance } = user;
   const pagerank = relevance ? relevance.pagerank || 0 : 0;
 
-  const iconSize = size || 3;
-  const imageMargin = align === 'center' ? 0 : sizing(-size / 10);
+  const iconSize = size || 2.75;
+  const imageMargin = align === 'center' ? 0 : sizing(-1, 'px');
 
   return (
     <ImageWrapper align={align || 'center'} mr={mr || 1.5} props={props} {...rest}>
       <Image
         h={iconSize}
-        w={iconSize}
+        w={iconSize * 1.3}
         source={iconImage}
-        mr={iconSize / 4}
+        mr={iconSize / 10}
+        mb={-1 / 24}
         style={{ bottom: imageMargin }}
         resizeMode="contain"
       />

@@ -133,6 +133,7 @@ exports[`Snapshot SplashComponent 1`] = `
         Object {
           "WebkitFlexBasis": "auto",
           "WebkitFlexShrink": 0,
+          "WebkitTextDecorationColor": "rgba(255,255,255,1.00)",
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
@@ -160,6 +161,7 @@ exports[`Snapshot SplashComponent 1`] = `
           "paddingTop": "0px",
           "position": "relative",
           "textDecoration": "none",
+          "textDecorationColor": "rgba(255,255,255,1.00)",
           "whiteSpace": "pre-wrap",
           "wordWrap": "break-word",
         }

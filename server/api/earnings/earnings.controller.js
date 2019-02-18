@@ -9,6 +9,10 @@ exports.index = async (req, res, next) => {
     let query = { user: user._id };
     if (status && status !== 'all') query = { user: user._id, status };
     const earnings = await Earnings.find(query)
+    .populate({
+      path: 'post',
+      populate: [{ path: 'data' }, { path: 'metaPost' }]
+    })
     .limit(limit)
     .skip(skip)
     .sort({ createdAt: -1 });

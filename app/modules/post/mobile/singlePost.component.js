@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  View,
   Text,
   RefreshControl,
   TouchableHighlight,
@@ -17,6 +16,8 @@ import Comment from 'modules/comment/mobile/comment.component';
 import CommentInput from 'modules/comment/mobile/commentInput.component';
 import UserSearchComponent from 'modules/createPost/mobile/userSearch.component';
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
+import { View, MobileDivider, Divider } from 'modules/styled/uni';
+import PostButtons from 'modules/post/mobile/postButtons.component';
 import Post from './post.component';
 
 let styles;
@@ -26,7 +27,7 @@ const inputOffset = IphoneX ? 59 + 33 : 59;
 class SinglePostComponent extends Component {
   static propTypes = {
     postId: PropTypes.string,
-    postComments: PropTypes.object,
+    postComments: PropTypes.array,
     posts: PropTypes.object,
     navigation: PropTypes.object,
     post: PropTypes.object,
@@ -34,7 +35,10 @@ class SinglePostComponent extends Component {
     actions: PropTypes.object,
     related: PropTypes.array,
     link: PropTypes.object,
-    users: PropTypes.object
+    users: PropTypes.object,
+    comments: PropTypes.object,
+    myPostInv: PropTypes.object,
+    auth: PropTypes.object
   };
 
   constructor(props) {
@@ -64,17 +68,12 @@ class SinglePostComponent extends Component {
     this.renderRelated = this.renderRelated.bind(this);
   }
 
+  comments = [];
+  nesting = {};
+
   componentWillMount() {
     this.id = this.props.postId;
-
-    const comments = this.props.postComments.data || [];
-    if (comments) {
-      this.comments = comments.map(c => this.props.posts.posts[c]);
-      this.total = comments.total || 0;
-      if (this.total > 10) this.longFormat = true;
-    }
-
-    // this.loaded = true;
+    this.getChildren(this.id);
 
     // InteractionManager.runAfterInteractions(() => {
     requestAnimationFrame(() => {
@@ -94,6 +93,17 @@ class SinglePostComponent extends Component {
       this.forceUpdate();
     }, 100);
   }
+
+  getChildren = (id = this.props.postId, nestingLevel = 0) => {
+    if (nestingLevel === 0) this.comments = [];
+    const { comments, posts } = this.props;
+    const children = comments.childComments[id] || [];
+    children.forEach(c => {
+      this.nesting[c] = nestingLevel;
+      this.comments.push(posts.posts[c]);
+      this.getChildren(c, nestingLevel + 1);
+    });
+  };
 
   componentWillReceiveProps(next) {
     if (next.postComments && next.postComments !== this.props.postComments) {
@@ -158,8 +168,7 @@ class SinglePostComponent extends Component {
   }
 
   renderComments() {
-    const comments = this.props.postComments.data || [];
-    this.comments = comments.map(c => this.props.posts.posts[c]);
+    this.getChildren();
 
     if (this.props.post) {
       return (
@@ -261,20 +270,56 @@ class SinglePostComponent extends Component {
   renderRow({ item, index }) {
     const comment = item;
     if (!comment) return null;
-    return (
-      <Comment
-        {...this.props}
-        key={item._id}
-        parentEditing={this.toggleEditing}
-        index={index}
-        scrollToComment={() => this.scrollToComment(index)}
-        parentId={this.id}
-        comment={comment}
-        parentView={this.scrollView}
-        users={this.props.users}
+    return this.renderComment({ comment, index });
+  }
+
+  renderButtons = (comment, index) => {
+    const { post, myPostInv, auth, actions, navigation } = this.props;
+    return () => (
+      <PostButtons
+        parentPost={post}
+        comment
+        post={comment}
+        isComment
+        actions={actions}
+        auth={auth}
+        navigation={navigation}
+        myPostInv={myPostInv[comment._id]}
+        setupReply={() => this.setState({ activeComment: comment, index })}
+        focusInput={() => this.input.textInput.focus()}
       />
     );
-  }
+  };
+
+  renderComment = ({ comment, index }) => {
+    const nesting = this.nesting[comment._id];
+    const renderButtons = this.renderButtons(comment, index);
+    return (
+      <View key={comment._id} index={index} fdirection={'column'} flex={1}>
+        {nesting ? (
+          <View ml={nesting * 3 - 1} mr={2}>
+            <Divider />
+          </View>
+        ) : (
+          <MobileDivider />
+        )}
+        <Comment
+          {...this.props}
+          parentEditing={this.toggleEditing}
+          index={index}
+          scrollToComment={() => this.scrollToComment(index)}
+          parentId={this.id}
+          comment={comment}
+          nesting={this.nesting[comment._id]}
+          parentView={this.scrollView}
+          users={this.props.users}
+          renderChildren={this.renderChildren}
+          renderButtons={() => renderButtons()}
+          nesting={nesting}
+        />
+      </View>
+    );
+  };
 
   renderUserSuggestions() {
     let parentEl = null;
@@ -310,6 +355,8 @@ class SinglePostComponent extends Component {
   }
 
   render() {
+    const { post } = this.props;
+    const { activeComment, index, editing } = this.state;
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
@@ -322,15 +369,19 @@ class SinglePostComponent extends Component {
         {this.renderUserSuggestions()}
 
         <CommentInput
+          parentPost={post}
+          parentComment={activeComment}
           ref={c => (this.input = c)}
           postId={this.id}
-          editing={this.state.editing}
+          editing={editing}
           {...this.props}
           scrollView={this.scrollView}
           scrollToBottom={this.scrollToBottom}
           updatePosition={params => this.setState(params)}
+          onBlur={() => this.setState({ comment: null, index: null })}
           onFocus={() => {
-            this.scrollToBottom();
+            if (typeof index === 'number') this.scrollToComment(index);
+            else this.scrollToBottom();
           }}
         />
       </KeyboardAvoidingView>
@@ -374,4 +425,3 @@ const localStyles = StyleSheet.create({
 styles = { ...localStyles, ...globalStyles };
 
 export default SinglePostComponent;
-

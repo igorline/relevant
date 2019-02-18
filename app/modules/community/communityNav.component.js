@@ -30,16 +30,15 @@ const CommunityContainer = styled.View`
 const StyledImage = styled.Image`
   width: ${sizing(4)};
   height: ${sizing(4)};
-  margin-right:  ${sizing(1.5)};
-  background: ${p => p.image ? 'transparent' : colors.grey};
+  margin-right: ${sizing(1.5)};
+  background: ${p => (p.image ? 'transparent' : colors.grey)};
 `;
 
 const CommunityLinkTab = styled.Text`
   ${fonts.fonts}
 `;
 
-const StyledCommunityList = styled.View`
-`;
+const StyledCommunityList = styled.View``;
 
 const CommunityLink = ({ community, onClick }) => (
   <CommunityLinkTab p={`${sizing(0)} ${sizing(0)}`}>
@@ -47,10 +46,14 @@ const CommunityLink = ({ community, onClick }) => (
       styles={linkStyle}
       key={community._id}
       to={'/' + community.slug + '/new'}
-      onPress={() => { onClick(community.slug); }}
-      onClick={() => { onClick(community.slug); }}
+      onPress={() => {
+        onClick(community.slug);
+      }}
+      onClick={() => {
+        onClick(community.slug);
+      }}
     >
-      <StyledImage image={community.image} source={{ uri: community.image }}/>
+      <StyledImage image={community.image} source={{ uri: community.image }} />
       {community.name}
     </ULink>
   </CommunityLinkTab>
@@ -58,14 +61,13 @@ const CommunityLink = ({ community, onClick }) => (
 
 CommunityLink.propTypes = {
   community: PropTypes.object,
-  onClick: PropTypes.func,
+  onClick: PropTypes.func
 };
-
 
 export class Community extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    community: PropTypes.object,
+    community: PropTypes.object
   };
 
   componentDidMount() {
@@ -79,45 +81,52 @@ export class Community extends Component {
       const community = communities[id];
       const isActive = this.props.community.active === community.slug;
       if (isActive) return null;
-      return <CommunityLink
-        key={community._id}
-        community={community}
-        onClick={actions.setCommunity}
-      />;
+      return (
+        <CommunityLink
+          key={community._id}
+          community={community}
+          onClick={actions.setCommunity}
+        />
+      );
     });
   }
 
   render() {
     const { community, actions } = this.props;
-    const activeCommunity = community.communities[community.active];
+    const { communityMembers, members, communities } = community;
+    const activeCommunity = communities[community.active];
+    if (!activeCommunity) return null;
+    const activeMembers = get(communityMembers, community.active, []).map(
+      id => members[id]
+    );
     return (
       <StyledCommunityList>
-        {activeCommunity &&
+        {activeCommunity && (
           <CommunityActive
             key={activeCommunity._id}
             community={activeCommunity}
+            members={activeMembers}
             getCommunityMembers={get(actions, 'getCommunityMembers', null)}
           >
             <CommunityLink community={activeCommunity} onClick={actions.setCommunity} />
           </CommunityActive>
-        }
-        <CommunityContainer>
-          {this.renderOtherCommunities()}
-        </CommunityContainer>
-      </StyledCommunityList>);
+        )}
+        <CommunityContainer>{this.renderOtherCommunities()}</CommunityContainer>
+      </StyledCommunityList>
+    );
   }
 }
 
 const mapStateToProps = state => ({
   community: state.community,
-  auth: state.auth,
+  auth: state.auth
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...communityActions,
-      setCommunity,
+      setCommunity
     },
     dispatch
   )

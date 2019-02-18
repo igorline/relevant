@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Animated, Easing, Image } from 'react-native';
+import { Animated, Easing, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullHeight } from 'app/styles/global';
+import { animatedElement } from 'app/styles/layout';
 
-let styles;
-const ENDY = fullHeight * 0.5;
+const ENDY = 300;
 
 class Coin extends Component {
   static propTypes = {
@@ -64,21 +63,22 @@ class Coin extends Component {
       toValue: 1,
       delay: r * 30 + (i * 100 * 10) / amount,
       duration: 1000
-    })
-    .start(() => this.props.destroy(null, i));
+    }).start(() => this.props.destroy(null, i));
   }
 
   render() {
+    const { w } = this.props.parent;
     const { specialKey } = this.props;
     const icon = require('app/public/img/relevantcoin.png');
-    const img = <Image style={[styles.coin, { width: 20, height: 20 }]} source={icon} />;
+    const img = <Image style={{ width: 20, height: 20 }} source={icon} />;
 
     return (
       <Animated.View
         key={specialKey}
         style={[
-          styles.aniMoney,
+          { ...animatedElement },
           {
+            left: w / 3,
             transform: [
               { translateX: this.x },
               { translateY: this.y },
@@ -95,14 +95,3 @@ class Coin extends Component {
 }
 
 export default Coin;
-
-const localStyles = StyleSheet.create({
-  aniMoney: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    backgroundColor: 'transparent'
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };

@@ -3,6 +3,8 @@ import thunk from 'redux-thunk';
 import createSocketIoMiddleware from 'redux-socket.io';
 import rootReducer from 'core/reducers';
 
+require('app/publicenv.js');
+
 window.navigator.userAgent = 'react-native';
 const io = require('socket.io-client/dist/socket.io');
 

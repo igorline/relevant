@@ -29,9 +29,10 @@ class PostImage extends Component {
   render() {
     let image = null;
     let post = this.props.metaPost || this.props.post;
-    if (post.metaPost) {
-      post = post.metaPost;
-    }
+    if (post.metaPost) post = post.metaPost;
+
+    if (!post) return null;
+
     const single = false; // this.props.singlePost;
     let smallerImg; // = this.props.singlePost;
     let title = null;
@@ -39,46 +40,39 @@ class PostImage extends Component {
     let time;
     let author;
     let authorEl;
-
-    if (post) {
-      if (post.articleDate) {
-        time = numbers.getTimestamp(Date.parse(post.articleDate));
-      }
-      if (post.articleAuthor && post.articleAuthor.length) {
-        // test this
-        author = post.articleAuthor.join(', ');
-        authorEl = (
+    if (post.articleDate) {
+      time = numbers.getTimestamp(Date.parse(post.articleDate));
+    }
+    if (post.articleAuthor && post.articleAuthor.length) {
+      // test this
+      author = post.articleAuthor.join(', ');
+      authorEl = (
+        <Text
+          numberOfLines={1}
+          style={[styles.font12, styles.articleTitle, single ? styles.darkGrey : null]}
+        >
+          {author || ''}
+        </Text>
+      );
+    }
+    if (post.image && !post.image.match('gif')) {
+      image = post.image.match('http') ? post.image : 'https:' + post.image;
+    }
+    if (post.link || post.url) {
+      linkEl = (
+        <View>
           <Text
-            numberOfLines={1}
             style={[styles.font12, styles.articleTitle, single ? styles.darkGrey : null]}
           >
-            {author || ''}
+            {post.publisher || post.domain}
+            {time ? ' · ' + time : ''}
+            {authorEl ? ' · ' : null}
+            {authorEl}
           </Text>
-        );
-      }
-      if (post.image && !post.image.match('gif')) {
-        image = post.image.match('http') ? post.image : 'https:' + post.image;
-      }
-      if (post.link || post.url) {
-        linkEl = (
-          <View>
-            <Text
-              style={[
-                styles.font12,
-                styles.articleTitle,
-                single ? styles.darkGrey : null
-              ]}
-            >
-              {post.publisher || post.domain}
-              {time ? ' · ' + time : ''}
-              {authorEl ? ' · ' : null}
-              {authorEl}
-            </Text>
-          </View>
-        );
-      }
-      title = post.title ? post.title.trim() : '';
+        </View>
+      );
     }
+    title = post.title ? post.title.trim() : '';
 
     const titleEl = (
       <View style={[styles.textContainer]}>

@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import { colors, mixins } from 'app/styles';
+import { Touchable } from 'modules/styled/uni';
+
+let { css } = require('styled-components');
 
 let styled;
 let StyledLink;
@@ -10,48 +13,39 @@ let StyledA;
 let DisabledLink;
 let environment = 'web';
 
+const linkStyles = css`
+  ${p => p.styles}
+  ${mixins.link}
+  ${mixins.margin}
+  ${mixins.padding}
+`;
+
 if (process.env.WEB !== 'true') {
   environment = 'native';
   styled = require('styled-components/primitives').default;
-  StyledLink = styled.Touchable`
-    ${p => p.styles}
-    ${mixins.link}
-    ${mixins.margin}
-    ${mixins.padding}
+  css = require('styled-components/primitives').css;
+  StyledLink = styled(Touchable)`
+    ${linkStyles}
   `;
   DisabledLink = styled.Text`
-    color: ${colors.secondaryText};
-    ${p => p.styles}
-    ${mixins.link}
-    ${mixins.margin}
-    ${mixins.padding}
+    ${p => (p.disabled ? `color: ${colors.secondaryText};` : '')}
+    ${linkStyles}
   `;
 } else {
   styled = require('styled-components').default;
+
   StyledLink = styled(Link)`
-    ${p => p.styles}
-    ${mixins.link}
-    ${mixins.margin}
-    ${mixins.padding}
+    ${linkStyles}
   `;
   StyledNavLink = styled(NavLink)`
-    ${p => p.styles}
-    ${mixins.link}
-    ${mixins.margin}
-    ${mixins.padding}
+    ${linkStyles}
   `;
   StyledA = styled.a`
-    ${p => p.styles}
-    ${mixins.link}
-    ${mixins.margin}
-    ${mixins.padding}
+    ${linkStyles}
   `;
   DisabledLink = styled.span`
-    color: ${colors.secondaryText};
-    ${p => p.styles}
-    ${mixins.link}
-    ${mixins.margin}
-    ${mixins.padding}
+    ${p => (p.disabled ? `color: ${colors.secondaryText};` : '')}
+    ${linkStyles}
   `;
 }
 
@@ -66,10 +60,15 @@ const ULink = props => {
     external,
     target,
     disabled,
+    noLink,
     ...rest
   } = props;
-  if (disabled) {
-    return <DisabledLink {...rest}>{children}</DisabledLink>;
+  if (disabled || noLink) {
+    return (
+      <DisabledLink {...rest} disabled={disabled}>
+        {children}
+      </DisabledLink>
+    );
   }
   if (environment === 'web') {
     if (navLink) {
@@ -122,7 +121,8 @@ ULink.propTypes = {
   styles: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   external: PropTypes.bool,
   target: PropTypes.string,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  noLink: PropTypes.bool
 };
 
 export default ULink;

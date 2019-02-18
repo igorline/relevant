@@ -25,8 +25,9 @@ class PostBody extends Component {
   componentDidMount() {}
 
   goToPost() {
-    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
-    this.props.actions.goToPost(this.props.post);
+    const { post, actions } = this.props;
+    if (!actions || !post || !post._id) return;
+    actions.goToPost({ ...post, _id: post.parentPost || post._id });
   }
 
   showInvestors() {

@@ -692,6 +692,7 @@ exports[`Snapshot NavProfile 1`] = `
           Object {
             "WebkitFlexBasis": "auto",
             "WebkitFlexShrink": 0,
+            "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "borderBottomWidth": "0px",
             "borderLeftWidth": "0px",
             "borderRightWidth": "0px",
@@ -719,6 +720,7 @@ exports[`Snapshot NavProfile 1`] = `
             "paddingTop": "3.6px",
             "position": "relative",
             "textDecoration": "none",
+            "textDecorationColor": "rgba(0,0,0,1.00)",
             "whiteSpace": "pre-wrap",
             "wordWrap": "break-word",
           }

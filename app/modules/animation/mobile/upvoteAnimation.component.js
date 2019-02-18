@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from 'modules/animation/animation.actions';
-import { globalStyles, fullHeight, fullWidth } from 'app/styles/global';
+import styled from 'styled-components/primitives';
 import Vote from './vote.component';
 import Coin from './coinVote.component';
 
-const localStyles = StyleSheet.create({
-  moneyContainer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    height: fullHeight,
-    width: fullWidth
-  }
-});
-
-const styles = { ...globalStyles, ...localStyles };
+const MoneyContainer = styled.View`
+  position: absolute
+  zIndex: 10000;
+  left: 0;
+  top: 0;
+  right: 0;
+`;
 
 class UpvoteAnimation extends Component {
   static propTypes = {
@@ -34,6 +29,11 @@ class UpvoteAnimation extends Component {
     };
     this.clearEls = this.clearEls.bind(this);
     this.destroy = this.destroy.bind(this);
+  }
+
+  componentDidMount() {
+    const { Dimensions } = require('react-native');
+    this.fullHeight = Dimensions.get('window').height;
   }
 
   componentWillUpdate(next) {
@@ -66,7 +66,9 @@ class UpvoteAnimation extends Component {
     const newArr = [];
     const coinArr = [];
     for (let i = 0; i <= 10; i++) {
-      newArr.push(<Vote destroy={this.destroy} parent={this.parent} key={i} specialKey={i} />);
+      newArr.push(
+        <Vote destroy={this.destroy} parent={this.parent} key={i} specialKey={i} />
+      );
     }
 
     for (let i = 0; i < this.amount; i++) {
@@ -85,10 +87,10 @@ class UpvoteAnimation extends Component {
 
   render() {
     return (
-      <View pointerEvents={'none'} style={styles.moneyContainer}>
+      <MoneyContainer pointerEvents={'none'} style={{ height: this.fullHeight }}>
         {this.state.coinAni}
         {this.state.investAni}
-      </View>
+      </MoneyContainer>
     );
   }
 }

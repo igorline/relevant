@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  AppState,
-  Linking,
-  Platform,
-  StatusBar,
-  YellowBox,
-} from 'react-native';
+import { View, AppState, Linking, Platform, StatusBar, YellowBox } from 'react-native';
 
 import { setCustomText } from 'react-native-global-props';
 import PropTypes from 'prop-types';
@@ -34,19 +27,17 @@ import { fullHeight } from 'app/styles/global';
 // Setting default styles for all Text components.
 const customTextProps = {
   style: {
-    fontSize: 16,
-    fontFamily: 'Arial',
-    color: '#242425'
+    // fontSize: 14,
+    fontFamily: 'HelveticaNeue'
+    // color: '#242425'
   }
 };
 setCustomText(customTextProps);
-
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 
 // eslint-disable-next-line
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
-
 
 class Application extends Component {
   static propTypes = {
@@ -62,7 +53,7 @@ class Application extends Component {
     super(props, context);
     this.state = {
       newName: null,
-      height: fullHeight,
+      height: fullHeight
     };
     this.backgroundTime = 0;
   }
@@ -84,8 +75,7 @@ class Application extends Component {
     //       reloadFunction={this.props.actions.getUser}
     //     />;
     //   }
-    this.props.actions.getUser()
-    .then(async user => {
+    this.props.actions.getUser().then(async user => {
       if (!user) {
         this.props.navigation.replace('auth');
       }
@@ -172,7 +162,7 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    error: state.error.universal,
+    error: state.error.universal
   };
 }
 

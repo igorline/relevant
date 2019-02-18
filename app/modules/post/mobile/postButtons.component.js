@@ -31,12 +31,14 @@ let styles;
 class PostButtons extends Component {
   static propTypes = {
     post: PropTypes.object,
+    parentPost: PropTypes.object,
+    setupReply: PropTypes.func,
     tooltip: PropTypes.bool,
     actions: PropTypes.object,
     auth: PropTypes.object,
     navigation: PropTypes.object,
     focusInput: PropTypes.func,
-    myPostInv: PropTypes.array,
+    myPostInv: PropTypes.object,
     link: PropTypes.object
   };
 
@@ -152,12 +154,7 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await actions.vote(
-        amount,
-        post,
-        auth.user,
-        !newVote
-      );
+      await actions.vote(amount, post, auth.user, !newVote);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
@@ -258,17 +255,15 @@ class PostButtons extends Component {
         description: link.description
       }
     });
-    this.props.actions.push(
-      {
-        key: 'createPost',
-        component: 'createPost',
-        back: 'Cancel',
-        title: 'Repost',
-        next: 'Post',
-        direction: 'vertical',
-        left: 'Cancel'
-      }
-    );
+    this.props.actions.push({
+      key: 'createPost',
+      component: 'createPost',
+      back: 'Cancel',
+      title: 'Repost',
+      next: 'Post',
+      direction: 'vertical',
+      left: 'Cancel'
+    });
   }
 
   repostUrl() {
@@ -286,26 +281,28 @@ class PostButtons extends Component {
         description: link.description
       }
     });
-    this.props.actions.push(
-      {
-        key: 'createPost',
-        back: true,
-        title: 'Add Commentary',
-        next: 'Next',
-        direction: 'vertical',
-        left: 'Cancel'
-      }
-    );
+    this.props.actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Add Commentary',
+      next: 'Next',
+      direction: 'vertical',
+      left: 'Cancel'
+    });
   }
 
   goToPost(comment) {
-    if (get(this.props.navigation, 'state.params.id') === this.props.post._id) {
-      if (this.props.focusInput) this.props.focusInput();
+    const { focusInput, navigation, actions, setupReply, post } = this.props;
+    const parentPost = this.props.parentPost || post;
+
+    if (get(navigation, 'state.params.id') === parentPost._id) {
+      setupReply(post);
+      if (this.props.focusInput) focusInput();
       return;
     }
-    let openComment = false;
-    if (comment) openComment = true;
-    this.props.actions.goToPost(this.props.post, openComment);
+
+    const openComment = comment || false;
+    actions.goToPost(parentPost, openComment);
   }
 
   flag() {
@@ -335,7 +332,6 @@ class PostButtons extends Component {
         commentString = post.commentCount;
       }
     }
-    let canBet;
     const space = 8;
 
     const opacity = 1;
@@ -350,23 +346,6 @@ class PostButtons extends Component {
         ref={c => (this.investButton = c)}
         onPress={() => this.invest(investible)}
       >
-        {canBet ? (
-          <Image
-            resizeMode={'contain'}
-            style={[
-              styles.r,
-              {
-                width: 20,
-                height: 20,
-                zIndex: 1,
-                position: 'absolute',
-                bottom: 1,
-                right: 0
-              }
-            ]}
-            source={require('app/public/img/relevantcoin.png')}
-          />
-        ) : null}
         <Image
           resizeMode={'contain'}
           style={[styles.vote, { opacity }]}
@@ -388,10 +367,7 @@ class PostButtons extends Component {
 
     const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
 
-    if (canBet) {
-      r = 'Place Bet!';
-      rIcon = null;
-    } else if (!r) {
+    if (!r) {
       r = 'Vote';
       rIcon = null;
     }
@@ -454,17 +430,6 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    const repost = (
-      <TouchableOpacity
-        style={{ paddingLeft: 10, paddingRight: 5 }}
-        onPress={() => this.repostCommentary()}
-      >
-        <View style={[styles.textRow, { alignItems: 'center' }]}>
-          <IconI name="ios-quote-outline" size={24} color={greyText} />
-        </View>
-      </TouchableOpacity>
-    );
-
     const newCommentary = (
       <TouchableOpacity style={{ paddingRight: 8 }} onPress={() => this.repostUrl()}>
         {/* <Icon name="pencil" size={18} color={greyText} /> */}
@@ -491,9 +456,8 @@ class PostButtons extends Component {
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {(link && link.url) && !isComment ? newCommentary : null}
+            {link && link.url && !isComment ? newCommentary : null}
             {twitter || isComment ? null : comments}
-            {twitter || isComment ? null : repost}
           </View>
 
           {/*          <InvestModal

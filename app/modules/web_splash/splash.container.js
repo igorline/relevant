@@ -7,9 +7,9 @@ import Marquee from './marquee.component';
 import SplashComponent from './splash.component';
 import Mission from './mission.component';
 
-if (process.env.BROWSER === true) {
-  require('./splash.css');
-}
+// if (process.env.BROWSER === true) {
+//   require('./splash.css');
+// }
 
 export class Splash extends Component {
   render() {

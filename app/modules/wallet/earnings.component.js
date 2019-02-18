@@ -9,13 +9,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as earningsActions from 'modules/wallet/earnings.actions';
 import InfScroll from 'modules/listview/web/infScroll.component';
+import ReactTooltip from 'react-tooltip';
 
 export class Earnings extends Component {
   static propTypes = {
     earnings: PropTypes.object
   };
 
-  componentDidMount() {}
+  componentDidUpdate(prevProps) {
+    if (prevProps.earnings.list.length !== this.props.earnings.list.length) {
+      ReactTooltip.rebuild();
+    }
+  }
 
   hasMore = true;
 
@@ -80,6 +85,14 @@ export class Earnings extends Component {
                   bg={colors.secondaryBG}
                   grow={1}
                   justify="space-between"
+                  data-for="tooltip"
+                  data-tip={JSON.stringify({
+                    type: 'EARNING',
+                    props: {
+                      text: 'Claim your tokens!',
+                      earning
+                    }
+                  })}
                 >
                   <View display="flex" fdirection="row">
                     <BodyText mr={4}>

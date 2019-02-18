@@ -248,7 +248,7 @@ exports[`Snapshot Post Web 1`] = `
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
                 "backgroundColor": "rgba(0,0,0,0.00)",
-                "backgroundImage": "url(\\"/img/uparrow-grey-outline.png\\")",
+                "backgroundImage": "url(\\"uparrow-grey-outline.png\\")",
                 "backgroundPosition": "center",
                 "backgroundRepeat": "no-repeat",
                 "backgroundSize": "contain",
@@ -293,7 +293,7 @@ exports[`Snapshot Post Web 1`] = `
           <img
             alt=""
             draggable={false}
-            src="/img/uparrow-grey-outline.png"
+            src="uparrow-grey-outline.png"
             style={
               Object {
                 "bottom": "0px",
@@ -333,10 +333,10 @@ exports[`Snapshot Post Web 1`] = `
               "flexBasis": "auto",
               "flexDirection": "column",
               "flexShrink": 0,
-              "marginBottom": "7.2px",
+              "marginBottom": "3.6px",
               "marginLeft": "0px",
               "marginRight": "0px",
-              "marginTop": "7.2px",
+              "marginTop": "3.6px",
               "minHeight": "0px",
               "minWidth": "0px",
               "msFlexAlign": "stretch",
@@ -360,6 +360,7 @@ exports[`Snapshot Post Web 1`] = `
               Object {
                 "WebkitFlexBasis": "auto",
                 "WebkitFlexShrink": 0,
+                "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
                 "borderBottomWidth": "0px",
                 "borderLeftWidth": "0px",
                 "borderRightWidth": "0px",
@@ -387,6 +388,7 @@ exports[`Snapshot Post Web 1`] = `
                 "paddingTop": "0px",
                 "position": "relative",
                 "textDecoration": "none",
+                "textDecorationColor": "rgba(153,153,153,1.00)",
                 "whiteSpace": "pre-wrap",
                 "wordWrap": "break-word",
               }
@@ -469,7 +471,7 @@ exports[`Snapshot Post Web 1`] = `
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
                 "backgroundColor": "rgba(0,0,0,0.00)",
-                "backgroundImage": "url(\\"/img/downarrow-grey-outline.png\\")",
+                "backgroundImage": "url(\\"downarrow-grey-outline.png\\")",
                 "backgroundPosition": "center",
                 "backgroundRepeat": "no-repeat",
                 "backgroundSize": "contain",
@@ -514,7 +516,7 @@ exports[`Snapshot Post Web 1`] = `
           <img
             alt=""
             draggable={false}
-            src="/img/downarrow-grey-outline.png"
+            src="downarrow-grey-outline.png"
             style={
               Object {
                 "bottom": "0px",
@@ -898,6 +900,7 @@ exports[`Snapshot Post Web 1`] = `
             styles=""
           >
             <div
+              c={null}
               dir="auto"
               flex={1}
               style={
@@ -944,7 +947,9 @@ exports[`Snapshot Post Web 1`] = `
             </div>
           </a>
           <div
+            c={null}
             dir="auto"
+            mt={1}
             style={
               Object {
                 "WebkitFlexBasis": "auto",
@@ -967,7 +972,7 @@ exports[`Snapshot Post Web 1`] = `
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
-                "marginTop": "0px",
+                "marginTop": "7.2px",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
                 "paddingBottom": "0px",
@@ -1049,9 +1054,41 @@ exports[`Snapshot Post Web 1`] = `
                   onClick={[Function]}
                   styles=""
                 >
-                  #
-                  tag11
-                   
+                  <span
+                    dir="auto"
+                    style={
+                      Object {
+                        "borderBottomWidth": "0px",
+                        "borderLeftWidth": "0px",
+                        "borderRightWidth": "0px",
+                        "borderTopWidth": "0px",
+                        "boxSizing": "border-box",
+                        "color": "inherit",
+                        "display": "inline",
+                        "fontFamily": "inherit",
+                        "fontSize": "inherit",
+                        "fontStyle": "inherit",
+                        "fontVariant": "inherit",
+                        "fontWeight": "inherit",
+                        "lineHeight": "inherit",
+                        "marginBottom": "0px",
+                        "marginLeft": "0px",
+                        "marginRight": "0px",
+                        "marginTop": "0px",
+                        "paddingBottom": "0px",
+                        "paddingLeft": "0px",
+                        "paddingRight": "0px",
+                        "paddingTop": "0px",
+                        "textDecoration": "none",
+                        "whiteSpace": "inherit",
+                        "wordWrap": "break-word",
+                      }
+                    }
+                  >
+                    #
+                    tag11
+                     
+                  </span>
                 </a>
                 <a
                   className=""
@@ -1059,9 +1096,41 @@ exports[`Snapshot Post Web 1`] = `
                   onClick={[Function]}
                   styles=""
                 >
-                  #
-                  tag12
-                   
+                  <span
+                    dir="auto"
+                    style={
+                      Object {
+                        "borderBottomWidth": "0px",
+                        "borderLeftWidth": "0px",
+                        "borderRightWidth": "0px",
+                        "borderTopWidth": "0px",
+                        "boxSizing": "border-box",
+                        "color": "inherit",
+                        "display": "inline",
+                        "fontFamily": "inherit",
+                        "fontSize": "inherit",
+                        "fontStyle": "inherit",
+                        "fontVariant": "inherit",
+                        "fontWeight": "inherit",
+                        "lineHeight": "inherit",
+                        "marginBottom": "0px",
+                        "marginLeft": "0px",
+                        "marginRight": "0px",
+                        "marginTop": "0px",
+                        "paddingBottom": "0px",
+                        "paddingLeft": "0px",
+                        "paddingRight": "0px",
+                        "paddingTop": "0px",
+                        "textDecoration": "none",
+                        "whiteSpace": "inherit",
+                        "wordWrap": "break-word",
+                      }
+                    }
+                  >
+                    #
+                    tag12
+                     
+                  </span>
                 </a>
                 <span
                   dir="auto"
@@ -1118,11 +1187,15 @@ exports[`Snapshot Post Web 1`] = `
                     "marginLeft": "0px",
                     "marginRight": "0px",
                     "marginTop": "0px",
+                    "maxWidth": "100%",
+                    "overflowX": "hidden",
+                    "overflowY": "hidden",
                     "paddingBottom": "0px",
                     "paddingLeft": "0px",
                     "paddingRight": "0px",
                     "paddingTop": "0px",
                     "textDecoration": "none",
+                    "textOverflow": "ellipsis",
                     "whiteSpace": "nowrap",
                     "wordWrap": "break-word",
                   }
@@ -1133,7 +1206,39 @@ exports[`Snapshot Post Web 1`] = `
                   href="https://example.com/testPost1"
                   target="_blank"
                 >
-                  link.domain1 ↗
+                  <span
+                    dir="auto"
+                    style={
+                      Object {
+                        "borderBottomWidth": "0px",
+                        "borderLeftWidth": "0px",
+                        "borderRightWidth": "0px",
+                        "borderTopWidth": "0px",
+                        "boxSizing": "border-box",
+                        "color": "inherit",
+                        "display": "inline",
+                        "fontFamily": "inherit",
+                        "fontSize": "inherit",
+                        "fontStyle": "inherit",
+                        "fontVariant": "inherit",
+                        "fontWeight": "inherit",
+                        "lineHeight": "inherit",
+                        "marginBottom": "0px",
+                        "marginLeft": "0px",
+                        "marginRight": "0px",
+                        "marginTop": "0px",
+                        "paddingBottom": "0px",
+                        "paddingLeft": "0px",
+                        "paddingRight": "0px",
+                        "paddingTop": "0px",
+                        "textDecoration": "none",
+                        "whiteSpace": "inherit",
+                        "wordWrap": "break-word",
+                      }
+                    }
+                  >
+                    link.domain1 ↗
+                  </span>
                 </a>
               </span>
             </span>

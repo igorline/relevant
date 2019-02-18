@@ -13,5 +13,5 @@ module.exports = {
       '<rootDir>/../__mocks__/fileTransformer.js'
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
-  setupTestFrameworkScriptFile: '<rootDir>/test/testDbSetup'
+  setupFilesAfterEnv: ['<rootDir>/test/testDbSetup']
 };

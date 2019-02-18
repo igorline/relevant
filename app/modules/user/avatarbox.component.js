@@ -79,7 +79,7 @@ export default function UserName(props) {
               {twitterIcon}
             </Name>
             {user.relevance && showRelevance && (
-              <RStat align="baseline" mr={0.75} size={2} user={user} />
+              <RStat align="baseline" mr={0.75} size={1.75} user={user} />
             )}
             {condensedView && handleEl}
           </View>

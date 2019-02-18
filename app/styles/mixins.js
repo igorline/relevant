@@ -2,17 +2,18 @@ import { css } from 'styled-components';
 import { lineColor } from './colors';
 import sizing from './sizing';
 
-export const color = css`
-  ${p => (p.c ? `color: ${p.c}` : '')};
-`;
-
 function size(units) {
   if (typeof units === 'number') return sizing(units);
-  if (!units || units.match(/px|rem|em|vh|vw|auto|%/)) return units;
+  if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
   const uArray = units.split(' ');
   if (uArray.lenght === 1) sizing(Number(units));
   return uArray.map(u => sizing(Number(u))).join(' ');
 }
+
+export const color = css`
+  ${p => (p.c ? `color: ${p.c}` : '')};
+  ${p => (p.c ? `text-decoration-color: ${p.c}` : '')};
+`;
 
 export const padding = css`
   ${p => (p.p ? `padding: ${size(p.p)}` : '')};
@@ -35,6 +36,7 @@ export const font = css`
   ${p => (p.lh ? `line-height: ${size(p.lh)}` : '')};
   ${p => (p.fw ? `font-weight: ${p.fw}` : '')};
   ${p => (p.ff ? `font-famimly: ${p.ff}` : '')};
+  ${p => (p.td ? `text-decoration: ${p.td}; }` : '')};
 `;
 
 export const inheritfont = css`
@@ -74,7 +76,7 @@ export const borderRadius = css`
 const universalBorder = (side, c = lineColor, w = '1px') => `
   border${side ? `-${side}` : ''}-color: ${c};
   border${side ? `-${side}` : ''}-width: ${size(w)};
-  border${side ? `-${side}` : ''}-style: solid;
+  border-style: solid;
 `;
 
 export const border = css`

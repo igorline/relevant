@@ -63,7 +63,8 @@ export default class Commentary extends Component {
       auth,
       singlePost,
       focusInput,
-      tooltip
+      tooltip,
+      myPostInv
     } = this.props;
 
     const i = index;
@@ -136,8 +137,6 @@ export default class Commentary extends Component {
       );
     }
 
-    const myPostInv = this.props.myPostInv[post._id];
-
     return (
       <View key={post._id + i} style={styles.commentaryContainer}>
         <View style={[styles.commentary]}>
@@ -169,7 +168,7 @@ export default class Commentary extends Component {
               comments={post.comments || null}
               actions={actions}
               auth={auth}
-              myPostInv={myPostInv}
+              myPostInv={myPostInv[post._id]}
               focusInput={focusInput}
               navigation={this.props.navigation}
             />
@@ -182,7 +181,7 @@ export default class Commentary extends Component {
   render() {
     const { commentary } = this.props;
     const pills = (
-      <View style={{ marginVertical: 15 }}>
+      <View style={{ marginVertical: 16 }}>
         <Pills
           changed={this.state.changed}
           currentIndex={this.state.currentIndex}
@@ -192,7 +191,7 @@ export default class Commentary extends Component {
       </View>
     );
     return (
-      <View>
+      <View style={{ marginVertical: 16 }}>
         <FlatList
           ref={c => (this.scrollView = c)}
           scrollEnabled={commentary.length > 1}

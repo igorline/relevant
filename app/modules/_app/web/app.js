@@ -18,6 +18,8 @@ import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
 import * as modals from 'modules/ui/modals';
+import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
+// import styled from 'styled-components/primitives';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -162,6 +164,16 @@ class App extends Component {
     return (
       <div>
         <GlobalStyle />
+        <div
+          pointerEvents={'none'}
+          style={{
+            top: '0',
+            left: '0',
+            zIndex: '10000'
+          }}
+        >
+          <UpvoteAnimation />
+        </div>
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>

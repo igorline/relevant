@@ -1,5 +1,5 @@
 import styled from 'styled-components/primitives';
-import { mixins, layout, fonts, colors } from 'app/styles';
+import { mixins, layout, fonts, colors, sizing } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
@@ -133,4 +133,9 @@ export const NumericalValue = styled(Text)`
   ${mixins.font}
   ${mixins.inheritfont}
   ${mixins.color}
+`;
+
+export const MobileDivider = styled(View)`
+  height: ${sizing(4)};
+  background-color: ${colors.dividerBg};
 `;
