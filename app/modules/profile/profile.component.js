@@ -50,12 +50,10 @@ export default class Profile extends Component {
           <View fdirection="row" display="flex" justify="space-between" align="baseline">
             <View display="flex" fdirection="row" align="baseline">
               <Header mr={sizing(2)}>{user.name}</Header>
-              <View display="flex" fdirection="row">
-                <RStat size={2} user={user} mr={2} align="baseline" />
-                <Text>
-                  <Percent size={2} user={user} align="baseline" />
-                </Text>
-                <CoinStat size={2} user={user} isOwner={isOwner} align="baseline" />
+              <View display="flex" fdirection="row" align={'baseline'}>
+                <RStat size={1.75} user={user} mr={2} align="baseline" />
+                <Percent size={1.75} user={user} align="baseline" />
+                <CoinStat size={1.75} user={user} isOwner={isOwner} align="baseline" />
               </View>
             </View>
             {isOwner ? (

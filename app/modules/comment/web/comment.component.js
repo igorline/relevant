@@ -18,9 +18,9 @@ import styled from 'styled-components/primitives';
 
 import ULink from 'modules/navigation/ULink.component';
 
-if (process.env.BROWSER === true) {
-  require('./comment.css');
-}
+// if (process.env.BROWSER === true) {
+//   require('./comment.css');
+// }
 
 const NESTING_UNIT = 8;
 

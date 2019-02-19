@@ -404,14 +404,14 @@ exports[`Snapshot other users Profile 1`] = `
         <div
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
+              "WebkitAlignItems": "baseline",
+              "WebkitBoxAlign": "baseline",
               "WebkitBoxDirection": "normal",
               "WebkitBoxOrient": "horizontal",
               "WebkitFlexBasis": "auto",
               "WebkitFlexDirection": "row",
               "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
+              "alignItems": "baseline",
               "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
               "borderLeftStyle": "solid",
@@ -431,7 +431,7 @@ exports[`Snapshot other users Profile 1`] = `
               "marginTop": "0px",
               "minHeight": "0px",
               "minWidth": "0px",
-              "msFlexAlign": "stretch",
+              "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
@@ -445,32 +445,6 @@ exports[`Snapshot other users Profile 1`] = `
           }
         >
           <div
-            align="baseline"
-            dir="auto"
-            mr={2}
-            props={
-              Object {
-                "align": "baseline",
-                "mr": 2,
-                "size": 2,
-                "user": Object {
-                  "_id": "a00000000000000000000000",
-                  "balance": 111,
-                  "bio": "hi i'm alice!",
-                  "ethAddress": Array [
-                    "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-                  ],
-                  "handle": "alice",
-                  "image": "alice-pic.jpg",
-                  "lockedTokens": 0,
-                  "name": "Alice",
-                  "password": "test",
-                  "relevance": Object {
-                    "pagerank": 11,
-                  },
-                },
-              }
-            }
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -481,26 +455,25 @@ exports[`Snapshot other users Profile 1`] = `
                 "WebkitFlexDirection": "row",
                 "WebkitFlexShrink": 0,
                 "alignItems": "baseline",
+                "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "inherit",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "row",
                 "flexShrink": 0,
-                "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-                "fontSize": "14px",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "14.4px",
                 "marginTop": "0px",
+                "minHeight": "0px",
+                "minWidth": "0px",
                 "msFlexAlign": "baseline",
                 "msFlexDirection": "row",
                 "msFlexNegative": 0,
@@ -510,9 +483,7 @@ exports[`Snapshot other users Profile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
+                "zIndex": 0,
               }
             }
           >
@@ -541,10 +512,10 @@ exports[`Snapshot other users Profile 1`] = `
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "14.4px",
-                  "marginBottom": "-0.3px",
+                  "height": "10.71px",
+                  "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "1.4400000000000002px",
+                  "marginRight": "1.26px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -559,7 +530,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "18.720000000000002px",
+                  "width": "15.120000000000001px",
                   "zIndex": 0,
                 }
               }
@@ -571,7 +542,9 @@ exports[`Snapshot other users Profile 1`] = `
                     "WebkitBoxAlign": "stretch",
                     "WebkitBoxDirection": "normal",
                     "WebkitBoxOrient": "vertical",
+                    "WebkitFlexBasis": "auto",
                     "WebkitFlexDirection": "column",
+                    "WebkitFlexShrink": 0,
                     "alignItems": "stretch",
                     "backgroundColor": "rgba(0,0,0,0.00)",
                     "backgroundImage": "url(\\"r-emoji.png\\")",
@@ -588,8 +561,10 @@ exports[`Snapshot other users Profile 1`] = `
                     "borderTopWidth": "0px",
                     "bottom": "0px",
                     "boxSizing": "border-box",
-                    "display": "inline-flex",
+                    "display": "flex",
+                    "flexBasis": "auto",
                     "flexDirection": "column",
+                    "flexShrink": 0,
                     "height": "100%",
                     "left": "0px",
                     "marginBottom": "0px",
@@ -600,6 +575,8 @@ exports[`Snapshot other users Profile 1`] = `
                     "minWidth": "0px",
                     "msFlexAlign": "stretch",
                     "msFlexDirection": "column",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
                     "paddingBottom": "0px",
                     "paddingLeft": "0px",
                     "paddingRight": "0px",
@@ -631,7 +608,7 @@ exports[`Snapshot other users Profile 1`] = `
                 }
               />
             </div>
-            <span
+            <div
               dir="auto"
               style={
                 Object {
@@ -647,11 +624,11 @@ exports[`Snapshot other users Profile 1`] = `
                   "flexBasis": "auto",
                   "flexShrink": 0,
                   "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "14.4px",
+                  "fontSize": "12.6px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "19.2px",
+                  "lineHeight": "16.799999999999997px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -664,39 +641,45 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
-                  "whiteSpace": "inherit",
+                  "whiteSpace": "pre-wrap",
                   "wordWrap": "break-word",
                 }
               }
             >
               11
-            </span>
+            </div>
           </div>
           <div
+            align="baseline"
             dir="auto"
+            mr={2}
             style={
               Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
                 "WebkitFlexBasis": "auto",
                 "WebkitFlexShrink": 0,
+                "alignItems": "baseline",
                 "borderBottomWidth": "0px",
                 "borderLeftWidth": "0px",
                 "borderRightWidth": "0px",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "inherit",
+                "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexShrink": 0,
-                "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-                "fontSize": "14px",
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "12.6px",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "lineHeight": "inherit",
+                "lineHeight": "16.799999999999997px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "0px",
+                "marginRight": "14.4px",
                 "marginTop": "0px",
+                "msFlexAlign": "baseline",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
                 "paddingBottom": "0px",
@@ -709,38 +692,54 @@ exports[`Snapshot other users Profile 1`] = `
                 "wordWrap": "break-word",
               }
             }
+            user={
+              Object {
+                "_id": "a00000000000000000000000",
+                "balance": 111,
+                "bio": "hi i'm alice!",
+                "ethAddress": Array [
+                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                ],
+                "handle": "alice",
+                "image": "alice-pic.jpg",
+                "lockedTokens": 0,
+                "name": "Alice",
+                "password": "test",
+                "relevance": Object {
+                  "pagerank": 11,
+                },
+              }
+            }
           >
             <span
-              align="baseline"
+              c="#7ED321"
               dir="auto"
-              mr={2}
+              fs={1.75}
               style={
                 Object {
-                  "WebkitAlignItems": "baseline",
-                  "WebkitBoxAlign": "baseline",
                   "WebkitFlexBasis": "auto",
                   "WebkitFlexShrink": 0,
-                  "alignItems": "baseline",
+                  "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
                   "borderBottomWidth": "0px",
                   "borderLeftWidth": "0px",
                   "borderRightWidth": "0px",
                   "borderTopWidth": "0px",
+                  "bottom": "-1.26px",
                   "boxSizing": "border-box",
-                  "color": "rgba(0,0,0,1.00)",
+                  "color": "rgba(126,211,33,1.00)",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexShrink": 0,
-                  "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "14.4px",
+                  "fontFamily": "inherit",
+                  "fontSize": "12.6px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "19.2px",
+                  "lineHeight": "inherit",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "14.4px",
+                  "marginRight": "0px",
                   "marginTop": "0px",
-                  "msFlexAlign": "baseline",
                   "msFlexNegative": 0,
                   "msFlexPreferredSize": "auto",
                   "paddingBottom": "0px",
@@ -749,64 +748,18 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
+                  "textDecorationColor": "rgba(126,211,33,1.00)",
                   "whiteSpace": "inherit",
                   "wordWrap": "break-word",
                 }
               }
             >
-              <span
-                c="#7ED321"
-                dir="auto"
-                fs={2}
-                style={
-                  Object {
-                    "WebkitFlexBasis": "auto",
-                    "WebkitFlexShrink": 0,
-                    "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-                    "borderBottomWidth": "0px",
-                    "borderLeftWidth": "0px",
-                    "borderRightWidth": "0px",
-                    "borderTopWidth": "0px",
-                    "bottom": "-1.4400000000000002px",
-                    "boxSizing": "border-box",
-                    "color": "rgba(126,211,33,1.00)",
-                    "display": "flex",
-                    "flexBasis": "auto",
-                    "flexShrink": 0,
-                    "fontFamily": "inherit",
-                    "fontSize": "14.4px",
-                    "fontStyle": "inherit",
-                    "fontVariant": "inherit",
-                    "fontWeight": "inherit",
-                    "lineHeight": "inherit",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "msFlexNegative": 0,
-                    "msFlexPreferredSize": "auto",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
-                    "position": "relative",
-                    "textDecoration": "none",
-                    "textDecorationColor": "rgba(126,211,33,1.00)",
-                    "whiteSpace": "inherit",
-                    "wordWrap": "break-word",
-                  }
-                }
-              >
-                ▲ 
-              </span>
-              0
-              %
+              ▲ 
             </span>
+            0
+            %
           </div>
           <div
-            align="baseline"
-            dir="auto"
-            mr={1.5}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -817,26 +770,25 @@ exports[`Snapshot other users Profile 1`] = `
                 "WebkitFlexDirection": "row",
                 "WebkitFlexShrink": 0,
                 "alignItems": "baseline",
+                "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "inherit",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "row",
                 "flexShrink": 0,
-                "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-                "fontSize": "14px",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "10.8px",
                 "marginTop": "0px",
+                "minHeight": "0px",
+                "minWidth": "0px",
                 "msFlexAlign": "baseline",
                 "msFlexDirection": "row",
                 "msFlexNegative": 0,
@@ -846,9 +798,7 @@ exports[`Snapshot other users Profile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
+                "zIndex": 0,
               }
             }
           >
@@ -871,16 +821,16 @@ exports[`Snapshot other users Profile 1`] = `
                   "borderRightWidth": "0px",
                   "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
-                  "bottom": "-1.4400000000000002px",
+                  "bottom": "-1px",
                   "boxSizing": "border-box",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "14.4px",
+                  "height": "11.34px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "3.6px",
+                  "marginRight": "3.15px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -895,7 +845,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "14.4px",
+                  "width": "13.860000000000003px",
                   "zIndex": 0,
                 }
               }
@@ -907,7 +857,9 @@ exports[`Snapshot other users Profile 1`] = `
                     "WebkitBoxAlign": "stretch",
                     "WebkitBoxDirection": "normal",
                     "WebkitBoxOrient": "vertical",
+                    "WebkitFlexBasis": "auto",
                     "WebkitFlexDirection": "column",
+                    "WebkitFlexShrink": 0,
                     "alignItems": "stretch",
                     "backgroundColor": "rgba(0,0,0,0.00)",
                     "backgroundImage": "url(\\"relevantcoin.png\\")",
@@ -924,8 +876,10 @@ exports[`Snapshot other users Profile 1`] = `
                     "borderTopWidth": "0px",
                     "bottom": "0px",
                     "boxSizing": "border-box",
-                    "display": "inline-flex",
+                    "display": "flex",
+                    "flexBasis": "auto",
                     "flexDirection": "column",
+                    "flexShrink": 0,
                     "height": "100%",
                     "left": "0px",
                     "marginBottom": "0px",
@@ -936,6 +890,8 @@ exports[`Snapshot other users Profile 1`] = `
                     "minWidth": "0px",
                     "msFlexAlign": "stretch",
                     "msFlexDirection": "column",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
                     "paddingBottom": "0px",
                     "paddingLeft": "0px",
                     "paddingRight": "0px",
@@ -967,10 +923,8 @@ exports[`Snapshot other users Profile 1`] = `
                 }
               />
             </div>
-            <span
+            <div
               dir="auto"
-              inheritfont={0}
-              lineheight={null}
               style={
                 Object {
                   "WebkitFlexBasis": "auto",
@@ -985,11 +939,11 @@ exports[`Snapshot other users Profile 1`] = `
                   "flexBasis": "auto",
                   "flexShrink": 0,
                   "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "14.4px",
+                  "fontSize": "12.6px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "19.2px",
+                  "lineHeight": "16.799999999999997px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -1002,13 +956,13 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
-                  "whiteSpace": "inherit",
+                  "whiteSpace": "pre-wrap",
                   "wordWrap": "break-word",
                 }
               }
             >
               111
-            </span>
+            </div>
           </div>
         </div>
       </div>
@@ -1573,14 +1527,14 @@ exports[`Snapshot own Profile 1`] = `
         <div
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
+              "WebkitAlignItems": "baseline",
+              "WebkitBoxAlign": "baseline",
               "WebkitBoxDirection": "normal",
               "WebkitBoxOrient": "horizontal",
               "WebkitFlexBasis": "auto",
               "WebkitFlexDirection": "row",
               "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
+              "alignItems": "baseline",
               "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
               "borderLeftStyle": "solid",
@@ -1600,7 +1554,7 @@ exports[`Snapshot own Profile 1`] = `
               "marginTop": "0px",
               "minHeight": "0px",
               "minWidth": "0px",
-              "msFlexAlign": "stretch",
+              "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
@@ -1614,32 +1568,6 @@ exports[`Snapshot own Profile 1`] = `
           }
         >
           <div
-            align="baseline"
-            dir="auto"
-            mr={2}
-            props={
-              Object {
-                "align": "baseline",
-                "mr": 2,
-                "size": 2,
-                "user": Object {
-                  "_id": "a00000000000000000000000",
-                  "balance": 111,
-                  "bio": "hi i'm alice!",
-                  "ethAddress": Array [
-                    "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-                  ],
-                  "handle": "alice",
-                  "image": "alice-pic.jpg",
-                  "lockedTokens": 0,
-                  "name": "Alice",
-                  "password": "test",
-                  "relevance": Object {
-                    "pagerank": 11,
-                  },
-                },
-              }
-            }
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -1650,26 +1578,25 @@ exports[`Snapshot own Profile 1`] = `
                 "WebkitFlexDirection": "row",
                 "WebkitFlexShrink": 0,
                 "alignItems": "baseline",
+                "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "inherit",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "row",
                 "flexShrink": 0,
-                "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-                "fontSize": "14px",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "14.4px",
                 "marginTop": "0px",
+                "minHeight": "0px",
+                "minWidth": "0px",
                 "msFlexAlign": "baseline",
                 "msFlexDirection": "row",
                 "msFlexNegative": 0,
@@ -1679,9 +1606,7 @@ exports[`Snapshot own Profile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
+                "zIndex": 0,
               }
             }
           >
@@ -1710,10 +1635,10 @@ exports[`Snapshot own Profile 1`] = `
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "14.4px",
-                  "marginBottom": "-0.3px",
+                  "height": "10.71px",
+                  "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "1.4400000000000002px",
+                  "marginRight": "1.26px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -1728,7 +1653,7 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "18.720000000000002px",
+                  "width": "15.120000000000001px",
                   "zIndex": 0,
                 }
               }
@@ -1740,7 +1665,9 @@ exports[`Snapshot own Profile 1`] = `
                     "WebkitBoxAlign": "stretch",
                     "WebkitBoxDirection": "normal",
                     "WebkitBoxOrient": "vertical",
+                    "WebkitFlexBasis": "auto",
                     "WebkitFlexDirection": "column",
+                    "WebkitFlexShrink": 0,
                     "alignItems": "stretch",
                     "backgroundColor": "rgba(0,0,0,0.00)",
                     "backgroundImage": "url(\\"r-emoji.png\\")",
@@ -1757,8 +1684,10 @@ exports[`Snapshot own Profile 1`] = `
                     "borderTopWidth": "0px",
                     "bottom": "0px",
                     "boxSizing": "border-box",
-                    "display": "inline-flex",
+                    "display": "flex",
+                    "flexBasis": "auto",
                     "flexDirection": "column",
+                    "flexShrink": 0,
                     "height": "100%",
                     "left": "0px",
                     "marginBottom": "0px",
@@ -1769,6 +1698,8 @@ exports[`Snapshot own Profile 1`] = `
                     "minWidth": "0px",
                     "msFlexAlign": "stretch",
                     "msFlexDirection": "column",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
                     "paddingBottom": "0px",
                     "paddingLeft": "0px",
                     "paddingRight": "0px",
@@ -1800,7 +1731,7 @@ exports[`Snapshot own Profile 1`] = `
                 }
               />
             </div>
-            <span
+            <div
               dir="auto"
               style={
                 Object {
@@ -1816,11 +1747,11 @@ exports[`Snapshot own Profile 1`] = `
                   "flexBasis": "auto",
                   "flexShrink": 0,
                   "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "14.4px",
+                  "fontSize": "12.6px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "19.2px",
+                  "lineHeight": "16.799999999999997px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -1833,39 +1764,45 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
-                  "whiteSpace": "inherit",
+                  "whiteSpace": "pre-wrap",
                   "wordWrap": "break-word",
                 }
               }
             >
               11
-            </span>
+            </div>
           </div>
           <div
+            align="baseline"
             dir="auto"
+            mr={2}
             style={
               Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
                 "WebkitFlexBasis": "auto",
                 "WebkitFlexShrink": 0,
+                "alignItems": "baseline",
                 "borderBottomWidth": "0px",
                 "borderLeftWidth": "0px",
                 "borderRightWidth": "0px",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "inherit",
+                "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexShrink": 0,
-                "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-                "fontSize": "14px",
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "12.6px",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "lineHeight": "inherit",
+                "lineHeight": "16.799999999999997px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "0px",
+                "marginRight": "14.4px",
                 "marginTop": "0px",
+                "msFlexAlign": "baseline",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
                 "paddingBottom": "0px",
@@ -1878,38 +1815,54 @@ exports[`Snapshot own Profile 1`] = `
                 "wordWrap": "break-word",
               }
             }
+            user={
+              Object {
+                "_id": "a00000000000000000000000",
+                "balance": 111,
+                "bio": "hi i'm alice!",
+                "ethAddress": Array [
+                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                ],
+                "handle": "alice",
+                "image": "alice-pic.jpg",
+                "lockedTokens": 0,
+                "name": "Alice",
+                "password": "test",
+                "relevance": Object {
+                  "pagerank": 11,
+                },
+              }
+            }
           >
             <span
-              align="baseline"
+              c="#7ED321"
               dir="auto"
-              mr={2}
+              fs={1.75}
               style={
                 Object {
-                  "WebkitAlignItems": "baseline",
-                  "WebkitBoxAlign": "baseline",
                   "WebkitFlexBasis": "auto",
                   "WebkitFlexShrink": 0,
-                  "alignItems": "baseline",
+                  "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
                   "borderBottomWidth": "0px",
                   "borderLeftWidth": "0px",
                   "borderRightWidth": "0px",
                   "borderTopWidth": "0px",
+                  "bottom": "-1.26px",
                   "boxSizing": "border-box",
-                  "color": "rgba(0,0,0,1.00)",
+                  "color": "rgba(126,211,33,1.00)",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexShrink": 0,
-                  "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "14.4px",
+                  "fontFamily": "inherit",
+                  "fontSize": "12.6px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "19.2px",
+                  "lineHeight": "inherit",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "14.4px",
+                  "marginRight": "0px",
                   "marginTop": "0px",
-                  "msFlexAlign": "baseline",
                   "msFlexNegative": 0,
                   "msFlexPreferredSize": "auto",
                   "paddingBottom": "0px",
@@ -1918,64 +1871,18 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
+                  "textDecorationColor": "rgba(126,211,33,1.00)",
                   "whiteSpace": "inherit",
                   "wordWrap": "break-word",
                 }
               }
             >
-              <span
-                c="#7ED321"
-                dir="auto"
-                fs={2}
-                style={
-                  Object {
-                    "WebkitFlexBasis": "auto",
-                    "WebkitFlexShrink": 0,
-                    "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-                    "borderBottomWidth": "0px",
-                    "borderLeftWidth": "0px",
-                    "borderRightWidth": "0px",
-                    "borderTopWidth": "0px",
-                    "bottom": "-1.4400000000000002px",
-                    "boxSizing": "border-box",
-                    "color": "rgba(126,211,33,1.00)",
-                    "display": "flex",
-                    "flexBasis": "auto",
-                    "flexShrink": 0,
-                    "fontFamily": "inherit",
-                    "fontSize": "14.4px",
-                    "fontStyle": "inherit",
-                    "fontVariant": "inherit",
-                    "fontWeight": "inherit",
-                    "lineHeight": "inherit",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "msFlexNegative": 0,
-                    "msFlexPreferredSize": "auto",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
-                    "position": "relative",
-                    "textDecoration": "none",
-                    "textDecorationColor": "rgba(126,211,33,1.00)",
-                    "whiteSpace": "inherit",
-                    "wordWrap": "break-word",
-                  }
-                }
-              >
-                ▲ 
-              </span>
-              0
-              %
+              ▲ 
             </span>
+            0
+            %
           </div>
           <div
-            align="baseline"
-            dir="auto"
-            mr={1.5}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -1986,26 +1893,25 @@ exports[`Snapshot own Profile 1`] = `
                 "WebkitFlexDirection": "row",
                 "WebkitFlexShrink": 0,
                 "alignItems": "baseline",
+                "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "inherit",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "row",
                 "flexShrink": 0,
-                "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-                "fontSize": "14px",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "10.8px",
                 "marginTop": "0px",
+                "minHeight": "0px",
+                "minWidth": "0px",
                 "msFlexAlign": "baseline",
                 "msFlexDirection": "row",
                 "msFlexNegative": 0,
@@ -2015,9 +1921,7 @@ exports[`Snapshot own Profile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
+                "zIndex": 0,
               }
             }
           >
@@ -2040,16 +1944,16 @@ exports[`Snapshot own Profile 1`] = `
                   "borderRightWidth": "0px",
                   "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
-                  "bottom": "-1.4400000000000002px",
+                  "bottom": "-1px",
                   "boxSizing": "border-box",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "14.4px",
+                  "height": "11.34px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "3.6px",
+                  "marginRight": "3.15px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -2064,7 +1968,7 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "14.4px",
+                  "width": "13.860000000000003px",
                   "zIndex": 0,
                 }
               }
@@ -2076,7 +1980,9 @@ exports[`Snapshot own Profile 1`] = `
                     "WebkitBoxAlign": "stretch",
                     "WebkitBoxDirection": "normal",
                     "WebkitBoxOrient": "vertical",
+                    "WebkitFlexBasis": "auto",
                     "WebkitFlexDirection": "column",
+                    "WebkitFlexShrink": 0,
                     "alignItems": "stretch",
                     "backgroundColor": "rgba(0,0,0,0.00)",
                     "backgroundImage": "url(\\"relevantcoin.png\\")",
@@ -2093,8 +1999,10 @@ exports[`Snapshot own Profile 1`] = `
                     "borderTopWidth": "0px",
                     "bottom": "0px",
                     "boxSizing": "border-box",
-                    "display": "inline-flex",
+                    "display": "flex",
+                    "flexBasis": "auto",
                     "flexDirection": "column",
+                    "flexShrink": 0,
                     "height": "100%",
                     "left": "0px",
                     "marginBottom": "0px",
@@ -2105,6 +2013,8 @@ exports[`Snapshot own Profile 1`] = `
                     "minWidth": "0px",
                     "msFlexAlign": "stretch",
                     "msFlexDirection": "column",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
                     "paddingBottom": "0px",
                     "paddingLeft": "0px",
                     "paddingRight": "0px",
@@ -2136,10 +2046,8 @@ exports[`Snapshot own Profile 1`] = `
                 }
               />
             </div>
-            <span
+            <div
               dir="auto"
-              inheritfont={0}
-              lineheight={null}
               style={
                 Object {
                   "WebkitFlexBasis": "auto",
@@ -2154,11 +2062,11 @@ exports[`Snapshot own Profile 1`] = `
                   "flexBasis": "auto",
                   "flexShrink": 0,
                   "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "14.4px",
+                  "fontSize": "12.6px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "19.2px",
+                  "lineHeight": "16.799999999999997px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -2171,13 +2079,13 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
-                  "whiteSpace": "inherit",
+                  "whiteSpace": "pre-wrap",
                   "wordWrap": "break-word",
                 }
               }
             >
               111
-            </span>
+            </div>
           </div>
         </div>
       </div>

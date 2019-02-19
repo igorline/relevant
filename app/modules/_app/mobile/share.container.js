@@ -26,9 +26,7 @@ import { text, token, post } from 'app/utils';
 import { fullWidth, fullHeight, darkGrey, IphoneX } from 'app/styles/global';
 
 const KBView = KeyboardAvoidingView;
-
 let style;
-
 
 export const ShareStack = createStackNavigator(
   {
@@ -52,7 +50,7 @@ export const ShareStack = createStackNavigator(
       screen: withProps(Auth),
       params: {
         left: 'Close',
-        share: true,
+        share: true
       }
     }
   },
@@ -64,13 +62,14 @@ export const ShareStack = createStackNavigator(
 
     transitionConfig: () => ({
       transitionSpec: transitionConfig,
-      screenInterpolator: sceneProps => StackViewStyleInterpolator.forHorizontal(sceneProps)
+      screenInterpolator: sceneProps =>
+        StackViewStyleInterpolator.forHorizontal(sceneProps)
     }),
 
-    defaultNavigationOptions: (props) => ({
+    defaultNavigationOptions: props => ({
       gesturesEnabled: true,
       gestureResponseDistance: {
-        horizontal: fullWidth,
+        horizontal: fullWidth
       },
       headerStyle: {
         elevation: 0,
@@ -78,26 +77,25 @@ export const ShareStack = createStackNavigator(
         borderBottomColor: darkGrey,
         borderBottomWidth: StyleSheet.hairlineWidth,
         height: 45,
-        marginTop: Platform.OS === 'ios' ? (IphoneX ? -40 : -20) : 0,
+        marginTop: Platform.OS === 'ios' ? (IphoneX ? -40 : -20) : 0
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <CreatePostHeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />,
+      headerLeft: <HeaderLeft {...props} />
     })
   }
 );
 
 const ShareAppContainer = createAppContainer(ShareStack);
 
-
 class ShareContainer extends Component {
   static propTypes = {
-    actions: PropTypes.object,
+    actions: PropTypes.object
   };
 
   state = {
     token: null
-  }
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -114,7 +112,8 @@ class ShareContainer extends Component {
   componentWillMount() {
     const community = 'relevant';
     this.props.actions.setCommunity(community);
-    token.get()
+    token
+    .get()
     .then(tk => {
       this.setState({ token: tk });
       if (!tk) this.props.actions.replace('shareAuth');
@@ -152,8 +151,7 @@ class ShareContainer extends Component {
 
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'extension' && !this.state.token) {
-      token.get()
-      .then(tk => {
+      token.get().then(tk => {
         this.setState({ token: tk });
         if (tk) this.props.actions.replace('createPostUrl');
       });

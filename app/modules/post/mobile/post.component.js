@@ -9,8 +9,7 @@ import * as postActions from 'modules/post/post.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as investActions from 'modules/post/invest.actions';
-import PostImage from 'modules/post/imagebg.component';
-// import PostImage from './postImage.component';
+import PostImage from 'modules/post/postinfo.mobile.component';
 import { getTitle } from 'app/utils/post';
 import { routing } from 'app/utils';
 import Commentary from './commentary.component';
@@ -29,7 +28,7 @@ class Post extends PureComponent {
   };
 
   render() {
-    const { link, commentary, auth, actions, myPostInv } = this.props;
+    const { link, commentary, auth, actions, myPostInv, singlePost } = this.props;
     const { community } = auth;
     let { post } = this.props;
     let imageEl;
@@ -39,7 +38,7 @@ class Post extends PureComponent {
     );
     let commentaryEl;
 
-    if (!this.props.auth.user) return null;
+    if (!auth.user) return null;
 
     const blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
 
@@ -76,6 +75,7 @@ class Post extends PureComponent {
           title={title}
           postUrl={postUrl}
           myPostInv={myPostInv}
+          singlePost={singlePost}
         />
       );
     }
@@ -86,7 +86,7 @@ class Post extends PureComponent {
           {imageEl}
           {commentaryEl}
         </View>
-        {!this.props.singlePost ? separator : null}
+        {!singlePost ? separator : null}
       </View>
     );
   }

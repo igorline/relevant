@@ -88,7 +88,6 @@ export const border = css`
 `;
 
 export const flex = css`
-  display: flex;
   position: relative;
   ${p => (p.flex ? `flex: ${p.flex}` : '')};
   ${p => (p.fdirection ? `flex-direction: ${p.fdirection}` : '')};
@@ -97,6 +96,8 @@ export const flex = css`
   ${p => (p.shrink ? `flex-shrink: ${p.grow}` : '')};
   ${p => (p.grow ? `flex-grow: ${p.grow}` : '')};
   ${p => (p.wrap ? 'flex-wrap: wrap' : '')};
+  ${p => (p.inline ? '' : 'display: flex')};
+  ${p => (p.alignself ? `align-self: ${p.alignself}` : '')};
 `;
 
 export const link = css`

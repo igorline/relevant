@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import Triangle from 'modules/icons/triangle.component';
-import { View, BodyText } from 'modules/styled/uni';
+import { BodyText, Text } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 
 const ActivityText = ({ activity, amount }) => {
@@ -23,55 +23,52 @@ const ActivityText = ({ activity, amount }) => {
       let relText = null;
       if (amount > 0) {
         relText = (
-          <BodyText>
-            {'→ your relevance increased by '}
-            <Triangle direction={triangleDirection} />
-            {` ${amount}%`}
+          <BodyText inline>
+            {' → your relevance increased by '}
+            <Triangle inline direction={triangleDirection} />
+            &nbsp;
+            {`${amount}%`}
           </BodyText>
         );
       }
       return (
-        <View display="flex" fdirection="row">
-          <BodyText>
-            {`upvoted your ${postType}`}
-            {relText}
-          </BodyText>
-        </View>
+        <BodyText inline>
+          {`upvoted your ${postType}`}
+          {relText}
+        </BodyText>
       );
     }
 
     // downvote, partialUpvote, partialDownvote basicIncome are deprecated
     case 'downvote':
       return (
-        <View>
-          <BodyText>
-            {`downvoted your ${postType} → your relevance decreased by `}
-            <Triangle direction={triangleDirection} />
-            {` ${amount}%`}
-          </BodyText>
-        </View>
+        <BodyText inline>
+          {`downvoted your ${postType} → your relevance decreased by `}
+          <Triangle direction={triangleDirection} />
+          {` ${amount}%`}
+        </BodyText>
       );
 
     case 'partialUpvote':
       return (
-        <View>
+        <Text inline>
           <BodyText>
             {`${also}upvoted this ${postType} → your relevance ${action} by`}
             <Triangle direction={triangleDirection} />
             {` ${amount}%`}
           </BodyText>
-        </View>
+        </Text>
       );
 
     case 'partialDownvote':
       return (
-        <View>
-          <BodyText>
+        <Text inline>
+          <BodyText inline>
             {`${also}downvoted this ${postType} → your relevance ${action} by`}
             <Triangle direction={triangleDirection} />
             {` ${amount}%`}
           </BodyText>
-        </View>
+        </Text>
       );
 
     case 'basicIncome':
@@ -102,26 +99,26 @@ const ActivityText = ({ activity, amount }) => {
     // break;
 
     case 'topPost':
-      text = 'In case you missed this top-ranked post:';
+      text = 'In case you missed this top-ranked post';
       break;
 
     case 'reward':
       // text = `You earned ${coin} coins from this post`;
       return (
-        <View display="flex" mr={1} ml={1}>
-          <BodyText display="flex" align="center">
-            {'You earned'}
-            <CoinStat
-              size={2}
-              lineHeight={2}
-              amount={Number(coin)}
-              mr={0.5}
-              ml={0.5}
-              align="center"
-            />
-            {'coins from this post.'}
-          </BodyText>
-        </View>
+        <Text inline align="baseline">
+          <BodyText inline>{'You earned '}</BodyText>
+          <CoinStat
+            inline
+            size={1.75}
+            lh={1.75}
+            amount={Number(coin)}
+            mr={0}
+            ml={0}
+            slef={'flex-end'}
+            align="baseline"
+          />
+          <BodyText inline>{' coins from this post'}</BodyText>
+        </Text>
       );
 
     default:

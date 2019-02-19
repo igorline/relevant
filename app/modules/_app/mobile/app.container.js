@@ -23,6 +23,10 @@ import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import Tooltip from 'modules/tooltip/mobile/tooltip.component';
 import { fullHeight } from 'app/styles/global';
+// import {
+//   StackActions,
+//   NavigationActions,
+// } from 'react-navigation';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -77,7 +81,19 @@ class Application extends Component {
     //   }
     this.props.actions.getUser().then(async user => {
       if (!user) {
-        this.props.navigation.replace('auth');
+        // TODO - should reset data if logged out
+        this.props.navigation.navigate('auth');
+        // const resetAction = StackActions.reset({
+        //   index: 0,
+        //   key: null,
+        //   actions: [
+        //     NavigationActions.navigate({
+        //       routeName: 'container',
+        //       action: NavigationActions.navigate({ routeName: 'auth' })
+        //     })
+        //   ],
+        // });
+        // return this.props.navigation.dispatch(resetAction);
       }
     });
 

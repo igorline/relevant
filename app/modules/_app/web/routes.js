@@ -85,6 +85,11 @@ const routes = [
               // TODO - parent route doesn't have access to child params
               { path: '/:community/', component: DiscoverContainer, exact: true },
               {
+                path: '/:community/:sort/invite/slava',
+                component: DiscoverContainer,
+                exact: true
+              },
+              {
                 path: '/:community/:sort/:tag?',
                 component: DiscoverContainer,
                 exact: true

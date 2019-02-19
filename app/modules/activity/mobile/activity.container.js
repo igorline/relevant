@@ -12,7 +12,7 @@ import { globalStyles } from 'app/styles/global';
 import DiscoverUser from 'modules/discover/mobile/discoverUser.component';
 import CustomListView from 'modules/listview/mobile/customList.component';
 import { withNavigation } from 'react-navigation';
-import SingleActivity from './activity.component';
+import SingleActivity from 'modules/activity/activity.component';
 import * as notifActions from './../activity.actions';
 
 const localStyles = StyleSheet.create({});
@@ -39,8 +39,7 @@ class Activity extends Component {
     this.changeView = this.changeView.bind(this);
     this.getViewData = this.getViewData.bind(this);
     this.load = this.load.bind(this);
-    this.needsReload = new Date()
-    .getTime();
+    this.needsReload = new Date().getTime();
     this.scrollToTop = this.scrollToTop.bind(this);
 
     this.tabs = [{ id: 0, title: 'Personal' }];
@@ -58,8 +57,7 @@ class Activity extends Component {
     }
     if (this.props.reload !== next.reload) {
       this.props.actions.markRead();
-      this.needsReload = new Date()
-      .getTime();
+      this.needsReload = new Date().getTime();
     }
   }
 
@@ -96,7 +94,9 @@ class Activity extends Component {
 
   renderRow(rowData) {
     if (this.state.view === 0) {
-      return <SingleActivity singleActivity={rowData} {...this.props} styles={styles} />;
+      return (
+        <SingleActivity mobile singleActivity={rowData} {...this.props} styles={styles} />
+      );
     }
     return <DiscoverUser user={rowData} {...this.props} styles={styles} />;
   }
@@ -169,7 +169,9 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default withNavigation(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Activity));
+export default withNavigation(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Activity)
+);

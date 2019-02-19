@@ -4,14 +4,15 @@ import get from 'lodash.get';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import { View, LinkFont, Header } from 'modules/styled/uni';
+import { View, LinkFont, Header, Text } from 'modules/styled/uni';
 
 class CommunityActive extends Component {
   static propTypes = {
     community: PropTypes.object,
     children: PropTypes.node,
     getCommunityMembers: PropTypes.func,
-    members: PropTypes.array
+    members: PropTypes.array,
+    mobile: PropTypes.bool
   };
 
   componentDidMount() {
@@ -19,15 +20,16 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children, members } = this.props;
+    const { community, children, members, mobile } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
-    const limitedMembers = members.slice(0, 12);
+    const limitedMembers = members.slice(0, mobile ? 14 : 12);
+    const p = mobile ? 2 : 4;
     return (
       <View bg={colors.white} mr={'1px'}>
-        <Header m={'4 4 3 4'}>Community</Header>
+        <Header m={`4 ${p} 3 ${p}`}>Community</Header>
         {children}
-        <View bb p={'0 4 4 4'}>
+        <View bb p={`0 ${p} 4 ${p}`}>
           <View m={'1 0 5 5.5'}>
             {topics.map(topic => (
               <LinkFont key={topic} p={'0.75 0'}>
@@ -38,7 +40,7 @@ class CommunityActive extends Component {
                   navLink
                   to={`/${community.slug}/new/${topic}`}
                 >
-                  #{topic}
+                  <Text>#{topic}</Text>
                 </ULink>
               </LinkFont>
             ))}

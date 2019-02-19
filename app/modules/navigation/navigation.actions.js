@@ -17,6 +17,7 @@ let safariView;
 let Orientation;
 let NavigationActions;
 let StackActions;
+
 if (process.env.WEB !== 'true') {
   Orientation = require('react-native-orientation');
   dismissKeyboard = require('react-native-dismiss-keyboard');

@@ -42,7 +42,7 @@ export const Image = styled.Image`
   ${mixins.flex}
 `;
 
-export const ImageWrapper = styled.Text`
+export const ImageWrapper = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;

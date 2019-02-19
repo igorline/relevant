@@ -10,13 +10,13 @@ export default function Percent(props) {
   if (!get(props.user, 'relevance')) {
     return null;
   }
-  const { align, mr, size } = props;
+  const { align, mr, size, ...rest } = props;
   const percent = numbers.percentChange(get(props.user, 'relevance'));
   const percentPretty = numbers.abbreviateNumber(percent);
   const imageMarginBottom = align === 'center' ? 0 : sizing(-size / 10);
   const isNegative = percent < 0;
   return (
-    <NumericalValue align={align || 'center'} mr={2 || mr}>
+    <NumericalValue {...rest} align={align || 'center'} mr={2 || mr}>
       <Text
         fs={size}
         c={isNegative ? colors.red : colors.green}

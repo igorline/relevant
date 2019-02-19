@@ -224,8 +224,7 @@ export default class SingleActivity extends Component {
   }
 
   renderBorder(activity) {
-    const fromNow = moment(activity.createdAt)
-    .fromNow();
+    const fromNow = moment(activity.createdAt).fromNow();
     if (activity.type) {
       return (
         <View style={styles.time}>

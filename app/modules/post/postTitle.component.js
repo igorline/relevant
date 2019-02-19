@@ -7,7 +7,18 @@ import { View, Title, SecondaryText, InlineText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 
 export default function PostTitle(props) {
-  const { children, postUrl, post, link, community, title, noLink, mobile } = props;
+  const {
+    children,
+    postUrl,
+    post,
+    link,
+    community,
+    title,
+    noLink,
+    mobile,
+    actions,
+    singlePost
+  } = props;
 
   const c = mobile ? colors.white : null;
 
@@ -15,7 +26,10 @@ export default function PostTitle(props) {
   const tags = post.tags && post.tags.length ? get(post, 'tags', []) : [];
 
   const titleEl = postUrl ? (
-    <ULink to={postUrl}>
+    <ULink
+      to={postUrl}
+      onPress={() => (singlePost ? actions.goToUrl(post.url) : actions.goToPost(post))}
+    >
       <Title c={c} flex={1} numberOfLines={3}>
         {title}
       </Title>
@@ -35,6 +49,7 @@ export default function PostTitle(props) {
           td={'underline'}
           styles={'text-decoration: underline'}
           noLink={noLink}
+          onPress={() => actions.goToPost(post)}
         >
           <InlineText>
             {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
@@ -55,7 +70,14 @@ export default function PostTitle(props) {
 
   const domainEl = get(link, 'domain') && (
     <InlineText numberOfLines={1}>
-      <ULink external to={post.url} target="_blank" disabled={!postUrl} noLink={noLink}>
+      <ULink
+        external
+        to={post.url}
+        target="_blank"
+        disabled={!postUrl}
+        noLink={noLink}
+        onPress={() => actions.goToUrl(post.url)}
+      >
         <InlineText>{link.domain && `${link.domain}\u00A0↗`}</InlineText>
       </ULink>
     </InlineText>
@@ -98,6 +120,7 @@ export default function PostTitle(props) {
 }
 
 PostTitle.propTypes = {
+  singlePost: PropTypes.bool,
   mobile: PropTypes.bool,
   noLink: PropTypes.bool,
   children: PropTypes.node,
@@ -105,5 +128,6 @@ PostTitle.propTypes = {
   post: PropTypes.object,
   community: PropTypes.string,
   postUrl: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
+  actions: PropTypes.object
 };

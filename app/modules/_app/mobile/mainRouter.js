@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { transitionConfig } from 'app/utils/nav';
 import {
-  createStackNavigator,
+  // createStackNavigator,
   createAppContainer,
+  createDrawerNavigator
 } from 'react-navigation';
 import { StackViewStyleInterpolator } from 'react-navigation-stack';
 import { KeyboardAvoidingView, StatusBar, Platform } from 'react-native';
@@ -13,8 +14,14 @@ import AuthContainer from 'modules/auth/mobile/auth.container';
 import ArticleView from 'modules/navigation/mobile/articleView.container';
 import ErrorComponent from 'modules/ui/mobile/error.component';
 import StallScreen from 'modules/navigation/mobile/stallScreen.component';
-import { CreatePostNavigator, CreatePostStack } from 'modules/_app/mobile/createPostRouter';
+import {
+  CreatePostNavigator,
+  CreatePostStack
+} from 'modules/_app/mobile/createPostRouter';
 import { TabContainer } from 'modules/_app/mobile/tabRouter';
+
+import SideNav from 'modules/navigation/mobile/sideNav.component';
+import { fullWidth } from 'app/styles/global';
 
 class CreatePostWrapper extends Component {
   static propTypes = {
@@ -23,12 +30,12 @@ class CreatePostWrapper extends Component {
 
   static router = CreatePostStack.router;
 
-  render () {
+  render() {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? StatusBar.currentHeight : 0 }
+        keyboardVerticalOffset={Platform.OS === 'android' ? StatusBar.currentHeight : 0}
       >
         <CreatePostNavigator navigation={this.props.navigation} />
       </KeyboardAvoidingView>
@@ -36,37 +43,40 @@ class CreatePostWrapper extends Component {
   }
 }
 
-export const RootStack = createStackNavigator(
+export const RootStack = createDrawerNavigator(
   {
     auth: {
       screen: AuthContainer,
       header: false,
-      path: '',
+      path: ''
     },
     main: {
       screen: TabContainer,
-      path: '',
+      path: ''
     },
     stall: {
-      screen: StallScreen,
+      screen: StallScreen
     },
     error: {
       screen: ErrorComponent,
-      path: 'error',
+      path: 'error'
     },
     articleView: {
       screen: ArticleView
     },
     createPost: {
       screen: CreatePostWrapper,
-      header: false,
-    },
+      header: false
+    }
     // this will be community drawer
     // categories: {
     //   screen: (props) => <CreatePostContainer {...props} step={'url'} />
     // },
   },
   {
+    contentComponent: SideNav,
+    drawerWidth: () => Math.min(320, fullWidth * 0.9),
+
     initialRouteName: 'main',
     headerMode: 'none',
     headerLayoutPreset: 'center',
@@ -89,10 +99,9 @@ export const RootStack = createStackNavigator(
         }
 
         return StackViewStyleInterpolator.forHorizontal(props);
-      },
-    }),
+      }
+    })
   }
 );
-
 
 export const AppContainer = createAppContainer(RootStack);

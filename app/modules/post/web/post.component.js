@@ -39,7 +39,8 @@ export class Post extends Component {
     firstPost: PropTypes.object,
     comment: PropTypes.object,
     children: PropTypes.object,
-    hideDivider: PropTypes.bool
+    hideDivider: PropTypes.bool,
+    hidePostButtons: PropTypes.bool
   };
 
   deletePost() {
@@ -75,7 +76,16 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, auth, sort, noComments, link, firstPost, hideDivider } = this.props;
+    const {
+      post,
+      auth,
+      sort,
+      noComments,
+      link,
+      firstPost,
+      hideDivider,
+      hidePostButtons
+    } = this.props;
     const { community } = auth;
     let { comment } = this.props;
 
@@ -108,9 +118,11 @@ export class Post extends Component {
 
     return (
       <View fdirection={'row'} m="4 4 0 0">
-        <PostButtonContainer>
-          <PostButtons post={post} {...this.props} />
-        </PostButtonContainer>
+        {!hidePostButtons && (
+          <PostButtonContainer>
+            <PostButtons post={post} {...this.props} />
+          </PostButtonContainer>
+        )}
         <View flex={1}>
           <PostInfo
             post={post}
