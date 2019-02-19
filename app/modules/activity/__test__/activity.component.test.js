@@ -10,7 +10,10 @@ jest.mock('modules/post/web/post.component', () => 'PostComponent');
 
 const props = {
   singleActivity: activity.activity,
-  auth: auth.auth
+  auth: auth.auth,
+  actions: {
+    goToProfile: jest.fn()
+  }
 };
 
 test('Snapshot Activity Web', () => {

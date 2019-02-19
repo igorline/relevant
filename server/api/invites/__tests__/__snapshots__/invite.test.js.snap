@@ -37,6 +37,7 @@ Object {
     "communityId": "c00000000000000000000001",
     "createdAt": "[SANITIZED]",
     "global": true,
+    "invites": 0,
     "pagerank": 7.72,
     "pagerankRaw": 0.02574,
     "relevance": 0,

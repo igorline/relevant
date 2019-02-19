@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import Eth from 'modules/web_ethTools/eth.context';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { userProps } from 'app/utils/propValidation';
-import { Image, ImageWrapper, NumericalValue } from 'modules/styled/uni';
-import { sizing, mixins } from 'app/styles';
-import styled from 'styled-components/primitives';
+import { sizing } from 'app/styles';
+import {
+  Image,
+  ImageWrapper,
+  NumericalValue,
+  SecondaryText,
+  Text
+} from 'modules/styled/uni';
 
 const coinImage = require('app/public/img/relevantcoin.png');
-
-const StyledNumericalValue = styled(NumericalValue)`
-  ${mixins.inheritfont}
-  ${p => (p.lineheight ? `line-height: ${p.lineheight};` : '')}
-`;
 
 function CoinStat(props) {
   const {
@@ -21,10 +21,12 @@ function CoinStat(props) {
     wallet,
     size,
     amount,
-    inheritfont,
     mr,
     align,
-    lineheight,
+    secondary,
+    fs,
+    lh,
+    inline,
     ...rest
   } = props;
 
@@ -39,31 +41,40 @@ function CoinStat(props) {
     tokens = wallet.connectedBalance + user.balance;
   }
   const iconSize = size || 3;
-  const imageMarginBottom = align === 'center' ? 0 : sizing(-size / 10);
+  const NumberStyle = secondary ? SecondaryText : NumericalValue;
+  const imageMargin = align === 'center' ? 0 : sizing(-1, 'px');
+  const Wrapper = inline ? Text : ImageWrapper;
 
   return (
-    <ImageWrapper mr={mr || 1.5} align={align} {...rest}>
+    <Wrapper
+      inline={inline}
+      {...rest}
+      mr={typeof mr === 'number' ? mr : 1.5}
+      align={align}
+    >
       <Image
+        inline={inline}
         source={coinImage}
-        h={iconSize}
-        w={iconSize}
+        h={iconSize * 0.9}
+        w={iconSize * 1.1}
         mr={iconSize / 4}
-        style={{ bottom: imageMarginBottom }}
+        style={{ bottom: imageMargin }}
+        // style={{ bottom: imageMarginBottom }}
         resizeMode="contain"
       />
-      <StyledNumericalValue
-        inheritfont={inheritfont ? 1 : 0}
-        lineheight={lineheight ? sizing(lineheight) : null}
-      >
+      <NumberStyle fs={fs} lh={lh} inline={inline}>
         {abbreviateNumber(tokens) || 0}
-      </StyledNumericalValue>
-    </ImageWrapper>
+      </NumberStyle>
+    </Wrapper>
   );
 }
 
 CoinStat.propTypes = {
+  lh: PropTypes.number,
+  inline: PropTypes.bool,
+  secondary: PropTypes.bool,
   mr: PropTypes.number,
-  inheritfont: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  fs: PropTypes.number,
   amount: PropTypes.number,
   size: PropTypes.number,
   user: userProps,

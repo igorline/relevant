@@ -72,17 +72,14 @@ export default class Commentary extends Component {
     let postStyle;
 
     let post = { ...item };
-    if (post.user && users[post.user]) {
-      post.user = users[post.user];
-    }
+    const user = users[post.user] || post.embeddedUser;
 
     if (post.repost) {
       postStyle = [styles.repost];
       let repost = posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
-      if (repost.user && users[repost.user]) {
-        repost.user = users[repost.user];
-      }
+
+      const repostUser = users[repost.user] || repost.embeddedUser;
 
       repostEl = (
         <View style={{ marginBottom: 0 }}>
@@ -91,7 +88,7 @@ export default class Commentary extends Component {
             actions={actions}
             auth={auth}
             post={post}
-            users={users}
+            user={repostUser}
             navigation={this.props.navigation}
           />
           <PostBody
@@ -149,7 +146,7 @@ export default class Commentary extends Component {
               actions={actions}
               auth={auth}
               singlePost={singlePost}
-              users={users}
+              user={user}
               navigation={this.props.navigation}
             />
             <PostBody

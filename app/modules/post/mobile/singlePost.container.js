@@ -29,16 +29,11 @@ class SinglePostContainer extends Component {
     posts: PropTypes.object
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      inputHeight: 0,
-      editing: false,
-      comment: null
-    };
-    this.setEditing = this.setEditing.bind(this);
-    this.reload = this.reload.bind(this);
-  }
+  state = {
+    inputHeight: 0,
+    editing: false,
+    comment: null
+  };
 
   componentWillMount() {
     const { posts, navigation } = this.props;
@@ -60,12 +55,11 @@ class SinglePostContainer extends Component {
     const post = posts.posts[id];
     if (!post) return;
 
-    const title = post.title || post.body;
-    if (
-      !this.props.navigation.state.params ||
-      title !== this.props.navigation.state.params.title
-    ) {
-      this.props.navigation.setParams({ title });
+    const link = post && posts.links[post.metaPost];
+    const title = post.title || post.body || link.title;
+
+    if (!this.props.navigation.state.params || title !== navigation.state.params.title) {
+      navigation.setParams({ title });
     }
   }
 
@@ -78,43 +72,25 @@ class SinglePostContainer extends Component {
     }
   }
 
-  setEditing(bool) {
+  setEditing = bool => {
     this.setState({ editing: bool });
-  }
+  };
 
-  reload() {
+  reload = () => {
     const { id } = this.props.navigation.state.params;
     this.props.actions.getSelectedPost(id);
     this.props.actions.getComments(id);
-  }
+  };
 
   render() {
-    let dataEl = null;
-    const { posts, navigation } = this.props;
+    const { posts, navigation, error } = this.props;
     const { id } = navigation.state.params;
     const post = posts.posts[id];
 
     const related = posts.related[id] || [];
     const link = post && posts.links[post.metaPost];
 
-    if (post) {
-      dataEl = (
-        <SinglePost
-          postId={id}
-          post={post}
-          link={link}
-          actions={this.props.actions}
-          singlePostEditing={this.setEditing}
-          error={this.error}
-          users={this.props.users}
-          auth={this.props.auth}
-          related={related}
-          {...this.props}
-        />
-      );
-    }
-
-    if (this.props.error && !this.postData) {
+    if (error && !post) {
       return (
         <ErrorComponent
           error={this.props.error}
@@ -126,7 +102,15 @@ class SinglePostContainer extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        {dataEl}
+        <SinglePost
+          postId={id}
+          post={post}
+          link={link}
+          singlePostEditing={this.setEditing}
+          error={this.error}
+          related={related}
+          {...this.props}
+        />
         <CustomSpinnerRelative visible={!post && !this.props.error} />
       </View>
     );

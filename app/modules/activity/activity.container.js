@@ -6,6 +6,7 @@ import InfScroll from 'modules/listview/web/infScroll.component';
 import * as postActions from 'modules/post/post.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import SingleActivity from 'modules/activity/activity.component';
 
 class Activity extends Component {
@@ -108,7 +109,8 @@ function mapDispatchToProps(dispatch) {
       {
         ...postActions,
         ...notifActions,
-        ...userActions
+        ...userActions,
+        ...navigationActions
       },
       dispatch
     )

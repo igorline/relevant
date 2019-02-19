@@ -359,6 +359,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
       </div>
       <div
         dir="auto"
+        mt={0.25}
         style={
           Object {
             "WebkitFlexBasis": "auto",
@@ -381,7 +382,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
             "marginBottom": "0px",
             "marginLeft": "0px",
             "marginRight": "0px",
-            "marginTop": "0px",
+            "marginTop": "1.8px",
             "msFlexNegative": 0,
             "msFlexPreferredSize": "auto",
             "paddingBottom": "0px",

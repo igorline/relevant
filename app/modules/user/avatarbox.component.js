@@ -40,7 +40,7 @@ export default function UserName(props) {
   }
 
   const handleEl = handle && (
-    <SecondaryText>
+    <SecondaryText mt={0.25}>
       <SecondaryText>{handle}</SecondaryText> {timestamp}
     </SecondaryText>
   );
@@ -59,8 +59,8 @@ export default function UserName(props) {
   const twitterIcon = twitter && (
     <Image
       resizeMode={'contain'}
-      w={1.75}
-      h={1.75}
+      w={2.5}
+      h={1.5}
       ml={0.5}
       mb={-0.1}
       source={require('app/public/img/icons/twitter_blue.png')}
@@ -79,7 +79,7 @@ export default function UserName(props) {
               {twitterIcon}
             </Name>
             {user.relevance && showRelevance && (
-              <RStat align="baseline" mr={0.75} size={1.75} user={user} />
+              <RStat align={'baseline'} mr={0.75} lh={1.75} size={1.75} user={user} />
             )}
             {condensedView && handleEl}
           </View>

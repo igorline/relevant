@@ -19,14 +19,14 @@ export const lh = 4 / 3;
 export const bodyStyle = {
   fontSize: sizing(1.75),
   lineHeight: sizing(1.75 * lh),
-  fontFamily: HELVETICA_REGULAR,
+  fontFamily: HELVETICA_REGULAR
 };
 
 export const header = {
   fontSize: sizing(3),
   lineHeight: sizing(3 * lh),
   fontFamily: HELVETICA_NEUE_BOLD,
-  color: colors.black,
+  color: colors.black
 };
 
 export const title = {
@@ -34,15 +34,15 @@ export const title = {
   fontSize: sizing(2.5),
   lineHeight: sizing(2.5 * lh),
   fontFamily: HELVETICA_NEUE_CONDENSED_BOLD,
-  color: colors.black,
+  color: colors.black
 };
 
 // REQUIRES FONT-INHERIT
 export const numericalValue = {
-  fontSize: sizing(2),
-  lineHeight: sizing(2 * lh),
+  fontSize: sizing(1.75),
+  lineHeight: sizing(1.75 * lh),
   fontFamily: HELVETICA_NEUE_CONDENSED_BOLD,
-  color: colors.black,
+  color: colors.black
 };
 
 export const link = {
@@ -50,26 +50,26 @@ export const link = {
   lineHeight: sizing(1.5 * lh),
   fontFamily: HELVETICA_NEUE_MEDIUM,
   color: colors.grey,
-  padding: `${sizing(0.5)} 0`,
+  padding: `${sizing(0.5)} 0`
 };
 
 export const altLink = {
   ...link,
-  textDecoration: 'underline',
+  textDecoration: 'underline'
 };
 
 export const bodyText = {
   fontSize: sizing(1.5),
   lineHeight: sizing(1.5 * lh),
   fontFamily: HELVETICA_REGULAR,
-  color: colors.black,
+  color: colors.black
 };
 
 export const commentText = {
   fontSize: sizing(2),
   lineHeight: sizing(2 * lh),
   fontFamily: GEORGIA,
-  color: colors.black,
+  color: colors.black
 };
 
 export const secondaryText = {
@@ -77,16 +77,15 @@ export const secondaryText = {
   fontSize: sizing(1.5),
   lineHeight: sizing(1.5 * lh),
   fontFamily: HELVETICA_REGULAR,
-  color: colors.secondaryText,
+  color: colors.secondaryText
 };
 
 export const CTALink = {
   fontSize: sizing(1.5),
   lineHeight: sizing(1.5 * lh),
   fontFamily: HELVETICA_REGULAR,
-  color: colors.blue,
+  color: colors.blue
 };
-
 
 export const button = {
   background: colors.blue,
@@ -99,5 +98,5 @@ export const button = {
   minWidth: sizing(18),
   padding: `0  ${sizing(2)}`,
   fontsize: sizing(1.5),
-  fontFamily: HELVETICA_NEUE_MEDIUM,
+  fontFamily: HELVETICA_NEUE_MEDIUM
 };

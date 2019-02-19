@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
 import { Text } from 'modules/styled/uni';
 
-const Triangle = ({ direction }) => {
+const Triangle = ({ direction, inline, lh }) => {
   if (direction === 'UP') {
     return (
-      <Text c={colors.green} display="inline">
+      <Text lh={lh} inline={inline} c={colors.green}>
         ▲
       </Text>
     );
   }
   if (direction === 'DOWN') {
     return (
-      <Text c={colors.red} display="inline">
+      <Text lh={lh} inline={inline} c={colors.red}>
         ▼
       </Text>
     );
@@ -22,7 +22,9 @@ const Triangle = ({ direction }) => {
 };
 
 Triangle.propTypes = {
-  direction: PropTypes.oneOf(['UP', 'DOWN'])
+  direction: PropTypes.oneOf(['UP', 'DOWN']),
+  inline: PropTypes.bool,
+  lh: PropTypes.number
 };
 
 export default Triangle;

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
   RefreshControl,
-  TouchableHighlight,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
@@ -11,7 +8,7 @@ import {
   Keyboard
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, IphoneX } from 'app/styles/global';
+import { IphoneX } from 'app/styles/global';
 import Comment from 'modules/comment/mobile/comment.component';
 import CommentInput from 'modules/comment/mobile/commentInput.component';
 import UserSearchComponent from 'modules/createPost/mobile/userSearch.component';
@@ -19,8 +16,6 @@ import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import { View, MobileDivider, Divider } from 'modules/styled/uni';
 import PostButtons from 'modules/post/mobile/postButtons.component';
 import Post from './post.component';
-
-let styles;
 
 const inputOffset = IphoneX ? 59 + 33 : 59;
 
@@ -38,7 +33,8 @@ class SinglePostComponent extends Component {
     users: PropTypes.object,
     comments: PropTypes.object,
     myPostInv: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    admin: PropTypes.object
   };
 
   constructor(props) {
@@ -54,7 +50,6 @@ class SinglePostComponent extends Component {
     this.comments = null;
     this.renderRow = this.renderRow.bind(this);
     this.dataSource = null;
-    this.renderComments = this.renderComments.bind(this);
     this.loadMoreComments = this.loadMoreComments.bind(this);
     this.longFormat = false;
     this.total = null;
@@ -167,43 +162,6 @@ class SinglePostComponent extends Component {
     this.props.actions.getSelectedPost(this.id);
   }
 
-  renderComments() {
-    this.getChildren();
-
-    if (this.props.post) {
-      return (
-        <FlatList
-          ref={c => (this.scrollView = c)}
-          data={this.comments}
-          renderItem={this.renderRow}
-          keyExtractor={(item, index) => index.toString()}
-          removeClippedSubviews
-          pageSize={1}
-          initialListSize={10}
-          keyboardShouldPersistTaps={'always'}
-          keyboardDismissMode={'interactive'}
-          onEndReachedThreshold={100}
-          overScrollMode={'always'}
-          style={{ flex: 1 }}
-          ListHeaderComponent={this.renderHeader}
-          onLayout={e => {
-            this.scrollHeight = e.nativeEvent.layout.height;
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.reloading}
-              onRefresh={this.reload}
-              tintColor="#000000"
-              colors={['#000000', '#000000', '#000000']}
-              progressBackgroundColor="#ffffff"
-            />
-          }
-        />
-      );
-    }
-    return <View style={{ flex: 1 }} />;
-  }
-
   renderRelated() {
     const relatedEl = this.props.related.map(r => {
       const post = { _id: r.commentary[0], title: r.title };
@@ -223,46 +181,22 @@ class SinglePostComponent extends Component {
   }
 
   renderHeader() {
-    let loadEarlier;
-
-    const headerEl = (
-      <Post
-        singlePost
-        key={0}
-        navigation={this.props.navigation}
-        post={this.props.post}
-        link={this.props.link}
-        actions={this.props.actions}
-        focusInput={() => this.input.textInput.focus()}
-      />
-    );
-
-    if (this.longFormat) {
-      if (this.comments && this.total) {
-        if (this.total > this.comments.length) {
-          loadEarlier = (
-            <TouchableHighlight
-              key={1}
-              underlayColor={'transparent'}
-              onPress={this.loadMoreComments}
-              style={styles.loadMoreButton}
-            >
-              <Text>load earlier...</Text>
-            </TouchableHighlight>
-          );
-        }
-      }
-    }
-
     return (
       <View
         onLayout={e => {
           this.headerHeight = e.nativeEvent.layout.height;
         }}
       >
-        {headerEl}
+        <Post
+          singlePost
+          key={0}
+          navigation={this.props.navigation}
+          post={this.props.post}
+          link={this.props.link}
+          actions={this.props.actions}
+          focusInput={() => this.input.textInput.focus()}
+        />
         {this.renderRelated()}
-        {loadEarlier}
       </View>
     );
   }
@@ -270,30 +204,16 @@ class SinglePostComponent extends Component {
   renderRow({ item, index }) {
     const comment = item;
     if (!comment) return null;
-    return this.renderComment({ comment, index });
-  }
 
-  renderButtons = (comment, index) => {
-    const { post, myPostInv, auth, actions, navigation } = this.props;
-    return () => (
-      <PostButtons
-        parentPost={post}
-        comment
-        post={comment}
-        isComment
-        actions={actions}
-        auth={auth}
-        navigation={navigation}
-        myPostInv={myPostInv[comment._id]}
-        setupReply={() => this.setState({ activeComment: comment, index })}
-        focusInput={() => this.input.textInput.focus()}
-      />
-    );
-  };
+    const { post, myPostInv, auth, actions, navigation, users } = this.props;
 
-  renderComment = ({ comment, index }) => {
+    const setupReply = () =>
+      this.setState({ activeComment: comment, activeIndex: index });
+    const focusInput = () => this.input.textInput.focus();
+
+    const user = users.users[comment.user] || comment.embeddedUser;
     const nesting = this.nesting[comment._id];
-    const renderButtons = this.renderButtons(comment, index);
+
     return (
       <View key={comment._id} index={index} fdirection={'column'} flex={1}>
         {nesting ? (
@@ -304,22 +224,31 @@ class SinglePostComponent extends Component {
           <MobileDivider />
         )}
         <Comment
-          {...this.props}
+          singlePost
+          actions={actions}
+          auth={auth}
           parentEditing={this.toggleEditing}
-          index={index}
           scrollToComment={() => this.scrollToComment(index)}
-          parentId={this.id}
           comment={comment}
-          nesting={this.nesting[comment._id]}
-          parentView={this.scrollView}
-          users={this.props.users}
-          renderChildren={this.renderChildren}
-          renderButtons={() => renderButtons()}
           nesting={nesting}
+          user={user}
+          renderButtons={() => (
+            <PostButtons
+              isComment
+              parentPost={post}
+              post={comment}
+              actions={actions}
+              auth={auth}
+              navigation={navigation}
+              myPostInv={myPostInv[comment._id]}
+              setupReply={setupReply}
+              focusInput={focusInput}
+            />
+          )}
         />
       </View>
     );
-  };
+  }
 
   renderUserSuggestions() {
     let parentEl = null;
@@ -356,7 +285,12 @@ class SinglePostComponent extends Component {
 
   render() {
     const { post } = this.props;
-    const { activeComment, index, editing } = this.state;
+    if (!post) return null;
+    const { activeComment, activeIndex, editing } = this.state;
+
+    // TODO this is hacky;
+    this.getChildren();
+
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
@@ -365,7 +299,34 @@ class SinglePostComponent extends Component {
           inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
         }
       >
-        {this.renderComments()}
+        <FlatList
+          ref={c => (this.scrollView = c)}
+          data={this.comments}
+          renderItem={this.renderRow}
+          keyExtractor={(item, index) => index.toString()}
+          removeClippedSubviews
+          pageSize={1}
+          initialListSize={10}
+          keyboardShouldPersistTaps={'always'}
+          keyboardDismissMode={'interactive'}
+          onEndReachedThreshold={100}
+          overScrollMode={'always'}
+          style={{ flex: 1 }}
+          ListHeaderComponent={this.renderHeader}
+          onLayout={e => {
+            this.scrollHeight = e.nativeEvent.layout.height;
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.reloading}
+              onRefresh={this.reload}
+              tintColor="#000000"
+              colors={['#000000', '#000000', '#000000']}
+              progressBackgroundColor="#ffffff"
+            />
+          }
+        />
+
         {this.renderUserSuggestions()}
 
         <CommentInput
@@ -380,7 +341,7 @@ class SinglePostComponent extends Component {
           updatePosition={params => this.setState(params)}
           onBlur={() => this.setState({ comment: null, index: null })}
           onFocus={() => {
-            if (typeof index === 'number') this.scrollToComment(index);
+            if (typeof activeIndex === 'number') this.scrollToComment(activeIndex);
             else this.scrollToBottom();
           }}
         />
@@ -388,40 +349,5 @@ class SinglePostComponent extends Component {
     );
   }
 }
-
-const localStyles = StyleSheet.create({
-  postScroll: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    flexWrap: 'nowrap',
-    justifyContent: 'flex-start'
-  },
-  comment: {
-    marginLeft: 25,
-    marginRight: 4,
-    marginBottom: 10
-  },
-  commentary: {
-    marginRight: 4,
-    marginLeft: 4,
-    marginTop: 3,
-    marginBottom: 10
-  },
-  postContainer: {
-    paddingBottom: 25,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0'
-  },
-  tagsRow: {
-    flexDirection: 'row',
-    paddingTop: 10,
-    paddingBottom: 10,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    flex: 1
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };
 
 export default SinglePostComponent;

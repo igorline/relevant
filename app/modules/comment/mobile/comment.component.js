@@ -29,11 +29,10 @@ class Comment extends Component {
     comment: PropTypes.object,
     actions: PropTypes.object,
     parentEditing: PropTypes.func,
-    navigator: PropTypes.object,
     scrollToComment: PropTypes.func,
     auth: PropTypes.object,
     singlePost: PropTypes.bool,
-    users: PropTypes.object,
+    user: PropTypes.object,
     nesting: PropTypes.number,
     renderButtons: PropTypes.func
   };
@@ -48,7 +47,6 @@ class Comment extends Component {
       editing: false,
       height: 0
     };
-    this.singleComment = null;
     this.deleteComment = this.deleteComment.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
@@ -57,10 +55,7 @@ class Comment extends Component {
 
   componentDidMount() {
     const { body } = this.props.comment;
-    if (body) {
-      this.setState({ editedText: body });
-    }
-    this.setSelected = this.setSelected.bind(this);
+    if (body) this.setState({ editedText: body });
   }
 
   saveEdit(body) {
@@ -114,16 +109,6 @@ class Comment extends Component {
     this.props.actions.deleteComment(this.props.comment._id);
   }
 
-  setTag(tag) {
-    this.props.actions.selectTag({ _id: tag.replace('#', '') });
-    this.props.navigator.changeTab('discover');
-  }
-
-  setSelected(user) {
-    if (!user) return;
-    this.props.actions.goToProfile(user);
-  }
-
   editComment() {
     if (!this.state.editing) {
       this.props.scrollToComment();
@@ -135,54 +120,41 @@ class Comment extends Component {
   }
 
   render() {
-    const { comment, auth, nesting, renderButtons } = this.props;
-    const { user } = auth;
-
+    const {
+      comment,
+      auth,
+      nesting,
+      renderButtons,
+      user,
+      actions,
+      singlePost
+    } = this.props;
     if (!comment) return null;
-    let optionsEl = null;
-    let editingEl = null;
-    let owner = false;
-    let commentUserId = null;
+    const { editing } = this.state;
+    const owner = auth.user && auth.user._id === user._id;
 
-    if (this.state.editing) {
-      editingEl = (
-        <TextEdit
-          style={[styles.darkGrey, styles.editingInput]}
-          text={this.state.editedText || comment.body}
-          toggleFunction={this.editComment}
-          saveEditFunction={this.saveEdit}
-          onChange={e => {
-            const h = e.nativeEvent.contentSize.height;
-            if (h !== this.height) {
-              this.height = h;
-            }
-          }}
-        />
-      );
-    }
+    const editingEl = editing && (
+      <TextEdit
+        style={[styles.darkGrey, styles.editingInput]}
+        text={this.state.editedText || comment.body}
+        toggleFunction={this.editComment}
+        saveEditFunction={this.saveEdit}
+        onChange={e => {
+          const h = e.nativeEvent.contentSize.height;
+          if (h !== this.height) {
+            this.height = h;
+          }
+        }}
+      />
+    );
 
-    if (comment.user && typeof comment.user === 'object') {
-      commentUserId = comment.user._id;
-    } else {
-      commentUserId = comment.user;
-    }
-
-    if (user && user._id && user._id === commentUserId) {
-      owner = true;
-    }
-
-    if (owner) {
-      optionsEl = (
-        <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            onPress={this.showActionSheet}
-          >
-            <Text style={styles.dots}>...</Text>
-          </TouchableHighlight>
-        </View>
-      );
-    }
+    const optionsEl = owner && (
+      <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={this.showActionSheet}>
+          <Text style={styles.dots}>...</Text>
+        </TouchableHighlight>
+      </View>
+    );
 
     const textBody = (
       <TextBody
@@ -219,12 +191,12 @@ class Comment extends Component {
           <View mt={2} fdirection={'row'} align={'center'} justify={'space-between'}>
             <PostInfo
               post={comment}
-              actions={this.props.actions}
-              auth={this.props.auth}
-              singlePost={this.props.singlePost}
+              actions={actions}
+              auth={auth}
+              singlePost={singlePost}
               delete={this.deleteComment}
               edit={this.editComment}
-              users={this.props.users}
+              user={user}
             />
             {optionsEl}
           </View>

@@ -28,10 +28,10 @@ class PostInfo extends Component {
     actions: PropTypes.object,
     edit: PropTypes.func,
     delete: PropTypes.func,
-    users: PropTypes.object,
     big: PropTypes.bool,
     preview: PropTypes.bool,
-    repost: PropTypes.bool
+    repost: PropTypes.bool,
+    user: PropTypes.object
   };
 
   constructor(props, context) {
@@ -59,11 +59,9 @@ class PostInfo extends Component {
   }
 
   componentDidMount() {
-    const { post, auth } = this.props;
-    const { user } = post;
+    const { auth, user } = this.props;
     if (!user) return;
-    const userId = user._id || user;
-    if (auth && userId && userId === auth.user._id) {
+    if (auth && user._id === auth.user._id) {
       this.menu = this.ownerMenu;
       this.myPost = true;
     }
@@ -145,10 +143,10 @@ class PostInfo extends Component {
   }
 
   render() {
-    const { post, users, big, preview, repost } = this.props;
+    const { post, big, preview, repost, user } = this.props;
     let postActions;
 
-    if (!post.embeddedUser) return null;
+    if (!user) return null;
 
     if (this.myPost) {
       postActions = (
@@ -159,18 +157,6 @@ class PostInfo extends Component {
           <Icon name="ios-more" size={24} color={greyText} />
         </TouchableOpacity>
       );
-    }
-
-    let userId = post.user ? post.user._id || post.user : null;
-    if (post.twitterUser) userId = post.twitterUser;
-    let user = users[userId];
-
-    if (!user || !user._id) {
-      user = {};
-      user = post.embeddedUser;
-      if (post.twitter) {
-        user._id = user.handle;
-      }
     }
 
     const userEl = (

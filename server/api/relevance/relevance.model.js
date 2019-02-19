@@ -30,7 +30,8 @@ const RelevanceSchema = new Schema(
         time: Date
       }
     ],
-    topTopics: [{ type: String, ref: 'Tag' }]
+    topTopics: [{ type: String, ref: 'Tag' }],
+    invites: { type: Number, default: 0 }
   },
   {
     timestamps: true

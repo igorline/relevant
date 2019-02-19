@@ -10,11 +10,12 @@ class UAvatar extends Component {
     noLink: PropTypes.bool,
     m: PropTypes.string,
     className: PropTypes.string,
+    goToProfile: PropTypes.func,
     style: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
   };
 
   render() {
-    const { size, user, m } = this.props;
+    const { size, user, m, goToProfile } = this.props;
     if (!user) return null;
     const profileLink = '/user/profile/' + this.props.user.handle;
 
@@ -34,7 +35,11 @@ class UAvatar extends Component {
     }
     return (
       <View style={this.props.style} className={this.props.className} m={m}>
-        <ULink onClick={e => e.stopPropagation()} to={profileLink}>
+        <ULink
+          onPress={() => goToProfile(user)}
+          onClick={e => e.stopPropagation()}
+          to={profileLink}
+        >
           {AvatarImage}
         </ULink>
       </View>

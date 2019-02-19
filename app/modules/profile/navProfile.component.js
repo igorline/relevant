@@ -5,28 +5,11 @@ import { connect } from 'react-redux';
 import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
-import { sizing, colors, fonts, mixins } from 'app/styles';
+import { sizing, colors } from 'app/styles';
 import styled from 'styled-components/primitives';
-
-const Header = styled.Text`
-  ${fonts.header}
-  ${mixins.margin}
-`;
-
-const View = styled.View`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: ${sizing(3)};
-`;
-
-const Text = styled.Text`
-  display: flex;
-  flex: 1;
-`;
+import { Header, View, LinkFont, SecondaryText } from 'modules/styled/uni';
 
 const WalletInfo = styled.View`
   display: flex;
@@ -35,49 +18,15 @@ const WalletInfo = styled.View`
   flex-shrink: 1;
 `;
 
-const ProfileContainer = styled.View`
-  padding: ${sizing(4)};
-  padding-bottom: ${sizing(5)};
-`;
-
-const ProfileDetailsContainer = styled.View`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-`;
-
-const StyledAvatar = styled(UAvatar)``;
-
-const PendingPayouts = styled.Text`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  color: ${colors.grey};
-  font-size: ${sizing(1.5)};
-  line-height: ${sizing(1.5)};
-  margin-top: ${sizing(2)};
-`;
-
-const linkStyles = `
-  display: flex;
-  align-items: center;
-  font-size: ${sizing(1.5)}
-  color: ${colors.blue};
-`;
-
-const walletLinkStyles = `
-  ${linkStyles}
-  color: ${colors.black};
-`;
-
 export class NavProfile extends Component {
   static propTypes = {
     user: PropTypes.object,
-    earnings: PropTypes.object
+    earnings: PropTypes.object,
+    mobile: PropTypes.bool
   };
 
   render() {
-    const { user, earnings } = this.props;
+    const { user, earnings, mobile } = this.props;
     if (!user) return null;
 
     // TODO optimize this so its not on every render?
@@ -90,37 +39,40 @@ export class NavProfile extends Component {
       }
     });
 
+    const p = mobile ? 2 : 4;
+
     return (
-      <ProfileContainer>
-        <View>
-          <Header mb={0}>{user.name}</Header>
-          <ULink to="/user/wallet" styles={linkStyles}>
-            {' '}
-            My Wallet
+      <View p={p} pb={p + 1}>
+        <View fdirection={'row'} align={'baseline'} justify={'space-between'}>
+          <Header mb={3}>{user.name}</Header>
+          <ULink to="/user/wallet">
+            <LinkFont c={colors.blue}> My Wallet</LinkFont>
           </ULink>
         </View>
 
-        <ProfileDetailsContainer>
-          <StyledAvatar user={user} size={8} noName />
+        <View fdirection={'row'} align={'center'}>
+          <UAvatar user={user} size={8} noName />
           <WalletInfo>
-            <ULink to="/user/wallet" styles={walletLinkStyles}>
-              <RStat user={user} />
-              <CoinStat user={user} isOwner={true} />
+            <ULink to="/user/wallet">
+              <View fdirection={'row'}>
+                <RStat user={user} align="center" />
+                <CoinStat user={user} isOwner={true} align="center" />
+              </View>
             </ULink>
-            <PendingPayouts>
-              <Text>Pending Rewards: </Text>
+            <View fdirection={'row'} align={'baseline'} color={colors.grey} mt={2}>
+              <SecondaryText fs={1.5}>Pending Rewards: </SecondaryText>
               <CoinStat
-                size={1.25}
-                size={1.25}
+                size={1.5}
                 mr={1.5}
-                inheritfont={1}
+                fs={1.5}
+                secondary
                 amount={pendingPayouts}
-                align="baseline"
+                align={'baseline'}
               />
-            </PendingPayouts>
+            </View>
           </WalletInfo>
-        </ProfileDetailsContainer>
-      </ProfileContainer>
+        </View>
+      </View>
     );
   }
 }
@@ -130,9 +82,7 @@ const mapStateToProps = state => ({
   earnings: state.earnings
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    {}
-  )(NavProfile)
-);
+export default connect(
+  mapStateToProps,
+  {}
+)(NavProfile);

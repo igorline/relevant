@@ -388,10 +388,7 @@ exports[`Snapshot Balance Web 1`] = `
           }
         }
       >
-        <span
-          align="center"
-          dir="auto"
-          mr={1.5}
+        <div
           style={
             Object {
               "WebkitAlignItems": "center",
@@ -402,26 +399,25 @@ exports[`Snapshot Balance Web 1`] = `
               "WebkitFlexDirection": "row",
               "WebkitFlexShrink": 0,
               "alignItems": "center",
+              "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "inherit",
               "display": "flex",
               "flexBasis": "auto",
               "flexDirection": "row",
               "flexShrink": 0,
-              "fontFamily": "inherit",
-              "fontSize": "inherit",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "inherit",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "10.8px",
               "marginTop": "0px",
+              "minHeight": "0px",
+              "minWidth": "0px",
               "msFlexAlign": "center",
               "msFlexDirection": "row",
               "msFlexNegative": 0,
@@ -431,9 +427,7 @@ exports[`Snapshot Balance Web 1`] = `
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "inherit",
-              "wordWrap": "break-word",
+              "zIndex": 0,
             }
           }
         >
@@ -462,7 +456,7 @@ exports[`Snapshot Balance Web 1`] = `
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "32.4px",
+                "height": "29.16px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "8.1px",
@@ -480,7 +474,7 @@ exports[`Snapshot Balance Web 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "width": "32.4px",
+                "width": "35.64px",
                 "zIndex": 0,
               }
             }
@@ -554,8 +548,6 @@ exports[`Snapshot Balance Web 1`] = `
           </div>
           <span
             dir="auto"
-            inheritfont={1}
-            lineheight={null}
             style={
               Object {
                 "WebkitFlexBasis": "auto",
@@ -569,12 +561,12 @@ exports[`Snapshot Balance Web 1`] = `
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexShrink": 0,
-                "fontFamily": "inherit",
-                "fontSize": "'inherit'",
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "12.6px",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "lineHeight": "'inherit'",
+                "lineHeight": "16.799999999999997px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
@@ -594,7 +586,7 @@ exports[`Snapshot Balance Web 1`] = `
           >
             111
           </span>
-        </span>
+        </div>
       </div>
     </div>
   </div>

@@ -19,7 +19,7 @@ export default function PostInfo(props) {
   }
   if (!post) return null;
   const imageUrl = get(link, 'image') || null;
-  const favIcon = link.domain && getFavIcon(link.domain);
+  const favIcon = link && link.domain && getFavIcon(link.domain);
 
   const title = getTitle({ post, link, firstPost });
 

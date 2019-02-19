@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
 import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
-import { colors, layout, sizing } from 'app/styles';
-import { Text } from 'modules/styled/web';
+import { colors, layout, mixins } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
+import ULink from 'modules/navigation/ULink.component';
+import { Image, View } from 'modules/styled/web';
 
 const SideNavContent = styled.div`
   position: sticky;
@@ -24,6 +24,9 @@ const SideNavContent = styled.div`
 `;
 
 const SideNavScroll = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   overflow: scroll;
   width: ${layout.sideNavWidth};
 `;
@@ -32,47 +35,32 @@ const SideNavSection = styled.div`
   ${layout.universalBorder('bottom')}
 `;
 
-const LogoContainer = styled(SideNavSection)`
-  height: ${layout.headerHeight};
-  display: flex;
-  padding-left: ${sizing(4)};
-  align-items: center;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  width: ${layout.sideNavWidth};
+const LogoContainer = styled.div`
+  position: sticky;
   background: ${colors.secondaryBG};
-  ${layout.universalBorder('right')}
-`;
-
-const StyledLink = styled(Link)`
-  display: flex;
-`;
-
-const StyledImg = styled.img`
-  max-width: 100%;
-  height: ${sizing(4)};
-`;
-
-const GetStarted = styled(Text)`
-  cursor: pointer;
-  margin-top: ${sizing(1.8)};
-  margin-left: ${sizing(1)};
+  height: ${layout.headerHeight};
+  top: 0;
+  z-index: 10;
+  ${mixins.border}
 `;
 
 const SideNav = props => {
-  const openHelpModal = props.actions.showModal;
   const logoLink = '/relevant/new';
   return (
     <SideNavContent className={props.className}>
       <SideNavScroll>
-        <LogoContainer>
-          <StyledLink to={logoLink}>
-            <StyledImg src={'/img/logo.svg'} alt={'Relevant'} />
-            <GetStarted onClick={() => openHelpModal('onboarding')}>
-              <img src={'/img/info.svg'} />
-            </GetStarted>
-          </StyledLink>
+        <LogoContainer br bb>
+          <ULink align={'flex-start'} to={logoLink}>
+            <View pl={4} h={layout.headerHeight} align={'center'} fdirection={'row'}>
+              <Image
+                h={4}
+                w={22}
+                resizeMode={'contain'}
+                src={require('app/public/img/logo-opt.png')}
+                alt={'Relevant'}
+              />
+            </View>
+          </ULink>
         </LogoContainer>
         <SideNavSection>
           <NavProfileComponent />

@@ -19,16 +19,17 @@ export function transtionConfig() {
 
 export const withProps = component => {
   const Comp = component;
-  return (navProps) => <Comp
-    navigation={navProps.navigation}
-    {...navProps.screenProps}
-  />;
+  return navProps => <Comp navigation={navProps.navigation} {...navProps.screenProps} />;
 };
 
 let _navigator;
 
 export function setTopLevelNavigator(navigatorRef) {
   _navigator = navigatorRef;
+}
+
+export function getNavigator() {
+  return _navigator;
 }
 
 export function dispatchNavigatorAction(action) {
