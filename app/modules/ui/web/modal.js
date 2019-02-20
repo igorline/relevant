@@ -48,15 +48,33 @@ const CloseButton = styled(Image)`
 export default class ModalComponent extends Component {
   static propTypes = {
     header: PropTypes.object,
-    title: PropTypes.string,
+    title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     visible: PropTypes.bool,
+    hideX: PropTypes.bool,
     close: PropTypes.func,
     children: PropTypes.node,
     footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
+  constructor(props) {
+    super(props);
+    this.escFunction = this.escFunction.bind(this);
+  }
+  escFunction(event) {
+    if (event.keyCode === 27) {
+      if (this.props.visible) {
+        this.props.close();
+      }
+    }
+  }
+  componentDidMount() {
+    document.addEventListener('keydown', this.escFunction, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.escFunction, false);
+  }
 
   render() {
-    const { close, footer, children } = this.props;
+    const { close, footer, children, hideX } = this.props;
     const header = this.props.header || this.props.title;
     if (!this.props.visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
@@ -64,14 +82,16 @@ export default class ModalComponent extends Component {
       <ModalParent>
         <ModalScroll>
           <Modal bg={colors.white} w={95} p={'6'}>
-            <Touchable onPress={() => close()}>
-              <CloseButton
-                w={3}
-                h={3}
-                resizeMode={'contain'}
-                source={require('app/public/img/x.png')}
-              />
-            </Touchable>
+            {hideX ? null : (
+              <Touchable onPress={() => close()}>
+                <CloseButton
+                  w={3}
+                  h={3}
+                  resizeMode={'contain'}
+                  source={require('app/public/img/x.png')}
+                />
+              </Touchable>
+            )}
             {header ? <Header>{this.props.header || this.props.title}</Header> : null}
             {children && <View mt={3}>{children}</View>}
             {footerEl && <View mt={6}>{footerEl}</View>}

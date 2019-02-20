@@ -16,7 +16,7 @@ export class Splash extends Component {
     return (
       <div className="splashContainer">
         <Marquee {...this.props} />
-        <SplashComponent {...this.props} hideCloseButton />
+        <SplashComponent {...this.props} hideCloseButton cta="INVITE" />
         <Mission />
       </div>
     );

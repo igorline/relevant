@@ -5,7 +5,7 @@ import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 
 const props = {
-  cta: <div> CTA WORKS</div>
+  cta: 'SIGN_UP'
 };
 
 test('Snapshot SplashComponent', () => {

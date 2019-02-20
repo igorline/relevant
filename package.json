@@ -140,7 +140,7 @@
     "readability": "git+https://github.com/balasan/readability-1.git",
     "redux": "^3.7.2",
     "redux-auth-wrapper": "^2.0.2",
-    "redux-form": "^7.3.0",
+    "redux-form": "^7.4.2",
     "redux-saga": "^0.16.0",
     "redux-socket.io": "=1.2.0",
     "redux-thunk": "^2.0.1",

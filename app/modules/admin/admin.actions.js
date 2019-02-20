@@ -96,7 +96,7 @@ export function createInvite(invite) {
     .then(response => response.json())
     .then(responseJSON => {
       dispatch(updateInvite(responseJSON));
-      Alert.alert('Invitation email has been sent');
+      Alert.alert('Invitation email has been sent', 'success');
       return responseJSON;
     })
     .catch(error => {

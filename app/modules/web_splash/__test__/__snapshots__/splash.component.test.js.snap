@@ -511,8 +511,168 @@ exports[`Snapshot SplashComponent 1`] = `
         }
       }
     >
-      <div>
-         CTA WORKS
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "horizontal",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "row",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "row",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "row",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
+      >
+        <a
+          className=""
+          href="/user/login"
+          onClick={[Function]}
+          styles=""
+        >
+          <div
+            dir="auto"
+            mr={4}
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxPack": "center",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "WebkitJustifyContent": "center",
+                "alignItems": "center",
+                "backgroundColor": "rgba(0,0,255,1.00)",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(255,255,255,1.00)",
+                "cursor": "pointer",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue-Medium",
+                "fontSize": "10.8px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "height": "43.2px",
+                "justifyContent": "center",
+                "lineHeight": "inherit",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "28.8px",
+                "marginTop": "0px",
+                "minWidth": "129.6px",
+                "msFlexAlign": "center",
+                "msFlexNegative": 0,
+                "msFlexPack": "center",
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "14.4px",
+                "paddingRight": "14.4px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            Login
+          </div>
+        </a>
+        <a
+          className=""
+          href="/user/signup"
+          onClick={[Function]}
+          styles=""
+        >
+          <div
+            dir="auto"
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxPack": "center",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "WebkitJustifyContent": "center",
+                "alignItems": "center",
+                "backgroundColor": "rgba(0,0,255,1.00)",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(255,255,255,1.00)",
+                "cursor": "pointer",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue-Medium",
+                "fontSize": "10.8px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "height": "43.2px",
+                "justifyContent": "center",
+                "lineHeight": "inherit",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "minWidth": "129.6px",
+                "msFlexAlign": "center",
+                "msFlexNegative": 0,
+                "msFlexPack": "center",
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "14.4px",
+                "paddingRight": "14.4px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            Sign Up
+          </div>
+        </a>
       </div>
     </div>
   </div>

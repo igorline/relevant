@@ -88,6 +88,14 @@ export default class Profile extends Component {
                   to="/settings"
                   hc={colors.secondaryText}
                   styles={linkStyle}
+                  onPress={e => {
+                    e.preventDefault();
+                    actions.showModal('settings');
+                  }}
+                  onClick={e => {
+                    e.preventDefault();
+                    actions.showModal('settings');
+                  }}
                 >
                   <Text fdirection="row" align="center">
                     <View mr={sizing(0.5)}>
@@ -104,6 +112,14 @@ export default class Profile extends Component {
                   to="/invites"
                   hc={colors.secondaryText}
                   styles={linkStyle}
+                  onPress={e => {
+                    e.preventDefault();
+                    actions.showModal('invite');
+                  }}
+                  onClick={e => {
+                    e.preventDefault();
+                    actions.showModal('invite');
+                  }}
                 >
                   <Text fdirection="row" align="center" ml={sizing(1)}>
                     <View mr={sizing(0.5)}>

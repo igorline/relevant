@@ -15,6 +15,7 @@ import tooltip from 'modules/tooltip/tooltip.reducer';
 import error from 'modules/ui/error.reducer';
 import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
+import { reducer as formReducer } from 'redux-form';
 
 import socket from './socket.reducer';
 import view from './view.reducer';
@@ -36,6 +37,7 @@ const appReducer = combineReducers({
   posts,
   user,
   socket,
+  form: formReducer,
   notif,
   error,
   animation,
@@ -60,13 +62,7 @@ const appReducer = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
     if (process.env.WEB !== 'true') {
-      let {
-        auth,
-        community,
-        socket,
-        earnings,
-        navigation
-      } = state;
+      let { auth, community, socket, earnings, navigation, form } = state;
 
       if (auth.community) {
         communityState = {
@@ -96,7 +92,8 @@ const rootReducer = (state, action) => {
         transactionStack,
         web3,
         accounts,
-        accountBalances
+        accountBalances,
+        form
       } = state;
 
       if (auth.community) {
