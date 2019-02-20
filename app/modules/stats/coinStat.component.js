@@ -23,6 +23,8 @@ function CoinStat(props) {
     amount,
     mr,
     align,
+
+    noNumber,
     secondary,
     fs,
     lh,
@@ -62,9 +64,12 @@ function CoinStat(props) {
         // style={{ bottom: imageMarginBottom }}
         resizeMode="contain"
       />
-      <NumberStyle fs={fs} lh={lh} inline={inline}>
-        {abbreviateNumber(tokens) || 0}
-      </NumberStyle>
+
+      {noNumber ? null : (
+        <NumberStyle fs={fs} lh={lh} inline={inline}>
+          {abbreviateNumber(tokens) || 0}
+        </NumberStyle>
+      )}
     </Wrapper>
   );
 }
@@ -81,7 +86,8 @@ CoinStat.propTypes = {
   isOwner: PropTypes.bool,
   wallet: PropTypes.object,
   align: PropTypes.string,
-  lineheight: PropTypes.string
+  lineheight: PropTypes.string,
+  noNumber: PropTypes.bool
 };
 
 export default props => (

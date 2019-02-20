@@ -111,15 +111,10 @@ class App extends Component {
     let { globalModal } = this.props;
     if (!globalModal) return null;
     globalModal = modals[globalModal] || globalModal;
+    const { Body } = globalModal;
     return (
-      <Modal
-        title={globalModal.title}
-        header={globalModal.header}
-        footer={globalModal.footer}
-        close={() => this.props.actions.hideModal()}
-        visible
-      >
-        {globalModal.body}
+      <Modal {...globalModal} close={() => this.props.actions.hideModal()} visible>
+        <Body close={() => this.props.actions.hideModal()} />
       </Modal>
     );
   }

@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { InlineText, Text, View, Touchable } from 'modules/styled/uni';
+import { InlineText, Text, View, Touchable, Button } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { colors, fonts, sizing } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
+import InviteCta from 'modules/web_splash/inviteCta.component';
+
+const SignUpCta = () => (
+  <View display="flex" fdirection="row">
+    <ULink to="/user/login">
+      <Button mr={4}>Login</Button>
+    </ULink>
+    <ULink to="/user/signup">
+      <Button>Sign Up</Button>
+    </ULink>
+  </View>
+);
+
+const CTA = {
+  INVITE: InviteCta,
+  SIGN_UP: SignUpCta
+};
 
 const Wrapper = styled(View)`
   position: relative;
@@ -43,7 +60,7 @@ if (process.env.BROWSER === true) {
 
 export default class Splash extends Component {
   static propTypes = {
-    cta: PropTypes.node,
+    cta: PropTypes.oneOf(Object.keys(CTA)),
     hideCloseButton: PropTypes.bool
   };
 
@@ -100,6 +117,7 @@ export default class Splash extends Component {
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
+    const CtaComponent = CTA[cta];
     return (
       <Wrapper
         ref={c => (this.container = c)}
@@ -144,7 +162,11 @@ export default class Splash extends Component {
               </SubHeader>
             </View>
           </section>
-          <View pb={8}>{cta}</View>
+          {CtaComponent ? (
+            <View pb={8}>
+              <CtaComponent />
+            </View>
+          ) : null}
         </View>
         <View className="phone" flexshrink={1}>
           <img ref={c => (this.phone = c)} src={img} alt="phone" />

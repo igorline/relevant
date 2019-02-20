@@ -150,6 +150,13 @@ export function setPosts(data, type, index) {
   };
 }
 
+export function setPostsSimple(data) {
+  return {
+    type: types.SET_POSTS_SIMPLE,
+    payload: { data }
+  };
+}
+
 export function getFeed(skip, _tag) {
   if (!skip) skip = 0;
   const type = 'feed';

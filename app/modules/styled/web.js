@@ -67,6 +67,7 @@ export const ImageWrapper = styled.span`
 export const Divider = styled.div`
   ${mixins.margin}
   ${mixins.padding}
+  ${mixins.width}
   ${layout.universalBorder('bottom')}
 `;
 
@@ -111,6 +112,16 @@ export const BodyText = styled(Text)`
   ${mixins.font}
 `;
 
-export const Button = styled(Text)`
-  ${layout.button}
+export const Button = styled.button`
+${layout.button}
+${p =>
+    p.disabled
+      ? `
+    color: ${colors.white};
+    background: ${colors.grey};
+    `
+      : ''};
+${mixins.background}
+${mixins.padding}
+${mixins.color}
 `;

@@ -1,12 +1,12 @@
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api } from 'app/utils';
-// import { postSchema } from 'modules/post/post.actions';
+import { postSchema, setPostsSimple } from 'modules/post/post.actions';
 
 const earningSchema = new schema.Entity(
   'earnings',
   {
-    // post: postSchema,
+    post: postSchema
   },
   { idAttribute: '_id' }
 );
@@ -31,7 +31,9 @@ export function getEarnings(status, limit, skip) {
         }
       });
       const data = normalize(earnings, [earningSchema]);
-      return dispatch(setEarnings({ data, status }));
+      dispatch(setEarnings({ data, status }));
+      dispatch(setPostsSimple(data));
+      return true;
     } catch (error) {
       return false;
     }

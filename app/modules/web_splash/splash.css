@@ -176,18 +176,21 @@ panel {
 .cta {
   font-family: Arial;
   font-weight: bold;
-  font-size: 120px;
+  font-size: 60px;
+  line-height: 1.2;
 
   justify-content: center;
   align-items: center;
   justify-content: center;
   align-items: center;
+  text-align: center;
   color: $blue;
   cursor: pointer;
   padding: 40px 50px;
+  margin: 50px;
+  margin-bottom: 100px;
   box-shadow: 5px 5px 0px 0px $blue;
   border: 2px solid $blue;
-  margin-bottom: 100px;
 }
 
 marrow img{
@@ -685,6 +688,8 @@ b {
 
   .cta {
     font-size: 40px;
+    line-height: 1.2;
+    line-height: 2;
   }
 
 }

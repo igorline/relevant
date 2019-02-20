@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Avatar from 'modules/user/web/avatar.component';
-import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 // import Activity from 'modules/activity/web/activity.container';
@@ -126,25 +125,8 @@ class AppHeader extends Component {
   renderSubHeaer() {
     const loggedIn = this.props.auth.isAuthenticated;
     let cta;
-
-    const signup = (
-      <div className="signupCTA">
-        <div className="basicButton">
-          <a
-            target="_blank"
-            href="https://hackernoon.com/relevant-an-introduction-5b79ef7afa9"
-          >
-            Read more about Relevant
-          </a>
-        </div>
-        <Link to="/user/signup">
-          <ShadowButton>Sign Up</ShadowButton>
-        </Link>
-      </div>
-    );
-
     if (!loggedIn) {
-      cta = <SplashComponent type={'app'} cta={signup} />;
+      cta = <SplashComponent type={'app'} cta="SIGN_UP" />;
     }
     return cta;
   }

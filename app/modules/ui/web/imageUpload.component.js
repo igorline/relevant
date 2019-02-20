@@ -8,7 +8,8 @@ const Alert = alert.Alert();
 export default class ImageUpload extends Component {
   static propTypes = {
     placeholder: PropTypes.node,
-    imageComponent: PropTypes.node
+    imageComponent: PropTypes.node,
+    onChange: PropTypes.func
   };
 
   state = {
@@ -27,6 +28,7 @@ export default class ImageUpload extends Component {
       .split(';')[0];
       const name = file.name.substr(0, extension.lastIndexOf('.')) + '.' + extension;
       this.setState({ preview: dataURL, fileName: name });
+      this.props.onChange({ preview: dataURL, fileName: name });
     })
     .catch(e => {
       // console.log(e);
@@ -41,6 +43,7 @@ export default class ImageUpload extends Component {
     }
     const upload = await s3.toS3Advanced(this.state.preview, this.state.fileName);
     this.setState({ preview: null, fileName: null });
+    this.props.onChange(upload);
     return upload;
   }
 

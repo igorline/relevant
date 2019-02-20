@@ -9,7 +9,7 @@ export default function() {
     <footer>
       <div className="footerIconContainer">
         <a href="https://twitter.com/relevantfeed" target="_blank">
-          <img className="footerIcon" src="/img/twitter.svg" />
+          <img className="footerIcon" src="/img/icons/twitter_white.png" />
         </a>
 
         <a

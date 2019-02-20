@@ -1,6 +1,7 @@
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
+import { setPostsSimple } from 'modules/post/post.actions';
 
 const Alert = alert.Alert();
 
@@ -34,13 +35,6 @@ export function undoPostVote(post) {
   return {
     type: types.UNDO_POST_INVESTMENT,
     payload: post
-  };
-}
-
-export function setPosts(data) {
-  return {
-    type: 'SET_POSTS_SIMPLE',
-    payload: { data }
   };
 }
 
@@ -115,7 +109,7 @@ export function getInvestments(userId, skip, limit) {
         query: { skip, limit }
       });
       const data = normalize({ investments: res }, { investments: [investmentSchema] });
-      dispatch(setPosts(data));
+      dispatch(setPostsSimple(data));
       dispatch(setInvestments(data, userId, skip));
     } catch (err) {
       // console.log(err);

@@ -10,6 +10,7 @@ import Profile from 'modules/profile/profile.component';
 import UserPosts from 'modules/profile/web/userPosts.component';
 import { Divider } from 'modules/styled/uni';
 import { sizing } from 'app/styles';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 const pageSize = 10;
 
@@ -18,13 +19,13 @@ class ProfileContainer extends Component {
     actions: PropTypes.object.isRequired,
     match: PropTypes.object,
     usersState: PropTypes.object.isRequired,
-    auth: authProps,
+    auth: authProps
   };
 
   state = {
     user: {},
-    isOwner: false,
-  }
+    isOwner: false
+  };
 
   static getDerivedStateFromProps(props) {
     const { auth, match, usersState } = props;
@@ -43,10 +44,10 @@ class ProfileContainer extends Component {
   }
 
   // Get array of posts based on userid param in route
-  grabPosts = (l) => {
+  grabPosts = l => {
     const { id } = this.props.match.params;
     this.props.actions.getUserPosts(l || 0, pageSize, id);
-  }
+  };
 
   componentDidMount() {
     this.grabUser();
@@ -62,11 +63,7 @@ class ProfileContainer extends Component {
   render() {
     return (
       <div style={{ flex: 1 }}>
-        <Profile
-          key={this.state.user._id + 'profile'}
-          {...this.props}
-          {...this.state}
-        />
+        <Profile key={this.state.user._id + 'profile'} {...this.props} {...this.state} />
         <Divider m={sizing(4)} />
         <UserPosts
           key={this.state.user._id}
@@ -87,7 +84,7 @@ const mapStateToProps = state => ({
   posts: state.posts,
   investments: state.investments,
   myPostInv: state.investments.myPostInv,
-  community: state.community,
+  community: state.community
 });
 
 const mapDispatchToProps = dispatch =>
@@ -102,6 +99,7 @@ const mapDispatchToProps = dispatch =>
             ...UserActions,
             ...PostActions,
             logoutAction,
+            showModal
           }
         ),
         dispatch

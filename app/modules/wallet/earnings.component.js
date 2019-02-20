@@ -89,7 +89,6 @@ export class Earnings extends Component {
                   data-tip={JSON.stringify({
                     type: 'EARNING',
                     props: {
-                      text: 'Claim your tokens!',
                       earning
                     }
                   })}
