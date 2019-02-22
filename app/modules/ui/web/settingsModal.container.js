@@ -6,29 +6,26 @@ import { connect } from 'react-redux';
 import { updateUser } from 'modules/auth/auth.actions';
 import { bindActionCreators } from 'redux';
 import SettingsModalComponent from 'modules/ui/web/settingsModal.component';
+import { browserAlerts } from 'app/utils/alert';
 
 class SettingsModalContainer extends Component {
   submit = async vals => {
-    const allVals = Object.assign({}, vals);
-    if (allVals.image && allVals.image.preview && allVals.image.fileName) {
-      try {
+    try {
+      const allVals = Object.assign({}, vals);
+      const { actions, close } = this.props;
+      if (allVals.image && allVals.image.preview && allVals.image.fileName) {
         const image = await s3.toS3Advanced(
           allVals.image.preview,
           allVals.image.fileName
         );
         allVals.image = image.url;
-        try {
-          const { actions, close } = this.props;
-          const resp = await actions.updateUser(allVals);
-          if (resp) {
-            close();
-          }
-        } catch (err) {
-          // TODO: handle
-        }
-      } catch (err) {
-        // TODO: handle image failure
       }
+      const resp = await actions.updateUser(allVals);
+      if (resp) {
+        close();
+      }
+    } catch (err) {
+      browserAlerts.alert(err);
     }
   };
   render() {

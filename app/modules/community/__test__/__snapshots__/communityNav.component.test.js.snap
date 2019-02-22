@@ -23,7 +23,7 @@ exports[`Snapshot NavProfile 1`] = `
   color: #999999;
 }
 
-.c1:hover {
+.c1:hover * {
   color: #000000;
 }
 
@@ -31,7 +31,7 @@ exports[`Snapshot NavProfile 1`] = `
   fill: #000000;
 }
 
-.c1.active {
+.c1.active * {
   color: #000000;
 }
 
@@ -168,7 +168,7 @@ exports[`Snapshot NavProfile 1`] = `
       Community
     </div>
     <a
-      className="c0"
+      className="ulink-mock c0"
       href="/relevant/new"
       onClick={[Function]}
       styles={
@@ -548,7 +548,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="c1"
+            className="ulink-mock c1"
             color="#999999"
             hc="#000000"
             href="/relevant/new/technology"
@@ -640,7 +640,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="c1"
+            className="ulink-mock c1"
             color="#999999"
             hc="#000000"
             href="/relevant/new/society"
@@ -732,7 +732,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="c1"
+            className="ulink-mock c1"
             color="#999999"
             hc="#000000"
             href="/relevant/new/culture"
@@ -824,7 +824,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="c1"
+            className="ulink-mock c1"
             color="#999999"
             hc="#000000"
             href="/relevant/new/politics"
@@ -916,7 +916,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="c1"
+            className="ulink-mock c1"
             color="#999999"
             hc="#000000"
             href="/relevant/new/altwoke"
@@ -1104,7 +1104,7 @@ exports[`Snapshot NavProfile 1`] = `
     }
   >
     <a
-      className="c0"
+      className="ulink-mock c0"
       href="/crypto/new"
       onClick={[Function]}
       styles={

@@ -92,7 +92,7 @@ exports[`Snapshot other users Profile 1`] = `
     }
   >
     <a
-      className=""
+      className="ulink-mock "
       href="/user/profile/alice"
       onClick={[Function]}
       styles=""
@@ -1117,7 +1117,7 @@ exports[`Snapshot own Profile 1`] = `
   text-decoration-color: #000000;
 }
 
-.c1:hover {
+.c1:hover * {
   color: #999999;
 }
 
@@ -1216,7 +1216,7 @@ exports[`Snapshot own Profile 1`] = `
     }
   >
     <a
-      className=""
+      className="ulink-mock "
       href="/user/profile/alice"
       onClick={[Function]}
       styles=""
@@ -2135,7 +2135,7 @@ exports[`Snapshot own Profile 1`] = `
         }
       >
         <a
-          className="c0"
+          className="ulink-mock c0"
           color="#0000ff"
           href="/"
           onClick={[Function]}
@@ -2318,7 +2318,7 @@ exports[`Snapshot own Profile 1`] = `
       >
         <a
           c="#000000"
-          className="c1"
+          className="ulink-mock c1"
           hc="#999999"
           href="/settings"
           onClick={[Function]}
@@ -2494,7 +2494,7 @@ exports[`Snapshot own Profile 1`] = `
       >
         <a
           c="#000000"
-          className="c1"
+          className="ulink-mock c1"
           hc="#999999"
           href="/invites"
           onClick={[Function]}
