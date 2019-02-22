@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
-import SingleComment from 'modules/comment/web/singleComment.container';
 import { View } from 'modules/styled/uni';
 import { routing } from 'app/utils';
 
@@ -62,16 +61,10 @@ class UserPosts extends Component {
             repost={repost}
             postUser={postUser}
             {...this.props}
-          >
-            <SingleComment
-              comment={post}
-              community={community._id}
-              postUrl={postUrl}
-              parentPostId={parentPost ? parentPost.id : null}
-              hidePostButtons
-              hideBorder
-            />
-          </PostComponent>
+            comment={post}
+            community={community._id}
+            postUrl={postUrl}
+          />
         </View>
       );
     });

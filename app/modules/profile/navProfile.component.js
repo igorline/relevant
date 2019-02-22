@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
-// import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
+import { showModal } from 'modules/navigation/navigation.actions';
+
 import { sizing, colors } from 'app/styles';
 import styled from 'styled-components/primitives';
-import { Header, View, LinkFont, SecondaryText } from 'modules/styled/uni';
+import { Header, View, LinkFont, SecondaryText, CTALink } from 'modules/styled/uni';
 
 const WalletInfo = styled.View`
   display: flex;
@@ -22,11 +24,12 @@ export class NavProfile extends Component {
   static propTypes = {
     user: PropTypes.object,
     earnings: PropTypes.object,
-    mobile: PropTypes.bool
+    mobile: PropTypes.bool,
+    actions: PropTypes.object
   };
 
   render() {
-    const { user, earnings, mobile } = this.props;
+    const { user, earnings, mobile, actions } = this.props;
     if (!user) return null;
 
     // TODO optimize this so its not on every render?
@@ -43,14 +46,14 @@ export class NavProfile extends Component {
 
     return (
       <View p={p} pb={p + 1}>
-        <View fdirection={'row'} align={'baseline'} justify={'space-between'}>
-          <Header mb={3}>{user.name}</Header>
+        <View fdirection={'row'} justify="space-between" align="center">
+          <Header>{user.name}</Header>
           <ULink to="/user/wallet">
             <LinkFont c={colors.blue}> My Wallet</LinkFont>
           </ULink>
         </View>
 
-        <View fdirection={'row'} align={'center'}>
+        <View fdirection={'row'} align={'center'} mt={4}>
           <UAvatar user={user} size={8} noName />
           <WalletInfo>
             <ULink to="/user/wallet">
@@ -66,11 +69,53 @@ export class NavProfile extends Component {
                 mr={1.5}
                 fs={1.5}
                 secondary
+                c={colors.black}
                 amount={pendingPayouts}
                 align={'baseline'}
               />
             </View>
           </WalletInfo>
+        </View>
+
+        <View fdirection={'row'} align={'baseline'} mt={3}>
+          {user.twitterId ? null : (
+            <ULink
+              to="/user/wallet"
+              c={colors.blue}
+              td={'underline'}
+              c={colors.blue}
+              hc={colors.black}
+              onPress={e => {
+                e.preventDefault();
+                actions.showModal('getTokens');
+              }}
+              onClick={e => {
+                e.preventDefault();
+                actions.showModal('getTokens');
+              }}
+            >
+              <CTALink c={colors.blue} hc={colors.black}>
+                Get Tokens
+              </CTALink>
+            </ULink>
+          )}
+          <ULink
+            to="/user/wallet"
+            ml={1}
+            c={colors.blue}
+            td={'underline'}
+            hc={colors.black}
+            onPress={e => {
+              e.preventDefault();
+              actions.showModal('invite');
+            }}
+            onClick={e => {
+              e.preventDefault();
+              actions.showModal('invite');
+            }}
+          >
+            <CTALink c={colors.blue}>Invite Friends</CTALink>
+          </ULink>
         </View>
       </View>
     );
@@ -82,7 +127,16 @@ const mapStateToProps = state => ({
   earnings: state.earnings
 });
 
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      showModal
+    },
+    dispatch
+  )
+});
+
 export default connect(
   mapStateToProps,
-  {}
+  mapDispatchToProps
 )(NavProfile);

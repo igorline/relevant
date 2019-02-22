@@ -49,6 +49,7 @@ exports.get = async (req, res, next) => {
           match: {
             // TODO implement intra-community commentary
             community,
+            type: 'post',
 
             // TODO - we should probably sort the non-community commentary
             // with some randomness on client side

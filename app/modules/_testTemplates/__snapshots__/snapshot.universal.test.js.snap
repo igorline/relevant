@@ -2,7 +2,7 @@
 
 exports[`Snapshot AvatarBox Styled 1`] = `
 <a
-  className="ULinkcomponent__StyledLink-sc-14pazwn-2 cNUVva"
+  className="ulink-mock ULinkcomponent__StyledLink-sc-14pazwn-2 cNUVva"
   href="/user/profile/handle"
   onClick={[Function]}
   styles=""

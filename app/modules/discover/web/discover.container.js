@@ -7,10 +7,6 @@ import get from 'lodash.get';
 import * as authActions from 'modules/auth/auth.actions';
 import * as postActions from 'modules/post/post.actions';
 import * as userActions from 'modules/user/user.actions';
-// import * as adminActions from 'modules/admin/admin.actions';
-// import * as notifActions from 'modules/activity/activity.actions';
-// import * as tagActions from 'modules/tag/tag.actions';
-// import * as investActions from 'modules/post/invest.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import { sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
@@ -214,10 +210,6 @@ function mapDispatchToProps(dispatch) {
         ...postActions,
         ...userActions,
         ...navigationActions
-        // ...notifActions,
-        // ...investActions,
-        // ...tagActions,
-        // ...adminActions,
       },
       dispatch
     )

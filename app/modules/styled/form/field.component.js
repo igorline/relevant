@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, LinkFont, SecondaryText } from 'modules/styled/web';
-import { colors, mixins } from 'app/styles';
-import styled from 'styled-components';
-
-const Input = styled.input`
-  ${mixins.padding}
-`;
+import { View, LinkFont, SecondaryText, Input } from 'modules/styled/web';
+import { colors } from 'app/styles';
 
 const FormField = props => {
   const {
@@ -29,12 +24,10 @@ const FormField = props => {
         type={type}
         placeholder={placeholder}
         value={value}
-        p="2 2"
         onChange={onChange}
         onBlur={onBlur}
         onFocus={onFocus}
         onKeyDown={onKeyDown}
-        mt={1}
       />
       {error ? (
         <SecondaryText c={colors.red} mt={1}>

@@ -11,8 +11,8 @@ function size(units) {
 }
 
 export const color = css`
-  ${p => (p.c ? `color: ${p.c}` : '')};
-  ${p => (p.c ? `text-decoration-color: ${p.c}` : '')};
+  ${p => (p.c ? `color: ${p.c};` : '')};
+  ${p => (p.c ? `text-decoration-color: ${p.c};` : '')};
 `;
 
 export const padding = css`
@@ -35,8 +35,12 @@ export const font = css`
   ${p => (p.fs ? `font-size: ${size(p.fs)}` : '')};
   ${p => (p.lh ? `line-height: ${size(p.lh)}` : '')};
   ${p => (p.fw ? `font-weight: ${p.fw}` : '')};
-  ${p => (p.ff ? `font-famimly: ${p.ff}` : '')};
+  ${p => (p.ff ? `font-family: ${p.ff}` : '')};
   ${p => (p.td ? `text-decoration: ${p.td}; }` : '')};
+`;
+
+export const display = css`
+  ${p => (p.d ? `display: ${p.d}` : '')};
 `;
 
 export const inheritfont = css`
@@ -102,10 +106,14 @@ export const flex = css`
 
 export const link = css`
   ${p => (p.color ? `color: ${p.color}` : '')};
-  ${p => (p.hc ? `&:hover { color: ${p.hc}; }` : '')};
+  ${p => (p.hc ? `&:hover * { color: ${p.hc}; }` : '')};
   ${p => (p.hc ? `&:hover * { fill: ${p.hc}; }` : '')};
-  ${p => (p.ac ? `&.active { color: ${p.ac}; }` : '')};
+  ${p => (p.ac ? `&.active * { color: ${p.ac}; }` : '')};
   ${p => (p.ac ? `&.active * { fill: ${p.ac}; }` : '')};
   ${p => (p.cursor ? `cursor: ${p.cursor}; }` : '')};
   ${p => (p.td ? `text-decoration: ${p.td}; }` : '')};
+`;
+
+export const zIndex = css`
+  ${p => (p.zIndex ? `z-index: ${p.zIndex}` : '')};
 `;

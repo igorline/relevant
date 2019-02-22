@@ -10,6 +10,7 @@ export const View = styled.View`
   ${mixins.border}
   ${mixins.width}
   ${mixins.height}
+  ${mixins.zIndex}
 `;
 
 export const Text = styled.Text`
@@ -74,6 +75,13 @@ export const LinkFont = styled(Text)`
   ${mixins.font}
 `;
 
+export const CTALink = styled(Text)`
+  ${fonts.CTALink}
+  ${mixins.link}
+  ${mixins.color}
+  ${mixins.font}
+`;
+
 export const SecondaryText = styled(Text)`
   ${fonts.secondaryText}
   ${mixins.color}
@@ -90,6 +98,7 @@ export const CommentText = styled(Text)`
   ${fonts.commentText}
   ${mixins.color}
   ${mixins.font}
+  z-index: 1;
 `;
 
 export const BodyText = styled(Text)`
@@ -138,4 +147,18 @@ export const NumericalValue = styled(Text)`
 export const MobileDivider = styled(View)`
   height: ${sizing(4)};
   background-color: ${colors.dividerBg};
+`;
+
+const NESTING_UNIT = 8;
+
+export const Spacer = styled(View)`
+  flex-direction: row;
+  position: relative;
+  padding-left: ${p => {
+    if (p.nestingLevel !== undefined && p.nestingLevel !== null) {
+      return sizing(p.nestingLevel * NESTING_UNIT);
+    }
+    return sizing(NESTING_UNIT);
+  }}
+  flex-grow: 1;
 `;
