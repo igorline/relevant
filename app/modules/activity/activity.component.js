@@ -8,8 +8,8 @@ import UAvatar from 'modules/user/UAvatar.component';
 import RStat from 'modules/stats/rStat.component';
 import { View, SecondaryText, BodyText, Divider, Text } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
-// import PostComponent from 'modules/post/web/post.component';
-import PostComponent from 'modules/post/postinfo.component';
+import PostComponent from 'modules/post/web/post.component';
+// import PostComponent from 'modules/post/postinfo.component';
 
 const moment = require('moment');
 

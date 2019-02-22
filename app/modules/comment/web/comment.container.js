@@ -5,20 +5,9 @@ import { connect } from 'react-redux';
 import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
-import styled from 'styled-components/primitives';
-import { sizing, colors } from 'app/styles';
+import { Divider } from 'modules/styled/uni';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
-
-const FormContainer = styled.View`
-  padding: ${sizing(4)};
-  padding-left: ${sizing(12)};
-  background-color: ${colors.secondaryBG};
-`;
-
-if (process.env.BROWSER === true) {
-  require('./comment.css');
-}
 
 class Comments extends Component {
   static propTypes = {
@@ -55,9 +44,15 @@ class Comments extends Component {
     const children = comments.childComments[post._id] || [];
     return (
       <div>
-        <FormContainer>
-          <CommentForm text={'Reply'} {...this.props} parentPost={post} />
-        </FormContainer>
+        <CommentForm
+          additionalNesting={1.5}
+          text={'Comment'}
+          {...this.props}
+          parentPost={post}
+          p={4}
+          isReply
+        />
+        <Divider />
         {children.length !== 0 ? (
           <div>
             {children.map(id => {
@@ -76,8 +71,8 @@ class Comments extends Component {
                   parentPost={post._id}
                   childComments={comments.childComments}
                   posts={posts}
-                  post={post}
-                  nesting={0}
+                  parentPost={post}
+                  nestingLevel={0}
                 />
               );
             })}

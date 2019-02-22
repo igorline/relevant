@@ -1,6 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot NavProfile 1`] = `
+.c0 {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0:hover * {
+  color: #000000;
+}
+
+.c0:hover * {
+  fill: #000000;
+}
+
+.c1 {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  margin-left: 7.2px;
+}
+
+.c1:hover * {
+  color: #000000;
+}
+
+.c1:hover * {
+  fill: #000000;
+}
+
 <div
   style={
     Object {
@@ -47,8 +74,8 @@ exports[`Snapshot NavProfile 1`] = `
   <div
     style={
       Object {
-        "WebkitAlignItems": "baseline",
-        "WebkitBoxAlign": "baseline",
+        "WebkitAlignItems": "center",
+        "WebkitBoxAlign": "center",
         "WebkitBoxDirection": "normal",
         "WebkitBoxOrient": "horizontal",
         "WebkitBoxPack": "justify",
@@ -56,7 +83,7 @@ exports[`Snapshot NavProfile 1`] = `
         "WebkitFlexDirection": "row",
         "WebkitFlexShrink": 0,
         "WebkitJustifyContent": "space-between",
-        "alignItems": "baseline",
+        "alignItems": "center",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "0px",
         "borderLeftStyle": "solid",
@@ -77,7 +104,7 @@ exports[`Snapshot NavProfile 1`] = `
         "marginTop": "0px",
         "minHeight": "0px",
         "minWidth": "0px",
-        "msFlexAlign": "baseline",
+        "msFlexAlign": "center",
         "msFlexDirection": "row",
         "msFlexNegative": 0,
         "msFlexPack": "justify",
@@ -93,7 +120,6 @@ exports[`Snapshot NavProfile 1`] = `
   >
     <div
       dir="auto"
-      mb={3}
       style={
         Object {
           "WebkitFlexBasis": "auto",
@@ -113,7 +139,7 @@ exports[`Snapshot NavProfile 1`] = `
           "fontVariant": "inherit",
           "fontWeight": "inherit",
           "lineHeight": "28.8px",
-          "marginBottom": "21.6px",
+          "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
           "marginTop": "0px",
@@ -133,7 +159,7 @@ exports[`Snapshot NavProfile 1`] = `
       Alice
     </div>
     <a
-      className=""
+      className="ulink-mock "
       href="/user/wallet"
       onClick={[Function]}
       styles=""
@@ -210,7 +236,7 @@ exports[`Snapshot NavProfile 1`] = `
         "marginBottom": "0px",
         "marginLeft": "0px",
         "marginRight": "0px",
-        "marginTop": "0px",
+        "marginTop": "28.8px",
         "minHeight": "0px",
         "minWidth": "0px",
         "msFlexAlign": "center",
@@ -270,7 +296,7 @@ exports[`Snapshot NavProfile 1`] = `
       }
     >
       <a
-        className=""
+        className="ulink-mock "
         href="/user/profile/alice"
         onClick={[Function]}
         styles=""
@@ -445,7 +471,7 @@ exports[`Snapshot NavProfile 1`] = `
       }
     >
       <a
-        className=""
+        className="ulink-mock "
         href="/user/wallet"
         onClick={[Function]}
         styles=""
@@ -1154,18 +1180,20 @@ exports[`Snapshot NavProfile 1`] = `
             />
           </div>
           <div
+            c="#000000"
             dir="auto"
             fs={1.5}
             style={
               Object {
                 "WebkitFlexBasis": "auto",
                 "WebkitFlexShrink": 0,
+                "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
                 "borderBottomWidth": "0px",
                 "borderLeftWidth": "0px",
                 "borderRightWidth": "0px",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "rgba(153,153,153,1.00)",
+                "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexShrink": 0,
@@ -1187,6 +1215,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "paddingTop": "0px",
                 "position": "relative",
                 "textDecoration": "none",
+                "textDecorationColor": "rgba(0,0,0,1.00)",
                 "whiteSpace": "pre-wrap",
                 "wordWrap": "break-word",
               }
@@ -1197,6 +1226,158 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
       </div>
     </div>
+  </div>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "baseline",
+        "WebkitBoxAlign": "baseline",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "horizontal",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "row",
+        "WebkitFlexShrink": 0,
+        "alignItems": "baseline",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "row",
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "marginTop": "21.6px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "baseline",
+        "msFlexDirection": "row",
+        "msFlexNegative": 0,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    <a
+      c="#0000ff"
+      className="ulink-mock c0"
+      hc="#000000"
+      href="/user/wallet"
+      onClick={[Function]}
+      styles=""
+      td="underline"
+    >
+      <div
+        c="#0000ff"
+        dir="auto"
+        hc="#000000"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(0,0,255,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "textDecoration": "none",
+            "textDecorationColor": "rgba(0,0,255,1.00)",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        Get Tokens
+      </div>
+    </a>
+    <a
+      c="#0000ff"
+      className="ulink-mock c1"
+      hc="#000000"
+      href="/user/wallet"
+      ml={1}
+      onClick={[Function]}
+      styles=""
+      td="underline"
+    >
+      <div
+        c="#0000ff"
+        dir="auto"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(0,0,255,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "textDecoration": "none",
+            "textDecorationColor": "rgba(0,0,255,1.00)",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        Invite Friends
+      </div>
+    </a>
   </div>
 </div>
 `;

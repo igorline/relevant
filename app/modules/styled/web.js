@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { mixins, layout, fonts, colors } from 'app/styles';
+import { mixins, layout, fonts, colors, sizing } from 'app/styles';
+import Textarea from 'react-textarea-autosize';
 
 export const StyledNavLink = styled(NavLink)`
   ${fonts.header};
@@ -12,6 +13,7 @@ export const StyledNavLink = styled(NavLink)`
     color: ${colors.black};
   }
   ${mixins.font}
+  ${mixins.display}
   ${mixins.color}
   ${mixins.margin}
 `;
@@ -124,4 +126,35 @@ ${p =>
 ${mixins.background}
 ${mixins.padding}
 ${mixins.color}
+`;
+
+export const Input = styled.input`
+  ${mixins.padding}
+  ${mixins.border}
+  ${layout.universalBorder()}
+  padding: ${sizing(2)} ${sizing(2)};
+  margin-top: ${sizing(1)};
+  &: focus {
+    outline: none;
+    ${layout.universalBorder('', colors.blue)}
+  }
+`;
+
+export const StyledTextarea = styled(Textarea)`
+  ${mixins.border}
+  ${mixins.flex}
+  ${layout.universalBorder()}
+  padding: ${sizing(2)} ${sizing(2)};
+  ${mixins.padding}
+  ${mixins.margin}
+  min-width: 0;
+  &: focus {
+    min-height: ${sizing(8)};
+    outline: 1px solid ${colors.blue};
+  }
+`;
+
+export const Form = styled.form`
+  ${mixins.flex}
+  ${mixins.margin}
 `;

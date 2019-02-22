@@ -11,12 +11,10 @@ import get from 'lodash.get';
 import { View } from 'modules/styled/uni';
 import PostComponent from './post.component';
 
-
 const PostContainer = styled.View`
-  margin: ${sizing(4)} 0 ;
+  margin: ${sizing(4)} 0 0 0;
   padding-bottom: 0;
 `;
-
 
 class SinglePostContainer extends Component {
   static propTypes = {
@@ -24,7 +22,7 @@ class SinglePostContainer extends Component {
     posts: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
-    comments: PropTypes.object,
+    comments: PropTypes.object
   };
 
   static fetchData(dispatch, params) {
@@ -52,7 +50,7 @@ class SinglePostContainer extends Component {
     const link = posts.links[post.metaPost];
 
     return (
-      <View flex={1}>
+      <View>
         {hasPost && (
           <div>
             <PostContainer>
@@ -62,7 +60,7 @@ class SinglePostContainer extends Component {
                 post={post}
                 firstPost={firstPost}
                 {...this.props}
-
+                hideDivider
               />
             </PostContainer>
             <Comments post={post} {...this.props} />
@@ -81,7 +79,7 @@ export default connect(
     user: state.user,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
-    isAuthenticated: state.auth.isAuthenticated,
+    isAuthenticated: state.auth.isAuthenticated
   }),
   dispatch => ({
     actions: bindActionCreators(

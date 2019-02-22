@@ -456,7 +456,7 @@ exports[`Snapshot SplashComponent 1`] = `
           Join the thought leaders, build trust and earn rewards.
            
           <a
-            className="c0"
+            className="ulink-mock c0"
             display="inline"
             href="/https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
             onClick={[Function]}
@@ -555,7 +555,7 @@ exports[`Snapshot SplashComponent 1`] = `
         }
       >
         <a
-          className=""
+          className="ulink-mock "
           href="/user/login"
           onClick={[Function]}
           styles=""
@@ -615,7 +615,7 @@ exports[`Snapshot SplashComponent 1`] = `
           </div>
         </a>
         <a
-          className=""
+          className="ulink-mock "
           href="/user/signup"
           onClick={[Function]}
           styles=""

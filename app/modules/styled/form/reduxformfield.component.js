@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, LinkFont, SecondaryText } from 'modules/styled/web';
-import { colors, mixins } from 'app/styles';
-import styled from 'styled-components';
-
-const Input = styled.input`
-  ${mixins.padding}
-  ${mixins.border}
-`;
+import { View, LinkFont, SecondaryText, Input } from 'modules/styled/web';
+import { colors } from 'app/styles';
 
 const ReduxFormField = props => {
   const { label, input, type, meta, name, placeholder } = props;

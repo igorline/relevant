@@ -29,6 +29,7 @@ function CoinStat(props) {
     fs,
     lh,
     inline,
+    c,
     ...rest
   } = props;
 
@@ -66,7 +67,7 @@ function CoinStat(props) {
       />
 
       {noNumber ? null : (
-        <NumberStyle fs={fs} lh={lh} inline={inline}>
+        <NumberStyle fs={fs} lh={lh} inline={inline} c={c}>
           {abbreviateNumber(tokens) || 0}
         </NumberStyle>
       )}
@@ -87,6 +88,7 @@ CoinStat.propTypes = {
   wallet: PropTypes.object,
   align: PropTypes.string,
   lineheight: PropTypes.string,
+  c: PropTypes.string,
   noNumber: PropTypes.bool
 };
 
