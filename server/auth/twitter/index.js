@@ -2,29 +2,29 @@ const express = require('express');
 const passport = require('passport');
 const auth = require('../auth.service');
 const controller = require('./passport');
+const config = require('../../config/config');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+router.get('/', auth.currentUser(), (req, res, next) => {
+  req.invitecode = req.query.invitecode;
   passport.authenticate('twitter', {
-    failureRedirect: '/login',
+    callbackURL: config.twitter.callbackURL + `?invitecode=${req.query.invitecode}`,
+    failureRedirect: '/user/login',
     session: false
   })(req, res, next);
 });
 
-router.get('/callback',
+router.get(
+  '/callback',
   auth.currentUser(),
   passport.authenticate('twitter', {
-    failureRedirect: '/login',
+    failureRedirect: '/user/login',
     session: false
   }),
   auth.setTokenCookieDesktop
 );
 
-router.post('/login',
-  auth.currentUser(),
-  controller.nativeAuth
-);
-
+router.post('/user/login', auth.currentUser(), controller.nativeAuth);
 
 module.exports = router;

@@ -3,7 +3,9 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 const config = require('../../config/config');
 const { promisify } = require('util');
 const User = require('../../api/user/user.model');
+const Invite = require('../../api/invites/invite.model');
 const auth = require('../auth.service');
+
 // const TwitterWorker = require('../../utils/twitterWorker');
 
 // User.remove({ handle: 'relevantfeed' }).exec();
@@ -27,11 +29,11 @@ const auth = require('../auth.service');
 // Handles both login and signup via http POST request - native
 exports.nativeAuth = async (req, res, next) => {
   try {
-    const { profile: twitterAuth } = req.body;
+    const { profile: twitterAuth, invitecode } = req.body;
     if (!twitterAuth || !twitterAuth.userID) throw new Error('Missing twitter id');
 
     const profile = await getProfile(twitterAuth);
-    const user = await handleTwitterAuth({ req, twitterAuth, profile });
+    const user = await handleTwitterAuth({ req, twitterAuth, profile, invitecode });
 
     const token = auth.signToken(user._id, user.role);
     return res.json({ token, user });
@@ -57,7 +59,8 @@ exports.setup = () => {
             authToken: token,
             authTokenSecret: tokenSecret
           };
-          const user = await handleTwitterAuth({ req, twitterAuth, profile });
+          const { invitecode } = req.query;
+          const user = await handleTwitterAuth({ req, twitterAuth, profile, invitecode });
           return done(null, user);
         } catch (err) {
           return done(err);
@@ -67,15 +70,16 @@ exports.setup = () => {
   );
 };
 
-
-async function handleTwitterAuth({ req, twitterAuth, profile }) {
+export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode }) {
   if (!profile) throw new Error('missing twitter profile');
 
   let { user } = req;
 
   const isConnectAccount = user || false;
+  const alreadyInUse =
+    isConnectAccount && (await isConnectedToDifferentUser({ user, profile }));
 
-  if (isConnectAccount && isConnectedToDifferentUser({ user, profile })) {
+  if (alreadyInUse) {
     throw new Error('A user with this twitter account already exists');
   }
 
@@ -85,21 +89,28 @@ async function handleTwitterAuth({ req, twitterAuth, profile }) {
   if (!user) {
     user = await User.findOne({
       email: profile._json.email,
-      confirmed: true,
+      confirmed: true
     });
   }
-
   const isNewUser = !user || false;
 
   const handle = profile.username;
-  if (isNewUser) user = await addNewTwitterUser({ handle });
-
-  if (!user.twitterId) {
+  if (isNewUser) {
+    user = await addNewTwitterUser({ handle, invitecode });
     user = await addTwitterProfile({ profile, user, twitterAuth });
+    user = await user.initialCoins();
+    if (invitecode) {
+      user = await Invite.processInvite({ invitecode, user });
+      // const invite = await Invite.findOne({ code: invitecode, redeemed: { $ne: true } });
+      // if (invite) user = await invite.referral(user);
+    }
+  } else if (!user.twitterId) {
+    user = await addTwitterProfile({ profile, user, twitterAuth });
+    user = await user.addReward({ type: 'twitter' });
   }
-  return user;
-}
 
+  return user.save();
+}
 
 export async function getProfile(props) {
   const { authToken, authTokenSecret } = props;
@@ -164,11 +175,10 @@ export async function addTwitterProfile({ profile, twitterAuth, user }) {
 }
 
 async function isConnectedToDifferentUser({ user, profile }) {
-  return User
-  .findOne({ twitterId: profile.id, _id: { $ne: user._id } });
+  return User.findOne({ twitterId: profile.id, _id: { $ne: user._id } });
 }
 
-async function addNewTwitterUser({ handle }) {
+export async function addNewTwitterUser({ handle }) {
   const handleExists = await User.findOne({ handle });
   if (handleExists) {
     handle += Math.random()
@@ -176,12 +186,11 @@ async function addNewTwitterUser({ handle }) {
     .substr(2, 3);
   }
 
-  let user = new User({
+  const user = new User({
     role: 'temp',
     handle,
     confirmed: true,
     provider: 'twitter'
   });
-  user = await user.initialCoins();
   return user.save();
 }

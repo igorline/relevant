@@ -4,6 +4,7 @@ exports[`CreatePost after invite was created should create new user with referra
 Object {
   "__v": 0,
   "_id": "[SANITIZED]",
+  "airdropTokens": 20,
   "balance": 20,
   "bio": "",
   "blocked": Array [],
@@ -12,6 +13,7 @@ Object {
   "confirmed": false,
   "createdAt": "[SANITIZED]",
   "deviceTokens": Array [],
+  "email": "bob@bob.com",
   "ethAddress": Array [],
   "handle": "Bob",
   "id": "[SANITIZED]",
@@ -30,6 +32,7 @@ Object {
     "role": "user",
   },
   "provider": "local",
+  "referralTokens": 0,
   "relevance": Object {
     "__v": 1,
     "_id": "[SANITIZED]",

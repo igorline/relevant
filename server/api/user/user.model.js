@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { NEW_USER_COINS, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
+import {
+  newUserCoins,
+  POWER_REGEN_INTERVAL,
+  MAX_AIRDROP,
+  getRewardForType
+} from '../../config/globalConstants';
 import { NAME_PATTERN } from '../../../app/utils/text';
 import * as ethUtils from '../../utils/ethereum';
 
@@ -111,6 +116,9 @@ const UserSchema = new Schema(
       sig: String,
       amount: Number
     },
+    airdropTokens: { type: Number, default: 0 },
+    referralTokens: { type: Number, default: 0 },
+
     version: String
   },
   {
@@ -121,9 +129,8 @@ const UserSchema = new Schema(
 );
 
 // UserSchema.index({ name: 'text' });
-
+UserSchema.index({ handle: 1 });
 UserSchema.statics.events = new EventEmitter();
-// UserSchema.index({ handle: 1 });
 
 /**
  * Virtuals
@@ -368,20 +375,66 @@ UserSchema.methods.updateMeta = async function updateMeta() {
   }
 };
 
-UserSchema.methods.initialCoins = async function initialCoins() {
+UserSchema.methods.addReward = async function addReward({ type, user }) {
   try {
+    const amount = getRewardForType(type);
+    const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
+
     // TODO - update this and tie it to smart contract
     await this.model('Treasury')
     .findOneAndUpdate(
       {},
-      { $inc: { balance: -NEW_USER_COINS } },
+      { $inc: { balance: -airdropTokens } },
       { new: true, upsert: true }
     )
     .exec();
 
-    // TODO NOTIFICATION!
-    this.balance += NEW_USER_COINS;
-    return this;
+    this.balance += airdropTokens;
+    this.airdropTokens += airdropTokens;
+    if (type === 'referral' || type === 'publicLink') {
+      this.referralTokens += airdropTokens;
+    }
+
+    const notification = {
+      forUser: this._id,
+      type: `reward_${type}`,
+      amount: airdropTokens,
+      byUser: user
+    };
+    await this.model('Notification').createNotification(notification);
+
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
+};
+
+UserSchema.methods.initialCoins = async function initialCoins(invite) {
+  try {
+    const airdropTokens = newUserCoins(this, invite);
+
+    if (!airdropTokens) return this;
+    // TODO - update this and tie it to smart contract
+    await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
+
+    this.balance += airdropTokens;
+    this.airdropTokens += airdropTokens;
+
+    const type = this.twitterId ? 'twitter' : 'email';
+    const notification = {
+      forUser: this._id,
+      type: `reward_${type}`,
+      amount: airdropTokens
+    };
+    await this.model('Notification').createNotification(notification);
+
+    return this.save();
   } catch (err) {
     throw err;
   }

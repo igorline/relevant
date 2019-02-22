@@ -3,6 +3,7 @@ import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
+import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
@@ -89,26 +90,28 @@ exports.forgot = async (req, res, next) => {
 };
 
 exports.confirm = async (req, res, next) => {
-  let user;
-  let middleware = false;
-  if (req.params.user) middleware = true;
   try {
+    let user;
+    let middleware = false;
+    if (!req.params) req.params = {};
+    if (req.params.user) middleware = true;
     const confirmCode = req.params.code || req.body.code;
     const handle = req.params.user || req.body.user;
     if (!handle || !confirmCode) throw new Error('Missing user id or confirmation token');
-    user = await User.findOne({ handle, confirmCode }, 'confirmCode confirmed email');
-    if (user && !user.confirmed) {
-      // Invite.generateCodes(user);
+    user = await User.findOne({ handle, confirmCode });
+    if (!user) throw new Error('Wrong confirmation code');
+
+    if (!user.confirmed) {
       user.confirmed = true;
+      user = await user.addReward({ type: 'email' });
       user = await user.save();
     } else {
-      req.unconfirmed = true;
+      req.unconfirmed = true; // ?
     }
-    if (!user) throw new Error('Wrong confirmation code');
+    return middleware ? next() : res.status(200).json(user);
   } catch (err) {
-    return middleware ? next() : err;
+    return next(err);
   }
-  return middleware ? next() : res.status(200).json(user);
 };
 
 exports.sendConfirmationCode = async (req, res, next) => {
@@ -339,16 +342,17 @@ exports.list = async (req, res, next) => {
 
 /**
  * Creates a new user
- * make sure to mimic logic in updateHandle TODO - refactor
  */
 exports.create = async (req, res, next) => {
   try {
     const confirmCode = uuid();
-    let { user, invite } = req.body;
-    if (user.name === 'everyone') throw new Error('username taken');
+    let { user } = req.body;
+    const { invitecode } = req.body;
 
-    if (invite) invite = await Invite.findOne({ code: invite });
-    const confirmed = invite && invite.email === user.email;
+    if (BANNED_USER_HANDLES.includes(user.name)) {
+      throw new Error('this username is taken');
+    }
+    if (!user.email) throw new Error('missing email');
 
     const userObj = {
       handle: user.name,
@@ -360,20 +364,22 @@ exports.create = async (req, res, next) => {
       provider: 'local',
       role: 'user',
       relevance: 0,
-      confirmed,
       confirmCode
     };
 
     user = new User(userObj);
     user = await user.save();
 
-    if (invite) await invite.referral(user);
+    if (invitecode) {
+      user = await Invite.processInvite({ invitecode, user });
+    }
+    // const confirmed = invite && invite.email === user.email;
+    user = await user.initialCoins();
+    // if (invite) user = await invite.referral(user);
 
     const token = signToken(user._id, 'user');
+    if (!user.confirmed) sendConfirmation(user, true);
 
-    if (!confirmed) sendConfirmation(user, true);
-
-    user = await user.initialCoins();
     user = await user.save();
     user = user.toObject();
     delete user.hashedPassword;

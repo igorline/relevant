@@ -1,10 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CreatePost api/user/create create user 1`] = `
+exports[`User api/user/create create user 1`] = `
 Object {
   "__v": 0,
   "_id": "[SANITIZED]",
-  "balance": 20,
+  "airdropTokens": 0,
+  "balance": 0,
   "bio": "",
   "blocked": Array [],
   "blockedBy": Array [],
@@ -12,6 +13,7 @@ Object {
   "confirmed": false,
   "createdAt": "[SANITIZED]",
   "deviceTokens": Array [],
+  "email": "alice@alice.com",
   "ethAddress": Array [],
   "handle": "Alice",
   "id": "[SANITIZED]",
@@ -30,6 +32,7 @@ Object {
     "role": "user",
   },
   "provider": "local",
+  "referralTokens": 0,
   "relevance": null,
   "relevanceRecord": Array [],
   "role": "user",

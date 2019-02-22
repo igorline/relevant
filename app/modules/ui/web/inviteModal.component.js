@@ -7,6 +7,7 @@ import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import ULink from 'modules/navigation/ULink.component';
 import { required, email } from 'modules/form/validators';
+import { REFERRAL_REWARD, PUBLIC_LINK_REWARD } from 'server/config/globalConstants';
 
 const ModalDivider = styled(Divider)`
   position: relative;
@@ -32,7 +33,7 @@ class SettingsModal extends Component {
     return createdInvite;
   };
   render() {
-    const { handleSubmit, auth, community } = this.props;
+    const { handleSubmit, auth, community, count } = this.props;
     const publicInviteUrl = `/${community.active}/top/invite/${auth.user.handle}`;
     const origin = window ? window.location.origin : 'https://relevant.community';
 
@@ -60,7 +61,7 @@ class SettingsModal extends Component {
         <View pb={4} display="flex" fdirection="column" mt={7}>
           <View display="flex" fdirection="row">
             <LinkFont c={colors.black}>Public Invite Link</LinkFont>
-            <LinkFont ml={0.5}> (+25 Rnt)</LinkFont>
+            <LinkFont ml={0.5}> (+{PUBLIC_LINK_REWARD} Rnt)</LinkFont>
           </View>
           <ULink to={publicInviteUrl}>
             <LinkFont c={colors.blue}>{`${origin}${publicInviteUrl}`}</LinkFont>
@@ -68,8 +69,10 @@ class SettingsModal extends Component {
         </View>
         <ModalDivider />
         <View display="flex" fdirection="row" mt={4}>
-          <LinkFont c={colors.black}>Private Invite: ${'FILL ME IN'} remaining</LinkFont>
-          <LinkFont ml={0.5}> (+150 Rnt)</LinkFont>
+          <LinkFont c={colors.black}>
+            Private Invite: {count[community.active]} remaining
+          </LinkFont>
+          <LinkFont ml={0.5}> (+{REFERRAL_REWARD} Rnt)</LinkFont>
         </View>
         <Form onSubmit={handleSubmit(this.submit.bind(this))}>
           {FORM_FIELDS.map((field, index) => (
@@ -97,7 +100,8 @@ SettingsModal.propTypes = {
   community: PropTypes.object,
   location: PropTypes.object,
   actions: PropTypes.object,
-  reset: PropTypes.func
+  reset: PropTypes.func,
+  count: PropTypes.object
 };
 
 export default reduxForm({

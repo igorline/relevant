@@ -100,6 +100,7 @@ export const SET_BUTTON_TOOLTIP = 'SET_BUTTON_TOOLTIP';
 export const SET_VIEW = 'SET_VIEW';
 export const SET_WEB_VIEW = 'SET_WEB_VIEW';
 
+export const SET_INVITE_COUNT = 'SET_INVITE_COUNT';
 export const SET_INVITES = 'SET_INVITES';
 export const UPDATE_INVITE = 'UPDATE_INVITE';
 export const DESTROY_INVITE = 'DESTROY_INVITE';

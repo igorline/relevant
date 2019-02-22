@@ -41,6 +41,7 @@ export function get() {
 
 export function remove() {
   token = null;
+  console.log('REMOVING TOKEN!'); // eslint-disable-line
   if (userDefaults) {
     return new Promise(resolve => {
       userDefaults.remove('token', APP_GROUP_ID);

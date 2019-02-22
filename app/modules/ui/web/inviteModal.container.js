@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
-import { createInvite } from 'modules/admin/admin.actions';
+import { createInvite, getInviteCount } from 'modules/admin/admin.actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InviteModalComponent from 'modules/ui/web/inviteModal.component';
 
 class InviteModalContainer extends Component {
+  componentDidMount() {
+    this.props.actions.getInviteCount();
+  }
+
   render() {
     return <InviteModalComponent {...this.props} />;
   }
@@ -21,6 +25,7 @@ InviteModalContainer.propTypes = {
 const mapStateToProps = state => ({
   auth: get(state, 'auth', {}) || {},
   community: get(state, 'community', {}) || {},
+  count: state.admin.count,
   initialValues: {
     invitedByString: get(state, 'auth.user.name', '')
   }
@@ -29,7 +34,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      createInvite
+      createInvite,
+      getInviteCount
     },
     dispatch
   )

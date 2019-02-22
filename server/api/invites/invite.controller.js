@@ -101,9 +101,17 @@ exports.create = async (req, res, next) => {
 };
 
 async function computeInviteNumber({ user, communityId }) {
-  const totalInvites = totalAllowedInvites(user.relevance);
+  if (!user.relevance) {
+    user.relevance = await Relevance.findOne({
+      user: user._id.toString(),
+      communityId,
+      global: true
+    });
+    if (!user.relevance) return 0;
+  }
+  const totalInvites = totalAllowedInvites(user.relevance.pagerank);
   const usedInvites = await Invite.count({
-    user: user._id,
+    invitedBy: user._id,
     communityId,
     type: 'referral'
   });
@@ -234,20 +242,30 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
   }
 };
 
-exports.checkInviteCode = async (req, res) => {
-  let invite;
+exports.checkInviteCode = async (req, res, next) => {
   try {
     const { code } = req.body;
     if (!code) throw new Error('No invitation code');
-    invite = await Invite.findOne({ code, redeemed: false });
+    const invite = await Invite.findOne({ code, redeemed: false });
     if (!invite) throw new Error('Invalid invitation code');
     invite.status = 'checked';
     invite.save();
+    if (invite.email) invite.email = invite.email.trim();
+    return res.status(200).json(invite);
   } catch (err) {
-    return handleError(res)(err);
+    return next(err);
   }
-  if (invite.email) invite.email = invite.email.trim();
-  return res.status(200).json(invite);
+};
+
+exports.count = async (req, res, next) => {
+  try {
+    const { user, communityMember } = req;
+    const { communityId, community } = communityMember;
+    const number = await computeInviteNumber({ user, communityId });
+    return res.status(200).json({ [community]: number });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.destroy = async (req, res) => {

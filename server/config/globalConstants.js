@@ -12,7 +12,7 @@ export const TWITTER_DECAY = 12 * HOURS; // time it takes to decay payout post s
 
 export const PAYOUT_TIME = 3 * DAYS; // time it takes for post to pay out
 export const VOTE_COST_RATIO = 0.1; // votes cost 10% of user balance
-export const NEW_USER_COINS = 20; // amount of coins new users get
+// export const NEW_USER_COINS = 20; // amount of coins new users get
 
 export const SLOPE = 1 / 1; // slope of bonding curve for posts
 export const EXPONENT = 1; // exponent for bonding curve price formula
@@ -22,6 +22,11 @@ export const RELEVANCE_DECAY = 90 * DAYS; // half life of relevance
 export const MINIMUM_RANK = 1; // minimum rank to be considered for rewards
 
 export const REP_CUTOFF = 2; // number of years before we ignore votes
+
+export const PUBLIC_LINK_REWARD = 1; // amount of tokens you get for public referral
+export const REFERRAL_REWARD = 20; // amount of tokens awarded both the referrer and referee
+export const TWITTER_REWARD = 20; // amount of tokens awarded for connecting twitter
+export const EMAIL_REWARD = 20; // amount of tokens awarded for connecting email
 
 export const totalAllowedInvites = pagerank => {
   if (pagerank < 1) return 0;
@@ -34,3 +39,38 @@ export const totalAllowedInvites = pagerank => {
   if (pagerank < 80) return 33;
   return 100;
 };
+
+export const MAX_AIRDROP = 200;
+
+export const getRewardForType = type => {
+  switch (type) {
+    case 'email':
+      return EMAIL_REWARD;
+    case 'twitter':
+      return TWITTER_REWARD;
+    case 'referral':
+      return REFERRAL_REWARD;
+    case 'referredBy':
+      return REFERRAL_REWARD;
+    case 'publicLink':
+      return PUBLIC_LINK_REWARD;
+    default:
+      return 0;
+  }
+};
+
+export const newUserCoins = user => {
+  let reward = 0;
+  if (user.email && user.confirmed) reward = EMAIL_REWARD;
+  if (user.twitterId) reward = EMAIL_REWARD + TWITTER_REWARD;
+  return reward;
+};
+
+export const BANNED_USER_HANDLES = [
+  'admin',
+  'everyone',
+  'user',
+  'channel',
+  'group',
+  'all'
+];

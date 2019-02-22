@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-use-before-define */
 import Express from 'express';
 import morgan from 'morgan';
+import passport from 'passport';
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -72,6 +73,9 @@ app.use(
     })
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 function requireHTTPS(req, res, next) {
   if (
