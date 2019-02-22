@@ -6,13 +6,15 @@ import CoinStat from 'modules/stats/coinStat.component';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getInvites } from 'modules/admin/admin.actions';
+import { MAX_AIRDROP } from 'server/config/globalConstants';
 
 const InviteImage = require('app/public/img/invite.svg');
 
 class InviteModalTitle extends Component {
   static propTypes = {
     inviteList: PropTypes.array,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    user: PropTypes.user
   };
   componentDidMount() {
     if (!this.props.inviteList.length) {
@@ -22,7 +24,8 @@ class InviteModalTitle extends Component {
   }
   submit = async () => {};
   render() {
-    const { inviteList } = this.props;
+    const { inviteList, user } = this.props;
+    const invited = inviteList.length;
     return (
       <View
         display="flex"
@@ -34,10 +37,12 @@ class InviteModalTitle extends Component {
         <Header>Invite Friends</Header>
         <View display="flex" fdirection="row" align="center">
           <CoinStat noNumber mr={0} size={2} align="center" />
-          <NumericalValue mr={1}>{`$${0} Earned`}</NumericalValue>
+          <NumericalValue mr={1}>{`$${
+            user.referralTokens
+          } Earned (max ${MAX_AIRDROP})`}</NumericalValue>
           <InviteImage />
           <NumericalValue ml={0.5}>
-            {`${inviteList.length || 0} Friends Invited`}
+            {`${invited || 0} Friend${invited === 1 ? '' : 's'} Invited`}
           </NumericalValue>
         </View>
       </View>

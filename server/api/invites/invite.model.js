@@ -67,27 +67,49 @@ InviteSchema.statics.checkInvite = async function checkInvite(invite) {
   return invite;
 };
 
-InviteSchema.methods.referral = async function referral(user) {
+InviteSchema.statics.processInvite = async function processInvite({ invitecode, user }) {
+  const invite = await this.model('Invite').findOne({
+    code: invitecode,
+    redeemed: { $ne: true }
+  });
+  if (invite) return referralRewards({ invite, user, Invite: this });
+
+  const publicInvite = await this.model('User').findOne({ _id: invitecode });
+  if (publicInvite) return publicReward({ inviter: publicInvite, user, Invite: this });
+  return null;
+};
+
+async function publicReward({ user, inviter }) {
+  await inviter.addReward({ type: 'publicLink', user });
+  return user;
+}
+
+async function referralRewards({ invite, user, Invite }) {
+  // InviteSchema.methods.referral = async function referral(user) {
   try {
-    const invite = this;
     const { communityId, community } = invite;
     invite.status = 'registered';
     invite.number -= 1;
     if (invite.number === 0) invite.redeemed = true;
     invite.registeredAs = user._id;
 
-    const inviter = await this.model('User')
-    .findOne({ _id: this.invitedBy })
+    let inviter = await Invite.model('User')
+    .findOne({ _id: invite.invitedBy })
     .populate({
       path: 'relevance',
       match: { communityId, global: true }
     });
 
-    const communityInstance = await this.model('Community').findOne({ _id: communityId });
-    await communityInstance.join(user);
+    const communityInstance = await Invite.model('Community').findOne({
+      _id: communityId
+    });
+    await communityInstance.join(user._id);
 
-    const vote = new (this.model('Invest'))({
-      investor: this.invitedBy,
+    user = await user.addReward({ type: 'referredBy', user: inviter });
+    inviter = await inviter.addReward({ type: 'referral', user });
+
+    const vote = new (Invite.model('Invest'))({
+      investor: inviter._id,
       author: user._id,
       amount: Math.min(1, (100 - inviter.relevance.pagerank + 10) / 100),
       ownPost: false,
@@ -103,13 +125,14 @@ InviteSchema.methods.referral = async function referral(user) {
       user: inviter
     });
     // console.log('updated relevance', updatedUser);
+    if (user.email === invite.email) user.confirmed = true;
 
     await invite.save();
     return updatedUser;
   } catch (err) {
     throw err;
   }
-};
+}
 
 InviteSchema.statics.generateCodes = async function generateCodes(user) {
   const invites = [];

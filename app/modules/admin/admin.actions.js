@@ -57,6 +57,29 @@ export function destroyInvite(invite) {
   };
 }
 
+export function setInviteCount(count) {
+  return {
+    type: types.SET_INVITE_COUNT,
+    payload: count
+  };
+}
+
+export function getInviteCount() {
+  return async dispatch => {
+    try {
+      const count = await utils.api.request({
+        method: 'GET',
+        endpoint: 'invites',
+        path: '/count'
+      });
+
+      dispatch(setInviteCount(count));
+    } catch (err) {
+      Alert.alert(err.message);
+    }
+  };
+}
+
 export function getInvites(skip, limit) {
   return async dispatch => {
     try {

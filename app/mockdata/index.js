@@ -4,12 +4,6 @@ import * as community from 'app/mockdata/community';
 import * as earnings from 'app/mockdata/earnings';
 import * as post from 'app/mockdata/post';
 import * as user from 'app/mockdata/user';
+import * as twitter from 'app/mockdata/twitter';
 
-export {
-  activity,
-  auth,
-  community,
-  earnings,
-  post,
-  user,
-};
+export { activity, auth, community, earnings, post, user, twitter };

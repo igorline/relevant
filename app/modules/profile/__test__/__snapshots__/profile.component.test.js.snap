@@ -697,6 +697,7 @@ exports[`Snapshot other users Profile 1`] = `
                 "_id": "a00000000000000000000000",
                 "balance": 111,
                 "bio": "hi i'm alice!",
+                "email": "alice@alice.com",
                 "ethAddress": Array [
                   "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
                 ],
@@ -1820,6 +1821,7 @@ exports[`Snapshot own Profile 1`] = `
                 "_id": "a00000000000000000000000",
                 "balance": 111,
                 "bio": "hi i'm alice!",
+                "email": "alice@alice.com",
                 "ethAddress": Array [
                   "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
                 ],

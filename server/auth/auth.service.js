@@ -22,8 +22,11 @@ function validateTokenLenient(req, res, next) {
   ) {
     req.headers.authorization = 'Bearer ' + req.query.access_token;
   }
-  return validateJwt(req, res, (err) => {
-    if (token && err) req.universalCookies.remove('token');
+  return validateJwt(req, res, err => {
+    if (token && err) {
+      console.log('REMOVING TOKEN', err); // eslint-disable-line
+      req.universalCookies.remove('token');
+    }
     next();
   });
 }
@@ -50,7 +53,7 @@ function getUser(select) {
 
       if (!user) {
         // eslint-disable-next-line
-        console.log('User doesn\'t exist - bad token', req.user);
+        console.log("User doesn't exist - bad token", req.user);
         req.universalCookies.remove('token');
       }
 
@@ -101,7 +104,7 @@ function communityMember() {
 
       // add member to default community
       if (!member) {
-      // if (community === 'relevant' && !member) {
+        // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
         const com = await Community.findOne({ slug: community });
         await com.join(user);

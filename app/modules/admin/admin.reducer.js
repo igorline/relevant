@@ -6,7 +6,8 @@ const initialState = {
   waitList: [],
   wait: {},
   currentInvite: null,
-  downvotes: []
+  downvotes: [],
+  count: {}
 };
 
 export default function admin(state = initialState, action) {
@@ -17,6 +18,16 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         invites
+      };
+    }
+
+    case types.SET_INVITE_COUNT: {
+      return {
+        ...state,
+        count: {
+          ...state.count,
+          ...action.payload
+        }
       };
     }
 

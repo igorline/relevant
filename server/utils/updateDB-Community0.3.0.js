@@ -304,6 +304,15 @@ async function updateUserEmbeds() {
       );
       return cb();
     });
+
+    q.push(async cb => {
+      await Invite.update(
+        { invitee: u.handle },
+        { invitee: ObjectId(u._id) },
+        { multi: true }
+      );
+      return cb();
+    });
   });
 
   return new Promise((resolve, reject) => {
@@ -624,6 +633,20 @@ async function makeSurePostHaveCommunityId() {
   );
 }
 
+// async function cleanInvites() {
+//   let invites = await Invite.find({});
+//   invites = invites.map(i => {
+//     try {
+//       ObjectId(i.registeredAs);
+//       return null;
+//     } catch (err) {
+//       console.log(i.toObject());
+//       return i.remove();
+//     }
+//   });
+//   return Promise.all(invites);
+// }
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -632,7 +655,7 @@ async function runUpdates() {
     // await makeSurePostHaveCommunityId();
     // await updateUserIdType();
 
-    await updateUserEmbeds();
+    // await updateUserEmbeds();
 
     // await checkHiddenPosts();
     // await updatePostData('relevant');
@@ -643,6 +666,8 @@ async function runUpdates() {
     // await updateMemberCount();
 
     // await removeOldUsers();
+
+    // await cleanInvites();
 
     // DON'T NEED
     // await cleanupPostData();

@@ -5,6 +5,7 @@ Object {
   "author": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
+    "airdropTokens": 0,
     "balance": 222,
     "bio": "sup bro!",
     "blocked": Array [],
@@ -12,6 +13,7 @@ Object {
     "confirmed": false,
     "createdAt": "[SANITIZED]",
     "deviceTokens": Array [],
+    "email": "bob@bob.com",
     "ethAddress": Array [
       "0xf17f52151EbEF6C7334FAD080c5704D77216b732",
     ],
@@ -33,6 +35,7 @@ Object {
       "name": "Bob",
       "role": "user",
     },
+    "referralTokens": 0,
     "relevance": Object {
       "__v": 1,
       "_id": "[SANITIZED]",
@@ -156,6 +159,7 @@ Object {
   "author": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
+    "airdropTokens": 0,
     "balance": 222,
     "bio": "sup bro!",
     "blocked": Array [],
@@ -163,6 +167,7 @@ Object {
     "confirmed": false,
     "createdAt": "[SANITIZED]",
     "deviceTokens": Array [],
+    "email": "bob@bob.com",
     "ethAddress": Array [
       "0xf17f52151EbEF6C7334FAD080c5704D77216b732",
     ],
@@ -184,6 +189,7 @@ Object {
       "name": "Bob",
       "role": "user",
     },
+    "referralTokens": 0,
     "relevance": Object {
       "__v": 1,
       "_id": "[SANITIZED]",

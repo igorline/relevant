@@ -295,6 +295,7 @@ export function getUser(callback) {
       if (callback) callback({ ok: false });
       // need this in case user is logged in but there is an error getting account
       if (error.message !== 'Network request failed') {
+        console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
         dispatch(logoutAction());
       }
       // throw error;
@@ -317,7 +318,6 @@ export function setOnboardingStep(step) {
     })
     .catch(() => false);
 }
-
 
 export function webOnboard(step) {
   return async () => {
