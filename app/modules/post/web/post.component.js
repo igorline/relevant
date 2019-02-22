@@ -84,13 +84,12 @@ export class Post extends Component {
       link,
       firstPost,
       hideDivider,
-      hidePostButtons
+      hidePostButtons,
+      comment
     } = this.props;
     const { community } = auth;
-    let { comment } = this.props;
 
-    const isLink = post.link || link ? true : false; // eslint-disable-line
-    comment = isLink ? comment : post;
+    const isLink = post.type === 'link';
 
     if (post === 'notFound') {
       return (
@@ -103,20 +102,8 @@ export class Post extends Component {
 
     const postUrl = routing.getPostUrl(community, post);
 
-    const commentEl =
-      (!noComments && comment) || !post.url ? (
-        <SingleComment
-          comment={comment}
-          postUrl={postUrl}
-          parentPost={post}
-          hidePostButtons={isLink}
-          hideBorder={isLink || hideDivider}
-        />
-      ) : null;
-
-    if (!isLink) return commentEl;
-
-    return (
+    // TODO pass post buttons as prop to Post?
+    const postEl = isLink ? (
       <View fdirection={'row'} m="4 4 0 0">
         {!hidePostButtons && (
           <PostButtonContainer>
@@ -132,10 +119,30 @@ export class Post extends Component {
             sort={sort}
             firstPost={firstPost}
           />
-          {commentEl}
           {this.props.children}
-          {!hideDivider && <Divider mt={4} />}
         </View>
+      </View>
+    ) : (
+      <SingleComment comment={post} postUrl={postUrl} parentPost={post} hideBorder />
+    );
+
+    const commentEl =
+      !noComments && comment ? (
+        <SingleComment
+          comment={comment}
+          postUrl={postUrl}
+          parentPost={post}
+          hidePostButtons
+          hideBorder
+          nestingLevel={1.5}
+        />
+      ) : null;
+
+    return (
+      <View fdirection={'column'} m="0 0 0 0">
+        {postEl}
+        {commentEl}
+        {!hideDivider && <Divider mt="4" ml={4} mr={4} />}
       </View>
     );
   }

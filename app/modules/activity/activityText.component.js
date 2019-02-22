@@ -126,7 +126,7 @@ const ActivityText = ({ activity, amount }) => {
         text = activity.text;
       }
   }
-  return <BodyText>{text}</BodyText>;
+  return <BodyText inline>{text}</BodyText>;
 };
 
 ActivityText.propTypes = {

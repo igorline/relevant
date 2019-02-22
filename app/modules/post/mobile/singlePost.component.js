@@ -64,7 +64,7 @@ class SinglePostComponent extends Component {
   }
 
   comments = [];
-  nesting = {};
+  nestingLevel = {};
 
   componentWillMount() {
     this.id = this.props.postId;
@@ -94,7 +94,7 @@ class SinglePostComponent extends Component {
     const { comments, posts } = this.props;
     const children = comments.childComments[id] || [];
     children.forEach(c => {
-      this.nesting[c] = nestingLevel;
+      this.nestingLevel[c] = nestingLevel;
       this.comments.push(posts.posts[c]);
       this.getChildren(c, nestingLevel + 1);
     });
@@ -212,12 +212,12 @@ class SinglePostComponent extends Component {
     const focusInput = () => this.input.textInput.focus();
 
     const user = users.users[comment.user] || comment.embeddedUser;
-    const nesting = this.nesting[comment._id];
+    const nestingLevel = this.nestingLevel[comment._id];
 
     return (
       <View key={comment._id} index={index} fdirection={'column'} flex={1}>
-        {nesting ? (
-          <View ml={nesting * 3 - 1} mr={2}>
+        {nestingLevel ? (
+          <View ml={nestingLevel * 3 - 1} mr={2}>
             <Divider />
           </View>
         ) : (
@@ -230,7 +230,7 @@ class SinglePostComponent extends Component {
           parentEditing={this.toggleEditing}
           scrollToComment={() => this.scrollToComment(index)}
           comment={comment}
-          nesting={nesting}
+          nestingLevel={nestingLevel}
           user={user}
           renderButtons={() => (
             <PostButtons

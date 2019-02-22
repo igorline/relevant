@@ -33,7 +33,7 @@ class Comment extends Component {
     auth: PropTypes.object,
     singlePost: PropTypes.bool,
     user: PropTypes.object,
-    nesting: PropTypes.number,
+    nestingLevel: PropTypes.number,
     renderButtons: PropTypes.func
   };
 
@@ -123,7 +123,7 @@ class Comment extends Component {
     const {
       comment,
       auth,
-      nesting,
+      nestingLevel,
       renderButtons,
       user,
       actions,
@@ -173,11 +173,11 @@ class Comment extends Component {
         onLayout={() => null}
         mr={2}
         mb={2}
-        ml={nesting ? 2 + nesting * 3 - 3 : 2}
+        ml={nestingLevel ? 2 + nestingLevel * 3 - 3 : 2}
         flex={1}
         fdirection={'row'}
       >
-        {nesting ? (
+        {nestingLevel ? (
           <Image
             h={2}
             w={2}

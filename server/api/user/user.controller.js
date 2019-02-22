@@ -534,7 +534,9 @@ exports.update = async (req, res, next) => {
     if (updateName || updateImage) {
       const newUser = {
         name: user.name,
-        image: user.image
+        image: user.image,
+        handle: user.handle,
+        _id: user._id
       };
 
       // Do this on a separate thread?

@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Textarea from 'react-textarea-autosize';
+import { Button, View, StyledTextarea, Form } from 'modules/styled/web';
 import { alert, text } from 'app/utils';
+import { colors, sizing } from 'app/styles';
+import UAvatar from 'modules/user/UAvatar.component';
+import styled from 'styled-components/primitives';
+import { Spacer } from 'modules/styled/uni';
+
+const AvatarContainer = styled.View`
+  position: absolute;
+  left: ${sizing(1.5)};
+  top: ${sizing(1.5)};
+  z-index: 10;
+`;
 
 class CommentForm extends Component {
   static propTypes = {
@@ -14,7 +25,11 @@ class CommentForm extends Component {
     text: PropTypes.string,
     isReply: PropTypes.bool,
     parentPost: PropTypes.object,
-    parentComment: PropTypes.object
+    parentComment: PropTypes.object,
+    className: PropTypes.string,
+    nestingLevel: PropTypes.number,
+    additionalNesting: PropTypes.number,
+    autoFocus: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -27,7 +42,8 @@ class CommentForm extends Component {
     // this.handleKeydown = this.handleKeydown.bind(this);
     this.state = {
       inputHeight: 50,
-      comment: ''
+      comment: '',
+      focused: false
     };
   }
 
@@ -129,41 +145,77 @@ class CommentForm extends Component {
   }
 
   render() {
-    if (!this.props.auth.isAuthenticated) return null;
+    const {
+      cancel,
+      auth,
+      edit,
+      isReply,
+      // nestingLevel,
+      className,
+      nestingLevel,
+      additionalNesting,
+      autoFocus,
+      ...rest
+    } = this.props;
+    if (!auth.isAuthenticated) return null;
+    let backgroundColor = 'transparent';
+    if (isReply && this.state.focused) {
+      backgroundColor = colors.secondaryBG;
+    }
     return (
-      <div className="comments formContainer">
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <form onSubmit={this.handleSubmit}>
-            <Textarea
+      <Spacer
+        fdirection="row"
+        grow={1}
+        {...rest}
+        bg={backgroundColor}
+        nestingLevel={(nestingLevel || 0) + (additionalNesting || 0)}
+      >
+        <View fdirection="column" flex={1} style={{ position: 'relative' }}>
+          {this.state.focused ? null : (
+            <AvatarContainer>
+              <UAvatar user={auth.user} size={3} />
+            </AvatarContainer>
+          )}
+          <Form
+            onSubmit={this.handleSubmit}
+            fdirection="row"
+            justify-="space-between"
+            align="flex-start"
+            m="0 0 2.5 0"
+            flex={1}
+          >
+            <StyledTextarea
               inputRef={c => (this.textArea = c)}
-              style={{ minHeight: '60px' }}
               rows={2}
               placeholder="Enter comment..."
               value={this.state.comment}
               onKeyDown={this.handleKeydown}
               onChange={this.handleChange}
+              m={0}
+              flex={1}
+              autoFocus={autoFocus}
+              pl={this.state.focused ? 2 : 6}
+              onFocus={() => this.setState({ focused: true })}
+              onBlur={() => setTimeout(() => this.setState({ focused: false }), 100)}
             />
-          </form>
-          <div style={{ alignSelf: 'flex-end' }}>
-            {this.props.cancel && (
-              <button
-                onClick={this.props.cancel}
-                className={'shadowButton'}
-                disabled={!this.props.auth.isAuthenticated}
+          </Form>
+          {this.state.focused || this.state.comment ? (
+            <View justify="flex-end" fdirection="row">
+              <Button
+                onClick={cancel}
+                bg="transparent"
+                c={colors.secondaryText}
+                disabled={!auth.isAuthenticated}
               >
                 Cancel
-              </button>
-            )}
-            <button
-              onClick={this.handleSubmit}
-              className={'shadowButton'}
-              disabled={!this.props.auth.isAuthenticated}
-            >
-              {this.props.text}
-            </button>
-          </div>
-        </div>
-      </div>
+              </Button>
+              <Button onClick={this.handleSubmit} disabled={!auth.isAuthenticated}>
+                {this.props.text}
+              </Button>
+            </View>
+          ) : null}
+        </View>
+      </Spacer>
     );
   }
 }

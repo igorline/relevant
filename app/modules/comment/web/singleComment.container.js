@@ -20,12 +20,12 @@ class SingleComment extends Component {
     parentPostId: PropTypes.string,
     hidePostButtons: PropTypes.bool,
     hideBorderBottom: PropTypes.bool,
-    postUrl: PropTypes.string,
+    postUrl: PropTypes.string
   };
 
   state = {
-    activeComment: null,
-  }
+    activeComment: null
+  };
 
   componentDidMount() {
     // TODO: Fetch comment here?
@@ -33,13 +33,13 @@ class SingleComment extends Component {
     // this.props.actions.getSingleComment(params.id);
   }
 
-  setActiveComment = (commentId) => {
+  setActiveComment = commentId => {
     const activeComment = this.state.activeComment === commentId ? null : commentId;
     this.setState({ activeComment });
-  }
+  };
 
   render() {
-    const { comment } = this.props;
+    const { comment, nestingLevel } = this.props;
     if (!comment) return null;
     return (
       <View>
@@ -47,18 +47,23 @@ class SingleComment extends Component {
           {...this.props}
           activeComment={this.state.activeComment}
           setActiveComment={this.setActiveComment}
-          nesting={0}
+          nestingLevel={nestingLevel || 0}
         />
       </View>
     );
   }
 }
 
+SingleComment.propTypes = {
+  nestingLevel: PropTypes.number,
+  comment: PropTypes.object
+};
+
 export default connect(
   state => ({
     auth: state.auth,
     myPostInv: state.investments.myPostInv,
-    user: state.user,
+    user: state.user
   }),
   dispatch => ({
     actions: bindActionCreators(
