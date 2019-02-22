@@ -63,6 +63,21 @@ const routes = [
         routes: [
           { path: '/user/wallet', component: Wallet, exact: true },
           {
+            path: '/admin',
+            component: withAuth(AdminHeader, 'admin'),
+            indexRoute: { component: AdminWallet },
+            routes: [
+              { path: '/admin/flagged', component: Flagged },
+              { path: '/admin/waitlist', component: Waitlist },
+              { path: '/admin/downvotes', component: Downvotes },
+              { path: '/admin/topics', component: TopicsAdmin },
+              { path: '/admin/invites', component: Invites },
+              { path: '/admin/email', component: Email },
+              { path: '/admin/topPosts', component: TopPosts },
+              { path: '/admin/community', component: CommunityAdmin }
+            ]
+          },
+          {
             path: '/',
             component: WithTopNav,
             routes: [
@@ -102,22 +117,6 @@ const routes = [
               }
             ]
           }
-        ]
-      },
-
-      {
-        path: '/admin',
-        component: withAuth(AdminHeader, 'admin'),
-        indexRoute: { component: AdminWallet },
-        routes: [
-          { path: '/admin/flagged', component: Flagged },
-          { path: '/admin/waitlist', component: Waitlist },
-          { path: '/admin/downvotes', component: Downvotes },
-          { path: '/admin/topics', component: TopicsAdmin },
-          { path: '/admin/invites', component: Invites },
-          { path: '/admin/email', component: Email },
-          { path: '/admin/topPosts', component: TopPosts },
-          { path: '/admin/community', component: CommunityAdmin }
         ]
       },
       { path: '*', component: NotFound }
