@@ -17,6 +17,9 @@ let safariView;
 let Orientation;
 let NavigationActions;
 let StackActions;
+let DrawerActions;
+let Linking;
+let native;
 
 if (process.env.WEB !== 'true') {
   Orientation = require('react-native-orientation');
@@ -24,6 +27,9 @@ if (process.env.WEB !== 'true') {
   safariView = require('react-native-safari-view').default;
   NavigationActions = require('react-navigation').NavigationActions;
   StackActions = require('react-navigation').StackActions;
+  DrawerActions = require('react-navigation').DrawerActions;
+  Linking = require('react-native').Linking;
+  native = true;
 }
 
 export function showModal(modal) {
@@ -47,13 +53,20 @@ export function scrolling(scroll) {
   };
 }
 
+export function closeDrawer() {
+  return () => (native ? dispatchNavigatorAction(DrawerActions.closeDrawer()) : null);
+}
+
 export function push(route) {
   return () => {
     // check if we need this
     if (dismissKeyboard) dismissKeyboard();
-    dispatchNavigatorAction(
-      NavigationActions.navigate({ routeName: route.key, params: route })
-    );
+    if (native) {
+      dispatchNavigatorAction(DrawerActions.closeDrawer());
+      dispatchNavigatorAction(
+        NavigationActions.navigate({ routeName: route.key || route, params: route })
+      );
+    }
   };
 }
 
@@ -76,6 +89,18 @@ export function toggleTopics(showTopics) {
   };
 }
 
+export function goToTab(tab) {
+  return () => {
+    if (!native) return;
+    dispatchNavigatorAction(DrawerActions.closeDrawer());
+    dispatchNavigatorAction(
+      NavigationActions.navigate({
+        routeName: tab
+      })
+    );
+  };
+}
+
 export function goToTopic(topic) {
   return dispatch => {
     dispatchNavigatorAction(
@@ -87,9 +112,9 @@ export function goToTopic(topic) {
     dispatch(
       push({
         key: 'discoverTag',
-        title: topic.categoryName,
+        title: topic.categoryName || topic,
         back: true,
-        id: topic._id || topic.topic,
+        id: topic._id || topic.topic || topic,
         topic,
         gestureResponseDistance: 150
       })
@@ -151,6 +176,7 @@ export function goToPeople(topic) {
 
 export function goToUrl(url, id) {
   return dispatch => {
+    if (url.match('mailto:')) return Linking.openURL(url);
     dispatch(setButtonTooltip('upvote', id));
     if (safariView) {
       safariView
@@ -178,6 +204,7 @@ export function goToUrl(url, id) {
         );
       });
     }
+    return null;
   };
 }
 

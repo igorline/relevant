@@ -39,10 +39,12 @@ export function setCommunity(community) {
   return dispatch => {
     utils.api.setCommunity(community);
     dispatch(getUser());
-    return dispatch({
+    dispatch({
       type: types.SET_COMMUNITY,
       payload: community
     });
+    dispatch(navigationActions.goToTab('discover'));
+    dispatch(navigationActions.reloadTab('discover'));
   };
 }
 

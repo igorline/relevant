@@ -5,16 +5,9 @@ import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
-import styled from 'styled-components/primitives';
-import { sizing } from 'app/styles';
 import get from 'lodash.get';
 import { View } from 'modules/styled/uni';
 import PostComponent from './post.component';
-
-const PostContainer = styled.View`
-  margin: ${sizing(4)} 0 0 0;
-  padding-bottom: 0;
-`;
 
 class SinglePostContainer extends Component {
   static propTypes = {
@@ -50,10 +43,10 @@ class SinglePostContainer extends Component {
     const link = posts.links[post.metaPost];
 
     return (
-      <View>
+      <View mb={20}>
         {hasPost && (
           <div>
-            <PostContainer>
+            <View>
               <PostComponent
                 noComments
                 link={link}
@@ -62,7 +55,7 @@ class SinglePostContainer extends Component {
                 {...this.props}
                 hideDivider
               />
-            </PostContainer>
+            </View>
             <Comments post={post} {...this.props} />
           </div>
         )}

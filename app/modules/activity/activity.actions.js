@@ -45,22 +45,23 @@ export function setCount(data) {
 }
 
 export function getActivity(skip) {
-  const type = 'personal';
-  return dispatch =>
-    token
-    .get()
-    .then(tk =>
-      fetch(`${apiServer}?skip=${skip}`, {
-        ...reqOptions(tk),
-        method: 'GET'
-      })
-    )
-    .then(response => response.json())
-    .then(responseJSON => {
-      dispatch(setActivity(responseJSON, type, skip));
+  return async dispatch => {
+    try {
+      const type = 'personal';
+
+      const res = await api.request({
+        method: 'GET',
+        endpoint: 'notification',
+        path: '/',
+        auth: true,
+        query: { skip }
+      });
+      dispatch(setActivity(res, type, skip));
       dispatch(errorActions.setError('activity', false));
-    })
-    .catch(error => dispatch(errorActions.setError('activity', true, error.message)));
+    } catch (err) {
+      errorActions.setError('activity', true, err.message);
+    }
+  };
 }
 
 export function markRead() {

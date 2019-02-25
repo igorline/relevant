@@ -66,13 +66,14 @@ export const Title = styled(Text)`
   ${fonts.title}
   ${mixins.color}
   ${mixins.font}
+  ${mixins.flex}
 `;
 
 export const LinkFont = styled(Text)`
   ${fonts.link}
   ${mixins.link}
-  ${mixins.color}
   ${mixins.font}
+  ${mixins.color}
 `;
 
 export const CTALink = styled(Text)`
@@ -90,6 +91,12 @@ export const SecondaryText = styled(Text)`
 
 export const AltLink = styled(Text)`
   ${fonts.altLink}
+  ${mixins.color}
+  ${mixins.font}
+`;
+
+export const CommunityLink = styled(Text)`
+  ${fonts.communityLink}
   ${mixins.color}
   ${mixins.font}
 `;

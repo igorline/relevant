@@ -12,7 +12,8 @@ let styles;
 
 const HeaderLeft = props => {
   const { navigation, screenProps } = props;
-  const parent = navigation.dangerouslyGetParent();
+  const parent = navigation.dangerouslyGetParent() || navigation;
+
   const { index } = parent.state;
 
   const { state } = navigation;
@@ -20,7 +21,6 @@ const HeaderLeft = props => {
 
   let back;
   let backEl;
-  let options;
 
   let goBack = () => {
     // Go back on next tick because button ripple effect needs to happen on Android
@@ -29,16 +29,6 @@ const HeaderLeft = props => {
     });
   };
 
-  if (state.routeName === 'discoverView' || state.routeName === 'discoverTag') {
-    options = (
-      <TouchableOpacity
-        onPress={() => navigation.openDrawer()}
-        style={{ padding: 0, paddingHorizontal: 10 }}
-      >
-        <Icon name="ios-options" size={23} style={{ height: 26 }} color={darkGrey} />
-      </TouchableOpacity>
-    );
-  }
   if (state.routeName === 'createPostUrl' || state.routeName === 'shareAuth') {
     if (params.share) {
       goBack = () => screenProps.close();
@@ -61,11 +51,18 @@ const HeaderLeft = props => {
       </TouchableOpacity>
     );
   }
+
+  const options = (
+    <TouchableOpacity
+      onPress={() => navigation.openDrawer()}
+      style={{ padding: 0, paddingHorizontal: 10 }}
+    >
+      <Icon name="ios-options" size={23} style={{ height: 26 }} color={darkGrey} />
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={[styles.leftButton, { flexDirection: 'row' }]}>
-      {backEl}
-      {options}
-    </View>
+    <View style={[styles.leftButton, { flexDirection: 'row' }]}>{backEl || options}</View>
   );
 };
 

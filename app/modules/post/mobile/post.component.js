@@ -24,11 +24,25 @@ class Post extends PureComponent {
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
-    myPostInv: PropTypes.object
+    myPostInv: PropTypes.object,
+    hideDivider: PropTypes.bool,
+    preview: PropTypes.bool,
+    noLink: PropTypes.bool
   };
 
   render() {
-    const { link, commentary, auth, actions, myPostInv, singlePost } = this.props;
+    const {
+      link,
+      commentary,
+      auth,
+      actions,
+      myPostInv,
+      singlePost,
+      hideDivider,
+      preview,
+      noLink
+    } = this.props;
+
     const { community } = auth;
     let { post } = this.props;
     let imageEl;
@@ -36,6 +50,7 @@ class Post extends PureComponent {
     const separator = (
       <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
     );
+
     let commentaryEl;
 
     if (!auth.user) return null;
@@ -76,6 +91,8 @@ class Post extends PureComponent {
           postUrl={postUrl}
           myPostInv={myPostInv}
           singlePost={singlePost}
+          preview={preview}
+          noLink={noLink}
         />
       );
     }
@@ -86,7 +103,7 @@ class Post extends PureComponent {
           {imageEl}
           {commentaryEl}
         </View>
-        {!singlePost ? separator : null}
+        {!singlePost && !hideDivider ? separator : null}
       </View>
     );
   }

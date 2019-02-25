@@ -8,13 +8,7 @@ import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
 import { Text, View, SecondaryText, Image } from 'modules/styled/uni';
 
-export const Name = styled(Text)`
-  font-weight: bold';
-  * {
-    fill: red;
-    stroke: green;
-  }
-`;
+export const Name = styled(Text)``;
 
 export default function UserName(props) {
   const {
@@ -26,7 +20,9 @@ export default function UserName(props) {
     postTime,
     repost,
     condensedView,
-    twitter
+    twitter,
+    avatarText,
+    noLink
   } = props;
 
   if (!user) return null;
@@ -58,6 +54,7 @@ export default function UserName(props) {
 
   const twitterIcon = twitter && (
     <Image
+      inline
       resizeMode={'contain'}
       w={2.5}
       h={1.5}
@@ -68,21 +65,29 @@ export default function UserName(props) {
   );
 
   return (
-    <ULink to={`/user/profile/${user.handle}`} onPress={() => setSelected(user)}>
+    <ULink
+      noLink={noLink}
+      to={`/user/profile/${user.handle}`}
+      onPress={() => setSelected(user)}
+    >
       <View flex={1} fdirection={'row'}>
         <Avatar size={size} user={user} noLink />
         {repostIcon}
         <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
-          <View fdirection={'row'} align={'baseline'}>
-            <Name mr={0.75} c={colors.black}>
+          <Text fdirection={'row'} align={'baseline'}>
+            <Name inline={1} c={colors.black}>
               {user.name}
               {twitterIcon}
             </Name>
             {user.relevance && showRelevance && (
-              <RStat align={'baseline'} mr={0.75} lh={1.75} size={1.75} user={user} />
+              <Text inline={1}>
+                {' '}
+                <RStat inline={1} align={'baseline'} lh={1.75} size={1.75} user={user} />
+              </Text>
             )}
+            {avatarText ? <Text inline={1}> {avatarText()}</Text> : null}
             {condensedView && handleEl}
-          </View>
+          </Text>
           {!condensedView && handleEl}
         </View>
       </View>
@@ -91,6 +96,8 @@ export default function UserName(props) {
 }
 
 UserName.propTypes = {
+  noLink: PropTypes.bool,
+  avatarText: PropTypes.func,
   twitter: PropTypes.bool,
   condensedView: PropTypes.bool,
   type: PropTypes.string,

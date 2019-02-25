@@ -15,7 +15,7 @@ import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
 
 let styles;
-const SUB_TITLE = 'Via Twitter';
+// const SUB_TITLE = 'Via Twitter';
 
 class DiscoverTabs extends Component {
   static propTypes = {
@@ -29,9 +29,9 @@ class DiscoverTabs extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      index: 1,
+      index: 0,
       routes: [
-        { key: 'feed', title: SUB_TITLE },
+        // { key: 'feed', title: SUB_TITLE },
         { key: 'new', title: 'New' },
         { key: 'top', title: 'Trending' }
       ],
@@ -44,7 +44,7 @@ class DiscoverTabs extends Component {
     this.renderScene = this.renderScene.bind(this);
     this.renderBadge = this.renderBadge.bind(this);
     this.scrollOffset = {};
-    this.initialTab = 1;
+    this.initialTab = 0;
 
     const { params } = this.props.navigation.state;
     if (params && params.topic) {
@@ -301,8 +301,10 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         getParentTags,
-        goToTopic,
-      }, dispatch),
+        goToTopic
+      },
+      dispatch
+    )
   };
 }
 

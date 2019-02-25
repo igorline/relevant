@@ -13,26 +13,29 @@ let StyledLink;
 let StyledNavLink;
 let StyledA;
 let DisabledLink;
+let DisabledLinkText;
+let DisabledLinkView;
 let environment = 'web';
 
 const linkStyles = css`
   ${p => p.styles}
+  color: ${colors.blue};
   ${mixins.link}
   ${mixins.margin}
   ${mixins.padding}
+  ${mixins.color}
+  :hover * {
+    ${p => (p.hc ? `color: ${p.hc}` : '')}
+    ${p => (p.hu ? 'text-decoration: underline' : '')}
+  }
 `;
 
 if (process.env.WEB !== 'true') {
   environment = 'native';
   styled = require('styled-components/primitives').default;
-  css = require('styled-components/primitives').css;
-  StyledLink = styled.Touchable`
-    ${linkStyles}
-  `;
-  DisabledLink = styled.Text`
-    ${p => (p.disabled ? `color: ${colors.secondaryText};` : '')}
-    ${linkStyles}
-  `;
+  StyledLink = styled.Touchable``;
+  DisabledLinkText = styled.Text``;
+  DisabledLinkView = styled.View``;
 } else {
   styled = require('styled-components').default;
   StyledLink = styled(Link)`
@@ -90,20 +93,32 @@ export class ULinkComponent extends Component {
       noLink,
       auth,
       authrequired,
+      type,
+      hu,
+      inline,
       ...rest
     } = this.props;
-    if (disabled || noLink) {
-      return (
-        <DisabledLink {...rest} disabled={disabled}>
-          {children}
-        </DisabledLink>
-      );
-    }
+
+    // ------ WEB -----------
     if (environment === 'web') {
+      if (disabled || noLink) {
+        return (
+          <DisabledLink
+            {...rest}
+            hu={hu ? 1 : 0}
+            inline={inline ? 1 : 0}
+            styles={styles || ''}
+          >
+            {children}
+          </DisabledLink>
+        );
+      }
       if (navLink) {
         return (
           <StyledNavLink
             {...rest}
+            hu={hu ? 1 : 0}
+            inline={inline ? 1 : 0}
             onClick={e => {
               this.checkAuth(e, onClick);
             }}
@@ -118,6 +133,8 @@ export class ULinkComponent extends Component {
         return (
           <StyledA
             {...rest}
+            hu={hu ? 1 : 0}
+            inline={inline ? 1 : 0}
             onClick={e => {
               this.checkAuth(e, onClick);
             }}
@@ -132,6 +149,8 @@ export class ULinkComponent extends Component {
       return (
         <StyledLink
           {...rest}
+          hu={hu ? 1 : 0}
+          inline={inline ? 1 : 0}
           onClick={e => {
             this.checkAuth(e, onClick);
           }}
@@ -144,12 +163,26 @@ export class ULinkComponent extends Component {
       );
     }
 
+    // ------ NATIVE -----------
+    if (disabled || noLink) {
+      if (type === 'text') {
+        return <DisabledLinkText styles={styles || ''}>{children}</DisabledLinkText>;
+      }
+
+      return (
+        <DisabledLinkView styles={styles || ''} flex={1}>
+          {children}
+        </DisabledLinkView>
+      );
+    }
+
     return (
       <StyledLink
-        {...rest}
+        // {...rest}
         to={to || '#'}
-        onPress={this.checkAuth(onPress)}
-        styles={styles || ''}
+        onPress={onPress}
+        // onPress={this.checkAuth(onPress)}
+        // styles={styles || ''}
       >
         {children}
       </StyledLink>
@@ -158,6 +191,9 @@ export class ULinkComponent extends Component {
 }
 
 ULinkComponent.propTypes = {
+  inline: PropTypes.bool,
+  hu: PropTypes.bool,
+  type: PropTypes.string,
   navLink: PropTypes.bool,
   children: PropTypes.node,
   to: PropTypes.string,

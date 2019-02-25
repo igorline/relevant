@@ -8,6 +8,7 @@ import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import SingleActivity from 'modules/activity/activity.component';
+import PostComponent from 'modules/post/web/post.component';
 
 class Activity extends Component {
   static propTypes = {
@@ -60,7 +61,14 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
-    return <SingleActivity key={rowData._id} singleActivity={rowData} {...this.props} />;
+    return (
+      <SingleActivity
+        PostComponent={PostComponent}
+        key={rowData._id}
+        singleActivity={rowData}
+        {...this.props}
+      />
+    );
   }
 
   getViewData(props) {

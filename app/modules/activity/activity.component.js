@@ -6,10 +6,16 @@ import * as activityHelper from 'modules/activity/activityHelper';
 import ActivityText from 'modules/activity/activityText.component';
 import UAvatar from 'modules/user/UAvatar.component';
 import RStat from 'modules/stats/rStat.component';
-import { View, SecondaryText, BodyText, Divider, Text } from 'modules/styled/uni';
+import {
+  View,
+  SecondaryText,
+  BodyText,
+  MobileDivider,
+  Image,
+  Divider,
+  InlineText
+} from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
-import PostComponent from 'modules/post/web/post.component';
-// import PostComponent from 'modules/post/postinfo.component';
 
 const moment = require('moment');
 
@@ -28,7 +34,8 @@ export default class SingleActivity extends Component {
     auth: PropTypes.shape({
       user: PropTypes.object.isRequired
     }).isRequired,
-    mobile: PropTypes.bool
+    mobile: PropTypes.bool,
+    PostComponent: PropTypes.func
   };
 
   renderName(activity, user) {
@@ -37,9 +44,9 @@ export default class SingleActivity extends Component {
       let s = '';
       if (activity.totalUsers > 1) s = 's';
       return (
-        <Text inline>
+        <InlineText>
           {activity.totalUsers} user{s}{' '}
-        </Text>
+        </InlineText>
       );
     }
     if (!user) {
@@ -50,33 +57,33 @@ export default class SingleActivity extends Component {
       let s = '';
       if (activity.totalUsers - 1 > 1) s = 's';
       return (
-        <Text inline>
+        <InlineText>
           <ULink
             onPress={() => actions.goToProfile(user)}
             to={'/user/profile/' + user.handle}
           >
-            <BodyText c={colors.blue} inline>
+            <BodyText c={colors.blue} inline={1}>
               @{user.handle}
             </BodyText>
           </ULink>
-          <RStat inline user={user} size={2} mr={0.5} align="baseline" />{' '}
+          <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '}
           {activity.totalUsers - 1} other{s}
-        </Text>
+        </InlineText>
       );
     }
     if (user.handle) {
       return (
-        <Text inline>
+        <InlineText>
           <ULink
             onPress={() => actions.goToProfile(user)}
             to={'/user/profile/' + user.handle}
           >
-            <BodyText c={colors.blue} inline>
+            <BodyText c={colors.blue} inline={1}>
               @{user.handle}
             </BodyText>
           </ULink>{' '}
-          <RStat inline user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '}
-        </Text>
+          <RStat inline={1} user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '}
+        </InlineText>
       );
     }
     return user.name;
@@ -86,19 +93,35 @@ export default class SingleActivity extends Component {
     if (!img) {
       return null;
     }
-    return <Image w={4} h={4} resizeMode={'contain'} source={img} />;
+    return <Image w={4} h={3.5} resizeMode={'contain'} source={img} />;
   }
 
   renderPostPreview(activity) {
+    const { PostComponent, actions, auth, mobile } = this.props;
     const { post } = activity;
-    if (!post.title && post.body) {
-      post.title = post.body.substring(0, 130);
-      if (post.body.length > 130) post.title += '...';
-    }
 
-    // TODO implement this
-    // const linkToPost = `/${auth.community}/post/${postId}`;
-    return <PostComponent post={post} hidePostButtons link={post.metaPost} hideDivider />;
+    const parentId = post.parentPost || post._id;
+    const linkToPost = `/${auth.community}/post/${parentId}`;
+
+    return (
+      <ULink
+        onPress={() => actions.goToPost({ _id: parentId })}
+        to={linkToPost}
+        noLink={!mobile}
+      >
+        <View>
+          <PostComponent
+            post={post}
+            // comment={post}
+            hidePostButtons
+            link={post.metaPost}
+            hideDivider
+            preview
+            noLink={mobile}
+          />
+        </View>
+      </ULink>
+    );
   }
 
   renderActivity(activity) {
@@ -117,10 +140,10 @@ export default class SingleActivity extends Component {
           {byUser && <UAvatar goToProfile={actions.goToProfile} user={byUser} size={4} />}
         </View>
         <View flex={1} fdirection={'column'} align="baseline">
-          <Text inline>
+          <InlineText>
             {this.renderName(activity, byUser)}
             <ActivityText activity={activity} amount={amount} />
-          </Text>
+          </InlineText>
           <View>{mobile ? this.renderDate(activity) : null}</View>
         </View>
       </View>
@@ -135,6 +158,21 @@ export default class SingleActivity extends Component {
     return null;
   }
 
+  renderComment(activity) {
+    const { PostComponent } = this.props;
+    const { post, amount, byUser } = activity;
+
+    post.embeddedUser = byUser;
+
+    return (
+      <PostComponent
+        post={post}
+        hidePostButtons
+        avatarText={() => <ActivityText activity={activity} amount={amount} />}
+      />
+    );
+  }
+
   render() {
     const { mobile } = this.props;
     const activity = this.props.singleActivity;
@@ -142,16 +180,28 @@ export default class SingleActivity extends Component {
 
     const p = mobile ? 2 : 4;
 
+    if (activity.type === 'comment') {
+      return this.renderComment(activity);
+    }
+
     return (
-      <View m={p}>
-        <View display="flex" fdirection="row" justify="space-between" align="center">
+      <View>
+        <View
+          mr={p}
+          ml={p}
+          mt={4}
+          mb={mobile ? 2 : 0}
+          fdirection="row"
+          justify="space-between"
+          align="center"
+        >
           {this.renderActivity(activity)}
           {mobile ? null : this.renderDate(activity)}
         </View>
-        <View bg={colors.white} mt={2}>
+        <View m={mobile ? '0 2 2 2' : 0} border={mobile}>
           {activity.post ? this.renderPostPreview(activity) : null}
-          <Divider mt={p} />
         </View>
+        {mobile ? <MobileDivider mt={p} /> : <Divider m={'0 4'} />}
       </View>
     );
   }

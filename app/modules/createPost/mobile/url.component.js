@@ -29,7 +29,7 @@ import * as userActions from 'modules/user/user.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 
 import * as utils from 'app/utils';
-import UserName from 'modules/user/mobile/avatar.component';
+import UserName from 'modules/user/avatarbox.component';
 import PostBody from 'modules/post/mobile/postBody.component';
 import PostInfo from 'modules/post/mobile/postInfo.component';
 import TextBody from 'modules/text/mobile/textBody.component';
@@ -222,7 +222,7 @@ class UrlComponent extends Component {
     if (this.props.user && !this.props.share && !this.props.repost) {
       userHeader = (
         <View style={styles.createPostUser}>
-          <View style={styles.innerBorder}>
+          <View style={[styles.innerBorder, { paddingVertical: 10 }]}>
             <UserName
               style={styles.innerBorder}
               user={this.props.user}

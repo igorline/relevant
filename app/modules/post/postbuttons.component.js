@@ -4,6 +4,7 @@ import { browserAlerts } from 'app/utils/alert';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
+import ReactTooltip from 'react-tooltip';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -25,6 +26,10 @@ class PostButtons extends Component {
     this.vote = this.vote.bind(this);
     this.irrelevant = this.irrelevant.bind(this);
     this.share = this.share.bind(this);
+  }
+
+  componentDidMount() {
+    ReactTooltip.rebuild();
   }
 
   async vote(e, vote) {
@@ -118,8 +123,19 @@ class PostButtons extends Component {
             color={color}
             onPress={e => this.vote(e, vote)}
           />
-          <View m={'.5 0'}>
-            <NumericalValue c={color || colors.secondaryText} fs={2}>
+          <View p={'.75 0'}>
+            <NumericalValue
+              c={color || colors.secondaryText}
+              fs={2}
+              lh={1.8}
+              data-for="mainTooltip"
+              data-tip={JSON.stringify({
+                type: 'TEXT',
+                props: {
+                  text: 'Upvote articles that are worth reading, downvote spam.'
+                }
+              })}
+            >
               {post.data ? Math.round(post.data.relevance) : 0}
             </NumericalValue>
           </View>

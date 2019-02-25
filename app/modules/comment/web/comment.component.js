@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Divider,
-  LinkFont,
+  CTALink,
   CommentText,
   SecondaryText,
   Spacer
@@ -38,7 +38,10 @@ class Comment extends Component {
     condensedView: PropTypes.bool,
     postUrl: PropTypes.string,
     hideBorder: PropTypes.bool,
-    post: PropTypes.object
+    post: PropTypes.object,
+    hideAvatar: PropTypes.bool,
+    noLink: PropTypes.bool,
+    avatarText: PropTypes.bool
   };
 
   state = {
@@ -96,7 +99,10 @@ class Comment extends Component {
       hidePostButtons,
       postUrl,
       condensedView,
-      hideBorder
+      hideBorder,
+      hideAvatar,
+      noLink,
+      avatarText
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -120,7 +126,11 @@ class Comment extends Component {
     let body = <CommentText m={bodyMargin}>{comment.body}</CommentText>;
 
     if (postUrl) {
-      body = <ULink to={postUrl}>{body}</ULink>;
+      body = (
+        <ULink to={postUrl} noLink={noLink}>
+          {body}
+        </ULink>
+      );
     }
 
     const commentChildren = get(childComments, comment.id) || [];
@@ -133,15 +143,19 @@ class Comment extends Component {
               <PostButtons {...this.props} post={comment} />
             </PostButtonsContainer>
           ) : null}
-          <View fdirection="column" grow={1} shrink={1} zIndex={1}>
-            <View fdirection={'row'} justify={'space-between'}>
-              <AvatarBox
-                twitter={comment.twitter}
-                user={{ ...user, _id: comment.user }}
-                postTime={comment.createdAt}
-                showRelevance
-                condensedView={condensedView}
-              />
+          <View fdirection="column" grow={1} shrink={1}>
+            <View fdirection={'row'} justify={'space-between'} zIndex={2}>
+              {!hideAvatar && (
+                <AvatarBox
+                  twitter={comment.twitter}
+                  user={{ ...user, _id: comment.user }}
+                  postTime={comment.createdAt}
+                  showRelevance
+                  condensedView={condensedView}
+                  avatarText={avatarText}
+                  noLink={noLink}
+                />
+              )}
               {popup}
             </View>
             {editing ? (
@@ -167,6 +181,7 @@ class Comment extends Component {
                 aligns="center"
               >
                 <ULink
+                  hu
                   to="#"
                   authrequired={true}
                   onClick={e => {
@@ -178,11 +193,12 @@ class Comment extends Component {
                     setActiveComment(comment.id);
                   }}
                 >
-                  <LinkFont mr={3} c={colors.blue}>
+                  <CTALink mr={3} mb={4} c={colors.blue}>
                     Reply
-                  </LinkFont>
+                  </CTALink>
                 </ULink>
                 <ULink
+                  hu
                   to="#"
                   authrequired={true}
                   onClick={e => {
@@ -194,14 +210,13 @@ class Comment extends Component {
                     this.copyToClipboard();
                   }}
                 >
-                  <LinkFont mr={3} c={colors.blue}>
+                  <CTALink mr={3} c={colors.blue}>
                     Share
-                  </LinkFont>
+                  </CTALink>
                 </ULink>
                 {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
               </View>
             )}
-            {!isActive && !hideBorder && <Divider pt={sizing(4)} />}
           </View>
         </Spacer>
 
@@ -211,7 +226,7 @@ class Comment extends Component {
             nestingLevel={nestingLevel}
             additionalNesting={hidePostButtons ? 0 : 1.5}
             p={4}
-            mt={4}
+            // mt={4}
             text={'Comment'}
             {...this.props}
             parentComment={comment}
@@ -219,6 +234,7 @@ class Comment extends Component {
             autoFocus
           />
         )}
+        {!hideBorder && <Divider m={'0 4'} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}

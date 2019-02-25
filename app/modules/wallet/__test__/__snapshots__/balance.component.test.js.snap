@@ -25,7 +25,7 @@ exports[`Snapshot Balance Web 1`] = `
       "flexBasis": "auto",
       "flexDirection": "column",
       "flexShrink": 0,
-      "marginBottom": "28.8px",
+      "marginBottom": "14.4px",
       "marginLeft": "28.8px",
       "marginRight": "28.8px",
       "marginTop": "28.8px",
@@ -45,35 +45,37 @@ exports[`Snapshot Balance Web 1`] = `
   }
 >
   <div
-    className="__react_component_tooltip place-top type-dark "
-    data-id="tooltip"
-    id="tooltip"
-  />
-  <div
-    dir="auto"
     style={
       Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
         "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
         "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomStyle": "solid",
         "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
         "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
         "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
         "borderTopWidth": "0px",
         "boxSizing": "border-box",
-        "color": "rgba(0,0,0,1.00)",
         "display": "flex",
         "flexBasis": "auto",
+        "flexDirection": "column",
         "flexShrink": 0,
-        "fontFamily": "HelveticaNeue-Bold",
-        "fontSize": "21.6px",
-        "fontStyle": "inherit",
-        "fontVariant": "inherit",
-        "fontWeight": "inherit",
-        "lineHeight": "28.8px",
         "marginBottom": "0px",
         "marginLeft": "0px",
         "marginRight": "0px",
         "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
         "msFlexNegative": 0,
         "msFlexPreferredSize": "auto",
         "paddingBottom": "0px",
@@ -81,54 +83,94 @@ exports[`Snapshot Balance Web 1`] = `
         "paddingRight": "0px",
         "paddingTop": "0px",
         "position": "relative",
-        "textDecoration": "none",
-        "whiteSpace": "pre-wrap",
-        "wordWrap": "break-word",
+        "zIndex": 0,
       }
     }
   >
-    Relevant Tokens
-  </div>
-  <div
-    dir="auto"
-    mt={2}
-    style={
-      Object {
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexShrink": 0,
-        "borderBottomWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "color": "inherit",
-        "display": "flex",
-        "flexBasis": "auto",
-        "flexShrink": 0,
-        "fontFamily": "HelveticaNeue",
-        "fontSize": "12.6px",
-        "fontStyle": "inherit",
-        "fontVariant": "inherit",
-        "fontWeight": "inherit",
-        "lineHeight": "16.799999999999997px",
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "14.4px",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
-        "position": "relative",
-        "textDecoration": "none",
-        "whiteSpace": "pre-wrap",
-        "wordWrap": "break-word",
+    <div
+      dir="auto"
+      style={
+        Object {
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexShrink": 0,
+          "borderBottomWidth": "0px",
+          "borderLeftWidth": "0px",
+          "borderRightWidth": "0px",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "color": "rgba(0,0,0,1.00)",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexShrink": 0,
+          "fontFamily": "HelveticaNeue-Bold",
+          "fontSize": "21.6px",
+          "fontStyle": "inherit",
+          "fontVariant": "inherit",
+          "fontWeight": "inherit",
+          "lineHeight": "28.8px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "0px",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "textDecoration": "none",
+          "whiteSpace": "pre-wrap",
+          "wordWrap": "break-word",
+        }
       }
-    }
-  >
-    These are tokens you earned as rewards. Once you have more than 100, you can transfer them to your Ethereum account.
+    >
+      Relevant Tokens
+    </div>
+    <div
+      dir="auto"
+      mt={2}
+      style={
+        Object {
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexShrink": 0,
+          "borderBottomWidth": "0px",
+          "borderLeftWidth": "0px",
+          "borderRightWidth": "0px",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "color": "inherit",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexShrink": 0,
+          "fontFamily": "HelveticaNeue",
+          "fontSize": "12.6px",
+          "fontStyle": "inherit",
+          "fontVariant": "inherit",
+          "fontWeight": "inherit",
+          "lineHeight": "16.799999999999997px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "14.4px",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "textDecoration": "none",
+          "whiteSpace": "pre-wrap",
+          "wordWrap": "break-word",
+        }
+      }
+    >
+      These are tokens you earned as rewards. Once you have more than
+       
+      100
+      , you can transfer them to your Ethereum account.
+    </div>
   </div>
   <div
     style={
@@ -182,11 +224,13 @@ exports[`Snapshot Balance Web 1`] = `
           "WebkitAlignItems": "stretch",
           "WebkitBoxAlign": "stretch",
           "WebkitBoxDirection": "normal",
+          "WebkitBoxLines": "multiple",
           "WebkitBoxOrient": "horizontal",
           "WebkitBoxPack": "justify",
           "WebkitFlexBasis": "auto",
           "WebkitFlexDirection": "row",
           "WebkitFlexShrink": 0,
+          "WebkitFlexWrap": "wrap",
           "WebkitJustifyContent": "space-between",
           "alignItems": "stretch",
           "borderBottomStyle": "solid",
@@ -202,6 +246,7 @@ exports[`Snapshot Balance Web 1`] = `
           "flexBasis": "auto",
           "flexDirection": "row",
           "flexShrink": 0,
+          "flexWrap": "wrap",
           "justifyContent": "space-between",
           "marginBottom": "0px",
           "marginLeft": "0px",
@@ -214,6 +259,7 @@ exports[`Snapshot Balance Web 1`] = `
           "msFlexNegative": 0,
           "msFlexPack": "justify",
           "msFlexPreferredSize": "auto",
+          "msFlexWrap": "wrap",
           "paddingBottom": "0px",
           "paddingLeft": "0px",
           "paddingRight": "0px",
@@ -225,6 +271,7 @@ exports[`Snapshot Balance Web 1`] = `
     >
       <div
         dir="auto"
+        mb={0.5}
         style={
           Object {
             "WebkitFlexBasis": "auto",
@@ -244,7 +291,7 @@ exports[`Snapshot Balance Web 1`] = `
             "fontVariant": "inherit",
             "fontWeight": "inherit",
             "lineHeight": "16.799999999999997px",
-            "marginBottom": "0px",
+            "marginBottom": "3.6px",
             "marginLeft": "0px",
             "marginRight": "0px",
             "marginTop": "0px",
@@ -265,6 +312,7 @@ exports[`Snapshot Balance Web 1`] = `
       </div>
       <div
         dir="auto"
+        mb={0.5}
         style={
           Object {
             "WebkitFlexBasis": "auto",
@@ -284,7 +332,7 @@ exports[`Snapshot Balance Web 1`] = `
             "fontVariant": "inherit",
             "fontWeight": "inherit",
             "lineHeight": "14.4px",
-            "marginBottom": "0px",
+            "marginBottom": "3.6px",
             "marginLeft": "0px",
             "marginRight": "0px",
             "marginTop": "0px",
@@ -348,33 +396,37 @@ exports[`Snapshot Balance Web 1`] = `
       }
     >
       <div
-        dir="auto"
-        fs={4.5}
-        lh={4.5}
-        mr={2}
         style={
           Object {
+            "WebkitAlignItems": "center",
+            "WebkitBoxAlign": "center",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "horizontal",
             "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "row",
             "WebkitFlexShrink": 0,
+            "alignItems": "center",
+            "borderBottomStyle": "solid",
             "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
             "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
             "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
             "borderTopWidth": "0px",
             "boxSizing": "border-box",
-            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "flexBasis": "auto",
+            "flexDirection": "row",
             "flexShrink": 0,
-            "fontFamily": "HelveticaNeue-CondensedBold",
-            "fontSize": "32.4px",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
-            "lineHeight": "32.4px",
             "marginBottom": "0px",
             "marginLeft": "0px",
-            "marginRight": "14.4px",
+            "marginRight": "10.8px",
             "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "center",
+            "msFlexDirection": "row",
             "msFlexNegative": 0,
             "msFlexPreferredSize": "auto",
             "paddingBottom": "0px",
@@ -382,23 +434,21 @@ exports[`Snapshot Balance Web 1`] = `
             "paddingRight": "0px",
             "paddingTop": "0px",
             "position": "relative",
-            "textDecoration": "none",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
+            "zIndex": 0,
           }
         }
       >
         <div
           style={
             Object {
-              "WebkitAlignItems": "center",
-              "WebkitBoxAlign": "center",
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
               "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "horizontal",
+              "WebkitBoxOrient": "vertical",
               "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "row",
+              "WebkitFlexDirection": "column",
               "WebkitFlexShrink": 0,
-              "alignItems": "center",
+              "alignItems": "stretch",
               "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
               "borderLeftStyle": "solid",
@@ -407,26 +457,31 @@ exports[`Snapshot Balance Web 1`] = `
               "borderRightWidth": "0px",
               "borderTopStyle": "solid",
               "borderTopWidth": "0px",
+              "bottom": "0px",
               "boxSizing": "border-box",
               "display": "flex",
               "flexBasis": "auto",
-              "flexDirection": "row",
+              "flexDirection": "column",
               "flexShrink": 0,
+              "height": "32.4px",
               "marginBottom": "0px",
               "marginLeft": "0px",
-              "marginRight": "10.8px",
+              "marginRight": "9px",
               "marginTop": "0px",
               "minHeight": "0px",
               "minWidth": "0px",
-              "msFlexAlign": "center",
-              "msFlexDirection": "row",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "column",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
+              "overflowX": "hidden",
+              "overflowY": "hidden",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
+              "width": "39.6px",
               "zIndex": 0,
             }
           }
@@ -442,6 +497,11 @@ exports[`Snapshot Balance Web 1`] = `
                 "WebkitFlexDirection": "column",
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
+                "backgroundColor": "rgba(0,0,0,0.00)",
+                "backgroundImage": "url(\\"relevantcoin.png\\")",
+                "backgroundPosition": "center",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "contain",
                 "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
                 "borderLeftStyle": "solid",
@@ -456,10 +516,11 @@ exports[`Snapshot Balance Web 1`] = `
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "29.16px",
+                "height": "100%",
+                "left": "0px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "8.1px",
+                "marginRight": "0px",
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
@@ -467,125 +528,79 @@ exports[`Snapshot Balance Web 1`] = `
                 "msFlexDirection": "column",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
                 "paddingBottom": "0px",
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
                 "paddingTop": "0px",
-                "position": "relative",
-                "width": "35.64px",
-                "zIndex": 0,
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
               }
             }
-          >
-            <div
-              style={
-                Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
-                  "WebkitFlexDirection": "column",
-                  "alignItems": "stretch",
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"relevantcoin.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "contain",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
-                  "bottom": "0px",
-                  "boxSizing": "border-box",
-                  "display": "inline-flex",
-                  "flexDirection": "column",
-                  "height": "100%",
-                  "left": "0px",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-            <img
-              alt=""
-              draggable={false}
-              src="relevantcoin.png"
-              style={
-                Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-          </div>
-          <span
-            dir="auto"
+          />
+          <img
+            alt=""
+            draggable={false}
+            src="relevantcoin.png"
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexShrink": 0,
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
-                "color": "rgba(0,0,0,1.00)",
-                "display": "flex",
-                "flexBasis": "auto",
-                "flexShrink": 0,
-                "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "12.6px",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "16.799999999999997px",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "inherit",
-                "wordWrap": "break-word",
+                "bottom": "0px",
+                "height": "100%",
+                "left": "0px",
+                "opacity": 0,
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
               }
             }
-          >
-            111
-          </span>
+          />
+        </div>
+        <div
+          dir="auto"
+          fs={4.5}
+          inline={0}
+          lh={5}
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "rgba(0,0,0,1.00)",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "HelveticaNeue-CondensedBold",
+              "fontSize": "32.4px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "36px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          111
         </div>
       </div>
     </div>
@@ -676,20 +691,11 @@ exports[`Snapshot Balance Web 1`] = `
       }
     >
       Unclaimed RNT: 111
-         Metamask: NaN
+      
+      
     </div>
   </div>
   <div
-    data-focusable={true}
-    onClick={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onResponderGrant={[Function]}
-    onResponderMove={[Function]}
-    onResponderRelease={[Function]}
-    onResponderTerminate={[Function]}
-    onResponderTerminationRequest={[Function]}
-    onStartShouldSetResponder={[Function]}
     style={
       Object {
         "WebkitAlignItems": "center",
@@ -709,7 +715,6 @@ exports[`Snapshot Balance Web 1`] = `
         "borderTopStyle": "solid",
         "borderTopWidth": "0px",
         "boxSizing": "border-box",
-        "cursor": "pointer",
         "display": "flex",
         "flexBasis": "auto",
         "flexDirection": "row",
@@ -724,21 +729,76 @@ exports[`Snapshot Balance Web 1`] = `
         "msFlexDirection": "row",
         "msFlexNegative": 0,
         "msFlexPreferredSize": "auto",
-        "msTouchAction": "manipulation",
         "paddingBottom": "0px",
         "paddingLeft": "0px",
         "paddingRight": "0px",
         "paddingTop": "0px",
         "position": "relative",
-        "touchAction": "manipulation",
         "zIndex": 0,
       }
     }
-    tabIndex="0"
   >
     <div
-      data-for="tooltip"
-      data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Claim your tokens!\\"}}"
+      aria-disabled={true}
+      c="#0000ff"
+      dir="auto"
+      disabled={true}
+      mr={0.5}
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexShrink": 0,
+          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+          "WebkitTextDecorationStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftWidth": "0px",
+          "borderRightWidth": "0px",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "color": "rgba(0,0,255,1.00)",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexShrink": 0,
+          "fontFamily": "HelveticaNeue-Medium",
+          "fontSize": "10.8px",
+          "fontStyle": "inherit",
+          "fontVariant": "inherit",
+          "fontWeight": "inherit",
+          "lineHeight": "14.4px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "3.6px",
+          "marginTop": "0px",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "textDecoration": "underline",
+          "textDecorationColor": "rgba(0,0,255,1.00)",
+          "textDecorationStyle": "solid",
+          "whiteSpace": "pre-wrap",
+          "wordWrap": "break-word",
+        }
+      }
+      td="underline"
+    >
+      Claim Tokens
+    </div>
+    <div
+      data-for="mainTooltip"
+      data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Once you earn more than 100 tokens you\\\\ncan transfer them to your Metamask wallet\\"}}"
       style={
         Object {
           "WebkitAlignItems": "stretch",
@@ -797,7 +857,7 @@ exports[`Snapshot Balance Web 1`] = `
             "WebkitFlexShrink": 0,
             "alignItems": "stretch",
             "backgroundColor": "rgba(0,0,0,0.00)",
-            "backgroundImage": "url(\\"/img/info.png\\")",
+            "backgroundImage": "url(\\"info.png\\")",
             "backgroundPosition": "center",
             "backgroundRepeat": "no-repeat",
             "backgroundSize": "cover",
@@ -842,7 +902,7 @@ exports[`Snapshot Balance Web 1`] = `
       <img
         alt=""
         draggable={false}
-        src="/img/info.png"
+        src="info.png"
         style={
           Object {
             "bottom": "0px",
@@ -857,53 +917,6 @@ exports[`Snapshot Balance Web 1`] = `
           }
         }
       />
-    </div>
-    <div
-      c="#0000ff"
-      dir="auto"
-      ml={0.5}
-      style={
-        Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-          "WebkitTextDecorationStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "rgba(0,0,255,1.00)",
-          "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
-          "fontFamily": "HelveticaNeue-Medium",
-          "fontSize": "10.8px",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "14.4px",
-          "marginBottom": "0px",
-          "marginLeft": "3.6px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "3.6px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "3.6px",
-          "position": "relative",
-          "textDecoration": "underline",
-          "textDecorationColor": "rgba(0,0,0,1.00)",
-          "textDecorationStyle": "solid",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
-        }
-      }
-      td="underline"
-    >
-      Claim Tokens
     </div>
   </div>
   <div
@@ -986,10 +999,7 @@ exports[`Snapshot Balance Web 1`] = `
       }
     }
   >
-    Your recent activities on relevant from winning Relevant Bonus Tokens.
+    Your rewards for upvoting links and discussion threads that are relevant to the community.
   </div>
-  <Earnings
-    pageSize={10}
-  />
 </div>
 `;

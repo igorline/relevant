@@ -13,7 +13,7 @@ export default function earnings(state = initialState, action) {
       return {
         ...state,
         [action.payload.status || 'list']: [
-          ...state[action.payload.status || 'list'],
+          ...state[action.payload.status || 'list'].slice(0, action.payload.skip),
           ...action.payload.data.result
         ],
         entities: {

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'modules/tooltip/web/tooltip.component';
-import EarningsComponent from 'modules/wallet/earnings.component';
 import { colors } from 'app/styles';
 import { numbers } from 'app/utils';
 import {
@@ -9,22 +7,24 @@ import {
   BodyText,
   Header,
   SecondaryText,
-  NumericalValue,
   Touchable,
   Image,
   LinkFont
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
+import { CASHOUT_LIMIT } from 'server/config/globalConstants';
+// import Tooltip from 'modules/tooltip/tooltip.component';
 
 export default class Balance extends Component {
   static propTypes = {
     user: PropTypes.object,
     contract: PropTypes.object,
     actions: PropTypes.object,
-    wallet: PropTypes.object
+    wallet: PropTypes.object,
+    mobile: PropTypes.bool
   };
 
-  async cashOut() {
+  cashOut = async () => {
     const { actions, user, contract } = this.props;
     try {
       const decimals = contract.methods.decimals.cacheCall();
@@ -47,64 +47,80 @@ export default class Balance extends Component {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   render() {
-    const { user, wallet } = this.props;
-    if (!user) {
-      return null;
-    }
+    const { user, wallet, mobile } = this.props;
+    if (!user) return null;
+    const metaMaskTokens = wallet.connectedBalance || user.tokenBalance;
+    const airdropTokens = user.airdropToknes;
+
+    // <Tooltip
+    //   name='cashOut'
+    //   text={'You can cash out your earnings once you earn 100 tokens'}
+    // >
     return (
-      <View m={4}>
-        <Tooltip id="tooltip" />
-        <Header>Relevant Tokens</Header>
-        <BodyText mt={2}>
-          These are tokens you earned as rewards. Once you have more than 100, you can
-          transfer them to your Ethereum account.
-        </BodyText>
+      <View m={mobile ? '2 2 0 2' : '4 4 2 4'}>
+        {!mobile ? (
+          <View>
+            <Header>Relevant Tokens</Header>
+            <BodyText mt={2}>
+              These are tokens you earned as rewards. Once you have more than{' '}
+              {CASHOUT_LIMIT}, you can transfer them to your Ethereum account.
+            </BodyText>
+          </View>
+        ) : null}
         <View br bl bt p="2" mt={2}>
-          <View fdirection="row" justify="space-between">
-            <BodyText>Account Balance</BodyText>
-            <SecondaryText>{user.ethAddress[0]}</SecondaryText>
+          <View fdirection="row" justify="space-between" wrap>
+            <BodyText mb={0.5}>Account Balance</BodyText>
+            <SecondaryText mb={0.5}>{user.ethAddress[0]}</SecondaryText>
           </View>
           <View fdirection="row" align="center" display="flex" mt={2}>
-            <NumericalValue fs={4.5} lh={4.5} mr={2}>
-              <CoinStat size={4.5} inheritfont user={user} align="center" />
-            </NumericalValue>
+            <CoinStat fs={4.5} lh={5} size={5} user={user} align="center" />
           </View>
         </View>
         <View border={1} p="2">
           <SecondaryText>
             {`Unclaimed RNT: ${numbers.abbreviateNumber(user.balance)}`}
-            {`   Metamask: ${numbers.abbreviateNumber(
-              wallet.connectedBalance || user.tokenBalance
-            )}`}
+            {metaMaskTokens
+              ? `   Metamask: ${numbers.abbreviateNumber(
+                wallet.connectedBalance || user.tokenBalance
+              )}`
+              : ''}
+            {airdropTokens
+              ? `   AirdropTokens: ${numbers.abbreviateNumber(user.airdropTokens)}`
+              : ''}
           </SecondaryText>
         </View>
-        <Touchable onClick={this.cashOut} mt={2}>
-          <View fdirection="row" align="center">
-            <Image
-              source={'/img/info.png'}
-              s={1.5}
-              h={1.5}
-              w={1.5}
-              m={0}
-              data-for="tooltip"
-              data-tip={JSON.stringify({
-                type: 'TEXT',
-                props: { text: 'Claim your tokens!' }
-              })}
-            />
-            <LinkFont ml={0.5} c={colors.blue} td={'underline'}>
+        <View fdirection="row" mt={2} align="center">
+          <Touchable onClick={this.cashOut} disabled>
+            <LinkFont mr={0.5} c={colors.blue} td={'underline'}>
               Claim Tokens
             </LinkFont>
-          </View>
-        </Touchable>
-        <Header mt={9}>Recent Activity</Header>
-        <BodyText mt={2}>
-          Your recent activities on relevant from winning Relevant Bonus Tokens.
-        </BodyText>
-        <EarningsComponent pageSize={10} />
+          </Touchable>
+          <Image
+            source={require('app/public/img/info.png')}
+            s={1.5}
+            h={1.5}
+            w={1.5}
+            m={0}
+            data-for="mainTooltip"
+            data-tip={JSON.stringify({
+              type: 'TEXT',
+              props: {
+                text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet`
+              }
+            })}
+            // onPress={() => this.tooltip.show()}
+          />
+        </View>
+        <Header mt={mobile ? 4 : 9}>Recent Activity</Header>
+        {!mobile ? (
+          <BodyText mt={2}>
+            Your rewards for upvoting links and discussion threads that are relevant to
+            the community.
+          </BodyText>
+        ) : null}
       </View>
     );
   }

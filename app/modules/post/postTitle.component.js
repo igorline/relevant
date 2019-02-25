@@ -17,25 +17,34 @@ export default function PostTitle(props) {
     noLink,
     mobile,
     actions,
-    singlePost
+    singlePost,
+    preview
   } = props;
 
   const c = mobile ? colors.white : null;
 
   if (!post) return null;
   const tags = post.tags && post.tags.length ? get(post, 'tags', []) : [];
+  const titleLines = preview && mobile ? 2 : 3;
 
   const titleEl = postUrl ? (
     <ULink
       to={postUrl}
+      noLink={noLink}
       onPress={() => (singlePost ? actions.goToUrl(post.url) : actions.goToPost(post))}
     >
-      <Title c={c} flex={1} numberOfLines={3}>
+      <Title
+        inline={1}
+        lh={mobile ? 2.7 : null}
+        c={c}
+        flex={1}
+        numberOfLines={titleLines}
+      >
         {title}
       </Title>
     </ULink>
   ) : (
-    <Title c={c} flex={1} numberOfLines={3}>
+    <Title inline={1} c={c} flex={1} numberOfLines={titleLines}>
       {title}
     </Title>
   );
@@ -44,41 +53,55 @@ export default function PostTitle(props) {
     post.commentCount && postUrl ? (
       <InlineText>
         <ULink
+          type="text"
           to={postUrl}
-          c={c}
-          td={'underline'}
-          styles={'text-decoration: underline'}
+          hu
           noLink={noLink}
           onPress={() => actions.goToPost(post)}
         >
-          <InlineText>
+          <SecondaryText inline={1} c={c || colors.blue}>
             {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
-          </InlineText>
+          </SecondaryText>
         </ULink>
-        <InlineText> • </InlineText>
+        <InlineText>&nbsp;&nbsp;&nbsp; </InlineText>
       </InlineText>
     ) : null;
 
   const tagEl = tags.length ? (
-    <InlineText>
+    <InlineText c={c || colors.blue}>
       {tags.map(tag => (
         <Tag name={tag} community={community} key={tag} noLink={noLink} />
       ))}
-      <InlineText>• </InlineText>
+    </InlineText>
+  ) : null;
+
+  const hasAuthor = link && link.articleAuthor && link.articleAuthor.length;
+  const authorEl = hasAuthor ? (
+    <InlineText numberOfLines={1}>
+      {link.articleAuthor.join(', ')}
+      {' • '}
     </InlineText>
   ) : null;
 
   const domainEl = get(link, 'domain') && (
     <InlineText numberOfLines={1}>
+      <SecondaryText c={c} inline={1}>
+        {authorEl}
+      </SecondaryText>
       <ULink
+        type="text"
         external
         to={post.url}
+        hc={colors.blue}
+        hu
         target="_blank"
         disabled={!postUrl}
         noLink={noLink}
         onPress={() => actions.goToUrl(post.url)}
       >
-        <InlineText>{link.domain && `${link.domain}\u00A0↗`}</InlineText>
+        <SecondaryText c={c || null} inline={1}>
+          {link.domain && `${link.domain}\u00A0\u2197\uFE0E`}
+        </SecondaryText>
       </ULink>
     </InlineText>
   );
@@ -104,22 +127,29 @@ export default function PostTitle(props) {
   //   </TextView>;
 
   return (
-    <View flex={1} fdirection={'column'}>
-      {titleEl}
-      {/* {postUrl && timestamp }{' • '} */}
-      <SecondaryText c={c} mt={1}>
-        <InlineText>
-          {commentEl}
-          {tagEl}
+    <View flex={1} fdirection={'column'} justify={mobile ? 'center' : 'flex-start'}>
+      <View>
+        {titleEl}
+        {/* {postUrl && timestamp }{' • '} */}
+        <SecondaryText mt={mobile ? 1 : 0} c={c}>
           {domainEl}
-        </InlineText>
-      </SecondaryText>
+        </SecondaryText>
+      </View>
+      {commentEl || tagEl ? (
+        <SecondaryText c={c} mt={mobile ? 0 : 0.5} numberOfLines={mobile ? 1 : null}>
+          <InlineText>
+            {commentEl}
+            {tagEl}
+          </InlineText>
+        </SecondaryText>
+      ) : null}
       {children}
     </View>
   );
 }
 
 PostTitle.propTypes = {
+  preview: PropTypes.bool,
   singlePost: PropTypes.bool,
   mobile: PropTypes.bool,
   noLink: PropTypes.bool,

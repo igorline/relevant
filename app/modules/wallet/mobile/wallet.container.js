@@ -11,10 +11,8 @@ import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
+import { FlatList, RefreshControl } from 'react-native';
 import moment from 'moment';
-import { numbers } from 'app/utils';
-import InfScroll from 'modules/listview/web/infScroll.component';
-import Tooltip from 'modules/tooltip/tooltip.component';
 
 let drizzle;
 
@@ -43,9 +41,9 @@ class WalletContainer extends Component {
       // eslint-disable-next-line
       drizzle = initDrizzle(this.context.store);
     }
-    // if (!this.props.earnings.list.length) {
-    //   this.load(0, 0);
-    // }
+    if (!this.props.earnings.list.length) {
+      this.load(0, 0);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -76,7 +74,7 @@ class WalletContainer extends Component {
     (
       <View>
         <Eth.Consumer>
-          {wallet => <Balance wallet={wallet} {...this.props} />}
+          {wallet => <Balance wallet={wallet} mobile {...this.props} />}
         </Eth.Consumer>
       </View>
     )
@@ -96,9 +94,8 @@ class WalletContainer extends Component {
     if (!item) return null;
     const earning = item;
 
-    let payout = this.computePayout(earning);
-    if (!payout) return null;
-    payout = numbers.abbreviateNumber(payout);
+    const payout = this.computePayout(earning);
+    if (!payout || !earning) return null;
 
     const month = moment(earning.createdAt).format('MMMM');
     const showMonth = this.previousMonth !== month;
@@ -106,7 +103,7 @@ class WalletContainer extends Component {
 
     return (
       <Earning
-        key={earning._id}
+        mobile
         earning={earning}
         payout={payout}
         month={showMonth ? month : null}
@@ -123,21 +120,31 @@ class WalletContainer extends Component {
     this.previousMonth = null;
 
     return (
-      <View flex={1} mb={8}>
-        <Tooltip id="tooltip" multiline ref={c => (this.tooltip = c)} />
-        {this.renderHeader()}
-        <View flex={1}>
-          <InfScroll
-            data={list}
-            loadMore={p => this.load(p, list.length)}
-            hasMore={this.hasMore}
-            key="recent-activties"
-            className={'parent'}
-            style={{ position: 'relative', marginBottom: 20 }}
-          >
-            {entities.map(item => this.renderRow({ item }))}
-          </InfScroll>
-        </View>
+      <View flex={1}>
+        <FlatList
+          ref={c => (this.scrollView = c)}
+          data={entities}
+          renderItem={this.renderRow}
+          keyExtractor={(item, index) => index.toString()}
+          removeClippedSubviews
+          pageSize={1}
+          initialListSize={10}
+          keyboardShouldPersistTaps={'always'}
+          keyboardDismissMode={'interactive'}
+          onEndReachedThreshold={100}
+          overScrollMode={'always'}
+          style={{ flex: 1 }}
+          ListHeaderComponent={this.renderHeader}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.reloading}
+              onRefresh={this.reload}
+              tintColor="#000000"
+              colors={['#000000', '#000000', '#000000']}
+              progressBackgroundColor="#ffffff"
+            />
+          }
+        />
       </View>
     );
   }

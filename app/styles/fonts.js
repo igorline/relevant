@@ -30,7 +30,7 @@ export const header = {
 };
 
 export const title = {
-  display: 'flex',
+  // display: 'flex',
   fontSize: sizing(2.5),
   lineHeight: sizing(2.5 * lh),
   fontFamily: HELVETICA_NEUE_CONDENSED_BOLD,
@@ -49,8 +49,8 @@ export const link = {
   fontSize: sizing(1.5),
   lineHeight: sizing(1.5 * lh),
   fontFamily: HELVETICA_NEUE_MEDIUM,
-  color: colors.grey,
-  padding: `${sizing(0.5)} 0`
+  color: colors.grey
+  // padding: `${sizing(0.5)} 0`
 };
 
 export const altLink = {
@@ -73,11 +73,17 @@ export const commentText = {
 };
 
 export const secondaryText = {
-  display: 'flex',
   fontSize: sizing(1.5),
   lineHeight: sizing(1.5 * lh),
   fontFamily: HELVETICA_REGULAR,
   color: colors.secondaryText
+};
+
+export const communityLink = {
+  fontSize: sizing(1.75),
+  lineHeight: sizing(1.75 * lh),
+  fontFamily: HELVETICA_REGULAR,
+  color: colors.grey
 };
 
 export const CTALink = {

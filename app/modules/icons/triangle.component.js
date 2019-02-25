@@ -23,7 +23,7 @@ const Triangle = ({ direction, inline, lh }) => {
 
 Triangle.propTypes = {
   direction: PropTypes.oneOf(['UP', 'DOWN']),
-  inline: PropTypes.bool,
+  inline: PropTypes.number,
   lh: PropTypes.number
 };
 

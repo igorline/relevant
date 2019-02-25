@@ -11,15 +11,19 @@ exports[`Snapshot NavProfile 1`] = `
   -ms-flex-align: center;
   align-items: center;
   color: #000000;
+  color: #0000ff;
 }
 
 .c0:hover {
-  font-weight: bold;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  -webkit-text-decoration-color: #000000;
+  text-decoration-color: #000000;
   background: white;
-  margin-right: 1px;
 }
 
 .c1 {
+  color: #0000ff;
   color: #999999;
 }
 
@@ -37,6 +41,10 @@ exports[`Snapshot NavProfile 1`] = `
 
 .c1.active * {
   fill: #000000;
+}
+
+.c1:hover * {
+  color: #000000;
 }
 
 <div
@@ -170,12 +178,18 @@ exports[`Snapshot NavProfile 1`] = `
     <a
       className="ulink-mock c0"
       href="/relevant/new"
+      hu={0}
+      inline={0}
       onClick={[Function]}
       styles={
         Array [
           "display:flex;align-items:center;color:",
           "#000000",
-          ";&:hover{font-weight:bold;background:white;margin-right:1px;}",
+          ";&:hover{text-decoration:underline;text-decoration-color:",
+          "#000000",
+          ";background:",
+          "white",
+          ";}",
         ]
       }
     >
@@ -378,26 +392,29 @@ exports[`Snapshot NavProfile 1`] = `
           </div>
         </div>
         <div
+          c="#000000"
           dir="auto"
+          lh={1.75}
           style={
             Object {
               "WebkitFlexBasis": "auto",
               "WebkitFlexShrink": 0,
+              "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "inherit",
+              "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "flexBasis": "auto",
               "flexShrink": 0,
-              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-              "fontSize": "14px",
+              "fontFamily": "HelveticaNeue",
+              "fontSize": "12.6px",
               "fontStyle": "inherit",
               "fontVariant": "inherit",
               "fontWeight": "inherit",
-              "lineHeight": "inherit",
+              "lineHeight": "12.6px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
@@ -410,6 +427,7 @@ exports[`Snapshot NavProfile 1`] = `
               "paddingTop": "0px",
               "position": "relative",
               "textDecoration": "none",
+              "textDecorationColor": "rgba(0,0,0,1.00)",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
             }
@@ -487,10 +505,10 @@ exports[`Snapshot NavProfile 1`] = `
             "flexBasis": "auto",
             "flexDirection": "column",
             "flexShrink": 0,
-            "marginBottom": "36px",
+            "marginBottom": "28.8px",
             "marginLeft": "39.6px",
             "marginRight": "0px",
-            "marginTop": "7.2px",
+            "marginTop": "3.6px",
             "minHeight": "0px",
             "minWidth": "0px",
             "msFlexAlign": "stretch",
@@ -506,466 +524,281 @@ exports[`Snapshot NavProfile 1`] = `
           }
         }
       >
-        <div
-          dir="auto"
-          p="0.75 0"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "10.8px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "14.4px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "3.6px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "3.6px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
-            }
-          }
+        <a
+          ac="#000000"
+          aria-current={null}
+          className="ulink-mock c1"
+          color="#999999"
+          hc="#000000"
+          href="/relevant/new/technology"
+          hu={0}
+          inline={0}
+          onClick={[Function]}
+          styles=""
         >
-          <a
-            ac="#000000"
-            aria-current={null}
-            className="ulink-mock c1"
-            color="#999999"
-            hc="#000000"
-            href="/relevant/new/technology"
-            onClick={[Function]}
-            styles=""
-          >
-            <span
-              dir="auto"
-              style={
-                Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
-                }
+          <div
+            dir="auto"
+            p="0.5 0"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "12.6px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "16.799999999999997px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "3.6px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "3.6px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
               }
-            >
-              #
-              technology
-            </span>
-          </a>
-        </div>
-        <div
-          dir="auto"
-          p="0.75 0"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "10.8px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "14.4px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "3.6px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "3.6px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
             }
-          }
-        >
-          <a
-            ac="#000000"
-            aria-current={null}
-            className="ulink-mock c1"
-            color="#999999"
-            hc="#000000"
-            href="/relevant/new/society"
-            onClick={[Function]}
-            styles=""
           >
-            <span
-              dir="auto"
-              style={
-                Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
-                }
+            #
+            technology
+          </div>
+        </a>
+        <a
+          ac="#000000"
+          aria-current={null}
+          className="ulink-mock c1"
+          color="#999999"
+          hc="#000000"
+          href="/relevant/new/society"
+          hu={0}
+          inline={0}
+          onClick={[Function]}
+          styles=""
+        >
+          <div
+            dir="auto"
+            p="0.5 0"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "12.6px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "16.799999999999997px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "3.6px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "3.6px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
               }
-            >
-              #
-              society
-            </span>
-          </a>
-        </div>
-        <div
-          dir="auto"
-          p="0.75 0"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "10.8px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "14.4px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "3.6px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "3.6px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
             }
-          }
-        >
-          <a
-            ac="#000000"
-            aria-current={null}
-            className="ulink-mock c1"
-            color="#999999"
-            hc="#000000"
-            href="/relevant/new/culture"
-            onClick={[Function]}
-            styles=""
           >
-            <span
-              dir="auto"
-              style={
-                Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
-                }
+            #
+            society
+          </div>
+        </a>
+        <a
+          ac="#000000"
+          aria-current={null}
+          className="ulink-mock c1"
+          color="#999999"
+          hc="#000000"
+          href="/relevant/new/culture"
+          hu={0}
+          inline={0}
+          onClick={[Function]}
+          styles=""
+        >
+          <div
+            dir="auto"
+            p="0.5 0"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "12.6px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "16.799999999999997px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "3.6px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "3.6px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
               }
-            >
-              #
-              culture
-            </span>
-          </a>
-        </div>
-        <div
-          dir="auto"
-          p="0.75 0"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "10.8px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "14.4px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "3.6px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "3.6px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
             }
-          }
-        >
-          <a
-            ac="#000000"
-            aria-current={null}
-            className="ulink-mock c1"
-            color="#999999"
-            hc="#000000"
-            href="/relevant/new/politics"
-            onClick={[Function]}
-            styles=""
           >
-            <span
-              dir="auto"
-              style={
-                Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
-                }
+            #
+            culture
+          </div>
+        </a>
+        <a
+          ac="#000000"
+          aria-current={null}
+          className="ulink-mock c1"
+          color="#999999"
+          hc="#000000"
+          href="/relevant/new/politics"
+          hu={0}
+          inline={0}
+          onClick={[Function]}
+          styles=""
+        >
+          <div
+            dir="auto"
+            p="0.5 0"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "12.6px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "16.799999999999997px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "3.6px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "3.6px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
               }
-            >
-              #
-              politics
-            </span>
-          </a>
-        </div>
-        <div
-          dir="auto"
-          p="0.75 0"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "10.8px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "14.4px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "3.6px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "3.6px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
             }
-          }
-        >
-          <a
-            ac="#000000"
-            aria-current={null}
-            className="ulink-mock c1"
-            color="#999999"
-            hc="#000000"
-            href="/relevant/new/altwoke"
-            onClick={[Function]}
-            styles=""
           >
-            <span
-              dir="auto"
-              style={
-                Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
-                }
+            #
+            politics
+          </div>
+        </a>
+        <a
+          ac="#000000"
+          aria-current={null}
+          className="ulink-mock c1"
+          color="#999999"
+          hc="#000000"
+          href="/relevant/new/altwoke"
+          hu={0}
+          inline={0}
+          onClick={[Function]}
+          styles=""
+        >
+          <div
+            dir="auto"
+            p="0.5 0"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "12.6px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "16.799999999999997px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "3.6px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "3.6px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
               }
-            >
-              #
-              altwoke
-            </span>
-          </a>
-        </div>
+            }
+          >
+            #
+            altwoke
+          </div>
+        </a>
       </div>
       <div
         c="#000000"
@@ -985,22 +818,22 @@ exports[`Snapshot NavProfile 1`] = `
             "display": "flex",
             "flexBasis": "auto",
             "flexShrink": 0,
-            "fontFamily": "HelveticaNeue-Medium",
-            "fontSize": "10.8px",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "12.6px",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
             "fontWeight": "inherit",
-            "lineHeight": "14.4px",
+            "lineHeight": "16.799999999999997px",
             "marginBottom": "14.4px",
             "marginLeft": "0px",
             "marginRight": "0px",
             "marginTop": "0px",
             "msFlexNegative": 0,
             "msFlexPreferredSize": "auto",
-            "paddingBottom": "3.6px",
+            "paddingBottom": "0px",
             "paddingLeft": "0px",
             "paddingRight": "0px",
-            "paddingTop": "3.6px",
+            "paddingTop": "0px",
             "position": "relative",
             "textDecoration": "none",
             "textDecorationColor": "rgba(0,0,0,1.00)",
@@ -1106,12 +939,18 @@ exports[`Snapshot NavProfile 1`] = `
     <a
       className="ulink-mock c0"
       href="/crypto/new"
+      hu={0}
+      inline={0}
       onClick={[Function]}
       styles={
         Array [
           "display:flex;align-items:center;color:",
           "#000000",
-          ";&:hover{font-weight:bold;background:white;margin-right:1px;}",
+          ";&:hover{text-decoration:underline;text-decoration-color:",
+          "#000000",
+          ";background:",
+          "white",
+          ";}",
         ]
       }
     >
@@ -1255,6 +1094,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "WebkitFlexDirection": "column",
                   "alignItems": "stretch",
                   "backgroundColor": "rgba(0,0,0,0.00)",
+                  "backgroundImage": "url(\\"default_community.png\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
                   "backgroundSize": "cover",
@@ -1292,29 +1132,50 @@ exports[`Snapshot NavProfile 1`] = `
                 }
               }
             />
+            <img
+              alt=""
+              draggable={false}
+              src="default_community.png"
+              style={
+                Object {
+                  "bottom": "0px",
+                  "height": "100%",
+                  "left": "0px",
+                  "opacity": 0,
+                  "position": "absolute",
+                  "right": "0px",
+                  "top": "0px",
+                  "width": "100%",
+                  "zIndex": -1,
+                }
+              }
+            />
           </div>
         </div>
         <div
+          c="#000000"
           dir="auto"
+          lh={1.75}
           style={
             Object {
               "WebkitFlexBasis": "auto",
               "WebkitFlexShrink": 0,
+              "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "inherit",
+              "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "flexBasis": "auto",
               "flexShrink": 0,
-              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-              "fontSize": "14px",
+              "fontFamily": "HelveticaNeue",
+              "fontSize": "12.6px",
               "fontStyle": "inherit",
               "fontVariant": "inherit",
               "fontWeight": "inherit",
-              "lineHeight": "inherit",
+              "lineHeight": "12.6px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
@@ -1327,6 +1188,7 @@ exports[`Snapshot NavProfile 1`] = `
               "paddingTop": "0px",
               "position": "relative",
               "textDecoration": "none",
+              "textDecorationColor": "rgba(0,0,0,1.00)",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
             }

@@ -27,6 +27,7 @@ export const PUBLIC_LINK_REWARD = 1; // amount of tokens you get for public refe
 export const REFERRAL_REWARD = 20; // amount of tokens awarded both the referrer and referee
 export const TWITTER_REWARD = 20; // amount of tokens awarded for connecting twitter
 export const EMAIL_REWARD = 20; // amount of tokens awarded for connecting email
+export const CASHOUT_LIMIT = 100; // amount of tokens one needs to earn to cash out
 
 export const totalAllowedInvites = pagerank => {
   if (pagerank < 1) return 0;

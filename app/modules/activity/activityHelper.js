@@ -39,7 +39,7 @@ export function getActivityParams(activity) {
       emoji = '🤑';
       break;
     case 'topPost':
-      image = 'r-emoji.png';
+      image = require('app/public/img/r-emoji.png');
       break;
     default:
       userImage = activity.byUser;

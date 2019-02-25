@@ -20,6 +20,7 @@ import SinglePost from 'modules/post/mobile/singlePost.container';
 import Blocked from 'modules/profile/mobile/blocked.container';
 import Invites from 'modules/invites/mobile/invites.container';
 import VoterList from 'modules/post/mobile/voterList.container';
+import Wallet from 'modules/wallet/mobile/wallet.container';
 
 import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
 import HeaderRight from 'modules/navigation/mobile/headerRight.component';
@@ -28,41 +29,48 @@ import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 export const DefaultStack = {
   profile: {
     screen: Profile,
-    path: 'user/profile/:id',
+    path: 'user/profile/:id'
   },
   singlePost: {
     screen: SinglePost,
     path: ':community/post/:id',
     navigationOptions: {
-      title: 'Read',
+      title: 'Read'
     }
   },
   discoverView: {
     screen: Discover,
     path: ':community/:sort',
     navigationOptions: {
-      title: 'Read',
+      title: 'Read'
     }
   },
   discoverTag: {
     screen: Discover,
     path: ':community/:sort/:topic',
     navigationOptions: {
-      title: 'Read',
+      title: 'Read'
     }
   },
   statsView: {
     screen: Stats,
     params: {
       icon: Platform.OS === 'android' ? '📈' : '📈',
-      title: 'Stats',
+      title: 'Stats'
+    }
+  },
+  walletView: {
+    screen: Wallet,
+    params: {
+      icon: Platform.OS === 'android' ? '📈' : '📈',
+      title: 'Wallet'
     }
   },
   activityView: {
     screen: Activity,
     params: {
       icon: Platform.OS === 'android' ? '⚡' : '⚡',
-      title: 'Activity',
+      title: 'Activity'
     }
   },
   myProfileView: {
@@ -70,41 +78,38 @@ export const DefaultStack = {
     path: 'user/profile',
     params: {
       icon: Platform.OS === 'android' ? '👤' : '👤',
-      title: 'Profile',
+      title: 'Profile'
     }
   },
   blocked: {
     screen: Blocked,
     navigationOptions: {
-      title: 'Read',
+      title: 'Read'
     }
   },
   invites: {
     screen: Invites,
     navigationOptions: {
-      title: 'Read',
+      title: 'Read'
     }
   },
   people: {
     screen: VoterList,
     navigationOptions: {
-      title: 'Read',
+      title: 'Read'
     }
   },
   peopleView: {
-    screen: props => <DiscoverComponent
-      active={true}
-      type={'people'}
-      key={'people'}
-      {...props}
-    />,
+    screen: props => (
+      <DiscoverComponent active={true} type={'people'} key={'people'} {...props} />
+    )
   },
   inviteList: {
     screen: props => <inviteListView {...props} />,
     navigationOptions: {
-      title: 'Invite List',
+      title: 'Invite List'
     }
-  },
+  }
 };
 
 const defaultStackSettings = {
@@ -121,81 +126,94 @@ const defaultStackSettings = {
     elevation: 4
   },
 
-  defaultNavigationOptions: (props) => ({
+  defaultNavigationOptions: props => ({
     gesturesEnabled: true,
     gestureResponseDistance: {
-      horizontal: fullWidth,
+      horizontal: fullWidth
     },
     headerStyle: {
       elevation: 0,
       shadowOpacity: 0,
       borderBottomColor: darkGrey,
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomWidth: StyleSheet.hairlineWidth
     },
     headerTitle: <HeaderTitle {...props} />,
     headerRight: <HeaderRight {...props} />,
-    headerLeft: <HeaderLeft {...props} />,
+    headerLeft: <HeaderLeft {...props} />
   })
 };
 
 export const TabNavigator = createBottomTabNavigator(
   {
     myProfile: {
-      screen: createStackNavigator(DefaultStack,
-        { ...defaultStackSettings, initialRouteName: 'myProfileView' }
-      ),
+      screen: createStackNavigator(DefaultStack, {
+        ...defaultStackSettings,
+        initialRouteName: 'myProfileView'
+      }),
       path: '',
       params: {
         icon: Platform.OS === 'android' ? '👤' : '👤',
-        title: 'Profile',
+        title: 'Profile'
       }
     },
-    stats: {
-      screen: createStackNavigator(DefaultStack,
-        { ...defaultStackSettings, initialRouteName: 'statsView' }
-      ),
-      path: 'user/stats',
+    wallet: {
+      screen: createStackNavigator(DefaultStack, {
+        ...defaultStackSettings,
+        initialRouteName: 'walletView'
+      }),
+      path: 'user/wallet',
       params: {
-        icon: Platform.OS === 'android' ? '📈' : '📈',
-        title: 'Stats',
+        icon: Platform.OS === 'android' ? '💵' : '💵',
+        title: 'Wallet'
       }
     },
+    // stats: {
+    //   screen: createStackNavigator(DefaultStack,
+    //     { ...defaultStackSettings, initialRouteName: 'statsView' }
+    //   ),
+    //   path: 'user/stats',
+    //   params: {
+    //     icon: Platform.OS === 'android' ? '📈' : '📈',
+    //     title: 'Stats',
+    //   }
+    // },
     createPostTab: {
       screen: () => null,
       path: 'newpost',
       params: {
         icon: Platform.OS === 'android' ? '📝' : '✍️',
-        title: 'New Post',
+        title: 'New Post'
       }
     },
     activity: {
-      screen: createStackNavigator(DefaultStack,
-        { ...defaultStackSettings, initialRouteName: 'activityView' }
-      ),
+      screen: createStackNavigator(DefaultStack, {
+        ...defaultStackSettings,
+        initialRouteName: 'activityView'
+      }),
       path: 'user/activity',
       params: {
         icon: Platform.OS === 'android' ? '⚡' : '⚡',
-        title: 'Activity',
+        title: 'Activity'
       }
     },
     discover: {
-      screen: createStackNavigator(DefaultStack,
-        { ...defaultStackSettings, initialRouteName: 'discoverView' }
-      ),
+      screen: createStackNavigator(DefaultStack, {
+        ...defaultStackSettings,
+        initialRouteName: 'discoverView'
+      }),
       path: '',
       params: {
         icon: Platform.OS === 'android' ? '📰' : '📰',
-        title: 'Read',
-      },
-    },
+        title: 'Read'
+      }
+    }
   },
   {
     // lazy: false,
-    order: ['discover', 'stats', 'createPostTab', 'activity', 'myProfile'],
+    order: ['discover', 'wallet', 'createPostTab', 'activity', 'myProfile'],
     initialRouteName: 'discover',
-    tabBarComponent: navProps => <TabBarContainer navigation={ navProps.navigation } />,
+    tabBarComponent: navProps => <TabBarContainer navigation={navProps.navigation} />
   }
 );
 
 export const TabContainer = createAppContainer(TabNavigator);
-

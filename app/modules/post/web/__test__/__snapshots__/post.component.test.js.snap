@@ -45,6 +45,7 @@ exports[`Snapshot Post Web 1`] = `
   }
 >
   <SingleCommnetContainer
+    actions={Object {}}
     comment={
       Object {
         "_id": "000000000000000000000001",
@@ -144,7 +145,7 @@ exports[`Snapshot Post Web 1`] = `
         "user": "b00000000000000000000000",
       }
     }
-    postUrl="/testCommunity/post/000000000000000000000001"
+    postUrl="/testCommunity/post/000000000000000000000003"
   />
   <div
     style={
@@ -174,7 +175,7 @@ exports[`Snapshot Post Web 1`] = `
         "marginBottom": "0px",
         "marginLeft": "28.8px",
         "marginRight": "28.8px",
-        "marginTop": "28.8px",
+        "marginTop": "0px",
         "minHeight": "0px",
         "minWidth": "0px",
         "msFlexAlign": "stretch",

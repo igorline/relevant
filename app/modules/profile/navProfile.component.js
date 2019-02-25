@@ -7,11 +7,12 @@ import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
 import ULink from 'modules/navigation/ULink.component';
-import { showModal } from 'modules/navigation/navigation.actions';
+import * as navigationActions from 'modules/navigation/navigation.actions';
+import ReactTooltip from 'react-tooltip';
 
 import { sizing, colors } from 'app/styles';
 import styled from 'styled-components/primitives';
-import { Header, View, LinkFont, SecondaryText, CTALink } from 'modules/styled/uni';
+import { Header, View, SecondaryText, CTALink, Text } from 'modules/styled/uni';
 
 const WalletInfo = styled.View`
   display: flex;
@@ -27,6 +28,10 @@ export class NavProfile extends Component {
     mobile: PropTypes.bool,
     actions: PropTypes.object
   };
+
+  componentDidMount() {
+    ReactTooltip.rebuild();
+  }
 
   render() {
     const { user, earnings, mobile, actions } = this.props;
@@ -48,20 +53,50 @@ export class NavProfile extends Component {
       <View p={p} pb={p + 1}>
         <View fdirection={'row'} justify="space-between" align="center">
           <Header>{user.name}</Header>
-          <ULink to="/user/wallet">
-            <LinkFont c={colors.blue}> My Wallet</LinkFont>
+          <ULink hu to="/user/wallet" onPress={() => actions.goToTab('wallet')}>
+            <CTALink c={colors.blue}>My Wallet</CTALink>
           </ULink>
         </View>
 
         <View fdirection={'row'} align={'center'} mt={4}>
-          <UAvatar user={user} size={8} noName />
+          <UAvatar
+            user={user}
+            size={8}
+            noName
+            goToProfile={() => actions.goToTab('myProfile')}
+          />
           <WalletInfo>
-            <ULink to="/user/wallet">
-              <View fdirection={'row'}>
-                <RStat user={user} align="center" />
-                <CoinStat user={user} isOwner={true} align="center" />
-              </View>
-            </ULink>
+            <View fdirection={'row'}>
+              <ULink to="/user/wallet" onPress={() => actions.push('statsView')}>
+                <RStat
+                  user={user}
+                  align="center"
+                  data-for="mainTooltip"
+                  data-tip={JSON.stringify({
+                    type: 'TEXT',
+                    props: {
+                      text:
+                        'Earn Reputation by posting comments.\nThe higher your score, the more weight your votes have.'
+                    }
+                  })}
+                />
+              </ULink>
+              <ULink to="/user/wallet" onPress={() => actions.goToTab('wallet')}>
+                <CoinStat
+                  user={user}
+                  isOwner={true}
+                  align="center"
+                  data-for="mainTooltip"
+                  data-tip={JSON.stringify({
+                    type: 'TEXT',
+                    props: {
+                      text:
+                        'Get coins by upvoting quality links.\nThe higher your Reputation the more coins you earn.'
+                    }
+                  })}
+                />
+              </ULink>
+            </View>
             <View fdirection={'row'} align={'baseline'} color={colors.grey} mt={2}>
               <SecondaryText fs={1.5}>Pending Rewards: </SecondaryText>
               <CoinStat
@@ -72,6 +107,14 @@ export class NavProfile extends Component {
                 c={colors.black}
                 amount={pendingPayouts}
                 align={'baseline'}
+                data-for="mainTooltip"
+                data-tip={JSON.stringify({
+                  type: 'TEXT',
+                  props: {
+                    text:
+                      'These are your projected earnings for upvoting quality posts.\nRewards are paid out 3 days after a link is posted.'
+                  }
+                })}
               />
             </View>
           </WalletInfo>
@@ -99,6 +142,7 @@ export class NavProfile extends Component {
               </CTALink>
             </ULink>
           )}
+          <Text> &nbsp;&nbsp; </Text>
           <ULink
             to="/user/wallet"
             ml={1}
@@ -130,7 +174,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      showModal
+      ...navigationActions
     },
     dispatch
   )

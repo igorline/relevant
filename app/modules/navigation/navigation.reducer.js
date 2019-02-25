@@ -14,6 +14,7 @@ const initialState = {
   scroll: false,
   discover: {},
   stats: {},
+  wallet: {},
   createPost: {},
   activity: {},
   profile: {},

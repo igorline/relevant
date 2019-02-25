@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { transitionConfig } from 'app/utils/nav';
-import {
-  // createStackNavigator,
-  createAppContainer,
-  createDrawerNavigator
-} from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { StackViewStyleInterpolator } from 'react-navigation-stack';
 import { KeyboardAvoidingView, StatusBar, Platform } from 'react-native';
 import PropTypes from 'prop-types';
@@ -19,9 +15,6 @@ import {
   CreatePostStack
 } from 'modules/_app/mobile/createPostRouter';
 import { TabContainer } from 'modules/_app/mobile/tabRouter';
-
-import SideNav from 'modules/navigation/mobile/sideNav.component';
-import { fullWidth } from 'app/styles/global';
 
 class CreatePostWrapper extends Component {
   static propTypes = {
@@ -43,7 +36,7 @@ class CreatePostWrapper extends Component {
   }
 }
 
-export const RootStack = createDrawerNavigator(
+export const RootStack = createStackNavigator(
   {
     auth: {
       screen: AuthContainer,
@@ -74,9 +67,6 @@ export const RootStack = createDrawerNavigator(
     // },
   },
   {
-    contentComponent: SideNav,
-    drawerWidth: () => Math.min(320, fullWidth * 0.9),
-
     initialRouteName: 'main',
     headerMode: 'none',
     headerLayoutPreset: 'center',

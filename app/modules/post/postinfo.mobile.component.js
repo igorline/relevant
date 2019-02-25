@@ -6,7 +6,7 @@ import Gradient from 'modules/post/gradient.component';
 import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
 import { colors } from 'app/styles';
-import { getFavIcon } from 'app/utils/post';
+import { getFavIcon, getTitle } from 'app/utils/post';
 import PostTitle from './postTitle.component';
 import PostButtons from './postbuttons.component';
 
@@ -26,21 +26,26 @@ const TitleContainer = styled(View)`
 `;
 
 const IMAGE_HEIGHT = 40;
+const PREVIEW_HEIGHT = 16;
 
 export default function ImagePost(props) {
-  const { post, link, title, goToPost, actions } = props;
+  const { post, link, goToPost, actions, preview, noLink } = props;
 
   if (!post) return null;
-  const imageUrl = get(link, 'image') || (link.domain && getFavIcon(link.domain));
+  const imageUrl = get(link, 'image');
+  const favIcon = get(link, 'domain', null) && getFavIcon(link.domain);
+  const title = getTitle({ post, link });
 
-  const imgBg = imageUrl && (
+  const imgBg = (imageUrl || favIcon) && (
     <View flex={1}>
-      <Image resizeMode="cover" flex={1} source={{ uri: imageUrl }} />
+      <Image resizeMode="cover" flex={1} source={{ uri: imageUrl || favIcon }} />
       <GradientContainer>
-        <Gradient flex={1} title={title} image={true} />
+        <Gradient flex={1} title={title} image={true} preview={preview} />
       </GradientContainer>
     </View>
   );
+
+  const imageHeight = preview ? PREVIEW_HEIGHT : IMAGE_HEIGHT;
 
   const postContent = (
     <View fdirection={'row'}>
@@ -50,17 +55,20 @@ export default function ImagePost(props) {
         to={post.url}
         target="_blank"
         onPress={() => actions.goToUrl(post.url)}
+        noLink={noLink}
       >
-        <View h={IMAGE_HEIGHT} flex={1}>
+        <View h={imageHeight} flex={1}>
           {imgBg || <Gradient flex={1} title={title} />}
         </View>
       </ULink>
 
-      <TitleContainer fdirection={'row'} p={'0 2 2 0'}>
-        <View w={7} pt={1}>
-          <PostButtons color={colors.white} post={post} {...props} />
-        </View>
-        <PostTitle {...props} title={title} mobile={true} />
+      <TitleContainer fdirection={'row'} p={'0 2 2 0'} pl={preview ? 2 : 0}>
+        {!preview && (
+          <View w={7} pt={1}>
+            <PostButtons color={colors.white} post={post} {...props} />
+          </View>
+        )}
+        <PostTitle {...props} title={title} mobile />
       </TitleContainer>
     </View>
   );
@@ -70,6 +78,7 @@ export default function ImagePost(props) {
 }
 
 ImagePost.propTypes = {
+  noLink: PropTypes.bool,
   link: PropTypes.object,
   post: PropTypes.object,
   community: PropTypes.string,

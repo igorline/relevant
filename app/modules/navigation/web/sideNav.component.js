@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
-import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
+import SideNavFooter from 'modules/navigation/sideNavFooter.component';
 import { colors, layout, mixins } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import ULink from 'modules/navigation/ULink.component';

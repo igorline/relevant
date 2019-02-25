@@ -30,9 +30,9 @@ const options = {
 let drizzle;
 
 export const initDrizzle = store => {
+  if (!Drizzle) return null;
   drizzle = new Drizzle(options, store);
   return drizzle;
 };
 
 export const getDrizzle = () => drizzle;
-

@@ -159,7 +159,9 @@ class CommentForm extends Component {
     } = this.props;
     if (!auth.isAuthenticated) return null;
     let backgroundColor = 'transparent';
+    let paddingTop = 0;
     if (isReply && this.state.focused) {
+      paddingTop = 4;
       backgroundColor = colors.secondaryBG;
     }
     return (
@@ -168,6 +170,7 @@ class CommentForm extends Component {
         grow={1}
         {...rest}
         bg={backgroundColor}
+        pt={paddingTop}
         nestingLevel={(nestingLevel || 0) + (additionalNesting || 0)}
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>

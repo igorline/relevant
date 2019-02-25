@@ -44,7 +44,6 @@ class PostImage extends Component {
       time = numbers.getTimestamp(Date.parse(post.articleDate));
     }
     if (post.articleAuthor && post.articleAuthor.length) {
-      // test this
       author = post.articleAuthor.join(', ');
       authorEl = (
         <Text

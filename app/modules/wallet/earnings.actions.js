@@ -11,10 +11,10 @@ const earningSchema = new schema.Entity(
   { idAttribute: '_id' }
 );
 
-export function setEarnings({ data, status }) {
+export function setEarnings({ data, status, skip }) {
   return {
     type: types.SET_EARNINGS,
-    payload: { data, status }
+    payload: { data, status, skip }
   };
 }
 
@@ -31,7 +31,7 @@ export function getEarnings(status, limit, skip) {
         }
       });
       const data = normalize(earnings, [earningSchema]);
-      dispatch(setEarnings({ data, status }));
+      dispatch(setEarnings({ data, status, skip }));
       dispatch(setPostsSimple(data));
       return true;
     } catch (error) {
