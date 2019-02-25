@@ -3,6 +3,8 @@
 .popup {
   position: relative;
   user-select: none;
+  z-index: 1;
+  cursor: pointer;
 }
 .popupOptions {
   min-width: 140px;

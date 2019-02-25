@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import { BondedTokenContainer } from 'bonded-token';
 import * as authActions from 'modules/auth/auth.actions';
+import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import { initDrizzle } from 'app/utils/eth';
-// import Wallet from 'modules/wallet/wallet.component';
-import Balance from 'modules/wallet/balance.component';
-import { View } from 'modules/styled/uni';
+import Wallet from './wallet.component';
+import Balance from './balance.component';
+
+if (process.env.BROWSER === true) {
+  require('./wallet.css');
+}
 
 let drizzle;
 
@@ -30,6 +35,7 @@ class WalletContainer extends Component {
       // eslint-disable-next-line
       drizzle = initDrizzle(this.context.store);
     }
+    this.props.actions.getEarnings();
   }
 
   componentDidUpdate(prevProps) {
@@ -48,15 +54,22 @@ class WalletContainer extends Component {
 
   render() {
     const { contract } = this.props;
+    // TODO - edge case needs to be fixed inside bonded component
+    // this throws error with HMR
+    // BondedContainer needs to check that contract is initialized in propsToState method
     if (contract && !contract.initialized) return null;
     return (
-      <View flex={1} fdirection="row">
-        <View flex={1}>
-          <Eth.Consumer>
-            {wallet => <Balance wallet={wallet} {...this.props} />}
-          </Eth.Consumer>
-        </View>
-      </View>
+      <div style={{ flex: 1 }}>
+        <div className={'banner'}>{this.renderHeader()}</div>
+        <BondedTokenContainer {...this.props}>
+          <div className={'pageContainer column'}>
+            <Eth.Consumer>
+              {wallet => <Balance wallet={wallet} {...this.props} />}
+            </Eth.Consumer>
+            <Wallet user={this.props.user} />
+          </div>
+        </BondedTokenContainer>
+      </div>
     );
   }
 }
@@ -70,6 +83,7 @@ function mapStateToProps(state) {
     accounts: state.accounts,
     contracts: state.contracts,
     accountBalances: state.accountBalances,
+    earnings: state.earnings,
     drizzle: {
       transactions: state.transactions,
       web3: state.web3,
@@ -81,7 +95,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions
+      ...authActions,
+      ...earningsActions
     },
     dispatch
   )

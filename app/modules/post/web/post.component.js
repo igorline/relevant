@@ -40,7 +40,11 @@ export class Post extends Component {
     comment: PropTypes.object,
     children: PropTypes.object,
     hideDivider: PropTypes.bool,
-    hidePostButtons: PropTypes.bool
+    hidePostButtons: PropTypes.bool,
+    hideAvatar: PropTypes.bool,
+    noLink: PropTypes.bool,
+    preview: PropTypes.bool,
+    avatarText: PropTypes.object
   };
 
   deletePost() {
@@ -85,7 +89,12 @@ export class Post extends Component {
       firstPost,
       hideDivider,
       hidePostButtons,
-      comment
+      comment,
+      hideAvatar,
+      noLink,
+      preview,
+      avatarText,
+      actions = { actions }
     } = this.props;
     const { community } = auth;
 
@@ -100,11 +109,13 @@ export class Post extends Component {
     }
     if (!post) return null;
 
-    const postUrl = routing.getPostUrl(community, post);
+    const parentPost = post.parentPost || post;
+    const postUrl = routing.getPostUrl(community, parentPost);
+    const renderComment = !noComments && comment;
 
     // TODO pass post buttons as prop to Post?
     const postEl = isLink ? (
-      <View fdirection={'row'} m="4 4 0 0">
+      <View fdirection={'row'} m={`4 4 ${renderComment ? 0 : 4} 0`}>
         {!hidePostButtons && (
           <PostButtonContainer>
             <PostButtons post={post} {...this.props} />
@@ -118,31 +129,58 @@ export class Post extends Component {
             postUrl={postUrl}
             sort={sort}
             firstPost={firstPost}
+            noLink={noLink}
+            actions={actions}
           />
           {this.props.children}
         </View>
       </View>
     ) : (
-      <SingleComment comment={post} postUrl={postUrl} parentPost={post} hideBorder />
+      <SingleComment
+        hideAvatar={hideAvatar}
+        comment={post}
+        postUrl={postUrl}
+        parentPost={post}
+        hideBorder
+        noLink={noLink}
+        avatarText={avatarText}
+        actions={actions}
+      />
     );
 
-    const commentEl =
-      !noComments && comment ? (
-        <SingleComment
-          comment={comment}
+    const commentEl = renderComment ? (
+      <SingleComment
+        comment={comment}
+        postUrl={postUrl}
+        parentPost={post}
+        hidePostButtons
+        hideBorder
+        nestingLevel={hidePostButtons ? 0 : 1.5}
+        actions={actions}
+      />
+    ) : null;
+
+    const previewEl = preview && link && (link.url || link.image) && (
+      <View m={'4 4 0 4'}>
+        <PostInfo
+          post={post}
+          link={link}
+          community={community}
           postUrl={postUrl}
-          parentPost={post}
-          hidePostButtons
-          hideBorder
-          nestingLevel={1.5}
+          sort={sort}
+          firstPost={firstPost}
+          noLink={noLink}
+          actions={actions}
         />
-      ) : null;
+      </View>
+    );
 
     return (
-      <View fdirection={'column'} m="0 0 0 0">
+      <View fdirection={'column'}>
+        {previewEl}
         {postEl}
         {commentEl}
-        {!hideDivider && <Divider mt="4" ml={4} mr={4} />}
+        {hideDivider ? null : <Divider m={'0 4'} />}
       </View>
     );
   }

@@ -19,7 +19,7 @@ import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
 import * as modals from 'modules/ui/modals';
 import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
-// import styled from 'styled-components/primitives';
+import Tooltip from 'modules/tooltip/tooltip.component';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -159,6 +159,8 @@ class App extends Component {
     return (
       <div>
         <GlobalStyle />
+        <Tooltip type={'dark'} id="mainTooltip" multiline ref={c => (this.tooltip = c)} />
+
         <div
           pointerEvents={'none'}
           style={{

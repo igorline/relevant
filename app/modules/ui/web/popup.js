@@ -51,9 +51,9 @@ export default class Popup extends Component {
           e.stopPropagation();
         }}
       >
-        <a ref={c => (this.el = c)} className={'popup'}>
+        <span ref={c => (this.el = c)} className={'popup'}>
           {this.props.children}
-        </a>
+        </span>
         {popupOptions}
       </div>
     );

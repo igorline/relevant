@@ -18,34 +18,55 @@ export default function RStat(props) {
   const iconSize = size || 3;
   const imageMargin = align === 'center' ? 0 : sizing(-1, 'px');
 
-  const Wrapper = inline ? Text : ImageWrapper;
+  if (inline) {
+    return (
+      <Text
+        {...rest}
+        inline={inline ? 1 : 0}
+        align={align || 'center'}
+        mr={typeof mr === 'number' ? mr : 1.5}
+      >
+        <Image
+          h={iconSize * 0.85}
+          w={iconSize * 1.2}
+          source={iconImage}
+          mr={iconSize / 10}
+          style={{ bottom: imageMargin }}
+          resizeMode={'contain'}
+          inline={inline ? 1 : 0}
+        />
+        <NumericalValue inline={inline ? 1 : 0} lh={lh} c={color}>
+          {abbreviateNumber(pagerank) || 0}
+        </NumericalValue>
+      </Text>
+    );
+  }
 
   return (
-    <Wrapper
-      inline={inline}
+    <ImageWrapper
+      {...rest}
+      inline={inline ? 1 : 0}
       align={align || 'center'}
       mr={typeof mr === 'number' ? mr : 1.5}
-      {...rest}
     >
       <Image
         h={iconSize * 0.85}
         w={iconSize * 1.2}
         source={iconImage}
         mr={iconSize / 10}
-        // mb={-1 / 24}
         style={{ bottom: imageMargin }}
         resizeMode={'contain'}
-        inline={inline}
+        inline={inline ? 1 : 0}
       />
-      <NumericalValue inline={inline} lh={lh} c={color}>
+      <NumericalValue inline={inline ? 1 : 0} lh={lh} c={color}>
         {abbreviateNumber(pagerank) || 0}
       </NumericalValue>
-    </Wrapper>
+    </ImageWrapper>
   );
 }
 
 RStat.propTypes = {
-  inline: PropTypes.bool,
+  inline: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   lh: PropTypes.number,
   align: PropTypes.string,
   mr: PropTypes.number,

@@ -3,12 +3,11 @@ import codePush from 'react-native-code-push';
 import { Provider } from 'react-redux';
 import configureStore from 'app/core/mobile/configureStore';
 import AppContainer from 'modules/_app/mobile/app.container';
-import {
-  createAppContainer,
-  createStackNavigator
-} from 'react-navigation';
+import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import Analytics from 'react-native-firebase-analytics';
 import { setTopLevelNavigator } from 'app/utils/nav';
+import SideNav from 'modules/navigation/mobile/sideNav.component';
+import { fullWidth } from 'app/styles/global';
 
 // gets the current screen from navigation state
 function getActiveRouteName(navigationState) {
@@ -29,21 +28,23 @@ const codePushOptions = {
   installMode: codePush.InstallMode.IMMEDIATE
 };
 
-
-export const MainStack = createStackNavigator(
+export const MainStack = createDrawerNavigator(
   {
     container: {
       screen: AppContainer,
       path: '',
       navigationOptions: {
-        header: null,
+        header: null
       }
-    },
+    }
   },
+  {
+    contentComponent: SideNav,
+    drawerWidth: () => Math.min(320, fullWidth * 0.9)
+  }
 );
 
 const MainNavigator = createAppContainer(MainStack);
-
 
 class App extends Component {
   render() {

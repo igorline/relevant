@@ -29,7 +29,7 @@ const WithSideNav = loadable(() =>
 const WithTopNav = loadable(() => import('modules/navigation/web/withTopNav.component'));
 
 const PostContainer = loadable(() => import('modules/post/web/singlePost.container'));
-const Wallet = loadable(() => import('modules/wallet/wallet.container'));
+const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
 const AdminWallet = loadable(() => import('modules/admin/web/admin.main.component'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
 const CreatePostContainer = loadable(() =>

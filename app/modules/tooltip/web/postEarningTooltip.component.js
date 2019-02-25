@@ -17,7 +17,9 @@ const EarningTooltip = props => {
   }
   return (
     <div>
-      <ULink to={`/${earning.community}/post/${post._id}`}>
+      <ULink
+        to={`/${earning.community}/post/${post.parentPost ? post.parentPost : post._id}`}
+      >
         <PostInfo link={link} post={post} community={earning.community} noLink />
       </ULink>
     </div>

@@ -50,24 +50,23 @@ function CoinStat(props) {
 
   return (
     <Wrapper
-      inline={inline}
       {...rest}
+      inline={inline ? 1 : 0}
       mr={typeof mr === 'number' ? mr : 1.5}
       align={align}
     >
       <Image
-        inline={inline}
+        inline={inline ? 1 : 0}
         source={coinImage}
         h={iconSize * 0.9}
         w={iconSize * 1.1}
         mr={iconSize / 4}
         style={{ bottom: imageMargin }}
-        // style={{ bottom: imageMarginBottom }}
         resizeMode="contain"
       />
 
       {noNumber ? null : (
-        <NumberStyle fs={fs} lh={lh} inline={inline} c={c}>
+        <NumberStyle fs={fs} lh={lh} inline={inline ? 1 : 0} c={c}>
           {abbreviateNumber(tokens) || 0}
         </NumberStyle>
       )}

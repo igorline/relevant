@@ -1,19 +1,9 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity
-} from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  darkGrey,
-  smallScreen
-} from 'app/styles/global';
-
-let styles;
+import { smallScreen } from 'app/styles/global';
+import { Title, View } from 'modules/styled/uni';
 
 const HeaderTitle = props => {
   const { navigation, auth, navigationOptions } = props;
@@ -25,6 +15,9 @@ const HeaderTitle = props => {
   if (state.routeName === 'myProfileView' && auth.user) {
     title = auth.user.name;
   }
+  if (routeName === 'discoverView') {
+    title = auth.community.toUpperCase();
+  }
 
   let clipped = title || navigationOptions.title;
 
@@ -34,7 +27,6 @@ const HeaderTitle = props => {
   }
 
   if (
-    routeName === 'discoverView' ||
     routeName === 'login' ||
     routeName === 'signup' ||
     routeName === 'imageUpload' ||
@@ -58,9 +50,14 @@ const HeaderTitle = props => {
   }
 
   return (
-    <View ref={c => (this.title = c)} style={[styles.titleComponent]}>
+    <View
+      ref={c => (this.title = c)}
+      justify={'center'}
+      align={'center'}
+      alignSelf={'center'}
+    >
       <TouchableOpacity>
-        <Text style={[styles.navTitle]}>{clipped}</Text>
+        <Title>{clipped}</Title>
       </TouchableOpacity>
     </View>
   );
@@ -69,27 +66,7 @@ const HeaderTitle = props => {
 HeaderTitle.propTypes = {
   auth: PropTypes.object,
   navigation: PropTypes.object,
-  navigationOptions: PropTypes.object,
+  navigationOptions: PropTypes.object
 };
 
-const localStyles = {
-  titleComponent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  navTitle: {
-    fontSize: 22.5,
-    fontFamily: 'BebasNeueRelevantRegular',
-    fontWeight: 'bold',
-    letterSpacing: 0.15,
-    marginBottom: -2,
-    color: darkGrey,
-  },
-};
-
-styles = StyleSheet.create({ ...localStyles });
-
-export default connect(
-  state => ({ auth: state.auth })
-)(HeaderTitle);
+export default connect(state => ({ auth: state.auth }))(HeaderTitle);

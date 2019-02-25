@@ -76,7 +76,10 @@ const rootReducer = (state, action) => {
         // TODO needs work?
         socket,
         auth: { ...auth, community: action.payload },
-        navigation
+        navigation,
+        earnings,
+        community,
+        form
       };
     } else {
       let {
@@ -84,6 +87,7 @@ const rootReducer = (state, action) => {
         community,
         socket,
         earnings,
+        navigation,
         // DESKTOP
         // keep drizzle stuff - really need a nested state!
         contracts,
@@ -109,7 +113,11 @@ const rootReducer = (state, action) => {
         socket,
         auth: { ...auth, community: action.payload },
 
+        navigation,
         community,
+        earnings,
+        form,
+
         contracts,
         drizzleStatus,
         transactions,

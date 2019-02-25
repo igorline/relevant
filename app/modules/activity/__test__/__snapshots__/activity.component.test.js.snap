@@ -1,6 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot Activity Web 1`] = `
+.c0 {
+  color: #0000ff;
+}
+
+.c1 {
+  color: #0000ff;
+}
+
 <div
   style={
     Object {
@@ -25,10 +33,10 @@ exports[`Snapshot Activity Web 1`] = `
       "flexBasis": "auto",
       "flexDirection": "column",
       "flexShrink": 0,
-      "marginBottom": "28.8px",
-      "marginLeft": "28.8px",
-      "marginRight": "28.8px",
-      "marginTop": "28.8px",
+      "marginBottom": "0px",
+      "marginLeft": "0px",
+      "marginRight": "0px",
+      "marginTop": "0px",
       "minHeight": "0px",
       "minWidth": "0px",
       "msFlexAlign": "stretch",
@@ -72,9 +80,9 @@ exports[`Snapshot Activity Web 1`] = `
         "flexShrink": 0,
         "justifyContent": "space-between",
         "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
+        "marginLeft": "28.8px",
+        "marginRight": "28.8px",
+        "marginTop": "28.8px",
         "minHeight": "0px",
         "minWidth": "0px",
         "msFlexAlign": "center",
@@ -228,8 +236,10 @@ exports[`Snapshot Activity Web 1`] = `
           }
         >
           <a
-            className="ulink-mock "
+            className="ulink-mock c0"
             href="/user/profile/bob"
+            hu={0}
+            inline={0}
             onClick={[Function]}
             styles=""
           >
@@ -409,7 +419,6 @@ exports[`Snapshot Activity Web 1`] = `
       >
         <div
           dir="auto"
-          inline={true}
           style={
             Object {
               "borderBottomWidth": "0px",
@@ -433,7 +442,6 @@ exports[`Snapshot Activity Web 1`] = `
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
-              "position": "relative",
               "textDecoration": "none",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
@@ -442,7 +450,6 @@ exports[`Snapshot Activity Web 1`] = `
         >
           <span
             dir="auto"
-            inline={true}
             style={
               Object {
                 "borderBottomWidth": "0px",
@@ -466,7 +473,6 @@ exports[`Snapshot Activity Web 1`] = `
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
                 "paddingTop": "0px",
-                "position": "relative",
                 "textDecoration": "none",
                 "whiteSpace": "inherit",
                 "wordWrap": "break-word",
@@ -474,15 +480,17 @@ exports[`Snapshot Activity Web 1`] = `
             }
           >
             <a
-              className="ulink-mock "
+              className="ulink-mock c0"
               href="/user/profile/bob"
+              hu={0}
+              inline={0}
               onClick={[Function]}
               styles=""
             >
               <span
                 c="#0000ff"
                 dir="auto"
-                inline={true}
+                inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
@@ -523,7 +531,7 @@ exports[`Snapshot Activity Web 1`] = `
             <span
               align="baseline"
               dir="auto"
-              inline={true}
+              inline={1}
               ml={0}
               mr={0}
               style={
@@ -674,7 +682,7 @@ exports[`Snapshot Activity Web 1`] = `
               </div>
               <span
                 dir="auto"
-                inline={true}
+                inline={1}
                 style={
                   Object {
                     "borderBottomWidth": "0px",
@@ -712,7 +720,7 @@ exports[`Snapshot Activity Web 1`] = `
           </span>
           <span
             dir="auto"
-            inline={true}
+            inline={1}
             style={
               Object {
                 "borderBottomWidth": "0px",
@@ -746,7 +754,7 @@ exports[`Snapshot Activity Web 1`] = `
             upvoted your comment
             <span
               dir="auto"
-              inline={true}
+              inline={1}
               style={
                 Object {
                   "borderBottomWidth": "0px",
@@ -777,11 +785,11 @@ exports[`Snapshot Activity Web 1`] = `
                 }
               }
             >
-               → your relevance increased by 
+               → your reputation increased by 
               <span
                 c="#7ED321"
                 dir="auto"
-                inline={true}
+                inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
@@ -919,7 +927,6 @@ exports[`Snapshot Activity Web 1`] = `
         "WebkitFlexDirection": "column",
         "WebkitFlexShrink": 0,
         "alignItems": "stretch",
-        "backgroundColor": "rgba(255,255,255,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "0px",
         "borderLeftStyle": "solid",
@@ -936,7 +943,7 @@ exports[`Snapshot Activity Web 1`] = `
         "marginBottom": "0px",
         "marginLeft": "0px",
         "marginRight": "0px",
-        "marginTop": "14.4px",
+        "marginTop": "0px",
         "minHeight": "0px",
         "minWidth": "0px",
         "msFlexAlign": "stretch",
@@ -952,102 +959,99 @@ exports[`Snapshot Activity Web 1`] = `
       }
     }
   >
-    <PostComponent
-      hideDivider={true}
-      hidePostButtons={true}
-      post={
-        Object {
-          "_id": "000000000000000000000002",
-          "body": "awesome post #2!",
-          "community": "relevant",
-          "data": Object {
-            "pagerank": 45,
-            "payout": 18000000000000000000,
-          },
-          "domain": "link.domain2",
-          "embeddedUser": Object {
-            "_id": "c00000000000000000000000",
-            "balance": 333,
-            "bio": "admin of a few communities",
-            "email": "carol@carol.com",
-            "ethAddress": Array [
-              "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef",
-            ],
-            "handle": "carol",
-            "image": "carol-pic.jpg",
-            "lockedTokens": 0,
-            "name": "Carol",
-            "password": "test",
-            "relevance": Object {
-              "pagerank": 33,
-            },
-          },
-          "image": "link_img2.jpg",
-          "link": Object {
-            "domain": "link.domain2",
-            "image": "link_img2.jpg",
-            "title": "postTitle2",
-            "url": "https://example.com/testPost2",
-          },
-          "parentComment": "000000000000000000000001",
-          "parentPost": "000000000000000000000003",
-          "payoutTime": 2019-02-03T06:01:01.000Z,
-          "postDate": Date { NaN },
-          "tags": Array [
-            "tag21",
-            "tag22",
-          ],
-          "title": "postTitle2",
-          "type": "comment",
-          "url": "https://example.com/testPost2",
-          "user": "c00000000000000000000000",
+    <span
+      className="ulink-mock c1"
+    >
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "column",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
         }
-      }
-    />
-    <div
-      style={
-        Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
-          "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomColor": "rgba(221,221,221,1.00)",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "1px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "display": "flex",
-          "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "28.8px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
-          "position": "relative",
-          "zIndex": 0,
-        }
-      }
-    />
+      >
+        PostComponent
+      </div>
+    </span>
   </div>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "1px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "28.8px",
+        "marginRight": "28.8px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  />
 </div>
 `;

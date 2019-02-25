@@ -10,8 +10,15 @@ const bgGradient = [
   'hsla(240, 70%, 5%, .6)'
 ];
 
-export default function Gradient({ title, image }) {
-  const colors = image ? bgGradient : generateColors(title);
+const previewGradient = [
+  'hsla(240, 70%, 10%, .4)',
+  'hsla(240, 70%, 8%, .7)',
+  'hsla(240, 70%, 5%, .6)'
+];
+
+export default function Gradient({ title, image, preview }) {
+  const textOverlay = preview ? previewGradient : bgGradient;
+  const colors = image ? textOverlay : generateColors(title);
 
   const start = image ? { x: 0.5, y: 0.0 } : { x: 0.8, y: 0.0 };
   const end = image ? { x: 0.5, y: 1.0 } : { x: 0.2, y: 1.0 };
@@ -31,6 +38,7 @@ function generateColors(string) {
 }
 
 Gradient.propTypes = {
+  preview: PropTypes.bool,
   image: PropTypes.bool,
   title: PropTypes.string
 };

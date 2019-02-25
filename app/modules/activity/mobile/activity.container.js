@@ -13,6 +13,7 @@ import DiscoverUser from 'modules/discover/mobile/discoverUser.component';
 import CustomListView from 'modules/listview/mobile/customList.component';
 import { withNavigation } from 'react-navigation';
 import SingleActivity from 'modules/activity/activity.component';
+import PostComponent from 'modules/post/mobile/post.component';
 import * as notifActions from './../activity.actions';
 
 const localStyles = StyleSheet.create({});
@@ -95,7 +96,12 @@ class Activity extends Component {
   renderRow(rowData) {
     if (this.state.view === 0) {
       return (
-        <SingleActivity mobile singleActivity={rowData} {...this.props} styles={styles} />
+        <SingleActivity
+          mobile
+          PostComponent={PostComponent}
+          singleActivity={rowData}
+          {...this.props}
+        />
       );
     }
     return <DiscoverUser user={rowData} {...this.props} styles={styles} />;
@@ -121,6 +127,7 @@ class Activity extends Component {
 
       activityEl.push(
         <CustomListView
+          style={{ flex: 1 }}
           ref={c => {
             this.tabs[tab.id].component = c;
           }}

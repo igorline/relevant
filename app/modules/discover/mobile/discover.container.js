@@ -49,8 +49,7 @@ class Discover extends Component {
     this.load = this.load.bind(this);
     this.scrollToTop = this.scrollToTop.bind(this);
 
-    this.needsReload = new Date()
-    .getTime();
+    this.needsReload = new Date().getTime();
     this.myTabs = [
       { id: 0, title: 'Trending', type: 'top' },
       { id: 1, title: 'New', type: 'new' },
@@ -74,8 +73,7 @@ class Discover extends Component {
     const { type } = this.myTabs[this.state.view];
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
       this.filter = next.tags.selectedTags;
-      this.needsReload = new Date()
-      .getTime();
+      this.needsReload = new Date().getTime();
     }
     if (this.props.refresh !== next.refresh && this.props.active) {
       if (this.scrollOffset === -50) {
@@ -85,9 +83,13 @@ class Discover extends Component {
       }
     }
     if (this.props.reload !== next.reload) {
-      this.needsReload = new Date()
-      .getTime();
+      this.needsReload = new Date().getTime();
     }
+
+    // if (this.props.community !== next.props.community) {
+    //   this.needsReload = new Date()
+    //   .getTime();
+    // }
   }
 
   shouldComponentUpdate(next) {
@@ -176,8 +178,7 @@ class Discover extends Component {
   }
 
   renderHeader() {
-    if (this.state.view !== 3 ||
-      get(this.props.auth, 'user.twitterId')) {
+    if (this.state.view !== 3 || get(this.props.auth, 'user.twitterId')) {
       return null;
     }
     return (

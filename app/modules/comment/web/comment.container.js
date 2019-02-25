@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
+import * as animationActions from 'modules/animation/animation.actions';
 import { Divider } from 'modules/styled/uni';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
@@ -45,11 +46,11 @@ class Comments extends Component {
     return (
       <div>
         <CommentForm
+          {...this.props}
           additionalNesting={1.5}
           text={'Comment'}
-          {...this.props}
           parentPost={post}
-          p={4}
+          p={'0 4 4 4'}
           isReply
         />
         <Divider />
@@ -73,6 +74,7 @@ class Comments extends Component {
                   posts={posts}
                   parentPost={post}
                   nestingLevel={0}
+                  actions={actions}
                 />
               );
             })}
@@ -95,7 +97,8 @@ export default connect(
       {
         ...commentActions,
         ...createPostActions,
-        ...investActions
+        ...investActions,
+        ...animationActions
       },
       dispatch
     )

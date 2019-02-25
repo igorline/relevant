@@ -31,7 +31,8 @@ class PostInfo extends Component {
     big: PropTypes.bool,
     preview: PropTypes.bool,
     repost: PropTypes.bool,
-    user: PropTypes.object
+    user: PropTypes.object,
+    avatarText: PropTypes.object
   };
 
   constructor(props, context) {
@@ -143,7 +144,7 @@ class PostInfo extends Component {
   }
 
   render() {
-    const { post, big, preview, repost, user } = this.props;
+    const { post, big, preview, repost, user, avatarText } = this.props;
     let postActions;
 
     if (!user) return null;
@@ -166,6 +167,7 @@ class PostInfo extends Component {
         postTime={post.postDate}
         twitter={post.twitter}
         showRelevance
+        avatarText={avatarText}
       />
     );
 

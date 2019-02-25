@@ -2,8 +2,13 @@
 
 exports[`Snapshot SplashComponent 1`] = `
 .c0 {
+  color: #0000ff;
   -webkit-text-decoration: underline;
   text-decoration: underline;
+}
+
+.c1 {
+  color: #0000ff;
 }
 
 <div
@@ -459,6 +464,8 @@ exports[`Snapshot SplashComponent 1`] = `
             className="ulink-mock c0"
             display="inline"
             href="/https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
+            hu={0}
+            inline={0}
             onClick={[Function]}
             styles=""
             td="underline"
@@ -555,8 +562,10 @@ exports[`Snapshot SplashComponent 1`] = `
         }
       >
         <a
-          className="ulink-mock "
+          className="ulink-mock c1"
           href="/user/login"
+          hu={0}
+          inline={0}
           onClick={[Function]}
           styles=""
         >
@@ -615,8 +624,10 @@ exports[`Snapshot SplashComponent 1`] = `
           </div>
         </a>
         <a
-          className="ulink-mock "
+          className="ulink-mock c1"
           href="/user/signup"
+          hu={0}
+          inline={0}
           onClick={[Function]}
           styles=""
         >

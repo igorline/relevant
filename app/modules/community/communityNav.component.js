@@ -4,12 +4,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from 'app/styles';
 import * as communityActions from 'modules/community/community.actions';
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
 import styled, { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import get from 'lodash.get';
-import { Text, Image, View } from 'modules/styled/uni';
+import { Text, Image, View, CommunityLink } from 'modules/styled/uni';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
@@ -17,14 +18,14 @@ const linkStyle = css`
   align-items: center;
   color: ${colors.black};
   &:hover {
-    font-weight: bold;
-    background: white;
-    margin-right: 1px;
+    text-decoration: underline;
+    text-decoration-color: ${colors.black};
+    background: ${colors.white};
   }
 `;
 
 const CommunityImage = styled(Image)`
-  background: ${p => (p.image ? 'transparent' : colors.grey)};
+  background-color: ${p => (p.image ? 'transparent' : colors.grey)};
 `;
 
 export class Community extends Component {
@@ -41,6 +42,9 @@ export class Community extends Component {
   renderCommunityLink(community) {
     const { mobile, actions } = this.props;
     const padding = mobile ? 2 : 4;
+    const image = community.image
+      ? { uri: community.image }
+      : require('app/public/img/default_community.png');
     return (
       <ULink
         styles={linkStyle}
@@ -59,11 +63,13 @@ export class Community extends Component {
               w={4}
               h={4}
               image={community.image}
-              source={{ uri: community.image }}
+              source={image}
               resizeMode={'cover'}
             />
           </Text>
-          <Text>{community.name}</Text>
+          <CommunityLink lh={1.75} c={colors.black}>
+            {community.name}
+          </CommunityLink>
         </View>
       </ULink>
     );
@@ -95,6 +101,7 @@ export class Community extends Component {
             community={activeCommunity}
             members={activeMembers}
             mobile={mobile}
+            actions={actions}
             getCommunityMembers={get(actions, 'getCommunityMembers', null)}
           >
             {this.renderCommunityLink(activeCommunity)}
@@ -115,6 +122,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...communityActions,
+      ...navigationActions,
       setCommunity
     },
     dispatch

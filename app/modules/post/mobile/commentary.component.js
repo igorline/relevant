@@ -22,7 +22,9 @@ export default class Commentary extends Component {
     tooltip: PropTypes.bool,
     focusInput: PropTypes.func,
     commentary: PropTypes.array,
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
+    preview: PropTypes.bool,
+    avatarText: PropTypes.object
   };
 
   constructor(props) {
@@ -64,7 +66,8 @@ export default class Commentary extends Component {
       singlePost,
       focusInput,
       tooltip,
-      myPostInv
+      myPostInv,
+      preview
     } = this.props;
 
     const i = index;
@@ -90,6 +93,7 @@ export default class Commentary extends Component {
             post={post}
             user={repostUser}
             navigation={this.props.navigation}
+            avatarText={this.props.avatarText}
           />
           <PostBody
             repost
@@ -134,12 +138,18 @@ export default class Commentary extends Component {
       );
     }
 
+    const isOwnPost = auth.user && user._id === auth.user._id;
+    const hideButtons = isOwnPost && preview;
+
     return (
-      <View key={post._id + i} style={styles.commentaryContainer}>
+      <View
+        key={post._id + i}
+        style={[styles.commentaryContainer, preview ? { width: 'auto', flex: 1 } : null]}
+      >
         <View style={[styles.commentary]}>
           {repostEl}
           {repostedBy}
-          <View style={[{ flex: 1 }, postStyle]}>
+          <View style={[postStyle, { flex: 1 }]}>
             <PostInfo
               big
               post={post}
@@ -148,6 +158,7 @@ export default class Commentary extends Component {
               singlePost={singlePost}
               user={user}
               navigation={this.props.navigation}
+              avatarText={this.props.avatarText}
             />
             <PostBody
               short
@@ -158,17 +169,19 @@ export default class Commentary extends Component {
               singlePost={singlePost}
               navigation={this.props.navigation}
             />
-            <PostButtons
-              post={post}
-              link={link}
-              tooltip={index === 0 ? tooltip : null}
-              comments={post.comments || null}
-              actions={actions}
-              auth={auth}
-              myPostInv={myPostInv[post._id]}
-              focusInput={focusInput}
-              navigation={this.props.navigation}
-            />
+            {!hideButtons && (
+              <PostButtons
+                post={post}
+                link={link}
+                tooltip={index === 0 ? tooltip : null}
+                comments={post.comments || null}
+                actions={actions}
+                auth={auth}
+                myPostInv={myPostInv[post._id]}
+                focusInput={focusInput}
+                navigation={this.props.navigation}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -176,7 +189,7 @@ export default class Commentary extends Component {
   }
 
   render() {
-    const { commentary } = this.props;
+    const { commentary, preview } = this.props;
     const pills = (
       <View style={{ marginVertical: 16 }}>
         <Pills
@@ -188,16 +201,16 @@ export default class Commentary extends Component {
       </View>
     );
     return (
-      <View style={{ marginVertical: 16 }}>
+      <View style={{ marginVertical: !preview ? 16 : 0 }}>
         <FlatList
           ref={c => (this.scrollView = c)}
           scrollEnabled={commentary.length > 1}
           keyExtractor={(item, index) => index.toString()}
-          horizontal
+          horizontal={!preview}
           data={commentary}
           renderItem={this.renderItem}
           pagingEnabled
-          contentContainerStyle={[styles.postScroll]}
+          contentContainerStyle={[!preview ? styles.postScroll : null]}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollEnd}
         />

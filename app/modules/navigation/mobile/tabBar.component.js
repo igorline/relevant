@@ -53,9 +53,10 @@ export default class TabBar extends Component {
     if (tab.params.key === 'activity' && notif.count) badge = notif.count;
 
     let fontAdjust;
-    if (tab.params.title === 'Stats' && Platform.OS === 'ios') {
-      fontAdjust = { fontSize: 15 };
+    if (tab.params.title === 'Wallet' && Platform.OS === 'ios') {
+      fontAdjust = { fontSize: 23 };
     }
+
     let icon = (
       <Text
         style={[

@@ -13,7 +13,8 @@ const props = {
   auth: auth.auth,
   actions: {
     goToProfile: jest.fn()
-  }
+  },
+  PostComponent: jest.fn(() => 'PostComponent')
 };
 
 test('Snapshot Activity Web', () => {

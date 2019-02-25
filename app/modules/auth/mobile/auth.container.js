@@ -7,13 +7,12 @@ import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import { goToUrl, push, reloadTab } from 'modules/navigation/navigation.actions';
+// import {
+//   StackActions,
+//   NavigationActions,
+// } from 'react-navigation';
 
-import {
-  StackActions,
-  NavigationActions,
-} from 'react-navigation';
 import { AuthNavigator, AuthStack } from 'modules/_app/mobile/authRouter';
-
 
 class AuthContainer extends Component {
   static propTypes = {
@@ -25,36 +24,37 @@ class AuthContainer extends Component {
   static router = AuthStack.router;
 
   componentDidMount() {
-    this.props.actions.getUser()
-    .then(async user => {
+    this.props.actions.getUser().then(async user => {
       if (!user) return null;
-      const resetAction = StackActions.reset({
-        index: 0,
-        key: null,
-        actions: [
-          NavigationActions.navigate({
-            routeName: 'container',
-            action: NavigationActions.navigate({ routeName: 'main' })
-          })
-        ],
-      });
-      return this.props.navigation.dispatch(resetAction);
+      return this.props.navigation.navigate('main');
+      // const resetAction = StackActions.reset({
+      //   index: 0,
+      //   key: null,
+      //   actions: [
+      //     NavigationActions.navigate({
+      //       routeName: 'container',
+      //       action: NavigationActions.navigate({ routeName: 'main' })
+      //     })
+      //   ],
+      // });
+      // return this.props.navigation.dispatch(resetAction);
     });
   }
 
   componentDidUpdate() {
     if (this.props.auth.user) {
-      const resetAction = StackActions.reset({
-        index: 0,
-        key: null,
-        actions: [
-          NavigationActions.navigate({
-            routeName: 'container',
-            action: NavigationActions.navigate({ routeName: 'main' })
-          })
-        ],
-      });
-      this.props.navigation.dispatch(resetAction);
+      this.props.navigation.navigate('main');
+      // const resetAction = StackActions.reset({
+      //   index: 0,
+      //   key: null,
+      //   actions: [
+      //     NavigationActions.navigate({
+      //       routeName: 'container',
+      //       action: NavigationActions.navigate({ routeName: 'main' })
+      //     })
+      //   ],
+      // });
+      // this.props.navigation.dispatch(resetAction);
     }
   }
 
@@ -65,7 +65,7 @@ class AuthContainer extends Component {
   render() {
     return (
       <View style={{ flex: 1 }} uriPrefix={'Relevant://'}>
-        <AuthNavigator navigation={this.props.navigation} screenProps={this.props}/>
+        <AuthNavigator navigation={this.props.navigation} screenProps={this.props} />
       </View>
     );
   }

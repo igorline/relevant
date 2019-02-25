@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
+import * as animationActions from 'modules/animation/animation.actions';
 import { View } from 'modules/styled/uni';
 import Comment from 'modules/comment/web/comment.component';
 
@@ -70,7 +71,8 @@ export default connect(
       {
         ...commentActions,
         ...createPostActions,
-        ...investActions
+        ...investActions,
+        ...animationActions
       },
       dispatch
     )

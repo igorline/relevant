@@ -1,4 +1,4 @@
-export const earningPayedout = {
+export const earningPaidout = {
   community: 'relevant',
   communityId: null,
   createdAt: '2019-02-05T05:42:29.684Z',

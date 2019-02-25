@@ -6,11 +6,12 @@ import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import AuthContainer from 'modules/auth/web/auth.container';
-import { View, Text } from 'modules/styled/uni';
+import { View, Text, LinkFont } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { colors, layout, sizing } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { getNotificationCount } from 'modules/activity/activity.actions';
+import Ulink from 'modules/navigation/ULink.component';
 
 const Nav = styled(View)`
   position: sticky;
@@ -46,9 +47,25 @@ class TopNav extends Component {
   componentDidMount() {
     this.props.actions.getNotificationCount();
     window.addEventListener('focus', () => {
-      this.props.actions.getNotificationCount();
+      this.getNotificationCount();
     });
   }
+
+  componentDidUpdate(prevProps) {
+    const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
+    const { isAuthenticated } = this.props.auth;
+    if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
+  }
+
+  getNotificationCount = () => {
+    const now = new Date();
+    const { isAuthenticated } = this.props.auth;
+    if (now - this.state.timeSinceNotificationCount < 5000) return;
+    if (isAuthenticated) {
+      this.props.actions.getNotificationCount();
+      this.setState({ timeSinceNotificationCount: now });
+    }
+  };
 
   state = {
     openLoginModal: false
@@ -105,19 +122,19 @@ class TopNav extends Component {
           )}
 
           <View fdirection="row" d="flex" flex={1} align="center" justify="flex-end">
-            <StyledNavLink
+            <Ulink
               onClick={e => {
                 e.preventDefault();
                 actions.showModal('onboarding');
               }}
               align={'center'}
               mr={2}
-              hc={colors.black}
-              c={colors.grey}
+              hu
+              color={colors.blue}
               to="/home"
             >
-              Get Started
-            </StyledNavLink>
+              <LinkFont c={colors.blue}>Get Started</LinkFont>
+            </Ulink>
             {auth.isAuthenticated ? (
               <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
                 <Button>New Post</Button>

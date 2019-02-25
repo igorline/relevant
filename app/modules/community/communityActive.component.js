@@ -4,7 +4,7 @@ import get from 'lodash.get';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import { View, LinkFont, Header, Text } from 'modules/styled/uni';
+import { View, CommunityLink, Header } from 'modules/styled/uni';
 
 class CommunityActive extends Component {
   static propTypes = {
@@ -12,7 +12,8 @@ class CommunityActive extends Component {
     children: PropTypes.node,
     getCommunityMembers: PropTypes.func,
     members: PropTypes.array,
-    mobile: PropTypes.bool
+    mobile: PropTypes.bool,
+    actions: PropTypes.object
   };
 
   componentDidMount() {
@@ -20,7 +21,7 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children, members, mobile } = this.props;
+    const { community, children, members, mobile, actions } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, mobile ? 14 : 12);
@@ -30,30 +31,33 @@ class CommunityActive extends Component {
         <Header m={`4 ${p} 3 ${p}`}>Community</Header>
         {children}
         <View bb p={`0 ${p} 4 ${p}`}>
-          <View m={'1 0 5 5.5'}>
+          <View m={'0.5 0 4 5.5'}>
             {topics.map(topic => (
-              <LinkFont key={topic} p={'0.75 0'}>
-                <ULink
-                  color={colors.grey}
-                  hc={colors.black}
-                  ac={colors.black}
-                  navLink
-                  to={`/${community.slug}/new/${topic}`}
-                >
-                  <Text>#{topic}</Text>
-                </ULink>
-              </LinkFont>
+              <ULink
+                key={topic}
+                color={colors.grey}
+                hc={colors.black}
+                ac={colors.black}
+                navLink
+                onPress={() => actions.goToTopic(topic)}
+                to={`/${community.slug}/new/${topic}`}
+              >
+                <CommunityLink key={topic} p={'0.5 0'}>
+                  #{topic}
+                </CommunityLink>
+              </ULink>
             ))}
           </View>
-          <LinkFont mb={2} c={colors.black}>
+          <CommunityLink mb={2} c={colors.black}>
             {`${totalMembers} Members`}
-          </LinkFont>
+          </CommunityLink>
           <View fdirection={'row'} wrap>
             {limitedMembers.map(member => (
               <UAvatar
                 key={member._id}
                 user={member.embeddedUser}
                 size={4}
+                actions={actions}
                 m={'0 1 1 0'}
               />
             ))}

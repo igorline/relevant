@@ -14,7 +14,7 @@ class Tag extends Component {
     const { community, name, noLink } = this.props;
     const link = `/${community}/top/${name}`;
     return (
-      <ULink to={link} onClick={e => e.stopPropagation()} noLink={noLink}>
+      <ULink hu type="text" to={link} onClick={e => e.stopPropagation()} noLink={noLink}>
         <InlineText>
           {'#'}
           {this.props.name}{' '}

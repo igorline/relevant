@@ -23,16 +23,16 @@ const ActivityText = ({ activity, amount }) => {
       let relText = null;
       if (amount > 0) {
         relText = (
-          <BodyText inline>
-            {' → your relevance increased by '}
-            <Triangle inline direction={triangleDirection} />
+          <BodyText inline={1}>
+            {' → your reputation increased by '}
+            <Triangle inline={1} direction={triangleDirection} />
             &nbsp;
             {`${amount}%`}
           </BodyText>
         );
       }
       return (
-        <BodyText inline>
+        <BodyText inline={1}>
           {`upvoted your ${postType}`}
           {relText}
         </BodyText>
@@ -42,19 +42,19 @@ const ActivityText = ({ activity, amount }) => {
     // downvote, partialUpvote, partialDownvote basicIncome are deprecated
     case 'downvote':
       return (
-        <BodyText inline>
-          {`downvoted your ${postType} → your relevance decreased by `}
-          <Triangle direction={triangleDirection} />
+        <BodyText inline={1}>
+          {`downvoted your ${postType} → your reputation decreased by `}
+          <Triangle inline={1} direction={triangleDirection} />
           {` ${amount}%`}
         </BodyText>
       );
 
     case 'partialUpvote':
       return (
-        <Text inline>
-          <BodyText>
-            {`${also}upvoted this ${postType} → your relevance ${action} by`}
-            <Triangle direction={triangleDirection} />
+        <Text inline={1}>
+          <BodyText inline={1}>
+            {`${also}upvoted this ${postType} → your reputation ${action} by `}
+            <Triangle inline={1} direction={triangleDirection} />
             {` ${amount}%`}
           </BodyText>
         </Text>
@@ -62,10 +62,10 @@ const ActivityText = ({ activity, amount }) => {
 
     case 'partialDownvote':
       return (
-        <Text inline>
-          <BodyText inline>
-            {`${also}downvoted this ${postType} → your relevance ${action} by`}
-            <Triangle direction={triangleDirection} />
+        <Text inline={1}>
+          <BodyText inline={1}>
+            {`${also}downvoted this ${postType} → your reputation ${action} by `}
+            <Triangle inline={1} direction={triangleDirection} />
             {` ${amount}%`}
           </BodyText>
         </Text>
@@ -78,11 +78,11 @@ const ActivityText = ({ activity, amount }) => {
       break;
 
     case 'commentAlso':
-      text = `commented on a ${postType}`;
+      text = `commented to this ${postType}`;
       break;
 
     case 'comment':
-      text = 'commented on your post';
+      text = 'replied to your comment';
       break;
 
     case 'repost':
@@ -105,8 +105,8 @@ const ActivityText = ({ activity, amount }) => {
     case 'reward':
       // text = `You earned ${coin} coins from this post`;
       return (
-        <Text inline align="baseline">
-          <BodyText inline>{'You earned '}</BodyText>
+        <Text inline={1} align="baseline">
+          <BodyText inline={1}>{'You earned '}</BodyText>
           <CoinStat
             inline
             size={1.75}
@@ -117,7 +117,7 @@ const ActivityText = ({ activity, amount }) => {
             slef={'flex-end'}
             align="baseline"
           />
-          <BodyText inline>{' coins from this post'}</BodyText>
+          <BodyText inline={1}>{' coins from upvoting this post'}</BodyText>
         </Text>
       );
 
@@ -126,7 +126,7 @@ const ActivityText = ({ activity, amount }) => {
         text = activity.text;
       }
   }
-  return <BodyText inline>{text}</BodyText>;
+  return <BodyText inline={1}>{text}</BodyText>;
 };
 
 ActivityText.propTypes = {
