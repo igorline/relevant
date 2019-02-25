@@ -37,7 +37,7 @@ const OnboardingModal = props => (
     </ImageWrapper>
 
     <Text fs={1.75} mt={1}>
-      As your Reputation grows so does your voting impact, and your earnings.
+      Earn cryptocurrency rewards for upvoting quality links and discussion threads.
     </Text>
     <View align={'flex-start'} mt={3}>
       <Button onPress={() => props.close()}>Got It</Button>

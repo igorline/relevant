@@ -13,7 +13,7 @@ class EthTools extends Component {
     RelevantCoin: PropTypes.object,
     children: PropTypes.node,
     network: PropTypes.number,
-    status: PropTypes.string,
+    status: PropTypes.string
   };
 
   state = {
@@ -52,7 +52,7 @@ class EthTools extends Component {
 
     connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
 
-    if (!connectedAccount && !account) return this.initialState;
+    if (!connectedAccount && !account) return null;
 
     if (account) {
       balance = toNumber(RelevantCoin.methods.balanceOf.fromCache(account), decimals);

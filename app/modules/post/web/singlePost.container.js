@@ -54,6 +54,7 @@ class SinglePostContainer extends Component {
                 firstPost={firstPost}
                 {...this.props}
                 hideDivider
+                singlePost
               />
             </View>
             <Comments post={post} {...this.props} />
