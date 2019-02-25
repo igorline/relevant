@@ -118,9 +118,9 @@ class WalletContainer extends Component {
     this.previousMonth = null;
 
     return (
-      <View flex={1} mb={8}>
+      <View mb={8}>
         {this.renderHeader()}
-        <View flex={1}>
+        <View>
           <InfScroll
             data={list}
             loadMore={p => this.load(p, list.length)}
