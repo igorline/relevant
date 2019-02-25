@@ -8,14 +8,14 @@ import { colors, sizing } from 'app/styles';
 
 const TooltipView = styled.div``;
 
-const TextTooltip = ({ text, title }) => (
+const TextTooltipComponent = ({ text, title }) => (
   <TooltipView flex={1} fdirection={'column'}>
     {title ? <Title mb={1}>{title}</Title> : null}
     {text ? <BodyText flex={1}>{text}</BodyText> : null}
   </TooltipView>
 );
 
-TextTooltip.propTypes = {
+TextTooltipComponent.propTypes = {
   text: PropTypes.string,
   title: PropTypes.string
 };
@@ -23,7 +23,7 @@ TextTooltip.propTypes = {
 const TOOLTIPS = {
   POST: {},
   EARNING: EarningTooltip,
-  TEXT: TextTooltip
+  TEXT: TextTooltipComponent
 };
 
 const StyledReactTooltip = styled(ReactTooltip)`
@@ -48,7 +48,31 @@ const StyledReactTooltip = styled(ReactTooltip)`
   z-Index: 10000;
 `;
 
-const Tooltip = ({ id, type }) => (
+export const TextTooltip = ({ id, type }) => (
+  <ReactTooltip
+    id={id}
+    effect="solid"
+    type={type || 'light'}
+    delayHide={100}
+    getContent={dataTip => {
+      const data = JSON.parse(dataTip);
+      if (!data) return null;
+
+      const { type, props } = data; // eslint-disable-line
+      if (!TOOLTIPS[type]) return null;
+
+      const TT = TOOLTIPS[type];
+      return <TT {...props} />;
+    }}
+  />
+);
+
+TextTooltip.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  type: PropTypes.string
+};
+
+export const CustomTooltip = ({ id, type }) => (
   <StyledReactTooltip
     id={id}
     effect="solid"
@@ -67,9 +91,7 @@ const Tooltip = ({ id, type }) => (
   />
 );
 
-Tooltip.propTypes = {
+CustomTooltip.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   type: PropTypes.string
 };
-
-export default Tooltip;

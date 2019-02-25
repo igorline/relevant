@@ -44,7 +44,8 @@ export class Post extends Component {
     hideAvatar: PropTypes.bool,
     noLink: PropTypes.bool,
     preview: PropTypes.bool,
-    avatarText: PropTypes.object
+    avatarText: PropTypes.object,
+    singlePost: PropTypes.bool
   };
 
   deletePost() {
@@ -94,6 +95,7 @@ export class Post extends Component {
       noLink,
       preview,
       avatarText,
+      singlePost,
       actions = { actions }
     } = this.props;
     const { community } = auth;
@@ -131,6 +133,7 @@ export class Post extends Component {
             firstPost={firstPost}
             noLink={noLink}
             actions={actions}
+            singlePost={singlePost}
           />
           {this.props.children}
         </View>

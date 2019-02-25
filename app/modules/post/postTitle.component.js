@@ -29,7 +29,9 @@ export default function PostTitle(props) {
 
   const titleEl = postUrl ? (
     <ULink
-      to={postUrl}
+      to={singlePost ? post.url : postUrl || '#'}
+      external={singlePost}
+      target={singlePost ? '_blank' : null}
       noLink={noLink}
       onPress={() => (singlePost ? actions.goToUrl(post.url) : actions.goToPost(post))}
     >

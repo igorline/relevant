@@ -68,10 +68,11 @@ class Comment extends Component {
     this.setState({ editing: true });
   }
 
-  // TODO utils
+  // TODO utils & link copied via tooltip
   copyToClipboard = () => {
+    const { parentPost, auth } = this.props;
     const el = document.createElement('textarea');
-    el.value = window.location;
+    el.value = `${window.location.host}/${auth.community}/post/${parentPost._id}`;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';

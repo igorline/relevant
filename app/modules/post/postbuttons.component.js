@@ -128,6 +128,7 @@ class PostButtons extends Component {
               c={color || colors.secondaryText}
               fs={2}
               lh={1.8}
+              data-place={'right'}
               data-for="mainTooltip"
               data-tip={JSON.stringify({
                 type: 'TEXT',

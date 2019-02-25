@@ -14,7 +14,6 @@ import get from 'lodash/get';
 import moment from 'moment';
 import { numbers } from 'app/utils';
 import InfScroll from 'modules/listview/web/infScroll.component';
-import Tooltip from 'modules/tooltip/tooltip.component';
 
 let drizzle;
 
@@ -66,21 +65,17 @@ class WalletContainer extends Component {
 
   reload = () => this.load(0, 0);
 
-  renderHeader = () =>
+  renderHeader = () => (
     // eslint-disable-line
     // if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
     //   return null;
     // }
     // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
 
-    (
-      <View>
-        <Eth.Consumer>
-          {wallet => <Balance wallet={wallet} {...this.props} />}
-        </Eth.Consumer>
-      </View>
-    )
-  ;
+    <View>
+      <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
+    </View>
+  );
 
   computePayout(earning) {
     if (earning.status === 'pending') {
@@ -124,7 +119,6 @@ class WalletContainer extends Component {
 
     return (
       <View flex={1} mb={8}>
-        <Tooltip id="tooltip" multiline ref={c => (this.tooltip = c)} />
         {this.renderHeader()}
         <View flex={1}>
           <InfScroll
