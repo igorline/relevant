@@ -17,8 +17,8 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 0,
+      // maxInitialRequests: Infinity,
+      // minSize: 0,
       cacheGroups: {
         default: false,
         vendors: false,

@@ -129,11 +129,16 @@ ${mixins.color}
 `;
 
 export const Input = styled.input`
+  ${fonts.bodyStyle}
   ${mixins.padding}
   ${mixins.border}
   ${layout.universalBorder()}
   padding: ${sizing(2)} ${sizing(2)};
   margin-top: ${sizing(1)};
+  ::placeholder: {
+    font-size: ${sizing(1.75)};
+    line-height: ${sizing(1.75)};
+  };
   &: focus {
     outline: none;
     ${layout.universalBorder('', colors.blue)}
@@ -141,6 +146,7 @@ export const Input = styled.input`
 `;
 
 export const StyledTextarea = styled(Textarea)`
+  ${fonts.bodyStyle}
   ${mixins.border}
   ${mixins.flex}
   ${layout.universalBorder()}

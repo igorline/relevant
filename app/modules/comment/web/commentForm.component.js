@@ -4,13 +4,13 @@ import { Button, View, StyledTextarea, Form } from 'modules/styled/web';
 import { alert, text } from 'app/utils';
 import { colors, sizing } from 'app/styles';
 import UAvatar from 'modules/user/UAvatar.component';
-import styled from 'styled-components/primitives';
+import styled from 'styled-components';
 import { Spacer } from 'modules/styled/uni';
 
-const AvatarContainer = styled.View`
+const AvatarContainer = styled(View)`
   position: absolute;
-  left: ${sizing(1.5)};
-  top: ${sizing(1.5)};
+  left: ${sizing(0)};
+  top: ${sizing(0)};
   z-index: 10;
 `;
 
@@ -175,7 +175,7 @@ class CommentForm extends Component {
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>
           {this.state.focused ? null : (
-            <AvatarContainer>
+            <AvatarContainer p={2}>
               <UAvatar user={auth.user} size={3} />
             </AvatarContainer>
           )}

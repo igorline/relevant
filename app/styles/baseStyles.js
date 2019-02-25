@@ -26,6 +26,8 @@ export const GlobalStyle = createGlobalStyle`
     font-family: HelveticaNeue, Helvetica Neue, sans-serif;
     position:relative;
     flex: 1;
+    font-smooth: auto;
+    -moz-osx-font-smoothing: auto;
     -webkit-font-smoothing: antialiased;
   }
   a {

@@ -56,7 +56,7 @@ const SideNav = props => {
                 h={4}
                 w={22}
                 resizeMode={'contain'}
-                src={require('app/public/img/logo-opt.png')}
+                src={'/img/logo-opt.png'}
                 alt={'Relevant'}
               />
             </View>
