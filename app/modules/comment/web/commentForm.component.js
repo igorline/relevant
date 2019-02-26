@@ -6,6 +6,7 @@ import { colors, sizing } from 'app/styles';
 import UAvatar from 'modules/user/UAvatar.component';
 import styled from 'styled-components';
 import { Spacer } from 'modules/styled/uni';
+import { withRouter } from 'react-router-dom';
 
 const AvatarContainer = styled(View)`
   position: absolute;
@@ -29,7 +30,8 @@ class CommentForm extends Component {
     className: PropTypes.string,
     nestingLevel: PropTypes.number,
     additionalNesting: PropTypes.number,
-    autoFocus: PropTypes.bool
+    autoFocus: PropTypes.bool,
+    history: PropTypes.object
   };
 
   constructor(props, context) {
@@ -70,7 +72,7 @@ class CommentForm extends Component {
   }
 
   async createComment() {
-    const { isReply, parentComment, parentPost, auth } = this.props;
+    const { isReply, parentComment, parentPost, auth, history } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -91,10 +93,14 @@ class CommentForm extends Component {
     };
     this.setState({ comment: '', inputHeight: 50 });
 
-    return this.props.actions.createComment(commentObj).then(success => {
-      if (!success) {
-        this.setState({ comment, inputHeight: 50 });
+    return this.props.actions.createComment(commentObj).then(newComment => {
+      if (!newComment) {
+        this.setState({ newComment, inputHeight: 50 });
         this.textInput.focus();
+      } else {
+        history.push(
+          `/${newComment.community}/post/${newComment.parentPost}/${newComment._id}`
+        );
       }
     });
   }
@@ -223,4 +229,4 @@ class CommentForm extends Component {
   }
 }
 
-export default CommentForm;
+export default withRouter(CommentForm);
