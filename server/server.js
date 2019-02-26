@@ -87,7 +87,7 @@ function requireHTTPS(req, res, next) {
   return next();
 }
 
-if (!process.env.NO_SSL) {
+if (process.env.NO_SSL !== 'true') {
   app.use(requireHTTPS);
 }
 
