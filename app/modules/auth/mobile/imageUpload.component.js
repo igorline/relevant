@@ -13,8 +13,7 @@ const ImagePicker = require('react-native-image-picker');
 class ImageUpload extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    actions: PropTypes.object,
-    admin: PropTypes.object
+    actions: PropTypes.object
   };
 
   constructor(props, context) {
@@ -36,8 +35,7 @@ class ImageUpload extends Component {
       if (err) return Alert.alert(err.message);
       if (data) {
         self.setState({ uploading: true });
-        utils.s3.toS3Advanced(data, this.props.auth.token)
-        .then(results => {
+        utils.s3.toS3Advanced(data, this.props.auth.token).then(results => {
           if (results.success) {
             self.setState({ image: results.url, uploading: false });
           } else {
@@ -64,9 +62,11 @@ class ImageUpload extends Component {
   }
 
   createUser() {
+    const { createUser } = this.props.actions;
+    const { invitecode } = this.props.auth;
     const newUser = { ...this.props.auth.preUser };
     newUser.image = this.state.image;
-    this.props.actions.createUser(newUser, this.props.admin.currentInvite);
+    createUser(newUser, invitecode);
   }
 
   renderImage() {
@@ -124,7 +124,7 @@ class ImageUpload extends Component {
         </View>
         {this.renderButtons()}
         <TouchableHighlight
-          onPress={() => this.createUser(this.props.auth.preUser)}
+          onPress={() => this.createUser()}
           underlayColor={'transparent'}
         >
           <Text style={styles.signInText}>

@@ -118,8 +118,11 @@ export function createInvite(invite) {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(responseJSON => {
-      dispatch(updateInvite(responseJSON));
-      Alert.alert('Invitation email has been sent', 'success');
+      dispatch(updateInvite(responseJSON[0]));
+      const alertText = invite.email
+        ? 'Invitation email has been sent'
+        : 'Generated new invite link';
+      Alert.alert(alertText, 'success');
       return responseJSON;
     })
     .catch(error => {

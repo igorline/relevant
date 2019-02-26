@@ -75,6 +75,7 @@ class AuthContainer extends Component {
   }
 
   async signup(data) {
+    const { invitecode } = this.props.auth;
     const { createUser } = this.props.actions;
     try {
       const user = {
@@ -83,7 +84,7 @@ class AuthContainer extends Component {
         password: data.password,
         image: data.image
       };
-      const signedUp = await createUser(user);
+      const signedUp = await createUser(user, invitecode);
       if (signedUp) this.close();
     } catch (err) {
       // TODO error handling

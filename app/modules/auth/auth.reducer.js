@@ -16,11 +16,19 @@ const initialState = {
   twitter: null,
   currentInvite: null,
   loading: false,
-  community: null
+  community: null,
+  invitecode: null
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+    case types.SET_INVITE_CODE: {
+      return {
+        ...state,
+        invitecode: action.payload
+      };
+    }
+
     case types.SET_LOADING: {
       return {
         ...state,

@@ -26,6 +26,8 @@ const mapStateToProps = state => ({
   auth: get(state, 'auth', {}) || {},
   community: get(state, 'community', {}) || {},
   count: state.admin.count,
+  invites: state.admin.invites,
+  inviteList: state.admin.inviteList,
   initialValues: {
     invitedByString: get(state, 'auth.user.name', '')
   }

@@ -153,13 +153,14 @@ class SignupForm extends Component {
   }
 
   renderTwitter() {
+    const { invitecode } = this.props.auth;
     return (
       <View display="flex" fdirection="column" align-items="flex-start">
         <SecondaryText>
           Sign up to Relevant with your Twitter account or your Email.
         </SecondaryText>
         <View display="flex" fdirection="row" align="center" mt={7}>
-          <ULink to="/auth/twitter" external mr={4}>
+          <ULink to={`/auth/twitter?invitecode=${invitecode}`} external mr={4}>
             <Button bg={colors.twitterBlue}>
               <Image source={twitterIcon} w={2} h={2} mr={2} />
               Sign up with Twitter
