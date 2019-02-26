@@ -14,15 +14,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Prompt from 'rn-prompt';
-import {
-  StackActions,
-  NavigationActions,
-} from 'react-navigation';
-import {
-  globalStyles,
-  darkGrey,
-  mainPadding,
-} from 'app/styles/global';
+import { StackActions, NavigationActions } from 'react-navigation';
+import { globalStyles, darkGrey, mainPadding } from 'app/styles/global';
 import Stats from 'modules/stats/mobile/stats.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
 
@@ -47,12 +40,12 @@ class HeaderRight extends Component {
   static propTypes = {
     auth: PropTypes.object,
     actions: PropTypes.object,
-    navigation: PropTypes.object,
-  }
+    navigation: PropTypes.object
+  };
 
   state = {
     newName: ''
-  }
+  };
 
   changeName() {
     const { user } = this.props.auth;
@@ -153,20 +146,24 @@ class HeaderRight extends Component {
         }
       }
     );
-  }
+  };
 
   logoutRedirect() {
-    this.props.actions.removeDeviceToken(this.props.auth);
-    this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
+    const { actions } = this.props;
+    actions.removeDeviceToken(this.props.auth);
+    actions.logoutAction(this.props.auth.user, this.props.auth.token);
     const resetAction = StackActions.reset({
       index: 0,
       key: null,
-      actions: [NavigationActions.navigate({
-        routeName: 'container',
-        action: [NavigationActions.navigate({ routeName: 'auth' })]
-      })],
+      actions: [
+        NavigationActions.navigate({
+          routeName: 'auth'
+        })
+      ]
     });
     this.props.navigation.dispatch(resetAction);
+
+    // navigation.replace('auth');
   }
 
   renderElement() {
@@ -180,11 +177,11 @@ class HeaderRight extends Component {
           underlayColor={'transparent'}
           onPress={() => this.showActionSheet()}
         >
-          {
-            Platform.OS === 'ios' ?
-              <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text> :
-              <Icon name="ios-settings-outline" size={24} color={darkGrey} />
-          }
+          {Platform.OS === 'ios' ? (
+            <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>
+          ) : (
+            <Icon name="ios-settings-outline" size={24} color={darkGrey} />
+          )}
         </TouchableHighlight>
       );
     }
@@ -235,15 +232,14 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center'
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
 
-
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
+    auth: state.auth
   };
 }
 
@@ -253,7 +249,7 @@ function mapDispatchToProps(dispatch) {
       {
         ...navigationActions,
         ...userActions,
-        ...authActions,
+        ...authActions
       },
       dispatch
     )

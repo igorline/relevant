@@ -399,7 +399,8 @@ UserSchema.methods.addReward = async function addReward({ type, user }) {
       forUser: this._id,
       type: `reward_${type}`,
       coin: airdropTokens,
-      byUser: user
+      byUser: user ? user._id : null,
+      byUsersHandle: user ? [user.handle] : null
     };
     await this.model('Notification').createNotification(notification);
 

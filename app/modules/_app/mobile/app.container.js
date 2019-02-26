@@ -23,6 +23,8 @@ import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
+import queryString from 'query-string';
+
 // import {
 //   StackActions,
 //   NavigationActions,
@@ -69,6 +71,7 @@ class Application extends Component {
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
 
     // TODO - error state & loading state
@@ -82,7 +85,9 @@ class Application extends Component {
     this.props.actions.getUser().then(async user => {
       if (!user) {
         // TODO - should reset data if logged out
-        this.props.navigation.navigate('auth');
+        // navigation.navigate('auth');
+        navigation.replace('auth');
+
         // const resetAction = StackActions.reset({
         //   index: 0,
         //   key: null,
@@ -98,7 +103,7 @@ class Application extends Component {
     });
 
     PushNotification.setApplicationIconBadgeNumber(0);
-    // Linking.addEventListener('url', this.handleOpenURL);
+    Linking.addEventListener('url', this.handleOpenURL);
     this.fullHeight = fullHeight;
     Orientation.lockToPortrait();
 
@@ -115,6 +120,18 @@ class Application extends Component {
       this.props.actions.getNotificationCount();
     }
   }
+
+  handleOpenURL = url => {
+    const { actions, navigation, auth } = this.props;
+    const query = url.url.split('?')[1];
+
+    const parsed = queryString.parse(query);
+
+    if (parsed.invitecode && !auth.isAuthenticated) {
+      actions.setInviteCode(parsed.invitecode);
+      navigation.navigate('twitterSignup');
+    }
+  };
 
   componentWillUnmount() {
     Linking.removeEventListener('url', this.handleOpenURL);

@@ -32,9 +32,15 @@ function filterComments(comments) {
   const childComments = {};
   comments.forEach(c => {
     if (!c.parentComment || c.parentComment === c.parentPost) {
-      return childComments[c.parentPost] = [...(childComments[c.parentPost] || []), c._id];
+      return (childComments[c.parentPost] = [
+        ...(childComments[c.parentPost] || []),
+        c._id
+      ]);
     }
-    return childComments[c.parentComment] = [...(childComments[c.parentComment] || []), c._id];
+    return (childComments[c.parentComment] = [
+      ...(childComments[c.parentComment] || []),
+      c._id
+    ]);
   });
   return childComments;
 }
@@ -51,7 +57,7 @@ export function createComment(commentObj) {
       const { parentComment, parentPost } = comment;
       const parentId = parentComment || parentPost;
       dispatch(addComment(parentId, comment));
-      return true;
+      return comment;
     } catch (err) {
       return false;
     }
