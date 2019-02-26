@@ -6,7 +6,7 @@ import Notification from '../api/notification/notification.model';
 import Earnings from '../api/earnings/earnings.model';
 import Community from '../api/community/community.model';
 import * as Eth from './ethereum';
-import { SHARE_DECAY, MINIMUM_RANK } from '../config/globalConstants';
+import { SHARE_DECAY, MINIMUM_RANK, TOKEN_DECIMALS } from '../config/globalConstants';
 import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
 import computePageRank from './pagerankCompute';
@@ -307,7 +307,7 @@ async function updatePendingEarnings(posts) {
   posts = await posts.map(post =>
     Earnings.update(
       { post: post.post },
-      { estimatedPostPayout: post.payout },
+      { estimatedPostPayout: post.payout / TOKEN_DECIMALS },
       { multi: true }
     )
   );

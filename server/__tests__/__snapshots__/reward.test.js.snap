@@ -30,7 +30,7 @@ Object {
   "communityId": "c00000000000000000000002",
   "createdAt": "[SANITIZED]",
   "earned": 0,
-  "estimatedPostPayout": 129.03225806451613,
+  "estimatedPostPayout": 1.2903225806451612e-16,
   "payoutTime": "[SANITIZED]",
   "post": "000000000000000000000006",
   "shares": 6.663332499583073,

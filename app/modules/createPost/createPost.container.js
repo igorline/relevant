@@ -90,9 +90,9 @@ class CreatePostContainer extends Component {
     }
   }
 
-  componentWillUpdate(newProps, newState) {
-    if (newState.body !== this.state.body) {
-      this.parseBody(newState);
+  componentDidUpdate(newProps, oldState) {
+    if (oldState.body !== this.state.body) {
+      this.parseBody();
     }
   }
 
@@ -113,7 +113,8 @@ class CreatePostContainer extends Component {
     this.setState({
       url: null,
       postUrl: null,
-      urlPreview: null
+      urlPreview: null,
+      loadingPreview: false
     });
   }
 
@@ -226,24 +227,11 @@ class CreatePostContainer extends Component {
     }
   }
 
-  parseBody(newState) {
-    const postBody = newState.body;
-    if (postBody === '') return;
-    const lines = postBody.replace(/&nbsp;/g, ' ').split('\n');
-    let words = [];
-    lines.forEach(line => (words = words.concat(line.split(' '))));
-
-    let shouldParseUrl = false;
-    const prevLength = this.state.body.length || 0;
-
-    if (postBody.length - prevLength > 1) shouldParseUrl = true;
-    if (words[words.length - 1] == '') shouldParseUrl = true; // eslint-disable-line
-    if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true; // eslint-disable-line
-
+  parseBody() {
     if (
       this.state.url &&
       !this.state.postUrl &&
-      shouldParseUrl &&
+      this.state.shouldParseUrl &&
       this.state.postUrl !== this.state.url
     ) {
       this.createPreview();

@@ -505,7 +505,7 @@ export function resetPassword(password, token) {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(() => {
-      Alert.alert('Your password has been updated! Try loggin in.');
+      Alert.alert('Your password has been updated! Try loggin in.', 'success');
       return true;
     })
     .catch(err => {

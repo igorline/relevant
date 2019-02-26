@@ -6,7 +6,7 @@ import { browserAlerts } from 'app/utils/alert';
 
 class ResetPassword extends Component {
   static propTypes = {
-    routeParams: PropTypes.object,
+    match: PropTypes.object,
     actions: PropTypes.object,
     history: PropTypes.object
   };
@@ -27,7 +27,7 @@ class ResetPassword extends Component {
   }
 
   componentWillMount() {
-    this.token = this.props.routeParams.token;
+    this.token = this.props.match.params.token;
   }
 
   validate(newState) {
@@ -63,8 +63,7 @@ class ResetPassword extends Component {
       browserAlerts.alert("passwords don't match");
       return;
     }
-    this.props.actions.resetPassword(this.state.password, this.token)
-    .then(success => {
+    this.props.actions.resetPassword(this.state.password, this.token).then(success => {
       if (success) this.props.history.push('/user/login');
     });
   }

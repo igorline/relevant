@@ -67,7 +67,7 @@ function CoinStat(props) {
 
       {noNumber ? null : (
         <NumberStyle fs={fs} lh={lh} inline={inline ? 1 : 0} c={c}>
-          {abbreviateNumber(tokens) || 0}
+          {abbreviateNumber(tokens)}
         </NumberStyle>
       )}
     </Wrapper>

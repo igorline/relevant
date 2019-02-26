@@ -4,7 +4,7 @@ import { EventEmitter } from 'events';
 import { VOTE_COST_RATIO, SLOPE, EXPONENT } from 'server/config/globalConstants';
 // import Community from 'server/api/community/community.model';
 import Earnings from 'server/api/earnings/earnings.model';
-import { computePayout } from 'app/utils/post';
+import { computePostPayout } from 'app/utils/rewards';
 
 const InvestSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
@@ -142,7 +142,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   post.data.balance += stakedTokens;
   user.lockedTokens += stakedTokens;
   post.data.totalStaked += stakedTokens;
-  post.data.expectedPayout = computePayout(post.data, communityInstance);
+  post.data.expectedPayout = computePostPayout(post.data, communityInstance);
 
   await user.save();
   await post.data.save();

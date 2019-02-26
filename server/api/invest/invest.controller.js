@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import Earnings from 'server/api/earnings/earnings.model';
 import apnData from 'server/pushNotifications';
 import { computeApproxPageRank } from 'server/utils/pagerankCompute';
-import { computePayout } from 'app/utils/post';
+import { computePostPayout } from 'app/utils/rewards';
 import Community from 'server/api/community/community.model';
 
 const Post = require('../post/post.model');
@@ -408,7 +408,7 @@ exports.create = async (req, res, next) => {
     await post.updateRank({ communityId });
 
     const communityInstance = await Community.findOne({ _id: communityId });
-    post.data.expectedPayout = computePayout(post.data, communityInstance);
+    post.data.expectedPayout = computePostPayout(post.data, communityInstance);
 
     post = await post.save();
     if (post.parentPost) {

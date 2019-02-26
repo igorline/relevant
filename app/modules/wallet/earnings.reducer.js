@@ -31,7 +31,7 @@ export default function earnings(state = initialState, action) {
           ...state.entities,
           [action.payload._id]: action.payload
         },
-        list: [action.payload.earning, ...state.list]
+        list: [action.payload._id, ...state.list]
       };
     }
 

@@ -154,8 +154,8 @@ describe('CreatePost', () => {
       expect(inviterNote.type).toBe('reward_referral');
       expect(inviteeNote.type).toBe('reward_referredBy');
 
-      expect(inviterNote.amount).toBe(REFERRAL_REWARD);
-      expect(inviteeNote.amount).toBe(REFERRAL_REWARD);
+      expect(inviterNote.coin).toBe(REFERRAL_REWARD);
+      expect(inviteeNote.coin).toBe(REFERRAL_REWARD);
     });
   });
 
@@ -170,7 +170,7 @@ describe('CreatePost', () => {
       const inviterNote = await Notification.findOne({ forUser: alice._id }).sort(
         '-createdAt'
       );
-      expect(inviterNote.amount).toBe(PUBLIC_LINK_REWARD);
+      expect(inviterNote.coin).toBe(PUBLIC_LINK_REWARD);
     });
   });
 });

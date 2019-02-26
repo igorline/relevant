@@ -14,10 +14,11 @@ import get from 'lodash/get';
 import moment from 'moment';
 import { numbers } from 'app/utils';
 import InfScroll from 'modules/listview/web/infScroll.component';
+import { computeUserPayout } from 'app/utils/rewards';
 
 let drizzle;
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 50;
 
 class WalletContainer extends Component {
   static propTypes = {
@@ -77,21 +78,11 @@ class WalletContainer extends Component {
     </View>
   );
 
-  computePayout(earning) {
-    if (earning.status === 'pending') {
-      return (
-        (earning.estimatedPostPayout * earning.stakedTokens) / earning.totalPostShares
-      );
-    }
-    if (earning.status === 'paidout') return earning.earned;
-    return 0;
-  }
-
   renderRow = ({ item }) => {
     if (!item) return null;
     const earning = item;
 
-    let payout = this.computePayout(earning);
+    let payout = computeUserPayout(earning);
     if (!payout) return null;
     payout = numbers.abbreviateNumber(payout);
 
