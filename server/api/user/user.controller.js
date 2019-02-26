@@ -14,7 +14,8 @@ import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
-// User.find({ handle: 'q' }).remove().exec();
+// User.find({ handle: 'ed' }).remove().exec();
+// Post.find({ 'embeddedUser.handle': 'ed' }).remove().exec();
 
 async function sendConfirmation(user, newUser) {
   let text = '';
