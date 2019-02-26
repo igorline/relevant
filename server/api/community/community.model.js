@@ -28,12 +28,21 @@ const CommunitySchema = new Schema(
     maxUserRank: { type: Number },
     maxPostRank: { type: Number },
     numberOfElements: { type: Number },
-    memberCount: { type: Number }
+    memberCount: { type: Number },
+    inactive: Boolean
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
+
+CommunitySchema.virtual('members', {
+  ref: 'CommunityMember',
+  localField: 'slug',
+  foreignField: 'community'
+});
 
 CommunitySchema.index({ slug: 1 });
 
@@ -136,11 +145,15 @@ CommunitySchema.methods.join = async function join(userId, role) {
       { _id: userId },
       'name balance ethAddress image handle'
     );
+    if (!user) throw new Error('missing user');
     let member = await this.model('CommunityMember').findOne({
       user: userId,
       communityId: this._id
     });
-    if (member) throw new Error('member already exists ', userId);
+    if (member) {
+      console.log('member already exists ', userId); // eslint-disable-line
+      return member;
+    }
 
     await this.model('Relevance').create({ userId, communityId, community });
 

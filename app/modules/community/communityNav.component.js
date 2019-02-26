@@ -79,6 +79,9 @@ export class Community extends Component {
     const { communities, list } = this.props.community;
     return list.map(id => {
       const community = communities[id];
+      if (!community) {
+        return null;
+      }
       const isActive = this.props.community.active === community.slug;
       if (isActive) return null;
       return this.renderCommunityLink(community);

@@ -1,5 +1,7 @@
 export const ADD_COMMUNITY = 'ADD_COMMUNITY';
 export const SET_COMMUNITIES = 'SET_COMMUNITIES';
+export const UPDATE_COMMUNITY = 'UPDATE_COMMUNITY';
+export const REMOVE_COMMUNITY = 'REMOVE_COMMUNITY';
 
 // careful this one sets active community in admin reducer
 export const SET_COMMUNITY = 'SET_COMMUNITY';

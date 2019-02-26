@@ -33,6 +33,17 @@ export default function community(state = initialState, action) {
       };
     }
 
+    case types.REMOVE_COMMUNITY: {
+      const updatedCommunities = { ...state.communities };
+      delete updatedCommunities[action.payload];
+      return {
+        ...state,
+        communities: {
+          ...updatedCommunities
+        }
+      };
+    }
+
     case types.SET_COMMUNITY_MEMBERS: {
       const { members, slug } = action.payload;
       const data = normalize(members, [MemberSchema]);
@@ -54,9 +65,19 @@ export default function community(state = initialState, action) {
         ...state,
         communities: {
           ...state.communities,
-          [action.payload._id]: action.payload
+          [action.payload.slug]: action.payload
         },
         list: [...new Set([...state.list, action.payload._id])]
+      };
+    }
+
+    case types.UPDATE_COMMUNITY: {
+      return {
+        ...state,
+        communities: {
+          ...state.communities,
+          [action.payload.slug]: action.payload
+        }
       };
     }
 

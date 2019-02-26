@@ -17,8 +17,11 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
-const CommunityAdmin = loadable(() =>
-  import('modules/admin/web/communityAdmin.component')
+const CommunityAdminForm = loadable(() =>
+  import('modules/admin/web/communityAdminForm.component')
+);
+const CommunityAdminList = loadable(() =>
+  import('modules/admin/web/communityAdminList.component')
 );
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
@@ -74,7 +77,17 @@ const routes = [
               { path: '/admin/invites', component: Invites },
               { path: '/admin/email', component: Email },
               { path: '/admin/topPosts', component: TopPosts },
-              { path: '/admin/community', component: CommunityAdmin }
+              { path: '/admin/community', component: CommunityAdminList, exact: true },
+              {
+                path: '/admin/community/new',
+                component: CommunityAdminForm,
+                exact: true
+              },
+              {
+                path: '/admin/community/:slug',
+                component: CommunityAdminForm,
+                exact: true
+              }
             ]
           },
           {
