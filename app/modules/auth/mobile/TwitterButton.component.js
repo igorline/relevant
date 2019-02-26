@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, NativeModules, TouchableOpacity, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  NativeModules,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { globalStyles } from 'app/styles/global';
@@ -31,13 +38,20 @@ export default class TwitterButton extends Component {
 
   async _twitterSignIn() {
     try {
-      RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
+      const { invitecode } = this.props.auth;
+      RNTwitterSignIn.init(
+        Constants.TWITTER_COMSUMER_KEY,
+        Constants.TWITTER_CONSUMER_SECRET
+      );
       const loginData = await RNTwitterSignIn.logIn();
       const { authToken, authTokenSecret } = loginData;
       if (!authToken || !authTokenSecret) throw new Error('Twitter login failed');
 
       // this.props.actions.setTwitter(loginData);
-      const serverLogin = await this.props.actions.twitterAuth(loginData);
+      const serverLogin = await this.props.actions.twitterAuth({
+        ...loginData,
+        invitecode
+      });
 
       if (serverLogin) {
         setTimeout(() => {

@@ -165,7 +165,9 @@ const ActivityText = ({ activity, amount }) => {
     case 'reward_referredBy':
       return (
         <Text inline={1} align="baseline">
-          <BodyText inline={1}>{'gave you a referral, so you got an extra '}</BodyText>
+          <BodyText inline={1}>
+            {"gave you a referral, so you're getting started with an extra "}
+          </BodyText>
           <CoinStat
             inline
             size={1.75}
@@ -176,7 +178,7 @@ const ActivityText = ({ activity, amount }) => {
             slef={'flex-end'}
             align="baseline"
           />
-          <BodyText inline={1}>{' coins'}</BodyText>
+          <BodyText inline={1}>{' coins and some reputation!'}</BodyText>
         </Text>
       );
 

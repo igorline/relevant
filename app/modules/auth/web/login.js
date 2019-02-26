@@ -12,7 +12,8 @@ class LoginForm extends Component {
   static propTypes = {
     parentFunction: PropTypes.func,
     authNav: PropTypes.func,
-    location: PropTypes.object
+    location: PropTypes.object,
+    auth: PropTypes.auth
   };
 
   constructor(props) {
@@ -43,6 +44,7 @@ class LoginForm extends Component {
   }
 
   render() {
+    const { invitecode } = this.props.auth;
     const { username, password } = this.state;
     const local = username.length && password.length;
     const FORM_FIELDS = [
@@ -96,7 +98,9 @@ class LoginForm extends Component {
           ) : null}
           {!local ? (
             <ULink
-              to={`/auth/twitter?redirect=${this.props.location.pathname}`}
+              to={`/auth/twitter?
+                redirect=${this.props.location.pathname}
+                &invitecode=${invitecode}`}
               external
               ml={2}
             >

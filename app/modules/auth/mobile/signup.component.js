@@ -88,8 +88,7 @@ class SignUp extends Component {
     const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
     if (!valid) return this.setState({ emailError: 'invalid email' });
 
-    this.props.actions.checkUser(string, 'email')
-    .then(results => {
+    this.props.actions.checkUser(string, 'email').then(results => {
       if (results) {
         this.setState({ emailError: 'This email has already been used' });
       }
@@ -104,9 +103,8 @@ class SignUp extends Component {
       const string = toCheck;
       const match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUser(string, 'name')
-        .then(results => {
-          if (!results) {
+        this.props.actions.checkUser(string, 'name').then(results => {
+          if (results) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
           } else this.usernameExists = false;
@@ -167,12 +165,10 @@ class SignUp extends Component {
     }
     this.props.actions.setPreUser(user);
     dismissKeyboard();
-    this.props.actions.push(
-      {
-        key: 'imageUpload',
-        title: 'image',
-      },
-    );
+    this.props.actions.push({
+      key: 'imageUpload',
+      title: 'image'
+    });
 
     return null;
   }
@@ -196,9 +192,9 @@ class SignUp extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ?
-          StatusBar.currentHeight / 2 + 64 :
-          (IphoneX ? 88 : 64) }
+        keyboardVerticalOffset={
+          Platform.OS === 'android' ? StatusBar.currentHeight / 2 + 64 : IphoneX ? 88 : 64
+        }
       >
         <ScrollView
           keyboardDismissMode={'interactive'}

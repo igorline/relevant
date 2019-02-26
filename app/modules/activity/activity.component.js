@@ -198,13 +198,13 @@ export default class SingleActivity extends Component {
           {this.renderActivity(activity)}
           {mobile ? null : this.renderDate(activity)}
         </View>
-        <View m={mobile ? '0 2 2 2' : 0} border={mobile}>
-          {activity.post ? (
-            this.renderPostPreview(activity)
-          ) : (
-            <View mt={mobile ? 2 : 4} />
-          )}
-        </View>
+        {activity.post ? (
+          <View m={mobile ? '0 2 2 2' : 0} border={mobile}>
+            {this.renderPostPreview(activity)}
+          </View>
+        ) : (
+          <View mt={mobile ? 2 : 4} />
+        )}
         {mobile ? <MobileDivider mt={p} /> : <Divider m={'0 4'} />}
       </View>
     );
