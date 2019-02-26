@@ -24,15 +24,11 @@ const SideNavContent = styled.div`
 `;
 
 const SideNavScroll = styled.div`
-  display: flex;
-  flex: 1;
   flex-direction: column;
+  display: block;
   overflow: scroll;
+  flex: 1;
   width: ${layout.sideNavWidth};
-`;
-
-const SideNavSection = styled.div`
-  ${layout.universalBorder('bottom')}
 `;
 
 const LogoContainer = styled.div`
@@ -41,15 +37,16 @@ const LogoContainer = styled.div`
   height: ${layout.headerHeight};
   top: 0;
   z-index: 10;
+  flex: 1;
   ${mixins.border}
 `;
 
 const SideNav = props => {
   const logoLink = '/relevant/new';
   return (
-    <SideNavContent className={props.className}>
-      <SideNavScroll>
-        <LogoContainer br bb>
+    <SideNavContent flex={1} className={props.className}>
+      <SideNavScroll flex={1}>
+        <LogoContainer bb>
           <ULink align={'flex-start'} to={logoLink}>
             <View pl={4} h={layout.headerHeight} align={'center'} fdirection={'row'}>
               <Image
@@ -62,12 +59,12 @@ const SideNav = props => {
             </View>
           </ULink>
         </LogoContainer>
-        <SideNavSection>
+        <View>
           <NavProfileComponent />
-        </SideNavSection>
-        <SideNavSection>
+        </View>
+        <View>
           <CommunityNav {...props} />
-        </SideNavSection>
+        </View>
         <SideNavFooter />
       </SideNavScroll>
     </SideNavContent>

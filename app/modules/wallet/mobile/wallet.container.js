@@ -13,6 +13,7 @@ import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
 import { FlatList, RefreshControl } from 'react-native';
 import moment from 'moment';
+import { computeUserPayout } from 'app/utils/rewards';
 
 let drizzle;
 
@@ -64,37 +65,25 @@ class WalletContainer extends Component {
 
   reload = () => this.load(0, 0);
 
-  renderHeader = () =>
+  renderHeader = () => (
     // eslint-disable-line
     // if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
     //   return null;
     // }
     // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
 
-    (
-      <View>
-        <Eth.Consumer>
-          {wallet => <Balance wallet={wallet} mobile {...this.props} />}
-        </Eth.Consumer>
-      </View>
-    )
-  ;
-
-  computePayout(earning) {
-    if (earning.status === 'pending') {
-      return (
-        (earning.estimatedPostPayout * earning.stakedTokens) / earning.totalPostShares
-      );
-    }
-    if (earning.status === 'paidout') return earning.earned;
-    return 0;
-  }
+    <View>
+      <Eth.Consumer>
+        {wallet => <Balance wallet={wallet} mobile {...this.props} />}
+      </Eth.Consumer>
+    </View>
+  );
 
   renderRow = ({ item }) => {
     if (!item) return null;
     const earning = item;
 
-    const payout = this.computePayout(earning);
+    const payout = computeUserPayout(earning);
     if (!payout || !earning) return null;
 
     const month = moment(earning.createdAt).format('MMMM');

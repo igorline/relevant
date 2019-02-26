@@ -30,12 +30,15 @@ export function getActivityParams(activity) {
     case 'partialUpvote':
     case 'downvote':
     case 'partialDownvote':
+    case 'reward_referral':
       if (activity.byUser) userImage = activity.byUser;
       else emoji = '🤑';
       byUser = activity.byUser;
       break;
     case 'basicIncome':
     case 'reward':
+    case 'reward_twitter':
+    case 'reward_email':
       emoji = '🤑';
       break;
     case 'topPost':

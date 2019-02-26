@@ -16,6 +16,7 @@ import CommentForm from 'modules/comment/web/commentForm.component';
 import { colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
+import { post as postUtils } from 'app/utils';
 
 const PostButtonsContainer = styled.View`
   /* margin-right: ${sizing(4)}; */
@@ -124,7 +125,23 @@ class Comment extends Component {
     }
 
     const bodyMargin = condensedView ? '-0.5 0 2 5' : '3 0';
-    let body = <CommentText m={bodyMargin}>{comment.body}</CommentText>;
+
+    // TODO
+    const html = comment.body
+      ? comment.body.replace(
+        postUtils.URL_REGEX,
+        url =>
+          `<a href=${url} onClick="window.open('${url}')" target='_blank'>${url}</a>`
+      )
+      : '';
+
+    let body = (
+      <CommentText
+        style={{ zIndex: 10 }}
+        m={bodyMargin}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
 
     if (postUrl) {
       body = (

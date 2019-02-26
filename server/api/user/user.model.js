@@ -398,7 +398,7 @@ UserSchema.methods.addReward = async function addReward({ type, user }) {
     const notification = {
       forUser: this._id,
       type: `reward_${type}`,
-      amount: airdropTokens,
+      coin: airdropTokens,
       byUser: user
     };
     await this.model('Notification').createNotification(notification);
@@ -430,7 +430,7 @@ UserSchema.methods.initialCoins = async function initialCoins(invite) {
     const notification = {
       forUser: this._id,
       type: `reward_${type}`,
-      amount: airdropTokens
+      coin: airdropTokens
     };
     await this.model('Notification').createNotification(notification);
 

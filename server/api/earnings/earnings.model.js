@@ -93,7 +93,7 @@ EarningsSchema.statics.updateEarnings = async function updateEarnings({
     { multi: true }
   );
   const earnings = await this.find({ post: post._id, communityId });
-  earnings.forEach(e => e.updateClient({ actionType: 'ADD_EARNING' }));
+  earnings.forEach(e => e.updateClient({ actionType: 'UPDATE_EARNING' }));
   return earnings;
 };
 

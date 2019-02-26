@@ -6,8 +6,6 @@ const User = require('../../api/user/user.model');
 const Invite = require('../../api/invites/invite.model');
 const auth = require('../auth.service');
 
-// const TwitterWorker = require('../../utils/twitterWorker');
-
 // User.remove({ handle: 'relevantfeed' }).exec();
 // async function removeTwitterProfile() {
 //   try {
@@ -92,6 +90,7 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
       confirmed: true
     });
   }
+
   const isNewUser = !user || false;
 
   const handle = profile.username;
@@ -99,7 +98,7 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
     user = await addNewTwitterUser({ handle, invitecode });
     user = await addTwitterProfile({ profile, user, twitterAuth });
     user = await user.initialCoins();
-    if (invitecode) {
+    if (invitecode && invitecode !== 'undefined') {
       user = await Invite.processInvite({ invitecode, user });
       // const invite = await Invite.findOne({ code: invitecode, redeemed: { $ne: true } });
       // if (invite) user = await invite.referral(user);

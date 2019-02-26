@@ -68,8 +68,9 @@ exports[`Snapshot NavProfile 1`] = `
       "WebkitFlexDirection": "column",
       "WebkitFlexShrink": 0,
       "alignItems": "stretch",
+      "borderBottomColor": "rgba(221,221,221,1.00)",
       "borderBottomStyle": "solid",
-      "borderBottomWidth": "0px",
+      "borderBottomWidth": "1px",
       "borderLeftStyle": "solid",
       "borderLeftWidth": "0px",
       "borderRightStyle": "solid",
@@ -91,10 +92,10 @@ exports[`Snapshot NavProfile 1`] = `
       "msFlexDirection": "column",
       "msFlexNegative": 0,
       "msFlexPreferredSize": "auto",
-      "paddingBottom": "36px",
-      "paddingLeft": "28.8px",
-      "paddingRight": "28.8px",
-      "paddingTop": "28.8px",
+      "paddingBottom": "0px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "paddingTop": "0px",
       "position": "relative",
       "zIndex": 0,
     }
@@ -103,16 +104,14 @@ exports[`Snapshot NavProfile 1`] = `
   <div
     style={
       Object {
-        "WebkitAlignItems": "center",
-        "WebkitBoxAlign": "center",
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
         "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "horizontal",
-        "WebkitBoxPack": "justify",
+        "WebkitBoxOrient": "vertical",
         "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "row",
+        "WebkitFlexDirection": "column",
         "WebkitFlexShrink": 0,
-        "WebkitJustifyContent": "space-between",
-        "alignItems": "center",
+        "alignItems": "stretch",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "0px",
         "borderLeftStyle": "solid",
@@ -124,100 +123,95 @@ exports[`Snapshot NavProfile 1`] = `
         "boxSizing": "border-box",
         "display": "flex",
         "flexBasis": "auto",
-        "flexDirection": "row",
+        "flexDirection": "column",
         "flexShrink": 0,
-        "justifyContent": "space-between",
         "marginBottom": "0px",
         "marginLeft": "0px",
         "marginRight": "0px",
         "marginTop": "0px",
         "minHeight": "0px",
         "minWidth": "0px",
-        "msFlexAlign": "center",
-        "msFlexDirection": "row",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
         "msFlexNegative": 0,
-        "msFlexPack": "justify",
         "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
+        "paddingBottom": "36px",
+        "paddingLeft": "28.8px",
+        "paddingRight": "28.8px",
+        "paddingTop": "28.8px",
         "position": "relative",
         "zIndex": 0,
       }
     }
   >
     <div
-      dir="auto"
       style={
         Object {
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitBoxPack": "justify",
           "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "row",
           "WebkitFlexShrink": 0,
+          "WebkitJustifyContent": "space-between",
+          "alignItems": "center",
+          "borderBottomStyle": "solid",
           "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
           "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
           "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
-          "color": "rgba(0,0,0,1.00)",
           "display": "flex",
           "flexBasis": "auto",
+          "flexDirection": "row",
           "flexShrink": 0,
-          "fontFamily": "HelveticaNeue-Bold",
-          "fontSize": "21.6px",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "28.8px",
+          "justifyContent": "space-between",
           "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
           "marginTop": "0px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
           "msFlexNegative": 0,
+          "msFlexPack": "justify",
           "msFlexPreferredSize": "auto",
           "paddingBottom": "0px",
           "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
+          "zIndex": 0,
         }
       }
     >
-      Alice
-    </div>
-    <a
-      className="ulink-mock c0"
-      href="/user/wallet"
-      hu={1}
-      inline={0}
-      onClick={[Function]}
-      styles=""
-    >
       <div
-        c="#0000ff"
         dir="auto"
         style={
           Object {
             "WebkitFlexBasis": "auto",
             "WebkitFlexShrink": 0,
-            "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
             "borderBottomWidth": "0px",
             "borderLeftWidth": "0px",
             "borderRightWidth": "0px",
             "borderTopWidth": "0px",
             "boxSizing": "border-box",
-            "color": "rgba(0,0,255,1.00)",
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "flexBasis": "auto",
             "flexShrink": 0,
-            "fontFamily": "HelveticaNeue",
-            "fontSize": "10.8px",
+            "fontFamily": "HelveticaNeue-Bold",
+            "fontSize": "21.6px",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
             "fontWeight": "inherit",
-            "lineHeight": "14.4px",
+            "lineHeight": "28.8px",
             "marginBottom": "0px",
             "marginLeft": "0px",
             "marginRight": "0px",
@@ -230,247 +224,77 @@ exports[`Snapshot NavProfile 1`] = `
             "paddingTop": "0px",
             "position": "relative",
             "textDecoration": "none",
-            "textDecorationColor": "rgba(0,0,255,1.00)",
             "whiteSpace": "pre-wrap",
             "wordWrap": "break-word",
           }
         }
       >
-        My Wallet
+        Alice
       </div>
-    </a>
-  </div>
-  <div
-    style={
-      Object {
-        "WebkitAlignItems": "center",
-        "WebkitBoxAlign": "center",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "horizontal",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "row",
-        "WebkitFlexShrink": 0,
-        "alignItems": "center",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "row",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "28.8px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "center",
-        "msFlexDirection": "row",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
-        "position": "relative",
-        "zIndex": 0,
-      }
-    }
-  >
-    <div
-      style={
-        Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
-          "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "display": "flex",
-          "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
-          "position": "relative",
-          "zIndex": 0,
-        }
-      }
-    >
       <a
-        className="ulink-mock c1"
-        href="/user/profile/alice"
-        hu={0}
+        className="ulink-mock c0"
+        href="/user/wallet"
+        hu={1}
         inline={0}
         onClick={[Function]}
         styles=""
       >
         <div
+          c="#0000ff"
+          dir="auto"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "vertical",
               "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "column",
               "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
-              "borderBottomLeftRadius": "28.8px",
-              "borderBottomRightRadius": "28.8px",
-              "borderBottomStyle": "solid",
+              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
-              "borderTopLeftRadius": "28.8px",
-              "borderTopRightRadius": "28.8px",
-              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
+              "color": "rgba(0,0,255,1.00)",
               "display": "flex",
               "flexBasis": "auto",
-              "flexDirection": "column",
               "flexShrink": 0,
-              "height": "57.6px",
+              "fontFamily": "HelveticaNeue",
+              "fontSize": "10.8px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "14.4px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
-              "overflowX": "hidden",
-              "overflowY": "hidden",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "width": "57.6px",
-              "zIndex": 0,
+              "textDecoration": "none",
+              "textDecorationColor": "rgba(0,0,255,1.00)",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
             }
           }
         >
-          <div
-            style={
-              Object {
-                "WebkitAlignItems": "stretch",
-                "WebkitBoxAlign": "stretch",
-                "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "vertical",
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "column",
-                "WebkitFlexShrink": 0,
-                "alignItems": "stretch",
-                "backgroundColor": "rgba(0,0,0,0.00)",
-                "backgroundImage": "url(\\"alice-pic.jpg\\")",
-                "backgroundPosition": "center",
-                "backgroundRepeat": "no-repeat",
-                "backgroundSize": "cover",
-                "borderBottomStyle": "solid",
-                "borderBottomWidth": "0px",
-                "borderLeftStyle": "solid",
-                "borderLeftWidth": "0px",
-                "borderRightStyle": "solid",
-                "borderRightWidth": "0px",
-                "borderTopStyle": "solid",
-                "borderTopWidth": "0px",
-                "bottom": "0px",
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexBasis": "auto",
-                "flexDirection": "column",
-                "flexShrink": 0,
-                "height": "100%",
-                "left": "0px",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "minHeight": "0px",
-                "minWidth": "0px",
-                "msFlexAlign": "stretch",
-                "msFlexDirection": "column",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "position": "absolute",
-                "right": "0px",
-                "top": "0px",
-                "width": "100%",
-                "zIndex": -1,
-              }
-            }
-          />
-          <img
-            alt=""
-            draggable={false}
-            src="alice-pic.jpg"
-            style={
-              Object {
-                "bottom": "0px",
-                "height": "100%",
-                "left": "0px",
-                "opacity": 0,
-                "position": "absolute",
-                "right": "0px",
-                "top": "0px",
-                "width": "100%",
-                "zIndex": -1,
-              }
-            }
-          />
+          My Wallet
         </div>
       </a>
     </div>
     <div
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
           "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
+          "WebkitBoxOrient": "horizontal",
           "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 1,
-          "alignItems": "stretch",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexShrink": 0,
+          "alignItems": "center",
           "borderBottomStyle": "solid",
           "borderBottomWidth": "0px",
           "borderLeftStyle": "solid",
@@ -482,20 +306,20 @@ exports[`Snapshot NavProfile 1`] = `
           "boxSizing": "border-box",
           "display": "flex",
           "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 1,
+          "flexDirection": "row",
+          "flexShrink": 0,
           "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
-          "marginTop": "0px",
+          "marginTop": "28.8px",
           "minHeight": "0px",
           "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 1,
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
+          "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
           "paddingBottom": "0px",
-          "paddingLeft": "14.4px",
+          "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
           "position": "relative",
@@ -509,9 +333,9 @@ exports[`Snapshot NavProfile 1`] = `
             "WebkitAlignItems": "stretch",
             "WebkitBoxAlign": "stretch",
             "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "horizontal",
+            "WebkitBoxOrient": "vertical",
             "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "row",
+            "WebkitFlexDirection": "column",
             "WebkitFlexShrink": 0,
             "alignItems": "stretch",
             "borderBottomStyle": "solid",
@@ -525,7 +349,7 @@ exports[`Snapshot NavProfile 1`] = `
             "boxSizing": "border-box",
             "display": "flex",
             "flexBasis": "auto",
-            "flexDirection": "row",
+            "flexDirection": "column",
             "flexShrink": 0,
             "marginBottom": "0px",
             "marginLeft": "0px",
@@ -534,7 +358,7 @@ exports[`Snapshot NavProfile 1`] = `
             "minHeight": "0px",
             "minWidth": "0px",
             "msFlexAlign": "stretch",
-            "msFlexDirection": "row",
+            "msFlexDirection": "column",
             "msFlexNegative": 0,
             "msFlexPreferredSize": "auto",
             "paddingBottom": "0px",
@@ -548,53 +372,59 @@ exports[`Snapshot NavProfile 1`] = `
       >
         <a
           className="ulink-mock c1"
-          href="/user/wallet"
+          href="/user/profile/alice"
           hu={0}
           inline={0}
           onClick={[Function]}
           styles=""
         >
           <div
-            data-for="mainTooltip"
-            data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Earn Reputation by posting comments.\\\\nThe higher your score, the more weight your votes have.\\"}}"
             style={
               Object {
-                "WebkitAlignItems": "center",
-                "WebkitBoxAlign": "center",
+                "WebkitAlignItems": "stretch",
+                "WebkitBoxAlign": "stretch",
                 "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "horizontal",
+                "WebkitBoxOrient": "vertical",
                 "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "row",
+                "WebkitFlexDirection": "column",
                 "WebkitFlexShrink": 0,
-                "alignItems": "center",
+                "alignItems": "stretch",
+                "borderBottomLeftRadius": "28.8px",
+                "borderBottomRightRadius": "28.8px",
                 "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
                 "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
                 "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopLeftRadius": "28.8px",
+                "borderTopRightRadius": "28.8px",
                 "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
                 "display": "flex",
                 "flexBasis": "auto",
-                "flexDirection": "row",
+                "flexDirection": "column",
                 "flexShrink": 0,
+                "height": "57.6px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "10.8px",
+                "marginRight": "0px",
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
-                "msFlexAlign": "center",
-                "msFlexDirection": "row",
+                "msFlexAlign": "stretch",
+                "msFlexDirection": "column",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
+                "overflowX": "hidden",
+                "overflowY": "hidden",
                 "paddingBottom": "0px",
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
+                "width": "57.6px",
                 "zIndex": 0,
               }
             }
@@ -610,6 +440,11 @@ exports[`Snapshot NavProfile 1`] = `
                   "WebkitFlexDirection": "column",
                   "WebkitFlexShrink": 0,
                   "alignItems": "stretch",
+                  "backgroundColor": "rgba(0,0,0,0.00)",
+                  "backgroundImage": "url(\\"alice-pic.jpg\\")",
+                  "backgroundPosition": "center",
+                  "backgroundRepeat": "no-repeat",
+                  "backgroundSize": "cover",
                   "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
                   "borderLeftStyle": "solid",
@@ -624,10 +459,11 @@ exports[`Snapshot NavProfile 1`] = `
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "18.36px",
+                  "height": "100%",
+                  "left": "0px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "2.16px",
+                  "marginRight": "0px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -635,14 +471,174 @@ exports[`Snapshot NavProfile 1`] = `
                   "msFlexDirection": "column",
                   "msFlexNegative": 0,
                   "msFlexPreferredSize": "auto",
-                  "overflowX": "hidden",
-                  "overflowY": "hidden",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "absolute",
+                  "right": "0px",
+                  "top": "0px",
+                  "width": "100%",
+                  "zIndex": -1,
+                }
+              }
+            />
+            <img
+              alt=""
+              draggable={false}
+              src="alice-pic.jpg"
+              style={
+                Object {
+                  "bottom": "0px",
+                  "height": "100%",
+                  "left": "0px",
+                  "opacity": 0,
+                  "position": "absolute",
+                  "right": "0px",
+                  "top": "0px",
+                  "width": "100%",
+                  "zIndex": -1,
+                }
+              }
+            />
+          </div>
+        </a>
+      </div>
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 1,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 1,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "column",
+            "msFlexNegative": 1,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "14.4px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
+      >
+        <div
+          style={
+            Object {
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "horizontal",
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "row",
+              "WebkitFlexShrink": 0,
+              "alignItems": "stretch",
+              "borderBottomStyle": "solid",
+              "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
+              "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
+              "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexDirection": "row",
+              "flexShrink": 0,
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "row",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "zIndex": 0,
+            }
+          }
+        >
+          <a
+            className="ulink-mock c1"
+            href="/user/wallet"
+            hu={0}
+            inline={0}
+            onClick={[Function]}
+            styles=""
+          >
+            <div
+              data-for="mainTooltip"
+              data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Earn Reputation by posting comments.\\\\nThe higher your score, the more weight your votes have.\\"}}"
+              style={
+                Object {
+                  "WebkitAlignItems": "center",
+                  "WebkitBoxAlign": "center",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "horizontal",
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexDirection": "row",
+                  "WebkitFlexShrink": 0,
+                  "alignItems": "center",
+                  "borderBottomStyle": "solid",
+                  "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
+                  "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
+                  "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexDirection": "row",
+                  "flexShrink": 0,
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "10.8px",
+                  "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "center",
+                  "msFlexDirection": "row",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
                   "paddingBottom": "0px",
                   "paddingLeft": "0px",
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "25.919999999999998px",
                   "zIndex": 0,
                 }
               }
@@ -658,11 +654,6 @@ exports[`Snapshot NavProfile 1`] = `
                     "WebkitFlexDirection": "column",
                     "WebkitFlexShrink": 0,
                     "alignItems": "stretch",
-                    "backgroundColor": "rgba(0,0,0,0.00)",
-                    "backgroundImage": "url(\\"r-emoji.png\\")",
-                    "backgroundPosition": "center",
-                    "backgroundRepeat": "no-repeat",
-                    "backgroundSize": "contain",
                     "borderBottomStyle": "solid",
                     "borderBottomWidth": "0px",
                     "borderLeftStyle": "solid",
@@ -677,11 +668,10 @@ exports[`Snapshot NavProfile 1`] = `
                     "flexBasis": "auto",
                     "flexDirection": "column",
                     "flexShrink": 0,
-                    "height": "100%",
-                    "left": "0px",
+                    "height": "18.36px",
                     "marginBottom": "0px",
                     "marginLeft": "0px",
-                    "marginRight": "0px",
+                    "marginRight": "2.16px",
                     "marginTop": "0px",
                     "minHeight": "0px",
                     "minWidth": "0px",
@@ -689,63 +679,176 @@ exports[`Snapshot NavProfile 1`] = `
                     "msFlexDirection": "column",
                     "msFlexNegative": 0,
                     "msFlexPreferredSize": "auto",
+                    "overflowX": "hidden",
+                    "overflowY": "hidden",
                     "paddingBottom": "0px",
                     "paddingLeft": "0px",
                     "paddingRight": "0px",
                     "paddingTop": "0px",
-                    "position": "absolute",
-                    "right": "0px",
-                    "top": "0px",
-                    "width": "100%",
-                    "zIndex": -1,
+                    "position": "relative",
+                    "width": "25.919999999999998px",
+                    "zIndex": 0,
                   }
                 }
-              />
-              <img
-                alt=""
-                draggable={false}
-                src="r-emoji.png"
+              >
+                <div
+                  style={
+                    Object {
+                      "WebkitAlignItems": "stretch",
+                      "WebkitBoxAlign": "stretch",
+                      "WebkitBoxDirection": "normal",
+                      "WebkitBoxOrient": "vertical",
+                      "WebkitFlexBasis": "auto",
+                      "WebkitFlexDirection": "column",
+                      "WebkitFlexShrink": 0,
+                      "alignItems": "stretch",
+                      "backgroundColor": "rgba(0,0,0,0.00)",
+                      "backgroundImage": "url(\\"r-emoji.png\\")",
+                      "backgroundPosition": "center",
+                      "backgroundRepeat": "no-repeat",
+                      "backgroundSize": "contain",
+                      "borderBottomStyle": "solid",
+                      "borderBottomWidth": "0px",
+                      "borderLeftStyle": "solid",
+                      "borderLeftWidth": "0px",
+                      "borderRightStyle": "solid",
+                      "borderRightWidth": "0px",
+                      "borderTopStyle": "solid",
+                      "borderTopWidth": "0px",
+                      "bottom": "0px",
+                      "boxSizing": "border-box",
+                      "display": "flex",
+                      "flexBasis": "auto",
+                      "flexDirection": "column",
+                      "flexShrink": 0,
+                      "height": "100%",
+                      "left": "0px",
+                      "marginBottom": "0px",
+                      "marginLeft": "0px",
+                      "marginRight": "0px",
+                      "marginTop": "0px",
+                      "minHeight": "0px",
+                      "minWidth": "0px",
+                      "msFlexAlign": "stretch",
+                      "msFlexDirection": "column",
+                      "msFlexNegative": 0,
+                      "msFlexPreferredSize": "auto",
+                      "paddingBottom": "0px",
+                      "paddingLeft": "0px",
+                      "paddingRight": "0px",
+                      "paddingTop": "0px",
+                      "position": "absolute",
+                      "right": "0px",
+                      "top": "0px",
+                      "width": "100%",
+                      "zIndex": -1,
+                    }
+                  }
+                />
+                <img
+                  alt=""
+                  draggable={false}
+                  src="r-emoji.png"
+                  style={
+                    Object {
+                      "bottom": "0px",
+                      "height": "100%",
+                      "left": "0px",
+                      "opacity": 0,
+                      "position": "absolute",
+                      "right": "0px",
+                      "top": "0px",
+                      "width": "100%",
+                      "zIndex": -1,
+                    }
+                  }
+                />
+              </div>
+              <div
+                dir="auto"
+                inline={0}
                 style={
                   Object {
-                    "bottom": "0px",
-                    "height": "100%",
-                    "left": "0px",
-                    "opacity": 0,
-                    "position": "absolute",
-                    "right": "0px",
-                    "top": "0px",
-                    "width": "100%",
-                    "zIndex": -1,
+                    "WebkitFlexBasis": "auto",
+                    "WebkitFlexShrink": 0,
+                    "borderBottomWidth": "0px",
+                    "borderLeftWidth": "0px",
+                    "borderRightWidth": "0px",
+                    "borderTopWidth": "0px",
+                    "boxSizing": "border-box",
+                    "color": "rgba(0,0,0,1.00)",
+                    "display": "flex",
+                    "flexBasis": "auto",
+                    "flexShrink": 0,
+                    "fontFamily": "HelveticaNeue-CondensedBold",
+                    "fontSize": "12.6px",
+                    "fontStyle": "inherit",
+                    "fontVariant": "inherit",
+                    "fontWeight": "inherit",
+                    "lineHeight": "16.799999999999997px",
+                    "marginBottom": "0px",
+                    "marginLeft": "0px",
+                    "marginRight": "0px",
+                    "marginTop": "0px",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
+                    "paddingBottom": "0px",
+                    "paddingLeft": "0px",
+                    "paddingRight": "0px",
+                    "paddingTop": "0px",
+                    "position": "relative",
+                    "textDecoration": "none",
+                    "whiteSpace": "pre-wrap",
+                    "wordWrap": "break-word",
                   }
                 }
-              />
+              >
+                11
+              </div>
             </div>
+          </a>
+          <a
+            className="ulink-mock c1"
+            href="/user/wallet"
+            hu={0}
+            inline={0}
+            onClick={[Function]}
+            styles=""
+          >
             <div
-              dir="auto"
-              inline={0}
+              data-for="mainTooltip"
+              data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Get coins by upvoting quality links.\\\\nThe higher your Reputation the more coins you earn.\\"}}"
               style={
                 Object {
+                  "WebkitAlignItems": "center",
+                  "WebkitBoxAlign": "center",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "horizontal",
                   "WebkitFlexBasis": "auto",
+                  "WebkitFlexDirection": "row",
                   "WebkitFlexShrink": 0,
+                  "alignItems": "center",
+                  "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
                   "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
                   "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
                   "boxSizing": "border-box",
-                  "color": "rgba(0,0,0,1.00)",
                   "display": "flex",
                   "flexBasis": "auto",
+                  "flexDirection": "row",
                   "flexShrink": 0,
-                  "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "12.6px",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "16.799999999999997px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "0px",
+                  "marginRight": "10.8px",
                   "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "center",
+                  "msFlexDirection": "row",
                   "msFlexNegative": 0,
                   "msFlexPreferredSize": "auto",
                   "paddingBottom": "0px",
@@ -753,37 +856,272 @@ exports[`Snapshot NavProfile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
+                  "zIndex": 0,
                 }
               }
             >
-              11
+              <div
+                style={
+                  Object {
+                    "WebkitAlignItems": "stretch",
+                    "WebkitBoxAlign": "stretch",
+                    "WebkitBoxDirection": "normal",
+                    "WebkitBoxOrient": "vertical",
+                    "WebkitFlexBasis": "auto",
+                    "WebkitFlexDirection": "column",
+                    "WebkitFlexShrink": 0,
+                    "alignItems": "stretch",
+                    "borderBottomStyle": "solid",
+                    "borderBottomWidth": "0px",
+                    "borderLeftStyle": "solid",
+                    "borderLeftWidth": "0px",
+                    "borderRightStyle": "solid",
+                    "borderRightWidth": "0px",
+                    "borderTopStyle": "solid",
+                    "borderTopWidth": "0px",
+                    "bottom": "0px",
+                    "boxSizing": "border-box",
+                    "display": "flex",
+                    "flexBasis": "auto",
+                    "flexDirection": "column",
+                    "flexShrink": 0,
+                    "height": "19.44px",
+                    "marginBottom": "0px",
+                    "marginLeft": "0px",
+                    "marginRight": "5.4px",
+                    "marginTop": "0px",
+                    "minHeight": "0px",
+                    "minWidth": "0px",
+                    "msFlexAlign": "stretch",
+                    "msFlexDirection": "column",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
+                    "overflowX": "hidden",
+                    "overflowY": "hidden",
+                    "paddingBottom": "0px",
+                    "paddingLeft": "0px",
+                    "paddingRight": "0px",
+                    "paddingTop": "0px",
+                    "position": "relative",
+                    "width": "23.76px",
+                    "zIndex": 0,
+                  }
+                }
+              >
+                <div
+                  style={
+                    Object {
+                      "WebkitAlignItems": "stretch",
+                      "WebkitBoxAlign": "stretch",
+                      "WebkitBoxDirection": "normal",
+                      "WebkitBoxOrient": "vertical",
+                      "WebkitFlexBasis": "auto",
+                      "WebkitFlexDirection": "column",
+                      "WebkitFlexShrink": 0,
+                      "alignItems": "stretch",
+                      "backgroundColor": "rgba(0,0,0,0.00)",
+                      "backgroundImage": "url(\\"relevantcoin.png\\")",
+                      "backgroundPosition": "center",
+                      "backgroundRepeat": "no-repeat",
+                      "backgroundSize": "contain",
+                      "borderBottomStyle": "solid",
+                      "borderBottomWidth": "0px",
+                      "borderLeftStyle": "solid",
+                      "borderLeftWidth": "0px",
+                      "borderRightStyle": "solid",
+                      "borderRightWidth": "0px",
+                      "borderTopStyle": "solid",
+                      "borderTopWidth": "0px",
+                      "bottom": "0px",
+                      "boxSizing": "border-box",
+                      "display": "flex",
+                      "flexBasis": "auto",
+                      "flexDirection": "column",
+                      "flexShrink": 0,
+                      "height": "100%",
+                      "left": "0px",
+                      "marginBottom": "0px",
+                      "marginLeft": "0px",
+                      "marginRight": "0px",
+                      "marginTop": "0px",
+                      "minHeight": "0px",
+                      "minWidth": "0px",
+                      "msFlexAlign": "stretch",
+                      "msFlexDirection": "column",
+                      "msFlexNegative": 0,
+                      "msFlexPreferredSize": "auto",
+                      "paddingBottom": "0px",
+                      "paddingLeft": "0px",
+                      "paddingRight": "0px",
+                      "paddingTop": "0px",
+                      "position": "absolute",
+                      "right": "0px",
+                      "top": "0px",
+                      "width": "100%",
+                      "zIndex": -1,
+                    }
+                  }
+                />
+                <img
+                  alt=""
+                  draggable={false}
+                  src="relevantcoin.png"
+                  style={
+                    Object {
+                      "bottom": "0px",
+                      "height": "100%",
+                      "left": "0px",
+                      "opacity": 0,
+                      "position": "absolute",
+                      "right": "0px",
+                      "top": "0px",
+                      "width": "100%",
+                      "zIndex": -1,
+                    }
+                  }
+                />
+              </div>
+              <div
+                dir="auto"
+                inline={0}
+                style={
+                  Object {
+                    "WebkitFlexBasis": "auto",
+                    "WebkitFlexShrink": 0,
+                    "borderBottomWidth": "0px",
+                    "borderLeftWidth": "0px",
+                    "borderRightWidth": "0px",
+                    "borderTopWidth": "0px",
+                    "boxSizing": "border-box",
+                    "color": "rgba(0,0,0,1.00)",
+                    "display": "flex",
+                    "flexBasis": "auto",
+                    "flexShrink": 0,
+                    "fontFamily": "HelveticaNeue-CondensedBold",
+                    "fontSize": "12.6px",
+                    "fontStyle": "inherit",
+                    "fontVariant": "inherit",
+                    "fontWeight": "inherit",
+                    "lineHeight": "16.799999999999997px",
+                    "marginBottom": "0px",
+                    "marginLeft": "0px",
+                    "marginRight": "0px",
+                    "marginTop": "0px",
+                    "msFlexNegative": 0,
+                    "msFlexPreferredSize": "auto",
+                    "paddingBottom": "0px",
+                    "paddingLeft": "0px",
+                    "paddingRight": "0px",
+                    "paddingTop": "0px",
+                    "position": "relative",
+                    "textDecoration": "none",
+                    "whiteSpace": "pre-wrap",
+                    "wordWrap": "break-word",
+                  }
+                }
+              >
+                111
+              </div>
             </div>
-          </div>
-        </a>
-        <a
-          className="ulink-mock c1"
-          href="/user/wallet"
-          hu={0}
-          inline={0}
-          onClick={[Function]}
-          styles=""
+          </a>
+        </div>
+        <div
+          style={
+            Object {
+              "WebkitAlignItems": "baseline",
+              "WebkitBoxAlign": "baseline",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "horizontal",
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "row",
+              "WebkitFlexShrink": 0,
+              "alignItems": "baseline",
+              "borderBottomStyle": "solid",
+              "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
+              "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
+              "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexDirection": "row",
+              "flexShrink": 0,
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "14.4px",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "baseline",
+              "msFlexDirection": "row",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "zIndex": 0,
+            }
+          }
         >
           <div
-            data-for="mainTooltip"
-            data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Get coins by upvoting quality links.\\\\nThe higher your Reputation the more coins you earn.\\"}}"
+            dir="auto"
+            fs={1.5}
             style={
               Object {
-                "WebkitAlignItems": "center",
-                "WebkitBoxAlign": "center",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "10.8px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "14.4px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            Pending Rewards: 
+          </div>
+          <div
+            data-for="mainTooltip"
+            data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are your projected earnings for upvoting quality posts.\\\\nRewards are paid out 3 days after a link is posted.\\"}}"
+            style={
+              Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
                 "WebkitBoxDirection": "normal",
                 "WebkitBoxOrient": "horizontal",
                 "WebkitFlexBasis": "auto",
                 "WebkitFlexDirection": "row",
                 "WebkitFlexShrink": 0,
-                "alignItems": "center",
+                "alignItems": "baseline",
                 "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
                 "borderLeftStyle": "solid",
@@ -803,7 +1141,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
-                "msFlexAlign": "center",
+                "msFlexAlign": "baseline",
                 "msFlexDirection": "row",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
@@ -835,16 +1173,16 @@ exports[`Snapshot NavProfile 1`] = `
                   "borderRightWidth": "0px",
                   "borderTopStyle": "solid",
                   "borderTopWidth": "0px",
-                  "bottom": "0px",
+                  "bottom": "-1px",
                   "boxSizing": "border-box",
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "19.44px",
+                  "height": "9.72px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "5.4px",
+                  "marginRight": "2.7px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -859,7 +1197,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "23.76px",
+                  "width": "11.88px",
                   "zIndex": 0,
                 }
               }
@@ -938,12 +1276,15 @@ exports[`Snapshot NavProfile 1`] = `
               />
             </div>
             <div
+              c="#000000"
               dir="auto"
+              fs={1.5}
               inline={0}
               style={
                 Object {
                   "WebkitFlexBasis": "auto",
                   "WebkitFlexShrink": 0,
+                  "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
                   "borderBottomWidth": "0px",
                   "borderLeftWidth": "0px",
                   "borderRightWidth": "0px",
@@ -953,12 +1294,12 @@ exports[`Snapshot NavProfile 1`] = `
                   "display": "flex",
                   "flexBasis": "auto",
                   "flexShrink": 0,
-                  "fontFamily": "HelveticaNeue-CondensedBold",
-                  "fontSize": "12.6px",
+                  "fontFamily": "HelveticaNeue",
+                  "fontSize": "10.8px",
                   "fontStyle": "inherit",
                   "fontVariant": "inherit",
                   "fontWeight": "inherit",
-                  "lineHeight": "16.799999999999997px",
+                  "lineHeight": "14.4px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -971,72 +1312,87 @@ exports[`Snapshot NavProfile 1`] = `
                   "paddingTop": "0px",
                   "position": "relative",
                   "textDecoration": "none",
+                  "textDecorationColor": "rgba(0,0,0,1.00)",
                   "whiteSpace": "pre-wrap",
                   "wordWrap": "break-word",
                 }
               }
             >
-              111
+              120
             </div>
           </div>
-        </a>
+        </div>
       </div>
-      <div
-        style={
-          Object {
-            "WebkitAlignItems": "baseline",
-            "WebkitBoxAlign": "baseline",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "horizontal",
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "row",
-            "WebkitFlexShrink": 0,
-            "alignItems": "baseline",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "display": "flex",
-            "flexBasis": "auto",
-            "flexDirection": "row",
-            "flexShrink": 0,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "14.4px",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "baseline",
-            "msFlexDirection": "row",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
-            "position": "relative",
-            "zIndex": 0,
-          }
+    </div>
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "baseline",
+          "WebkitBoxAlign": "baseline",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexShrink": 0,
+          "alignItems": "baseline",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "row",
+          "flexShrink": 0,
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "21.6px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "baseline",
+          "msFlexDirection": "row",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
         }
+      }
+    >
+      <a
+        c="#0000ff"
+        className="ulink-mock c2"
+        hc="#000000"
+        href="/user/wallet"
+        hu={0}
+        inline={0}
+        onClick={[Function]}
+        styles=""
+        td="underline"
       >
         <div
+          c="#0000ff"
           dir="auto"
-          fs={1.5}
+          hc="#000000"
           style={
             Object {
               "WebkitFlexBasis": "auto",
               "WebkitFlexShrink": 0,
+              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
+              "color": "rgba(0,0,255,1.00)",
               "display": "flex",
               "flexBasis": "auto",
               "flexShrink": 0,
@@ -1058,47 +1414,94 @@ exports[`Snapshot NavProfile 1`] = `
               "paddingTop": "0px",
               "position": "relative",
               "textDecoration": "none",
+              "textDecorationColor": "rgba(0,0,255,1.00)",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
             }
           }
         >
-          Pending Rewards: 
+          Get Tokens
         </div>
+      </a>
+      <div
+        dir="auto"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "inherit",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+            "fontSize": "14px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "inherit",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "textDecoration": "none",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+            
+      </div>
+      <a
+        c="#0000ff"
+        className="ulink-mock c3"
+        hc="#000000"
+        href="/user/wallet"
+        hu={0}
+        inline={0}
+        ml={1}
+        onClick={[Function]}
+        styles=""
+        td="underline"
+      >
         <div
-          data-for="mainTooltip"
-          data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are your projected earnings for upvoting quality posts.\\\\nRewards are paid out 3 days after a link is posted.\\"}}"
+          c="#0000ff"
+          dir="auto"
           style={
             Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "horizontal",
               "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "row",
               "WebkitFlexShrink": 0,
-              "alignItems": "baseline",
-              "borderBottomStyle": "solid",
+              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
+              "color": "rgba(0,0,255,1.00)",
               "display": "flex",
               "flexBasis": "auto",
-              "flexDirection": "row",
               "flexShrink": 0,
+              "fontFamily": "HelveticaNeue",
+              "fontSize": "10.8px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "14.4px",
               "marginBottom": "0px",
               "marginLeft": "0px",
-              "marginRight": "10.8px",
+              "marginRight": "0px",
               "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "baseline",
-              "msFlexDirection": "row",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
               "paddingBottom": "0px",
@@ -1106,375 +1509,17 @@ exports[`Snapshot NavProfile 1`] = `
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "zIndex": 0,
+              "textDecoration": "none",
+              "textDecorationColor": "rgba(0,0,255,1.00)",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
             }
           }
         >
-          <div
-            style={
-              Object {
-                "WebkitAlignItems": "stretch",
-                "WebkitBoxAlign": "stretch",
-                "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "vertical",
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "column",
-                "WebkitFlexShrink": 0,
-                "alignItems": "stretch",
-                "borderBottomStyle": "solid",
-                "borderBottomWidth": "0px",
-                "borderLeftStyle": "solid",
-                "borderLeftWidth": "0px",
-                "borderRightStyle": "solid",
-                "borderRightWidth": "0px",
-                "borderTopStyle": "solid",
-                "borderTopWidth": "0px",
-                "bottom": "-1px",
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexBasis": "auto",
-                "flexDirection": "column",
-                "flexShrink": 0,
-                "height": "9.72px",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "2.7px",
-                "marginTop": "0px",
-                "minHeight": "0px",
-                "minWidth": "0px",
-                "msFlexAlign": "stretch",
-                "msFlexDirection": "column",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "position": "relative",
-                "width": "11.88px",
-                "zIndex": 0,
-              }
-            }
-          >
-            <div
-              style={
-                Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexDirection": "column",
-                  "WebkitFlexShrink": 0,
-                  "alignItems": "stretch",
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"relevantcoin.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "contain",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
-                  "bottom": "0px",
-                  "boxSizing": "border-box",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexDirection": "column",
-                  "flexShrink": 0,
-                  "height": "100%",
-                  "left": "0px",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-            <img
-              alt=""
-              draggable={false}
-              src="relevantcoin.png"
-              style={
-                Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-          </div>
-          <div
-            c="#000000"
-            dir="auto"
-            fs={1.5}
-            inline={0}
-            style={
-              Object {
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexShrink": 0,
-                "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
-                "color": "rgba(0,0,0,1.00)",
-                "display": "flex",
-                "flexBasis": "auto",
-                "flexShrink": 0,
-                "fontFamily": "HelveticaNeue",
-                "fontSize": "10.8px",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "14.4px",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "position": "relative",
-                "textDecoration": "none",
-                "textDecorationColor": "rgba(0,0,0,1.00)",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
-              }
-            }
-          >
-            120
-          </div>
+          Invite Friends
         </div>
-      </div>
+      </a>
     </div>
-  </div>
-  <div
-    style={
-      Object {
-        "WebkitAlignItems": "baseline",
-        "WebkitBoxAlign": "baseline",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "horizontal",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "row",
-        "WebkitFlexShrink": 0,
-        "alignItems": "baseline",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "row",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "21.6px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "baseline",
-        "msFlexDirection": "row",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
-        "position": "relative",
-        "zIndex": 0,
-      }
-    }
-  >
-    <a
-      c="#0000ff"
-      className="ulink-mock c2"
-      hc="#000000"
-      href="/user/wallet"
-      hu={0}
-      inline={0}
-      onClick={[Function]}
-      styles=""
-      td="underline"
-    >
-      <div
-        c="#0000ff"
-        dir="auto"
-        hc="#000000"
-        style={
-          Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
-            "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "color": "rgba(0,0,255,1.00)",
-            "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
-            "fontFamily": "HelveticaNeue",
-            "fontSize": "10.8px",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
-            "lineHeight": "14.4px",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
-            "position": "relative",
-            "textDecoration": "none",
-            "textDecorationColor": "rgba(0,0,255,1.00)",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
-          }
-        }
-      >
-        Get Tokens
-      </div>
-    </a>
-    <div
-      dir="auto"
-      style={
-        Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "inherit",
-          "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
-          "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-          "fontSize": "14px",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "inherit",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
-          "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
-        }
-      }
-    >
-          
-    </div>
-    <a
-      c="#0000ff"
-      className="ulink-mock c3"
-      hc="#000000"
-      href="/user/wallet"
-      hu={0}
-      inline={0}
-      ml={1}
-      onClick={[Function]}
-      styles=""
-      td="underline"
-    >
-      <div
-        c="#0000ff"
-        dir="auto"
-        style={
-          Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
-            "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "color": "rgba(0,0,255,1.00)",
-            "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
-            "fontFamily": "HelveticaNeue",
-            "fontSize": "10.8px",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
-            "lineHeight": "14.4px",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
-            "position": "relative",
-            "textDecoration": "none",
-            "textDecorationColor": "rgba(0,0,255,1.00)",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
-          }
-        }
-      >
-        Invite Friends
-      </div>
-    </a>
   </div>
 </div>
 `;

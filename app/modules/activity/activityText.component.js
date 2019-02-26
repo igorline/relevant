@@ -121,6 +121,65 @@ const ActivityText = ({ activity, amount }) => {
         </Text>
       );
 
+    case 'reward_twitter':
+    case 'reward_email':
+      text =
+        activity.type === 'reward_twitter'
+          ? 'connecting your Twitter account'
+          : 'verifying your email';
+      return (
+        <Text inline={1} align="baseline">
+          <BodyText inline={1}>{'You got '}</BodyText>
+          <CoinStat
+            inline
+            size={1.75}
+            lh={1.75}
+            amount={Number(coin)}
+            mr={0}
+            ml={0}
+            slef={'flex-end'}
+            align="baseline"
+          />
+          <BodyText inline={1}>{` coins for ${text}`}</BodyText>
+        </Text>
+      );
+
+    case 'reward_referral':
+      return (
+        <Text inline={1} align="baseline">
+          <BodyText inline={1}>{'signed up via your invite link, you got '}</BodyText>
+          <CoinStat
+            inline
+            size={1.75}
+            lh={1.75}
+            amount={Number(coin)}
+            mr={0}
+            ml={0}
+            slef={'flex-end'}
+            align="baseline"
+          />
+          <BodyText inline={1}>{' coins for your referral'}</BodyText>
+        </Text>
+      );
+
+    case 'reward_referredBy':
+      return (
+        <Text inline={1} align="baseline">
+          <BodyText inline={1}>{'gave you a referral, so you got an extra '}</BodyText>
+          <CoinStat
+            inline
+            size={1.75}
+            lh={1.75}
+            amount={Number(coin)}
+            mr={0}
+            ml={0}
+            slef={'flex-end'}
+            align="baseline"
+          />
+          <BodyText inline={1}>{' coins'}</BodyText>
+        </Text>
+      );
+
     default:
       if (activity.text) {
         text = activity.text;

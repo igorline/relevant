@@ -94,7 +94,7 @@ export class Community extends Component {
       id => members[id]
     );
     return (
-      <View>
+      <View flex={1} bb>
         {activeCommunity && (
           <CommunityActive
             key={activeCommunity._id}
