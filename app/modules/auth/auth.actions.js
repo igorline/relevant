@@ -48,6 +48,13 @@ export function setCommunity(community) {
   };
 }
 
+export function setInviteCode(code) {
+  return {
+    type: types.SET_INVITE_CODE,
+    payload: code
+  };
+}
+
 export function updateInvite(invite) {
   return {
     type: types.UPDATE_INVITE,
@@ -296,7 +303,11 @@ export function getUser(callback) {
       dispatch(loginUserFailure('Server error'));
       if (callback) callback({ ok: false });
       // need this in case user is logged in but there is an error getting account
-      if (error.message !== 'Network request failed') {
+      if (
+        error.message !== 'Network request failed' &&
+        error.message !== 'Failed to fetch'
+      ) {
+        window.alert('REMOVING TOKEN!' + error.message); // eslint-disable-line
         console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
         dispatch(logoutAction());
       }
@@ -403,7 +414,7 @@ export function checkUser(string, type) {
     });
 }
 
-export function createUser(user, invite) {
+export function createUser(user, invitecode) {
   return dispatch =>
     fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
@@ -412,7 +423,7 @@ export function createUser(user, invite) {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ user, invite })
+      body: JSON.stringify({ user, invitecode })
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
