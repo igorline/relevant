@@ -20,6 +20,7 @@ import { GlobalStyle } from 'app/styles';
 import * as modals from 'modules/ui/modals';
 import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
+import queryString from 'query-string';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -54,7 +55,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { actions, auth } = this.props;
+    const { actions, auth, location } = this.props;
     const { community } = auth;
 
     actions.setCommunity(community);
@@ -65,6 +66,12 @@ class App extends Component {
     if (auth.user && !auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
+    }
+
+    const parsed = queryString.parse(location.search);
+    if (parsed.invitecode) {
+      actions.setInviteCode(parsed.invitecode);
+      this.toggleLogin();
     }
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {

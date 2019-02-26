@@ -1,4 +1,7 @@
+import React from 'react';
 import loadable from '@loadable/component';
+import { Redirect } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 import App from './app';
 import NotFound from './404';
@@ -38,6 +41,10 @@ const Auth = loadable(() => import('modules/auth/web/auth.container'));
 const CreatePostContainer = loadable(() =>
   import('modules/createPost/createPost.container')
 );
+
+const MyRedirect = withRouter(props => (
+  <Redirect {...props} to={props.match.url + props.to + props.location.search} />
+));
 
 // community slug blacklist
 // user
@@ -116,7 +123,16 @@ const routes = [
 
               // DISCOVER
               // TODO - parent route doesn't have access to child params
-              { path: '/:community/', component: DiscoverContainer, exact: true },
+              {
+                path: '/:community/',
+                component: props => <MyRedirect {...props} to={'/new'} />,
+                exact: true
+              },
+              // {
+              //   path: '/:community/invite/:handle',
+              //   component: (props) => <MyRedirect {...props} to={'/new'} />,
+              //   exact: true
+              // },
               {
                 path: '/:community/:sort/invite/slava',
                 component: DiscoverContainer,

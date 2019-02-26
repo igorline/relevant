@@ -19,7 +19,7 @@ const RESERVED = [
 export async function findOne(req, res, next) {
   try {
     const { slug } = req.params;
-    const community = await Community.findOne({ slug });
+    const community = await Community.findOne({ slug, inactive: { $ne: true } });
     res.status(200).json(community);
   } catch (err) {
     next(err);
@@ -221,7 +221,7 @@ export async function remove(req, res, next) {
     if (!admin) throw new Error('you need to be a community admin to do this');
 
     // await Community.findOne({ slug }).remove().exec();
-    await Community.findOneAndUpdate({ slug }, { inactive: true }).exec();
+    await Community.findOneAndUpdate({ slug }, { inactive: true }, { new: true });
 
     res.status(200).json('removed');
   } catch (err) {

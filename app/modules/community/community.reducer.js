@@ -67,7 +67,7 @@ export default function community(state = initialState, action) {
           ...state.communities,
           [action.payload.slug]: action.payload
         },
-        list: [...new Set([...state.list, action.payload._id])]
+        list: [...new Set([...state.list, action.payload.slug])]
       };
     }
 

@@ -1,3 +1,5 @@
+import { Alert } from 'app/utils/alert';
+
 export function getMentions(words) {
   return words
   .map(word => {
@@ -36,4 +38,17 @@ const HTML_REGEX = new RegExp(/<[^>]*>/gm);
 
 export function stripHTML(text) {
   return (text || '').replace(HTML_REGEX, '');
+}
+
+export function copyToClipBoard(url) {
+  const el = document.createElement('textarea');
+  el.value = url;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+  Alert().alert('Link copied to clip board ^_^', 'success');
 }

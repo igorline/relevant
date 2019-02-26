@@ -79,9 +79,9 @@ export default class ModalComponent extends Component {
     if (!this.props.visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
     return (
-      <ModalParent>
+      <ModalParent onClick={close}>
         <ModalScroll>
-          <Modal bg={colors.white} w={95} p={'6'}>
+          <Modal bg={colors.white} w={95} p={'6'} onClick={e => e.stopPropagation()}>
             {hideX ? null : (
               <Touchable onPress={() => close()}>
                 <CloseButton

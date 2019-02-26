@@ -14,7 +14,7 @@ class InviteModalTitle extends Component {
   static propTypes = {
     inviteList: PropTypes.array,
     actions: PropTypes.object,
-    user: PropTypes.user
+    user: PropTypes.object
   };
   componentDidMount() {
     if (!this.props.inviteList.length) {
