@@ -19,7 +19,7 @@ const Form = styled.form`
   flex-direction: column;
 `;
 
-class SettingsModal extends Component {
+class InviteModal extends Component {
   submit = async vals => {
     const { reset } = this.props;
     const invite = {
@@ -92,7 +92,7 @@ class SettingsModal extends Component {
   }
 }
 
-SettingsModal.propTypes = {
+InviteModal.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
   initialValues: PropTypes.object,
@@ -106,4 +106,4 @@ SettingsModal.propTypes = {
 
 export default reduxForm({
   form: 'settings'
-})(SettingsModal);
+})(InviteModal);
