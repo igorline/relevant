@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash.get';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as commentActions from 'modules/comment/comment.actions';
@@ -36,13 +38,19 @@ class Comments extends Component {
     this.setState({ activeComment });
   };
 
+  scrollTo = (x, y) => {
+    const paddingY = window.outerHeight / 4;
+    window.scrollTo(x, y - paddingY);
+  };
+
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
   render() {
-    const { comments, posts, post, auth, actions, myPostInv, user } = this.props;
+    const { comments, posts, post, auth, actions, myPostInv, user, match } = this.props;
     const children = comments.childComments[post._id] || [];
+    const focusedComment = get(match, 'params.commentId', null);
     return (
       <div>
         <CommentForm
@@ -75,6 +83,8 @@ class Comments extends Component {
                   parentPost={post}
                   nestingLevel={0}
                   actions={actions}
+                  focusedComment={focusedComment}
+                  scrollTo={this.scrollTo}
                 />
               );
             })}
@@ -85,22 +95,24 @@ class Comments extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    auth: state.auth,
-    comments: state.comments,
-    myPostInv: state.investments.myPostInv,
-    user: state.user
-  }),
-  dispatch => ({
-    actions: bindActionCreators(
-      {
-        ...commentActions,
-        ...createPostActions,
-        ...investActions,
-        ...animationActions
-      },
-      dispatch
-    )
-  })
-)(Comments);
+export default withRouter(
+  connect(
+    state => ({
+      auth: state.auth,
+      comments: state.comments,
+      myPostInv: state.investments.myPostInv,
+      user: state.user
+    }),
+    dispatch => ({
+      actions: bindActionCreators(
+        {
+          ...commentActions,
+          ...createPostActions,
+          ...investActions,
+          ...animationActions
+        },
+        dispatch
+      )
+    })
+  )(Comments)
+);

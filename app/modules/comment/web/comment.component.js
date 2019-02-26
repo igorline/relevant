@@ -41,13 +41,39 @@ class Comment extends Component {
     post: PropTypes.object,
     hideAvatar: PropTypes.bool,
     noLink: PropTypes.bool,
-    avatarText: PropTypes.bool
+    avatarText: PropTypes.bool,
+    focusedComment: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    scrollTo: PropTypes.func
   };
 
   state = {
     editing: false,
     copied: false
   };
+
+  constructor(props) {
+    super(props);
+    this.el = React.createRef();
+  }
+
+  scrollIfFocused = () => {
+    const { focusedComment, comment, scrollTo } = this.props;
+    if (focusedComment === comment._id) {
+      this.el.current.measureInWindow((x, y) => {
+        scrollTo(0, y);
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.scrollIfFocused();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.focusedComment !== this.props.focusedComment) {
+      this.scrollIfFocused();
+    }
+  }
 
   deletePost() {
     // TODO custom confirm
@@ -137,7 +163,7 @@ class Comment extends Component {
     const commentChildren = get(childComments, comment.id) || [];
 
     return (
-      <View>
+      <View ref={this.el}>
         <Spacer nestingLevel={nestingLevel} m={'4 4 0 0'}>
           {!hidePostButtons ? (
             <PostButtonsContainer>

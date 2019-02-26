@@ -92,6 +92,11 @@ const routes = [
               { path: '/user/confirm/:user/:code', component: Auth, exact: true },
               { path: '/user/invite/:code', component: Invite, exact: true },
               { path: '/:community/post/:id', component: PostContainer, exact: true },
+              {
+                path: '/:community/post/:id/:commentId',
+                component: PostContainer,
+                exact: true
+              },
 
               // INFO
               { path: '/info', routes: [{ path: 'faq', component: Faq, exact: true }] },
