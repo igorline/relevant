@@ -59,10 +59,10 @@ const SideNav = props => {
             </View>
           </ULink>
         </LogoContainer>
-        <View>
+        <View flex={1}>
           <NavProfileComponent />
         </View>
-        <View>
+        <View flex={1}>
           <CommunityNav {...props} />
         </View>
         <SideNavFooter />

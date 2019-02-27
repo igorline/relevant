@@ -16,7 +16,7 @@ export default class Earning extends Component {
   };
 
   componentDidMount() {
-    ReactTooltip.rebuild();
+    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
   }
 
   // componentDidUpdate(prevProps) {

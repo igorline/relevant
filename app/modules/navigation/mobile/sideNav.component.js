@@ -46,13 +46,13 @@ const SideNav = props => (
           </View>
         </ULink>
       </LogoContainer>
-      <SideNavSection>
+      <SideNavSection flex={1}>
         <NavProfileComponent {...props} mobile />
       </SideNavSection>
-      <SideNavSection>
+      <SideNavSection flex={1}>
         <CommunityNav {...props} mobile />
       </SideNavSection>
-      <View mt={4}>
+      <View mt={4} flex={1}>
         <SideNavFooter mobile {...props} />
       </View>
     </ScrollView>

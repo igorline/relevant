@@ -85,8 +85,8 @@ class Application extends Component {
     this.props.actions.getUser().then(async user => {
       if (!user) {
         // TODO - should reset data if logged out
-        // navigation.navigate('auth');
-        navigation.replace('auth');
+        navigation.navigate('auth');
+        // navigation.replace('auth');
 
         // const resetAction = StackActions.reset({
         //   index: 0,

@@ -70,6 +70,8 @@
 		FB2BD6281E8B0C6200DBC2BA /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */; };
 		FB3F485421E06E1400DC0D34 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB3F484A21E06E0300DC0D34 /* libRNGestureHandler.a */; };
 		FB3F485521E06E1E00DC0D34 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB3F484A21E06E0300DC0D34 /* libRNGestureHandler.a */; };
+		FB46822422266D060082AFE3 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
+		FB46822522266D190082AFE3 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		FB816A931DCD2B52003C4E63 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		FB88BE861D9ED742002D0069 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB88BE841D9ED742002D0069 /* MainInterface.storyboard */; };
 		FB88BE8A1D9ED742002D0069 /* Relevant.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FB88BE7F1D9ED742002D0069 /* Relevant.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -680,6 +682,8 @@
 		FB04E0C11E2856B500DD436D /* default-launch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "default-launch.png"; path = "../app/public/img/default-launch.png"; sourceTree = "<group>"; };
 		FB07D82F2200EFB40004D656 /* RNFIRAnalytics.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFIRAnalytics.xcodeproj; path = "../node_modules/react-native-firebase-analytics/ios/RNFIRAnalytics.xcodeproj"; sourceTree = "<group>"; };
 		FB0FADFD220A75C000F6D820 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		FB19374722265D2B00C289AA /* libPods-relevantNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-relevantNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FB19378622265D4100C289AA /* libPods-relevantNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-relevantNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB3F481221E06E0300DC0D34 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		FB88BE7F1D9ED742002D0069 /* Relevant.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Relevant.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB88BE851D9ED742002D0069 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -1248,6 +1252,8 @@
 		FBF8A93D1E6F3A50009404F2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FB19378622265D4100C289AA /* libPods-relevantNativeTests.a */,
+				FB19374722265D2B00C289AA /* libPods-relevantNativeTests.a */,
 				FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */,
 				FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */,
 				FBDA04731EEF40F000789ED9 /* libGoogleToolboxForMac.a */,
@@ -1319,7 +1325,7 @@
 				FB88BE7B1D9ED742002D0069 /* Sources */,
 				FB88BE7C1D9ED742002D0069 /* Frameworks */,
 				FB88BE7D1D9ED742002D0069 /* Resources */,
-				FB88BEB01D9EDF26002D0069 /* ShellScript */,
+				FB88BEB01D9EDF26002D0069 /* Run Script */,
 				484084A367AC0B4AA2C906BA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -1965,6 +1971,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB46822422266D060082AFE3 /* main.jsbundle in Resources */,
 				2A43980C1DFF3B6200E7FC9B /* helvetica-outline.otf in Resources */,
 				2A46C3471DEA396400DAFC70 /* Georgia.ttf in Resources */,
 				FBD6A2541E8B0F840088BBC2 /* GoogleService-Info.plist in Resources */,
@@ -1992,6 +1999,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB46822522266D190082AFE3 /* main.jsbundle in Resources */,
 				FBBBF1A31F8F0C7B00F68218 /* Ionicons.ttf in Resources */,
 				FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */,
 				FB9F3BB71E327FC100C92158 /* WebsiteProcessor.js in Resources */,
@@ -2019,7 +2027,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		0ED0FBE4D83185F91ACCBEE9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2158,18 +2166,19 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FB88BEB01D9EDF26002D0069 /* ShellScript */ = {
+		FB88BEB01D9EDF26002D0069 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

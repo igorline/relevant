@@ -140,31 +140,37 @@ exports[`Snapshot NavProfile 1`] = `
     }
   >
     <div
-      dir="auto"
-      m="4 4 3 4"
       style={
         Object {
+          "WebkitAlignItems": "stretch",
+          "WebkitBoxAlign": "stretch",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "vertical",
           "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "column",
           "WebkitFlexShrink": 0,
+          "alignItems": "stretch",
+          "borderBottomStyle": "solid",
           "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
           "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
           "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
-          "color": "rgba(0,0,0,1.00)",
           "display": "flex",
           "flexBasis": "auto",
+          "flexDirection": "column",
           "flexShrink": 0,
-          "fontFamily": "HelveticaNeue-Bold",
-          "fontSize": "21.6px",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "28.8px",
-          "marginBottom": "21.6px",
-          "marginLeft": "28.8px",
-          "marginRight": "28.8px",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
           "marginTop": "28.8px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "stretch",
+          "msFlexDirection": "column",
           "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
           "paddingBottom": "0px",
@@ -172,14 +178,10 @@ exports[`Snapshot NavProfile 1`] = `
           "paddingRight": "0px",
           "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
+          "zIndex": 0,
         }
       }
-    >
-      Community
-    </div>
+    />
     <a
       className="ulink-mock c0"
       href="/relevant/new"
@@ -510,7 +512,7 @@ exports[`Snapshot NavProfile 1`] = `
             "flexBasis": "auto",
             "flexDirection": "column",
             "flexShrink": 0,
-            "marginBottom": "28.8px",
+            "marginBottom": "0px",
             "marginLeft": "39.6px",
             "marginRight": "0px",
             "marginTop": "3.6px",
@@ -806,9 +808,51 @@ exports[`Snapshot NavProfile 1`] = `
         </a>
       </div>
       <div
+        dir="auto"
+        mt={3}
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(153,153,153,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "21.6px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "textDecoration": "none",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        A community for curating and discussing links related to critical analysis of #technology, #society and #culture.
+      </div>
+      <div
         c="#000000"
         dir="auto"
         mb={2}
+        mt={3}
         style={
           Object {
             "WebkitFlexBasis": "auto",
@@ -832,7 +876,7 @@ exports[`Snapshot NavProfile 1`] = `
             "marginBottom": "14.4px",
             "marginLeft": "0px",
             "marginRight": "0px",
-            "marginTop": "0px",
+            "marginTop": "21.6px",
             "msFlexNegative": 0,
             "msFlexPreferredSize": "auto",
             "paddingBottom": "0px",

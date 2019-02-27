@@ -16,29 +16,18 @@ exports[`Snapshot NavProfile 1`] = `
 
 .c2 {
   color: #0000ff;
-  -webkit-text-decoration: underline;
-  text-decoration: underline;
   color: #0000ff;
   -webkit-text-decoration-color: #0000ff;
   text-decoration-color: #0000ff;
 }
 
 .c2:hover * {
-  color: #000000;
-}
-
-.c2:hover * {
-  fill: #000000;
-}
-
-.c2:hover * {
-  color: #000000;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
 }
 
 .c3 {
   color: #0000ff;
-  -webkit-text-decoration: underline;
-  text-decoration: underline;
   margin-left: 7.2px;
   color: #0000ff;
   -webkit-text-decoration-color: #0000ff;
@@ -46,15 +35,8 @@ exports[`Snapshot NavProfile 1`] = `
 }
 
 .c3:hover * {
-  color: #000000;
-}
-
-.c3:hover * {
-  fill: #000000;
-}
-
-.c3:hover * {
-  color: #000000;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
 }
 
 <div
@@ -63,10 +45,12 @@ exports[`Snapshot NavProfile 1`] = `
       "WebkitAlignItems": "stretch",
       "WebkitBoxAlign": "stretch",
       "WebkitBoxDirection": "normal",
+      "WebkitBoxFlex": 1,
       "WebkitBoxOrient": "vertical",
-      "WebkitFlexBasis": "auto",
+      "WebkitFlexBasis": "0px",
       "WebkitFlexDirection": "column",
-      "WebkitFlexShrink": 0,
+      "WebkitFlexGrow": 1,
+      "WebkitFlexShrink": 1,
       "alignItems": "stretch",
       "borderBottomColor": "rgba(221,221,221,1.00)",
       "borderBottomStyle": "solid",
@@ -79,9 +63,10 @@ exports[`Snapshot NavProfile 1`] = `
       "borderTopWidth": "0px",
       "boxSizing": "border-box",
       "display": "flex",
-      "flexBasis": "auto",
+      "flexBasis": "0px",
       "flexDirection": "column",
-      "flexShrink": 0,
+      "flexGrow": 1,
+      "flexShrink": 1,
       "marginBottom": "0px",
       "marginLeft": "0px",
       "marginRight": "0px",
@@ -90,8 +75,9 @@ exports[`Snapshot NavProfile 1`] = `
       "minWidth": "0px",
       "msFlexAlign": "stretch",
       "msFlexDirection": "column",
-      "msFlexNegative": 0,
-      "msFlexPreferredSize": "auto",
+      "msFlexNegative": 1,
+      "msFlexPositive": 1,
+      "msFlexPreferredSize": "0px",
       "paddingBottom": "0px",
       "paddingLeft": "0px",
       "paddingRight": "0px",
@@ -1370,18 +1356,15 @@ exports[`Snapshot NavProfile 1`] = `
       <a
         c="#0000ff"
         className="ulink-mock c2"
-        hc="#000000"
         href="/user/wallet"
-        hu={0}
+        hu={1}
         inline={0}
         onClick={[Function]}
         styles=""
-        td="underline"
       >
         <div
           c="#0000ff"
           dir="auto"
-          hc="#000000"
           style={
             Object {
               "WebkitFlexBasis": "auto",
@@ -1466,14 +1449,12 @@ exports[`Snapshot NavProfile 1`] = `
       <a
         c="#0000ff"
         className="ulink-mock c3"
-        hc="#000000"
         href="/user/wallet"
-        hu={0}
+        hu={1}
         inline={0}
         ml={1}
         onClick={[Function]}
         styles=""
-        td="underline"
       >
         <div
           c="#0000ff"

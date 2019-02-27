@@ -169,7 +169,8 @@
     "./server/api/user/user.controller": false,
     "web3-eth-accounts": false,
     "drizzle": false,
-    "web3": false
+    "web3": false,
+    "react-tooltip": false
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.3",

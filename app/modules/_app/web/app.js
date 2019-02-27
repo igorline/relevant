@@ -44,7 +44,8 @@ class App extends Component {
   };
 
   state = {
-    openLoginModal: false
+    openLoginModal: false,
+    authType: null
   };
 
   componentWillMount() {
@@ -71,7 +72,7 @@ class App extends Component {
     const parsed = queryString.parse(location.search);
     if (parsed.invitecode) {
       actions.setInviteCode(parsed.invitecode);
-      this.toggleLogin();
+      this.toggleLogin('signup');
     }
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
@@ -106,8 +107,8 @@ class App extends Component {
     }
   }
 
-  toggleLogin() {
-    this.setState({ openLoginModal: !this.state.openLoginModal });
+  toggleLogin(authType) {
+    this.setState({ openLoginModal: !this.state.openLoginModal, authType });
   }
 
   closeModal() {
@@ -195,6 +196,7 @@ class App extends Component {
             toggleLogin={this.toggleLogin.bind(this)}
             open={this.state.openLoginModal || temp}
             modal
+            type={this.state.authType}
             {...this.props}
           />
           <Eth.Consumer>
