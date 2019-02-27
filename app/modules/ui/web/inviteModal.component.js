@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import ReduxFormField from 'modules/styled/form/reduxformfield.component';
-import { View, SecondaryText, LinkFont, Divider } from 'modules/styled/web';
+import CoinStat from 'modules/stats/coinStat.component';
+import {
+  View,
+  SecondaryText,
+  LinkFont,
+  Divider,
+  BodyText,
+  Header
+} from 'modules/styled/web';
 import { colors, sizing } from 'app/styles';
-// import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import ULink from 'modules/navigation/ULink.component';
-// import { required, email } from 'modules/form/validators';
 import { REFERRAL_REWARD, PUBLIC_LINK_REWARD } from 'server/config/globalConstants';
 import { copyToClipBoard } from 'utils/text';
 
@@ -15,38 +20,47 @@ const ModalDivider = styled(Divider)`
   margin: 0 ${sizing(-6)};
 `;
 
-// const Form = styled.form`
-//   display: flex;
-//   flex-direction: column;
-// `;
-
 const InviteLink = styled(LinkFont)`
   cursor: pointer;
+  ${p =>
+    p.new
+      ? `
+    animation-duration: 5s;
+    animation-name: slidein;
+    @keyframes slidein {
+      from {
+        color: ${colors.green}
+      }
+
+      to {
+        color: ${p.c || colors.black}
+      }
+    }
+    `
+      : ''}
 `;
 
 class InviteModal extends Component {
-  submit = async vals => {
-    // const { reset } = this.props;
-    const invite = {
-      ...vals,
-      invitedBy: this.props.auth.user._id
-    };
-    const createdInvite = await this.props.actions.createInvite(invite);
-    // if (createdInvite) {
-    //   reset();
-    // }
-    return createdInvite;
-  };
+  componentDidMount() {
+    if (!this.props.inviteList.length) {
+      const skip = this.props.inviteList.length;
+      this.props.actions.getInvites(skip, 100);
+    }
+  }
 
-  generateInvite = async () => {
+  generateInvite = async type => {
     const invite = {
       invitedBy: this.props.auth.user._id
     };
+    if (type) {
+      invite.type = type;
+    }
     return this.props.actions.createInvite(invite);
   };
 
   render() {
     const { auth, community, count, inviteList, invites } = this.props;
+    const { user } = auth;
     // const publicInviteUrl = `/${community.active}/invite/${auth.user.handle}`;
     const publicInviteUrl = `/${community.active}?invitecode=${auth.user.handle}`;
     const origin = window ? window.location.origin : 'https://relevant.community';
@@ -56,78 +70,110 @@ class InviteModal extends Component {
     const invitesEl = inviteList.map(_id => {
       const invite = invites[_id];
       const url = `${origin}/${invite.community}?invitecode=${invite.code}`;
+      const now = new Date().getTime();
+      const createdAt = Date.parse(invite.createdAt);
+      const isNew = now - createdAt < 5000;
       return (
-        <InviteLink onClick={() => copyToClipBoard(url)} key={_id} c={colors.blue}>
-          {url}
-        </InviteLink>
+        <View mt={2} fdirection="column" key={_id}>
+          <View fdirection="row" justify="space-between">
+            <View>
+              <InviteLink
+                new={isNew}
+                onClick={() => copyToClipBoard(url)}
+                c={invite.redeemed ? colors.grey : colors.blue}
+              >
+                {url}
+              </InviteLink>
+              <LinkFont ml={0.5}>{invite.type === 'admin' ? '(admin)' : ''}</LinkFont>
+            </View>
+            <LinkFont c={invite.redeemed ? colors.SecondaryText : colors.blue}>
+              {invite.redeemed ? 'Redeemed' : 'Available'}
+            </LinkFont>
+          </View>
+          <Divider pt={2} />
+        </View>
       );
     });
 
-    // const FORM_FIELDS = [
-    //   {
-    //     name: 'name',
-    //     component: ReduxFormField,
-    //     type: 'text',
-    //     placeholder: 'Name',
-    //     validate: [required]
-    //   },
-    //   {
-    //     name: 'email',
-    //     component: ReduxFormField,
-    //     type: 'email',
-    //     placeholder: 'Email',
-    //     validate: [required, email]
-    //   }
-    // ];
     return (
       <View display="flex" fdirection="column">
-        <SecondaryText>
-          Earn Relevant Tokens by inviting people to your Relevant network
-        </SecondaryText>
-        <View pb={4} display="flex" fdirection="column" mt={7}>
-          <View display="flex" fdirection="row">
-            <LinkFont c={colors.black}>Public Invite Link</LinkFont>
-            <LinkFont ml={0.5}> (+{PUBLIC_LINK_REWARD} Rnt)</LinkFont>
-          </View>
-          <ULink to={'#'}>
+        <View mt={6} display="flex" fdirection="column">
+          <SecondaryText>Public Invite Link</SecondaryText>
+          <BodyText fdirection="row" align="center" mt={1}>
+            Share this public invitation link to earn
+            <CoinStat
+              ml={0.25}
+              mr={0.5}
+              size={2}
+              spaceBetween={0.25}
+              amount={PUBLIC_LINK_REWARD}
+              inline={1}
+            />
+            per invite, perpetually.
+          </BodyText>
+          <ULink to={'#'} mt={1}>
             <LinkFont onClick={() => copyToClipBoard(publicLink)} c={colors.blue}>
               {publicLink}
             </LinkFont>
           </ULink>
         </View>
-        <ModalDivider />
-        <View display="flex" fdirection="row" mt={4}>
-          <LinkFont c={colors.black}>
+        <Divider pt={6} />
+        <View display="flex" fdirection="column" mt={6}>
+          <SecondaryText>
             Private Invite: {count[community.active]} remaining
+          </SecondaryText>
+          <BodyText fdirection="row" align="center" mt={1}>
+            A private link will earn
+            <CoinStat
+              ml={0.25}
+              mr={0.5}
+              size={2}
+              spaceBetween={0.25}
+              amount={REFERRAL_REWARD}
+              inline={1}
+            />{' '}
+            per invite, and invitees will be given a Reputation boost.
+          </BodyText>
+        </View>
+        <ULink
+          to={'#'}
+          onPress={() => this.generateInvite()}
+          onClick={() => this.generateInvite()}
+          c={colors.blue}
+        >
+          <LinkFont mt={1} c={colors.blue}>
+            Click here to generate a new private link
           </LinkFont>
-          <LinkFont ml={0.5}> (+{REFERRAL_REWARD} Rnt)</LinkFont>
-        </View>
-        <View mt={0.5}>
-          <ULink
-            to={'#'}
-            onPress={this.generateInvite}
-            onClick={this.generateInvite}
-            c={colors.blue}
-          >
-            <LinkFont c={colors.blue}>Generate Invite Link</LinkFont>
-          </ULink>
-        </View>
-        <View mt={2} fdirection={'column'}>
-          {invitesEl}
-        </View>
-        {/*        <Form onSubmit={handleSubmit(this.submit.bind(this))}>
-          {FORM_FIELDS.map((field, index) => (
-            <Field {...field} key={index} />
-          ))}
-          <View justify="flex-end" mt={3} fdirection="row">
-            <Button bg={colors.white} c={colors.black} onClick={() => this.props.close()}>
-              Close
-            </Button>
-            <Button ml={2} c={colors.white} type="submit">
-              Submit
-            </Button>
+        </ULink>
+        <ULink
+          to={'#'}
+          onPress={() => this.generateInvite('admin')}
+          onClick={() => this.generateInvite('admin')}
+          c={colors.blue}
+        >
+          <LinkFont mt={1} c={colors.blue}>
+            Click here to generate a new private admin link
+          </LinkFont>
+        </ULink>
+        <ModalDivider pt={6} />
+        <View mt={6} fdirection={'column'}>
+          <Header>Invitations</Header>
+          <BodyText fdirection="row" align="center">
+            Your invites have earned
+            <CoinStat
+              ml={0.25}
+              size={2}
+              spaceBetween={0.25}
+              amount={user.referralTokens}
+              inline={1}
+              mr={0.5}
+            />{' '}
+            so far
+          </BodyText>
+          <View mt={4} fdirection="column">
+            {invitesEl}
           </View>
-        </Form> */}
+        </View>
       </View>
     );
   }
@@ -136,20 +182,10 @@ class InviteModal extends Component {
 InviteModal.propTypes = {
   inviteList: PropTypes.array,
   invites: PropTypes.object,
-  // close: PropTypes.func,
-
-  // handleSubmit: PropTypes.func,
-  // initialValues: PropTypes.object,
   auth: PropTypes.object,
   community: PropTypes.object,
-  // location: PropTypes.object,
   actions: PropTypes.object,
-  // reset: PropTypes.func,
   count: PropTypes.object
 };
 
 export default InviteModal;
-
-// export default reduxForm({
-//   form: 'settings'
-// })(InviteModal);

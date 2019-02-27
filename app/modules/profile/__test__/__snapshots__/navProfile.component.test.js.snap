@@ -874,7 +874,7 @@ exports[`Snapshot NavProfile 1`] = `
                     "height": "19.44px",
                     "marginBottom": "0px",
                     "marginLeft": "0px",
-                    "marginRight": "5.4px",
+                    "marginRight": "0px",
                     "marginTop": "0px",
                     "minHeight": "0px",
                     "minWidth": "0px",
@@ -970,6 +970,7 @@ exports[`Snapshot NavProfile 1`] = `
               <div
                 dir="auto"
                 inline={0}
+                ml={0.75}
                 style={
                   Object {
                     "WebkitFlexBasis": "auto",
@@ -990,7 +991,7 @@ exports[`Snapshot NavProfile 1`] = `
                     "fontWeight": "inherit",
                     "lineHeight": "16.799999999999997px",
                     "marginBottom": "0px",
-                    "marginLeft": "0px",
+                    "marginLeft": "5.4px",
                     "marginRight": "0px",
                     "marginTop": "0px",
                     "msFlexNegative": 0,
@@ -1006,6 +1007,7 @@ exports[`Snapshot NavProfile 1`] = `
                   }
                 }
               >
+                
                 111
               </div>
             </div>
@@ -1168,7 +1170,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "height": "9.72px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
-                  "marginRight": "2.7px",
+                  "marginRight": "0px",
                   "marginTop": "0px",
                   "minHeight": "0px",
                   "minWidth": "0px",
@@ -1266,6 +1268,7 @@ exports[`Snapshot NavProfile 1`] = `
               dir="auto"
               fs={1.5}
               inline={0}
+              ml={0.375}
               style={
                 Object {
                   "WebkitFlexBasis": "auto",
@@ -1287,7 +1290,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "fontWeight": "inherit",
                   "lineHeight": "14.4px",
                   "marginBottom": "0px",
-                  "marginLeft": "0px",
+                  "marginLeft": "2.7px",
                   "marginRight": "0px",
                   "marginTop": "0px",
                   "msFlexNegative": 0,
@@ -1304,6 +1307,7 @@ exports[`Snapshot NavProfile 1`] = `
                 }
               }
             >
+              
               120
             </div>
           </div>

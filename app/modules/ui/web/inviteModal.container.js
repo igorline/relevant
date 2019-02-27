@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
-import { createInvite, getInviteCount } from 'modules/admin/admin.actions';
+import { createInvite, getInviteCount, getInvites } from 'modules/admin/admin.actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InviteModalComponent from 'modules/ui/web/inviteModal.component';
@@ -37,7 +37,8 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       createInvite,
-      getInviteCount
+      getInviteCount,
+      getInvites
     },
     dispatch
   )
