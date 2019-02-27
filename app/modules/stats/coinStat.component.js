@@ -30,6 +30,7 @@ function CoinStat(props) {
     lh,
     inline,
     c,
+    spaceBetween,
     ...rest
   } = props;
 
@@ -48,6 +49,14 @@ function CoinStat(props) {
   const imageMargin = align === 'center' ? 0 : sizing(-1, 'px');
   const Wrapper = inline ? Text : ImageWrapper;
 
+  let spacer = 0;
+  if (!inline && iconSize) {
+    spacer = iconSize / 4;
+  }
+  if (!inline && spaceBetween) {
+    spacer = spaceBetween;
+  }
+
   return (
     <Wrapper
       {...rest}
@@ -60,13 +69,13 @@ function CoinStat(props) {
         source={coinImage}
         h={iconSize * 0.9}
         w={iconSize * 1.1}
-        mr={inline ? 0 : iconSize / 4}
         style={{ bottom: imageMargin }}
         resizeMode="contain"
       />
 
       {noNumber ? null : (
-        <NumberStyle fs={fs} lh={lh} inline={inline ? 1 : 0} c={c}>
+        <NumberStyle ml={spacer} fs={fs} lh={lh} inline={inline ? 1 : 0} c={c}>
+          {inline ? ' ' : ''}
           {abbreviateNumber(tokens)}
         </NumberStyle>
       )}
@@ -88,7 +97,8 @@ CoinStat.propTypes = {
   align: PropTypes.string,
   lineheight: PropTypes.string,
   c: PropTypes.string,
-  noNumber: PropTypes.bool
+  noNumber: PropTypes.bool,
+  spaceBetween: PropTypes.number
 };
 
 export default props => (
