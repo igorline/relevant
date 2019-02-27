@@ -97,6 +97,10 @@ const routes = [
               }
             ]
           },
+
+          // INFO
+          { path: '/info/faq', component: Faq, exact: true },
+
           {
             path: '/',
             component: WithTopNav,
@@ -117,9 +121,6 @@ const routes = [
                 component: PostContainer,
                 exact: true
               },
-
-              // INFO
-              { path: '/info', routes: [{ path: 'faq', component: Faq, exact: true }] },
 
               // DISCOVER
               // TODO - parent route doesn't have access to child params
