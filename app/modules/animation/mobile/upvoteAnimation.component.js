@@ -54,15 +54,18 @@ class UpvoteAnimation extends Component {
 
   destroy(key, coinKey) {
     if (typeof key === 'number') {
-      delete this.state.investAni[key];
+      const investAni = [...this.state.investAni];
+      investAni[key] = null;
+      this.setState({ investAni });
     }
     if (typeof coinKey === 'number') {
-      delete this.state.coinAni[coinKey];
+      const coinAni = [...this.state.coinAni];
+      coinAni[coinKey] = null;
+      this.setState({ coinAni });
     }
   }
 
   investAni() {
-    // this.clearEls();
     const newArr = [];
     const coinArr = [];
     for (let i = 0; i <= 10; i++) {
