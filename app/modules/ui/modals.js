@@ -21,8 +21,7 @@ export const settings = {
 export const invite = {
   title: <InviteModalTitle />,
   Body: InviteModal,
-  footer: () => {},
-  hideX: true
+  footer: () => {}
 };
 
 export const getTokens = {

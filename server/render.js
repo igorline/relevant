@@ -32,7 +32,7 @@ export function createInitialState(req) {
     auth: {
       confirmed: !req.unconfirmed,
       // TODO - get this from req.user
-      community: 'relevant'
+      community: req.params.community || 'relevant'
     }
   };
 }
@@ -156,12 +156,12 @@ export function fetchMeta(initialState) {
       url = `https://relevant.community/${community}/post/${postId}`;
     }
   }
-  title = title || 'Relevant: A Social News Reader';
+  title = title || 'Relevant: curated by communities, not clicks.';
   image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description =
     description ||
-    'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
+    'Relevant is a community-based content curation and discussion app built on reputation.';
   return { title, description, image, url };
 }
 
