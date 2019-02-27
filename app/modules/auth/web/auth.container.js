@@ -23,7 +23,8 @@ class AuthContainer extends Component {
     user: PropTypes.object,
     open: PropTypes.bool,
     match: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    type: PropTypes.string
   };
 
   constructor(props) {
@@ -42,11 +43,12 @@ class AuthContainer extends Component {
 
     this.state = {
       redirectTo: redirectRoute,
-      type: 'login'
+      type: props.type
     };
   }
 
   componentWillReceiveProps(next) {
+    if (!this.state.type) this.setState({ type: next.type || 'login' });
     if (this.props.modal) return;
     const { redirect } = queryString.parse(this.props.location.search);
     const redirectTo = redirect;

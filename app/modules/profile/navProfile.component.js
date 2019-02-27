@@ -31,7 +31,7 @@ export class NavProfile extends Component {
   };
 
   componentDidMount() {
-    ReactTooltip.rebuild();
+    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
   }
 
   render() {
@@ -49,7 +49,7 @@ export class NavProfile extends Component {
     const hideGetTokens = user.twitterId;
 
     return (
-      <View bb>
+      <View bb flex={1}>
         <View p={p} pb={p + 1}>
           <View fdirection={'row'} justify="space-between" align="center">
             <Header>{user.name}</Header>
@@ -125,8 +125,6 @@ export class NavProfile extends Component {
               <ULink
                 to="/user/wallet"
                 c={colors.blue}
-                td={'underline'}
-                c={colors.blue}
                 hu
                 onPress={e => {
                   e.preventDefault();
@@ -145,7 +143,6 @@ export class NavProfile extends Component {
               to="/user/wallet"
               ml={1}
               c={colors.blue}
-              td={'underline'}
               hu
               onPress={e => {
                 e.preventDefault();

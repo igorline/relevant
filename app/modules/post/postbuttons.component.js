@@ -30,7 +30,7 @@ class PostButtons extends Component {
   }
 
   componentDidMount() {
-    ReactTooltip.rebuild();
+    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
   }
 
   async vote(e, vote) {

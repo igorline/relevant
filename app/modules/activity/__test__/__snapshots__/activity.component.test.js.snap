@@ -594,7 +594,7 @@ exports[`Snapshot Activity Web 1`] = `
                     "height": "11.628px",
                     "marginBottom": "0px",
                     "marginLeft": "0px",
-                    "marginRight": "1.368px",
+                    "marginRight": "0px",
                     "marginTop": "0px",
                     "minHeight": "0px",
                     "minWidth": "0px",

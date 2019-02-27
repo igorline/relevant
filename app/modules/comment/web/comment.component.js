@@ -59,7 +59,7 @@ class Comment extends Component {
 
   scrollIfFocused = () => {
     const { focusedComment, comment, scrollTo } = this.props;
-    if (focusedComment === comment._id) {
+    if (comment && focusedComment === comment._id) {
       this.el.current.measureInWindow((x, y) => {
         scrollTo(0, y);
       });
@@ -86,6 +86,7 @@ class Comment extends Component {
 
   static getDerivedStateFromProps(props) {
     const { user: userState, comment } = props;
+    if (!comment || !comment.embeddedUser) return null;
     const userId = userState.handleToId[comment.embeddedUser.handle];
     const user = userState.users[userId] || comment.embeddedUser;
     return { user };
