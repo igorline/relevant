@@ -2,7 +2,6 @@ import { TOKEN_DECIMALS } from 'server/config/globalConstants';
 
 export function computePostPayout(postData, community) {
   if (!community || !postData || postData.parentPost) return null;
-
   if (postData.pagerank < community.currentShares / community.postCount) {
     return 0;
   }
@@ -13,6 +12,7 @@ export function computePostPayout(postData, community) {
 
 export function computeUserPayout(earning) {
   if (earning.status === 'pending') {
+    if (earning.totalPostShares === 0) return 0;
     let estimatedPayout = earning.estimatedPostPayout;
     if (estimatedPayout > 1e8) estimatedPayout /= TOKEN_DECIMALS;
     const payout = (estimatedPayout * earning.shares) / earning.totalPostShares;
