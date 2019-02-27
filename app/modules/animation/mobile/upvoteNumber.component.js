@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { Animated, Easing, Image } from 'react-native';
+import { Animated, Easing } from 'react-native';
 import PropTypes from 'prop-types';
 import { animatedElement } from 'app/styles/layout';
+import { colors } from 'app/styles';
+import { Title } from 'modules/styled/uni';
 
-const ENDY = 300;
+const ENDY = 100;
 
-class Coin extends Component {
+class VoteNumber extends Component {
   static propTypes = {
     parent: PropTypes.object,
     specialKey: PropTypes.number,
@@ -22,17 +24,17 @@ class Coin extends Component {
 
   componentWillMount() {
     const { x, y } = this.props.parent;
-    const ENDX = Math.random() * 50;
+    const ENDX = (Math.random() - 0.5) * 20;
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
-      outputRange: [y, y - ENDY],
+      outputRange: [y + 10, y - ENDY],
       easing: Easing.in(Easing.ease)
     });
 
     this.x = this.state.position.interpolate({
-      inputRange: [0, 0.5 * Math.random(), 1],
-      outputRange: [x, x + ENDX / 2, x + ENDX],
+      inputRange: [0, 0.05, 0.5, 1],
+      outputRange: [x - 15, x, x + ENDX / 2, x + ENDX],
       easing: Easing.out(Easing.ease)
     });
 
@@ -48,9 +50,9 @@ class Coin extends Component {
     });
 
     this.scale = this.state.position.interpolate({
-      inputRange: [0, 0.2, 0.3, 1],
-      outputRange: [0, 1.2, 1, 1.5],
-      extrapolate: 'clamp'
+      inputRange: [0, 0.05, 0.1, 0.9, 0.95, 1],
+      outputRange: [0, 1.4, 1, 1, 1.2, 0]
+      // extrapolate: 'clamp'
     });
   }
 
@@ -62,15 +64,15 @@ class Coin extends Component {
     Animated.timing(this.state.position, {
       toValue: 1,
       delay: r * 30 + (i * 100 * 10) / amount,
-      duration: 1000
+      duration: 2000
     }).start(() => this.props.destroy(null, i));
   }
 
   render() {
+    const { amount } = this.props;
     const { w } = this.props.parent;
     const { specialKey } = this.props;
-    const icon = require('app/public/img/relevantcoin.png');
-    const img = <Image style={{ width: 20, height: 20 }} source={icon} />;
+    const element = <Title c={colors.green}>+{amount}</Title>;
 
     return (
       <Animated.View
@@ -78,7 +80,7 @@ class Coin extends Component {
         style={[
           { ...animatedElement },
           {
-            left: w / 3,
+            left: (w * 2) / 3,
             transform: [
               { translateX: this.x },
               { translateY: this.y },
@@ -88,10 +90,10 @@ class Coin extends Component {
           }
         ]}
       >
-        {img}
+        {element}
       </Animated.View>
     );
   }
 }
 
-export default Coin;
+export default VoteNumber;

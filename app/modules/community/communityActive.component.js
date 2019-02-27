@@ -4,7 +4,7 @@ import get from 'lodash.get';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import { View, CommunityLink, Header } from 'modules/styled/uni';
+import { View, CommunityLink, SecondaryText } from 'modules/styled/uni';
 
 class CommunityActive extends Component {
   static propTypes = {
@@ -26,12 +26,14 @@ class CommunityActive extends Component {
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, mobile ? 14 : 12);
     const p = mobile ? 2 : 4;
+    // <Header m={`4 ${p} 3 ${p}`}>Community</Header>
+
     return (
       <View bg={colors.white} mr={'1px'}>
-        <Header m={`4 ${p} 3 ${p}`}>Community</Header>
+        <View mt={p} />
         {children}
         <View bb p={`0 ${p} 4 ${p}`}>
-          <View m={'0.5 0 4 5.5'}>
+          <View m={'0.5 0 0 5.5'}>
             {topics.map(topic => (
               <ULink
                 key={topic}
@@ -48,7 +50,8 @@ class CommunityActive extends Component {
               </ULink>
             ))}
           </View>
-          <CommunityLink mb={2} c={colors.black}>
+          <SecondaryText mt={3}>{community.description}</SecondaryText>
+          <CommunityLink mt={3} mb={2} c={colors.black}>
             {`${totalMembers} Members`}
           </CommunityLink>
           <View fdirection={'row'} wrap>

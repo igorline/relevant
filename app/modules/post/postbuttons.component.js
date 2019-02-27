@@ -5,6 +5,7 @@ import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import ReactTooltip from 'react-tooltip';
+import { userVotePower } from 'server/config/globalConstants';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -45,10 +46,12 @@ class PostButtons extends Component {
 
       if (vote) return null;
 
+      const upvoteAmount = userVotePower(auth.user.relevance.pagerank);
+
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
         if (x + y + w + h === 0) return;
-        actions.triggerAnimation('upvote', { parent, amount });
+        actions.triggerAnimation('upvote', { parent, amount: upvoteAmount });
       });
 
       // browserAlerts.alert('Success!');

@@ -20,7 +20,7 @@ const FooterIcon = ({ href, source, target, actions }) => (
 
 FooterIcon.propTypes = {
   href: PropTypes.string,
-  source: PropTypes.string,
+  source: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   target: PropTypes.string,
   actions: PropTypes.object
 };
