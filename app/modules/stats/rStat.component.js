@@ -30,7 +30,6 @@ export default function RStat(props) {
           h={iconSize * 0.85}
           w={iconSize * 1.2}
           source={iconImage}
-          mr={iconSize / 10}
           style={{ bottom: imageMargin }}
           resizeMode={'contain'}
           inline={inline ? 1 : 0}

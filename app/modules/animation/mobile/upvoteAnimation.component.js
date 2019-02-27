@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as animationActions from 'modules/animation/animation.actions';
 import styled from 'styled-components/primitives';
 import Vote from './vote.component';
-import Coin from './coinVote.component';
+import VoteNumber from './upvoteNumber.component';
 
 const MoneyContainer = styled.View`
   position: absolute
@@ -74,17 +74,16 @@ class UpvoteAnimation extends Component {
       );
     }
 
-    for (let i = 0; i < this.amount; i++) {
-      coinArr.push(
-        <Coin
-          destroy={this.destroy}
-          parent={this.parent}
-          amount={this.amount}
-          key={i}
-          specialKey={i}
-        />
-      );
-    }
+    const i = 0;
+    coinArr.push(
+      <VoteNumber
+        destroy={this.destroy}
+        parent={this.parent}
+        amount={this.props.animation.amount.upvote}
+        key={i}
+        specialKey={i}
+      />
+    );
     this.setState({ coinAni: coinArr, investAni: newArr });
   }
 

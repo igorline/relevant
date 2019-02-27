@@ -127,7 +127,7 @@ export class NavProfile extends Component {
                 c={colors.blue}
                 td={'underline'}
                 c={colors.blue}
-                hc={colors.black}
+                hu
                 onPress={e => {
                   e.preventDefault();
                   actions.showModal('getTokens');
@@ -137,9 +137,7 @@ export class NavProfile extends Component {
                   actions.showModal('getTokens');
                 }}
               >
-                <CTALink c={colors.blue} hc={colors.black}>
-                  Get Tokens
-                </CTALink>
+                <CTALink c={colors.blue}>Get Tokens</CTALink>
               </ULink>
             )}
             {hideGetTokens ? null : <Text> &nbsp;&nbsp; </Text>}
@@ -148,7 +146,7 @@ export class NavProfile extends Component {
               ml={1}
               c={colors.blue}
               td={'underline'}
-              hc={colors.black}
+              hu
               onPress={e => {
                 e.preventDefault();
                 actions.showModal('invite');

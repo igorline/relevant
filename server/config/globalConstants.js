@@ -75,5 +75,8 @@ export const BANNED_USER_HANDLES = [
   'user',
   'channel',
   'group',
-  'all'
+  'all',
+  'invite'
 ];
+
+export const userVotePower = pagerank => Math.round(Math.sqrt(1 + pagerank * 4));

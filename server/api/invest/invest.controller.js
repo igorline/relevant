@@ -4,6 +4,7 @@ import apnData from 'server/pushNotifications';
 import { computeApproxPageRank } from 'server/utils/pagerankCompute';
 import { computePostPayout } from 'app/utils/rewards';
 import Community from 'server/api/community/community.model';
+import { userVotePower } from 'server/config/globalConstants';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
@@ -333,13 +334,7 @@ exports.create = async (req, res, next) => {
     // Deprecated - keep around for comparison analysis?
     const userRelevance = user.relevance ? user.relevance.pagerank : 0;
 
-    let relevanceToAdd;
-    if (userRelevance < 0) relevanceToAdd = 0;
-    else {
-      // use sqrt function for post relevance
-      relevanceToAdd = Math.round(Math.sqrt(userRelevance * 4));
-      relevanceToAdd = Math.max(1, relevanceToAdd);
-    }
+    let relevanceToAdd = userVotePower(userRelevance);
     if (amount < 0) relevanceToAdd *= -1;
 
     let undoInvest;

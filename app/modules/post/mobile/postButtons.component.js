@@ -17,6 +17,7 @@ import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, greyText, fullHeight } from 'app/styles/global';
 import { numbers } from 'app/utils';
 import { get } from 'lodash';
+import { userVotePower } from 'server/config/globalConstants';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -156,10 +157,14 @@ class PostButtons extends Component {
 
       await actions.vote(amount, post, auth.user, !newVote);
 
+      if (!newVote) return;
+
+      const upvoteAmount = userVotePower(auth.user.relevance.pagerank);
+
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
         if (x + y + w + h === 0) return;
-        actions.triggerAnimation('upvote', { parent, amount });
+        actions.triggerAnimation('upvote', { parent, amount: upvoteAmount });
       });
       setTimeout(() => {
         // this.props.actions.reloadTab('read');
@@ -357,19 +362,19 @@ class PostButtons extends Component {
     let r = post.data ? post.data.relevance : null;
     const rel = r;
 
-    let rIcon = (
-      <Image
-        resizeMode={'contain'}
-        style={styles.smallR}
-        source={require('app/public/img/icons/smallR.png')}
-      />
-    );
+    // let rIcon = (
+    //   <Image
+    //     resizeMode={'contain'}
+    //     style={styles.smallR}
+    //     source={require('app/public/img/icons/smallR.png')}
+    //   />
+    // );
 
     const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
 
     if (!r) {
       r = 'Vote';
-      rIcon = null;
+      // rIcon = null;
     }
 
     const stat = (
@@ -386,7 +391,6 @@ class PostButtons extends Component {
           }}
         >
           <View style={[styles.textRow, { alignItems: 'center' }]}>
-            {rIcon}
             <Text style={[styles.smallInfo, styles.greyText]}>
               {typeof r !== 'number' ? r : numbers.abbreviateNumber(r)}
             </Text>
