@@ -9,6 +9,8 @@ import { computePostPayout } from 'app/utils/rewards';
 const InvestSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
 
+const TEST_ENV = process.env.NODE_ENV === 'test';
+
 const InvestSchema = new Schema(
   {
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
@@ -94,13 +96,18 @@ InvestSchema.statics.createVote = async function createVote(props) {
 
   // can only invest in top-level posts
   let canInvest = false;
+  const now = new Date();
+
+  const leeway = TEST_ENV ? 1000 * 60 : 0;
+
+  console.log(post.data.payoutTime.getTime() + 1000 > now.getTime());
   if (
     !post.postParent &&
     user.lockedTokens + stakedTokens <= userBalance &&
     post.data.eligibleForReward &&
     !post.data.paidOut &&
-    post.data.payoutDate &&
-    post.data.payoutDate < new Date()
+    post.data.payoutTime &&
+    post.data.payoutTime.getTime() + leeway > now.getTime()
   ) {
     canInvest = true;
   }
