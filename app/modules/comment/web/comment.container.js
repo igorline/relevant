@@ -40,7 +40,7 @@ class Comments extends Component {
 
   scrollTo = (x, y) => {
     const paddingY = window.outerHeight / 4;
-    window.scrollTo(x, y + paddingY);
+    window.scrollTo(x, y - paddingY);
   };
 
   scrollToBottom() {
