@@ -55,6 +55,9 @@ module.exports = app => {
     return res.status(500).json({ message: err.message });
   });
 
-  // app.get('/subdomain/:subdomain/*', currentUser(), handleRender);
+  app.get('/info/*', currentUser(), handleRender);
+  app.get('/user/*', currentUser(), handleRender);
+  app.get('/admin/*', currentUser(), handleRender);
+  app.get('/:community/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
 };
