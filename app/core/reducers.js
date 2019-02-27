@@ -58,75 +58,38 @@ const appReducer = combineReducers({
   ...drizzleReducers
 });
 
-/* eslint-disable */
+const initialState = {
+  posts: appReducer.posts,
+  user: appReducer.user,
+  stats: appReducer.stats
+};
+
+// Purpose of this reducer is to swap out community state
+// we swap out posts, user data and stats
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
-    if (process.env.WEB !== 'true') {
-      let { auth, community, socket, earnings, navigation, form } = state;
-
-      if (auth.community) {
-        communityState = {
-          ...communityState,
-          [auth.community]: state
-        };
-      }
-
-      state = {
-        ...communityState[action.payload],
-        // TODO needs work?
-        socket,
-        auth: { ...auth, community: action.payload },
-        navigation,
-        earnings,
-        community,
-        form
-      };
-    } else {
-      let {
-        auth,
-        community,
-        socket,
-        earnings,
-        navigation,
-        // DESKTOP
-        // keep drizzle stuff - really need a nested state!
-        contracts,
-        drizzleStatus,
-        transactions,
-        transactionStack,
-        web3,
-        accounts,
-        accountBalances,
-        form
-      } = state;
-
-      if (auth.community) {
-        communityState = {
-          ...communityState,
-          [auth.community]: state
-        };
-      }
-
-      state = {
-        ...communityState[action.payload],
-        // TODO needs work?
-        socket,
-        auth: { ...auth, community: action.payload },
-
-        navigation,
-        community,
-        earnings,
-        form,
-
-        contracts,
-        drizzleStatus,
-        transactions,
-        transactionStack,
-        web3,
-        accounts,
-        accountBalances
+    const { community } = state.auth; // eslint-disable-line
+    const { posts, user, stats } = state; // eslint-disable-line
+    if (community) {
+      communityState = {
+        ...communityState,
+        [community]: {
+          posts,
+          user,
+          stats
+        }
       };
     }
+
+    const cachedCommunityState = communityState[action.payload] || initialState;
+
+    const newState = {
+      ...state,
+      ...cachedCommunityState,
+      auth: { ...state.auth, community: action.payload }
+    };
+
+    return appReducer(newState, action);
   }
   return appReducer(state, action);
 };

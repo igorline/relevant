@@ -42,7 +42,7 @@ const LogoContainer = styled.div`
 `;
 
 const SideNav = props => {
-  const logoLink = '/relevant/new';
+  const logoLink = `/${props.community}/new`;
   return (
     <SideNavContent flex={1} className={props.className}>
       <SideNavScroll flex={1}>
@@ -73,10 +73,12 @@ const SideNav = props => {
 
 SideNav.propTypes = {
   className: PropTypes.string,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  community: PropTypes.string
 };
 
 const mapStateToProps = state => ({
+  community: state.auth.community,
   isAuthenticated: state.auth.isAuthenticated
 });
 

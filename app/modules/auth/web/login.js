@@ -13,7 +13,7 @@ class LoginForm extends Component {
     parentFunction: PropTypes.func,
     authNav: PropTypes.func,
     location: PropTypes.object,
-    auth: PropTypes.auth
+    auth: PropTypes.object
   };
 
   constructor(props) {
