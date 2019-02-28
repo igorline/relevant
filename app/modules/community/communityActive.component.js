@@ -13,7 +13,8 @@ class CommunityActive extends Component {
     getCommunityMembers: PropTypes.func,
     members: PropTypes.array,
     mobile: PropTypes.bool,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    view: PropTypes.object
   };
 
   componentDidMount() {
@@ -21,13 +22,12 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children, members, mobile, actions } = this.props;
+    const { community, children, members, mobile, actions, view } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, mobile ? 14 : 12);
     const p = mobile ? 2 : 4;
-    // <Header m={`4 ${p} 3 ${p}`}>Community</Header>
-
+    const sort = get(view, 'discover.sort') || 'new';
     return (
       <View bg={colors.white} mr={'1px'}>
         <View mt={p} />
@@ -42,7 +42,7 @@ class CommunityActive extends Component {
                 ac={colors.black}
                 navLink
                 onPress={() => actions.goToTopic(topic)}
-                to={`/${community.slug}/new/${topic}`}
+                to={`/${community.slug}/${sort}/${topic}`}
               >
                 <CommunityLink key={topic} p={'0.5 0'}>
                   #{topic}
