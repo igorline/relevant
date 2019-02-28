@@ -40,9 +40,11 @@ if (process.env.WEB !== 'true') {
   styled = require('styled-components').default;
   StyledLink = styled(Link)`
     ${linkStyles}
+    ${mixins.cursor}
   `;
   StyledNavLink = styled(NavLink)`
     ${linkStyles}
+    ${mixins.cursor}
   `;
   StyledA = styled.a`
     ${linkStyles}
@@ -50,6 +52,7 @@ if (process.env.WEB !== 'true') {
   DisabledLink = styled.span`
     ${p => (p.disabled ? `color: ${colors.secondaryText};` : '')}
     ${linkStyles}
+    ${mixins.cursor}
   `;
 }
 

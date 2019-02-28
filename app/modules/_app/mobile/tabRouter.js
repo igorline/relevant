@@ -19,6 +19,7 @@ import DiscoverComponent from 'modules/discover/mobile/discover.container';
 import SinglePost from 'modules/post/mobile/singlePost.container';
 import Blocked from 'modules/profile/mobile/blocked.container';
 import Invites from 'modules/invites/mobile/invites.container';
+import GetTokens from 'modules/getTokens/mobile/getTokens.container';
 import VoterList from 'modules/post/mobile/voterList.container';
 import Wallet from 'modules/wallet/mobile/wallet.container';
 
@@ -89,6 +90,12 @@ export const DefaultStack = {
   },
   invites: {
     screen: Invites,
+    navigationOptions: {
+      title: 'Read'
+    }
+  },
+  getTokens: {
+    screen: GetTokens,
     navigationOptions: {
       title: 'Read'
     }

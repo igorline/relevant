@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
-import { sendConfirmation } from 'modules/auth/auth.actions';
-import { showModal } from 'modules/navigation/navigation.actions';
+import { sendConfirmation, twitterAuth } from 'modules/auth/auth.actions';
+import { showModal, push, reloadTab } from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import GetTokensModal from 'modules/ui/web/getTokensModal.component';
+import GetTokensModal from 'modules/getTokens/getTokensModal.component';
+import { View } from 'modules/styled/uni';
+import TwitterButton from 'modules/auth/mobile/TwitterButton.component';
 
 class GetTokensModalContainer extends Component {
   render() {
-    return <GetTokensModal {...this.props} />;
+    return (
+      <View m={2} mt={4}>
+        <GetTokensModal
+          {...this.props}
+          mobile
+          twitterButton={
+            <TwitterButton auth={this.props.auth} actions={this.props.actions} />
+          }
+        />
+      </View>
+    );
   }
 }
 
@@ -26,10 +38,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      // createInvite,
-      // getInviteCount
       sendConfirmation,
-      showModal
+      showModal,
+      push,
+      twitterAuth,
+      reloadTab
     },
     dispatch
   )
