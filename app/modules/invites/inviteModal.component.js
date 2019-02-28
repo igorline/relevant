@@ -77,7 +77,7 @@ class InviteModal extends Component {
       const createdAt = Date.parse(invite.createdAt);
       const isNew = now - createdAt < 5000;
       return (
-        <View mt={2} fdirection="column" key={_id} flex={1}>
+        <View mt={2} fdirection="column" key={_id}>
           <View fdirection="row" justify="space-between">
             <View fdirection="row" flex={1} mr={1}>
               <InviteLink
@@ -198,7 +198,7 @@ class InviteModal extends Component {
             />{' '}
             so far
           </BodyText>
-          <View mt={4} fdirection="column" flex={1}>
+          <View mt={4} fdirection="column">
             {invitesEl}
           </View>
         </View>
