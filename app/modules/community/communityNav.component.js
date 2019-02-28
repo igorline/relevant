@@ -21,7 +21,7 @@ const linkStyle = css`
     text-decoration: underline;
     text-decoration-color: ${colors.black};
     background: ${colors.white};
-  },
+  }
 `;
 
 const CommunityImage = styled(Image)`
