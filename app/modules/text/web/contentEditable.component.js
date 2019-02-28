@@ -175,8 +175,7 @@ export default class ContentEditable extends React.Component {
       <div
         id="editor"
         style={{
-          minHeight: '300px',
-          fontSize: '12px'
+          minHeight: '300px'
         }}
         className={this.props.className}
         placeholder={this.props.placeholder}

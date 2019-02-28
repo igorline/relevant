@@ -89,7 +89,13 @@ class TopNav extends Component {
     const activeCommunity = get(community, `communities.${view.discover.community}`);
     return (
       <Nav className={className} fdirection="column" justify="center">
-        <View justify="space-between" display="flex" fdirection="row" align="center">
+        <View
+          zIndex={1}
+          justify="space-between"
+          display="flex"
+          fdirection="row"
+          align="center"
+        >
           <DiscoverTabs />
           <View
             justify="space-between"
@@ -145,12 +151,14 @@ class TopNav extends Component {
               )}
             </View>
           </View>
-          <AuthContainer
-            toggleLogin={this.toggleLogin.bind(this)}
-            open={this.state.openLoginModal || temp}
-            modal
-            {...this.props}
-          />
+          <View>
+            <AuthContainer
+              toggleLogin={this.toggleLogin.bind(this)}
+              open={this.state.openLoginModal || temp}
+              modal
+              {...this.props}
+            />
+          </View>
         </View>
         <View fdirection="row">
           {activeCommunity ? (

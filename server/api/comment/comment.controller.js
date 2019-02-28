@@ -16,23 +16,23 @@ const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 exports.get = async (req, res, next) => {
   try {
-    // TODO - not paginated
-    const { community } = req.query;
+    // TODO - pagination
     // const limit = parseInt(req.query.limit, 10) || 10;
     // const skip = parseInt(req.query.skip, 10) || 0;
+
+    const { community } = req.query;
+
     let query = null;
     let parentPost = null;
-    const sort = 1;
     const id = req.user ? req.user._id : null;
 
     if (req.query.post) {
       parentPost = req.query.post;
-      query = { parentPost };
+      query = { parentPost, hidden: { $ne: true } };
     }
 
     const total = await Post.count(query);
 
-    // if (total > 10) sort = -1;
     const comments = await Post.find(query)
     .populate({
       path: 'embeddedUser.relevance',
@@ -43,12 +43,9 @@ exports.get = async (req, res, next) => {
       path: 'data',
       match: { community }
     })
-    .sort({ createdAt: sort });
-    // .limit(limit)
-    // .skip(skip);
+    .sort({ pagerank: -1 });
 
     const toSend = comments;
-    // if (total > 10) toSend = comments.reverse();
     res.status(200).json({ data: toSend, total });
 
     // TODO worker thread

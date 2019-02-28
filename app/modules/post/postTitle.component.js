@@ -24,7 +24,7 @@ export default function PostTitle(props) {
   const c = mobile ? colors.white : null;
 
   if (!post) return null;
-  const tags = post.tags && post.tags.length ? get(post, 'tags', []) : [];
+  const tags = get(post, 'tags', []);
   const titleLines = preview && mobile ? 2 : 3;
 
   const titleEl = postUrl ? (

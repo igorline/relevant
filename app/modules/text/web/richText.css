@@ -3,6 +3,7 @@
 .editor {
   min-height: 300px;
   @extend %input;
+  font-size: 14px;
   p {
     margin: 0;
   }
@@ -14,11 +15,12 @@
     content: attr(placeholder);
     font-family: HelveticaNeue, system-ui, Arial, sans-serif;
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     color: $greyText;
   }
 }
 
 .editor:focus, .editor.active {
   @extend %activeInput;
+  font-size: 14px;
 }

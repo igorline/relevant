@@ -309,6 +309,11 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       });
     }
 
+    const combinedTags = [...new Set([...(post.tags || []), ...(tags || [])])];
+    post.tags = combinedTags;
+    post.data.tags = combinedTags;
+    linkObject.tags = combinedTags;
+
     // TODO figure out what to do with payoutTime should old post reset?
     // for now we don't update payout time
     if (!hidden && post.latestComment < postDate) {
@@ -577,7 +582,7 @@ PostSchema.post('remove', async function postRemove(post, next) {
 
     let metaPost;
     let commentNote;
-    if (post.type === 'link' && !post.postParent) {
+    if (post.type === 'link' && !post.parentParent) {
       metaPost = await this.model('MetaPost')
       .remove({ post: post._id })
       .exec();

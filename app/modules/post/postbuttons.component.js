@@ -6,6 +6,7 @@ import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import ReactTooltip from 'react-tooltip';
 import { userVotePower } from 'server/config/globalConstants';
+import get from 'lodash/get';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -46,7 +47,8 @@ class PostButtons extends Component {
 
       if (vote) return null;
 
-      const upvoteAmount = userVotePower(auth.user.relevance.pagerank);
+      const pagerank = get(auth.user, 'relevance.pagerank');
+      const upvoteAmount = userVotePower(pagerank);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };

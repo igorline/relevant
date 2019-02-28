@@ -23,7 +23,10 @@ export default class SelectTags extends Component {
     if (!tags || !tags.length) return null;
 
     const inner = tags.map((tag, i) => {
-      tag = tag.replace(/\s/g, '');
+      // tag = tag.replace(/\s/g, '');
+      // tag = tag
+      // .replace(/tag:|publication:|elevated:false|lockedpostsource:0/g, '');
+
       const selected = selectedTags.indexOf(tag) !== -1;
       if (selected) return null;
       return (

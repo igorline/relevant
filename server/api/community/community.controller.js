@@ -40,12 +40,16 @@ export async function index(req, res, next) {
 
 export async function members(req, res, next) {
   try {
+    const { user } = req;
+    const userId = user ? user._id : null;
     const limit = req.params.limit || 20;
     const community = req.params.slug;
-    const users = await CommunityMember.find({ community })
-    .sort('role reputation')
+    let users = CommunityMember.find({ community, user: { $ne: userId } })
+    .sort({ role: 1, reputation: -1 })
     .limit(limit);
-    res.status(200).json(users);
+    let me = userId ? CommunityMember.find({ user: userId, community }) : [];
+    [me, users] = await Promise.all([me, users]);
+    res.status(200).json([...me, ...(users || [])]);
   } catch (err) {
     next(err);
   }

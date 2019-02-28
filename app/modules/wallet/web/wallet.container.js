@@ -12,7 +12,6 @@ import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
 import moment from 'moment';
-import { numbers } from 'app/utils';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
 
@@ -82,9 +81,8 @@ class WalletContainer extends Component {
     if (!item) return null;
     const earning = item;
 
-    let payout = computeUserPayout(earning);
+    const payout = computeUserPayout(earning);
     if (!payout) return null;
-    payout = numbers.abbreviateNumber(payout);
 
     const month = moment(earning.createdAt).format('MMMM');
     const showMonth = this.previousMonth !== month;

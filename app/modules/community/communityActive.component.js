@@ -14,11 +14,26 @@ class CommunityActive extends Component {
     members: PropTypes.array,
     mobile: PropTypes.bool,
     actions: PropTypes.object,
-    view: PropTypes.object
+    view: PropTypes.object,
+    auth: PropTypes.object
   };
 
   componentDidMount() {
     this.props.getCommunityMembers({ slug: this.props.community.slug });
+  }
+
+  componentDidUpdate(lastProps) {
+    const { auth } = this.props;
+    // Nasty code to get user to show up in members after first
+    // action in an new community
+    if (
+      auth.user &&
+      lastProps.auth.user &&
+      auth.user.relevance &&
+      !lastProps.auth.user.relevance
+    ) {
+      this.props.getCommunityMembers({ slug: this.props.community.slug });
+    }
   }
 
   render() {
