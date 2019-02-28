@@ -1,4 +1,5 @@
 import PostData from 'server/api/post/postData.model';
+import { MINIMUM_RANK } from 'server/config/globalConstants';
 import Feed from './communityFeed.model';
 import Post from '../post/post.model';
 
@@ -18,9 +19,10 @@ exports.get = async (req, res, next) => {
     let sortQuery;
     let commentarySort;
 
+    let query = { community, isInFeed: true };
     if (sort === 'rank') {
       sortQuery = { rank: -1 };
-      // commentarySort = { relevance: -1 };
+      query.pagerank = { $gt: MINIMUM_RANK };
       commentarySort = { pagerank: -1 };
     } else {
       sortQuery = { latestComment: -1 };
@@ -32,8 +34,6 @@ exports.get = async (req, res, next) => {
       blocked = [...(req.user.blocked || []), ...(req.user.blockedBy || [])];
     }
 
-    let query = { community, isInFeed: true };
-
     if (tag) query = { ...query, tags: tag };
 
     const feed = await PostData.find(query)
@@ -43,7 +43,7 @@ exports.get = async (req, res, next) => {
     .populate({
       path: 'post',
       populate: [
-        { path: 'data' },
+        { path: 'data', match: { community } },
         {
           path: 'commentary',
           match: {

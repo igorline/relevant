@@ -46,6 +46,8 @@ describe('ethRewards', () => {
     });
   });
 
+  // Todo test all cases of non-invest
+
   // describe('Invest', () => {
   //   test('should create invest', async () => {
   //     await create(req, res, next);

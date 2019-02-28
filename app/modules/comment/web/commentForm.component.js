@@ -52,7 +52,7 @@ class CommentForm extends Component {
   componentDidMount() {
     if (this.props.edit && this.props.comment) {
       this.setState({ comment: this.props.comment.body });
-      this.textArea.focus();
+      if (this.textArea) this.textArea.focus();
     }
   }
 
@@ -96,7 +96,7 @@ class CommentForm extends Component {
     return this.props.actions.createComment(commentObj).then(newComment => {
       if (!newComment) {
         this.setState({ newComment, inputHeight: 50 });
-        this.textInput.focus();
+        if (this.textInput) this.textInput.focus();
       } else {
         history.push(
           `/${newComment.community}/post/${newComment.parentPost}/${newComment._id}`

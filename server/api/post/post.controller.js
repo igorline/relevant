@@ -624,18 +624,6 @@ exports.create = async (req, res, next) => {
       }
     });
     tags = [...new Set(tags)];
-    // TODO work on & test tags & community tag stats!
-    // async
-    tags.map(tag =>
-      Tag.update(
-        { _id: tag },
-        {
-          $addToSet: { parents: category },
-          $inc: { count: 1 }
-        },
-        { upsert: true }
-      ).exec()
-    );
 
     const linkObject = {
       // this is stored in metaPost

@@ -4,7 +4,7 @@ const auth = require('../../auth/auth.service');
 
 const router = express.Router();
 
-router.get('/:slug/members', controller.members);
+router.get('/:slug/members', auth.currentUser(), controller.members);
 router.get('/membership/:user', auth.isAuthenticated(), controller.membership);
 router.get('/', controller.index);
 router.get('/:slug', auth.isAuthenticated(), controller.findOne);

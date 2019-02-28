@@ -278,10 +278,11 @@ exports.create = async (req, res, next) => {
     // postCommunity = post.community || 'relevant';
 
     // unhide twitter commentary
-    if (amount > 0 && post.hidden) {
+    if (amount > 0 && post.hidden && post.parentPost) {
       await post.parentPost.insertIntoFeed(communityId);
       post.hidden = false;
     }
+    post.hidden = false;
 
     // ------ investor ------
     user = await User.findOne(

@@ -21,7 +21,7 @@ const linkStyle = css`
     text-decoration: underline;
     text-decoration-color: ${colors.black};
     background: ${colors.white};
-  }
+  },
 `;
 
 const CommunityImage = styled(Image)`
@@ -33,7 +33,8 @@ export class Community extends Component {
     actions: PropTypes.object,
     community: PropTypes.object,
     mobile: PropTypes.bool,
-    view: PropTypes.object
+    view: PropTypes.object,
+    auth: PropTypes.object
   };
 
   componentDidMount() {
@@ -90,7 +91,7 @@ export class Community extends Component {
   }
 
   render() {
-    const { community, actions, mobile, view } = this.props;
+    const { community, actions, mobile, view, auth } = this.props;
     const { communityMembers, members, communities } = community;
     const activeCommunity = communities[community.active];
     if (!activeCommunity) return null;
@@ -108,6 +109,7 @@ export class Community extends Component {
             actions={actions}
             getCommunityMembers={get(actions, 'getCommunityMembers', null)}
             view={view}
+            auth={auth}
           >
             {this.renderCommunityLink(activeCommunity)}
           </CommunityActive>

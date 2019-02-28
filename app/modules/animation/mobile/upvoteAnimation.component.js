@@ -79,7 +79,7 @@ class UpvoteAnimation extends Component {
       <VoteNumber
         destroy={this.destroy}
         parent={this.parent}
-        amount={this.props.animation.amount.upvote}
+        amount={this.amount}
         key={i}
         specialKey={i}
       />

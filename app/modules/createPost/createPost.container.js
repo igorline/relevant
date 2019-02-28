@@ -106,6 +106,7 @@ class CreatePostContainer extends Component {
 
   clearPost() {
     this.props.actions.clearCreatePost();
+    this.clearUrl();
     this.stateFromReducer();
   }
 
