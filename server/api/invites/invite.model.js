@@ -74,7 +74,7 @@ InviteSchema.statics.processInvite = async function processInvite({ invitecode, 
   });
   if (invite) return referralRewards({ invite, user, Invite: this });
 
-  const publicInvite = await this.model('User').findOne({ _id: invitecode });
+  const publicInvite = await this.model('User').findOne({ handle: invitecode });
   if (publicInvite) return publicReward({ inviter: publicInvite, user, Invite: this });
   return null;
 };

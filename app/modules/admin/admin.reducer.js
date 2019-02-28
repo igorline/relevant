@@ -1,7 +1,7 @@
 import * as types from 'core/actionTypes';
 
 const initialState = {
-  inviteList: [],
+  inviteList: {},
   invites: {},
   waitList: [],
   wait: {},
@@ -57,12 +57,19 @@ export default function admin(state = initialState, action) {
     }
 
     case types.SET_INVITES: {
+      const { community, data, skip } = action.payload;
       return {
         ...state,
-        inviteList: [...state.inviteList, ...action.payload.result.invites],
+        inviteList: {
+          ...state.inviteList,
+          [community]: [
+            ...(state.inviteList[community] || []).slice(0, skip),
+            ...data.result.invites
+          ]
+        },
         invites: {
           ...state.invites,
-          ...action.payload.entities.invites
+          ...data.entities.invites
         }
       };
     }

@@ -20,16 +20,14 @@ function handleError(res, statusCode) {
 }
 
 exports.index = async (req, res, next) => {
+  const { community } = req.query;
   let invites;
 
   const limit = parseInt(req.query.limit, 0) || null;
   const skip = parseInt(req.query.skip, 0) || null;
 
   try {
-    let query;
-    if (req.user.role !== 'admin') {
-      query = { invitedBy: req.user._id };
-    }
+    const query = { invitedBy: req.user._id, community };
     invites = await Invite.find(query)
     .populate('registeredAs')
     .sort({ updatedAt: -1 })
@@ -59,7 +57,8 @@ exports.create = async (req, res, next) => {
   try {
     const { user, communityMember } = req;
     const { communityId, community } = communityMember;
-    const { email, name, type, invitee } = req.body;
+    const { email, name, invitee } = req.body;
+    const type = req.body.type || 'referral';
     let invite = {
       invitedBy: user._id,
       invitedByString: user.name,
@@ -99,7 +98,9 @@ exports.create = async (req, res, next) => {
     if (invite.type !== 'admin') communityMember.invites = unusedInvites - 1;
     await communityMember.save();
 
-    return res.status(200).json(invite);
+    return res
+    .status(200)
+    .json({ invite, count: { [community]: communityMember.invites } });
   } catch (err) {
     return next(err);
   }

@@ -100,7 +100,6 @@ InvestSchema.statics.createVote = async function createVote(props) {
 
   const leeway = TEST_ENV ? 1000 * 60 : 0;
 
-  console.log(post.data.payoutTime.getTime() + 1000 > now.getTime());
   if (
     !post.postParent &&
     user.lockedTokens + stakedTokens <= userBalance &&

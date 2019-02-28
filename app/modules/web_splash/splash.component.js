@@ -5,17 +5,22 @@ import styled from 'styled-components/primitives';
 import { colors, fonts, sizing } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import InviteCta from 'modules/web_splash/inviteCta.component';
+import { withRouter } from 'react-router-dom';
 
-const SignUpCta = () => (
+const SignUpCta = ({ location }) => (
   <View display="flex" fdirection="row">
-    <ULink to="/user/login">
+    <ULink to={`/user/login?redirect=${location.pathname}`}>
       <Button mr={4}>Login</Button>
     </ULink>
-    <ULink to="/user/signup">
+    <ULink to={`/user/signup?redirect=${location.pathname}`}>
       <Button>Sign Up</Button>
     </ULink>
   </View>
 );
+
+SignUpCta.propTypes = {
+  location: PropTypes.object
+};
 
 const CTA = {
   INVITE: InviteCta,
@@ -58,10 +63,11 @@ if (process.env.BROWSER === true) {
   require('modules/navigation/web/header.css');
 }
 
-export default class Splash extends Component {
+class Splash extends Component {
   static propTypes = {
     cta: PropTypes.oneOf(Object.keys(CTA)),
-    hideCloseButton: PropTypes.bool
+    hideCloseButton: PropTypes.bool,
+    location: PropTypes.object
   };
 
   constructor(props, context) {
@@ -113,7 +119,7 @@ export default class Splash extends Component {
     if (this.state.isDismissed) {
       return null;
     }
-    const { cta, hideCloseButton } = this.props;
+    const { cta, hideCloseButton, location } = this.props;
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
@@ -164,7 +170,7 @@ export default class Splash extends Component {
           </section>
           {CtaComponent ? (
             <View pb={8}>
-              <CtaComponent />
+              <CtaComponent location={location} />
             </View>
           ) : null}
         </View>
@@ -175,3 +181,5 @@ export default class Splash extends Component {
     );
   }
 }
+
+export default withRouter(Splash);

@@ -60,7 +60,7 @@ class TopNav extends Component {
   getNotificationCount = () => {
     const now = new Date();
     const { isAuthenticated } = this.props.auth;
-    if (now - this.state.timeSinceNotificationCount < 5000) return;
+    if (now - this.state.timeSinceNotificationCount < 30000) return;
     if (isAuthenticated) {
       this.props.actions.getNotificationCount();
       this.setState({ timeSinceNotificationCount: now });

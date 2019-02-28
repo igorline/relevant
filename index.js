@@ -4,8 +4,8 @@
 // require('@babel/polyfill');
 
 const { AppRegistry } = require('react-native');
-const App = require('./app/modules/_app/mobile/app.index');
-const Share = require('./app/modules/_app/mobile/share.index');
+const App = require('./app/modules/_app/mobile/app.index').default;
+const Share = require('./app/modules/_app/mobile/share.index').default;
 
 AppRegistry.registerComponent('relevantNative', () => App);
 AppRegistry.registerComponent('Relevant', () => Share);

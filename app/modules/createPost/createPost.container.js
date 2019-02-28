@@ -336,6 +336,9 @@ class CreatePostContainer extends Component {
         />
       );
     }
+    const submitDisabled =
+      !this.state.selectedTags.length || (!this.state.body.length && !this.state.postUrl);
+
     return (
       <View>
         <View display="flex" fdirection="row" align="center">
@@ -409,11 +412,8 @@ class CreatePostContainer extends Component {
           </Button>
 
           <Button
-            onClick={() => this.createPost()}
-            disabled={
-              !this.state.selectedTags.length ||
-              (!this.state.body.length && !this.state.postUrl)
-            }
+            onClick={() => !submitDisabled && this.createPost()}
+            disabled={submitDisabled}
             ml={2}
             bb={1}
           >

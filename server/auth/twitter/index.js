@@ -9,7 +9,9 @@ const router = express.Router();
 router.get('/', auth.currentUser(), (req, res, next) => {
   req.invitecode = req.query.invitecode;
   passport.authenticate('twitter', {
-    callbackURL: config.twitter.callbackURL + `?invitecode=${req.query.invitecode}`,
+    callbackURL: `${config.twitter.callbackURL}?invitecode=${
+      req.query.invitecode
+    }&redirect=${req.query.redirect}`,
     failureRedirect: '/user/login',
     session: false
   })(req, res, next);
