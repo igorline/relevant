@@ -8,22 +8,22 @@ import {
   Divider,
   BodyText,
   Header
-} from 'modules/styled/web';
+} from 'modules/styled/uni';
 import { colors, sizing } from 'app/styles';
-import styled from 'styled-components';
+import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import { REFERRAL_REWARD, PUBLIC_LINK_REWARD } from 'server/config/globalConstants';
 import { copyToClipBoard } from 'utils/text';
 
 const ModalDivider = styled(Divider)`
   position: relative;
-  margin: 0 ${sizing(-6)};
+  margin: 0 -${sizing(6)};
 `;
 
 const InviteLink = styled(LinkFont)`
-  cursor: pointer;
+  // cursor: pointer;
   ${p =>
-    p.new
+    p.new && !p.mobile
       ? `
     animation-duration: 5s;
     animation-name: slidein;
@@ -62,7 +62,7 @@ class InviteModal extends Component {
   };
 
   render() {
-    const { auth, community, count, inviteList, invites } = this.props;
+    const { auth, community, count, inviteList, invites, mobile, onShare } = this.props;
     const { user } = auth;
     const publicInviteUrl = `/${community.active}?invitecode=${auth.user.handle}`;
     const origin = window ? window.location.origin : 'https://relevant.community';
@@ -77,17 +77,30 @@ class InviteModal extends Component {
       const createdAt = Date.parse(invite.createdAt);
       const isNew = now - createdAt < 5000;
       return (
-        <View mt={2} fdirection="column" key={_id}>
+        <View mt={2} fdirection="column" key={_id} flex={1}>
           <View fdirection="row" justify="space-between">
-            <View>
+            <View fdirection="row" flex={1} mr={1}>
               <InviteLink
                 new={isNew}
                 onClick={() => copyToClipBoard(url)}
+                onPress={() =>
+                  onShare({
+                    title: 'Join Relevant',
+                    message: 'Join Relevant',
+                    url,
+                    subject: 'Join Relevant'
+                  })
+                }
                 c={invite.redeemed ? colors.grey : colors.blue}
+                mobile={mobile}
+                numberOfLines={1}
+                flex={1}
               >
                 {url}
               </InviteLink>
-              <LinkFont ml={0.5}>{invite.type === 'admin' ? '(admin)' : ''}</LinkFont>
+              <View ml={0.5} w={6}>
+                <LinkFont>{invite.type === 'admin' ? '(admin)' : null}</LinkFont>
+              </View>
             </View>
             <LinkFont c={invite.redeemed ? colors.SecondaryText : colors.blue}>
               {invite.redeemed ? 'Redeemed' : 'Available'}
@@ -114,11 +127,21 @@ class InviteModal extends Component {
             />
             per invite, perpetually.
           </BodyText>
-          <ULink to={'#'} mt={1}>
-            <LinkFont onClick={() => copyToClipBoard(publicLink)} c={colors.blue}>
-              {publicLink}
-            </LinkFont>
-          </ULink>
+          <LinkFont
+            mt={1}
+            onClick={() => copyToClipBoard(publicLink)}
+            c={colors.blue}
+            onPress={() =>
+              onShare({
+                title: 'Join Relevant',
+                message: 'Join Relevant',
+                publicLink,
+                subject: 'Join Relevant'
+              })
+            }
+          >
+            {publicLink}
+          </LinkFont>
         </View>
         <Divider pt={6} />
         <View display="flex" fdirection="column" mt={6}>
@@ -175,7 +198,7 @@ class InviteModal extends Component {
             />{' '}
             so far
           </BodyText>
-          <View mt={4} fdirection="column">
+          <View mt={4} fdirection="column" flex={1}>
             {invitesEl}
           </View>
         </View>
@@ -190,7 +213,9 @@ InviteModal.propTypes = {
   auth: PropTypes.object,
   community: PropTypes.object,
   actions: PropTypes.object,
-  count: PropTypes.object
+  count: PropTypes.object,
+  mobile: PropTypes.bool,
+  onShare: PropTypes.func
 };
 
 export default InviteModal;

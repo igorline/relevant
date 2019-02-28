@@ -144,9 +144,8 @@ export class NavProfile extends Component {
               ml={1}
               c={colors.blue}
               hu
-              onPress={e => {
-                e.preventDefault();
-                actions.showModal('invite');
+              onPress={() => {
+                actions.push('invites');
               }}
               onClick={e => {
                 e.preventDefault();
