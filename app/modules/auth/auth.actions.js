@@ -481,7 +481,10 @@ export function sendConfirmation() {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(responseJSON => {
-      Alert.alert('A confirmation email has been sent to ' + responseJSON.email);
+      Alert.alert(
+        'A confirmation email has been sent to ' + responseJSON.email,
+        'success'
+      );
       return true;
     })
     .catch(err => {

@@ -149,16 +149,18 @@ class InviteModal extends Component {
             Click here to generate a new private link
           </LinkFont>
         </ULink>
-        <ULink
-          to={'#'}
-          onPress={() => this.generateInvite('admin')}
-          onClick={() => this.generateInvite('admin')}
-          c={colors.blue}
-        >
-          <LinkFont mt={1} c={colors.blue}>
-            Click here to generate a new private admin link
-          </LinkFont>
-        </ULink>
+        {user.role === 'admin' ? (
+          <ULink
+            to={'#'}
+            onPress={() => this.generateInvite('admin')}
+            onClick={() => this.generateInvite('admin')}
+            c={colors.blue}
+          >
+            <LinkFont mt={1} c={colors.blue}>
+              Click here to generate a new private admin link
+            </LinkFont>
+          </ULink>
+        ) : null}
         <ModalDivider pt={6} />
         <View mt={6} fdirection={'column'}>
           <Header>Invitations</Header>
