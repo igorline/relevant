@@ -25,7 +25,6 @@ target 'relevantNative' do
   pod 'Firebase/Core'
   pod 'TwitterKit'
 
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+  # pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
 end
-
