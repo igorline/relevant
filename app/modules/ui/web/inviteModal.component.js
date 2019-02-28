@@ -64,7 +64,6 @@ class InviteModal extends Component {
   render() {
     const { auth, community, count, inviteList, invites } = this.props;
     const { user } = auth;
-    // const publicInviteUrl = `/${community.active}/invite/${auth.user.handle}`;
     const publicInviteUrl = `/${community.active}?invitecode=${auth.user.handle}`;
     const origin = window ? window.location.origin : 'https://relevant.community';
 

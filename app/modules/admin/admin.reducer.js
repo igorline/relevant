@@ -75,6 +75,7 @@ export default function admin(state = initialState, action) {
     }
 
     case types.UPDATE_INVITE: {
+      const { community, _id } = action.payload;
       if (action.payload === null) {
         return {
           ...state,
@@ -84,7 +85,10 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         currentInvite: action.payload,
-        inviteList: [...new Set([action.payload._id, ...state.inviteList])],
+        inviteList: {
+          ...state.inviteList,
+          [community]: [...new Set([_id, ...(state.inviteList[community] || [])])]
+        },
         invites: {
           ...state.invites,
           [action.payload._id]: {
