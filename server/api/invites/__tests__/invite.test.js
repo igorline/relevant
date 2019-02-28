@@ -61,7 +61,7 @@ describe('CreatePost', () => {
     test('create invite', async () => {
       await create(req, res, next);
       let apiRes = toObject(res.json.mock.calls[0][0]);
-      invite = apiRes[0];
+      invite = apiRes.invite[0];
       expect(invite.code).toBeDefined();
       apiRes = sanitize(apiRes, 'code');
       expect(apiRes).toMatchSnapshot();
@@ -71,7 +71,7 @@ describe('CreatePost', () => {
       req = { ...req, body: referralWithEmail };
       await create(req, res, next);
       const apiRes = toObject(res.json.mock.calls[0][0]);
-      inviteWithEmail = apiRes[0];
+      inviteWithEmail = apiRes.invite[0];
       expect(inviteWithEmail.code).toBeDefined();
     });
   });

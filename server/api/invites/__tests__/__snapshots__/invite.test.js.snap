@@ -66,22 +66,27 @@ Object {
 `;
 
 exports[`CreatePost api/invite/create create invite 1`] = `
-Array [
-  Object {
-    "__v": 0,
-    "_id": "[SANITIZED]",
-    "code": "[SANITIZED]",
-    "community": "relevant",
-    "communityId": "c00000000000000000000001",
-    "createdAt": "[SANITIZED]",
-    "email": null,
-    "invitedBy": "a00000000000000000000000",
-    "invitedByString": "Alice",
-    "name": "bob",
-    "number": 1,
-    "redeemed": false,
-    "type": "referral",
-    "updatedAt": "[SANITIZED]",
+Object {
+  "count": Object {
+    "relevant": 99,
   },
-]
+  "invite": Array [
+    Object {
+      "__v": 0,
+      "_id": "[SANITIZED]",
+      "code": "[SANITIZED]",
+      "community": "relevant",
+      "communityId": "c00000000000000000000001",
+      "createdAt": "[SANITIZED]",
+      "email": null,
+      "invitedBy": "a00000000000000000000000",
+      "invitedByString": "Alice",
+      "name": "bob",
+      "number": 1,
+      "redeemed": false,
+      "type": "referral",
+      "updatedAt": "[SANITIZED]",
+    },
+  ],
+}
 `;
