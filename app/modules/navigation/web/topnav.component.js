@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash.get';
 import { Button, StyledNavLink } from 'modules/styled/web';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -15,7 +16,7 @@ import Ulink from 'modules/navigation/ULink.component';
 
 const Nav = styled(View)`
   position: sticky;
-  background-image: linear-gradient(hsla(0, 0%, 100%, 1) 70%, hsla(0, 0%, 100%, 0) 100%);
+  background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
   z-index: 100;
   height: ${layout.headerHeight};
   padding: 0 ${sizing(4)};
@@ -41,7 +42,9 @@ class TopNav extends Component {
     history: PropTypes.object,
     className: PropTypes.string,
     actions: PropTypes.object,
-    notif: PropTypes.object
+    notif: PropTypes.object,
+    community: PropTypes.object,
+    view: PropTypes.object
   };
 
   componentDidMount() {
@@ -80,78 +83,99 @@ class TopNav extends Component {
   }
 
   render() {
-    const { location, auth, className, actions, notif } = this.props;
+    const { location, auth, className, actions, notif, community, view } = this.props;
     const { user } = auth;
     const temp = user && user.role === 'temp';
+    const activeCommunity = get(community, `communities.${view.discover.community}`);
     return (
-      <Nav
-        className={className}
-        justify="space-between"
-        display="flex"
-        fdirection="row"
-        align="center"
-      >
-        <DiscoverTabs />
-        <View
-          justify="space-between"
-          display="flex"
-          fdirection="row"
-          flex={1}
-          grow={1}
-          align="center"
-        >
-          {auth.isAuthenticated ? (
-            <StyledNavLink
-              to="/user/activity"
-              hc={colors.black}
-              c={colors.grey}
-              fdirection="row"
-              d="flex"
-            >
-              Activity
-              {notif.count ? (
-                <Badge bg={colors.red} ml={0.5}>
-                  <Text c={colors.white} fw="bold" fs={1.25}>
-                    {notif.count}
-                  </Text>
-                </Badge>
-              ) : null}
-            </StyledNavLink>
-          ) : (
-            <div />
-          )}
-
-          <View fdirection="row" d="flex" flex={1} align="center" justify="flex-end">
-            <Ulink
-              onClick={e => {
-                e.preventDefault();
-                actions.showModal('onboarding');
-              }}
-              align={'center'}
-              mr={2}
-              hu
-              color={colors.blue}
-              to="/home"
-            >
-              <LinkFont c={colors.blue}>Get Started</LinkFont>
-            </Ulink>
+      <Nav className={className} fdirection="column" justify="center">
+        <View justify="space-between" display="flex" fdirection="row" align="center">
+          <DiscoverTabs />
+          <View
+            justify="space-between"
+            display="flex"
+            fdirection="row"
+            flex={1}
+            grow={1}
+            align="center"
+          >
             {auth.isAuthenticated ? (
-              <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                <Button>New Post</Button>
-              </Link>
+              <StyledNavLink
+                to="/user/activity"
+                hc={colors.black}
+                c={colors.grey}
+                fdirection="row"
+                d="flex"
+              >
+                Activity
+                {notif.count ? (
+                  <Badge bg={colors.red} ml={0.5}>
+                    <Text c={colors.white} fw="bold" fs={1.25}>
+                      {notif.count}
+                    </Text>
+                  </Badge>
+                ) : null}
+              </StyledNavLink>
             ) : (
-              <Button onClick={this.toggleLogin} color={colors.blue}>
-                Login
-              </Button>
+              <div />
             )}
+
+            <View fdirection="row" d="flex" flex={1} align="center" justify="flex-end">
+              <Ulink
+                onClick={e => {
+                  e.preventDefault();
+                  actions.showModal('onboarding');
+                }}
+                align={'center'}
+                mr={2}
+                hu
+                color={colors.blue}
+                to="/home"
+              >
+                <LinkFont c={colors.blue}>Get Started</LinkFont>
+              </Ulink>
+              {auth.isAuthenticated ? (
+                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                  <Button>New Post</Button>
+                </Link>
+              ) : (
+                <Button onClick={this.toggleLogin} color={colors.blue}>
+                  Login
+                </Button>
+              )}
+            </View>
           </View>
+          <AuthContainer
+            toggleLogin={this.toggleLogin.bind(this)}
+            open={this.state.openLoginModal || temp}
+            modal
+            {...this.props}
+          />
         </View>
-        <AuthContainer
-          toggleLogin={this.toggleLogin.bind(this)}
-          open={this.state.openLoginModal || temp}
-          modal
-          {...this.props}
-        />
+        <View fdirection="row">
+          {activeCommunity ? (
+            <StyledNavLink
+              lh={1.5}
+              fs={1.5}
+              to={`/${view.discover.community}/${view.discover.sort}`}
+            >
+              {activeCommunity.name}{' '}
+            </StyledNavLink>
+          ) : null}
+          {view.discover && view.discover.tag ? (
+            <View fdirection="row">
+              <StyledNavLink
+                lh={1.5}
+                fs={1.5}
+                to={`/${view.discover.community}/${view.discover.sort}/${
+                  view.discover.tag
+                }`}
+              >
+                &nbsp;→ #{view.discover.tag}
+              </StyledNavLink>
+            </View>
+          ) : null}
+        </View>
       </Nav>
     );
   }
@@ -160,7 +184,9 @@ class TopNav extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    notif: state.notif
+    notif: state.notif,
+    community: state.community,
+    view: state.view
   };
 }
 

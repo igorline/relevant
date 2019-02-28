@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import get from 'lodash.get';
 import * as authActions from 'modules/auth/auth.actions';
 import * as postActions from 'modules/post/post.actions';
@@ -18,10 +18,6 @@ const Wrapper = styled.View`
   display: flex;
   flex-direction: column;
   padding: 0 0 ${sizing(4)} 0;
-`;
-
-const BreadCrumbs = styled.Text`
-  margin: ${sizing(-4)} ${sizing(4)} ${sizing(4)} ${sizing(4)};
 `;
 
 const POST_PAGE_SIZE = 15;
@@ -171,16 +167,9 @@ export class Discover extends Component {
 
   render() {
     if (!this.state.routes[this.state.tabIndex]) return null;
-    const { auth, match } = this.props;
-    const { tag } = match.params;
 
     return (
       <Wrapper>
-        {tag && (
-          <BreadCrumbs>
-            <Link to="/discover/new">{auth.community}</Link> - #{tag}
-          </BreadCrumbs>
-        )}
         <div>
           {/* <CreatePost {...this.props} /> */}
           {this.renderFeed()}

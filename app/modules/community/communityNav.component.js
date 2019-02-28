@@ -32,7 +32,8 @@ export class Community extends Component {
   static propTypes = {
     actions: PropTypes.object,
     community: PropTypes.object,
-    mobile: PropTypes.bool
+    mobile: PropTypes.bool,
+    view: PropTypes.object
   };
 
   componentDidMount() {
@@ -89,7 +90,7 @@ export class Community extends Component {
   }
 
   render() {
-    const { community, actions, mobile } = this.props;
+    const { community, actions, mobile, view } = this.props;
     const { communityMembers, members, communities } = community;
     const activeCommunity = communities[community.active];
     if (!activeCommunity) return null;
@@ -106,6 +107,7 @@ export class Community extends Component {
             mobile={mobile}
             actions={actions}
             getCommunityMembers={get(actions, 'getCommunityMembers', null)}
+            view={view}
           >
             {this.renderCommunityLink(activeCommunity)}
           </CommunityActive>
@@ -118,7 +120,8 @@ export class Community extends Component {
 
 const mapStateToProps = state => ({
   community: state.community,
-  auth: state.auth
+  auth: state.auth,
+  view: state.view
 });
 
 const mapDispatchToProps = dispatch => ({
