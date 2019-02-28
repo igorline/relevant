@@ -1,8 +1,8 @@
 import React from 'react';
 import OnboardingModal from 'modules/ui/web/onboardingModal';
 import SettingsModal from 'modules/ui/web/settingsModal.container';
-import InviteModal from 'modules/ui/web/inviteModal.container';
-import InviteModalTitle from 'modules/ui/web/inviteModalTitle.component';
+import InviteModal from 'modules/invites/web/inviteModal.container';
+import InviteModalTitle from 'modules/invites/inviteModalTitle.component';
 import GetTokensModal from 'modules/ui/web/getTokensModal.container';
 // import AuthContainer from 'modules/auth/web/auth.container';
 
