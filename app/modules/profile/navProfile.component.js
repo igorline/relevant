@@ -46,7 +46,7 @@ export class NavProfile extends Component {
     });
 
     const p = mobile ? 2 : 4;
-    const hideGetTokens = user.twitterId;
+    const hideGetTokens = user.twitterId && user.confirmed;
 
     return (
       <View bb flex={1}>
