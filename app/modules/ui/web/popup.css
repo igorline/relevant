@@ -10,6 +10,7 @@
   min-width: 140px;
   top: 25px;
   right: 5px;
+  cursor: pointer;
   @extend %popupMenu;
   a {
     display: block;

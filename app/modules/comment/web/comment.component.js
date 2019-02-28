@@ -164,7 +164,7 @@ class Comment extends Component {
 
     let body = (
       <CommentText
-        style={{ zIndex: 10 }}
+        style={{ zIndex: 0 }}
         m={bodyMargin}
         dangerouslySetInnerHTML={{ __html: html }}
       />

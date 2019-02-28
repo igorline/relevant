@@ -5,6 +5,7 @@ import FormField from 'modules/styled/form/field.component';
 import { browserAlerts } from 'app/utils/alert';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
+import queryString from 'query-string';
 
 const twitterIcon = '/img/icons/twitter_white.png';
 
@@ -44,9 +45,13 @@ class LoginForm extends Component {
   }
 
   render() {
+    const { location } = this.props;
     const { invitecode } = this.props.auth;
     const { username, password } = this.state;
     const local = username.length && password.length;
+    let { redirect } = queryString.parse(location.search);
+    if (!redirect) redirect = location.pathname;
+
     const FORM_FIELDS = [
       {
         placeholder: 'Username or email',
@@ -76,6 +81,7 @@ class LoginForm extends Component {
         }
       }
     ];
+
     return (
       <div>
         {FORM_FIELDS.map(field => (
@@ -98,9 +104,7 @@ class LoginForm extends Component {
           ) : null}
           {!local ? (
             <ULink
-              to={`/auth/twitter?
-                redirect=${this.props.location.pathname}
-                &invitecode=${invitecode}`}
+              to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
               external
               ml={2}
             >

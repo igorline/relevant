@@ -563,7 +563,7 @@ exports[`Snapshot SplashComponent 1`] = `
       >
         <a
           className="ulink-mock c1"
-          href="/user/login"
+          href="/user/login?redirect=/"
           hu={0}
           inline={0}
           onClick={[Function]}
@@ -625,7 +625,7 @@ exports[`Snapshot SplashComponent 1`] = `
         </a>
         <a
           className="ulink-mock c1"
-          href="/user/signup"
+          href="/user/signup?redirect=/"
           hu={0}
           inline={0}
           onClick={[Function]}

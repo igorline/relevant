@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as authActions from 'modules/auth/auth.actions';
-import * as queryString from 'query-string';
+import queryString from 'query-string';
 import Modal from 'modules/ui/web/modal';
 import LoginForm from './login';
 import SignupForm from './signup';

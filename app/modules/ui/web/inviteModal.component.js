@@ -42,9 +42,12 @@ const InviteLink = styled(LinkFont)`
 
 class InviteModal extends Component {
   componentDidMount() {
-    if (!this.props.inviteList.length) {
-      const skip = this.props.inviteList.length;
-      this.props.actions.getInvites(skip, 100);
+    const { auth, inviteList, actions } = this.props;
+    const communityInvites = inviteList[auth.community] || [];
+
+    if (!inviteList.length) {
+      const skip = communityInvites.length;
+      actions.getInvites(skip, 100, auth.community);
     }
   }
 
@@ -66,8 +69,9 @@ class InviteModal extends Component {
     const origin = window ? window.location.origin : 'https://relevant.community';
 
     const publicLink = `${origin}${publicInviteUrl}`;
+    const communityInvites = inviteList[auth.community] || [];
 
-    const invitesEl = inviteList.map(_id => {
+    const invitesEl = communityInvites.map(_id => {
       const invite = invites[_id];
       const url = `${origin}/${invite.community}?invitecode=${invite.code}`;
       const now = new Date().getTime();

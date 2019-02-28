@@ -156,7 +156,7 @@ export function fetchMeta(initialState) {
       url = `https://relevant.community/${community}/post/${postId}`;
     }
   }
-  title = title || 'Relevant: curated by communities, not clicks.';
+  title = title || 'Relevant: Curated by Communities, Not Clicks.';
   image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description =

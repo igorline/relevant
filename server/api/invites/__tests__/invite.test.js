@@ -161,7 +161,7 @@ describe('CreatePost', () => {
 
   describe('public link', () => {
     test('should be able to get reward for public link', async () => {
-      req = { body: { user: { ...user2, name: 'bobby' }, invitecode: alice._id } };
+      req = { body: { user: { ...user2, name: 'bobby' }, invitecode: alice.handle } };
       await createUser(req, res, next);
 
       const inviter = await User.findOne({ _id: alice._id });

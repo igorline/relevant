@@ -17,6 +17,7 @@ import ULink from 'modules/navigation/ULink.component';
 import ImageUpload from 'modules/ui/web/imageUpload.component';
 import RIcon from 'app/public/img/r.svg';
 import styled from 'styled-components';
+import queryString from 'query-string';
 
 const StyledRIcon = styled(RIcon)`
   * {
@@ -35,6 +36,7 @@ const twitterIcon = '/img/icons/twitter_white.png';
 
 class SignupForm extends Component {
   static propTypes = {
+    location: PropTypes.object,
     actions: PropTypes.object,
     parentFunction: PropTypes.func,
     user: PropTypes.object,
@@ -153,14 +155,22 @@ class SignupForm extends Component {
   }
 
   renderTwitter() {
+    const { location } = this.props;
+    let { redirect } = queryString.parse(location.search);
+    if (!redirect) redirect = location.pathname;
     const { invitecode } = this.props.auth;
+
     return (
       <View display="flex" fdirection="column" align-items="flex-start">
         <SecondaryText>
           Sign up to Relevant with your Twitter account or your Email.
         </SecondaryText>
         <View display="flex" fdirection="row" align="center" mt={7}>
-          <ULink to={`/auth/twitter?invitecode=${invitecode}`} external mr={4}>
+          <ULink
+            to={`/auth/twitter?invitecode=${invitecode}&redirect=${redirect}`}
+            external
+            mr={4}
+          >
             <Button bg={colors.twitterBlue}>
               <Image source={twitterIcon} w={2} h={2} mr={2} />
               Sign up with Twitter
@@ -187,6 +197,7 @@ class SignupForm extends Component {
 
   render() {
     const { errors, provider } = this.state;
+
     if (this.props.user && this.props.user.role === 'temp') {
       return (
         <SetHandle
