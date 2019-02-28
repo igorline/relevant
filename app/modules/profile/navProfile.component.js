@@ -126,9 +126,8 @@ export class NavProfile extends Component {
                 to="/user/wallet"
                 c={colors.blue}
                 hu
-                onPress={e => {
-                  e.preventDefault();
-                  actions.showModal('getTokens');
+                onPress={() => {
+                  actions.push('getTokens');
                 }}
                 onClick={e => {
                   e.preventDefault();
