@@ -54,6 +54,7 @@ export class Community extends Component {
         to={'/' + community.slug + '/new'}
         onPress={() => {
           actions.setCommunity(community.slug);
+          actions.goToTab('discover');
         }}
         onClick={() => {
           actions.setCommunity(community.slug);
@@ -94,7 +95,6 @@ export class Community extends Component {
     const { community, actions, mobile, view, auth } = this.props;
     const { communityMembers, members, communities } = community;
     const activeCommunity = communities[community.active];
-    if (!activeCommunity) return null;
     const activeMembers = get(communityMembers, community.active, []).map(
       id => members[id]
     );

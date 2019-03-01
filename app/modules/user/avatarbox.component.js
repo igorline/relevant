@@ -73,7 +73,7 @@ export default function UserName(props) {
       <View flex={1} fdirection={'row'}>
         <Avatar size={size} user={user} noLink />
         {repostIcon}
-        <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
+        <View ml={avatarText ? 1.5 : 1} justify={condensedView ? 'flex-start' : 'center'}>
           <Text fdirection={'row'} align={'baseline'}>
             <Name inline={1} c={colors.black}>
               {user.name}

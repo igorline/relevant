@@ -86,6 +86,9 @@ class Discover extends Component {
       this.needsReload = new Date().getTime();
     }
 
+    if (this.props.auth.community !== next.auth.community) {
+      this.needsReload = new Date().getTime();
+    }
     // if (this.props.community !== next.props.community) {
     //   this.needsReload = new Date()
     //   .getTime();

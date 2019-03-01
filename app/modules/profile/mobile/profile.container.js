@@ -67,7 +67,7 @@ class Profile extends Component {
     if (!user) return { handle };
     const isOwner = auth.user && user._id === auth.user._id;
     const loaded = true;
-    return { user, isOwner, handle, loaded };
+    return { user: isOwner ? auth.user : user, isOwner, handle, loaded };
   }
 
   componentDidMount() {
@@ -96,6 +96,7 @@ class Profile extends Component {
   }
 
   shouldComponentUpdate(next) {
+    if (next.auth.community !== this.props.auth.community) return true;
     return next.navigation.isFocused();
   }
 

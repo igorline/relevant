@@ -119,7 +119,8 @@ const UserSchema = new Schema(
     airdropTokens: { type: Number, default: 0 },
     referralTokens: { type: Number, default: 0 },
 
-    version: String
+    version: String,
+    community: String
   },
   {
     toJSON: { virtuals: true },

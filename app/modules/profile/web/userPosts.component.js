@@ -56,14 +56,12 @@ class UserPosts extends Component {
       return (
         <View shrink={1} key={id} fdirection="column">
           <PostComponent
-            // post={parentPost || post}
             post={post}
             preview
             link={{ ...parentPost, ...link }} // TODO - metapost is a pain
             repost={repost}
             postUser={postUser}
             {...this.props}
-            // comment={post}
             community={community._id}
             postUrl={postUrl}
           />

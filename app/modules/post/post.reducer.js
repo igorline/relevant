@@ -1,5 +1,6 @@
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
+import get from 'lodash/get';
 
 const repostSchema = new schema.Entity(
   'posts',
@@ -146,7 +147,7 @@ export default function post(state = initialState, action) {
         links: {
           ...state.links,
           ...action.payload.data.entities.links
-        },
+        }
       };
     }
 
@@ -190,7 +191,7 @@ export default function post(state = initialState, action) {
       // need to do this so reposted = null doesen't over-write existing value
       let { reposted } = action.payload;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
-      const postData = updatePost.data || state.posts[id].data;
+      const postData = updatePost.data || get(state.posts[id], 'data');
       let embeddedUser = state.posts[id] ? state.posts[id].embeddedUser : null;
       // TODO normalize this — should keep this in users store
       if (

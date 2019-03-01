@@ -32,7 +32,7 @@ class PostInfo extends Component {
     preview: PropTypes.bool,
     repost: PropTypes.bool,
     user: PropTypes.object,
-    avatarText: PropTypes.object
+    avatarText: PropTypes.func
   };
 
   constructor(props, context) {
@@ -172,7 +172,7 @@ class PostInfo extends Component {
     );
 
     let info = (
-      <View style={[styles.postHeader, preview ? { paddingTop: 10 } : null]}>
+      <View style={[styles.postHeader, preview ? { paddingTop: 0 } : null]}>
         <View style={styles.postInfo}>
           {userEl}
           <View style={[styles.infoRight]}>{repost ? null : postActions}</View>

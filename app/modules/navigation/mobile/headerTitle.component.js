@@ -6,7 +6,7 @@ import { smallScreen } from 'app/styles/global';
 import { Title, View } from 'modules/styled/uni';
 
 const HeaderTitle = props => {
-  const { navigation, auth, navigationOptions } = props;
+  const { navigation, auth, navigationOptions, community } = props;
   const { state } = navigation;
   const { params, routeName } = state;
 
@@ -15,13 +15,20 @@ const HeaderTitle = props => {
   if (state.routeName === 'myProfileView' && auth.user) {
     title = auth.user.name;
   }
+
+  let communityName;
+  if (auth.community) {
+    communityName =
+      community.communities[auth.community] && community.communities[auth.community].name;
+  }
+
   if (routeName === 'discoverView') {
-    title = auth.community.toUpperCase();
+    title = communityName;
   }
 
   let clipped = title || navigationOptions.title;
 
-  if (title && title.length > 20) {
+  if (title && title.length > 16) {
     clipped = title.substring(0, smallScreen ? 14 : 18);
     clipped += '...';
   }
@@ -64,9 +71,12 @@ const HeaderTitle = props => {
 };
 
 HeaderTitle.propTypes = {
+  community: PropTypes.object,
   auth: PropTypes.object,
   navigation: PropTypes.object,
   navigationOptions: PropTypes.object
 };
 
-export default connect(state => ({ auth: state.auth }))(HeaderTitle);
+export default connect(state => ({ auth: state.auth, community: state.community }))(
+  HeaderTitle
+);

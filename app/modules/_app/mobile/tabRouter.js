@@ -1,13 +1,11 @@
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
-import { transitionConfig } from 'app/utils/nav';
 import { darkGrey, fullWidth } from 'app/styles/global';
 import {
   createAppContainer,
   createBottomTabNavigator,
   createStackNavigator
 } from 'react-navigation';
-import { StackViewStyleInterpolator } from 'react-navigation-stack';
 
 import Discover from 'modules/discover/mobile/discoverTabs.component';
 import Stats from 'modules/stats/mobile/stats.container';
@@ -120,11 +118,6 @@ export const DefaultStack = {
 };
 
 const defaultStackSettings = {
-  transitionConfig: () => ({
-    transitionSpec: transitionConfig,
-    screenInterpolator: sceneProps => StackViewStyleInterpolator.forHorizontal(sceneProps)
-  }),
-  lazy: false,
   headerLayoutPreset: 'center',
   cardOverlayEnabled: true,
   cardShadowEnabled: true,

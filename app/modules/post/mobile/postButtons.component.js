@@ -31,8 +31,8 @@ let styles;
 // TODO refactor this
 class PostButtons extends Component {
   static propTypes = {
-    post: PropTypes.object,
-    parentPost: PropTypes.object,
+    post: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    parentPost: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     setupReply: PropTypes.func,
     tooltip: PropTypes.bool,
     actions: PropTypes.object,
@@ -40,7 +40,8 @@ class PostButtons extends Component {
     navigation: PropTypes.object,
     focusInput: PropTypes.func,
     myPostInv: PropTypes.object,
-    link: PropTypes.object
+    link: PropTypes.object,
+    comment: PropTypes.object
   };
 
   constructor(props, context) {
@@ -296,18 +297,18 @@ class PostButtons extends Component {
     });
   }
 
-  goToPost(comment) {
-    const { focusInput, navigation, actions, setupReply, post } = this.props;
+  goToPost(openComment) {
+    const { focusInput, navigation, actions, setupReply, post, comment } = this.props;
     const parentPost = this.props.parentPost || post;
+    const parentPostId = parentPost._id || parentPost;
 
-    if (get(navigation, 'state.params.id') === parentPost._id) {
+    if (get(navigation, 'state.params.id') === parentPostId) {
       setupReply(post);
       if (this.props.focusInput) focusInput();
       return;
     }
 
-    const openComment = comment || false;
-    actions.goToPost(parentPost, openComment);
+    actions.goToPost({ _id: parentPostId, comment }, openComment);
   }
 
   flag() {

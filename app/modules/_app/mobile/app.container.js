@@ -25,17 +25,10 @@ import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 
-// import {
-//   StackActions,
-//   NavigationActions,
-// } from 'react-navigation';
-
 // Setting default styles for all Text components.
 const customTextProps = {
   style: {
-    // fontSize: 14,
     fontFamily: 'HelveticaNeue'
-    // color: '#242425'
   }
 };
 setCustomText(customTextProps);
@@ -123,8 +116,14 @@ class Application extends Component {
 
   handleOpenURL = url => {
     const { actions, navigation, auth } = this.props;
-    const query = url.url.split('?')[1];
 
+    let newCommunity = url.url.split('/')[3];
+    newCommunity = newCommunity.replace(/user|admin|info/, '');
+    if (newCommunity && newCommunity !== '' && newCommunity !== auth.community) {
+      actions.setCommunity(newCommunity);
+    }
+
+    const query = url.url.split('?')[1];
     const parsed = queryString.parse(query);
 
     if (parsed.invitecode && !auth.isAuthenticated) {

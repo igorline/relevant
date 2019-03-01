@@ -19,7 +19,10 @@ class CommunityActive extends Component {
   };
 
   componentDidMount() {
-    this.props.getCommunityMembers({ slug: this.props.community.slug });
+    const { members, community, getCommunityMembers } = this.props;
+    if (!members.length) {
+      getCommunityMembers({ slug: community.slug });
+    }
   }
 
   componentDidUpdate(lastProps) {

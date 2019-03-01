@@ -13,7 +13,8 @@ class PostBody extends Component {
     short: PropTypes.bool,
     repost: PropTypes.bool,
     preview: PropTypes.bool,
-    comment: PropTypes.object
+    comment: PropTypes.object,
+    avatarText: PropTypes.func
   };
 
   constructor(props, context) {
@@ -41,7 +42,7 @@ class PostBody extends Component {
   }
 
   render() {
-    const { post, short, repost, preview, comment } = this.props;
+    const { post, short, repost, preview, comment, avatarText } = this.props;
     let body;
     if (post) {
       if (post.body) body = post.body.trim();
@@ -55,7 +56,7 @@ class PostBody extends Component {
 
     if (short) {
       maxTextLength = 60;
-      postStyle = styles.commentaryText;
+      postStyle = styles.bodyText;
     }
 
     if (repost) {
@@ -64,14 +65,14 @@ class PostBody extends Component {
       postStyle = styles.repostText;
     }
 
+    if (comment) {
+      postStyle = styles.bodyText;
+    }
+
     if (preview) {
       numberOfLines = 2;
       maxTextLength = 10;
       postStyle = styles.previewText;
-    }
-
-    if (comment) {
-      postStyle = styles.repostText;
     }
 
     const textBody = (
@@ -88,7 +89,13 @@ class PostBody extends Component {
           this.goToPost();
         }}
       >
-        <View style={[styles.postBody, this.props.preview ? { marginTop: 10 } : null]}>
+        <View
+          style={[
+            styles.postBody,
+            this.props.preview ? { marginTop: 10 } : null,
+            avatarText ? { marginLeft: 6 * 8 } : null
+          ]}
+        >
           <Text style={[styles.darkGrey, postStyle]}>
             <TextBody
               style={postStyle}
