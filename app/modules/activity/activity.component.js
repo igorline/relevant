@@ -106,13 +106,10 @@ export default class SingleActivity extends Component {
     // const parentPost = post.parentPost || post;
     // const postUrl = routing.getPostUrl(community, parentPost);
     // const renderComment = !noComments && comment;
+    const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
 
     return (
-      <ULink
-        onPress={() => actions.goToPost({ _id: parentId, community: newCommunity })}
-        to={linkToPost}
-        noLink={!mobile}
-      >
+      <ULink to={linkToPost} noLink={!mobile} onPress={onPress}>
         <View>
           <PostComponent
             post={post}

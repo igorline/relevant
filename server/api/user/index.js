@@ -31,6 +31,7 @@ router.put(
   controller.updateHandle,
   auth.setTokenCookieDesktop
 );
+router.put('/updateCommunity', auth.isAuthenticated(), controller.updateComunity);
 router.put('/ethAddress', auth.isAuthenticated(), controller.ethAddress);
 router.put('/confirm', controller.confirm);
 router.put('/forgot', controller.forgot);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, Easing, Image } from 'react-native';
+import { Animated, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { animatedElement } from 'app/styles/layout';
 
@@ -31,8 +31,8 @@ class Vote extends Component {
 
     this.x = this.state.position.interpolate({
       inputRange: [0, 0.5 * Math.random(), 1],
-      outputRange: [x, x + ENDX / 2, x + ENDX],
-      easing: Easing.out(Easing.ease)
+      outputRange: [x, x + ENDX / 2, x + ENDX]
+      // easing: Easing.out(Easing.ease)
     });
 
     this.opacity = this.state.position.interpolate({
@@ -61,7 +61,7 @@ class Vote extends Component {
       toValue: 1,
       delay: i * (75 + r * 50),
       duration: 1000,
-      native: true
+      useNativeDriver: true
     }).start(() => this.props.destroy(i));
   }
 

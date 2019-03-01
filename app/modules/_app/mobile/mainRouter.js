@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { transitionConfig } from 'app/utils/nav';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { StackViewStyleInterpolator } from 'react-navigation-stack';
 import { KeyboardAvoidingView, StatusBar, Platform } from 'react-native';
@@ -74,7 +73,6 @@ export const RootStack = createStackNavigator(
     cardShadowEnabled: true,
 
     transitionConfig: () => ({
-      transitionSpec: transitionConfig,
       screenInterpolator: props => {
         // Transitioning to search screen (navigate)
         if (props.scene.route.routeName === 'createPost') {
