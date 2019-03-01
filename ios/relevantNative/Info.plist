@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>Relevant</string>
+	<string>Relevant${BUNDLE_DISPLAY_NAME_SUFFIX}</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.70</string>
+	<string>1.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0.9.71</string>
+	<string>1</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -71,8 +71,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Add profile picture</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Contacts user to find and connect friends</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Share location with friends</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Upload photos for profile and posts</string>
 	<key>UIAppFonts</key>
