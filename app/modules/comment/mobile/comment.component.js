@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles, darkGrey } from 'app/styles/global';
+import { globalStyles } from 'app/styles/global';
 import TextEdit from 'modules/text/mobile/textEdit.component';
 import { text as textUtil } from 'app/utils';
 import TextBody from 'modules/text/mobile/textBody.component';
@@ -34,7 +34,8 @@ class Comment extends Component {
     singlePost: PropTypes.bool,
     user: PropTypes.object,
     nestingLevel: PropTypes.number,
-    renderButtons: PropTypes.func
+    renderButtons: PropTypes.func,
+    preview: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -157,12 +158,14 @@ class Comment extends Component {
     );
 
     const textBody = (
-      <TextBody
-        {...this.props}
-        style={styles.commentBodyText}
-        post={comment}
-        body={comment.body}
-      />
+      <View mt={2} mb={1} bc={'pink'}>
+        <TextBody
+          {...this.props}
+          style={styles.commentaryText}
+          post={comment}
+          body={comment.body}
+        />
+      </View>
     );
 
     return (
@@ -213,12 +216,10 @@ class Comment extends Component {
 export default Comment;
 
 const localStyles = StyleSheet.create({
-  commentBodyText: {
-    color: darkGrey,
+  commentaryText: {
     fontFamily: 'Georgia',
-    fontSize: 30 / 2,
-    lineHeight: 42 / 2,
-    paddingTop: 5
+    fontSize: 36 / 2,
+    lineHeight: 54 / 2
   }
 });
 

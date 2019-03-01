@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
+import { renderRoutes, matchRoutes } from 'react-router-config';
+import routes from 'modules/_app/web/routes';
+
 import Header from 'modules/navigation/web/header.component';
 import AuthContainer from 'modules/auth/web/auth.container';
 import * as navigationActions from 'modules/navigation/navigation.actions';
@@ -21,6 +23,7 @@ import * as modals from 'modules/ui/modals';
 import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import queryString from 'query-string';
+import get from 'lodash/get';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -74,20 +77,28 @@ class App extends Component {
       actions.setInviteCode(parsed.invitecode);
       this.toggleLogin('signup');
     }
+
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
     //   this.props.actions.refreshTab('discover');
     // });
+    //
   }
 
   componentDidUpdate(prevProps) {
-    const { actions, auth, location, match, activeCommunity } = this.props;
-    const { community } = match.params;
-    if (community && activeCommunity !== community) {
-      if (community === 'home') {
-        this.props.history.push(`/${activeCommunity}/new`);
-      } else actions.setCommunity(community);
+    const { actions, auth, location } = this.props;
+    // const { community } = match.params;
+    // if (community && activeCommunity !== community) {
+    //   if (community === 'home') {
+    //     this.props.history.push(`/${activeCommunity}/new`);
+    //   } else actions.setCommunity(community);
+    // }
+
+    const route = matchRoutes(routes, location.pathname);
+    const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
+    if (newCommunity && newCommunity !== auth.community) {
+      actions.setCommunity(newCommunity);
     }
 
     if (location.pathname !== prevProps.location.pathname) {
@@ -105,6 +116,10 @@ class App extends Component {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
     }
+    // const match = matchPath(history.location.pathname, {
+    //   // You can share this string as a constant if you want
+    //   path: "/articles/:id"
+    // });
   }
 
   toggleLogin(authType) {

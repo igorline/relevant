@@ -16,7 +16,7 @@ import CommentForm from 'modules/comment/web/commentForm.component';
 import { colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
-import { post as postUtils } from 'app/utils';
+import Linkify from 'linkifyjs/react';
 
 const PostButtonsContainer = styled.View`
   /* margin-right: ${sizing(4)}; */
@@ -42,9 +42,10 @@ class Comment extends Component {
     post: PropTypes.object,
     hideAvatar: PropTypes.bool,
     noLink: PropTypes.bool,
-    avatarText: PropTypes.bool,
+    avatarText: PropTypes.func,
     focusedComment: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    scrollTo: PropTypes.func
+    scrollTo: PropTypes.func,
+    preview: PropTypes.bool
   };
 
   state = {
@@ -131,7 +132,8 @@ class Comment extends Component {
       hideBorder,
       hideAvatar,
       noLink,
-      avatarText
+      avatarText,
+      preview
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -153,21 +155,16 @@ class Comment extends Component {
 
     const bodyMargin = condensedView ? '-0.5 0 2 5' : '3 0';
 
-    // TODO
-    const html = comment.body
-      ? comment.body.replace(
-        postUtils.URL_REGEX,
-        url =>
-          `<a href=${url} onClick="window.open('${url}')" target='_blank'>${url}</a>`
-      )
-      : '';
-
     let body = (
-      <CommentText
-        style={{ zIndex: 0 }}
-        m={bodyMargin}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
+        <Linkify
+          onClick={e => {
+            window.open(e.target.text);
+          }}
+        >
+          {comment.body}
+        </Linkify>
+      </CommentText>
     );
 
     if (postUrl) {
@@ -218,7 +215,7 @@ class Comment extends Component {
             ) : (
               body
             )}
-            {editing ? null : (
+            {editing || (hidePostButtons && preview) ? null : (
               <View
                 ml={condensedView ? 5 : 0}
                 fdirection="row"
