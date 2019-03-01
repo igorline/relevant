@@ -125,6 +125,7 @@ export const Button = styled(Text)`
     background: ${colors.grey};
     `
       : ''};
+  ${mixins.margin}
   ${mixins.background}
   ${mixins.padding}
   ${mixins.color}
