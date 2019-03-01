@@ -67,13 +67,13 @@ export default class UrlPreviewComponent extends Component {
   render() {
     const { noLink, urlPreview, image, domain, size, title } = this.props;
     const isSmall = size === 'small';
-    let preview = null;
     const height = isSmall ? 55 : 80;
     const imageFlex = isSmall ? 0.25 : 0.4;
     const fontSize = isSmall ? 13 : 15;
-    const img = image || urlPreview.image;
 
-    const body = urlPreview.title || title;
+    const img = image || (urlPreview && urlPreview.image);
+    const body = title || (urlPreview && urlPreview.title);
+    const domainUrl = domain || (urlPreview && urlPreview.domain);
 
     const imageEl = img && (
       <Image
@@ -83,50 +83,42 @@ export default class UrlPreviewComponent extends Component {
       />
     );
 
-    const domainEl =
-      domain ||
-      (urlPreview.domain && (
-        <Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
-          from: {domain || urlPreview.domain}
-        </Text>
-      ));
+    const domainEl = domainUrl && (
+      <Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
+        from: {domainUrl}
+      </Text>
+    );
 
     const maxLines = isSmall && domainEl ? 2 : 3;
 
-    if (urlPreview) {
-      preview = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.createPostInput, { height, marginTop: 0 }]}
-          onPress={this.props.onPress || this.previewMenu}
-          disabled={noLink}
-        >
-          <View style={[styles.innerPreview]}>
-            {imageEl || <View style={{ width: 5 }} />}
-            <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
-              <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
-                {body}
-              </Text>
-              {domainEl}
-            </View>
+    return urlPreview ? (
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={[styles.createPostInput, { height, marginTop: 0 }]}
+        onPress={this.props.onPress || this.previewMenu}
+        disabled={noLink}
+      >
+        <View style={[styles.innerPreview]}>
+          {imageEl || <View style={{ width: 5 }} />}
+          <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
+            <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
+              {body}
+            </Text>
+            {domainEl}
           </View>
-        </TouchableHighlight>
-      );
-    } else {
-      preview = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.createPostInput, styles.preview, { height }]}
-          onPress={this.previewMenu}
-        >
-          <View style={styles.innerPreview}>
-            <CustomSpinner size={'small'} visible />
-          </View>
-        </TouchableHighlight>
-      );
-    }
-
-    return preview;
+        </View>
+      </TouchableHighlight>
+    ) : (
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={[styles.createPostInput, styles.preview, { height }]}
+        onPress={this.previewMenu}
+      >
+        <View style={styles.innerPreview}>
+          <CustomSpinner size={'small'} visible />
+        </View>
+      </TouchableHighlight>
+    );
   }
 }
 
