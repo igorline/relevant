@@ -123,10 +123,6 @@ export function createInvite(invite) {
       });
       dispatch(updateInvite(res.invite[0]));
       dispatch(setInviteCount(res.count));
-      const alertText = invite.email
-        ? 'Invitation email has been sent'
-        : 'Generated new invite link';
-      Alert.alert(alertText, 'success');
       return res;
     } catch (error) {
       Alert.alert(error.message);
