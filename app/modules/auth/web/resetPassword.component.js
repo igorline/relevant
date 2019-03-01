@@ -1,110 +1,80 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import ShadowButton from 'modules/ui/web/ShadowButton';
-import { browserAlerts } from 'app/utils/alert';
+import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import { Field, reduxForm } from 'redux-form';
+import { Button, Form, View } from 'modules/styled/web';
+import { required } from 'modules/form/validators';
 
 class ResetPassword extends Component {
   static propTypes = {
     match: PropTypes.object,
     actions: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    handleSubmit: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      password: '',
-      cPassword: ''
-    };
     this.submit = this.submit.bind(this);
-    this.errors = {
-      cPassword: null,
-      password: null
-    };
   }
 
   componentWillMount() {
     this.token = this.props.match.params.token;
   }
 
-  validate(newState) {
-    if (newState.password && newState.cPassword) {
-      if (newState.password !== newState.cPassword) {
-        this.errors = { ...this.errors, cPassword: "Passwords don't match" };
-      } else {
-        this.errors = { ...this.errors, cPassword: false };
-      }
-    }
-  }
-
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  componentWillUpdate(newProps, newState) {
-    if (newState !== this.state) {
-      this.validate(newState);
-    }
-  }
-
-  submit() {
-    if (!this.state.password) {
-      browserAlerts.alert('password required');
-      return;
-    }
-    if (!this.state.cPassword) {
-      browserAlerts.alert('please confirm password');
-      return;
-    }
-    if (this.state.password !== this.state.cPassword) {
-      browserAlerts.alert("passwords don't match");
-      return;
-    }
-    this.props.actions.resetPassword(this.state.password, this.token).then(success => {
+  submit(vals) {
+    this.props.actions.resetPassword(vals.password, this.token).then(success => {
       if (success) this.props.history.push('/user/login');
     });
   }
 
   render() {
+    const { handleSubmit } = this.props;
+    const FORM_FIELDS = [
+      {
+        name: 'password',
+        component: ReduxFormField,
+        type: 'password',
+        label: 'Password',
+        validate: [required]
+      },
+      {
+        name: 'confirmPassword',
+        component: ReduxFormField,
+        type: 'password',
+        label: 'Confirm Password',
+        validate: [required]
+      }
+    ];
     return (
-      <div className="innerForm">
-        <div>
-          <input
-            className="blueInput special"
-            type="password"
-            placeholder="Password"
-            value={this.state.password}
-            onChange={password => {
-              this.handleChange('password', password.target.value);
-            }}
-          />
-          {this.errors.password ? <div>{this.errors.password}</div> : null}
-        </div>
-        <div>
-          <input
-            className="blueInput special"
-            type="password"
-            placeholder="Confirm Password"
-            value={this.state.cPassword}
-            onChange={cPassword => {
-              this.handleChange('cPassword', cPassword.target.value);
-            }}
-            onKeyDown={e => {
-              if (e.keyCode === 13) {
-                this.submit();
-              }
-            }}
-          />
-          {this.errors.cPassword ? <div>{this.errors.cPassword}</div> : null}
-        </div>
-        <br />
-        <ShadowButton onClick={() => this.submit()}>Update Password</ShadowButton>
-      </div>
+      <View display="flex" fdirection="column" m={4}>
+        <Form fdirection="column" onSubmit={handleSubmit(this.submit.bind(this))}>
+          {FORM_FIELDS.map((field, index) => (
+            <Field {...field} key={index} />
+          ))}
+          <View mt={4} ml={0} justify="flex-end">
+            <Button type="submit" p={0}>
+              Update Password
+            </Button>
+          </View>
+        </Form>
+      </View>
     );
   }
 }
 
-export default withRouter(ResetPassword);
+export default withRouter(
+  reduxForm({
+    form: 'settings',
+    validate: vals => {
+      const errors = {};
+      if (vals.password !== vals.confirmPassword) {
+        const message = 'Passwords must be identical';
+        errors.password = message;
+        errors.confirmPassword = message;
+      }
+      return errors;
+    }
+  })(ResetPassword)
+);

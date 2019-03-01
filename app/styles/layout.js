@@ -39,7 +39,8 @@ export const button = {
   minWidth: sizing(18),
   padding: `0 ${sizing(2)}`,
   fontSize: sizing(1.5),
-  fontFamily: 'HelveticaNeue-Medium'
+  fontFamily: 'HelveticaNeue-Medium',
+  margin: 0
 };
 
 export const tag = {
