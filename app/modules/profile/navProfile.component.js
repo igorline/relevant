@@ -8,6 +8,7 @@ import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
 import ULink from 'modules/navigation/ULink.component';
 import * as navigationActions from 'modules/navigation/navigation.actions';
+import { getUser } from 'modules/auth/auth.actions';
 import ReactTooltip from 'react-tooltip';
 
 import { sizing, colors } from 'app/styles';
@@ -27,11 +28,24 @@ export class NavProfile extends Component {
     user: PropTypes.object,
     earnings: PropTypes.object,
     mobile: PropTypes.bool,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    auth: PropTypes.object
   };
 
   componentDidMount() {
     if (ReactTooltip.rebuild) ReactTooltip.rebuild();
+  }
+
+  componentDidUpdate(lastProps) {
+    const { auth, actions, user } = this.props;
+    // refresh user relevance
+    if (
+      auth.community !== lastProps.auth.community &&
+      user &&
+      (!user.relevance || user.relevance.community !== auth.community)
+    ) {
+      actions.getUser();
+    }
   }
 
   render() {
@@ -163,6 +177,7 @@ export class NavProfile extends Component {
 }
 
 const mapStateToProps = state => ({
+  auth: state.auth,
   user: state.auth.user,
   earnings: state.earnings
 });
@@ -170,7 +185,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...navigationActions
+      ...navigationActions,
+      getUser
     },
     dispatch
   )

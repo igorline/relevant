@@ -14,6 +14,7 @@ import PostButtons from 'modules/post/postbuttons.component';
 import PostInfo from 'modules/post/postinfo.component';
 import { routing } from 'app/utils';
 import { View, Text, Divider } from 'modules/styled/uni';
+import get from 'lodash/get';
 
 const PostButtonContainer = styled.View`
   width: ${sizing(12)};
@@ -44,7 +45,7 @@ export class Post extends Component {
     hideAvatar: PropTypes.bool,
     noLink: PropTypes.bool,
     preview: PropTypes.bool,
-    avatarText: PropTypes.object,
+    avatarText: PropTypes.func,
     singlePost: PropTypes.bool
   };
 
@@ -98,7 +99,9 @@ export class Post extends Component {
       singlePost,
       actions = { actions }
     } = this.props;
-    const { community } = auth;
+    const { community: currentCommunity } = auth;
+    const { community: postCommunity } = post;
+    const community = postCommunity || currentCommunity;
 
     const isLink = post.type === 'link';
 
@@ -144,22 +147,29 @@ export class Post extends Component {
         comment={post}
         postUrl={postUrl}
         parentPost={post}
+        hidePostButtons={hidePostButtons}
+        nestingLevel={hidePostButtons ? 0.5 : 0}
         hideBorder
         noLink={noLink}
         avatarText={avatarText}
         actions={actions}
+        preview={preview}
       />
     );
+
+    const commentCommunity = get(comment, 'community') || community;
+    const commentUrl = routing.getPostUrl(commentCommunity, parentPost);
 
     const commentEl = renderComment ? (
       <SingleComment
         comment={comment}
-        postUrl={postUrl}
+        postUrl={commentUrl}
         parentPost={post}
         hidePostButtons
         hideBorder
         nestingLevel={hidePostButtons ? 0 : 1.5}
         actions={actions}
+        preview={preview}
       />
     ) : null;
 
@@ -181,7 +191,7 @@ export class Post extends Component {
     return (
       <View fdirection={'column'}>
         {previewEl}
-        {postEl}
+        {isLink && previewEl ? <View mt={4} /> : postEl}
         {commentEl}
         {hideDivider ? null : <Divider m={'0 4'} />}
       </View>

@@ -69,6 +69,9 @@ const initialState = {
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
     const { community } = state.auth; // eslint-disable-line
+
+    if (community === action.payload) return appReducer(state, action);
+
     const { posts, user, stats } = state; // eslint-disable-line
     if (community) {
       communityState = {
@@ -82,11 +85,18 @@ const rootReducer = (state, action) => {
     }
 
     const cachedCommunityState = communityState[action.payload] || initialState;
+    const authUser =
+      (state.auth.user &&
+        cachedCommunityState.user &&
+        cachedCommunityState.user.users[state.auth.user._id] &&
+        cachedCommunityState.user.users[state.auth.user._id]) ||
+      state.auth.user;
+    // console.log('hmmmm...', authUser.relevance.community);
 
     const newState = {
       ...state,
       ...cachedCommunityState,
-      auth: { ...state.auth, community: action.payload }
+      auth: { ...state.auth, community: action.payload, user: authUser }
     };
 
     return appReducer(newState, action);

@@ -34,7 +34,8 @@ class SinglePostComponent extends Component {
     comments: PropTypes.object,
     myPostInv: PropTypes.object,
     auth: PropTypes.object,
-    admin: PropTypes.object
+    admin: PropTypes.object,
+    comment: PropTypes.object
   };
 
   constructor(props) {
@@ -83,6 +84,9 @@ class SinglePostComponent extends Component {
           this.scrollToBottom(true);
         } else if (!params.commentCount) {
           this.input.textInput.focus();
+        }
+        if (params.comment) {
+          this.setState({ activeComment: params.comment });
         }
       }
       this.forceUpdate();
@@ -138,6 +142,7 @@ class SinglePostComponent extends Component {
     if (Platform.OS === 'android') {
       Keyboard.addListener('keyboardDidShow', scroll);
     }
+    this.setState({ activeComment: this.comments[index], activeIndex: index });
   }
 
   scrollToBottom() {
@@ -207,8 +212,8 @@ class SinglePostComponent extends Component {
 
     const { post, myPostInv, auth, actions, navigation, users } = this.props;
 
-    const setupReply = () =>
-      this.setState({ activeComment: comment, activeIndex: index });
+    const setupReply = _comment =>
+      this.setState({ activeComment: _comment, activeIndex: index });
     const focusInput = () => this.input.textInput.focus();
 
     const user = users.users[comment.user] || comment.embeddedUser;

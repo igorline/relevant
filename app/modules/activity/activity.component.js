@@ -10,7 +10,6 @@ import {
   View,
   SecondaryText,
   BodyText,
-  MobileDivider,
   Image,
   Divider,
   InlineText
@@ -97,15 +96,20 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, auth, mobile } = this.props;
+    const { PostComponent, actions, mobile, auth } = this.props;
     const { post } = activity;
 
     const parentId = post.parentPost || post._id;
-    const linkToPost = `/${auth.community}/post/${parentId}`;
+    const linkToPost = `/${post.community}/post/${parentId}`;
+
+    const newCommunity = post.community !== auth.community ? post.community : null;
+    // const parentPost = post.parentPost || post;
+    // const postUrl = routing.getPostUrl(community, parentPost);
+    // const renderComment = !noComments && comment;
 
     return (
       <ULink
-        onPress={() => actions.goToPost({ _id: parentId })}
+        onPress={() => actions.goToPost({ _id: parentId, community: newCommunity })}
         to={linkToPost}
         noLink={!mobile}
       >
@@ -113,9 +117,9 @@ export default class SingleActivity extends Component {
           <PostComponent
             post={post}
             // comment={post}
-            hidePostButtons
             link={post.metaPost}
             hideDivider
+            hidePostButtons
             preview
             noLink={mobile}
           />
@@ -130,7 +134,7 @@ export default class SingleActivity extends Component {
     const amount = numbers.abbreviateNumber(activity.amount);
     return (
       <View flex={1} fdirection="row" align="center">
-        <View alignself={'flex-start'} mr={1}>
+        <View alignself={'flex-start'} mr={1.5}>
           {this.renderIcon(image)}
           {emoji ? (
             <BodyText fs={4} lh={4.2} pt={1} align="baseline">
@@ -159,17 +163,23 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent } = this.props;
+    const { PostComponent, mobile } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
+    const p = mobile ? 2 : 4;
 
     return (
-      <PostComponent
-        post={post}
-        hidePostButtons
-        avatarText={() => <ActivityText activity={activity} amount={amount} />}
-      />
+      <View m={mobile ? '2 0 2 2' : 0}>
+        <PostComponent
+          post={post}
+          hidePostButtons
+          preview
+          hideDivider
+          avatarText={() => <ActivityText activity={activity} amount={amount} />}
+        />
+        {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}
+      </View>
     );
   }
 
@@ -199,13 +209,13 @@ export default class SingleActivity extends Component {
           {mobile ? null : this.renderDate(activity)}
         </View>
         {activity.post ? (
-          <View m={mobile ? '0 2 2 2' : 0} border={mobile}>
+          <View m={0} ml={mobile ? 8 : 6} pr={mobile ? 2 : 0}>
             {this.renderPostPreview(activity)}
           </View>
         ) : (
           <View mt={mobile ? 2 : 4} />
         )}
-        {mobile ? <MobileDivider mt={p} /> : <Divider m={'0 4'} />}
+        {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}
       </View>
     );
   }

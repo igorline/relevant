@@ -78,12 +78,17 @@ export default class UrlPreviewComponent extends Component {
     let body = this.props.post && this.props.post.body;
     body = this.props.urlPreview ? this.props.urlPreview.title || body : null;
 
-    if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
+    if (
+      this.props.urlPreview &&
+      (this.props.urlPreview.image || this.props.size !== 'small')
+    ) {
       const previewImage = this.props.urlPreview.image;
       image = (
         <Image
           resizeMode={'cover'}
-          source={previewImage ? { uri: previewImage } : require('app/public/img/missing.png')}
+          source={
+            previewImage ? { uri: previewImage } : require('app/public/img/missing.png')
+          }
           style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
         />
       );
@@ -107,7 +112,7 @@ export default class UrlPreviewComponent extends Component {
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
-          style={[styles.createPostInput, { height, marginTop: 5 }]}
+          style={[styles.createPostInput, { height, marginTop: 0 }]}
           onPress={this.props.onPress || this.previewMenu}
         >
           <View style={[styles.innerPreview]}>

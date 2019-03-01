@@ -419,7 +419,7 @@ exports.show = async function show(req, res, next) {
     user = await User.findOne({ handle }).populate({
       path: 'relevance',
       match: { community, global: true },
-      select: 'pagerank relevanceRecord'
+      select: 'pagerank relevanceRecord community'
     });
 
     if (!user) throw new Error('no such user ', handle);

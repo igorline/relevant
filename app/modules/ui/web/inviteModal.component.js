@@ -102,17 +102,10 @@ class InviteModal extends Component {
       <View display="flex" fdirection="column">
         <View mt={6} display="flex" fdirection="column">
           <SecondaryText>Public Invite Link</SecondaryText>
-          <BodyText fdirection="row" align="center" mt={1}>
-            Share this public invitation link to earn
-            <CoinStat
-              ml={0.25}
-              mr={0.5}
-              size={2}
-              spaceBetween={0.25}
-              amount={PUBLIC_LINK_REWARD}
-              inline={1}
-            />
-            per invite, perpetually.
+          <BodyText inline={1} mt={1}>
+            Share this public invitation link to earn{' '}
+            <CoinStat size={2} amount={PUBLIC_LINK_REWARD} inline={1} /> coin
+            {PUBLIC_LINK_REWARD === 1 ? '' : 's'} per invite, perpetually.
           </BodyText>
           <ULink to={'#'} mt={1}>
             <LinkFont onClick={() => copyToClipBoard(publicLink)} c={colors.blue}>
@@ -125,17 +118,11 @@ class InviteModal extends Component {
           <SecondaryText>
             Private Invite: {count[community.active]} remaining
           </SecondaryText>
-          <BodyText fdirection="row" align="center" mt={1}>
-            A private link will earn
-            <CoinStat
-              ml={0.25}
-              mr={0.5}
-              size={2}
-              spaceBetween={0.25}
-              amount={REFERRAL_REWARD}
-              inline={1}
-            />{' '}
-            per invite, and invitees will be given a Reputation boost.
+          <BodyText inline={1} mt={1}>
+            A private link will earn{' '}
+            <CoinStat size={2} amount={REFERRAL_REWARD} inline={1} /> coin
+            {REFERRAL_REWARD === 1 ? '' : 's'} per invite, and invitees will be given a
+            Reputation boost.
           </BodyText>
         </View>
         <ULink
@@ -163,17 +150,10 @@ class InviteModal extends Component {
         <ModalDivider pt={6} />
         <View mt={6} fdirection={'column'}>
           <Header>Invitations</Header>
-          <BodyText fdirection="row" align="center">
-            Your invites have earned
-            <CoinStat
-              ml={0.25}
-              size={2}
-              spaceBetween={0.25}
-              amount={user.referralTokens}
-              inline={1}
-              mr={0.5}
-            />{' '}
-            so far
+          <BodyText inline={1} fdirection="row">
+            Your invites have earned{' '}
+            <CoinStat size={2} amount={user.referralTokens} inline={1} /> coin
+            {user.referralTokens === 1 ? '' : 's'} so far
           </BodyText>
           <View mt={4} fdirection="column">
             {invitesEl}

@@ -11,6 +11,7 @@ import {
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction } from 'app/utils/nav';
+import { setCommunity } from 'modules/auth/auth.actions';
 
 let dismissKeyboard;
 let safariView;
@@ -58,8 +59,12 @@ export function closeDrawer() {
 }
 
 export function push(route) {
-  return () => {
+  return dispatch => {
     // check if we need this
+    // console.log('c', route.community, route.community !== 'undefined');
+    if (route.community && route.community !== '') {
+      dispatch(setCommunity(route.community));
+    }
     if (dismissKeyboard) dismissKeyboard();
     if (native) {
       dispatchNavigatorAction(DrawerActions.closeDrawer());
@@ -213,6 +218,7 @@ export function goToComments(post, key, animation) {
     {
       key: 'comment',
       title: 'Comments',
+      community: post.data ? post.data.community : post.community,
       back: true,
       id: post._id
     },
@@ -226,7 +232,9 @@ export function goToPost(post, openComment) {
     key: 'singlePost',
     title: post.title ? post.title : '',
     back: true,
+    community: post.data ? post.data.community : post.community,
     id: post._id,
+    comment: post.comment,
     commentCount: post.commentCount,
     openComment
   });

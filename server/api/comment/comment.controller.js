@@ -79,7 +79,7 @@ exports.create = async (req, res, next) => {
   } = req.body;
   let { parentPost } = req.body;
 
-  const type = !parentComment || parentComment ? 'post' : 'comment';
+  const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
 
   const commentObj = {
     body,

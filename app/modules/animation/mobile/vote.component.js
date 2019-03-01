@@ -60,7 +60,8 @@ class Vote extends Component {
     Animated.timing(this.state.position, {
       toValue: 1,
       delay: i * (75 + r * 50),
-      duration: 1000
+      duration: 1000,
+      native: true
     }).start(() => this.props.destroy(i));
   }
 

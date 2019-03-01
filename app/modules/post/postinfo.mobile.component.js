@@ -7,6 +7,7 @@ import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { getFavIcon, getTitle } from 'app/utils/post';
+import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import PostTitle from './postTitle.component';
 import PostButtons from './postbuttons.component';
 
@@ -72,6 +73,8 @@ export default function ImagePost(props) {
       </TitleContainer>
     </View>
   );
+
+  if (preview) return <UrlPreview size="small" urlPreview={link || post} />;
 
   if (post.url) return <View>{postContent}</View>;
   return postContent;
