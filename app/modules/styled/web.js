@@ -115,17 +115,18 @@ export const BodyText = styled(Text)`
 `;
 
 export const Button = styled.button`
-${layout.button}
-${p =>
+  ${layout.button}
+  ${p =>
     p.disabled
       ? `
     color: ${colors.white};
     background: ${colors.grey};
     `
       : ''};
-${mixins.background}
-${mixins.padding}
-${mixins.color}
+  ${mixins.background}
+  ${mixins.padding}
+  ${mixins.margin}
+  ${mixins.color}
 `;
 
 export const Input = styled.input`
