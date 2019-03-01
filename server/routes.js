@@ -1,3 +1,4 @@
+import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import handleRender from './render';
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
@@ -38,7 +39,7 @@ module.exports = app => {
   app.get('/confirm/:user/:code', userController.confirm);
 
   // TODO - check if community exists here and redirect if not
-  app.use('/home', (req, res) => res.redirect('/relevant/new'));
+  // app.use('/home', (req, res) => res.redirect('/relevant/new'));
 
   // Default response middleware
   app.use((req, res, next) => {
@@ -55,9 +56,13 @@ module.exports = app => {
     return res.status(500).json({ message: err.message });
   });
 
-  app.get('/info/*', currentUser(), handleRender);
-  app.get('/user/*', currentUser(), handleRender);
-  app.get('/admin/*', currentUser(), handleRender);
+  BANNED_COMMUNITY_SLUGS.forEach(c => {
+    app.get(`/${c}/*`, currentUser(), handleRender);
+  });
+  // app.get('/home/*', currentUser(), handleRender);
+  // app.get('/info/*', currentUser(), handleRender);
+  // app.get('/user/*', currentUser(), handleRender);
+  // app.get('/admin/*', currentUser(), handleRender);
   app.get('/:community/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
 };

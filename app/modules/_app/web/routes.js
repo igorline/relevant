@@ -28,7 +28,7 @@ const CommunityAdminList = loadable(() =>
 );
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
-const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
+// const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
 const WithSideNav = loadable(() =>
   import('modules/navigation/web/withSideNav.component')
 );
@@ -61,12 +61,11 @@ const routes = [
     path: '/',
     component: App,
     routes: [
-      {
-        path: '/',
-        component: SplashContainer,
-        exact: true
-      },
-
+      // {
+      //   path: '/',
+      //   component: SplashContainer,
+      //   exact: true
+      // },
       {
         path: '/',
         component: WithSideNav,

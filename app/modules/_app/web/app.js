@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import routes from 'modules/_app/web/routes';
 
-import Header from 'modules/navigation/web/header.component';
+// import Header from 'modules/navigation/web/header.component';
 import AuthContainer from 'modules/auth/web/auth.container';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
@@ -24,6 +24,7 @@ import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component'
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import queryString from 'query-string';
 import get from 'lodash/get';
+import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -52,15 +53,20 @@ class App extends Component {
   };
 
   componentWillMount() {
+    const { actions } = this.props;
     const { community } = this.props.auth;
     if (community && community !== 'home') {
-      this.props.actions.setCommunity(community);
+      actions.setCommunity(community);
     }
   }
 
   componentDidMount() {
-    const { actions, auth, location } = this.props;
+    const { actions, auth, location, history } = this.props;
     const { community } = auth;
+
+    if (community && location.pathname === '/') {
+      history.replace(`/${community}/new`);
+    }
 
     actions.setCommunity(community);
     actions.getCommunities();
@@ -97,7 +103,12 @@ class App extends Component {
 
     const route = matchRoutes(routes, location.pathname);
     const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
-    if (newCommunity && newCommunity !== auth.community) {
+
+    if (
+      newCommunity &&
+      newCommunity !== auth.community &&
+      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
+    ) {
       actions.setCommunity(newCommunity);
     }
 
@@ -143,12 +154,12 @@ class App extends Component {
   }
 
   render() {
-    const { location, user, match, children } = this.props;
+    const { location, user, children } = this.props;
     const temp = user && user.role === 'temp';
     const create = location.hash === '#newpost';
     const connectAccount = location.hash === '#connectAccount';
 
-    let mobileEl = (
+    const mobileEl = (
       <div className="mobileSplash">
         <h1>Relevant browser version doesn't currently support mobile devices</h1>
         <p>Please download a dedicated mobile app:</p>
@@ -174,10 +185,10 @@ class App extends Component {
     );
 
     let header;
-    if (location.pathname === '/') {
-      header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
-      mobileEl = null;
-    }
+    // if (location.pathname === '/') {
+    //   header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
+    //   mobileEl = null;
+    // }
 
     return (
       <div>

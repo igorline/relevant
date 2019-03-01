@@ -38,7 +38,6 @@ export class NavProfile extends Component {
 
   componentDidUpdate(lastProps) {
     const { auth, actions, user } = this.props;
-    // refresh user relevance
     if (
       auth.community !== lastProps.auth.community &&
       user &&

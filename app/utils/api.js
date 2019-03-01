@@ -122,6 +122,7 @@ export async function request(options) {
       };
       const next = () => null;
       const res = null;
+      if (!routes[options.endpoint]) return null;
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
       // in case we get a mongoose object back
       if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();

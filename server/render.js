@@ -28,11 +28,12 @@ let extractor =
     : null;
 
 export function createInitialState(req) {
+  const cachedCommunity = req.user ? req.user.community : null;
   return {
     auth: {
       confirmed: !req.unconfirmed,
       // TODO - get this from req.user
-      community: req.params.community || 'relevant'
+      community: req.params.community || cachedCommunity
     }
   };
 }
@@ -46,8 +47,8 @@ export default async function handleRender(req, res) {
   const store = initStore(req);
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
-  store.dispatch(setCommunity(store.getState().auth.community));
   if (req.user) store.dispatch(setUser(req.user));
+  store.dispatch(setCommunity(store.getState().auth.community));
 
   try {
     await handleRouteData({ req, store });

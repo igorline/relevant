@@ -38,14 +38,11 @@ const reqOptions = async () => {
 export function setCommunity(community) {
   return dispatch => {
     utils.api.setCommunity(community);
-
     dispatch(cacheCommunity(community));
-    // dispatch(getUser()); // TODO shouldn't do this every single time
     dispatch({
       type: types.SET_COMMUNITY,
       payload: community
     });
-    // dispatch(navigationActions.reloadTab('discover'));
   };
 }
 
