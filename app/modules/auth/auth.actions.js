@@ -651,6 +651,9 @@ export function twitterAuth(profile, invite) {
         path: 'twitter/login',
         body: JSON.stringify({ profile, invite })
       });
+      if (!result) {
+        throw new Error('Twitter Auth failed');
+      }
       dispatch(setLoading(false));
       if (result.user && result.user.role === 'temp') {
         await utils.token.set(result.token);
