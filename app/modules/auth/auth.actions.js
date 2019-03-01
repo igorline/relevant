@@ -38,14 +38,11 @@ const reqOptions = async () => {
 export function setCommunity(community) {
   return dispatch => {
     utils.api.setCommunity(community);
-
     dispatch(cacheCommunity(community));
-    // dispatch(getUser()); // TODO shouldn't do this every single time
     dispatch({
       type: types.SET_COMMUNITY,
       payload: community
     });
-    // dispatch(navigationActions.reloadTab('discover'));
   };
 }
 
@@ -651,6 +648,9 @@ export function twitterAuth(profile, invite) {
         path: 'twitter/login',
         body: JSON.stringify({ profile, invite })
       });
+      if (!result) {
+        throw new Error('Twitter Auth failed');
+      }
       dispatch(setLoading(false));
       if (result.user && result.user.role === 'temp') {
         await utils.token.set(result.token);

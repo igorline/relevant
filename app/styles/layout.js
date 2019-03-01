@@ -29,7 +29,6 @@ export const textRow = {
 };
 
 export const button = {
-  cursor: 'pointer',
   background: colors.blue,
   color: 'white',
   display: 'flex',

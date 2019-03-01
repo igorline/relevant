@@ -118,6 +118,7 @@ export const Touchable = styled.Touchable``;
 
 export const Button = styled(Text)`
   ${layout.button}
+  ${p => (!p.mobile ? 'cursor: pointer;' : '')}
   ${p =>
     p.disabled
       ? `
@@ -129,6 +130,19 @@ export const Button = styled(Text)`
   ${mixins.background}
   ${mixins.padding}
   ${mixins.color}
+`;
+
+export const ViewButton = styled(View)`
+  ${layout.button}
+  ${p => (!p.mobile ? 'cursor: pointer;' : '')}
+  ${p =>
+    p.disabled
+      ? `
+    background: ${colors.grey};
+    `
+      : ''};
+  ${mixins.background}
+  ${mixins.padding}
 `;
 
 export const Tag = styled(Text)`

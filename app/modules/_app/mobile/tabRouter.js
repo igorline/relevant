@@ -17,6 +17,7 @@ import DiscoverComponent from 'modules/discover/mobile/discover.container';
 import SinglePost from 'modules/post/mobile/singlePost.container';
 import Blocked from 'modules/profile/mobile/blocked.container';
 import Invites from 'modules/invites/mobile/invites.container';
+import GetTokens from 'modules/getTokens/mobile/getTokens.container';
 import VoterList from 'modules/post/mobile/voterList.container';
 import Wallet from 'modules/wallet/mobile/wallet.container';
 
@@ -81,20 +82,26 @@ export const DefaultStack = {
   },
   blocked: {
     screen: Blocked,
-    navigationOptions: {
-      title: 'Read'
+    params: {
+      title: 'Blocked'
     }
   },
   invites: {
     screen: Invites,
-    navigationOptions: {
-      title: 'Read'
+    params: {
+      title: 'Invites'
+    }
+  },
+  getTokens: {
+    screen: GetTokens,
+    params: {
+      title: 'Get Tokens'
     }
   },
   people: {
     screen: VoterList,
-    navigationOptions: {
-      title: 'Read'
+    params: {
+      title: 'Votes'
     }
   },
   peopleView: {
@@ -104,7 +111,7 @@ export const DefaultStack = {
   },
   inviteList: {
     screen: props => <inviteListView {...props} />,
-    navigationOptions: {
+    params: {
       title: 'Invite List'
     }
   }

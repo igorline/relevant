@@ -24,6 +24,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
+import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -59,12 +60,12 @@ class Application extends Component {
 
   componentWillMount() {
     // hard-code community for now
-    const community = 'relevant';
-    this.props.actions.setCommunity(community);
+    // const community = 'relevant';
+    // this.props.actions.setCommunity(community);
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
+    const { navigation, actions } = this.props;
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
 
     // TODO - error state & loading state
@@ -75,10 +76,10 @@ class Application extends Component {
     //       reloadFunction={this.props.actions.getUser}
     //     />;
     //   }
-    this.props.actions.getUser().then(async user => {
+    actions.getUser().then(async user => {
       if (!user) {
         // TODO - should reset data if logged out
-        navigation.navigate('auth');
+        return navigation.navigate('auth');
         // navigation.replace('auth');
 
         // const resetAction = StackActions.reset({
@@ -93,6 +94,9 @@ class Application extends Component {
         // });
         // return this.props.navigation.dispatch(resetAction);
       }
+      const { community } = user;
+      if (community) actions.setCommunity(community);
+      return null;
     });
 
     PushNotification.setApplicationIconBadgeNumber(0);
@@ -111,6 +115,9 @@ class Application extends Component {
     if (!this.props.auth.user && next.auth.user) {
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
+
+      const { community } = next.auth.user;
+      if (community) next.actions.setCommunity(community);
     }
   }
 
@@ -119,7 +126,12 @@ class Application extends Component {
 
     let newCommunity = url.url.split('/')[3];
     newCommunity = newCommunity.replace(/user|admin|info/, '');
-    if (newCommunity && newCommunity !== '' && newCommunity !== auth.community) {
+    if (
+      newCommunity &&
+      newCommunity !== '' &&
+      newCommunity !== auth.community &&
+      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
+    ) {
       actions.setCommunity(newCommunity);
     }
 

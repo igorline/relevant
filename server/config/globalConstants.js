@@ -69,6 +69,16 @@ export const newUserCoins = user => {
   return reward;
 };
 
+export const BANNED_COMMUNITY_SLUGS = [
+  'admin',
+  'user',
+  'channel',
+  'home',
+  'admin',
+  'auth',
+  'profile'
+];
+
 export const BANNED_USER_HANDLES = [
   'admin',
   'everyone',
