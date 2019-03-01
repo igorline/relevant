@@ -8,14 +8,13 @@ import * as postActions from 'modules/post/post.actions';
 import Share from 'react-native-share';
 import InviteComponent from 'modules/invites/inviteModal.component';
 import { View } from 'modules/styled/uni';
+import InviteModalTitle from 'modules/invites/inviteModalTitle.component';
 
 import { ScrollView } from 'react-native';
 
 class Invites extends Component {
   static propTypes = {
-    // inviteList: PropTypes.array,
     actions: PropTypes.object
-    // inviteListView: PropTypes.object,
   };
 
   componentWillMount() {
@@ -38,6 +37,7 @@ class Invites extends Component {
     return (
       <ScrollView>
         <View m={2}>
+          <InviteModalTitle />
           <InviteComponent mobile {...this.props} onShare={this.handleShare} />
         </View>
       </ScrollView>

@@ -49,8 +49,7 @@ class InviteModal extends Component {
     this.animation = Animated.timing(this.position, {
       toValue: 1,
       duration: 8000
-    })
-    .start();
+    }).start();
   };
 
   generateInvite = async type => {
@@ -60,11 +59,15 @@ class InviteModal extends Component {
     if (type) {
       invite.type = type;
     }
-    return this.props.actions.createInvite(invite);
+    const { postInviteGeneration } = this.props;
+    const newInvite = await this.props.actions.createInvite(invite);
+    if (postInviteGeneration) {
+      postInviteGeneration(newInvite);
+    }
   };
 
   render() {
-    const { auth, community, count, inviteList, invites, mobile, onShare } = this.props;
+    const { auth, community, count, inviteList, invites, onShare } = this.props;
     const { user } = auth;
     const publicInviteUrl = `/${community.active}?invitecode=${auth.user.handle}`;
     const origin = window ? window.location.origin : 'https://relevant.community';
@@ -89,7 +92,6 @@ class InviteModal extends Component {
             <View fdirection="row" flex={1} mr={1}>
               <CTALink numberOfLines={1} flex={1}>
                 <Animated.Text
-                  new={isNew}
                   onClick={() => copyToClipBoard(url)}
                   onPress={() =>
                     onShare({
@@ -102,9 +104,6 @@ class InviteModal extends Component {
                   style={{
                     color
                   }}
-                  mobile={mobile}
-                  numberOfLines={1}
-                  flex={1}
                 >
                   {url}
                 </Animated.Text>
@@ -225,8 +224,8 @@ InviteModal.propTypes = {
   community: PropTypes.object,
   actions: PropTypes.object,
   count: PropTypes.object,
-  mobile: PropTypes.bool,
-  onShare: PropTypes.func
+  onShare: PropTypes.func,
+  postInviteGeneration: PropTypes.func
 };
 
 export default InviteModal;
