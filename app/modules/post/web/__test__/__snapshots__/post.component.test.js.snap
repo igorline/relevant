@@ -96,6 +96,7 @@ exports[`Snapshot Post Web 1`] = `
       }
     }
     hideBorder={true}
+    nestingLevel={0}
     parentPost={
       Object {
         "_id": "000000000000000000000001",
@@ -145,7 +146,7 @@ exports[`Snapshot Post Web 1`] = `
         "user": "b00000000000000000000000",
       }
     }
-    postUrl="/testCommunity/post/000000000000000000000003"
+    postUrl="/relevant/post/000000000000000000000003"
   />
   <div
     style={
