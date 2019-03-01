@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
 import { Button, StyledNavLink } from 'modules/styled/web';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import AuthContainer from 'modules/auth/web/auth.container';
+import Breadcrumbs from 'modules/navigation/web/breadcrumbs.component';
 import { View, Text, LinkFont } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { colors, layout, sizing } from 'app/styles';
@@ -83,10 +83,9 @@ class TopNav extends Component {
   }
 
   render() {
-    const { location, auth, className, actions, notif, community, view } = this.props;
+    const { location, auth, className, actions, notif } = this.props;
     const { user } = auth;
     const temp = user && user.role === 'temp';
-    const activeCommunity = get(community, `communities.${view.discover.community}`);
     return (
       <Nav className={className} fdirection="column" justify="center">
         <View
@@ -161,28 +160,7 @@ class TopNav extends Component {
           </View>
         </View>
         <View fdirection="row">
-          {activeCommunity ? (
-            <StyledNavLink
-              lh={1.5}
-              fs={1.5}
-              to={`/${view.discover.community}/${view.discover.sort}`}
-            >
-              {activeCommunity.name}{' '}
-            </StyledNavLink>
-          ) : null}
-          {view.discover && view.discover.tag ? (
-            <View fdirection="row">
-              <StyledNavLink
-                lh={1.5}
-                fs={1.5}
-                to={`/${view.discover.community}/${view.discover.sort}/${
-                  view.discover.tag
-                }`}
-              >
-                &nbsp;→ #{view.discover.tag}
-              </StyledNavLink>
-            </View>
-          ) : null}
+          <Breadcrumbs />
         </View>
       </Nav>
     );
@@ -192,9 +170,7 @@ class TopNav extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    notif: state.notif,
-    community: state.community,
-    view: state.view
+    notif: state.notif
   };
 }
 

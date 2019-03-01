@@ -4,15 +4,27 @@ import get from 'lodash.get';
 import { createInvite, getInviteCount, getInvites } from 'modules/admin/admin.actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import InviteModalComponent from 'modules/ui/web/inviteModal.component';
+import InviteModalComponent from 'modules/invites/inviteModal.component';
+import { Alert } from 'app/utils/alert';
 
 class InviteModalContainer extends Component {
   componentDidMount() {
     this.props.actions.getInviteCount();
   }
 
+  postInviteGeneration(invite) {
+    if (invite) {
+      Alert().alert('Generated new invite link', 'success');
+    }
+  }
+
   render() {
-    return <InviteModalComponent {...this.props} />;
+    return (
+      <InviteModalComponent
+        {...this.props}
+        postInviteGeneration={this.postInviteGeneration}
+      />
+    );
   }
 }
 
