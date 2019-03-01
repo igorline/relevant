@@ -32,7 +32,7 @@ class PostInfo extends Component {
     preview: PropTypes.bool,
     repost: PropTypes.bool,
     user: PropTypes.object,
-    avatarText: PropTypes.object
+    avatarText: PropTypes.func
   };
 
   constructor(props, context) {

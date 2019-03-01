@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, Easing } from 'react-native';
+import { Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { animatedElement } from 'app/styles/layout';
 import { colors } from 'app/styles';
@@ -28,14 +28,12 @@ class VoteNumber extends Component {
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
-      outputRange: [y + 10, y - ENDY],
-      easing: Easing.in(Easing.ease)
+      outputRange: [y + 10, y - ENDY]
     });
 
     this.x = this.state.position.interpolate({
       inputRange: [0, 0.05, 0.5, 1],
-      outputRange: [x - 15, x, x + ENDX / 2, x + ENDX],
-      easing: Easing.out(Easing.ease)
+      outputRange: [x - 15, x, x + ENDX / 2, x + ENDX]
     });
 
     this.opacity = this.state.position.interpolate({
@@ -52,7 +50,6 @@ class VoteNumber extends Component {
     this.scale = this.state.position.interpolate({
       inputRange: [0, 0.05, 0.1, 0.9, 0.95, 1],
       outputRange: [0, 1.4, 1, 1, 1.2, 0]
-      // extrapolate: 'clamp'
     });
   }
 
@@ -64,7 +61,8 @@ class VoteNumber extends Component {
     Animated.timing(this.state.position, {
       toValue: 1,
       delay: r * 30 + (i * 100 * 10) / amount,
-      duration: 2000
+      duration: 2000,
+      useNativeDriver: true
     }).start(() => this.props.destroy(null, i));
   }
 

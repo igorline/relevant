@@ -469,6 +469,18 @@ exports.destroy = async (req, res, next) => {
   }
 };
 
+exports.updateComunity = async (req, res, next) => {
+  try {
+    const { user } = req;
+    if (!user) throw new Error('missing user');
+    const { community } = req.body;
+    user.community = community;
+    await user.save();
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.updateHandle = async (req, res, next) => {
   try {
     let { user } = req;

@@ -181,7 +181,8 @@ export default class Commentary extends Component {
             />
             {!hideButtons && (
               <PostButtons
-                post={post.parentPost ? post.parentPost : post}
+                post={post}
+                parentPost={post.parentPost ? post.parentPost : post}
                 comment={post}
                 link={link}
                 tooltip={index === 0 ? tooltip : null}
@@ -219,6 +220,8 @@ export default class Commentary extends Component {
           keyExtractor={(item, index) => index.toString()}
           horizontal={!preview}
           data={commentary}
+          // nestedScrollEnabled
+          // bounces={false}
           renderItem={this.renderItem}
           pagingEnabled
           contentContainerStyle={[!preview ? styles.postScroll : null]}

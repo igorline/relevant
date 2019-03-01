@@ -159,7 +159,13 @@ class Comment extends Component {
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
           onClick={e => {
-            window.open(e.target.text);
+            let link;
+            try {
+              link = e.target.getAttribute('href');
+            } catch (err) {
+              //
+            }
+            return link ? window.open(e.target.href) : true;
           }}
         >
           {comment.body}

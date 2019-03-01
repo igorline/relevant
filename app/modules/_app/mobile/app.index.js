@@ -40,6 +40,8 @@ export const MainStack = createDrawerNavigator(
   },
   {
     drawerType: 'slide',
+    edgeWidth: 100,
+    // minSwipeDistance: 1,
     contentComponent: SideNav,
     drawerWidth: () => Math.min(320, fullWidth * 0.9),
     defaultNavigationOptions: () => ({

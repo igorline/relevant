@@ -36,10 +36,11 @@ export default function ImagePost(props) {
   const imageUrl = get(link, 'image');
   const favIcon = get(link, 'domain', null) && getFavIcon(link.domain);
   const title = getTitle({ post, link });
+  const image = imageUrl || favIcon;
 
-  const imgBg = (imageUrl || favIcon) && (
+  const imgBg = image && (
     <View flex={1}>
-      <Image resizeMode="cover" flex={1} source={{ uri: imageUrl || favIcon }} />
+      <Image resizeMode="cover" flex={1} source={{ uri: image }} />
       <GradientContainer>
         <Gradient flex={1} title={title} image={true} preview={preview} />
       </GradientContainer>
@@ -74,7 +75,17 @@ export default function ImagePost(props) {
     </View>
   );
 
-  if (preview) return <UrlPreview size="small" urlPreview={link || post} />;
+  if (preview) {
+    return (
+      <UrlPreview
+        size="small"
+        urlPreview={link || post}
+        title={title}
+        image={image}
+        noLink={noLink}
+      />
+    );
+  }
 
   if (post.url) return <View>{postContent}</View>;
   return postContent;

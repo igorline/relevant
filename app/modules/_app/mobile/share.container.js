@@ -5,7 +5,6 @@ import Modal from 'react-native-modalbox';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShareExtension from 'react-native-share-extension';
-import { StackViewStyleInterpolator } from 'react-navigation-stack';
 
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
@@ -20,7 +19,7 @@ import Categories from 'modules/createPost/mobile/categories.component';
 import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
 import CreatePostHeaderRight from 'modules/createPost/mobile/createPostHeaderRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
-import { transitionConfig, setTopLevelNavigator, withProps } from 'app/utils/nav';
+import { setTopLevelNavigator, withProps } from 'app/utils/nav';
 
 import { text, token, post } from 'app/utils';
 import { fullWidth, fullHeight, darkGrey, IphoneX } from 'app/styles/global';
@@ -59,12 +58,6 @@ export const ShareStack = createStackNavigator(
     headerLayoutPreset: 'center',
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
-
-    transitionConfig: () => ({
-      transitionSpec: transitionConfig,
-      screenInterpolator: sceneProps =>
-        StackViewStyleInterpolator.forHorizontal(sceneProps)
-    }),
 
     defaultNavigationOptions: props => ({
       gesturesEnabled: true,

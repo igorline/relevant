@@ -1,11 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { transitionConfig, withProps } from 'app/utils/nav';
-import {
-  createStackNavigator,
-  createAppContainer,
-} from 'react-navigation';
-import { StackViewStyleInterpolator } from 'react-navigation-stack';
+import { withProps } from 'app/utils/nav';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import TwitterSignup from 'modules/auth/mobile/twitterSignup.component';
 import ImageUpload from 'modules/auth/mobile/imageUpload.component';
@@ -31,7 +27,7 @@ export const AuthStack = createStackNavigator(
       screen: withProps(Login),
       path: 'login',
       params: {
-        title: 'Sign In',
+        title: 'Sign In'
       }
     },
     signup: {
@@ -69,25 +65,21 @@ export const AuthStack = createStackNavigator(
   },
   {
     initialRouteName: 'mainAuth',
-    transitionConfig: () => ({
-      ...transitionConfig,
-      screenInterpolator: sceneProps => StackViewStyleInterpolator.forHorizontal(sceneProps)
-    }),
     headerLayoutPreset: 'center',
-    defaultNavigationOptions: (props) => ({
+    defaultNavigationOptions: props => ({
       gesturesEnabled: true,
       gestureResponseDistance: {
-        horizontal: fullWidth,
+        horizontal: fullWidth
       },
       headerStyle: {
         elevation: 0,
         shadowOpacity: 0,
         borderBottomColor: darkGrey,
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomWidth: StyleSheet.hairlineWidth
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <HeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />,
+      headerLeft: <HeaderLeft {...props} />
     })
   }
 );
