@@ -10,7 +10,7 @@ class TagSelection extends Component {
   static propTypes = {
     createPost: PropTypes.object,
     actions: PropTypes.object,
-    scrollToElement: PropTypes.func
+    communityTags: PropTypes.object
   };
 
   constructor(props, context) {
@@ -33,6 +33,7 @@ class TagSelection extends Component {
     if (props) {
       this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
       this.tags = props.keywords.map(tag => ({ _id: tag }));
+      this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
       if (props.postCategory) this.setTopicTags(props.postCategory, true);
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
@@ -117,7 +118,7 @@ class TagSelection extends Component {
   render() {
     const { selectedTopic } = this;
     const selectedTags = [...this.selectedTags, ...this.inputTags];
-    let tags = [...this.inputTags, ...this.topicTags, ...this.tags];
+    let tags = [...this.inputTags, ...this.communityTags, ...this.tags];
 
     tags = [...new Set(tags.map(t => t._id))];
     // hide current category
@@ -131,7 +132,6 @@ class TagSelection extends Component {
           autoCapitalize={'none'}
           autoCorrect={false}
           underlineColorAndroid={'transparent'}
-          onFocus={() => this.props.scrollToElement()}
           onChangeText={input => this.processInput(input)}
           ref={c => {
             this.input = c;
@@ -142,11 +142,7 @@ class TagSelection extends Component {
           placeholder={'Select additional topics or create your own'}
         />
         <View style={styles.break} />
-        <Tags
-          noScroll
-          toggleTag={this.toggleTag}
-          tags={{ tags, selectedTags }}
-        />
+        <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
         <View style={styles.break} />
       </View>
     );
