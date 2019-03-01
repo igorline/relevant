@@ -7,6 +7,7 @@ import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { getFavIcon, getTitle } from 'app/utils/post';
+import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import PostTitle from './postTitle.component';
 import PostButtons from './postbuttons.component';
 
@@ -35,10 +36,11 @@ export default function ImagePost(props) {
   const imageUrl = get(link, 'image');
   const favIcon = get(link, 'domain', null) && getFavIcon(link.domain);
   const title = getTitle({ post, link });
+  const image = imageUrl || favIcon;
 
-  const imgBg = (imageUrl || favIcon) && (
+  const imgBg = image && (
     <View flex={1}>
-      <Image resizeMode="cover" flex={1} source={{ uri: imageUrl || favIcon }} />
+      <Image resizeMode="cover" flex={1} source={{ uri: image }} />
       <GradientContainer>
         <Gradient flex={1} title={title} image={true} preview={preview} />
       </GradientContainer>
@@ -72,6 +74,18 @@ export default function ImagePost(props) {
       </TitleContainer>
     </View>
   );
+
+  if (preview) {
+    return (
+      <UrlPreview
+        size="small"
+        urlPreview={link || post}
+        title={title}
+        image={image}
+        noLink={noLink}
+      />
+    );
+  }
 
   if (post.url) return <View>{postContent}</View>;
   return postContent;

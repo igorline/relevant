@@ -61,7 +61,7 @@ function CoinStat(props) {
     <Wrapper
       {...rest}
       inline={inline ? 1 : 0}
-      mr={typeof mr === 'number' ? mr : 1.5}
+      mr={typeof mr === 'number' ? mr : inline ? 0 : 1.5}
       align={align}
     >
       <Image
@@ -85,7 +85,7 @@ function CoinStat(props) {
 
 CoinStat.propTypes = {
   lh: PropTypes.number,
-  inline: PropTypes.bool,
+  inline: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   secondary: PropTypes.bool,
   mr: PropTypes.number,
   fs: PropTypes.number,

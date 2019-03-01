@@ -5,6 +5,9 @@ import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { earnings } from 'app/mockdata';
 
+// some react-native code here thats not handled well
+jest.mock('modules/post/postinfo.mobile.component', () => 'PostMobilePreview');
+
 const props = {
   earning: earnings.earningPaidout,
   payout: 10,

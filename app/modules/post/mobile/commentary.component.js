@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text, FlatList, TouchableOpacity } from 'react
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, mainPadding, borderGrey } from 'app/styles/global';
 import Pills from 'modules/ui/mobile/pills.component';
+// import UAvatar from 'modules/user/UAvatar.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
@@ -138,13 +139,19 @@ export default class Commentary extends Component {
       );
     }
 
-    const isOwnPost = auth.user && user._id === auth.user._id;
-    const hideButtons = isOwnPost && preview;
+    // const isOwnPost = auth.user && user._id === auth.user._id;
+    const hideButtons = preview;
+    // <UAvatar user={auth.user}/>
+    if (!post) return null;
 
     return (
       <View
         key={post._id + i}
-        style={[styles.commentaryContainer, preview ? { width: 'auto', flex: 1 } : null]}
+        style={[
+          styles.commentaryContainer,
+          preview ? { width: 'auto', flex: 1 } : null,
+          preview ? { marginHorizontal: 0, marginTop: 8 } : null
+        ]}
       >
         <View style={[styles.commentary]}>
           {repostEl}
@@ -159,6 +166,7 @@ export default class Commentary extends Component {
               user={user}
               navigation={this.props.navigation}
               avatarText={this.props.avatarText}
+              preview
             />
             <PostBody
               short
@@ -168,10 +176,14 @@ export default class Commentary extends Component {
               auth={auth}
               singlePost={singlePost}
               navigation={this.props.navigation}
+              avatarText={this.props.avatarText}
+              preview={preview}
             />
             {!hideButtons && (
               <PostButtons
                 post={post}
+                parentPost={post.parentPost ? post.parentPost : post}
+                comment={post}
                 link={link}
                 tooltip={index === 0 ? tooltip : null}
                 comments={post.comments || null}
@@ -208,6 +220,8 @@ export default class Commentary extends Component {
           keyExtractor={(item, index) => index.toString()}
           horizontal={!preview}
           data={commentary}
+          // nestedScrollEnabled
+          // bounces={false}
           renderItem={this.renderItem}
           pagingEnabled
           contentContainerStyle={[!preview ? styles.postScroll : null]}

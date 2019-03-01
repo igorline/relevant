@@ -38,13 +38,14 @@ const reqOptions = async () => {
 export function setCommunity(community) {
   return dispatch => {
     utils.api.setCommunity(community);
-    dispatch(getUser());
+
+    dispatch(cacheCommunity(community));
+    // dispatch(getUser()); // TODO shouldn't do this every single time
     dispatch({
       type: types.SET_COMMUNITY,
       payload: community
     });
-    dispatch(navigationActions.goToTab('discover'));
-    dispatch(navigationActions.reloadTab('discover'));
+    // dispatch(navigationActions.reloadTab('discover'));
   };
 }
 
@@ -134,6 +135,21 @@ export function loginUserRequest() {
 export function logout() {
   return {
     type: types.LOGOUT_USER
+  };
+}
+
+export function cacheCommunity(community) {
+  return async () => {
+    try {
+      await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/updateCommunity',
+        body: JSON.stringify({ community })
+      });
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
   };
 }
 

@@ -435,7 +435,7 @@ export const layout = {
     padding: 10
   },
   createPostInput: {
-    marginTop: 10,
+    // marginTop: 10,
     marginBottom: 10,
     backgroundColor: '#ffffff',
     paddingHorizontal: 0
@@ -561,9 +561,7 @@ export const layout = {
   }
 };
 
-const globalStyles = StyleSheet.create(
-  { ...colors, ...font, ...alignment, ...layout }
-);
+const globalStyles = StyleSheet.create({ ...colors, ...font, ...alignment, ...layout });
 
 export {
   globalStyles,

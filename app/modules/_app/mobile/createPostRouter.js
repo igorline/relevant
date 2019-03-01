@@ -1,11 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { transitionConfig, withProps } from 'app/utils/nav';
-import {
-  createStackNavigator,
-  createAppContainer,
-} from 'react-navigation';
-import { StackViewStyleInterpolator } from 'react-navigation-stack';
+import { withProps } from 'app/utils/nav';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import UrlComponent from 'modules/createPost/mobile/url.component';
 import Categories from 'modules/createPost/mobile/categories.component';
 
@@ -21,15 +17,15 @@ export const CreatePostStack = createStackNavigator(
       screen: withProps(UrlComponent),
       params: {
         left: 'Cancel',
-        next: 'Next',
+        next: 'Next'
       }
     },
     createPostTags: {
       screen: withProps(Categories),
       params: {
-        title: 'Post Category',
+        title: 'Post Category'
       }
-    },
+    }
   },
   {
     initialRouteName: 'createPostUrl',
@@ -37,25 +33,20 @@ export const CreatePostStack = createStackNavigator(
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
 
-    transitionConfig: () => ({
-      transitionSpec: transitionConfig,
-      screenInterpolator: sceneProps => StackViewStyleInterpolator.forHorizontal(sceneProps)
-    }),
-
-    defaultNavigationOptions: (props) => ({
+    defaultNavigationOptions: props => ({
       gesturesEnabled: true,
       gestureResponseDistance: {
-        horizontal: fullWidth,
+        horizontal: fullWidth
       },
       headerStyle: {
         elevation: 0,
         shadowOpacity: 0,
         borderBottomColor: darkGrey,
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomWidth: StyleSheet.hairlineWidth
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <CreatePostHeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />,
+      headerLeft: <HeaderLeft {...props} />
     })
   }
 );

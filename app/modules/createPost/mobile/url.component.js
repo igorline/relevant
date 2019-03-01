@@ -352,7 +352,9 @@ class UrlComponent extends Component {
         {userSearch}
         {repostBody}
         {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
-          <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
+          <View style={{ marginTop: 8 }}>
+            <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
+          </View>
         ) : null}
       </ScrollView>
     );

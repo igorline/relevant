@@ -20,12 +20,7 @@ export default function RStat(props) {
 
   if (inline) {
     return (
-      <Text
-        {...rest}
-        inline={inline ? 1 : 0}
-        align={align || 'center'}
-        mr={typeof mr === 'number' ? mr : 1.5}
-      >
+      <Text {...rest} inline={inline ? 1 : 0} align={align || 'center'}>
         <Image
           h={iconSize * 0.85}
           w={iconSize * 1.2}

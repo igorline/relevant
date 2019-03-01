@@ -28,10 +28,12 @@ export default class UrlPreviewComponent extends Component {
     edit: PropTypes.bool,
     repost: PropTypes.object,
     size: PropTypes.string,
-    post: PropTypes.object,
+    image: PropTypes.string,
+    title: PropTypes.string,
     urlPreview: PropTypes.object,
     domain: PropTypes.string,
-    onPress: PropTypes.func
+    onPress: PropTypes.func,
+    noLink: PropTypes.bool
   };
 
   constructor(props, state) {
@@ -63,60 +65,49 @@ export default class UrlPreviewComponent extends Component {
   }
 
   render() {
+    const { noLink, urlPreview, image, domain, size, title } = this.props;
+    const isSmall = size === 'small';
     let preview = null;
-    let image;
-    let domain;
-    let height = 80;
-    let imageFlex = 0.4;
-    let fontSize = 15;
-    let maxLines = 3;
-    if (this.props.size === 'small') {
-      height = 55;
-      imageFlex = 0.25;
-      fontSize = 13;
-    }
-    let body = this.props.post && this.props.post.body;
-    body = this.props.urlPreview ? this.props.urlPreview.title || body : null;
+    const height = isSmall ? 55 : 80;
+    const imageFlex = isSmall ? 0.25 : 0.4;
+    const fontSize = isSmall ? 13 : 15;
+    const img = image || urlPreview.image;
 
-    if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
-      const previewImage = this.props.urlPreview.image;
-      image = (
-        <Image
-          resizeMode={'cover'}
-          source={previewImage ? { uri: previewImage } : require('app/public/img/missing.png')}
-          style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
-        />
-      );
-    } else {
-      // height = null;
-      // addStyle = {
-      //   borderWidth: 0
-      // };
-    }
+    const body = urlPreview.title || title;
 
-    if (this.props.domain) {
-      if (this.props.size === 'small') maxLines = 2;
-      domain = (
+    const imageEl = img && (
+      <Image
+        resizeMode={'cover'}
+        source={img ? { uri: img } : require('app/public/img/missing.png')}
+        style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
+      />
+    );
+
+    const domainEl =
+      domain ||
+      (urlPreview.domain && (
         <Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
-          from: {this.props.domain}
+          from: {domain || urlPreview.domain}
         </Text>
-      );
-    }
+      ));
 
-    if (this.props.urlPreview) {
+    const maxLines = isSmall && domainEl ? 2 : 3;
+
+    if (urlPreview) {
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
-          style={[styles.createPostInput, { height, marginTop: 5 }]}
+          style={[styles.createPostInput, { height, marginTop: 0 }]}
           onPress={this.props.onPress || this.previewMenu}
+          disabled={noLink}
         >
           <View style={[styles.innerPreview]}>
-            {image || <View style={{ width: 5 }} />}
+            {imageEl || <View style={{ width: 5 }} />}
             <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
               <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
                 {body}
               </Text>
-              {domain}
+              {domainEl}
             </View>
           </View>
         </TouchableHighlight>

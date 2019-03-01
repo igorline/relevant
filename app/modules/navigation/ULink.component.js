@@ -169,14 +169,10 @@ export class ULinkComponent extends Component {
     // ------ NATIVE -----------
     if (disabled || noLink) {
       if (type === 'text') {
-        return <DisabledLinkText styles={styles || ''}>{children}</DisabledLinkText>;
+        return <DisabledLinkText>{children}</DisabledLinkText>;
       }
 
-      return (
-        <DisabledLinkView styles={styles || ''} flex={1}>
-          {children}
-        </DisabledLinkView>
-      );
+      return <DisabledLinkView flex={1}>{children}</DisabledLinkView>;
     }
 
     return (
