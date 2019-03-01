@@ -7,40 +7,28 @@ import {
   LinkFont,
   Divider,
   BodyText,
-  Header
+  Header,
+  CTALink
 } from 'modules/styled/uni';
 import { colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import { REFERRAL_REWARD, PUBLIC_LINK_REWARD } from 'server/config/globalConstants';
 import { copyToClipBoard } from 'utils/text';
+import { Animated } from 'react-native';
 
 const ModalDivider = styled(Divider)`
   position: relative;
   margin: 0 -${sizing(6)};
 `;
 
-const InviteLink = styled(LinkFont)`
-  // cursor: pointer;
-  ${p =>
-    p.new && !p.mobile
-      ? `
-    animation-duration: 5s;
-    animation-name: slidein;
-    @keyframes slidein {
-      from {
-        color: ${colors.green}
-      }
-
-      to {
-        color: ${p.c || colors.black}
-      }
-    }
-    `
-      : ''}
-`;
-
 class InviteModal extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.position = new Animated.Value(0);
+    this.color = colors.black;
+  }
+
   componentDidMount() {
     const { auth, inviteList, actions } = this.props;
     const communityInvites = inviteList[auth.community] || [];
@@ -50,6 +38,20 @@ class InviteModal extends Component {
       actions.getInvites(skip, 100, auth.community);
     }
   }
+
+  animate = () => {
+    this.position.setValue(0);
+    this.color = this.position.interpolate({
+      inputRange: [0, 1],
+      // Green to blue, variables don't work for some reason
+      outputRange: ['#7ED321', '#0000ff']
+    });
+    this.animation = Animated.timing(this.position, {
+      toValue: 1,
+      duration: 8000
+    })
+    .start();
+  };
 
   generateInvite = async type => {
     const invite = {
@@ -76,35 +78,44 @@ class InviteModal extends Component {
       const now = new Date().getTime();
       const createdAt = Date.parse(invite.createdAt);
       const isNew = now - createdAt < 5000;
+      let color = invite.redeemed ? colors.grey : colors.blue;
+      if (isNew) {
+        this.animate();
+        color = this.color || colors.black;
+      }
       return (
         <View mt={2} fdirection="column" key={_id}>
           <View fdirection="row" justify="space-between">
             <View fdirection="row" flex={1} mr={1}>
-              <InviteLink
-                new={isNew}
-                onClick={() => copyToClipBoard(url)}
-                onPress={() =>
-                  onShare({
-                    title: 'Join Relevant',
-                    message: 'Join Relevant',
-                    url,
-                    subject: 'Join Relevant'
-                  })
-                }
-                c={invite.redeemed ? colors.grey : colors.blue}
-                mobile={mobile}
-                numberOfLines={1}
-                flex={1}
-              >
-                {url}
-              </InviteLink>
+              <CTALink numberOfLines={1} flex={1}>
+                <Animated.Text
+                  new={isNew}
+                  onClick={() => copyToClipBoard(url)}
+                  onPress={() =>
+                    onShare({
+                      title: 'Join Relevant',
+                      message: 'Join Relevant',
+                      url,
+                      subject: 'Join Relevant'
+                    })
+                  }
+                  style={{
+                    color
+                  }}
+                  mobile={mobile}
+                  numberOfLines={1}
+                  flex={1}
+                >
+                  {url}
+                </Animated.Text>
+              </CTALink>
               <View ml={0.5} w={6}>
                 <LinkFont>{invite.type === 'admin' ? '(admin)' : null}</LinkFont>
               </View>
             </View>
-            <LinkFont c={invite.redeemed ? colors.SecondaryText : colors.blue}>
+            <BodyText c={invite.redeemed ? colors.SecondaryText : colors.green}>
               {invite.redeemed ? 'Redeemed' : 'Available'}
-            </LinkFont>
+            </BodyText>
           </View>
           <Divider pt={2} />
         </View>
