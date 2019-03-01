@@ -140,9 +140,8 @@ export class NavProfile extends Component {
                 to="/user/wallet"
                 c={colors.blue}
                 hu
-                onPress={e => {
-                  e.preventDefault();
-                  actions.showModal('getTokens');
+                onPress={() => {
+                  actions.push('getTokens');
                 }}
                 onClick={e => {
                   e.preventDefault();
@@ -158,9 +157,8 @@ export class NavProfile extends Component {
               ml={1}
               c={colors.blue}
               hu
-              onPress={e => {
-                e.preventDefault();
-                actions.showModal('invite');
+              onPress={() => {
+                actions.push('invites');
               }}
               onClick={e => {
                 e.preventDefault();
