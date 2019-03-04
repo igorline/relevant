@@ -566,6 +566,7 @@ exports[`Snapshot Activity Web 1`] = `
                   "wordWrap": "break-word",
                 }
               }
+              textAlignVertical="top"
             >
               <div
                 style={
@@ -590,7 +591,7 @@ exports[`Snapshot Activity Web 1`] = `
                     "display": "inline-flex",
                     "flexBasis": "auto",
                     "flexDirection": "column",
-                    "height": "11.628px",
+                    "height": "12.312px",
                     "marginBottom": "0px",
                     "marginLeft": "0px",
                     "marginRight": "0px",
@@ -607,7 +608,7 @@ exports[`Snapshot Activity Web 1`] = `
                     "paddingRight": "0px",
                     "paddingTop": "0px",
                     "position": "relative",
-                    "width": "16.416px",
+                    "width": "15.048px",
                     "zIndex": 0,
                   }
                 }
@@ -679,6 +680,7 @@ exports[`Snapshot Activity Web 1`] = `
                   }
                 />
               </div>
+               
               <span
                 dir="auto"
                 inline={1}

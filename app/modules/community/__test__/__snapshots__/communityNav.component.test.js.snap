@@ -244,41 +244,50 @@ exports[`Snapshot NavProfile 1`] = `
         }
       >
         <div
-          dir="auto"
-          mr={1.5}
           style={
             Object {
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "vertical",
               "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "column",
               "WebkitFlexShrink": 0,
+              "alignItems": "stretch",
+              "backgroundColor": "rgba(0,0,0,0.00)",
+              "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "inherit",
               "display": "flex",
               "flexBasis": "auto",
+              "flexDirection": "column",
               "flexShrink": 0,
-              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-              "fontSize": "14px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "inherit",
+              "height": "28.8px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "10.8px",
               "marginTop": "0px",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "column",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
+              "overflowX": "hidden",
+              "overflowY": "hidden",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
+              "width": "28.8px",
+              "zIndex": 0,
             }
           }
         >
@@ -294,6 +303,10 @@ exports[`Snapshot NavProfile 1`] = `
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
                 "backgroundColor": "rgba(0,0,0,0.00)",
+                "backgroundImage": "url(\\"https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg\\")",
+                "backgroundPosition": "center",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "cover",
                 "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
                 "borderLeftStyle": "solid",
@@ -302,12 +315,14 @@ exports[`Snapshot NavProfile 1`] = `
                 "borderRightWidth": "0px",
                 "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
+                "bottom": "0px",
                 "boxSizing": "border-box",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "28.8px",
+                "height": "100%",
+                "left": "0px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
@@ -318,85 +333,36 @@ exports[`Snapshot NavProfile 1`] = `
                 "msFlexDirection": "column",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
                 "paddingBottom": "0px",
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
                 "paddingTop": "0px",
-                "position": "relative",
-                "width": "28.8px",
-                "zIndex": 0,
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
               }
             }
-          >
-            <div
-              style={
-                Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
-                  "WebkitFlexDirection": "column",
-                  "alignItems": "stretch",
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
-                  "bottom": "0px",
-                  "boxSizing": "border-box",
-                  "display": "inline-flex",
-                  "flexDirection": "column",
-                  "height": "100%",
-                  "left": "0px",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
+          />
+          <img
+            alt=""
+            draggable={false}
+            src="https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg"
+            style={
+              Object {
+                "bottom": "0px",
+                "height": "100%",
+                "left": "0px",
+                "opacity": 0,
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
               }
-            />
-            <img
-              alt=""
-              draggable={false}
-              src="https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg"
-              style={
-                Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-          </div>
+            }
+          />
         </div>
         <div
           c="#000000"
@@ -1047,41 +1013,50 @@ exports[`Snapshot NavProfile 1`] = `
         }
       >
         <div
-          dir="auto"
-          mr={1.5}
           style={
             Object {
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "vertical",
               "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "column",
               "WebkitFlexShrink": 0,
+              "alignItems": "stretch",
+              "backgroundColor": "rgba(153,153,153,1.00)",
+              "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "inherit",
               "display": "flex",
               "flexBasis": "auto",
+              "flexDirection": "column",
               "flexShrink": 0,
-              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-              "fontSize": "14px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "inherit",
+              "height": "28.8px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "10.8px",
               "marginTop": "0px",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "column",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
+              "overflowX": "hidden",
+              "overflowY": "hidden",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
+              "width": "28.8px",
+              "zIndex": 0,
             }
           }
         >
@@ -1096,7 +1071,11 @@ exports[`Snapshot NavProfile 1`] = `
                 "WebkitFlexDirection": "column",
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
-                "backgroundColor": "rgba(153,153,153,1.00)",
+                "backgroundColor": "rgba(0,0,0,0.00)",
+                "backgroundImage": "url(\\"default_community.png\\")",
+                "backgroundPosition": "center",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "cover",
                 "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
                 "borderLeftStyle": "solid",
@@ -1105,12 +1084,14 @@ exports[`Snapshot NavProfile 1`] = `
                 "borderRightWidth": "0px",
                 "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
+                "bottom": "0px",
                 "boxSizing": "border-box",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "28.8px",
+                "height": "100%",
+                "left": "0px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
@@ -1121,85 +1102,36 @@ exports[`Snapshot NavProfile 1`] = `
                 "msFlexDirection": "column",
                 "msFlexNegative": 0,
                 "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
                 "paddingBottom": "0px",
                 "paddingLeft": "0px",
                 "paddingRight": "0px",
                 "paddingTop": "0px",
-                "position": "relative",
-                "width": "28.8px",
-                "zIndex": 0,
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
               }
             }
-          >
-            <div
-              style={
-                Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
-                  "WebkitFlexDirection": "column",
-                  "alignItems": "stretch",
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"default_community.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
-                  "bottom": "0px",
-                  "boxSizing": "border-box",
-                  "display": "inline-flex",
-                  "flexDirection": "column",
-                  "height": "100%",
-                  "left": "0px",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
+          />
+          <img
+            alt=""
+            draggable={false}
+            src="default_community.png"
+            style={
+              Object {
+                "bottom": "0px",
+                "height": "100%",
+                "left": "0px",
+                "opacity": 0,
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
               }
-            />
-            <img
-              alt=""
-              draggable={false}
-              src="default_community.png"
-              style={
-                Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-          </div>
+            }
+          />
         </div>
         <div
           c="#000000"
