@@ -70,7 +70,8 @@ class CreatePostContainer extends Component {
       tags: null,
       url: null,
       mentions: null,
-      failedUrl: null
+      failedUrl: null,
+      submitting: false
     };
   }
 
@@ -82,6 +83,7 @@ class CreatePostContainer extends Component {
     if (!this.props.tags || !this.props.tags.parentTags.length) {
       this.props.actions.getParentTags();
     }
+    this.setState({ submitting: false });
   }
 
   componentWillReceiveProps(newProps) {
@@ -162,7 +164,8 @@ class CreatePostContainer extends Component {
     return true;
   }
 
-  async createPost() {
+  createPost = async () => {
+    this.setState({ submitting: true });
     const { auth, close, actions, history, location, createPost } = this.props;
     const { selectedTags, postUrl, urlPreview, category, mentions, domain } = this.state;
     let { tags, body } = this.state;
@@ -216,7 +219,8 @@ class CreatePostContainer extends Component {
       // TODO error handling
       alert.browserAlerts.alert(err.message);
     }
-  }
+    this.setState({ submitting: false });
+  };
 
   handleChange(field, data) {
     this.setState({ [field]: data });
@@ -319,7 +323,7 @@ class CreatePostContainer extends Component {
 
   render() {
     const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
-    const { body, url } = this.state;
+    const { body, url, submitting, postUrl } = this.state;
     const { community } = this.props;
     const articleTags = this.state.keywords;
     let communityTags = [];
@@ -338,8 +342,7 @@ class CreatePostContainer extends Component {
       );
     }
     const submitDisabled =
-      !this.state.selectedTags.length || (!this.state.body.length && !this.state.postUrl);
-
+      submitting || !this.state.selectedTags.length || (!body.length && !postUrl);
     return (
       <View>
         <View display="flex" fdirection="row" align="center">
