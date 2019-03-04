@@ -4,6 +4,16 @@ import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
 import Tags from 'modules/tag/mobile/tags.component';
+import styled from 'styled-components/primitives';
+import { colors, sizing, layout } from 'app/styles';
+
+const Input = styled(TextInput)`
+  padding: ${sizing(1.5)};
+  background-color: ${colors.white};
+  ${layout.universalBorder()}
+  ${p => (p.isFocused ? `border-color: ${colors.blue};}` : null)}
+  margin-bottom: ${sizing(2)}
+`;
 
 let styles;
 
@@ -17,7 +27,8 @@ class TagSelection extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      input: ''
+      input: '',
+      inputFocused: false
     };
 
     this.toggleTag = this.toggleTag.bind(this);
@@ -27,6 +38,14 @@ class TagSelection extends Component {
     this.tags = [];
     this.topicTags = [];
     this.bodyTags = [];
+  }
+
+  onFocus() {
+    this.setState({ inputFocused: true });
+  }
+
+  onBlur() {
+    this.setState({ inputFocused: false });
   }
 
   componentWillMount() {
@@ -69,7 +88,6 @@ class TagSelection extends Component {
       });
     }
     const words = input.split(' ');
-    // if (input[input.length - 1] !== ' ' && input[input.length - 1] !== ',') return null;
     const tags = words
     .map(word => {
       word = word
@@ -129,8 +147,8 @@ class TagSelection extends Component {
 
     return (
       <ScrollView style={{ flexDirection: 'column' }}>
-        <View p={2}>
-          <TextInput
+        <View p={2} pt={3}>
+          <Input
             autoCapitalize={'none'}
             autoCorrect={false}
             underlineColorAndroid={'transparent'}
@@ -138,9 +156,11 @@ class TagSelection extends Component {
             ref={c => {
               this.input = c;
             }}
-            style={[styles.font15, styles.topicInput]}
+            onBlur={() => this.onBlur()}
+            onFocus={() => this.onFocus()}
             value={this.state.input}
             multiline={false}
+            isFocused={this.state.inputFocused}
             placeholder={'Select additional topics or create your own'}
           />
           <View style={styles.break} />

@@ -143,7 +143,7 @@ class CreatePostHeaderRight extends Component {
     const props = this.props.createPost;
     this.image = null;
 
-    if (!props.selectedTags.length) {
+    if (!props.allTags.length) {
       Alert.alert('Please select at lest one tag');
       return;
     }
@@ -258,7 +258,7 @@ class CreatePostHeaderRight extends Component {
       enabled = this.enableNext;
       rightAction = p => this.rightButtonAction(p);
     } else {
-      enabled = this.props.createPost.selectedTags.length && !this.state.creatingPost;
+      enabled = this.props.createPost.allTags.length && !this.state.creatingPost;
       rightAction = () => this.createPost();
     }
 
