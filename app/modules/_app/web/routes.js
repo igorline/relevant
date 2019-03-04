@@ -26,6 +26,8 @@ const CommunityAdminForm = loadable(() =>
 const CommunityAdminList = loadable(() =>
   import('modules/admin/web/communityAdminList.component')
 );
+
+const CommunityList = loadable(() => import('modules/community/communityList.component'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
 // const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
@@ -114,6 +116,7 @@ const routes = [
               { path: '/user/resetPassword/:token', component: Auth, exact: true },
               { path: '/user/confirm/:user/:code', component: Auth, exact: true },
               { path: '/user/invite/:code', component: Invite, exact: true },
+              { path: '/community/all', component: CommunityList, exact: true },
               { path: '/:community/post/:id', component: PostContainer, exact: true },
               {
                 path: '/:community/post/:id/:commentId',
