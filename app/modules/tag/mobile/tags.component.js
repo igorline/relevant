@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, TouchableHighlight, View } from 'react-native';
+import { Text, TouchableHighlight } from 'react-native';
+import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
+import { colors } from 'app/styles';
 
 const styles = { ...globalStyles };
 
@@ -9,8 +11,7 @@ export default class Tags extends Component {
   static propTypes = {
     toggleTag: PropTypes.func,
     actions: PropTypes.object,
-    tags: PropTypes.object,
-    noScroll: PropTypes.bool
+    tags: PropTypes.object
   };
 
   constructor(props, context) {
@@ -41,7 +42,7 @@ export default class Tags extends Component {
         onPress={() => this.toggleTag(tag)}
         key={i}
       >
-        <View style={{ flexDirection: 'row' }}>
+        <View fdirection="row">
           <Text style={[styles.font15, { color: selected ? 'white' : '#808080' }]}>
             {name}
           </Text>
@@ -62,19 +63,9 @@ export default class Tags extends Component {
     const allTags = tags.map((tag, i) => this.renderTag(tag, i));
 
     return (
-      <ScrollView
-        horizontal={!this.props.noScroll}
-        scrollEnabled
-        keyboardShouldPersistTaps={'always'}
-        showsHorizontalScrollIndicator={false}
-        automaticallyAdjustContentInsets={false}
-        contentContainerStyle={[
-          styles.tags,
-          this.props.noScroll ? { flexWrap: 'wrap' } : null
-        ]}
-      >
+      <View fdirection="row" wrap align="center" justify="flex-start" bg={colors.white}>
         {allTags}
-      </ScrollView>
+      </View>
     );
   }
 }
