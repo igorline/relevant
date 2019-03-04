@@ -871,7 +871,7 @@ exports[`Snapshot NavProfile 1`] = `
                     "flexBasis": "auto",
                     "flexDirection": "column",
                     "flexShrink": 0,
-                    "height": "19.44px",
+                    "height": "21.6px",
                     "marginBottom": "0px",
                     "marginLeft": "0px",
                     "marginRight": "0px",
@@ -889,7 +889,7 @@ exports[`Snapshot NavProfile 1`] = `
                     "paddingRight": "0px",
                     "paddingTop": "0px",
                     "position": "relative",
-                    "width": "23.76px",
+                    "width": "22.680000000000003px",
                     "zIndex": 0,
                   }
                 }
@@ -1167,7 +1167,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "9.72px",
+                  "height": "10.8px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "0px",
@@ -1185,7 +1185,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "11.88px",
+                  "width": "11.340000000000002px",
                   "zIndex": 0,
                 }
               }

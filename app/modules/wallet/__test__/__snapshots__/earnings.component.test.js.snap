@@ -357,7 +357,7 @@ exports[`Snapshot Paidout Web 1`] = `
     >
       + 
       10
-      RNT
+       RNT
     </div>
   </div>
 </div>
@@ -718,7 +718,7 @@ exports[`Snapshot Pending Web 1`] = `
     >
       + 
       10
-      RNT
+       RNT
     </div>
   </div>
 </div>

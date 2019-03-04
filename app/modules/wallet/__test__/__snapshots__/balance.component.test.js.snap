@@ -463,7 +463,7 @@ exports[`Snapshot Balance Web 1`] = `
               "flexBasis": "auto",
               "flexDirection": "column",
               "flexShrink": 0,
-              "height": "32.4px",
+              "height": "36px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
@@ -481,7 +481,7 @@ exports[`Snapshot Balance Web 1`] = `
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "width": "39.6px",
+              "width": "37.800000000000004px",
               "zIndex": 0,
             }
           }
@@ -742,7 +742,7 @@ exports[`Snapshot Balance Web 1`] = `
   >
     <div
       aria-disabled={true}
-      c="#0000ff"
+      c="#999999"
       dir="auto"
       disabled={true}
       mr={0.5}
@@ -759,14 +759,14 @@ exports[`Snapshot Balance Web 1`] = `
         Object {
           "WebkitFlexBasis": "auto",
           "WebkitFlexShrink": 0,
-          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+          "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
           "WebkitTextDecorationStyle": "solid",
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
-          "color": "rgba(0,0,255,1.00)",
+          "color": "rgba(153,153,153,1.00)",
           "display": "flex",
           "flexBasis": "auto",
           "flexShrink": 0,
@@ -788,7 +788,7 @@ exports[`Snapshot Balance Web 1`] = `
           "paddingTop": "0px",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(0,0,255,1.00)",
+          "textDecorationColor": "rgba(153,153,153,1.00)",
           "textDecorationStyle": "solid",
           "whiteSpace": "pre-wrap",
           "wordWrap": "break-word",
@@ -800,7 +800,7 @@ exports[`Snapshot Balance Web 1`] = `
     </div>
     <div
       data-for="mainTooltip"
-      data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Once you earn more than 100 tokens you\\\\ncan transfer them to your Metamask wallet\\"}}"
+      data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Once you earn more than 100 tokens you\\\\ncan transfer them to your Metamask wallet\\\\n(temporarily disabled)\\"}}"
       style={
         Object {
           "WebkitAlignItems": "stretch",
