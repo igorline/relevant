@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { InteractionManager, View } from 'react-native';
+import { InteractionManager } from 'react-native';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as tagActions from 'modules/tag/tag.actions';
-// import Topics from './topics.component';
 import TagSelection from './tagSelection.component';
 
 class Categories extends Component {
@@ -53,23 +52,17 @@ class Categories extends Component {
       // || [].map(t => t._id);
     }
     // const { selectedTopic } = this;
-    let categoryEl;
-
-    if (this.props.tags) {
-      categoryEl = (
-        <TagSelection
-          topic={null}
-          communityTags={communityTags}
-          actions={actions}
-          createPost={createPost}
-        />
-      );
+    // let tagSelection;
+    if (!this.props.tags) {
+      return null;
     }
-
     return (
-      <View style={{ flex: 1 }} behavior={'padding'}>
-        <View style={{ flex: 1 }}>{categoryEl}</View>
-      </View>
+      <TagSelection
+        topic={null}
+        communityTags={communityTags}
+        actions={actions}
+        createPost={createPost}
+      />
     );
   }
 }

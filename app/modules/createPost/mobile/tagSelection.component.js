@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, TextInput, Alert, StyleSheet } from 'react-native';
+import { TextInput, Alert, StyleSheet, ScrollView } from 'react-native';
+import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
 import Tags from 'modules/tag/mobile/tags.component';
@@ -127,24 +128,26 @@ class TagSelection extends Component {
     }
 
     return (
-      <View style={{ flexDirection: 'column' }}>
-        <TextInput
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          underlineColorAndroid={'transparent'}
-          onChangeText={input => this.processInput(input)}
-          ref={c => {
-            this.input = c;
-          }}
-          style={[styles.font15, styles.topicInput]}
-          value={this.state.input}
-          multiline={false}
-          placeholder={'Select additional topics or create your own'}
-        />
-        <View style={styles.break} />
-        <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
-        <View style={styles.break} />
-      </View>
+      <ScrollView style={{ flexDirection: 'column' }}>
+        <View p={2}>
+          <TextInput
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            underlineColorAndroid={'transparent'}
+            onChangeText={input => this.processInput(input)}
+            ref={c => {
+              this.input = c;
+            }}
+            style={[styles.font15, styles.topicInput]}
+            value={this.state.input}
+            multiline={false}
+            placeholder={'Select additional topics or create your own'}
+          />
+          <View style={styles.break} />
+          <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
+          <View style={styles.break} />
+        </View>
+      </ScrollView>
     );
   }
 }
