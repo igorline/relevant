@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  NativeModules,
-  TouchableOpacity,
-  Alert
-} from 'react-native';
+import { StyleSheet, Text, View, NativeModules, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { globalStyles } from 'app/styles/global';
@@ -44,6 +37,7 @@ export default class TwitterButton extends Component {
         Constants.TWITTER_CONSUMER_SECRET
       );
       const loginData = await RNTwitterSignIn.logIn();
+
       const { authToken, authTokenSecret } = loginData;
       if (!authToken || !authTokenSecret) throw new Error('Twitter login failed');
 
@@ -59,7 +53,7 @@ export default class TwitterButton extends Component {
         }, 3000);
       }
     } catch (error) {
-      Alert.alert(error);
+      // Alert.alert(error.message);
     }
   }
 

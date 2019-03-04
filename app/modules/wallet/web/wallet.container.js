@@ -14,6 +14,7 @@ import get from 'lodash/get';
 import moment from 'moment';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
+import PostPreview from 'modules/post/web/post.component';
 
 let drizzle;
 
@@ -94,6 +95,7 @@ class WalletContainer extends Component {
         earning={earning}
         payout={payout}
         month={showMonth ? month : null}
+        PostPreview={PostPreview}
       />
     );
   };

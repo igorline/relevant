@@ -561,13 +561,18 @@ export async function computeApproxPageRank(params) {
 
     if (author) {
       const rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
-      author.relevance.pagerank =
-        (100 * Math.log(N * rA + 1)) / Math.log(N * maxUserRank + 1);
+      author.relevance.pagerank = Math.min(
+        100,
+        (100 * Math.log(N * rA + 1)) / Math.log(N * maxUserRank + 1)
+      );
     }
 
     if (post) {
       const pA = Math.max(post.data.pagerankRaw, 0);
-      post.data.pagerank = (100 * Math.log(N * pA + 1)) / Math.log(N * maxPostRank + 1);
+      post.data.pagerank = Math.min(
+        100,
+        (100 * Math.log(N * pA + 1)) / Math.log(N * maxPostRank + 1)
+      );
     }
 
     await Promise.all([

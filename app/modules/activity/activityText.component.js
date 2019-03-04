@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { numbers } from 'app/utils';
 import Triangle from 'modules/icons/triangle.component';
 import { BodyText, Text } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
@@ -15,7 +14,7 @@ const ActivityText = ({ activity, amount }) => {
     triangleDirection = 'DOWN';
   }
   const postType = activity.post ? activity.post.type : 'post';
-  const coin = numbers.abbreviateNumber(activity.coin);
+  const { coin } = activity;
 
   let text = null;
   switch (activity.type) {

@@ -60,8 +60,8 @@ class Application extends Component {
 
   componentWillMount() {
     // hard-code community for now
-    // const community = 'relevant';
-    // this.props.actions.setCommunity(community);
+    const community = 'relevant';
+    this.props.actions.setCommunity(community);
   }
 
   componentDidMount() {
@@ -125,7 +125,7 @@ class Application extends Component {
     const { actions, navigation, auth } = this.props;
 
     let newCommunity = url.url.split('/')[3];
-    newCommunity = newCommunity.replace(/user|admin|info/, '');
+    newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
     if (
       newCommunity &&
       newCommunity !== '' &&

@@ -14,6 +14,7 @@ import get from 'lodash/get';
 import { FlatList, RefreshControl } from 'react-native';
 import moment from 'moment';
 import { computeUserPayout } from 'app/utils/rewards';
+import PostPreview from 'modules/post/postPreview.container';
 
 let drizzle;
 
@@ -96,6 +97,7 @@ class WalletContainer extends Component {
         earning={earning}
         payout={payout}
         month={showMonth ? month : null}
+        PostPreview={PostPreview}
       />
     );
   };
@@ -115,8 +117,8 @@ class WalletContainer extends Component {
           data={entities}
           renderItem={this.renderRow}
           keyExtractor={(item, index) => index.toString()}
-          removeClippedSubviews
-          pageSize={1}
+          // removeClippedSubviews
+          pageSize={2}
           initialListSize={10}
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}

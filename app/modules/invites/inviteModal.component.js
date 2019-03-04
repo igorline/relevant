@@ -70,7 +70,8 @@ class InviteModal extends Component {
     const { auth, community, count, inviteList, invites, onShare } = this.props;
     const { user } = auth;
     const publicInviteUrl = `/${community.active}?invitecode=${auth.user.handle}`;
-    const origin = window ? window.location.origin : 'https://relevant.community';
+    const origin =
+      window && window.location ? window.location.origin : 'https://relevant.community';
 
     const publicLink = `${origin}${publicInviteUrl}`;
     const communityInvites = inviteList[auth.community] || [];
@@ -109,12 +110,14 @@ class InviteModal extends Component {
                 </Animated.Text>
               </CTALink>
               <View ml={0.5} w={6}>
-                <LinkFont>{invite.type === 'admin' ? '(admin)' : null}</LinkFont>
+                <CTALink c={colors.grey}>
+                  {invite.type === 'admin' ? '(admin)' : null}
+                </CTALink>
               </View>
             </View>
-            <BodyText c={invite.redeemed ? colors.SecondaryText : colors.green}>
-              {invite.redeemed ? 'Redeemed' : 'Available'}
-            </BodyText>
+            <CTALink c={invite.redeemed ? colors.grey : colors.green}>
+              {invite.redeemed ? 'redeemed' : 'available'}
+            </CTALink>
           </View>
           <Divider pt={2} />
         </View>

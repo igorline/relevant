@@ -33,14 +33,14 @@ export function getActivityParams(activity) {
     case 'reward_referral':
     case 'reward_referredBy':
       if (activity.byUser) userImage = activity.byUser;
-      else emoji = '🤑';
+      else emoji = '☺️';
       byUser = activity.byUser;
       break;
     case 'basicIncome':
     case 'reward':
     case 'reward_twitter':
     case 'reward_email':
-      emoji = '🤑';
+      emoji = '☺️';
       break;
     case 'topPost':
       image = require('app/public/img/r-emoji.png');

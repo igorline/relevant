@@ -27,6 +27,6 @@ router.get(
   auth.setTokenCookieDesktop
 );
 
-router.post('/user/login', auth.currentUser(), controller.nativeAuth);
+router.post('/login', auth.currentUser(), controller.nativeAuth);
 
 module.exports = router;

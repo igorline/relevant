@@ -306,7 +306,7 @@ class UrlComponent extends Component {
           }}
         />
         {userHeader}
-        <View style={[{ flex: 1 }]}>
+        <View style={[{ flex: 1, marginTop: 8 }]}>
           <TextInput
             ref={c => {
               this.input = c;
@@ -352,7 +352,7 @@ class UrlComponent extends Component {
         {userSearch}
         {repostBody}
         {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
-          <View style={{ marginTop: 8 }}>
+          <View style={{ marginVertical: 8 }}>
             <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
           </View>
         ) : null}

@@ -25,18 +25,18 @@ export const crypto = {
   slug: 'crypto',
   image: '',
   description: 'Discussion of blockchain tech and ecosystem',
-  maxPostRank: 0.07589951187785565,
-  maxUserRank: 0.22774693637225513,
-  numberOfElements: 18,
-  memberCount: 11,
-  twitterCount: 0,
-  avgTwitterScore: 0,
-  lastRewardFundUpdate: new Date(),
-  postCount: 10,
-  topPostShares: 3000,
-  currentShares: 600,
-  rewardFund: 0,
-  currentPosts: 0,
+  // maxPostRank: 0.07589951187785565,
+  // maxUserRank: 0.22774693637225513,
+  // numberOfElements: 18,
+  // memberCount: 11,
+  // twitterCount: 0,
+  // avgTwitterScore: 0,
+  // lastRewardFundUpdate: new Date(),
+  // postCount: 10,
+  // topPostShares: 3000,
+  // currentShares: 600,
+  // rewardFund: 0,
+  // currentPosts: 0,
   topics: [
     'governance',
     'layer1',
@@ -47,6 +47,17 @@ export const crypto = {
     'reputation',
     'curation markets'
   ],
+  channels: []
+};
+
+export const bandNew = {
+  _id: 'c00000000000000000000003',
+  name: 'New Community',
+  slug: 'imnew',
+  image: '',
+  description: 'Discussion of blockchain tech and ecosystem',
+  lastRewardFundUpdate: new Date(),
+  topics: ['co community topic'],
   channels: []
 };
 

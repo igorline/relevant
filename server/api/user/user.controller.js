@@ -476,8 +476,9 @@ exports.updateComunity = async (req, res, next) => {
     const { community } = req.body;
     user.community = community;
     await user.save();
+    return res.status(200).json({ succcess: true });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 

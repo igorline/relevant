@@ -39,7 +39,6 @@
 		56C921FCC2B44637B46733C9 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CFF5F025ED3455183847E5E /* MaterialIcons.ttf */; };
 		5E177E3742B7495B93D90824 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2930D1F26CA244DF809E3D38 /* Feather.ttf */; };
 		64CF6EE408AD4065A5893E9C /* libyoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D911302890D43DB8A512450 /* libyoga.a */; };
-		6F07DBE2ECCC6C052C4DDCA3 /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */; };
 		70D02AB44F3C4CF995E28B4F /* libRNSKText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB36E8E5FE084D69AED831CD /* libRNSKText.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
@@ -47,7 +46,6 @@
 		B00FFFC03E93458D93116747 /* libcxxreact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5FEE109BF44588811576A3 /* libcxxreact.a */; };
 		B2B1E5D6542F4D8E985F8E90 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */; };
 		C242DF693C40F7EE4DC2ED93 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */; };
-		CE7A7E0E7DD948AA2DEA98BD /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 549F04AB9497946054EC0B34 /* libPods-Relevant.a */; };
 		E262D6F76A0144AEB886635B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40A15E4F9FA34E0EBE964209 /* Entypo.ttf */; };
 		E55F878B26CF4578AFCF67C6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69D68DD57A7D46E1932AC656 /* Zocial.ttf */; };
 		E91573B35AA94626AC59C39D /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B9D73294842405B97D27972 /* Foundation.ttf */; };
@@ -117,12 +115,12 @@
 		FBDA04701EEF289600789ED9 /* CodePush.h in Frameworks */ = {isa = PBXBuildFile; fileRef = FBDA046E1EEF281F00789ED9 /* CodePush.h */; };
 		FBDAAA7B1DFF89C800A4363B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A9422631D9D827E000671FA /* libART.a */; };
 		FBDC86D71E8C393900B6ADE1 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBDC86B11E8C391B00B6ADE1 /* libBVLinearGradient.a */; };
+		FBECAE1C222A2F1800029891 /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBECAE1B222A2F1800029891 /* libPods-Relevant.a */; };
 		FBF8A93F1E6F3A50009404F2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A93E1E6F3A50009404F2 /* CoreData.framework */; };
 		FBF8A9411E6F3A5A009404F2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */; };
 		FBF8A9431E6F3A62009404F2 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9421E6F3A62009404F2 /* libz.tbd */; };
 		FBF8A9451E6F3A6E009404F2 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */; };
 		FBFBE0251FA6EA88005DCC25 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */; };
-		FBFBE05D1FA6EB37005DCC25 /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */; };
 		FDF0AAE9B41343AB80114ED0 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7854DE6F4CAC458F8533F7B8 /* SimpleLineIcons.ttf */; };
 /* End PBXBuildFile section */
 
@@ -702,6 +700,7 @@
 		FBDA046E1EEF281F00789ED9 /* CodePush.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CodePush.h; path = "../node_modules/react-native-code-push/ios/CodePush/CodePush.h"; sourceTree = "<group>"; };
 		FBDA04731EEF40F000789ED9 /* libGoogleToolboxForMac.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleToolboxForMac.a; path = "../../../Library/Developer/Xcode/DerivedData/relevantNative-dpmigjkklbelulfgagqhzmnyzxkt/Build/Products/Release-iphoneos/GoogleToolboxForMac/libGoogleToolboxForMac.a"; sourceTree = "<group>"; };
 		FBDC86AB1E8C391B00B6ADE1 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
+		FBECAE1B222A2F1800029891 /* libPods-Relevant.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Relevant.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBF8A93E1E6F3A50009404F2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FBF8A9421E6F3A62009404F2 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -730,7 +729,6 @@
 				FB07D8712200EFC90004D656 /* libRNFIRAnalytics.a in Frameworks */,
 				FB3F485521E06E1E00DC0D34 /* libRNGestureHandler.a in Frameworks */,
 				FBA9F21B209A5171005635BD /* libRCTBlob.a in Frameworks */,
-				FBFBE05D1FA6EB37005DCC25 /* libPods-Relevant.a in Frameworks */,
 				FB17DDD21FA02BF900293C05 /* libRNTwitterSignIn.a in Frameworks */,
 				FBBBF2081F8F1B6500F68218 /* libSafariViewManager.a in Frameworks */,
 				FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */,
@@ -778,6 +776,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBECAE1C222A2F1800029891 /* libPods-Relevant.a in Frameworks */,
 				FB0FAE42220A75D500F6D820 /* libRNSVG.a in Frameworks */,
 				FB07D8722200EFCF0004D656 /* libRNFIRAnalytics.a in Frameworks */,
 				FB3F485421E06E1400DC0D34 /* libRNGestureHandler.a in Frameworks */,
@@ -809,8 +808,6 @@
 				FB88BEAD1D9ED8F6002D0069 /* libRCTWebSocket.a in Frameworks */,
 				FB88BEAE1D9ED8F6002D0069 /* libReact.a in Frameworks */,
 				FB88BEAF1D9ED8F6002D0069 /* libReactNativeShareExtension.a in Frameworks */,
-				CE7A7E0E7DD948AA2DEA98BD /* libPods-Relevant.a in Frameworks */,
-				6F07DBE2ECCC6C052C4DDCA3 /* libPods-Relevant.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1254,6 +1251,7 @@
 		FBF8A93D1E6F3A50009404F2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FBECAE1B222A2F1800029891 /* libPods-Relevant.a */,
 				FB19378622265D4100C289AA /* libPods-relevantNativeTests.a */,
 				FB19374722265D2B00C289AA /* libPods-relevantNativeTests.a */,
 				FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */,
@@ -2337,7 +2335,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.Relevant--BUNDLE-ID-SUFFIX-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2391,7 +2389,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.Relevant--BUNDLE-ID-SUFFIX-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2565,7 +2563,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.Relevant--BUNDLE-ID-SUFFIX-.Relevant--BUNDLE-ID-SUFFIX-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
@@ -2618,7 +2616,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.Relevant--BUNDLE-ID-SUFFIX-.Relevant--BUNDLE-ID-SUFFIX-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
@@ -2727,7 +2725,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.Relevant--BUNDLE-ID-SUFFIX-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.staging;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2821,7 +2819,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.Relevant--BUNDLE-ID-SUFFIX-.Relevant--BUNDLE-ID-SUFFIX-";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.staging.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;

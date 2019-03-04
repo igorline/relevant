@@ -132,7 +132,7 @@ class PostButtons extends Component {
             <NumericalValue
               c={color || colors.secondaryText}
               fs={2}
-              lh={1.8}
+              lh={2}
               data-place={'right'}
               data-for="mainTooltip"
               data-tip={JSON.stringify({

@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  TouchableHighlight,
-  ActionSheetIOS,
-  Platform
-} from 'react-native';
+import { Image, Text, TouchableHighlight, ActionSheetIOS, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles, greyText } from 'app/styles/global';
+import { greyText } from 'app/styles/global';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import { View } from 'modules/styled/uni';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -19,8 +12,6 @@ if (Platform.OS === 'android') {
   ActionSheet = RNBottomSheet;
   ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 }
-
-let styles;
 
 export default class UrlPreviewComponent extends Component {
   static propTypes = {
@@ -32,7 +23,6 @@ export default class UrlPreviewComponent extends Component {
     title: PropTypes.string,
     urlPreview: PropTypes.object,
     domain: PropTypes.string,
-    onPress: PropTypes.func,
     noLink: PropTypes.bool
   };
 
@@ -68,7 +58,7 @@ export default class UrlPreviewComponent extends Component {
     const { noLink, urlPreview, image, domain, size, title } = this.props;
     const isSmall = size === 'small';
     const height = isSmall ? 55 : 80;
-    const imageFlex = isSmall ? 0.25 : 0.4;
+    const imageFlex = isSmall ? 0.35 : 0.4;
     const fontSize = isSmall ? 13 : 15;
 
     const img = image || (urlPreview && urlPreview.image);
@@ -94,49 +84,29 @@ export default class UrlPreviewComponent extends Component {
     return urlPreview ? (
       <TouchableHighlight
         underlayColor={'transparent'}
-        style={[styles.createPostInput, { height, marginTop: 0 }]}
-        onPress={this.props.onPress || this.previewMenu}
+        style={{ height }}
         disabled={noLink}
       >
-        <View style={[styles.innerPreview]}>
+        <View h={height} border align={'stretch'} fdirection={'row'} flex={1}>
           {imageEl || <View style={{ width: 5 }} />}
-          <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
+          <View style={{ flex: 1, padding: 5, justifyContent: 'center' }}>
             <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
               {body}
             </Text>
-            {domainEl}
+            <Text>{domainEl}</Text>
           </View>
         </View>
       </TouchableHighlight>
     ) : (
       <TouchableHighlight
         underlayColor={'transparent'}
-        style={[styles.createPostInput, styles.preview, { height }]}
+        style={{ height }}
         onPress={this.previewMenu}
       >
-        <View style={styles.innerPreview}>
+        <View h={height} border align={'stretch'} fdirection={'row'} flex={1}>
           <CustomSpinner size={'small'} visible />
         </View>
       </TouchableHighlight>
     );
   }
 }
-
-const localStyles = StyleSheet.create({
-  preview: {
-    height: 100
-  },
-  innerPreview: {
-    borderRadius: 0,
-    borderColor: greyText,
-    borderStyle: 'solid',
-    borderWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    flex: 1,
-    overflow: 'hidden'
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };

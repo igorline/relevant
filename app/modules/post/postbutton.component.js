@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, Text } from 'modules/styled/uni';
+import { Image, View } from 'modules/styled/uni';
 
 const BUTTON_IMAGES = {
   UPVOTE: {
@@ -39,7 +39,7 @@ class PostButton extends Component {
       source = images.hover;
     }
     return (
-      <Text onPress={e => onPress(e)}>
+      <View onPress={e => onPress(e)}>
         <Image
           w={3}
           h={2.8}
@@ -49,7 +49,7 @@ class PostButton extends Component {
           onMouseEnter={this.handleOnMouseOver}
           onMouseLeave={this.handleOnMouseOut}
         />
-      </Text>
+      </View>
     );
   }
 }

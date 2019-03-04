@@ -20,7 +20,7 @@ class InviteModalTitle extends Component {
         align="center"
         flex={1}
       >
-        <Header>Invite People To {activeCommunity}</Header>
+        <Header>Invite Friends To {activeCommunity}</Header>
       </View>
     );
   }

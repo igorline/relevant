@@ -5,14 +5,15 @@ import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
 import { View, BodyText } from 'modules/styled/uni';
 import ReactTooltip from 'react-tooltip';
-import PostPreview from 'modules/post/postPreview.container';
+// import PostPreview from 'modules/post/postPreview.container';
 
 export default class Earning extends Component {
   static propTypes = {
     earning: PropTypes.object,
     month: PropTypes.string,
     payout: PropTypes.number,
-    mobile: PropTypes.bool
+    mobile: PropTypes.bool,
+    PostPreview: PropTypes.func
   };
 
   componentDidMount() {
@@ -26,7 +27,7 @@ export default class Earning extends Component {
   // }
 
   render() {
-    const { earning, month, payout, mobile } = this.props;
+    const { earning, month, payout, mobile, PostPreview } = this.props;
     const { community, post } = earning;
     if (!earning) return null;
     return (
@@ -61,9 +62,9 @@ export default class Earning extends Component {
             <BodyText c={colors.secondaryText}>{get(earning, 'status')}</BodyText>
           </View>
           {payout < 0 ? (
-            <BodyText c={colors.red}>- {numbers.abbreviateNumber(payout)}RNT</BodyText>
+            <BodyText c={colors.red}>- {numbers.abbreviateNumber(payout)} RNT</BodyText>
           ) : (
-            <BodyText c={colors.green}>+ {numbers.abbreviateNumber(payout)}RNT</BodyText>
+            <BodyText c={colors.green}>+ {numbers.abbreviateNumber(payout)} RNT</BodyText>
           )}
         </View>
 

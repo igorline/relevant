@@ -367,12 +367,17 @@ async function updatePostData(community) {
     type: { $in: ['post', 'repost'] },
     community
   })
-  .populate({ path: 'data', match: { community }, select: 'isInFeed type repost' })
+  .populate({
+    path: 'data',
+    match: { community },
+    select: 'isInFeed type repost relevance pagerank'
+  })
   .populate({
     path: 'parentPost',
     populate: [
       {
-        path: 'data'
+        path: 'data',
+        match: { community }
       },
       {
         path: 'metaPost'
@@ -460,6 +465,7 @@ async function updatePostData(community) {
         parentData.hidden = p.hidden;
         parentData.type = p.type;
         parentData.parentPost = null;
+        parentData.relevance = Math.max(p.data.relevance, parentData.relevance) || 0;
         parentPost.relevance = parentData.relevance;
         if (!parentData.community) parentData.community = p.community;
         if (!parentData.communityId) parentData.communityId = p.communityId;
