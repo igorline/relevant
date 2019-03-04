@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import get from 'lodash.get';
-import { Text, Image, View, CommunityLink } from 'modules/styled/uni';
+import { Image, View, CommunityLink } from 'modules/styled/uni';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
@@ -61,15 +61,14 @@ export class Community extends Component {
         }}
       >
         <View p={`1 ${padding}`} align={'center'} fdirection={'row'}>
-          <Text mr={1.5}>
-            <CommunityImage
-              w={4}
-              h={4}
-              image={community.image}
-              source={image}
-              resizeMode={'cover'}
-            />
-          </Text>
+          <CommunityImage
+            w={4}
+            h={4}
+            mr={1.5}
+            image={community.image}
+            source={image}
+            resizeMode={'cover'}
+          />
           <CommunityLink lh={1.75} c={colors.black}>
             {community.name}
           </CommunityLink>

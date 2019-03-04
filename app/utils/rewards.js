@@ -2,10 +2,11 @@ import { TOKEN_DECIMALS } from 'server/config/globalConstants';
 
 export function computePostPayout(postData, community) {
   if (!community || !postData || postData.parentPost) return null;
-  if (postData.pagerank < community.currentShares / community.postCount) {
+  if (postData.pagerank < community.currentShares / (community.postCount || 1)) {
     return 0;
   }
-  postData.payoutShare = postData.pagerank / (community.topPostShares || 1);
+  postData.payoutShare =
+    postData.pagerank / (community.topPostShares + postData.pagerank || 1);
   postData.payout = community.rewardFund * postData.payoutShare;
   return postData.payout / TOKEN_DECIMALS;
 }

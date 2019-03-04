@@ -3,7 +3,6 @@ process.env.WEB = 'true';
 module.exports = {
   rootDir: './',
   displayName: 'Server',
-  testPathIgnorePatterns: ['<rootDir>/../node_modules/'],
   globalSetup: '<rootDir>/test/setup',
   globalTeardown: '<rootDir>/test/teardown',
   testEnvironment: '<rootDir>/test/mongo.environment',
@@ -13,5 +12,6 @@ module.exports = {
       '<rootDir>/../__mocks__/fileTransformer.js'
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
-  setupFilesAfterEnv: ['<rootDir>/test/testDbSetup']
+  setupFilesAfterEnv: ['<rootDir>/test/testDbSetup'],
+  testPathIgnorePatterns: ['<rootDir>/../node_modules/', 'ethereum.test.js']
 };

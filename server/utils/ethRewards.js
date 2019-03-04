@@ -24,9 +24,15 @@ exports.rewards = async () => {
   if (computingRewards) throw new Error('computing rewards is already in progress!');
   computingRewards = true;
 
+  let rewardPool;
+  try {
+    rewardPool = await allocateRewards();
+  } catch (err) {
+    console.log(err);
+  }
+
   try {
     const communities = await Community.find({});
-    const rewardPool = await allocateRewards();
 
     // const stakedTokens = await Community.getBalances();
     const stakedTokens = await Earnings.stakedTokens();
@@ -154,7 +160,7 @@ async function postRewards(community) {
     if (post.pagerank > MINIMUM_RANK) {
       community.currentShares += post.pagerank;
       community.postCount += 1;
-      if (post.pagerank >= community.currentShares / community.postCount) {
+      if (post.pagerank >= community.currentShares / (community.postCount || 1)) {
         community.topPostShares += post.pagerank;
       }
     }
@@ -185,7 +191,7 @@ async function postRewards(community) {
 async function computePostPayout({ posts, community }) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
-    const average = community.currentShares / community.postCount;
+    const average = community.currentShares / (community.postCount || 1);
 
     // only reward above-average posts
     console.log('rank vs average', post.pagerank, average);
@@ -244,7 +250,7 @@ async function distributeUserRewards(posts, _community) {
 
       // TODO diff decimal?
       const reward = curationPayout / 10 ** 18;
-      user.balance += reward;
+      user.balance += Math.min(reward, 0);
 
       const earning = await Earnings.updateRewardsRecord({
         user: user._id,
@@ -254,7 +260,7 @@ async function distributeUserRewards(posts, _community) {
         community,
         communityId
       });
-      user.lockedTokens = Math.max(user.lockedTokens - earning.stakedTokens);
+      user.lockedTokens = Math.max(user.lockedTokens - earning.stakedTokens, 0);
       await user.save();
 
       console.log('Awarded', user.name, reward, 'tokens for', post.post);

@@ -4,7 +4,7 @@ const Relevance = require('./api/relevance/relevance.model');
 const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
-const { PAYOUT_FREQUENCY, RELEVANCE_DECAY, DAYS } = require('./config/globalConstants');
+const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
 
 const TwitterWorker = require('./utils/twitterWorker');
 
@@ -180,16 +180,14 @@ async function basicIncome(done) {
     return topic => {
       q.push(async cb => {
         try {
-          const r = topic.relevance * (1 / 2) ** (DAYS / RELEVANCE_DECAY);
-          const diff = r - topic.relevance;
-          topic.relevance += diff;
-          if (topic.global === true) {
-            // console.log(topic);
+          // const r = topic.relevance * (1 / 2) ** (DAYS / RELEVANCE_DECAY);
+          // const diff = r - topic.relevance;
+          // topic.relevance += diff;
+          if (topic.global === true && topic.user) {
+            // updates % stats
             await topic.updateRelevanceRecord();
-            // TODO update community stats
-            // RelevanceStats.updateUserStats(topic, diff);
+            await topic.save();
           }
-          await topic.save();
         } catch (err) {
           console.log('error updating topic relevance income ', err);
           console.log(topic);
@@ -268,9 +266,10 @@ function startTwitterUpdate() {
   TwitterWorker.updateTwitterPosts();
 }
 
-// updateUserStats();
+// updateUserStats(/);
 // startTwitterUpdate();
 // startBasicIncomeUpdate();
+// startRewards();
 
 if (process.env.NODE_ENV === 'production') {
   // start interval on the hour

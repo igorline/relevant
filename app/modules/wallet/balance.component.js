@@ -92,28 +92,30 @@ export default class Balance extends Component {
               : ''}
           </SecondaryText>
         </View>
-        <View fdirection="row" mt={2} align="center">
-          <Touchable onClick={this.cashOut} disabled>
-            <LinkFont mr={0.5} c={colors.blue} td={'underline'}>
-              Claim Tokens
-            </LinkFont>
-          </Touchable>
-          <Image
-            source={require('app/public/img/info.png')}
-            s={1.5}
-            h={1.5}
-            w={1.5}
-            m={0}
-            data-for="mainTooltip"
-            data-tip={JSON.stringify({
-              type: 'TEXT',
-              props: {
-                text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet`
-              }
-            })}
-            // onPress={() => this.tooltip.show()}
-          />
-        </View>
+        {!mobile ? (
+          <View fdirection="row" mt={2} align="center">
+            <Touchable onClick={this.cashOut} disabled>
+              <LinkFont mr={0.5} c={colors.grey} td={'underline'}>
+                Claim Tokens
+              </LinkFont>
+            </Touchable>
+            <Image
+              source={require('app/public/img/info.png')}
+              s={1.5}
+              h={1.5}
+              w={1.5}
+              m={0}
+              data-for="mainTooltip"
+              data-tip={JSON.stringify({
+                type: 'TEXT',
+                props: {
+                  text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet\n(temporarily disabled)`
+                }
+              })}
+              // onPress={() => this.tooltip.show()}
+            />
+          </View>
+        ) : null}
         <Header mt={mobile ? 4 : 9}>Recent Activity</Header>
         {!mobile ? (
           <BodyText mt={2}>

@@ -160,9 +160,7 @@ export function fetchMeta(initialState) {
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
   image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
-  description =
-    description ||
-    'Relevant is a community-based content curation and discussion app built on reputation.';
+  description = description || 'Join the discussion.';
   return { title, description, image, url };
 }
 

@@ -20,15 +20,20 @@ export default function RStat(props) {
 
   if (inline) {
     return (
-      <Text {...rest} inline={inline ? 1 : 0} align={align || 'center'}>
+      <Text
+        textAlignVertical="top"
+        {...rest}
+        inline={inline ? 1 : 0}
+        align={align || 'center'}
+      >
         <Image
-          h={iconSize * 0.85}
-          w={iconSize * 1.2}
+          h={iconSize * 0.9}
+          w={iconSize * 1.1}
           source={iconImage}
-          style={{ bottom: imageMargin }}
+          style={{ bottom: imageMargin, resizeMode: 'contain' }}
           resizeMode={'contain'}
-          inline={inline ? 1 : 0}
-        />
+          inline={1}
+        />{' '}
         <NumericalValue inline={inline ? 1 : 0} lh={lh} c={color}>
           {abbreviateNumber(pagerank) || 0}
         </NumericalValue>

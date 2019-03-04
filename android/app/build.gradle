@@ -104,8 +104,8 @@ android {
         applicationId "com.relevantnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.0.10"
+        versionCode 11
+        versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -173,7 +173,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-video')
     compile project(':react-native-vector-icons')
@@ -185,7 +184,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-video')
     compile project(':react-native-vector-icons')
@@ -198,7 +196,6 @@ dependencies {
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
     compile project(':react-native-firebase-analytics')
-    compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-share')
     compile project(':react-native-share')
@@ -212,7 +209,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-share')
     compile project(':react-native-video')
@@ -226,7 +222,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-code-push')
     compile project(':react-native-push-notification')

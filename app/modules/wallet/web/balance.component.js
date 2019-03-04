@@ -17,6 +17,8 @@ export default class Balance extends Component {
   static contextType = BondingCurveContext;
 
   async cashOut() {
+    return null;
+    // eslint-disable-next-line
     const { actions, user, contract } = this.props;
     try {
       const decimals = contract.methods.decimals.cacheCall();
@@ -43,9 +45,12 @@ export default class Balance extends Component {
 
   renderEarnigns() {
     const { list } = this.props.earnings;
-    return list.map(earning => <div>
-      status: {earning.status} stakedTokens: {earning.stakedTokens} earned: {earning.earned}
-    </div>);
+    return list.map(earning => (
+      <div>
+        status: {earning.status} stakedTokens: {earning.stakedTokens} earned:{' '}
+        {earning.earned}
+      </div>
+    ));
   }
 
   render() {
