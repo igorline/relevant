@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import InviteModalComponent from 'modules/invites/inviteModal.component';
 import { Alert } from 'app/utils/alert';
+import { copyToClipBoard } from 'utils/text';
 
 class InviteModalContainer extends Component {
   componentDidMount() {
@@ -18,11 +19,16 @@ class InviteModalContainer extends Component {
     }
   }
 
+  handleShare(data) {
+    copyToClipBoard(data.url);
+  }
+
   render() {
     return (
       <InviteModalComponent
         {...this.props}
         postInviteGeneration={this.postInviteGeneration}
+        onShare={this.handleShare}
       />
     );
   }
