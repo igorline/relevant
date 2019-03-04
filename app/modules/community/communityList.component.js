@@ -17,7 +17,7 @@ class CommunityAdminList extends Component {
     return (
       <View m={4} fdirection="column" wrap>
         {Object.values(communities).map(c => (
-          <ULink to={`/admin/community/${c.slug}`} inline={1} mt={2}>
+          <ULink to={`/${c.slug}/new`} inline={1} mt={2}>
             <View mt={2} key={c.slug} fdirection="row" align="center">
               <Image source={c.image} h={4} w={4} />
               <Title ml={1}>{c.name} </Title>
