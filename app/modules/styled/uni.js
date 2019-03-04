@@ -156,6 +156,7 @@ export const Tag = styled(Text)`
       : ''};
   ${mixins.background}
   ${mixins.padding}
+  ${mixins.margin}
   ${mixins.color}
 `;
 

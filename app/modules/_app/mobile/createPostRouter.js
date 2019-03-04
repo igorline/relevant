@@ -23,7 +23,7 @@ export const CreatePostStack = createStackNavigator(
     createPostTags: {
       screen: withProps(Categories),
       params: {
-        title: 'Post Category'
+        title: 'Select Tags'
       }
     }
   },

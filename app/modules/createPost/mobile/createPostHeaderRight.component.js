@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
@@ -32,7 +27,6 @@ class CreatePostHeaderRight extends Component {
     editPost: PropTypes.object,
     postBody: PropTypes.object,
     repost: PropTypes.object,
-    postCategory: PropTypes.string,
     urlPreview: PropTypes.object,
     postUrl: PropTypes.object,
     edit: PropTypes.bool
@@ -104,8 +98,7 @@ class CreatePostHeaderRight extends Component {
       body: props.postBody,
       mentions: props.bodyMentions
     };
-    this.props.actions.editPost(postBody)
-    .then(res => {
+    this.props.actions.editPost(postBody).then(res => {
       if (!res) return;
       Alert.alert('Success!');
       this.props.actions.clearCreatePost();
@@ -126,8 +119,7 @@ class CreatePostHeaderRight extends Component {
     };
 
     this.setState({ creatingPost: true });
-    this.props.actions.createComment(commentObj)
-    .then(() => {
+    this.props.actions.createComment(commentObj).then(() => {
       this.props.actions.clearCreatePost();
       this.props.actions.setUserSearch([]);
       this.setState({ creatingPost: false });
@@ -151,8 +143,8 @@ class CreatePostHeaderRight extends Component {
     const props = this.props.createPost;
     this.image = null;
 
-    if (!props.postCategory) {
-      Alert.alert('Please add category');
+    if (!props.allTags.length) {
+      Alert.alert('Please select at lest one tag');
       return;
     }
 
@@ -202,8 +194,7 @@ class CreatePostHeaderRight extends Component {
 
     if (props.edit) {
       postBody = { ...props.editPost, ...postBody };
-      return this.props.actions.editPost(postBody)
-      .then(res => {
+      return this.props.actions.editPost(postBody).then(res => {
         if (!res) return;
         Alert.alert('Success!');
         this.props.actions.clearCreatePost();
@@ -212,8 +203,7 @@ class CreatePostHeaderRight extends Component {
       });
     }
 
-    this.props.actions.submitPost(postBody)
-    .then(results => {
+    this.props.actions.submitPost(postBody).then(results => {
       if (!results) {
         Alert.alert('Post error please try again');
         return this.setState({ creatingPost: false });
@@ -247,7 +237,6 @@ class CreatePostHeaderRight extends Component {
       return null;
     }
 
-
     this.enableNext = false;
     if (this.props.createPost.postBody && this.props.createPost.postBody.length) {
       this.enableNext = true;
@@ -269,7 +258,7 @@ class CreatePostHeaderRight extends Component {
       enabled = this.enableNext;
       rightAction = p => this.rightButtonAction(p);
     } else {
-      enabled = this.props.createPost.postCategory && !this.state.creatingPost;
+      enabled = this.props.createPost.allTags.length && !this.state.creatingPost;
       rightAction = () => this.createPost();
     }
 
@@ -307,7 +296,7 @@ styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {
-    createPost: state.createPost,
+    createPost: state.createPost
   };
 }
 
@@ -319,7 +308,7 @@ function mapDispatchToProps(dispatch) {
         ...navigationActions,
         ...createPostActions,
         ...postActions,
-        ...userActions,
+        ...userActions
       },
       dispatch
     )

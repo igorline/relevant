@@ -1280,8 +1280,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				E097E421A88455D3599C984C /* [CP] Embed Pods Frameworks */,
-				AD1963CB87DA0CF22AD1C597 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1304,7 +1302,6 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				FB88BE9A1D9ED742002D0069 /* Embed App Extensions */,
 				810885804C60765617333183 /* [CP] Copy Pods Resources */,
-				5AEA38AB9DE8060E66605571 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2077,26 +2074,12 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterKitResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterShareExtensionUIResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Relevant/Pods-Relevant-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5AEA38AB9DE8060E66605571 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-relevantNative/Pods-relevantNative-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		810885804C60765617333183 /* [CP] Copy Pods Resources */ = {
@@ -2111,7 +2094,8 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterKitResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TwitterShareExtensionUIResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2134,36 +2118,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AD1963CB87DA0CF22AD1C597 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-relevantNativeTests/Pods-relevantNativeTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E097E421A88455D3599C984C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-relevantNativeTests/Pods-relevantNativeTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FB88BEB01D9EDF26002D0069 /* Run Script */ = {
@@ -2790,26 +2744,7 @@
 					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
 				);
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
-					"$(SRCROOT)/../node_modules/react-native-image-picker/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-overlay",
-					"$(SRCROOT)/../node_modules/react-native-share/ios",
-					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
-					"$(SRCROOT)/../node_modules/react-native-firebase-analytics/ios",
-					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
-					"$(SRCROOT)/../node_modules/react-native-overlay",
-					"$(SRCROOT)/../node_modules/react-native-video/ios",
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
-					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
-					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(inherited) /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include $(SRCROOT)/../node_modules/react-native/React/** $(SRCROOT)/../node_modules/react-native-share-extension/ios/** $(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts $(SRCROOT)/../node_modules/react-native-image-picker/ios/** $(SRCROOT)/../node_modules/react-native-overlay $(SRCROOT)/../node_modules/react-native-share/ios $(SRCROOT)/../node_modules/react-native-svg/ios/** $(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu $(SRCROOT)/../node_modules/react-native-firebase-analytics/ios $(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/** $(SRCROOT)/../node_modules/react-native-overlay $(SRCROOT)/../node_modules/react-native-video/ios $(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager $(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/** $(SRCROOT)/../node_modules/rn-fetch-blob/ios/** $(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**";
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
