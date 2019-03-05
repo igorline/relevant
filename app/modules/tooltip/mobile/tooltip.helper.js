@@ -46,8 +46,8 @@ exports.text.relevance = function relevance(props) {
   if (!props.auth.user) return null;
 
   const data = [
-    'You earn Relevance when you post or upvote quality articles',
-    'The more Relevant you are, the more weight your votes have'
+    'Earn Reputation by posting comments.',
+    'The higher your score, the more weight your votes have.'
   ];
 
   const dataEl = data.map(txt => renderRow(props, txt));
@@ -58,7 +58,7 @@ exports.text.relevance = function relevance(props) {
     <View>
       <View style={[styles.textRow]}>
         <Text allowFontScaling={false} style={[props.style, styles.title]}>
-          This is your Relevance:{' '}
+          This is your Reputation:{' '}
         </Text>
         <Image
           resizeMode={'contain'}
@@ -94,9 +94,8 @@ exports.text.coin = function coin(props) {
   if (!props.auth.user) return null;
 
   const data = [
-    'You stake coins when you upvote posts',
-    'You earn coins when you create or upvote quality posts (it takes a few days)',
-    "The more coins you stake on a vote, the more rewards you'll earn"
+    'Get coins by upvoting quality links. ',
+    "The more coins you have, the more rewards you'll be able to earn"
   ];
 
   const dataEl = data.map(txt => renderRow(props, txt));
@@ -175,9 +174,8 @@ exports.text.vote = function vote(props) {
   if (!props.auth.user) return null;
 
   const data = [
-    'Upvote important articles to let others know they are worth reading',
-    'Downvote if it was a waste of your time',
-    "Voters will earn coins based on the article's Relevance after 3 days"
+    'Upvote articles and that are worth reading, downvote spam.',
+    "Voters will earn coins based on the article's ranking after 3 days"
   ];
 
   const dataEl = data.map(txt => renderRow(props, txt));

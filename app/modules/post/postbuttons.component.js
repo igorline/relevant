@@ -32,7 +32,35 @@ class PostButtons extends Component {
 
   componentDidMount() {
     if (ReactTooltip.rebuild) ReactTooltip.rebuild();
+    const { Dimensions } = require('react-native');
+    this.fullHeight = Dimensions.get('window').height;
+    this.initTooltips();
   }
+
+  initTooltips = () => {
+    if (!this.props.actions.setTooltipData) return;
+    ['vote'].forEach(name => {
+      this.props.actions.setTooltipData({
+        name,
+        toggle: () => this.toggleTooltip(name)
+      });
+    });
+  };
+
+  toggleTooltip = name => {
+    if (!this.props.actions.setTooltipData) return;
+    if (!this.investButton) return;
+    this.investButton.measureInWindow((x, y, w, h) => {
+      const parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      if (y > this.fullHeight - 50) return;
+      this.props.actions.setTooltipData({
+        name,
+        parent
+      });
+      this.props.actions.showTooltip(name);
+    });
+  };
 
   async vote(e, vote) {
     try {
@@ -119,7 +147,12 @@ class PostButtons extends Component {
 
     return (
       <View className={className}>
-        <View ref={c => (this.investButton = c)} align="center">
+        <View
+          ref={c => (this.investButton = c)}
+          onLayout={() => {}}
+          align="center"
+          style={{ opacity: 1 }} // need this to make animations work on android
+        >
           <PostButton
             key={`${post.id}-up`}
             imageSet="UPVOTE"
@@ -130,6 +163,7 @@ class PostButtons extends Component {
           />
           <View p={'.75 0'}>
             <NumericalValue
+              onPress={() => this.toggleTooltip('vote')}
               c={color || colors.secondaryText}
               fs={2}
               lh={2}

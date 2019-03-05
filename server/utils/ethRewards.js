@@ -200,7 +200,9 @@ async function computePostPayout({ posts, community }) {
       return post.save();
     }
     // linear reward curve
-    post.payoutShare = post.pagerank / (community.topPostShares || 1);
+
+    // cap rewards share at 1/20th of the fund - especially for the first rewards?
+    post.payoutShare = Math.min(0.05, post.pagerank / (community.topPostShares || 1));
     post.payout = community.rewardFund * post.payoutShare;
     return post.save();
   });
