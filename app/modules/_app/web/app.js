@@ -73,7 +73,7 @@ class App extends Component {
     actions.getUser();
     actions.getEarnings('pending');
 
-    if (auth.user && !auth.user.webOnboard.onboarding) {
+    if (auth.user && auth.user.webOnboard && !auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
     }

@@ -271,6 +271,10 @@ function startTwitterUpdate() {
 // startBasicIncomeUpdate();
 // startRewards();
 
+if (process.env.NODE_ENV !== 'production') {
+  startTwitterUpdate();
+}
+
 if (process.env.NODE_ENV === 'production') {
   // start interval on the hour
   const minutesTillHour = 60 - new Date().getMinutes();
@@ -279,9 +283,9 @@ if (process.env.NODE_ENV === 'production') {
     startRewards();
   }, minutesTillHour * 60 * 1000);
 
-  setTimeout(() => {
-    startTwitterUpdate();
-  }, ((10 + minutesTillHour) % 60) * 60 * 1000);
+  // setTimeout(() => {
+  //   startTwitterUpdate();
+  // }, ((10 + minutesTillHour) % 60) * 60 * 1000);
   // TwitterWorker.updateTwitterPosts();
 
   // DEPRECATED
