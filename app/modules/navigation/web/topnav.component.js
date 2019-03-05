@@ -49,9 +49,7 @@ class TopNav extends Component {
 
   componentDidMount() {
     this.props.actions.getNotificationCount();
-    window.addEventListener('focus', () => {
-      this.getNotificationCount();
-    });
+    window.addEventListener('focus', getNotificationCount);
   }
 
   componentDidUpdate(prevProps) {
@@ -63,12 +61,16 @@ class TopNav extends Component {
   getNotificationCount = () => {
     const now = new Date();
     const { isAuthenticated } = this.props.auth;
-    if (now - this.state.timeSinceNotificationCount < 30000) return;
+    if (now.getTime() - this.state.timeSinceNotificationCount.getTime() < 30000) return;
     if (isAuthenticated) {
-      this.props.actions.getNotificationCount();
       this.setState({ timeSinceNotificationCount: now });
+      this.props.actions.getNotificationCount();
     }
   };
+
+  componentWillUnmount() {
+    window.removeEventListener('focus', getNotificationCount);
+  }
 
   state = {
     openLoginModal: false

@@ -1,9 +1,10 @@
 @import 'styles/global.css';
 
-.editor {
+#editor {
   min-height: 300px;
   @extend %input;
   font-size: 14px;
+  white-space: pre;
   p {
     margin: 0;
   }

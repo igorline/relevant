@@ -213,9 +213,9 @@ async function updateLatestComment({ post, communityId }) {
   if (post.parentPost) return post;
 
   const latestComment = await post
-  .model('PostData')
+  .model('Post')
   .findOne(
-    { parentPost: post._id, communityId, hidden: false, type: 'post' },
+    { parentPost: post._id, communityId, hidden: { $ne: true }, type: 'post' },
     'postDate'
   )
   .sort({ postDate: -1 });

@@ -19,7 +19,7 @@ const { ObjectId } = mongoose.Types;
 const queue = require('queue');
 
 const q = queue({
-  concurrency: 20
+  concurrency: 1
 });
 
 // TODO update post embedded user to _id
@@ -107,8 +107,8 @@ async function updateUserEmbeds() {
     console.log(u._id);
     // -------- POSTS ------------
     q.push(async cb => {
-      const posts = await Post.find({ user: u._id });
-      console.log('found posts', u.handle, posts.length);
+      // let posts = await Post.find({ user: u._id });
+      // console.log('found posts', u.handle, posts.length);
 
       await Post.update(
         { user: u.handle },
@@ -132,7 +132,7 @@ async function updateUserEmbeds() {
         { user: ObjectId(u._id) },
         { multi: true }
       );
-      cb();
+      return cb();
     });
 
     // -------- NOTIFICATIONS ------------
@@ -161,6 +161,7 @@ async function updateUserEmbeds() {
         { $set: { 'byUsers.$': ObjectId(u._id) } },
         { multi: true }
       );
+      return cb();
     });
     q.push(async cb => {
       await Notification.update(
