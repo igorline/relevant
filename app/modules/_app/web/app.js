@@ -14,7 +14,6 @@ import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
 import Modal from 'modules/ui/web/modal';
-import CreatePost from 'modules/createPost/createPost.container';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';
@@ -142,13 +141,39 @@ class App extends Component {
   }
 
   renderModal() {
+    const { location, history } = this.props;
     let { globalModal } = this.props;
+    const { hash } = location;
+    let hashModal;
+    if (hash) {
+      hashModal = hash.substring(1);
+    }
+    if (!hash && globalModal) {
+      history.push(location.pathname + `#${globalModal}`);
+    }
+    if (hashModal) {
+      globalModal = hashModal;
+    }
     if (!globalModal) return null;
     globalModal = modals[globalModal] || globalModal;
     const { Body } = globalModal;
+    const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
     return (
-      <Modal {...globalModal} close={() => this.props.actions.hideModal()} visible>
-        <Body close={() => this.props.actions.hideModal()} />
+      <Modal
+        {...globalModal}
+        close={() => {
+          this.props.actions.hideModal();
+          this.closeModal();
+        }}
+        visible
+      >
+        <Body
+          {...bodyProps}
+          close={() => {
+            this.props.actions.hideModal();
+            this.closeModal();
+          }}
+        />
       </Modal>
     );
   }
@@ -156,7 +181,6 @@ class App extends Component {
   render() {
     const { location, user, children } = this.props;
     const temp = user && user.role === 'temp';
-    const create = location.hash === '#newpost';
     const connectAccount = location.hash === '#connectAccount';
 
     const mobileEl = (
@@ -236,14 +260,6 @@ class App extends Component {
             )}
           </Eth.Consumer>
         </EthTools>
-        <Modal
-          title="New Post"
-          visible={create}
-          className="createPostModal"
-          close={() => this.props.history.push(location.pathname)}
-        >
-          <CreatePost modal />
-        </Modal>
         {this.renderModal()}
         <ToastContainer />
         {mobileEl}
