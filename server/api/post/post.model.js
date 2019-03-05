@@ -256,8 +256,8 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
     if (topComment) rank = Math.max(rank, topComment.rank);
 
-    post.data.rank = rank;
-    post.data.pagerank = Math.max(post.data.pagerank, topComment.pagerank) || 0;
+    // post.data.rank = rank;
+    // post.data.pagerank = Math.max(post.data.pagerank, topComment.pagerank) || 0;
 
     // TODO - deprecate this once we don't use this in the feed
     post.rank = rank;
