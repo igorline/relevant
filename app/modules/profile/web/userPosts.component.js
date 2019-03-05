@@ -50,7 +50,6 @@ class UserPosts extends Component {
       if (parentId) {
         parentPost = this.props.posts.posts[parentId];
       }
-
       const postUrl = routing.getPostUrl(community, post);
 
       return (
