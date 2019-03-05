@@ -14,8 +14,8 @@ const TEST_ENV = process.env.NODE_ENV === 'test';
 const InvestSchema = new Schema(
   {
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    investor: { type: Schema.Types.Mixed, ref: 'User' },
-    author: { type: Schema.Types.Mixed, ref: 'User' },
+    investor: { type: Schema.Types.ObjectId, ref: 'User' },
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
 
     ownPost: { type: Boolean, default: false },
     amount: Number,

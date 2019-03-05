@@ -119,7 +119,6 @@ if (process.env.NODE_ENV !== 'test') {
 } else {
   require('./routes')(app);
 }
-console.log('routes ready');
 
 // in production this is a worker
 if (relevantEnv === 'staging' || isDevelopment) {

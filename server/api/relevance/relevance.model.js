@@ -6,13 +6,13 @@ const { Schema } = mongoose;
 // TODO move this to Community Member
 const RelevanceSchema = new Schema(
   {
-    user: { type: Schema.Types.Mixed, ref: 'User', index: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     tag: { type: String, ref: 'Tag' },
     global: { type: Boolean, default: false },
     topTopic: { type: Boolean, deafault: false },
 
     community: { type: String },
-    communityId: { type: Schema.Types.Mixed, ref: 'Community' },
+    communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
 
     category: { type: String, ref: 'Tag' },
     relevance: { type: Number, default: 0 },

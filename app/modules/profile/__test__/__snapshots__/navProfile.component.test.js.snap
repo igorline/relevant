@@ -654,7 +654,7 @@ exports[`Snapshot NavProfile 1`] = `
                     "flexBasis": "auto",
                     "flexDirection": "column",
                     "flexShrink": 0,
-                    "height": "18.36px",
+                    "height": "21.6px",
                     "marginBottom": "0px",
                     "marginLeft": "0px",
                     "marginRight": "2.16px",
@@ -672,7 +672,7 @@ exports[`Snapshot NavProfile 1`] = `
                     "paddingRight": "0px",
                     "paddingTop": "0px",
                     "position": "relative",
-                    "width": "25.919999999999998px",
+                    "width": "21.6px",
                     "zIndex": 0,
                   }
                 }
