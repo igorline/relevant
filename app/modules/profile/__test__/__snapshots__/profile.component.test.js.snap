@@ -518,7 +518,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "10.71px",
+                  "height": "12.6px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "1.26px",
@@ -536,7 +536,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "15.120000000000001px",
+                  "width": "12.6px",
                   "zIndex": 0,
                 }
               }
@@ -1659,7 +1659,7 @@ exports[`Snapshot own Profile 1`] = `
                   "flexBasis": "auto",
                   "flexDirection": "column",
                   "flexShrink": 0,
-                  "height": "10.71px",
+                  "height": "12.6px",
                   "marginBottom": "0px",
                   "marginLeft": "0px",
                   "marginRight": "1.26px",
@@ -1677,7 +1677,7 @@ exports[`Snapshot own Profile 1`] = `
                   "paddingRight": "0px",
                   "paddingTop": "0px",
                   "position": "relative",
-                  "width": "15.120000000000001px",
+                  "width": "12.6px",
                   "zIndex": 0,
                 }
               }

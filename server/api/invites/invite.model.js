@@ -7,9 +7,9 @@ const { Schema } = mongoose;
 
 const InviteSchema = new Schema(
   {
-    invitedBy: { type: Schema.Types.Mixed, ref: 'User' },
-    invitee: { type: Schema.Types.Mixed, ref: 'User' },
-    registeredAs: { type: Schema.Types.Mixed, ref: 'User' },
+    invitedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    invitee: { type: Schema.Types.ObjectId, ref: 'User' },
+    registeredAs: { type: Schema.Types.ObjectId, ref: 'User' },
     email: { type: String },
     name: { type: String },
     redeemed: { type: Boolean, default: false },

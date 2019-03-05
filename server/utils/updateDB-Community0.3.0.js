@@ -654,6 +654,27 @@ async function makeSurePostHaveCommunityId() {
 //   return Promise.all(invites);
 // }
 
+async function userTokens() {
+  let users = await User.find({ tokenBalance: { $gt: 0 } });
+  users = users.map(u => {
+    u.tokenBalance = 0;
+    return u.save();
+  });
+
+  users = await User.find();
+
+  users = users.map(u => {
+    u.tokenBalance = 0;
+    return u.save();
+  });
+  let totalTokens = 0;
+  users.forEach(u => {
+    console.log(u.handle, u.balance);
+    totalTokens += u.balance || 0;
+  });
+  console.log('totalTokens', totalTokens);
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -675,6 +696,8 @@ async function runUpdates() {
     // await removeOldUsers();
 
     // await cleanInvites();
+
+    // await userTokens();
 
     // DON'T NEED
     // await cleanupPostData();

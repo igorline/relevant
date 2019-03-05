@@ -56,6 +56,8 @@ module.exports = app => {
     return res.status(500).json({ message: err.message });
   });
 
+  app.get('/', (req, res) => res.redirect('/relevant/new'));
+
   BANNED_COMMUNITY_SLUGS.forEach(c => {
     app.get(`/${c}/*`, currentUser(), handleRender);
   });

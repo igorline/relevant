@@ -6,7 +6,7 @@ const EarningsSchemaEvents = new EventEmitter();
 
 const EarningsSchema = new Schema(
   {
-    user: { type: Schema.Types.Mixed, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
     source: { type: String, default: 'post' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     // amount: { type: Number, default: 0 },

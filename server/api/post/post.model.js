@@ -21,7 +21,7 @@ const PostSchema = new Schema(
       comment: { type: Schema.Types.ObjectId, ref: 'Post' },
       commentBody: String
     },
-    user: { type: Schema.Types.Mixed, ref: 'User', index: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     embeddedUser: {
       _id: String,
       handle: String,
@@ -251,12 +251,13 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     // But if a comment ranks highly - update post rank
     const topComment = await post
     .model('PostData')
-    .findOne({ parentPost: post._id, communityId }, 'rank')
+    .findOne({ parentPost: post._id, communityId }, 'rank pagerank')
     .sort({ rank: -1 });
 
     if (topComment) rank = Math.max(rank, topComment.rank);
 
     post.data.rank = rank;
+    post.data.pagerank = Math.max(post.data.pagerank, topComment.pagerank) || 0;
 
     // TODO - deprecate this once we don't use this in the feed
     post.rank = rank;

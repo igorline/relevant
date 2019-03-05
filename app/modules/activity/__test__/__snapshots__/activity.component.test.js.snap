@@ -566,7 +566,6 @@ exports[`Snapshot Activity Web 1`] = `
                   "wordWrap": "break-word",
                 }
               }
-              textAlignVertical="top"
             >
               <div
                 style={
