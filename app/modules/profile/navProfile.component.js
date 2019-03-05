@@ -8,7 +8,7 @@ import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
 import ULink from 'modules/navigation/ULink.component';
 import * as navigationActions from 'modules/navigation/navigation.actions';
-import { getUser } from 'modules/auth/auth.actions';
+import { getUser, cacheCommunity } from 'modules/auth/auth.actions';
 import ReactTooltip from 'react-tooltip';
 
 import { sizing, colors } from 'app/styles';
@@ -44,6 +44,10 @@ export class NavProfile extends Component {
       (!user.relevance || user.relevance.community !== auth.community)
     ) {
       actions.getUser();
+    }
+
+    if (user && auth.community !== lastProps.auth.community) {
+      actions.cacheCommunity(auth.community);
     }
   }
 
@@ -183,6 +187,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...navigationActions,
+      cacheCommunity,
       getUser
     },
     dispatch

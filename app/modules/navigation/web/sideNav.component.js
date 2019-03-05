@@ -42,7 +42,7 @@ const LogoContainer = styled.div`
 `;
 
 const SideNav = props => {
-  const logoLink = `/${props.community}/new`;
+  const logoLink = `/${props.community || 'relevant'}/new`;
   return (
     <SideNavContent flex={1} className={props.className}>
       <SideNavScroll flex={1}>

@@ -27,7 +27,7 @@ let allUsers;
 let userCounter = 0;
 let processedTweets = 0;
 
-const q = queue({ concurrency: 5 });
+const q = queue({ concurrency: 1 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -332,9 +332,10 @@ async function cleanup() {
   ).limit(5000);
 
   console.log('clearing twitter posts ', posts.length, ' posts');
-  const removePosts = await posts.map(p =>
+  const removePosts = await posts.map((p, i) =>
     q.push(async cb => {
       try {
+        console.log('removing ', i, 'out of', 5000);
         await p.remove();
         cb();
         return p;
