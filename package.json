@@ -8,8 +8,9 @@
     "worker": "node server/worker.js",
     "dev": "nodemon server/index.js",
     "devServer": "NODE_ENV='native' nodemon server/index.js",
-    "native": "NODE_ENV='native' nodemon server/index.js",
+    "native": "NODE_ENV='native' nodemon server/index.js --max-old-space-size=4096",
     "build": "BABEL_ENV='development_web' webpack --config ./webpack.production.config.js --progress --colors -p",
+    "build:server": "BABEL_ENV='development_web' webpack --config ./webpack.config.server.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
     "testServer": "NODE_ENV=test jest ./server --config server/jest.config.js",
     "testServer:watch": "NODE_ENV=test jest --watch --config server/jest.config.js --",
@@ -190,6 +191,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^24.1.0",
+    "babel-plugin-add-module-exports": "^1.0.0",
     "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-inline-react-svg": "^1.0.1",
     "babel-plugin-module-resolver": "^3.1.1",
@@ -249,7 +251,8 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.1.0",
     "webpack-dev-server": "^3.1.14",
-    "webpack-hot-middleware": "^2.21.2"
+    "webpack-hot-middleware": "^2.21.2",
+    "webpack-node-externals": "^1.7.2"
   },
   "engines": {
     "node": "11.4.0"

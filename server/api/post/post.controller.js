@@ -17,11 +17,6 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 const { promisify } = require('util');
 
-// const date = new Date();
-// date.setDate(date.getDate() - 3);
-// Post.find({ postDate: { $gt: date } })
-// .then(posts => posts.forEach(p => p.remove()));
-
 const requestAsync = promisify(request);
 request.defaults({ maxRedirects: 22, jar: true });
 

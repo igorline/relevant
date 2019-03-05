@@ -12,7 +12,7 @@ export function env() {
 }
 env();
 
-if (process.env.BROWSER || process.env.WEB !== 'true' || process.env.WEB !== true) {
+if (process.env.BROWSER || process.env.WEB !== 'true') {
   // this is a weird hack that makes conditional require work in react-native
   // routes.post = require(postApi);
   // routes.user = require(userApi);
@@ -122,7 +122,9 @@ export async function request(options) {
       };
       const next = () => null;
       const res = null;
-      if (!routes[options.endpoint]) return null;
+      if (!routes[options.endpoint] || !routes[options.endpoint][options.path]) {
+        return null;
+      }
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
       // in case we get a mongoose object back
       if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();

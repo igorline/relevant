@@ -316,14 +316,14 @@ export function getUser(callback) {
       dispatch(loginUserFailure('Server error'));
       if (callback) callback({ ok: false });
       // need this in case user is logged in but there is an error getting account
-      if (
-        error.message !== 'Network request failed' &&
-        error.message !== 'Failed to fetch'
-      ) {
-        window.alert('REMOVING TOKEN!' + error.message); // eslint-disable-line
-        console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
-        dispatch(logoutAction());
-      }
+      // if (
+      //   error.message !== 'Network request failed' &&
+      //   error.message !== 'Failed to fetch'
+      // ) {
+      // window.alert('REMOVING TOKEN!' + error.message); // eslint-disable-line
+      // console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
+      // dispatch(logoutAction());
+      // }
       // throw error;
       return null;
     }

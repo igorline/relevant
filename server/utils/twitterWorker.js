@@ -329,7 +329,7 @@ async function cleanup() {
       postDate: { $lt: cutoffDate }
     },
     'metaPost postDate linkParent parentPost linkPost metaPost type tags community communityId hidden twitter data'
-  );
+  ).limit(5000);
 
   console.log('clearing twitter posts ', posts.length, ' posts');
   const removePosts = await posts.map(p =>
@@ -348,6 +348,7 @@ async function cleanup() {
   await Promise.all(removePosts);
 }
 
+// eslint-disable-next-line
 async function processTweets(users) {
   console.log('processing', users.length, 'users');
   let trim = await TwitterFeed.find({ user: '_common_Feed_' })
@@ -435,7 +436,7 @@ async function getUsers(userId) {
     processedTweets = 0;
 
     await cleanup();
-    await processTweets(users);
+    // await processTweets(users);
 
     q.start(async queErr => {
       try {

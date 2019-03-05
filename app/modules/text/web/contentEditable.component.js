@@ -6,8 +6,8 @@ const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 function stripContentEditableHTML(text) {
   return (text || '')
   .replace(/<div><br>/g, '\n')
-  .replace(/<div>/g, '\n')
-  .replace(/<br>\u200B/g, '\n')
+  .replace(/<\/div>/g, '\n')
+  .replace(/<br>/g, '\n')
   .replace(HTML_REGEX, '');
 }
 
@@ -25,7 +25,7 @@ function renderBody(lines) {
     })
     .join(' ')
   )
-  .join('<br/>\u200B');
+  .join('\n');
 }
 
 function onPaste(e) {
@@ -120,6 +120,7 @@ export default class ContentEditable extends React.Component {
 
   componentDidMount() {
     this.el.focus();
+    document.execCommand('defaultParagraphSeparator', false, 'br');
   }
 
   componentDidUpdate(lastProps) {

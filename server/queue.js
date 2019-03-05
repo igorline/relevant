@@ -267,7 +267,7 @@ function startTwitterUpdate() {
 }
 
 // updateUserStats(/);
-// startTwitterUpdate();
+startTwitterUpdate();
 // startBasicIncomeUpdate();
 // startRewards();
 

@@ -33,10 +33,10 @@ class AppHeader extends Component {
   };
 
   componentDidMount() {
-    this.getNotificationCount();
-    window.addEventListener('focus', () => {
-      this.getNotificationCount();
-    });
+    // this.getNotificationCount();
+    // window.addEventListener('focus', () => {
+    //   this.getNotificationCount();
+    // });
 
     window.addEventListener('click', e => {
       if (e.target.classList.contains('activityButton')) return true;
@@ -47,21 +47,21 @@ class AppHeader extends Component {
     });
   }
 
-  componentDidUpdate(prevProps) {
-    const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
-    const { isAuthenticated } = this.props.auth;
-    if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
-  }
+  // componentDidUpdate(prevProps) {
+  //   // const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
+  //   // const { isAuthenticated } = this.props.auth;
+  //   // if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
+  // }
 
-  getNotificationCount() {
-    const now = new Date();
-    const { isAuthenticated } = this.props.auth;
-    if (now - this.state.timeSinceNotificationCount < 5000) return;
-    if (isAuthenticated) {
-      this.props.actions.getNotificationCount();
-      this.setState({ timeSinceNotificationCount: now });
-    }
-  }
+  // getNotificationCount() {
+  //   const now = new Date();
+  //   const { isAuthenticated } = this.props.auth;
+  //   if (now - this.state.timeSinceNotificationCount < 5000) return;
+  //   if (isAuthenticated) {
+  //     this.props.actions.getNotificationCount();
+  //     this.setState({ timeSinceNotificationCount: now });
+  //   }
+  // }
 
   renderActivity() {
     if (!this.props.isAuthenticated) return null;

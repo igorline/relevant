@@ -20,17 +20,12 @@ export default function RStat(props) {
 
   if (inline) {
     return (
-      <Text
-        textAlignVertical="top"
-        {...rest}
-        inline={inline ? 1 : 0}
-        align={align || 'center'}
-      >
+      <Text {...rest} inline={inline ? 1 : 0} align={align || 'center'}>
         <Image
           h={iconSize * 0.9}
           w={iconSize * 1.1}
           source={iconImage}
-          style={{ bottom: imageMargin, resizeMode: 'contain' }}
+          style={{ bottom: imageMargin }}
           resizeMode={'contain'}
           inline={1}
         />{' '}
@@ -49,8 +44,8 @@ export default function RStat(props) {
       mr={typeof mr === 'number' ? mr : 1.5}
     >
       <Image
-        h={iconSize * 0.85}
-        w={iconSize * 1.2}
+        h={iconSize * 1}
+        w={iconSize * 1}
         source={iconImage}
         mr={iconSize / 10}
         style={{ bottom: imageMargin }}

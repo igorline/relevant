@@ -146,10 +146,10 @@ export function fetchMeta(initialState) {
   const { community } = initialState.auth;
   if (initialState.posts.posts) {
     const postId = Object.keys(initialState.posts.posts)[0];
-    if (postId) {
-      let post = initialState.posts.posts[postId];
+    let post = postId ? initialState.posts.posts[postId] : null;
+    if (post) {
       if (post.metaPost) {
-        post = initialState.posts.links[post.metaPost] || {};
+        post = initialState.posts.links[post.metaPost] || post;
       }
       title = post.title;
       image = post.image;
@@ -199,12 +199,3 @@ export function renderApp({ url, store }) {
   );
   return { app, rnWebStyles };
 }
-
-// Might be useful to go through the whole stack?
-// function fetchComponentData(dispatch, components, params, req) {
-//   const promises = components
-//   .filter(component => component && component.fetchData)
-//   .map(component => component.fetchData)
-//   .map(fetchData => fetchData(dispatch, params, req));
-//   return Promise.all(promises);
-// }
