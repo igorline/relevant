@@ -47,6 +47,8 @@ class TopNav extends Component {
     view: PropTypes.object
   };
 
+  state = {};
+
   componentDidMount() {
     this.props.actions.getNotificationCount();
     window.addEventListener('focus', getNotificationCount);
@@ -61,7 +63,10 @@ class TopNav extends Component {
   getNotificationCount = () => {
     const now = new Date();
     const { isAuthenticated } = this.props.auth;
-    if (now.getTime() - this.state.timeSinceNotificationCount.getTime() < 30000) return;
+    if (
+      this.state.timeSinceNotificationCount &&
+      now.getTime() - this.state.timeSinceNotificationCount.getTime() < 30000
+    ) { return; }
     if (isAuthenticated) {
       this.setState({ timeSinceNotificationCount: now });
       this.props.actions.getNotificationCount();

@@ -82,7 +82,6 @@ class App extends Component {
       actions.setInviteCode(parsed.invitecode);
       this.toggleLogin('signup');
     }
-
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
