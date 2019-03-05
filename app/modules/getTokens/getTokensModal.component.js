@@ -47,10 +47,9 @@ class GetTokensModal extends Component {
               onPress={sendConfirmation}
               external
               mr="auto"
-              mt={3}
               mobile={mobile}
             >
-              <ViewButton m={0} mobile={mobile}>
+              <ViewButton mt={3} mobile={mobile}>
                 <LinkFont c={colors.white}>Confirm E-mail</LinkFont>
               </ViewButton>
             </ULink>
@@ -66,7 +65,7 @@ class GetTokensModal extends Component {
             mr="auto"
             mobile={mobile}
           >
-            <LinkFont>Invite Friends</LinkFont>
+            <LinkFont c={colors.blue}>Invite Friends</LinkFont>
           </ULink>
         </View>
       </View>
