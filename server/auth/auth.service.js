@@ -50,7 +50,6 @@ function getUser(select) {
     try {
       if (!req.user) return next();
       const user = await User.findById(req.user._id, select);
-
       if (!user) {
         // eslint-disable-next-line
         console.log("User doesn't exist - bad token", req.user);
@@ -60,6 +59,8 @@ function getUser(select) {
       req.user = user;
       return next();
     } catch (err) {
+      req.user = null;
+      req.universalCookies.remove('token');
       return next();
     }
   };
