@@ -223,7 +223,7 @@ class CreatePostHeaderRight extends Component {
       this.props.navigation.navigate('discover');
       this.props.navigation.popToTop();
       this.props.actions.reloadTab('discover');
-      this.props.actions.setView('discover', 1);
+      this.props.actions.setView('discover', 0);
       return null;
     });
     return null;

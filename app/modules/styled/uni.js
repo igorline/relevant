@@ -143,6 +143,7 @@ export const ViewButton = styled(View)`
       : ''};
   ${mixins.background}
   ${mixins.padding}
+  ${mixins.margin}
 `;
 
 export const Tag = styled(Text)`
