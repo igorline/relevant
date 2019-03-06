@@ -21256,8 +21256,8 @@
     "4": {
       "links": {},
       "events": {},
-      "address": "0x232ADBDb37B3BAaffc9B692a1a7AEf9940D1D65B",
-      "updated_at": 1551856033087
+      "address": "0xd05e0e497a570Ad0a1402375561293Bd01e9cb73",
+      "updated_at": 1551901513894
     },
     "99": {
       "links": {},
@@ -21267,7 +21267,7 @@
     }
   },
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-03-06T18:06:44.122Z",
+  "updatedAt": "2019-03-06T19:42:28.023Z",
   "devdoc": {
     "methods": {
       "allocateAirdrops(uint256)": {
