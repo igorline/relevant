@@ -68,7 +68,7 @@ async function undoInvest({ post, investment, user }) {
   user.lockedTokens = (user.lockedTokens || 0) - returnTokens;
   console.log('UNLOCK TOKENS', investment.stakedTokens, user.balance, user.lockedTokens);
 
-  post.data.totalStaked -= investment.stakedTokens;
+  post.data.totalShares -= investment.stakedTokens;
   const earning = await Earnings.findOne({ user: user._id, post: post._id });
   if (earning) {
     await earning.remove();
@@ -156,7 +156,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   post.data.shares += shares;
   post.data.balance += stakedTokens;
   user.lockedTokens += stakedTokens;
-  post.data.totalStaked += stakedTokens;
+  post.data.totalShares += stakedTokens;
   post.data.expectedPayout = computePostPayout(post.data, communityInstance);
 
   await user.save();

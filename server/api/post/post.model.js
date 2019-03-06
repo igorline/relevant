@@ -312,11 +312,17 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       post = await new (this.model('Post'))(parentObj);
     }
 
+    const eligibleForReward = !post.parentPost && !post.twitter;
+
     if (!post.data) {
       post = await post.addPostData({
         slug: community,
         _id: communityId
       });
+    } else if (!post.data.eligibleForReward && eligibleForReward) {
+      post.data = eligibleForReward;
+      post.data.postDate = postDate;
+      post.data.payoutTime = payoutTime;
     }
 
     const combinedTags = [...new Set([...(post.tags || []), ...(tags || [])])];
