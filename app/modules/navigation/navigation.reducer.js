@@ -5,7 +5,8 @@ import {
   TOGGLE_TOPICS,
   SCROLL,
   SHOW_MODAL,
-  HIDE_MODAL
+  HIDE_MODAL,
+  SET_WIDTH
 } from 'core/actionTypes';
 
 const initialState = {
@@ -19,11 +20,18 @@ const initialState = {
   activity: {},
   profile: {},
   myProfile: {},
-  modal: null
+  modal: null,
+  sideNavIsOpen: true,
+  width: null
 };
 
 function navigationState(state = initialState, action) {
   switch (action.type) {
+    case SET_WIDTH:
+      return {
+        ...state,
+        width: action.payload.width
+      };
     case SHOW_MODAL: {
       return {
         ...state,
