@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot SplashComponent 1`] = `
+.c1 {
+  color: #0000ff;
+}
+
 .c0 {
   color: #0000ff;
   -webkit-text-decoration: underline;
   text-decoration: underline;
-}
-
-.c1 {
-  color: #0000ff;
 }
 
 <div
@@ -463,12 +463,9 @@ exports[`Snapshot SplashComponent 1`] = `
           <a
             className="ulink-mock c0"
             display="inline"
-            href="/https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
-            hu={0}
-            inline={0}
+            href="https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
             onClick={[Function]}
-            styles=""
-            td="underline"
+            target="_blank"
           >
             Learn More
           </a>
