@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
-import get from 'lodash/get';
+import get from 'lodash.get';
 
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
@@ -85,6 +86,8 @@ class App extends Component {
       actions.setInviteCode(parsed.invitecode);
       this.toggleLogin('signup');
     }
+    this.updateWidth();
+    window.addEventListener('resize', this.updateWidth);
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
@@ -92,6 +95,15 @@ class App extends Component {
     // });
     //
   }
+
+  setWidth = () => {
+    this.props.actions.setWidth(window.innerWidth);
+  };
+
+  debouncedSetWidth = AwesomeDebouncePromise(this.setWidth, 500);
+  updateWidth = () => {
+    this.debouncedSetWidth();
+  };
 
   componentDidUpdate(prevProps) {
     const { actions, auth, location } = this.props;

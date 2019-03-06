@@ -7,7 +7,8 @@ import {
   SCROLL,
   SET_WEB_VIEW,
   SHOW_MODAL,
-  HIDE_MODAL
+  HIDE_MODAL,
+  SET_WIDTH
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction } from 'app/utils/nav';
@@ -134,6 +135,15 @@ export function setView(type, view) {
     payload: {
       type,
       view
+    }
+  };
+}
+
+export function setWidth(width) {
+  return {
+    type: SET_WIDTH,
+    payload: {
+      width
     }
   };
 }
