@@ -66,7 +66,9 @@ class TopNav extends Component {
     if (
       this.state.timeSinceNotificationCount &&
       now.getTime() - this.state.timeSinceNotificationCount.getTime() < 30000
-    ) { return; }
+    ) {
+      return;
+    }
     if (isAuthenticated) {
       this.setState({ timeSinceNotificationCount: now });
       this.props.actions.getNotificationCount();
@@ -90,7 +92,7 @@ class TopNav extends Component {
   }
 
   render() {
-    const { location, auth, className, actions, notif } = this.props;
+    const { auth, className, actions, notif } = this.props;
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
@@ -147,7 +149,11 @@ class TopNav extends Component {
                 <LinkFont c={colors.blue}>Get Started</LinkFont>
               </Ulink>
               {auth.isAuthenticated ? (
-                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                <Link
+                  onClick={() => actions.showModal('newpost')}
+                  to={'#'}
+                  disabled={!auth.user}
+                >
                   <Button>New Post</Button>
                 </Link>
               ) : (

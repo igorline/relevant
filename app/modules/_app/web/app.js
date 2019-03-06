@@ -140,16 +140,16 @@ class App extends Component {
   }
 
   renderModal() {
-    const { location, history } = this.props;
+    const { location, history } = this.props; // eslint-disable-line
     let { globalModal } = this.props;
     const { hash } = location;
     let hashModal;
     if (hash) {
       hashModal = hash.substring(1);
     }
-    if (!hash && globalModal) {
-      history.push(location.pathname + `#${globalModal}`);
-    }
+    // if (!hash && globalModal) {
+    //   history.push(location.pathname + `#${globalModal}`);
+    // }
     if (hashModal) {
       globalModal = hashModal;
     }
