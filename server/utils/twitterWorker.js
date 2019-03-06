@@ -335,7 +335,7 @@ async function cleanup() {
     twitter: true,
     hidden: true,
     postDate: { $lt: cutoffDate }
-  }).limit(50000);
+  }).limit(10000);
 
   console.log('clearing twitter posts ', posts.length, ' posts');
   const removePosts = await posts.map((p, i) =>
