@@ -121,7 +121,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // in production this is a worker
-if (relevantEnv === 'staging' || isDevelopment) {
+if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'native') {
   require('./queue');
 }
 
