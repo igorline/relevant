@@ -1,5 +1,6 @@
 import PostData from 'server/api/post/postData.model';
 import { MINIMUM_RANK } from 'server/config/globalConstants';
+import Community from 'server/api/community/community.model';
 import Feed from './communityFeed.model';
 import Post from '../post/post.model';
 
@@ -19,7 +20,10 @@ exports.get = async (req, res, next) => {
     let sortQuery;
     let commentarySort;
 
-    let query = { community, isInFeed: true };
+    const cObj = await Community.findOne({ slug: community }, '_id');
+    const communityId = cObj._id;
+
+    let query = { communityId, isInFeed: true };
     if (sort === 'rank') {
       sortQuery = { rank: -1 };
       query.pagerank = { $gt: MINIMUM_RANK };
@@ -43,12 +47,12 @@ exports.get = async (req, res, next) => {
     .populate({
       path: 'post',
       populate: [
-        { path: 'data', match: { community } },
+        // { path: 'data', match: { communityId } },
         {
           path: 'commentary',
           match: {
             // TODO implement intra-community commentary
-            community,
+            communityId,
             type: 'post',
 
             // TODO - we should probably sort the non-community commentary
@@ -63,7 +67,7 @@ exports.get = async (req, res, next) => {
             {
               path: 'embeddedUser.relevance',
               select: 'pagerank',
-              match: { community, global: true }
+              match: { communityId, global: true }
             }
           ]
         },
@@ -71,7 +75,7 @@ exports.get = async (req, res, next) => {
         {
           path: 'embeddedUser.relevance',
           select: 'pagerank',
-          match: { community, global: true }
+          match: { communityId, global: true }
         }
       ]
     });
@@ -84,21 +88,24 @@ exports.get = async (req, res, next) => {
         // if (f.post.commentary.length && f.post.commentary.find(p => p.twitter)) {
         //   console.log(f.post.toObject());
         // }
+        const data = { ...f.toObject() };
+        delete data.post;
+        f.post.data = data;
         posts.push(f.post);
       } else {
         // just in case - this shouldn't happen
         console.log('error: post is null!', f.toObject()); // eslint-disable-line
-        await f.remove();
+        // await f.remove();
       }
     });
 
     // TODO worker thread?
     if (user) {
       const postIds = [];
-      posts.forEach(meta => {
-        postIds.push(meta._id);
-        meta.commentary.forEach(post => {
-          postIds.push(post._id || post);
+      posts.forEach(post => {
+        postIds.push(post._id);
+        post.commentary.forEach(comment => {
+          postIds.push(comment._id || comment);
         });
       });
       Post.sendOutInvestInfo(postIds, user._id);

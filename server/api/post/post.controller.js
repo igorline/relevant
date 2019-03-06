@@ -2,6 +2,7 @@ import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
 import { get } from 'lodash';
+import Community from 'server/api/community/community.model';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -215,6 +216,10 @@ exports.index = async (req, res, next) => {
 exports.userPosts = async (req, res, next) => {
   try {
     const { community } = req.query;
+
+    const cObj = await Community.findOne({ slug: community }, '_id');
+    const communityId = cObj._id;
+
     const { user } = req;
     let id;
     let blocked = [];
@@ -230,7 +235,7 @@ exports.userPosts = async (req, res, next) => {
     if (!author) throw new Error('Missing user');
 
     const sortQuery = { _id: -1 };
-    const query = { user: author._id, community };
+    const query = { user: author._id, communityId };
 
     if (blocked.find(u => author._id.equals(u))) {
       return res.status(200).json({});
@@ -243,14 +248,14 @@ exports.userPosts = async (req, res, next) => {
         {
           path: 'embeddedUser.relevance',
           select: 'pagerank',
-          match: { community, global: true }
+          match: { communityId, global: true }
         },
         {
           path: 'metaPost'
         },
         {
           path: 'data',
-          match: { community }
+          match: { communityId }
         }
       ]
     })
@@ -260,11 +265,11 @@ exports.userPosts = async (req, res, next) => {
     .populate({
       path: 'embeddedUser.relevance',
       select: 'pagerank',
-      match: { community, global: true }
+      match: { communityId, global: true }
     })
     .populate({
       path: 'data',
-      match: { community }
+      match: { communityId }
     })
     .limit(limit)
     .skip(skip)

@@ -12,6 +12,7 @@ import Earnings from 'server/api/earnings/earnings.model';
 import Subscription from 'server/api/subscription/subscription.model';
 import Statistics from 'server/api/statistics/statistics.model';
 import Feed from 'server/api/feed/feed.model';
+import Treasury from 'server/api/treasury/treasury.model';
 import { previewDataAsync } from 'server/api/post/post.controller';
 
 const { ObjectId } = mongoose.Types;
@@ -655,24 +656,37 @@ async function makeSurePostHaveCommunityId() {
 // }
 
 async function userTokens() {
-  let users = await User.find({ tokenBalance: { $gt: 0 } });
-  users = users.map(u => {
-    u.tokenBalance = 0;
-    return u.save();
-  });
+  // let users = await User.find({});
+  // users = users.map(u => {
+  //   u.tokenBalance = 0;
+  //   return u.save();
+  // });
 
-  users = await User.find();
-
-  users = users.map(u => {
-    u.tokenBalance = 0;
-    return u.save();
-  });
+  const users = await User.find({});
   let totalTokens = 0;
   users.forEach(u => {
-    console.log(u.handle, u.balance);
+    // console.log(u.handle, u.balance);
     totalTokens += u.balance || 0;
   });
   console.log('totalTokens', totalTokens);
+
+  const treasury = await Treasury.findOne({});
+  console.log(treasury.toObject());
+}
+
+async function cleanUpCommunityFunds() {
+  const communities = await Community.find({});
+  communities.map(c =>
+    // eslint-disable-line
+    // console.log(c.toObject());
+    console.log(c.slug, c.rewardFund)
+    // c.rewardFund = 0;
+    // c.topPostShares = 0;
+    // c.currentPosts = 0;
+    // c.postCount = 0;
+    // c.currentShares = 0;
+    // return c.save();
+  );
 }
 
 async function runUpdates() {
@@ -697,7 +711,8 @@ async function runUpdates() {
 
     // await cleanInvites();
 
-    // await userTokens();
+    await userTokens();
+    await cleanUpCommunityFunds();
 
     // DON'T NEED
     // await cleanupPostData();
