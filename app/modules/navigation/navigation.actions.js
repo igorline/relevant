@@ -8,6 +8,8 @@ import {
   SET_WEB_VIEW,
   SHOW_MODAL,
   HIDE_MODAL,
+  OPEN_WEB_SIDE_NAV,
+  CLOSE_WEB_SIDE_NAV,
   SET_WIDTH
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
@@ -175,6 +177,18 @@ export function reloadTab(key) {
 export function reloadAllTabs() {
   return {
     type: RELOAD_ALL_TABS
+  };
+}
+
+export function openWebSideNav() {
+  return {
+    type: OPEN_WEB_SIDE_NAV
+  };
+}
+
+export function closeWebSideNav() {
+  return {
+    type: CLOSE_WEB_SIDE_NAV
   };
 }
 
