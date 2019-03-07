@@ -187,10 +187,7 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance(
-                'Discover relevant content and silence the noise of the attention economy',
-                ['relevant', 'noise', 'content']
-              )}
+              {sentance('Discover content that’s relevant to you', ['relevant', 'you'])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
           </View>
