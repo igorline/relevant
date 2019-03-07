@@ -28,7 +28,8 @@ class TagSelection extends Component {
     super(props, context);
     this.state = {
       input: '',
-      inputFocused: false
+      inputFocused: false,
+      communityTags: []
     };
 
     this.toggleTag = this.toggleTag.bind(this);
@@ -53,14 +54,19 @@ class TagSelection extends Component {
     if (props) {
       this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
       this.tags = props.keywords.map(tag => ({ _id: tag }));
-      this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
+      // this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
+      this.setState({
+        communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
+      });
       if (props.postCategory) this.setTopicTags(props.postCategory, true);
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
   }
   componentDidUpdate(prevProps) {
     if (prevProps.communityTags !== this.props.communityTags) {
-      this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
+      this.setState({
+        communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
+      });
     }
   }
 
@@ -142,7 +148,7 @@ class TagSelection extends Component {
   render() {
     const { selectedTopic } = this;
     const selectedTags = [...this.selectedTags, ...this.inputTags];
-    let tags = [...this.inputTags, ...this.communityTags, ...this.tags];
+    let tags = [...this.inputTags, ...this.state.communityTags, ...this.tags];
 
     tags = [...new Set(tags.map(t => t._id))];
     // hide current category
