@@ -3,7 +3,7 @@ import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
-import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
+import { BANNED_USER_HANDLES, EMAIL_REWARD } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
@@ -14,8 +14,6 @@ import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
-// User.find({ handle: 'ed' }).remove().exec();
-// Post.find({ 'embeddedUser.handle': 'ed' }).remove().exec();
 
 async function sendConfirmation(user, newUser) {
   let text = '';
@@ -25,16 +23,15 @@ async function sendConfirmation(user, newUser) {
       user.confirmCode
     }`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Relevant Email Confirmation',
-      html: `${text}Click on this link to confirm your email address:
+      html: `${text}Click on this link to confirm your email address and get ${EMAIL_REWARD} Relevant Coins:
       <br />
       <br />
       <a href="${url}" target="_blank">${url}</a>
       <br />
       <br />
-      Once you confirm your email you will be able to invite your friends to the app!
       `
     };
     await mail.send(data);

@@ -112,19 +112,24 @@ class Application extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (!this.props.auth.user && next.auth.user) {
-      this.props.actions.userToSocket(next.auth.user._id);
-      this.props.actions.getNotificationCount();
+    const { auth, actions } = this.props;
+    if (!auth.user && next.auth.user) {
+      actions.userToSocket(next.auth.user._id);
+      actions.getNotificationCount();
 
       const { community } = next.auth.user;
       if (community) next.actions.setCommunity(community);
+
+      if (next.auth.invitecode) {
+        actions.redeemInvite(next.auth.invitecode);
+      }
     }
   }
 
   handleOpenURL = url => {
     const { actions, navigation, auth } = this.props;
 
-    let newCommunity = url.url.split('/')[3];
+    let newCommunity = url.url.split(/\/|\?/)[3];
     newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
     if (
       newCommunity &&
@@ -141,6 +146,10 @@ class Application extends Component {
     if (parsed.invitecode && !auth.isAuthenticated) {
       actions.setInviteCode(parsed.invitecode);
       navigation.navigate('twitterSignup');
+    }
+
+    if (parsed.invitecode && auth.isAuthenticated) {
+      actions.redeemInvite(parsed.invitecode);
     }
   };
 
