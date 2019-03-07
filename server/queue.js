@@ -261,6 +261,7 @@ function startRewards() {
   updateRewards();
 }
 
+// eslint-disable-next-line
 function startTwitterUpdate() {
   setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
   TwitterWorker.updateTwitterPosts();
@@ -272,7 +273,7 @@ function startTwitterUpdate() {
 // startRewards();
 
 if (process.env.NODE_ENV !== 'production') {
-  startTwitterUpdate();
+  // startTwitterUpdate();
 }
 
 if (process.env.NODE_ENV === 'production') {
