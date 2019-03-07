@@ -15,6 +15,9 @@ export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);
 
+export const mediumScreenWidth = '714px';
+export const smallScreenWidth = '414px';
+
 // this is handled by mixins now — deprecated
 export const universalBorder = (side, color, width) => `
   border${side ? `-${side}` : ''}-color: ${color || colors.lineColor};

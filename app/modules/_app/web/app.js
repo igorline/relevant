@@ -1,28 +1,31 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+import routes from 'modules/_app/web/routes';
+import queryString from 'query-string';
+import get from 'lodash/get';
+
+import * as navigationActions from 'modules/navigation/navigation.actions';
+import * as authActions from 'modules/auth/auth.actions';
+import * as modals from 'modules/ui/modals';
+
+import { renderRoutes, matchRoutes } from 'react-router-config';
+import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { renderRoutes, matchRoutes } from 'react-router-config';
-import routes from 'modules/_app/web/routes';
-
-// import Header from 'modules/navigation/web/header.component';
-import AuthContainer from 'modules/auth/web/auth.container';
-import * as navigationActions from 'modules/navigation/navigation.actions';
-import * as authActions from 'modules/auth/auth.actions';
 import { getEarnings } from 'modules/wallet/earnings.actions';
-import { getCommunities } from 'modules/community/community.actions';
+
+import AuthContainer from 'modules/auth/web/auth.container';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
 import Modal from 'modules/ui/web/modal';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
+import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
+
 import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
-import * as modals from 'modules/ui/modals';
-import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
-import queryString from 'query-string';
-import get from 'lodash/get';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 if (process.env.BROWSER === true) {
@@ -196,37 +199,6 @@ class App extends Component {
     const temp = user && user.role === 'temp';
     const connectAccount = location.hash === '#connectAccount';
 
-    const mobileEl = (
-      <div className="mobileSplash">
-        <h1>Relevant browser version doesn't currently support mobile devices</h1>
-        <p>Please download a dedicated mobile app:</p>
-        <p>
-          <a
-            href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8"
-            target="_blank"
-          >
-            <img alt="iOS App Store" src="https://relevant.community/img/appstore.png" />
-          </a>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <a
-            href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
-            target="_blank"
-          >
-            <img
-              alt="Google Play Store"
-              src="https://relevant.community/img/googleplaystore.png"
-            />
-          </a>
-        </p>
-      </div>
-    );
-
-    let header;
-    // if (location.pathname === '/') {
-    //   header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
-    //   mobileEl = null;
-    // }
-
     return (
       <div>
         <GlobalStyle />
@@ -250,11 +222,7 @@ class App extends Component {
           <UpvoteAnimation />
         </div>
         <EthTools>
-          {header}
-          <div style={{ display: 'flex', width: '100%' }}>
-            {/* <CommunityNav {...this.props} /> */}
-            {children}
-          </div>
+          <div style={{ display: 'flex', width: '100%' }}>{children}</div>
           <AuthContainer
             toggleLogin={this.toggleLogin.bind(this)}
             open={this.state.openLoginModal || temp}
@@ -275,7 +243,6 @@ class App extends Component {
         </EthTools>
         {this.renderModal()}
         <ToastContainer />
-        {mobileEl}
         {renderRoutes(this.props.route.routes)}
       </div>
     );
