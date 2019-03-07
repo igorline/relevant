@@ -20,6 +20,7 @@ let account;
 let key;
 let web3;
 let initialized = false;
+const chainId = process.env.INFURA_NETWORK === 'mainnet' ? 1 : 4;
 // const nextNonce = 0;
 
 export const isInitialized = () => initialized;
@@ -89,7 +90,7 @@ export async function sendTx(params) {
       value: web3.utils.numberToHex(value),
       data,
       // EIP 155 chainId - mainnet: 1, ropsten: 3
-      chainId: 4
+      chainId
     };
 
     const tx = new EthereumTx(txParams);

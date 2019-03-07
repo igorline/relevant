@@ -150,10 +150,13 @@ CommunitySchema.methods.join = async function join(userId, role) {
       user: userId,
       communityId: this._id
     });
-    if (member) {
-      console.log('member already exists ', userId); // eslint-disable-line
-      return member;
+
+    if (member && role === 'admin') {
+      member.role = role;
+      return member.save();
     }
+
+    if (member) return member;
 
     await this.model('Relevance').create({ userId, communityId, community });
 

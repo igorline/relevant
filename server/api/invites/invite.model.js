@@ -103,7 +103,8 @@ async function referralRewards({ invite, user, Invite }) {
     const communityInstance = await Invite.model('Community').findOne({
       _id: communityId
     });
-    await communityInstance.join(user._id);
+    const role = invite.type === 'admin' ? 'admin' : null;
+    await communityInstance.join(user._id, role);
 
     user = await user.addReward({ type: 'referredBy', user: inviter });
     inviter = await inviter.addReward({ type: 'referral', user });

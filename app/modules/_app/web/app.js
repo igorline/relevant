@@ -83,7 +83,11 @@ class App extends Component {
     const parsed = queryString.parse(location.search);
     if (parsed.invitecode) {
       actions.setInviteCode(parsed.invitecode);
-      this.toggleLogin('signup');
+      if (auth.isAuthenticated) {
+        actions.redeemInvite(parsed.invitecode);
+      } else {
+        this.toggleLogin('signup');
+      }
     }
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
@@ -92,6 +96,17 @@ class App extends Component {
     // });
     //
   }
+
+  handleUserLogin = () => {
+    const { auth, actions } = this.props;
+    if (!auth.user.webOnboard.onboarding) {
+      actions.showModal('onboarding');
+      actions.webOnboard('onboarding');
+    }
+    if (auth.invitecode) {
+      actions.redeemInvite(auth.invitecode);
+    }
+  };
 
   componentDidUpdate(prevProps) {
     const { actions, auth, location } = this.props;
@@ -124,9 +139,8 @@ class App extends Component {
       actions.userToSocket(userId);
     }
 
-    if (!prevProps.auth.user && auth.user && !auth.user.webOnboard.onboarding) {
-      actions.showModal('onboarding');
-      actions.webOnboard('onboarding');
+    if (!prevProps.auth.user && auth.user) {
+      this.handleUserLogin();
     }
     // const match = matchPath(history.location.pathname, {
     //   // You can share this string as a constant if you want
@@ -143,16 +157,16 @@ class App extends Component {
   }
 
   renderModal() {
-    const { location, history } = this.props;
+    const { location, history } = this.props; // eslint-disable-line
     let { globalModal } = this.props;
     const { hash } = location;
     let hashModal;
     if (hash) {
       hashModal = hash.substring(1);
     }
-    if (!hash && globalModal) {
-      history.push(location.pathname + `#${globalModal}`);
-    }
+    // if (!hash && globalModal) {
+    //   history.push(location.pathname + `#${globalModal}`);
+    // }
     if (hashModal) {
       globalModal = hashModal;
     }

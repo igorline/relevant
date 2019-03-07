@@ -109,7 +109,7 @@ PostSchema.virtual('reposted', {
 PostSchema.virtual('commentary', {
   ref: 'Post',
   localField: '_id',
-  foreignField: 'linkParent'
+  foreignField: 'parentPost'
 });
 
 PostSchema.virtual('embeddedUser.relevance', {
@@ -135,13 +135,22 @@ PostSchema.virtual('children', {
 
 PostSchema.index({ twitter: 1 });
 PostSchema.index({ parentPost: 1, hidden: 1 });
+PostSchema.index({ parentPost: 1, pagerank: 1, hidden: 1 });
+
 PostSchema.index({ twitter: 1, twitterId: 1 });
 
 PostSchema.index({ rank: 1 });
-PostSchema.index({ postDate: 1 });
-PostSchema.index({ _id: 1, user: 1 });
+PostSchema.index({ postDate: -1 });
+PostSchema.index({ postDate: -1, community: 1 });
+
+PostSchema.index({ postDate: -1, communitId: 1, parentPost: 1 });
 PostSchema.index({ _id: 1, community: 1, user: 1 });
-PostSchema.index({ postDate: 1, tags: 1 });
+
+PostSchema.index({ _id: 1, user: 1 });
+PostSchema.index({ _id: -1, communityId: 1, user: 1 });
+
+PostSchema.index({ communityId: 1, user: 1 });
+PostSchema.index({ postDate: -1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
 PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
@@ -256,8 +265,7 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
     if (topComment) rank = Math.max(rank, topComment.rank);
 
-    // post.data.rank = rank;
-    // post.data.pagerank = Math.max(post.data.pagerank, topComment.pagerank) || 0;
+    post.data.rank = rank;
 
     // TODO - deprecate this once we don't use this in the feed
     post.rank = rank;
@@ -303,11 +311,17 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       post = await new (this.model('Post'))(parentObj);
     }
 
+    const eligibleForReward = !post.parentPost && !post.twitter;
+
     if (!post.data) {
       post = await post.addPostData({
         slug: community,
         _id: communityId
       });
+    } else if (!post.data.eligibleForReward && eligibleForReward) {
+      post.data = eligibleForReward;
+      post.data.postDate = postDate;
+      post.data.payoutTime = payoutTime;
     }
 
     const combinedTags = [...new Set([...(post.tags || []), ...(tags || [])])];
@@ -498,7 +512,9 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
   try {
     const post = this;
 
-    post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+    if (!post.data) {
+      post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+    }
     const { shares } = post.data;
 
     if (post.type !== 'link') throw new Error('Should not prune anything but links');
@@ -533,16 +549,21 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
 
 async function updateParentPostOnRemovingChild(post) {
   const { communityId } = post;
+
   if (!communityId) {
     throw new Error('error missing post community id!', post.toObject());
   }
-  let parent = await post.model('Post').findOne({ _id: post.linkParent });
+  let parent = await post
+  .model('Post')
+  .findOne({ _id: post.linkParent })
+  .populate({ path: 'data', match: { communityId } });
+
   if (parent) parent = await parent.pruneFeed({ communityId });
 
   if (!parent) return null;
+  if (post.hidden) return parent;
 
-  parent.data = await post.model('PostData').findOne({ post: parent._id, communityId });
-
+  // parent.data = await post.model('PostData').findOne({ post: parent._id, communityId });
   if (!post.data) {
     post.data = await post.model('PostData').findOne({ post: post._id, communityId });
   }

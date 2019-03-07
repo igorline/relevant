@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import get from 'lodash.get';
-import { Image, View, CommunityLink } from 'modules/styled/uni';
+import { Image, View, CommunityLink, BodyText } from 'modules/styled/uni';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
@@ -98,22 +98,27 @@ export class Community extends Component {
       id => members[id]
     );
     return (
-      <View flex={1} bb>
-        {activeCommunity && (
-          <CommunityActive
-            key={activeCommunity._id}
-            community={activeCommunity}
-            members={activeMembers}
-            mobile={mobile}
-            actions={actions}
-            getCommunityMembers={get(actions, 'getCommunityMembers', null)}
-            view={view}
-            auth={auth}
-          >
-            {this.renderCommunityLink(activeCommunity)}
-          </CommunityActive>
-        )}
-        <View m={'2 0'}>{this.renderOtherCommunities()}</View>
+      <View flex={1}>
+        <View bb>
+          {activeCommunity && (
+            <CommunityActive
+              key={activeCommunity._id}
+              community={activeCommunity}
+              members={activeMembers}
+              mobile={mobile}
+              actions={actions}
+              getCommunityMembers={get(actions, 'getCommunityMembers', null)}
+              view={view}
+              auth={auth}
+            >
+              {this.renderCommunityLink(activeCommunity)}
+            </CommunityActive>
+          )}
+          <View m={'2 0'}>{this.renderOtherCommunities()}</View>
+        </View>
+        <BodyText m={mobile ? 2 : 4}>
+          We'll be adding more communities in the coming weeks!{'\n\n'}
+        </BodyText>
       </View>
     );
   }

@@ -24,6 +24,15 @@ const CommunityMemberSchema = new Schema(
   }
 );
 
+CommunityMemberSchema.index({ community: 1 });
+CommunityMemberSchema.index({ communityId: 1 });
+CommunityMemberSchema.index({ communityId: 1, user: 1 });
+CommunityMemberSchema.index({ community: 1, user: 1 });
+
+CommunityMemberSchema.index({ community: 1, reputation: -1 });
+CommunityMemberSchema.index({ community: 1, reputation: -1, role: 1 });
+CommunityMemberSchema.index({ community: 1, reputation: -1, user: 1 });
+
 // TODO rep key to search by
 CommunityMemberSchema.virtual('repKey').get(function getProfile() {
   return this.user + '_' + this.communityId;

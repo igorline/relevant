@@ -81,7 +81,7 @@ export default class Balance extends Component {
         </View>
         <View border={1} p="2">
           <SecondaryText>
-            {`Unclaimed RNT: ${numbers.abbreviateNumber(user.balance)}`}
+            {`Unclaimed REL: ${numbers.abbreviateNumber(user.balance)}`}
             {metaMaskTokens
               ? `   Metamask: ${numbers.abbreviateNumber(
                 wallet.connectedBalance || user.tokenBalance
