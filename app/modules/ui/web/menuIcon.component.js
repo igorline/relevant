@@ -2,33 +2,35 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { View } from 'modules/styled/web';
 import styled from 'styled-components';
 import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
-import { colors, sizing } from 'app/styles';
+import { colors, layout } from 'app/styles';
 
-const Menu = styled.div`
+const Menu = styled(View)`
+  display: flex;
   z-index: 100;
   cursor: pointer;
-  width: 35px;
-  @media screen and (min-width: 736px) * {
-    display: none;
-  }
-  margin-right: ${sizing(4)}
+  width: 25px;
+  height: 25px;
   :hover * {
     background-color: ${colors.black};
   }
 `;
 
-const MenuBar = styled.div`
+const MenuBar = styled(View)`
   width: 100%;
-  height: 5px;
+  height: 4px;
   background-color: ${colors.grey};
-  margin: 5px 0;
+  margin: 1.5px 0;
 `;
 
 class MenuIcon extends Component {
   toggleMenu = () => {
-    const { actions, sideNavIsOpen } = this.props;
+    const {
+      actions,
+      navigation: { sideNavIsOpen }
+    } = this.props;
     if (sideNavIsOpen) {
       actions.closeWebSideNav();
     }
@@ -37,23 +39,35 @@ class MenuIcon extends Component {
     }
   };
   render() {
+    const {
+      mr,
+      ml,
+      navigation: { width }
+    } = this.props;
+    if (width > layout.mediumScreenWidth) {
+      return null;
+    }
     return (
-      <Menu onClick={this.toggleMenu}>
-        <MenuBar />
-        <MenuBar />
-        <MenuBar />
-      </Menu>
+      <View mr={mr} ml={ml}>
+        <Menu onClick={this.toggleMenu} fdirection="column" justify="space-between">
+          <MenuBar />
+          <MenuBar />
+          <MenuBar />
+        </Menu>
+      </View>
     );
   }
 }
 
 MenuIcon.propTypes = {
-  sideNavIsOpen: PropTypes.bool,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  navigation: PropTypes.object,
+  ml: PropTypes.string,
+  mr: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-  sideNavIsOpen: state.navigation.sideNavIsOpen
+  navigation: state.navigation
 });
 
 const mapDispatchToProps = dispatch => ({

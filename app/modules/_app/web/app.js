@@ -100,7 +100,7 @@ class App extends Component {
     this.props.actions.setWidth(window.innerWidth);
   };
 
-  debouncedSetWidth = AwesomeDebouncePromise(this.setWidth, 500);
+  debouncedSetWidth = AwesomeDebouncePromise(this.setWidth, 100);
   updateWidth = () => {
     this.debouncedSetWidth();
   };
