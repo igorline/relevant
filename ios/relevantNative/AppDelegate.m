@@ -52,14 +52,22 @@
                       sourceApplication:sourceApplication annotation:annotation];
 }
 
-// twitter
+// twitter + url
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
-  return [[Twitter sharedInstance] application:app openURL:url options:options];
+
+  NSString* stringURL = [url absoluteString];
+
+  BOOL UrlHandled = [RCTLinkingManager application:app openURL:url options:options] &&
+  ([stringURL hasPrefix:@"Relevant://"] == YES || [stringURL hasPrefix:@"https://relevant.community/"] == YES);
+
+  BOOL TwitterHandled = [[Twitter sharedInstance] application:app openURL:url options:options];
+
+  return UrlHandled || TwitterHandled;
 }
 
 // Used for universal links
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
- restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+ restorationHandler:(void(^)(NSArray * _Nullable))restorationHandler
 {
   return [RCTLinkingManager application:application
                    continueUserActivity:userActivity
@@ -84,17 +92,17 @@
                                                       moduleName:@"relevantNative"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-  
+
   for (NSString* family in [UIFont familyNames])
   {
     NSLog(@"%@", family);
-    
+
     for (NSString* name in [UIFont fontNamesForFamilyName: family])
     {
       NSLog(@"  %@", name);
     }
   }
-  
+
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -102,15 +110,15 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  
+
   [FIRApp configure];
-  
+
 //  #ifdef DEBUG
 //    NSLog(@"DEBUG!!!");
 //  #else
 //    NSLog(@"PRODUCTION");
 //  #endif
-  
+
   return YES;
 }
 

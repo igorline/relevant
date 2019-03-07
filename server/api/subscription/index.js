@@ -1,9 +1,9 @@
-let express = require('express');
-let controller = require('./subscription.controller');
-let auth = require('../../auth/auth.service');
-let router = express.Router();
+const express = require('express');
+const controller = require('./subscription.controller');
+const auth = require('../../auth/auth.service');
 
-// router.post('/', auth.isAuthenticated(), controller.create);
+const router = express.Router();
+
 router.get('/user', auth.isAuthenticated(), controller.index);
 router.get('/search', controller.search);
 

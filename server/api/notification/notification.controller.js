@@ -4,15 +4,8 @@ const Notification = require('./notification.model');
 
 const NotificationEvents = new EventEmitter();
 
-function handleError(res, err) {
-  console.log(err);
-  return res.status(500).send(err);
-}
-
-exports.create = (req, res) => {
-  let notificationObj = req.body;
-
-  let dbNotificationObj = {
+exports.create = (req, res, next) => {
+  const dbNotificationObj = {
     post: req.body.post ? req.body.post : null,
     forUser: req.body.forUser ? req.body.forUser : null,
     byUser: req.body.byUser ? req.body.byUser : null,
@@ -23,63 +16,69 @@ exports.create = (req, res) => {
     tag: req.body.tag ? req.body.tag : null
   };
 
-  let newNotification = new Notification(dbNotificationObj);
-  return newNotification.save()
-  .then(newNotif => {
-    let newNotifObj = {
+  const newNotification = new Notification(dbNotificationObj);
+  return newNotification
+  .save()
+  .then(() => {
+    const newNotifObj = {
       _id: req.body.forUser,
-      type: 'ADD_ACTIVITY',
+      type: 'ADD_ACTIVITY'
     };
     if (newNotification.personal) {
       NotificationEvents.emit('notification', newNotifObj);
     }
     res.send(200).send();
-  });
+  })
+  .catch(next);
 };
 
-exports.show = (req, res) => {
+exports.show = (req, res, next) => {
   let query = null;
-  let userId = req.user._id;
-  let skip = parseInt(req.query.skip, 10) || 0;
-  let limit = 20;
+  const userId = req.user._id;
+  const skip = parseInt(req.query.skip, 10) || 0;
+  const limit = 20;
 
   if (userId) {
-    query = { $or: [
-      { forUser: userId },
-      { forUser: 'everyone' },
-    ]
-    };
+    query = { $or: [{ forUser: userId }, { group: 'everyone' }] };
   }
-
-  // Uncomment to hide previous @everyone notifications - these maybe usefull onboarding?
-  // if (req.user.createdAt) {
-  //   query = { ...query, createdAt: { $gt: new Date(req.user.createdAt) } };
-  // }
 
   Notification.find(query)
   .limit(limit)
   .skip(skip)
   .sort({ _id: -1 })
-  .populate('byUser forUser post')
-  .then(notifications => res.status(200).json(notifications));
+  // .populate('byUser')
+  .populate({
+    path: 'byUser',
+    populate: {
+      path: 'relevance',
+      match: {
+        community: req.query.community,
+        global: true
+      }
+    }
+  })
+  .populate({ path: 'post', populate: { path: 'metaPost' } })
+  .then(notifications => res.status(200).json(notifications))
+  .catch(next);
 };
 
-exports.unread = (req, res) => {
+exports.unread = (req, res, next) => {
   let query = null;
-  let userId = req.user._id;
+  const userId = req.user._id;
   if (userId) {
     query = { forUser: userId, read: false };
   }
   Notification.count(query)
-  .then((unread) => {
+  .then(unread => {
     res.status(200).json({ unread });
-  });
+  })
+  .catch(next);
 };
 
-exports.showGeneral = (req, res) => {
-  let avoidUser = req.user._id;
-  let skip = parseInt(req.query.skip, 10) || 0;
-  let limit = 20;
+exports.showGeneral = (req, res, next) => {
+  const avoidUser = req.user._id;
+  const skip = parseInt(req.query.skip, 10) || 0;
+  const limit = 20;
   let query = { personal: false };
   if (avoidUser) query = { $and: [{ personal: false }, { byUser: { $ne: avoidUser } }] };
 
@@ -87,23 +86,16 @@ exports.showGeneral = (req, res) => {
   .limit(limit)
   .skip(skip)
   .sort({ _id: -1 })
-  .populate('byUser forUser post tag')
-  .then(notifications => res.status(200).json(notifications));
+  .populate('byUser post tag')
+  .then(notifications => res.status(200).json(notifications))
+  .catch(next);
 };
 
-exports.markRead = (req, res) => {
-  let query = { forUser: req.user._id, read: false };
+exports.markRead = (req, res, next) => {
+  const query = { forUser: req.user._id, read: false };
   return Notification.update(query, { read: true }, { multi: true })
   .then(() => res.status(200).send())
-  .catch(err => handleError(res, err));
+  .catch(next);
 };
 
-  // Notification.update(query, { read: true }, { multi: true }, function (err, raw) {
-  //   if (err) return handleError(err);
-  //   console.log('The raw response from Mongo was ', raw);
-  //   res.status(200).send(true);
-  // });
-// }
-
 exports.NotificationEvents = NotificationEvents;
-

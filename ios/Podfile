@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '9.0'
 
 
 target 'Relevant' do
@@ -25,6 +25,6 @@ target 'relevantNative' do
   pod 'Firebase/Core'
   pod 'TwitterKit'
 
-  pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
+  # pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
 end

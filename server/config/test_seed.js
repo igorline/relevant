@@ -1,14 +1,17 @@
-let User = require('../api/user/user.model');
-let Subscription = require('../api/subscription/subscription.model');
-let Post = require('../api/post/post.model');
-let Feed = require('../api/feed/feed.model');
-let Notification = require('../api/notification/notification.model');
-let Invest = require('../api/invest/invest.model');
-let Earnings = require('../api/earnings/earnings.model');
-let Relevance = require('../api/relevance/relevance.model');
-let Community = require('../api/community/community.model').default;
+const User = require('../api/user/user.model');
+const Subscription = require('../api/subscription/subscription.model');
+const Post = require('../api/post/post.model');
+const Feed = require('../api/feed/feed.model');
+const Notification = require('../api/notification/notification.model');
+const Invest = require('../api/invest/invest.model');
+const Earnings = require('../api/earnings/earnings.model');
+const Relevance = require('../api/relevance/relevance.model');
+const Community = require('../api/community/community.model').default;
+const PostData = require('../api/post/postData.model.js');
 
-let Eth = require('../utils/ethereum');
+const Eth = require('../utils/ethereum');
+
+const testUserId = '5c4267177f81360b10b4b196';
 
 export const testAccounts = [
   {
@@ -22,12 +25,12 @@ export const testAccounts = [
   {
     address: '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef',
     key: '0dbbe8e4ae425a6d2687f1a7e3ba17bc98c673636790f1b8ad91193c05875ef1'
-  },
+  }
 ];
 
 export const dummyUsers = [
   {
-    _id: 'dummy1',
+    _id: '572a37d72ae95bf66b3e32d1',
     handle: 'dummy1',
     provider: 'local',
     name: 'dummy1',
@@ -43,7 +46,7 @@ export const dummyUsers = [
     ethAddress: [testAccounts[0].address]
   },
   {
-    _id: 'dummy2',
+    _id: '572a37d72ae95bf66b3e32d2',
     handle: 'dummy2',
     provider: 'local',
     name: 'dummy2',
@@ -59,7 +62,7 @@ export const dummyUsers = [
     ethAddress: [testAccounts[1].address]
   },
   {
-    _id: 'dummy3',
+    _id: '572a37d72ae95bf66b3e32d3',
     handle: 'dummy3',
     provider: 'local',
     name: 'dummy3',
@@ -74,16 +77,16 @@ export const dummyUsers = [
     role: 'user',
     __v: 224,
     ethAddress: [testAccounts[2].address]
-  },
+  }
 ];
 
-let dummySubscriptions = [
+const dummySubscriptions = [
   {
     _id: '572a37d72ae95bf66b3e32d1',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy1',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d1',
+    following: testUserId,
     amount: 1,
     __v: 0
   },
@@ -91,8 +94,8 @@ let dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d2',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy2',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d2',
+    following: testUserId,
     amount: 4,
     __v: 0
   },
@@ -100,78 +103,91 @@ let dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d3',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy3',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d3',
+    following: testUserId,
     amount: 4,
     __v: 0
-  },
+  }
 ];
 
-export async function setupData(communities) {
-  let saveUsers = dummyUsers.map(async user => {
-    user = new User(user);
-    user = await user.save();
-    let joined = communities.map(async community => {
-      let c = await Community.findOne({ slug: community });
+export async function setupData(communities = []) {
+  const saveUsers =
+    dummyUsers.map(async user => {
+      user = new User(user);
+      user = await user.save();
+      const joined = communities.map(async community => {
+        const c = await Community.findOne({ slug: community });
 
-      // create an upvote from test so we have some relevance
-      let vote = new Invest({
-        investor: 'test',
-        author: user.handle,
-        amount: 10,
-        ownPost: false,
-        communityId: c._id
+        // create an upvote from test so we have some relevance
+        const vote = new Invest({
+          investor: testUserId,
+          author: user._id,
+          amount: 10,
+          ownPost: false,
+          communityId: c._id
+        });
+        await vote.save();
+
+        return c.join(user._id);
       });
-      await vote.save();
 
-      return c.join(user._id);
-    });
-
-
-    await Promise.all(joined);
-  }) || [];
-  let saveSub = dummySubscriptions.map((sub) => {
-    let subObj = new Subscription(sub);
-    return subObj.save();
-  }) || [];
-
+      await Promise.all(joined);
+    }) || [];
+  const saveSub =
+    dummySubscriptions.map(sub => {
+      const subObj = new Subscription(sub);
+      return subObj.save();
+    }) || [];
 
   return Promise.all([...saveUsers, ...saveSub]);
 }
 
 export async function cleanupData() {
-  console.log('CLEAN UP DATA');
-  let clearFeed = [];
-  let clearUsers = dummyUsers.map(async user => {
-    try {
-      clearFeed.push(Feed.findOne({ user: user._id }).remove().exec());
-      user = await User.findOne({ _id: user._id });
-      return user && user.remove();
-    } catch (err) {
-      console.log(err);
-    }
-  }) || [];
-  let clearSub = dummySubscriptions.map(sub =>
-    Subscription.findByIdAndRemove(sub._id).exec()
-  ) || [];
+  const clearFeed = [];
+  const clearUsers =
+    dummyUsers.map(async user => {
+      try {
+        clearFeed.push(
+          Feed.findOne({ user: user._id })
+          .remove()
+          .exec()
+        );
+        user = await User.findOne({ _id: user._id });
+        return user && user.remove();
+      } catch (err) {
+        throw err;
+      }
+    }) || [];
+  const clearSub =
+    dummySubscriptions.map(sub => Subscription.findByIdAndRemove(sub._id)
+    .exec()) || [];
 
-  let dummies = dummyUsers.map(user => user._id);
-  let clearNotifications = Notification.find({ forUser: { $in: dummies } }).remove();
+  const dummies = dummyUsers.map(user => user._id);
+  const clearNotifications = Notification.find({ forUser: { $in: dummies } })
+  .remove();
 
-  let clearUpvotes = Invest.find({
-    $or: [
-      { investor: { $in: dummies } },
-      { author: { $in: dummies } },
-    ]
-  }).remove();
+  const clearUpvotes = Invest.find({
+    $or: [{ investor: { $in: dummies } }, { author: { $in: dummies } }]
+  })
+  .remove();
 
-  let posts = await Post.find({ body: 'Hotties' });
+  const posts = await Post.find({ body: 'Hotties' });
+  const clearPostData = await PostData.remove({ post: { $in: posts.map(p => p._id) } }).exec();
+
   // Have to do this in order to trigger remove hooks;
-  let clearPosts = posts.map(async post => post.remove());
-  let clearEarnings = Earnings.find({ user: { $in: dummies } }).remove().exec() || null;
-  let clearRelevance = Relevance.find({ user: { $in: dummies } }).remove().exec() || null;
+  const clearPosts = posts.map(async post => post.remove());
+  const clearEarnings =
+    Earnings.find({ user: { $in: dummies } })
+    .remove()
+    .exec() || null;
+  const clearRelevance =
+    Relevance.find({ user: { $in: dummies } })
+    .remove()
+    .exec() || null;
 
-  let clearCommunity = await Community.find({ slug: { $in: ['test_community1', 'test_community2', 'test_community3' ] } });
+  let clearCommunity = await Community.find({
+    slug: { $in: ['test_community1', 'test_community2', 'test_community3'] }
+  });
   clearCommunity = clearCommunity.map(async c => c.remove());
   // let clearCommunityFeed = CommunityFeed.remove({})
 
@@ -184,13 +200,14 @@ export async function cleanupData() {
     clearUpvotes,
     clearEarnings,
     clearRelevance,
-    ...clearCommunity
+    ...clearCommunity,
+    clearPostData,
   ]);
 }
 
 export async function initEth() {
-  let balances = testAccounts.map(async (acc, i) => {
-    let balance = await Eth.getBalance(acc.address);
+  const balances = testAccounts.map(async (acc, i) => {
+    const balance = await Eth.getBalance(acc.address);
     if (balance === 0) {
       return Eth.buyTokens(acc.address, acc.key, i + 1);
     }
@@ -198,4 +215,3 @@ export async function initEth() {
   });
   return Promise.all(balances);
 }
-

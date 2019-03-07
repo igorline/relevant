@@ -14,13 +14,24 @@ router.get('/general/list', auth.blocked(), controller.list);
 router.get('/testData', controller.testData);
 
 router.get('/check/user', controller.checkUser);
-router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 
 router.post('/', controller.create);
 router.post('/cashOut', auth.isAuthenticated(), controller.cashOut);
 
-router.put('/updateUserTokenBalance', auth.isAuthenticated(), controller.updateUserTokenBalance);
-router.put('/updateHandle', auth.isAuthenticated(), controller.updateHandle, auth.setTokenCookieDesktop);
+router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
+router.put('/webonboard/:step', auth.isAuthenticated(), controller.webOnboard);
+router.put(
+  '/updateUserTokenBalance',
+  auth.isAuthenticated(),
+  controller.updateUserTokenBalance
+);
+router.put(
+  '/updateHandle',
+  auth.isAuthenticated(),
+  controller.updateHandle,
+  auth.setTokenCookieDesktop
+);
+router.put('/updateCommunity', auth.isAuthenticated(), controller.updateComunity);
 router.put('/ethAddress', auth.isAuthenticated(), controller.ethAddress);
 router.put('/confirm', controller.confirm);
 router.put('/forgot', controller.forgot);

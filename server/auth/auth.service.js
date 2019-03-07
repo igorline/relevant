@@ -6,62 +6,108 @@ import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
 import Community from '../api/community/community.model';
 
-let validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
+const validateJwt = expressJwt({
+  secret: process.env.SESSION_SECRET,
+  ignoreExpiration: true
+});
 
-function blocked(req, res) {
-  return compose()
-  .use((req, res, next) => {
-    let token = req.cookies.token;
-    if (token) {
-      req.headers.authorization = 'Bearer ' + token;
+// doesn't throw error if user is not authenticated
+function validateTokenLenient(req, res, next) {
+  const { token } = req.cookies;
+  if (token) {
+    req.headers.authorization = 'Bearer ' + token;
+  } else if (
+    req.query &&
+    Object.prototype.hasOwnProperty.call(req.query, 'access_token')
+  ) {
+    req.headers.authorization = 'Bearer ' + req.query.access_token;
+  }
+  return validateJwt(req, res, err => {
+    if (token && err) {
+      console.log('REMOVING TOKEN', err); // eslint-disable-line
+      req.universalCookies.remove('token');
     }
-    validateJwt(req, res, (err, decoded) => {
-      if (err || !req.user) return next();
-      User.findById(req.user._id, 'blocked blockedBy', (err, user) => {
-        if (err) return next();
-        if (!user) return next();
-        req.user = user;
-        return next();
-      });
-    });
+    next();
   });
 }
 
-function currentUser(req, res) {
-  return compose()
-  .use((req, res, next) => {
-    let token = req.cookies.token;
-    if (token) {
-      req.headers.authorization = 'Bearer ' + token;
-    } else if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
-    }
-    validateJwt(req, res, (err, decoded) => {
-      if (err || !req.user) return next();
-      User.findById(req.user._id, (err, user) => {
-        if (err) return next();
-        if (!user) return next();
-        req.user = user;
-        return next();
-      });
-    });
-  });
+// throws error if user is not authenticated
+function validateTokenStrict(req, res, next) {
+  const { token } = req.cookies;
+  if (token) {
+    req.headers.authorization = 'Bearer ' + token;
+  } else if (
+    req.query &&
+    Object.prototype.hasOwnProperty.call(req.query, 'access_token')
+  ) {
+    req.headers.authorization = 'Bearer ' + req.query.access_token;
+  }
+  return validateJwt(req, res, next);
 }
 
-function communityMember(req, res) {
-  return compose()
-  .use(async (req, res, next) => {
+function getUser(select) {
+  return async (req, res, next) => {
     try {
-      let user = req.user._id;
-      if (!user) throw new Error('missing user credentials');
+      if (!req.user) return next();
+      const user = await User.findById(req.user._id, select);
+      if (!user) {
+        // eslint-disable-next-line
+        console.log("User doesn't exist - bad token", req.user);
+        req.universalCookies.remove('token');
+      }
+
+      req.user = user;
+      return next();
+    } catch (err) {
+      req.user = null;
+      req.universalCookies.remove('token');
+      return next();
+    }
+  };
+}
+
+function blocked() {
+  return compose()
+  .use(validateTokenLenient)
+  .use(getUser('blocked blockedBy'));
+}
+
+function currentUser() {
+  return compose()
+  .use(validateTokenLenient)
+  .use(getUser());
+}
+
+function authMiddleware() {
+  return validateTokenStrict;
+}
+
+/**
+ * Attaches the user object to the request if authenticated
+ * Otherwise returns 403
+ */
+function isAuthenticated() {
+  return compose()
+  .use(validateTokenStrict)
+  .use(getUser());
+}
+
+function communityMember() {
+  return async (req, res, next) => {
+    try {
+      if (!req.user || !req.user._id) {
+        throw new Error('missing user credentials');
+      }
+      const user = req.user._id;
       // TODO make sure share extension supports this
-      let community = req.query.community || 'relevant';
+      const community = req.query.community || 'relevant';
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
-      if (community === 'relevant' && !member) {
+      if (!member) {
+        // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
-        let com = await Community.findOne({ slug: 'relevant' });
+        const com = await Community.findOne({ slug: community });
         await com.join(user);
         member = await CommunityMember.findOne({ user, community });
       }
@@ -71,53 +117,9 @@ function communityMember(req, res) {
       req.communityMember = member;
       return next();
     } catch (err) {
-      next(err);
+      return next(err);
     }
-  });
-}
-
-function authMiddleware(req, res) {
-  return compose()
-    // Validate jwt
-  .use((req, res, next) => {
-    // allow access_token to be passed through query parameter as well
-    if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
-    }
-
-    validateJwt(req, res, (err, decoded) => {
-      if (!err && decoded) {
-        req.user = decoded;
-      }
-      next();
-    });
-  });
-}
-
-
-/**
- * Attaches the user object to the request if authenticated
- * Otherwise returns 403
- */
-function isAuthenticated() {
-  return compose()
-  // Validate jwt
-  .use((req, res, next) => {
-    // allow access_token to be passed through query parameter as well
-    if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
-    }
-    validateJwt(req, res, next);
-  })
-  // Attach user to request
-  .use((req, res, next) => {
-    User.findById(req.user._id, (err, user) => {
-      if (err) return next(err);
-      if (!user) return res.status(401).json({ message: 'Authentication failed.' });
-      req.user = user;
-      return next();
-    });
-  });
+  };
 }
 
 /**
@@ -125,11 +127,12 @@ function isAuthenticated() {
  */
 function hasRole(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
-
   return compose()
   .use(isAuthenticated())
   .use((req, res, next) => {
-    if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
+    if (
+      config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
+    ) {
       next();
     } else {
       res.sendStatus(403);
@@ -144,15 +147,26 @@ function signToken(id, role) {
   return jwt.sign({ _id: id, role }, process.env.SESSION_SECRET, { expiresIn: '7 days' });
 }
 
+function setTokenNative(req, res) {
+  if (!req.user) {
+    return res.json(404, { message: 'Something went wrong, please try again.' });
+  }
+
+  const token = signToken(req.user._id, req.user.role);
+  req.universalCookies.set('token', token);
+
+  return res.json({ token, user: req.user });
+}
 
 function setTokenCookieDesktop(req, res) {
-  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
+  if (!req.user) {
+    return res.json(404, { message: 'Something went wrong, please try again.' });
+  }
 
-  let token = signToken(req.user._id, req.user.role);
+  const token = signToken(req.user._id, req.user.role);
+  req.universalCookies.set('token', token);
 
-  res.cookie('token', token);
-  // console.log('query params ', req.query);
-  let redirect = req.query.redirect || '/relevant/new';
+  const redirect = req.query.redirect || '/relevant/new';
   return res.redirect(redirect);
 }
 
@@ -160,14 +174,13 @@ function setTokenCookieDesktop(req, res) {
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
-
-  let token = signToken(req.user._id, req.user.role);
-  if (req.user.type === 'temp') {
-    return res.json({ tmpUser: token });
+  if (!req.user) {
+    return res.json(404, { message: 'Something went wrong, please try again.' });
   }
 
-  res.cookie('token', token);
+  const token = signToken(req.user._id, req.user.role);
+  req.universalCookies.set('token', token);
+
   return res.redirect('/signup');
 }
 
@@ -180,4 +193,4 @@ exports.currentUser = currentUser;
 exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
 exports.communityMember = communityMember;
-
+exports.setTokenNative = setTokenNative;

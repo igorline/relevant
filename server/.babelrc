@@ -1,21 +1,24 @@
 {
   "presets": [
-    "env",
-    "stage-2",
-    "react",
+    "@babel/preset-env",
+    "@babel/preset-react",
   ],
-  "env": {
-    "development": {
-      "plugins": [
-        "espower",
-        "transform-runtime",
-      ],
-    },
-    "production": {
-      "plugins": [
-        "espower",
-        "transform-runtime"
-      ],
-    }
-  },
+  "plugins": [
+    "espower",
+    "@babel/plugin-transform-runtime",
+    "@loadable/babel-plugin",
+    "@babel/plugin-proposal-class-properties",
+    "inline-react-svg",
+    ["styled-components"],
+    ["module-resolver", {
+      "alias": {
+        "server": "./server",
+        "modules": "./app/modules",
+        "core": "./app/core",
+        "app": "./app",
+        "^react-native$": "react-native-web",
+        "react-native-linear-gradient": "react-native-web-linear-gradient"
+      },
+    }]
+  ],
 }

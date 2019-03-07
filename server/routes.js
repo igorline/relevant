@@ -1,25 +1,25 @@
+import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import handleRender from './render';
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
 
-let base;
-if (process.env.NODE_ENV === 'production') {
-  base = 'relevant.community';
-} else {
-  base = 'localhost';
-}
+// let base;
+// if (process.env.NODE_ENV === 'production') {
+//   base = 'relevant.community';
+// } else {
+//   base = 'localhost';
+// }
 
-const subdomainOptions = { base, removeWWW: true };
+// const subdomainOptions = { base, removeWWW: true };
 
-module.exports = (app) => {
-  app.use(require('./utils/subdomain')(subdomainOptions));
+module.exports = app => {
+  // app.use(require('./utils/subdomain')(subdomainOptions));
 
   // API
   app.use('/api/user', require('./api/user'));
   app.use('/api/s3', require('./api/s3'));
   app.use('/auth', require('./auth'));
   app.use('/api/post', require('./api/post'));
-  app.use('/api/links', require('./api/links'));
   app.use('/api/feed', require('./api/feed'));
   app.use('/api/subscription', require('./api/subscription'));
   app.use('/api/invest', require('./api/invest'));
@@ -32,7 +32,6 @@ module.exports = (app) => {
   app.use('/api/treasury', require('./api/treasury'));
   app.use('/api/list', require('./api/emailList'));
   app.use('/api/invites', require('./api/invites'));
-  app.use('/api/relevanceStats', require('./api/relevanceStats'));
   app.use('/api/email', require('./api/email'));
   app.use('/api/twitterFeed', require('./api/twitterFeed'));
   app.use('/api/communityFeed', require('./api/communityFeed'));
@@ -40,8 +39,7 @@ module.exports = (app) => {
   app.get('/confirm/:user/:code', userController.confirm);
 
   // TODO - check if community exists here and redirect if not
-  app.use('/home', (req, res) => res.redirect('/relevant/new'));
-
+  // app.use('/home', (req, res) => res.redirect('/relevant/new'));
 
   // Default response middleware
   app.use((req, res, next) => {
@@ -54,10 +52,21 @@ module.exports = (app) => {
   // (need next for this to work)
   // eslint-disable-next-line
   app.use((err, req, res, next) => {
-    console.error(err);
+    console.error(err); // eslint-disable-line
     return res.status(500).json({ message: err.message });
   });
 
-  // app.get('/subdomain/:subdomain/*', currentUser(), handleRender);
+  app.get('/', (req, res) => res.redirect('/relevant/new'));
+
+  BANNED_COMMUNITY_SLUGS.forEach(c => {
+    app.get(`/${c}/*`, currentUser(), handleRender);
+    app.get(`/${c}`, currentUser(), handleRender);
+  });
+  // app.get('/home/*', currentUser(), handleRender);
+  // app.get('/info/*', currentUser(), handleRender);
+  // app.get('/user/*', currentUser(), handleRender);
+  // app.get('/admin/*', currentUser(), handleRender);
+  app.get('/:community', currentUser(), handleRender);
+  app.get('/:community/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
 };

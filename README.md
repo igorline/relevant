@@ -13,6 +13,12 @@ install Relevant's packages
 npm install
 ```
 
+install Pod files
+```
+cd ios
+pod install
+```
+
 ##Run
 Open ```ios/relevantNative.xcodeproj``` and hit run in Xcode
 

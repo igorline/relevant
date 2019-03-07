@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.70</string>
+	<string>1.0.0</string>
 	<key>CFBundleVersion</key>
-	<string>0.9.70.5</string>
+	<string>5</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>NSAppTransportSecurity</key>
@@ -29,9 +29,19 @@
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>127.0.0.1</key>
-			<true/>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>localhost</key>
-			<true/>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 		</dict>
 	</dict>
 	<key>NSExtension</key>

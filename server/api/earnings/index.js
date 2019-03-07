@@ -1,10 +1,10 @@
 import express from 'express';
 import controller from './earnings.controller';
 import auth from '../../auth/auth.service';
-let asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
+// const { asyncMiddleware } = require('../../utils/middlewares');
 
 const router = express.Router();
 
-router.get('/', asyncMiddleware(controller.get));
+router.get('/', auth.isAuthenticated(), controller.index);
 
 module.exports = router;

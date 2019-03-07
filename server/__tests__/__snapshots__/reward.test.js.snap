@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ethRewards After rewards earnings should update 1`] = `
+Object {
+  "__v": 0,
+  "_id": "[SANITIZED]",
+  "community": "relevant",
+  "communityId": "c00000000000000000000001",
+  "createdAt": "[SANITIZED]",
+  "earned": 3e-16,
+  "estimatedPostPayout": 0,
+  "payoutTime": "[SANITIZED]",
+  "post": "000000000000000000000003",
+  "shares": 4.711687595755899,
+  "source": "post",
+  "stakedTokens": 11.100000000000001,
+  "status": "paidout",
+  "totalPostShares": 4.711687595755899,
+  "type": "coins",
+  "updatedAt": "[SANITIZED]",
+  "user": "a00000000000000000000000",
+}
+`;
+
+exports[`ethRewards After rewards pending posts should update 1`] = `
+Object {
+  "__v": 0,
+  "_id": "[SANITIZED]",
+  "community": "crypto",
+  "communityId": "c00000000000000000000002",
+  "createdAt": "[SANITIZED]",
+  "earned": 0,
+  "estimatedPostPayout": 2e-16,
+  "payoutTime": "[SANITIZED]",
+  "post": "000000000000000000000006",
+  "shares": 6.663332499583073,
+  "source": "post",
+  "stakedTokens": 22.200000000000003,
+  "status": "pending",
+  "totalPostShares": 6.663332499583073,
+  "type": "coins",
+  "updatedAt": "[SANITIZED]",
+  "user": "b00000000000000000000000",
+}
+`;
+
+exports[`ethRewards After rewards should create notification 1`] = `
+Object {
+  "__v": 0,
+  "_id": "[SANITIZED]",
+  "byUsers": Array [],
+  "byUsersHandle": Array [],
+  "coin": 3e-16,
+  "coinType": "eth",
+  "createdAt": "[SANITIZED]",
+  "forUser": "a00000000000000000000000",
+  "group": Array [],
+  "personal": true,
+  "post": "000000000000000000000003",
+  "read": false,
+  "source": "post",
+  "text": "You earned 0T coins from upvoting this post",
+  "type": "reward",
+  "updatedAt": "[SANITIZED]",
+}
+`;
+
+exports[`ethRewards Rewards should compute correctly 1`] = `
+Object {
+  "payoutData": Object {
+    "crypto": Object {
+      "community": "crypto",
+      "distributedRewards": 200,
+      "payouts": Object {
+        "b00000000000000000000000": 200,
+      },
+      "postPayouts": Array [
+        Object {
+          "payout": 200,
+          "payoutShare": 0.05,
+          "rank": 100,
+          "title": "000000000000000000000005",
+        },
+      ],
+    },
+    "relevant": Object {
+      "community": "relevant",
+      "distributedRewards": 599,
+      "payouts": Object {
+        "a00000000000000000000000": 300,
+        "b00000000000000000000000": 189,
+        "c00000000000000000000000": 110,
+      },
+      "postPayouts": Array [
+        Object {
+          "payout": 300,
+          "payoutShare": 0.05,
+          "rank": 66.91,
+          "title": "000000000000000000000003",
+        },
+        Object {
+          "payout": 300,
+          "payoutShare": 0.05,
+          "rank": 100,
+          "title": "000000000000000000000004",
+        },
+      ],
+    },
+  },
+  "totalDistributedRewards": 799,
+}
+`;
+
+exports[`ethRewards Votes should be created 1`] = `
+Object {
+  "__v": 0,
+  "_id": "[SANITIZED]",
+  "amount": 1,
+  "community": "relevant",
+  "communityId": "c00000000000000000000001",
+  "createdAt": "[SANITIZED]",
+  "downVotes": 0,
+  "investor": "a00000000000000000000000",
+  "ownPost": false,
+  "paidOut": false,
+  "partialRelevance": 0,
+  "partialUsers": 0,
+  "post": "000000000000000000000003",
+  "rankChange": 0,
+  "relevance": 0,
+  "relevantPoints": 10,
+  "shares": 4.711687595755899,
+  "stakedTokens": 11.100000000000001,
+  "updatedAt": "[SANITIZED]",
+  "upvotes": 0,
+}
+`;

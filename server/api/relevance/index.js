@@ -1,9 +1,9 @@
 
-let express = require('express');
-let controller = require('./relevance.controller');
-let auth = require('../../auth/auth.service');
+const express = require('express');
+const controller = require('./relevance.controller');
+const auth = require('../../auth/auth.service');
 
-let router = express.Router();
+const router = express.Router();
 
 router.get('/', controller.index);
 router.get('/user/:id/stats', auth.isAuthenticated(), controller.stats);
