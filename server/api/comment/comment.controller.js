@@ -31,7 +31,7 @@ exports.get = async (req, res, next) => {
 
     if (req.query.post) {
       parentPost = req.query.post;
-      query = { parentPost, hidden: { $ne: true } };
+      query = { parentPost, hidden: { $ne: true }, communityId };
     }
 
     const total = await Post.count(query);
@@ -44,7 +44,7 @@ exports.get = async (req, res, next) => {
     })
     .populate({
       path: 'data',
-      match: { community }
+      match: { communityId }
     })
     .sort({ pagerank: -1 });
 
