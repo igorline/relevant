@@ -6,6 +6,7 @@ import ULink from 'modules/navigation/ULink.component';
 const TwitterIcon = require('app/public/img/twitter-black.png');
 const EmailIcon = require('app/public/img/email.png');
 const SlackIcon = require('app/public/img/slack.png');
+const MediumIcon = require('app/public/img/medium.png');
 
 const FooterIcon = ({ href, source, target, actions }) => (
   <ULink
@@ -41,6 +42,11 @@ const icons = [
     href: 'mailto:info@relevant.community',
     source: EmailIcon,
     target: '_blank'
+  },
+  {
+    href: 'https://blog.relevant.community',
+    source: MediumIcon,
+    target: '_blank'
   }
 ];
 
@@ -48,6 +54,10 @@ const SideNavFooter = ({ actions, mobile }) => (
   <View m={mobile ? 2 : 4}>
     <BodyText>© 2019 Relevant Protocols Inc.</BodyText>
     <BodyText inline={1} mt={1}>
+      <ULink to="/info/faq">
+        <InlineText>FAQ</InlineText>
+      </ULink>
+      <InlineText> | </InlineText>
       <ULink to="/eula.html" external target="_blank">
         <InlineText>Content Policy</InlineText>
       </ULink>
