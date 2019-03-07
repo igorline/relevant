@@ -4,15 +4,12 @@ import styled from 'styled-components/primitives';
 import { View, Image, Header, Touchable } from 'modules/styled/uni';
 import { colors, sizing, layout } from 'app/styles';
 
-if (process.env.BROWSER === true) {
-  require('./modal.css');
-}
-
 const ModalParent = styled.View`
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
+  max-width: 100vw;
   height: 100vh;
   background-color: ${colors.modalBackground};
   z-index: 200;
@@ -35,6 +32,7 @@ const Modal = styled(View)`
   flex-direction: column;
   ${layout.modalShadow}
   margin: ${sizing(6)} 0;
+  max-width: 100vw;
 `;
 
 const CloseButton = styled(Image)`
