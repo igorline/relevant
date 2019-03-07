@@ -6,6 +6,8 @@ import {
   SCROLL,
   SHOW_MODAL,
   HIDE_MODAL,
+  OPEN_WEB_SIDE_NAV,
+  CLOSE_WEB_SIDE_NAV,
   SET_WIDTH
 } from 'core/actionTypes';
 
@@ -32,6 +34,18 @@ function navigationState(state = initialState, action) {
         ...state,
         width: action.payload.width
       };
+    case OPEN_WEB_SIDE_NAV:
+      return {
+        ...state,
+        sideNavIsOpen: true
+      };
+
+    case CLOSE_WEB_SIDE_NAV:
+      return {
+        ...state,
+        sideNavIsOpen: false
+      };
+
     case SHOW_MODAL: {
       return {
         ...state,

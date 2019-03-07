@@ -120,4 +120,7 @@ export const REMOVE_EARNING = 'REMOVE_EARNING';
 
 export const SHOW_MODAL = 'SHOW_MODAL';
 export const HIDE_MODAL = 'HIDE_MODAL';
+
+export const OPEN_WEB_SIDE_NAV = 'OPEN_WEB_SIDE_NAV';
+export const CLOSE_WEB_SIDE_NAV = 'CLOSE_WEB_SIDE_NAV';
 export const SET_WIDTH = 'SET_WIDTH';
