@@ -36,7 +36,7 @@ class CommunitySelection extends Component {
     return (
       <View pt={3} style={{ flexDirection: 'column' }}>
         {Object.values(communities).map(c => (
-          <TouchableOpacity onPress={() => this.setCommunity(c)}>
+          <TouchableOpacity onPress={() => this.setCommunity(c)} key={c.slug}>
             <CommunityListItem
               p="1 2"
               community={c}
