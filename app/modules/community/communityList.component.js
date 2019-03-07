@@ -22,10 +22,7 @@ class CommunityAdminList extends Component {
               <Image source={c.image} h={4} w={4} />
               <Title ml={1}>{c.name} </Title>
             </View>
-            <BodyText inline={1}>
-              {c.description}
-              {c.description}
-            </BodyText>
+            <BodyText inline={1}>{c.description}</BodyText>
           </ULink>
         ))}
       </View>

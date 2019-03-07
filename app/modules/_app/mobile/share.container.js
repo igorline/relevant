@@ -10,6 +10,7 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import * as postActions from 'modules/post/post.actions';
+import * as communityActions from 'modules/community/community.actions';
 
 import Auth from 'modules/auth/mobile/auth.component';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
@@ -83,7 +84,9 @@ const ShareAppContainer = createAppContainer(ShareStack);
 
 class ShareContainer extends Component {
   static propTypes = {
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    auth: PropTypes.object
+    // community: PropTypes.object
   };
 
   state = {
@@ -118,7 +121,18 @@ class ShareContainer extends Component {
 
   async componentDidMount() {
     try {
-      this.props.actions.getUser();
+      const { actions } = this.props;
+      const resp = await this.props.actions.getUser();
+      const { auth } = this.props;
+      if (resp && auth && auth.user && auth.user.community) {
+        await actions.getCommunities();
+        actions.setCommunity(auth.user.community);
+      }
+    } catch (e) {
+      // console.log('e', e);
+    }
+    try {
+      const { actions } = this.props;
       const data = await ShareExtension.data();
       this.data = data;
       this.setState({
@@ -126,13 +140,12 @@ class ShareContainer extends Component {
         value: data.value,
         data
       });
-
       let url = data.url || data.value;
       if (url) {
         const words = text.getWords(url);
         url = words.find(word => post.URL_REGEX.test(word));
       }
-      this.props.actions.setCreatePostState({
+      actions.setCreatePostState({
         postUrl: url || null,
         postBody: data.selection || !url ? data.value : '',
         createPreview: {}
@@ -214,8 +227,11 @@ style = StyleSheet.create({
   }
 });
 
-function mapStateToProps() {
-  return {};
+function mapStateToProps(store) {
+  return {
+    auth: store.auth,
+    community: store.community
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -225,7 +241,8 @@ function mapDispatchToProps(dispatch) {
         ...authActions,
         ...postActions,
         ...navigationActions,
-        ...createPostActions
+        ...createPostActions,
+        ...communityActions
       },
       dispatch
     )
