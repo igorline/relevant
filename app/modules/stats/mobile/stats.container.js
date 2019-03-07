@@ -19,7 +19,7 @@ let styles;
 class StatsContainer extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    refresh: PropTypes.object,
+    refresh: PropTypes.number,
     actions: PropTypes.object,
     error: PropTypes.bool
   };
@@ -71,8 +71,7 @@ class StatsContainer extends Component {
 
   renderHeader() {
     if (this.filler) return this.filler;
-    const nextUpdate = moment(this.props.auth.nextUpdate)
-    .fromNow(true);
+    const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
     const relChart = (
       <Chart
         start={this.relStart}
@@ -143,8 +142,7 @@ class StatsContainer extends Component {
     }
 
     if (!this.props.auth.user.level) {
-      const nextUpdate = moment(this.props.auth.nextUpdate)
-      .fromNow(true);
+      const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
       this.filler = (
         <EmptyList visible style={styles.emptyList}>
           <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>

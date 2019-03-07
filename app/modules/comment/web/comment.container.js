@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash.get';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as postActions from 'modules/post/post.actions';
+import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
+import * as animationActions from 'modules/animation/animation.actions';
+import { Divider } from 'modules/styled/uni';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 
@@ -15,9 +19,13 @@ class Comments extends Component {
     comments: PropTypes.object,
     posts: PropTypes.object,
     auth: PropTypes.object,
-    location: PropTypes.object,
+    post: PropTypes.object,
     myPostInv: PropTypes.object,
     user: PropTypes.object
+  };
+
+  state = {
+    activeComment: null
   };
 
   componentDidMount() {
@@ -25,60 +33,86 @@ class Comments extends Component {
     this.props.actions.getComments(params.id);
   }
 
+  setActiveComment = commentId => {
+    const activeComment = this.state.activeComment === commentId ? null : commentId;
+    this.setState({ activeComment });
+  };
+
+  scrollTo = (x, y) => {
+    const paddingY = window.outerHeight / 4;
+    window.scrollTo(x, y - paddingY);
+  };
+
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
   render() {
-    const { params } = this.props.match;
-    let comments = this.props.comments.commentsById[params.id];
-    if (!comments) return null;
-    comments = comments.data;
-    if (!comments) return null;
+    const { comments, posts, post, auth, actions, myPostInv, user, match } = this.props;
+    const children = comments.childComments[post._id] || [];
+    const focusedComment = get(match, 'params.commentId', null);
     return (
-      <div className="comments">
-        {comments.length !== 0 ? (
+      <div>
+        <CommentForm
+          {...this.props}
+          additionalNesting={1.5}
+          text={'Comment'}
+          parentPost={post}
+          p={'0 4 4 4'}
+          isReply
+        />
+        <Divider />
+        {children.length !== 0 ? (
           <div>
-            {comments.map(id => {
-              const comment = this.props.posts.posts[id];
+            {children.map(id => {
+              const comment = posts.posts[id];
               if (!comment) return null;
               return (
                 <Comment
                   key={id}
-                  auth={this.props.auth}
+                  auth={auth}
                   comment={comment}
-                  actions={this.props.actions}
-                  location={this.props.location}
-                  myPostInv={this.props.myPostInv}
-                  user={this.props.user}
+                  actions={actions}
+                  myPostInv={myPostInv}
+                  user={user}
+                  activeComment={this.state.activeComment}
+                  setActiveComment={this.setActiveComment}
+                  parentPost={post._id}
+                  childComments={comments.childComments}
+                  posts={posts}
+                  parentPost={post}
+                  nestingLevel={0}
+                  actions={actions}
+                  focusedComment={focusedComment}
+                  scrollTo={this.scrollTo}
                 />
               );
             })}
           </div>
         ) : null}
-        <div className={'formContainer'}>
-          <CommentForm text={'Reply'} {...this.props} />
-        </div>
       </div>
     );
   }
 }
 
-export default connect(
-  state => ({
-    auth: state.auth,
-    comments: state.comments,
-    myPostInv: state.investments.myPostInv,
-    user: state.user
-  }),
-  dispatch => ({
-    actions: bindActionCreators(
-      {
-        ...postActions,
-        ...createPostActions,
-        ...investActions
-      },
-      dispatch
-    )
-  })
-)(Comments);
+export default withRouter(
+  connect(
+    state => ({
+      auth: state.auth,
+      comments: state.comments,
+      myPostInv: state.investments.myPostInv,
+      user: state.user
+    }),
+    dispatch => ({
+      actions: bindActionCreators(
+        {
+          ...commentActions,
+          ...createPostActions,
+          ...investActions,
+          ...animationActions
+        },
+        dispatch
+      )
+    })
+  )(Comments)
+);

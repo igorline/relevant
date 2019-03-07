@@ -71,10 +71,6 @@
   flex-direction: column;
   justify-content: space-between;
 
-  div:last-child {
-    /*text-align: right;*/
-    justify-content: flex-end;
-  }
   select {
     font-size: 14px;
     height: 40px;

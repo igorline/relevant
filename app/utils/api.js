@@ -27,7 +27,7 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   routes.user = require(userApi) || {}; // eslint-disable-line
 }
 
-const queryParams = params => {
+export const queryParams = params => {
   if (!params) return '';
   const paramString = Object.keys(params)
   .filter(p => params[p])
@@ -101,8 +101,7 @@ export async function request(options) {
     uri += path;
 
     if (options.params) {
-      Object.keys(options.params)
-      .forEach(key => {
+      Object.keys(options.params).forEach(key => {
         uri += '/' + options.params[key];
       });
     }
@@ -123,6 +122,9 @@ export async function request(options) {
       };
       const next = () => null;
       const res = null;
+      if (!routes[options.endpoint] || !routes[options.endpoint][options.path]) {
+        return null;
+      }
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
       // in case we get a mongoose object back
       if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();

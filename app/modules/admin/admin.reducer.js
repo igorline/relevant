@@ -1,12 +1,13 @@
 import * as types from 'core/actionTypes';
 
 const initialState = {
-  inviteList: [],
+  inviteList: {},
   invites: {},
   waitList: [],
   wait: {},
   currentInvite: null,
-  downvotes: []
+  downvotes: [],
+  count: {}
 };
 
 export default function admin(state = initialState, action) {
@@ -17,6 +18,16 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         invites
+      };
+    }
+
+    case types.SET_INVITE_COUNT: {
+      return {
+        ...state,
+        count: {
+          ...state.count,
+          ...action.payload
+        }
       };
     }
 
@@ -46,17 +57,25 @@ export default function admin(state = initialState, action) {
     }
 
     case types.SET_INVITES: {
+      const { community, data, skip } = action.payload;
       return {
         ...state,
-        inviteList: [...state.inviteList, ...action.payload.result.invites],
+        inviteList: {
+          ...state.inviteList,
+          [community]: [
+            ...(state.inviteList[community] || []).slice(0, skip),
+            ...data.result.invites
+          ]
+        },
         invites: {
           ...state.invites,
-          ...action.payload.entities.invites
+          ...data.entities.invites
         }
       };
     }
 
     case types.UPDATE_INVITE: {
+      const { community, _id } = action.payload;
       if (action.payload === null) {
         return {
           ...state,
@@ -66,7 +85,10 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         currentInvite: action.payload,
-        inviteList: [...new Set([action.payload._id, ...state.inviteList])],
+        inviteList: {
+          ...state.inviteList,
+          [community]: [...new Set([_id, ...(state.inviteList[community] || [])])]
+        },
         invites: {
           ...state.invites,
           [action.payload._id]: {

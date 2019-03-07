@@ -1,35 +1,49 @@
 import {
-  POP_ROUTE,
-  PUSH_ROUTE,
-  CHANGE_TAB,
-  RESET_ROUTES,
   REFRESH_ROUTE,
-  REPLACE_ROUTE,
   RELOAD_ROUTE,
   RELOAD_ALL_TABS,
   SET_VIEW,
   TOGGLE_TOPICS,
-  SCROLL
+  SCROLL,
+  SET_WEB_VIEW,
+  SHOW_MODAL,
+  HIDE_MODAL
 } from 'core/actionTypes';
-
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
+import { dispatchNavigatorAction } from 'app/utils/nav';
+import { setCommunity } from 'modules/auth/auth.actions';
 
 let dismissKeyboard;
 let safariView;
 let Orientation;
+let NavigationActions;
+let StackActions;
+let DrawerActions;
+let Linking;
+let native;
+
 if (process.env.WEB !== 'true') {
   Orientation = require('react-native-orientation');
   dismissKeyboard = require('react-native-dismiss-keyboard');
   safariView = require('react-native-safari-view').default;
+  NavigationActions = require('react-navigation').NavigationActions;
+  StackActions = require('react-navigation').StackActions;
+  DrawerActions = require('react-navigation').DrawerActions;
+  Linking = require('react-native').Linking;
+  native = true;
 }
 
-export function push(route, key, animation = 'vertical') {
-  if (dismissKeyboard) dismissKeyboard();
+export function showModal(modal) {
   return {
-    type: PUSH_ROUTE,
-    route,
-    key,
-    animation
+    type: SHOW_MODAL,
+    payload: modal
+  };
+}
+
+export function hideModal(modal) {
+  return {
+    type: HIDE_MODAL,
+    payload: modal
   };
 }
 
@@ -40,6 +54,39 @@ export function scrolling(scroll) {
   };
 }
 
+export function closeDrawer() {
+  return () => (native ? dispatchNavigatorAction(DrawerActions.closeDrawer()) : null);
+}
+
+export function push(route) {
+  return dispatch => {
+    // check if we need this
+    // console.log('c', route.community, route.community !== 'undefined');
+    if (route.community && route.community !== '') {
+      dispatch(setCommunity(route.community));
+    }
+    if (dismissKeyboard) dismissKeyboard();
+    if (native) {
+      dispatchNavigatorAction(DrawerActions.closeDrawer());
+      dispatchNavigatorAction(
+        NavigationActions.navigate({ routeName: route.key || route, params: route })
+      );
+    }
+  };
+}
+
+export function pop() {
+  return () => {
+    dispatchNavigatorAction(NavigationActions.back());
+  };
+}
+
+export function replace(key) {
+  return () => {
+    dispatchNavigatorAction(StackActions.replace({ routeName: key }));
+  };
+}
+
 export function toggleTopics(showTopics) {
   return {
     type: TOGGLE_TOPICS,
@@ -47,34 +94,32 @@ export function toggleTopics(showTopics) {
   };
 }
 
-export function pop(key) {
-  return dispatch => {
-    if (dismissKeyboard) dismissKeyboard();
-    dispatch(toggleTopics(false));
-    dispatch({
-      type: POP_ROUTE,
-      key
-    });
-  };
-}
-
-export function changeTab(key) {
-  if (dismissKeyboard) dismissKeyboard();
-  return {
-    type: CHANGE_TAB,
-    key
+export function goToTab(tab) {
+  return () => {
+    if (!native) return;
+    dispatchNavigatorAction(DrawerActions.closeDrawer());
+    dispatchNavigatorAction(
+      NavigationActions.navigate({
+        routeName: tab
+      })
+    );
   };
 }
 
 export function goToTopic(topic) {
   return dispatch => {
-    // dispatch(changeTab('discover'));
+    dispatchNavigatorAction(
+      NavigationActions.navigate({
+        routeName: 'discover'
+      })
+    );
+
     dispatch(
       push({
-        key: 'discover',
-        title: topic.categoryName,
+        key: 'discoverTag',
+        title: topic.categoryName || topic,
         back: true,
-        id: topic._id,
+        id: topic._id || topic.topic || topic,
         topic,
         gestureResponseDistance: 150
       })
@@ -87,8 +132,18 @@ export function setView(type, view) {
   return {
     type: SET_VIEW,
     payload: {
-      view,
-      type
+      type,
+      view
+    }
+  };
+}
+
+export function setWebView(type, params) {
+  return {
+    type: SET_WEB_VIEW,
+    payload: {
+      type,
+      params
     }
   };
 }
@@ -113,24 +168,6 @@ export function reloadAllTabs() {
   };
 }
 
-export function resetRoutes(key) {
-  return {
-    type: RESET_ROUTES,
-    key
-  };
-}
-
-export function replaceRoute(route, index, key) {
-  return {
-    type: REPLACE_ROUTE,
-    payload: {
-      key,
-      index,
-      route
-    }
-  };
-}
-
 export function goToPeople(topic) {
   return push({
     key: 'peopleView',
@@ -144,6 +181,7 @@ export function goToPeople(topic) {
 
 export function goToUrl(url, id) {
   return dispatch => {
+    if (url.match('mailto:')) return Linking.openURL(url);
     dispatch(setButtonTooltip('upvote', id));
     if (safariView) {
       safariView
@@ -171,6 +209,7 @@ export function goToUrl(url, id) {
         );
       });
     }
+    return null;
   };
 }
 
@@ -179,6 +218,7 @@ export function goToComments(post, key, animation) {
     {
       key: 'comment',
       title: 'Comments',
+      community: post.data ? post.data.community : post.community,
       back: true,
       id: post._id
     },
@@ -192,18 +232,20 @@ export function goToPost(post, openComment) {
     key: 'singlePost',
     title: post.title ? post.title : '',
     back: true,
+    community: post.data ? post.data.community : post.community,
     id: post._id,
+    comment: post.comment,
     commentCount: post.commentCount,
     openComment
   });
 }
 
 export function goToProfile(user, key, animation) {
-  const handle = user._id || user.replace('@', '');
+  const handle = user.handle || user.replace('@', '');
   return push(
     {
       key: 'profile',
-      title: user.name || handle,
+      title: user.name,
       back: true,
       id: handle
     },

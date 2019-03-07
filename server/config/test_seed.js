@@ -7,8 +7,11 @@ const Invest = require('../api/invest/invest.model');
 const Earnings = require('../api/earnings/earnings.model');
 const Relevance = require('../api/relevance/relevance.model');
 const Community = require('../api/community/community.model').default;
+const PostData = require('../api/post/postData.model.js');
 
 const Eth = require('../utils/ethereum');
+
+const testUserId = '5c4267177f81360b10b4b196';
 
 export const testAccounts = [
   {
@@ -27,7 +30,7 @@ export const testAccounts = [
 
 export const dummyUsers = [
   {
-    _id: 'dummy1',
+    _id: '572a37d72ae95bf66b3e32d1',
     handle: 'dummy1',
     provider: 'local',
     name: 'dummy1',
@@ -43,7 +46,7 @@ export const dummyUsers = [
     ethAddress: [testAccounts[0].address]
   },
   {
-    _id: 'dummy2',
+    _id: '572a37d72ae95bf66b3e32d2',
     handle: 'dummy2',
     provider: 'local',
     name: 'dummy2',
@@ -59,7 +62,7 @@ export const dummyUsers = [
     ethAddress: [testAccounts[1].address]
   },
   {
-    _id: 'dummy3',
+    _id: '572a37d72ae95bf66b3e32d3',
     handle: 'dummy3',
     provider: 'local',
     name: 'dummy3',
@@ -82,8 +85,8 @@ const dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d1',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy1',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d1',
+    following: testUserId,
     amount: 1,
     __v: 0
   },
@@ -91,8 +94,8 @@ const dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d2',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy2',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d2',
+    following: testUserId,
     amount: 4,
     __v: 0
   },
@@ -100,14 +103,14 @@ const dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d3',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy3',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d3',
+    following: testUserId,
     amount: 4,
     __v: 0
   }
 ];
 
-export async function setupData(communities) {
+export async function setupData(communities = []) {
   const saveUsers =
     dummyUsers.map(async user => {
       user = new User(user);
@@ -117,8 +120,8 @@ export async function setupData(communities) {
 
         // create an upvote from test so we have some relevance
         const vote = new Invest({
-          investor: 'test',
-          author: user.handle,
+          investor: testUserId,
+          author: user._id,
           amount: 10,
           ownPost: false,
           communityId: c._id
@@ -156,19 +159,19 @@ export async function cleanupData() {
       }
     }) || [];
   const clearSub =
-    dummySubscriptions.map(sub => Subscription.findByIdAndRemove(sub._id)
-    .exec()) || [];
+    dummySubscriptions.map(sub => Subscription.findByIdAndRemove(sub._id).exec()) || [];
 
   const dummies = dummyUsers.map(user => user._id);
-  const clearNotifications = Notification.find({ forUser: { $in: dummies } })
-  .remove();
+  const clearNotifications = Notification.find({ forUser: { $in: dummies } }).remove();
 
   const clearUpvotes = Invest.find({
     $or: [{ investor: { $in: dummies } }, { author: { $in: dummies } }]
-  })
-  .remove();
+  }).remove();
 
   const posts = await Post.find({ body: 'Hotties' });
+  const clearPostData = await PostData.remove({
+    post: { $in: posts.map(p => p._id) }
+  }).exec();
 
   // Have to do this in order to trigger remove hooks;
   const clearPosts = posts.map(async post => post.remove());
@@ -196,7 +199,8 @@ export async function cleanupData() {
     clearUpvotes,
     clearEarnings,
     clearRelevance,
-    ...clearCommunity
+    ...clearCommunity,
+    clearPostData
   ]);
 }
 

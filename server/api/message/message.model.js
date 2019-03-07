@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 
 const MessageSchema = new Schema(
   {
-    to: { type: String, ref: 'User' },
-    from: { type: String, ref: 'User' },
+    to: { type: Schema.Types.ObjectId, ref: 'User' },
+    from: { type: Schema.Types.ObjectId, ref: 'User' },
     tag: { type: String, ref: 'Tag' },
     text: String,
     type: String,

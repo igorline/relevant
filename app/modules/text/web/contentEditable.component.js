@@ -6,8 +6,8 @@ const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 function stripContentEditableHTML(text) {
   return (text || '')
   .replace(/<div><br>/g, '\n')
-  .replace(/<div>/g, '\n')
-  .replace(/<br>\u200B/g, '\n')
+  .replace(/<\/div>/g, '\n')
+  .replace(/<br>/g, '\n')
   .replace(HTML_REGEX, '');
 }
 
@@ -25,7 +25,7 @@ function renderBody(lines) {
     })
     .join(' ')
   )
-  .join('<br/>\u200B');
+  .join('\n');
 }
 
 function onPaste(e) {
@@ -47,8 +47,7 @@ function getCurrentCursorPosition(parentId) {
   const el = document.getElementById(parentId);
   let caretOffset = 0;
   if (typeof window.getSelection !== 'undefined') {
-    const range = window.getSelection()
-    .getRangeAt(0);
+    const range = window.getSelection().getRangeAt(0);
     const selected = range.toString().length;
     const preCaretRange = range.cloneRange();
     preCaretRange.selectNodeContents(el);
@@ -121,6 +120,7 @@ export default class ContentEditable extends React.Component {
 
   componentDidMount() {
     this.el.focus();
+    document.execCommand('defaultParagraphSeparator', false, 'br');
   }
 
   componentDidUpdate(lastProps) {
@@ -132,8 +132,7 @@ export default class ContentEditable extends React.Component {
     if (lastProps.body === this.props.body) return;
 
     const lengthWithoutNewlines =
-      this.props.body.replace(/\n/, '')
-      .replace(/&[^;]+;/g, ' ').length + 1;
+      this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
 
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
 
@@ -173,10 +172,12 @@ export default class ContentEditable extends React.Component {
     this.lastHTML = renderBody(this.props.body);
     const className = [this.props.className];
     if (this.props.body.length) className.push('active');
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions react/no-danger
     return (
       <div
         id="editor"
+        style={{
+          minHeight: '300px'
+        }}
         className={this.props.className}
         placeholder={this.props.placeholder}
         role="textbox"

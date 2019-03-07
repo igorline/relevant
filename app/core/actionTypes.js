@@ -1,5 +1,7 @@
 export const ADD_COMMUNITY = 'ADD_COMMUNITY';
 export const SET_COMMUNITIES = 'SET_COMMUNITIES';
+export const UPDATE_COMMUNITY = 'UPDATE_COMMUNITY';
+export const REMOVE_COMMUNITY = 'REMOVE_COMMUNITY';
 
 // careful this one sets active community in admin reducer
 export const SET_COMMUNITY = 'SET_COMMUNITY';
@@ -8,6 +10,7 @@ export const LOGIN_USER_FAILURE = 'LOGIN_USER_FAILURE';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const LOGOUT_USER = 'LOGOUT_USER';
 export const SHOW_LOADER = 'SHOW_LOADER';
+export const SET_COMMUNITY_MEMBERS = 'SET_COMMUNITY_MEMBERS';
 
 export const SET_USER_SEARCH = 'SET_USER_SEARCH';
 export const SET_USER = 'SET_USER';
@@ -85,12 +88,7 @@ export const SET_POST_CATEGORY = 'SET_POST_CATEGORY';
 export const CLEAR_CREATE_POST = 'CLEAR_CREATE_POST';
 export const SET_TOPIC_POSTS = 'SET_TOPIC_POSTS';
 
-export const PUSH_ROUTE = 'PUSH_ROUTE';
-export const POP_ROUTE = 'POP_ROUTE';
-export const CHANGE_TAB = 'CHANGE_TAB';
-export const RESET_ROUTES = 'RESET_ROUTES';
 export const REFRESH_ROUTE = 'REFRESH_ROUTE';
-export const REPLACE_ROUTE = 'REPLACE_ROUTE';
 export const RELOAD_ROUTE = 'RELOAD_ROUTE';
 export const RELOAD_ALL_TABS = 'RELOAD_ALL_TABS';
 export const SHOW_TOOLTIP = 'SHOW_TOOLTIP';
@@ -102,12 +100,23 @@ export const SET_ONBOARDING_STEP = 'SET_ONBOARDING_STEP';
 export const SET_BUTTON_TOOLTIP = 'SET_BUTTON_TOOLTIP';
 
 export const SET_VIEW = 'SET_VIEW';
+export const SET_WEB_VIEW = 'SET_WEB_VIEW';
 
+export const SET_INVITE_COUNT = 'SET_INVITE_COUNT';
 export const SET_INVITES = 'SET_INVITES';
 export const UPDATE_INVITE = 'UPDATE_INVITE';
 export const DESTROY_INVITE = 'DESTROY_INVITE';
 export const SET_WAITLIST = 'SET_WAITLIST';
 export const SET_DOWNVOTES = 'SET_DOWNVOTES';
 export const DELETE_WAITLIST_USER = 'DELETE_WAITLIST_USER';
+export const SET_INVITE_CODE = 'SET_INVITE_CODE';
 
 export const SET_ERROR = 'SET_ERROR';
+
+export const SET_EARNINGS = 'SET_EARNINGS';
+export const ADD_EARNING = 'ADD_EARNING';
+export const UPDATE_EARNING = 'UPDATE_EARNING';
+export const REMOVE_EARNING = 'REMOVE_EARNING';
+
+export const SHOW_MODAL = 'SHOW_MODAL';
+export const HIDE_MODAL = 'HIDE_MODAL';

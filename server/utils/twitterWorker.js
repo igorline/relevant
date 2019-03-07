@@ -176,6 +176,7 @@ async function processTweet(tweet, user) {
       title: processed.title,
       body,
       tags,
+      image: processed.image,
       url: processed.url,
       postDate: originalTweet.created_at,
 
@@ -317,23 +318,30 @@ async function getUserFeed(user) {
   }
 }
 
+// eslint-disable-next-line
 async function cleanup() {
   const now = new Date();
   const cutoffDate = now.getTime() - 30 * 24 * 60 * 60 * 1000;
-  const posts = await Post.find(
-    {
-      twitter: true,
-      hidden: true,
-      reputation: { $lte: 0 },
-      postDate: { $lt: cutoffDate }
-    },
-    'metaPost linkParent parentPost linkPost metaPost type tags community hidden twitter'
-  );
+
+  console.log('RUN CLEAN!');
+  const totalToClean = await Post.count({
+    twitter: true,
+    hidden: true,
+    postDate: { $lt: cutoffDate }
+  });
+  console.log('total posts to clean', totalToClean);
+
+  const posts = await Post.find({
+    twitter: true,
+    hidden: true,
+    postDate: { $lt: cutoffDate }
+  }).limit(10000);
 
   console.log('clearing twitter posts ', posts.length, ' posts');
-  const removePosts = await posts.map(p =>
+  const removePosts = await posts.map((p, i) =>
     q.push(async cb => {
       try {
+        console.log('removing ', i, 'out of', 5000);
         await p.remove();
         cb();
         return p;
@@ -347,6 +355,7 @@ async function cleanup() {
   await Promise.all(removePosts);
 }
 
+// eslint-disable-next-line
 async function processTweets(users) {
   console.log('processing', users.length, 'users');
   let trim = await TwitterFeed.find({ user: '_common_Feed_' })
@@ -404,7 +413,7 @@ async function getUsers(userId) {
     })
     .sort({ pagerank: -1 })
     .limit(15);
-    userList = userList.map(u => u.user);
+    userList = userList.map(u => u.user).filter(u => u !== 'undefined');
 
     const query = userId ? { _id: userId } : { _id: { $in: userList } };
 
@@ -433,8 +442,8 @@ async function getUsers(userId) {
     userCounter = 0;
     processedTweets = 0;
 
-    // await cleanup();
-    await processTweets(users);
+    await cleanup();
+    // await processTweets(users);
 
     q.start(async queErr => {
       try {
@@ -445,7 +454,7 @@ async function getUsers(userId) {
       }
     });
   } catch (err) {
-    console.log('twitter error ', err);
+    throw err;
   }
 }
 

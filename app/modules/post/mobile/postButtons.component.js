@@ -16,6 +16,8 @@ import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, greyText, fullHeight } from 'app/styles/global';
 import { numbers } from 'app/utils';
+import { get } from 'lodash';
+import { userVotePower } from 'server/config/globalConstants';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -29,14 +31,17 @@ let styles;
 // TODO refactor this
 class PostButtons extends Component {
   static propTypes = {
-    post: PropTypes.object,
-    tooltip: PropTypes.object,
+    post: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    parentPost: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    setupReply: PropTypes.func,
+    tooltip: PropTypes.bool,
     actions: PropTypes.object,
     auth: PropTypes.object,
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     focusInput: PropTypes.func,
-    myPostInv: PropTypes.array,
-    link: PropTypes.object
+    myPostInv: PropTypes.object,
+    link: PropTypes.object,
+    comment: PropTypes.object
   };
 
   constructor(props, context) {
@@ -151,17 +156,16 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await actions.vote(
-        amount,
-        post,
-        auth.user,
-        !newVote
-      );
+      await actions.vote(amount, post, auth.user, !newVote);
+
+      if (!newVote) return;
+
+      const upvoteAmount = userVotePower(auth.user.relevance.pagerank);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
         if (x + y + w + h === 0) return;
-        actions.triggerAnimation('upvote', { parent, amount });
+        actions.triggerAnimation('upvote', { parent, amount: upvoteAmount });
       });
       setTimeout(() => {
         // this.props.actions.reloadTab('read');
@@ -248,7 +252,7 @@ class PostButtons extends Component {
   repostCommentary() {
     let { link } = this.props;
     if (!link) link = {};
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       postBody: '',
       repost: this.props.post,
       urlPreview: {
@@ -257,37 +261,21 @@ class PostButtons extends Component {
         description: link.description
       }
     });
-    this.props.actions.push(
-      {
-        key: 'createPost',
-        component: 'createPost',
-        back: 'Cancel',
-        title: 'Repost',
-        next: 'Post',
-        direction: 'vertical',
-        left: 'Cancel'
-      },
-      'home'
-    );
-    this.props.actions.replaceRoute(
-      {
-        key: 'createPost',
-        component: 'createPost',
-        back: true,
-        left: 'Cancel',
-        title: 'Repost',
-        next: 'Post',
-        direction: 'vertical'
-      },
-      0,
-      'createPost'
-    );
+    this.props.actions.push({
+      key: 'createPost',
+      component: 'createPost',
+      back: 'Cancel',
+      title: 'Repost',
+      next: 'Post',
+      direction: 'vertical',
+      left: 'Cancel'
+    });
   }
 
   repostUrl() {
     const { link } = this.props;
     if (!link) return;
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       postBody: '',
       component: 'createPost',
       nativeImage: true,
@@ -299,41 +287,28 @@ class PostButtons extends Component {
         description: link.description
       }
     });
-    this.props.actions.push(
-      {
-        key: 'createPost',
-        back: true,
-        title: 'Add Commentary',
-        next: 'Next',
-        direction: 'vertical'
-      },
-      'home'
-    );
-    this.props.actions.replaceRoute(
-      {
-        key: 'createPost',
-        component: 'createPost',
-        back: true,
-        left: 'Cancel',
-        title: 'New Commentary',
-        next: 'Next',
-        direction: 'vertical'
-      },
-      0,
-      'createPost'
-    );
+    this.props.actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Add Commentary',
+      next: 'Next',
+      direction: 'vertical',
+      left: 'Cancel'
+    });
   }
 
-  goToPost(comment) {
-    if (this.props.scene) {
-      if (this.props.scene.id === this.props.post._id) {
-        if (this.props.focusInput) this.props.focusInput();
-        return;
-      }
+  goToPost(openComment) {
+    const { focusInput, navigation, actions, setupReply, post, comment } = this.props;
+    const parentPost = this.props.parentPost || post;
+    const parentPostId = parentPost._id || parentPost;
+
+    if (get(navigation, 'state.params.id') === parentPostId) {
+      setupReply(post);
+      if (this.props.focusInput) focusInput();
+      return;
     }
-    let openComment = false;
-    if (comment) openComment = true;
-    this.props.actions.goToPost(this.props.post, openComment);
+
+    actions.goToPost({ _id: parentPostId, comment }, openComment);
   }
 
   flag() {
@@ -363,7 +338,6 @@ class PostButtons extends Component {
         commentString = post.commentCount;
       }
     }
-    let canBet;
     const space = 8;
 
     const opacity = 1;
@@ -378,23 +352,6 @@ class PostButtons extends Component {
         ref={c => (this.investButton = c)}
         onPress={() => this.invest(investible)}
       >
-        {canBet ? (
-          <Image
-            resizeMode={'contain'}
-            style={[
-              styles.r,
-              {
-                width: 20,
-                height: 20,
-                zIndex: 1,
-                position: 'absolute',
-                bottom: 1,
-                right: 0
-              }
-            ]}
-            source={require('app/public/img/relevantcoin.png')}
-          />
-        ) : null}
         <Image
           resizeMode={'contain'}
           style={[styles.vote, { opacity }]}
@@ -403,25 +360,22 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    let r = post.data ? post.data.pagerank : null;
+    let r = post.data ? post.data.relevance : null;
     const rel = r;
 
-    let rIcon = (
-      <Image
-        resizeMode={'contain'}
-        style={styles.smallR}
-        source={require('app/public/img/icons/smallR.png')}
-      />
-    );
+    // let rIcon = (
+    //   <Image
+    //     resizeMode={'contain'}
+    //     style={styles.smallR}
+    //     source={require('app/public/img/icons/smallR.png')}
+    //   />
+    // );
 
     const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
 
-    if (canBet) {
-      r = 'Place Bet!';
-      rIcon = null;
-    } else if (!r) {
+    if (!r) {
       r = 'Vote';
-      rIcon = null;
+      // rIcon = null;
     }
 
     const stat = (
@@ -438,7 +392,6 @@ class PostButtons extends Component {
           }}
         >
           <View style={[styles.textRow, { alignItems: 'center' }]}>
-            {rIcon}
             <Text style={[styles.smallInfo, styles.greyText]}>
               {typeof r !== 'number' ? r : numbers.abbreviateNumber(r)}
             </Text>
@@ -482,17 +435,6 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    const repost = (
-      <TouchableOpacity
-        style={{ paddingLeft: 10, paddingRight: 5 }}
-        onPress={() => this.repostCommentary()}
-      >
-        <View style={[styles.textRow, { alignItems: 'center' }]}>
-          <IconI name="ios-quote-outline" size={24} color={greyText} />
-        </View>
-      </TouchableOpacity>
-    );
-
     const newCommentary = (
       <TouchableOpacity style={{ paddingRight: 8 }} onPress={() => this.repostUrl()}>
         {/* <Icon name="pencil" size={18} color={greyText} /> */}
@@ -519,9 +461,8 @@ class PostButtons extends Component {
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {(link && link.url) && !isComment ? newCommentary : null}
+            {link && link.url && !isComment ? newCommentary : null}
             {twitter || isComment ? null : comments}
-            {twitter || isComment ? null : repost}
           </View>
 
           {/*          <InvestModal
@@ -534,17 +475,6 @@ class PostButtons extends Component {
     );
   }
 }
-
-PostButtons.propTypes = {
-  actions: PropTypes.object,
-  post: PropTypes.object,
-  tooltip: PropTypes.bool,
-  link: PropTypes.object,
-  myPostInv: PropTypes.object,
-  auth: PropTypes.object,
-  scene: PropTypes.object,
-  focusInput: PropTypes.func
-};
 
 export default PostButtons;
 

@@ -1,8 +1,7 @@
 let userDefaults;
 let cookie;
 
-if (process.env.WEB !== 'true' && process.env.NODE_ENV !== 'test') {
-  // userDefaults = require('react-native-user-defaults').default;
+if (process.env.WEB !== 'true') {
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
   const Cookies = require('universal-cookie');
@@ -42,6 +41,7 @@ export function get() {
 
 export function remove() {
   token = null;
+  console.log('REMOVING TOKEN!'); // eslint-disable-line
   if (userDefaults) {
     return new Promise(resolve => {
       userDefaults.remove('token', APP_GROUP_ID);

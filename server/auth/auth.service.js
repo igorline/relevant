@@ -22,7 +22,13 @@ function validateTokenLenient(req, res, next) {
   ) {
     req.headers.authorization = 'Bearer ' + req.query.access_token;
   }
-  return validateJwt(req, res, () => next());
+  return validateJwt(req, res, err => {
+    if (token && err) {
+      console.log('REMOVING TOKEN', err); // eslint-disable-line
+      req.universalCookies.remove('token');
+    }
+    next();
+  });
 }
 
 // throws error if user is not authenticated
@@ -44,10 +50,18 @@ function getUser(select) {
     try {
       if (!req.user) return next();
       const user = await User.findById(req.user._id, select);
+      if (!user) {
+        // eslint-disable-next-line
+        console.log("User doesn't exist - bad token", req.user);
+        req.universalCookies.remove('token');
+      }
+
       req.user = user;
       return next();
     } catch (err) {
-      return next(err);
+      req.user = null;
+      req.universalCookies.remove('token');
+      return next();
     }
   };
 }
@@ -90,9 +104,10 @@ function communityMember() {
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
-      if (community === 'relevant' && !member) {
+      if (!member) {
+        // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
-        const com = await Community.findOne({ slug: 'relevant' });
+        const com = await Community.findOne({ slug: community });
         await com.join(user);
         member = await CommunityMember.findOne({ user, community });
       }
@@ -132,15 +147,25 @@ function signToken(id, role) {
   return jwt.sign({ _id: id, role }, process.env.SESSION_SECRET, { expiresIn: '7 days' });
 }
 
+function setTokenNative(req, res) {
+  if (!req.user) {
+    return res.json(404, { message: 'Something went wrong, please try again.' });
+  }
+
+  const token = signToken(req.user._id, req.user.role);
+  req.universalCookies.set('token', token);
+
+  return res.json({ token, user: req.user });
+}
+
 function setTokenCookieDesktop(req, res) {
   if (!req.user) {
     return res.json(404, { message: 'Something went wrong, please try again.' });
   }
 
   const token = signToken(req.user._id, req.user.role);
+  req.universalCookies.set('token', token);
 
-  res.cookie('token', token);
-  // console.log('query params ', req.query);
   const redirect = req.query.redirect || '/relevant/new';
   return res.redirect(redirect);
 }
@@ -154,11 +179,8 @@ function setTokenCookie(req, res) {
   }
 
   const token = signToken(req.user._id, req.user.role);
-  if (req.user.type === 'temp') {
-    return res.json({ tmpUser: token });
-  }
+  req.universalCookies.set('token', token);
 
-  res.cookie('token', token);
   return res.redirect('/signup');
 }
 
@@ -171,3 +193,4 @@ exports.currentUser = currentUser;
 exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
 exports.communityMember = communityMember;
+exports.setTokenNative = setTokenNative;

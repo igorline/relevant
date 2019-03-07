@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-use-before-define */
 import Express from 'express';
 import morgan from 'morgan';
+import passport from 'passport';
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -14,8 +15,7 @@ const path = require('path');
 const app = new Express();
 mongoose.Promise = global.Promise;
 
-require('dotenv')
-.config({ silent: true });
+require('dotenv').config({ silent: true });
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 
@@ -27,11 +27,10 @@ const isDevelopment =
   process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'native';
 
+const relevantEnv = process.env.RELEVANT_ENV;
+
 if (isDevelopment) {
   console.log('in development environment');
-  // can test queue in development
-  require('./queue');
-
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -41,8 +40,8 @@ if (isDevelopment) {
   app.use(
     webpackDevMiddleware(compiler, {
       // noInfo: true,
-      publicPath: webpackConfig.output.publicPath,
-      writeToDisk: filePath => /loadable-stats\.json$/.test(filePath)
+      publicPath: webpackConfig.output.publicPath
+      // writeToDisk: filePath => /loadable-stats-dev\.json$/.test(filePath)
     })
   );
   app.use(webpackHotMiddleware(compiler));
@@ -55,7 +54,7 @@ app.use(cookieParser());
 app.use(favicon(path.join(__dirname, '/../app/public/img/favicon.ico')));
 
 // Connect to db
-require('./config/db.connect');
+const { db } = require('./config/db.connect');
 
 // Persist sessions with MongoStore
 // We need to enable sessions for passport twitter because its an oauth 1.0 strategy
@@ -75,6 +74,9 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 function requireHTTPS(req, res, next) {
   if (
     req.headers['x-forwarded-proto'] !== 'https' &&
@@ -84,7 +86,10 @@ function requireHTTPS(req, res, next) {
   }
   return next();
 }
-app.use(requireHTTPS);
+
+if (process.env.NO_SSL !== 'true') {
+  app.use(requireHTTPS);
+}
 
 // public folder
 app.use(Express.static(path.join(__dirname, '/../app/public')));
@@ -93,7 +98,6 @@ app.use(cookiesMiddleware());
 const port = process.env.PORT || 3000;
 
 console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
-
 let server;
 const socketServer = require('./socket').default;
 
@@ -107,8 +111,7 @@ if (process.env.NODE_ENV !== 'test') {
       );
       const now = new Date();
       require('./routes')(app);
-      const time = new Date()
-      .getTime() - now.getTime();
+      const time = new Date().getTime() - now.getTime();
       console.log('done loading routes', time / 1000, 's');
     }
     socketServer(server, { pingTimeout: 30000 });
@@ -117,9 +120,14 @@ if (process.env.NODE_ENV !== 'test') {
   require('./routes')(app);
 }
 
-require('./utils/updateDB-Community0.2.0');
-require('./utils/ethereum')
-.init();
+// in production this is a worker
+if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'native') {
+  require('./queue');
+}
+
+require('./utils/updateDB-Community0.3.0');
+require('./utils/ethereum').init();
 
 exports.app = app;
 exports.server = server;
+exports.db = db;

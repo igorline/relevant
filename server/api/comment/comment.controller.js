@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import Community from 'server/api/community/community.model';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
@@ -16,39 +17,38 @@ const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 exports.get = async (req, res, next) => {
   try {
-    // TODO - not paginated
-    const { community } = req.query;
+    // TODO - pagination
     // const limit = parseInt(req.query.limit, 10) || 10;
     // const skip = parseInt(req.query.skip, 10) || 0;
+
+    const { community } = req.query;
+    const cObj = await Community.findOne({ slug: community }, '_id');
+    const communityId = cObj._id;
+
     let query = null;
     let parentPost = null;
-    const sort = 1;
     const id = req.user ? req.user._id : null;
 
     if (req.query.post) {
       parentPost = req.query.post;
-      query = { parentPost };
+      query = { parentPost, hidden: { $ne: true }, communityId };
     }
 
     const total = await Post.count(query);
 
-    // if (total > 10) sort = -1;
     const comments = await Post.find(query)
     .populate({
       path: 'embeddedUser.relevance',
       select: 'pagerank',
-      match: { community, global: true }
+      match: { communityId, global: true }
     })
     .populate({
       path: 'data',
-      // match: { community }
+      match: { communityId }
     })
-    .sort({ createdAt: sort });
-    // .limit(limit)
-    // .skip(skip);
+    .sort({ pagerank: -1 });
 
     const toSend = comments;
-    // if (total > 10) toSend = comments.reverse();
     res.status(200).json({ data: toSend, total });
 
     // TODO worker thread
@@ -67,61 +67,151 @@ exports.get = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+// for testing
+exports.create = async (req, res, next) => {
+  let user = req.user._id;
+  const { community, communityId } = req.communityMember;
+  const {
+    parentComment,
+    linkParent,
+    text: body,
+    tags,
+    mentions = [],
+    repost = false,
+    metaPost
+  } = req.body;
+  let { parentPost } = req.body;
+
+  const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
+
+  const commentObj = {
+    body,
+    mentions,
+    tags,
+    parentPost,
+    linkParent,
+    parentComment,
+    user,
+    type,
+    eligibleForRewards: true,
+    postDate: new Date(),
+    community,
+    communityId,
+    metaPost
+  };
+
   try {
-    const userId = req.user._id;
-    const { id } = req.params;
-    const query = { _id: id, user: userId };
-    const foundComment = await Post.findOne(query);
-    if (!foundComment) throw new Error("Comment doesn't exist");
-    if (foundComment.repost) {
-      // remove the post that holds the repost
-      await Post.findOne({ 'repost.comment': id }).remove();
-    }
+    let comment = new Post(commentObj);
+    user = await User.findOne({ _id: user });
 
-    const post = await Post.findOneAndUpdate(
-      { _id: foundComment.parentPost },
-      { $inc: { commentCount: -1 } },
-      { new: true }
-    ).exec();
+    parentPost = await Post.findOne({ _id: parentPost });
 
-    await foundComment.remove();
+    if (repost) comment = await createRepost(comment, parentPost, user);
 
-    post.updateClient();
-    return res.json(200, true);
-  } catch (err) {
-    return next(err);
-  }
-};
+    comment = await comment.addUserInfo(user);
+    comment = await comment.addPostData();
 
-exports.update = async (req, res, next) => {
-  try {
-    const comment = req.body;
-    const { user } = req;
-    const { mentions } = comment;
-    let newMentions;
+    // this will also save the new comment
+    comment = await Post.sendOutMentions(mentions, parentPost, user, comment);
 
-    const newComment = await Post.findOne({ _id: comment._id });
+    await Invest.createVote({
+      post: comment,
+      user,
+      amount: 1,
+      relevanceToAdd: 0,
+      community,
+      communityId
+    });
 
-    if (newComment.user !== user._id) throw new Error("Can't edit other's comments");
+    // TODO increase the post's relevance? **but only if its user's first comment!
+    const updateTime = type === 'post' || false;
+    await parentPost.updateRank({ communityId, updateTime });
+    parentPost = await parentPost.save();
+    parentPost.updateClient();
 
-    newComment.body = req.body.body;
-    newMentions = mentions.filter(m => newComment.mentions.indexOf(m) < 0);
-    newComment.mentions = mentions;
-    newMentions = newMentions || [];
+    const postAuthor = await User.findOne(
+      { _id: parentPost.user },
+      'name _id deviceTokens'
+    );
 
-    if (newMentions.length) {
-      const post = { _id: newComment.parentPost };
-      Post.sendOutMentions(mentions, post, newComment.user, newComment);
-    }
+    let otherCommentors = await Post.find({ post: parentPost._id }).populate(
+      'user',
+      'name _id deviceTokens'
+    );
 
-    await newComment.save();
+    otherCommentors = otherCommentors.map(comm => comm.user).filter(u => u);
+    otherCommentors.push(postAuthor);
 
-    res.json(200, newComment);
+    let voters = await Invest.find({ post: parentPost._id }).populate(
+      'investor',
+      'name _id deviceTokens'
+    );
+    voters = voters.map(v => v.investor);
+    otherCommentors = [...otherCommentors, ...voters];
+    otherCommentors = otherCommentors.filter(u => u);
+
+    // filter out duplicates
+    otherCommentors = otherCommentors.filter((u, i) => {
+      const index = otherCommentors.findIndex(c => (c ? c._id.equals(u._id) : false));
+      return index === i;
+    });
+
+    await comment.save();
+    res.status(200).json(comment);
+
+    otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u.handle));
+    otherCommentors.forEach(commentor =>
+      sendNotifications({ commentor, postAuthor, repost, parentPost, user, comment })
+    );
   } catch (err) {
     next(err);
   }
 };
+
+async function sendNotifications({ commentor, postAuthor, repost, user, comment }) {
+  try {
+    if (user._id.equals(commentor._id)) return;
+
+    let type = 'comment';
+    let ownPost = false;
+
+    if (postAuthor && commentor._id.equals(postAuthor._id)) {
+      ownPost = true;
+    }
+    type = !ownPost ? (type += 'Also') : type;
+
+    if (repost && ownPost) type = 'repost';
+
+    const dbNotificationObj = {
+      post: comment._id,
+      forUser: commentor._id,
+      byUser: user._id,
+      amount: null,
+      type,
+      personal: true,
+      read: false
+    };
+
+    const newDbNotification = new Notification(dbNotificationObj);
+    const note = await newDbNotification.save();
+
+    const newNotifsObj = {
+      _id: commentor._id,
+      type: 'ADD_ACTIVITY',
+      payload: note
+    };
+    CommentEvents.emit('comment', newNotifsObj);
+
+    let action = ` commented on ${ownPost ? 'your' : 'a'} post`;
+    if (comment.repost && ownPost) action = ' reposted your post';
+
+    const alert = user.name + action;
+    const payload = { commentFrom: user.name };
+    apnData.sendNotification(commentor, alert, payload);
+  } catch (err) {
+    throw err;
+  }
+}
 
 async function createRepost(comment, post, user) {
   try {
@@ -139,7 +229,6 @@ async function createRepost(comment, post, user) {
       postDate: new Date(),
       relevance: 0,
       parentPost: post._id,
-      aboutLink: post.aboutLink,
       body: comment.body,
       type: 'repost',
       eligibleForRewards: true,
@@ -191,146 +280,57 @@ async function createRepost(comment, post, user) {
   }
 }
 
-// for testing
-exports.create = async (req, res, next) => {
-  let user = req.user._id;
-  const { community, communityId } = req.communityMember;
-  const body = req.body.text;
-  let parentPost = req.body.post;
-  const { parentComment } = req.body;
-  const { tags } = req.body;
-  const mentions = req.body.mentions || [];
-  const repost = req.body.repost || false;
-  let comment;
-  let postAuthor;
-
-  const commentObj = {
-    body,
-    mentions,
-    tags,
-    parentPost,
-    parentComment,
-    user,
-    type: 'comment',
-    eligibleForRewards: true,
-    postDate: new Date(),
-    community,
-    communityId
-  };
-
-  async function sendOutComments(commentor) {
-    try {
-      if (user._id === commentor._id) return;
-
-      let type = 'comment';
-      let ownPost = false;
-
-      if (postAuthor && commentor._id.toString() === postAuthor._id.toString()) {
-        ownPost = true;
-      }
-      type = !ownPost ? (type += 'Also') : type;
-
-      if (repost && ownPost) type = 'repost';
-
-      const dbNotificationObj = {
-        post: parentPost._id,
-        forUser: commentor._id,
-        byUser: user._id,
-        comment: comment._id,
-        amount: null,
-        type,
-        personal: true,
-        read: false
-      };
-
-      const newDbNotification = new Notification(dbNotificationObj);
-      const note = await newDbNotification.save();
-
-      const newNotifsObj = {
-        _id: commentor._id,
-        type: 'ADD_ACTIVITY',
-        payload: note
-      };
-      CommentEvents.emit('comment', newNotifsObj);
-
-      let action = ` commented on ${ownPost ? 'your' : 'a'} post`;
-      if (comment.repost && ownPost) action = ' reposted your post';
-
-      const alert = user.name + action;
-      const payload = { commentFrom: req.user.name };
-      apnData.sendNotification(commentor, alert, payload);
-    } catch (err) {
-      throw err;
-    }
-  }
-
+exports.update = async (req, res, next) => {
   try {
-    comment = new Post(commentObj);
-    user = await User.findOne({ _id: user });
+    const comment = req.body;
+    const { user } = req;
+    const { mentions } = comment;
+    let newMentions;
 
-    parentPost = await Post.findOne({ _id: parentPost });
+    const newComment = await Post.findOne({ _id: comment._id });
+    if (!user._id.equals(newComment.user)) throw new Error("Can't edit other's comments");
 
-    if (repost) {
-      comment = await createRepost(comment, parentPost, user);
+    newComment.body = req.body.body;
+    newMentions = mentions.filter(m => newComment.mentions.indexOf(m) < 0);
+    newComment.mentions = mentions;
+    newMentions = newMentions || [];
+
+    if (newMentions.length) {
+      const post = { _id: newComment.parentPost };
+      Post.sendOutMentions(mentions, post, newComment.user, newComment);
     }
 
-    // comment.community = parentPost.community;
-    comment.aboutLink = parentPost.aboutLink;
+    await newComment.save();
 
-    comment = await comment.addUserInfo(user);
-    comment = await comment.addPostData();
-
-    // this will also save the new comment
-    comment = await Post.sendOutMentions(mentions, parentPost, user, comment);
-
-    await Invest.createVote({
-      post: comment,
-      user,
-      amount: 1,
-      relevanceToAdd: 0,
-      community,
-      communityId
-    });
-
-    // TODO increase the post's relevance? **but only if its user's first comment!
-    // this auto-updates comment count
-    parentPost = await parentPost.save();
-    parentPost.updateClient();
-
-    postAuthor = await User.findOne({ _id: parentPost.user }, 'name _id deviceTokens');
-
-    let otherCommentors = await Post.find({ post: parentPost._id }).populate(
-      'user',
-      'name _id deviceTokens'
-    );
-
-    otherCommentors = otherCommentors.map(comm => comm.user).filter(u => u);
-    otherCommentors.push(postAuthor);
-
-    let voters = await Invest.find({ post: parentPost._id }).populate(
-      'investor',
-      'name _id deviceTokens'
-    );
-    voters = voters.map(v => v.investor);
-    voters = voters || [];
-    otherCommentors = otherCommentors || [];
-    otherCommentors = [...otherCommentors, ...voters];
-    // filter out nulls
-    otherCommentors = otherCommentors.filter(u => u);
-
-    // filter out duplicates
-    otherCommentors = otherCommentors.filter((u, i) => {
-      const index = otherCommentors.findIndex(c => (c ? c._id === u._id : false));
-      return index === i;
-    });
-
-    await comment.save();
-    res.status(200).json(comment);
-
-    otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u._id));
-    otherCommentors.forEach(sendOutComments);
+    res.json(200, newComment);
   } catch (err) {
     next(err);
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { id } = req.params;
+    const query = { _id: id, user: userId };
+    const comment = await Post.findOne(query);
+    if (!comment) throw new Error("Comment doesn't exist");
+    if (comment.repost) {
+      await Post.findOne({ 'repost.comment': id }).remove();
+    }
+
+    const post = await Post.findOneAndUpdate(
+      { _id: comment.parentPost },
+      { $inc: { commentCount: -1 } },
+      { new: true }
+    ).exec();
+
+    await comment.remove();
+
+    if (post) post.updateClient();
+    return res.json(200, true);
+  } catch (err) {
+    return next(err);
   }
 };
 

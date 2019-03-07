@@ -1,18 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Textarea from 'react-textarea-autosize';
-import { alert, token, text } from 'app/utils';
+import { Button, View, StyledTextarea, Form } from 'modules/styled/web';
+import { alert, text } from 'app/utils';
+import { colors, sizing } from 'app/styles';
+import UAvatar from 'modules/user/UAvatar.component';
+import styled from 'styled-components';
+import { Spacer } from 'modules/styled/uni';
+import { withRouter } from 'react-router-dom';
+
+const AvatarContainer = styled(View)`
+  position: absolute;
+  left: ${sizing(0)};
+  top: ${sizing(0)};
+  z-index: 10;
+`;
 
 class CommentForm extends Component {
   static propTypes = {
     edit: PropTypes.bool,
     comment: PropTypes.object,
     auth: PropTypes.object,
-    post: PropTypes.object,
     actions: PropTypes.object,
     cancel: PropTypes.func,
     updatePosition: PropTypes.func,
-    text: PropTypes.string
+    text: PropTypes.string,
+    isReply: PropTypes.bool,
+    parentPost: PropTypes.object,
+    parentComment: PropTypes.object,
+    className: PropTypes.string,
+    nestingLevel: PropTypes.number,
+    additionalNesting: PropTypes.number,
+    autoFocus: PropTypes.bool,
+    history: PropTypes.object
   };
 
   constructor(props, context) {
@@ -25,14 +44,15 @@ class CommentForm extends Component {
     // this.handleKeydown = this.handleKeydown.bind(this);
     this.state = {
       inputHeight: 50,
-      comment: ''
+      comment: '',
+      focused: false
     };
   }
 
   componentDidMount() {
     if (this.props.edit && this.props.comment) {
       this.setState({ comment: this.props.comment.body });
-      this.textArea.focus();
+      if (this.textArea) this.textArea.focus();
     }
   }
 
@@ -52,6 +72,7 @@ class CommentForm extends Component {
   }
 
   async createComment() {
+    const { isReply, parentComment, parentPost, auth, history } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -61,21 +82,25 @@ class CommentForm extends Component {
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      post: this.props.post.id,
+      parentPost: parentPost._id,
+      parentComment: isReply && parentComment ? parentComment._id : null,
+      linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
-      user: this.props.auth.user._id
+      user: auth.user._id,
+      metaPost: parentPost.metaPost
     };
-
     this.setState({ comment: '', inputHeight: 50 });
 
-    return this.props.actions
-    .createComment(await token.get(), commentObj)
-    .then(success => {
-      if (!success) {
-        this.setState({ comment, inputHeight: 50 });
-        this.textInput.focus();
+    return this.props.actions.createComment(commentObj).then(newComment => {
+      if (!newComment) {
+        this.setState({ newComment, inputHeight: 50 });
+        if (this.textInput) this.textInput.focus();
+      } else {
+        history.push(
+          `/${newComment.community}/post/${newComment.parentPost}/${newComment._id}`
+        );
       }
     });
   }
@@ -126,41 +151,82 @@ class CommentForm extends Component {
   }
 
   render() {
-    if (!this.props.auth.isAuthenticated) return null;
+    const {
+      cancel,
+      auth,
+      edit,
+      isReply,
+      // nestingLevel,
+      className,
+      nestingLevel,
+      additionalNesting,
+      autoFocus,
+      ...rest
+    } = this.props;
+    if (!auth.isAuthenticated) return null;
+    let backgroundColor = 'transparent';
+    let paddingTop = 0;
+    if (isReply && this.state.focused) {
+      paddingTop = 4;
+      backgroundColor = colors.secondaryBG;
+    }
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <form onSubmit={this.handleSubmit}>
-          <Textarea
-            inputRef={c => (this.textArea = c)}
-            style={{ minHeight: '60px' }}
-            rows={2}
-            placeholder="Enter comment..."
-            value={this.state.comment}
-            onKeyDown={this.handleKeydown}
-            onChange={this.handleChange}
-          />
-        </form>
-        <div style={{ alignSelf: 'flex-end' }}>
-          {this.props.cancel && (
-            <button
-              onClick={this.props.cancel}
-              className={'shadowButton'}
-              disabled={!this.props.auth.isAuthenticated}
-            >
-              Cancel
-            </button>
+      <Spacer
+        fdirection="row"
+        grow={1}
+        {...rest}
+        bg={backgroundColor}
+        pt={paddingTop}
+        nestingLevel={(nestingLevel || 0) + (additionalNesting || 0)}
+      >
+        <View fdirection="column" flex={1} style={{ position: 'relative' }}>
+          {this.state.focused ? null : (
+            <AvatarContainer p={2}>
+              <UAvatar user={auth.user} size={3} />
+            </AvatarContainer>
           )}
-          <button
-            onClick={this.handleSubmit}
-            className={'shadowButton'}
-            disabled={!this.props.auth.isAuthenticated}
+          <Form
+            onSubmit={this.handleSubmit}
+            fdirection="row"
+            justify-="space-between"
+            align="flex-start"
+            m="0 0 2.5 0"
+            flex={1}
           >
-            {this.props.text}
-          </button>
-        </div>
-      </div>
+            <StyledTextarea
+              inputRef={c => (this.textArea = c)}
+              rows={2}
+              placeholder="Enter comment..."
+              value={this.state.comment}
+              onKeyDown={this.handleKeydown}
+              onChange={this.handleChange}
+              m={0}
+              flex={1}
+              autoFocus={autoFocus}
+              pl={this.state.focused ? 2 : 6}
+              onFocus={() => this.setState({ focused: true })}
+              onBlur={() => setTimeout(() => this.setState({ focused: false }), 100)}
+            />
+          </Form>
+          {this.state.focused || this.state.comment ? (
+            <View justify="flex-end" fdirection="row">
+              <Button
+                onClick={cancel}
+                bg="transparent"
+                c={colors.secondaryText}
+                disabled={!auth.isAuthenticated}
+              >
+                Cancel
+              </Button>
+              <Button onClick={this.handleSubmit} disabled={!auth.isAuthenticated}>
+                {this.props.text}
+              </Button>
+            </View>
+          ) : null}
+        </View>
+      </Spacer>
     );
   }
 }
 
-export default CommentForm;
+export default withRouter(CommentForm);

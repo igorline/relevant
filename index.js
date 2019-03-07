@@ -1,11 +1,11 @@
 // This is needed for android
 // may not be needed in future versions
 // https://github.com/facebook/react-native/issues/20902
-import '@babel/polyfill';
+require('@babel/polyfill');
 
-import { AppRegistry } from 'react-native';
-import App from './app/modules/_app/mobile/app.index';
-import Share from './app/modules/_app/mobile/share.index';
+const { AppRegistry } = require('react-native');
+const App = require('./app/modules/_app/mobile/app.index').default;
+const Share = require('./app/modules/_app/mobile/share.index').default;
 
 AppRegistry.registerComponent('relevantNative', () => App);
 AppRegistry.registerComponent('Relevant', () => Share);

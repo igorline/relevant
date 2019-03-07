@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  TouchableHighlight,
-  ActionSheetIOS,
-  Platform
-} from 'react-native';
+import { Image, Text, TouchableHighlight, ActionSheetIOS, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles, greyText } from 'app/styles/global';
+import { greyText } from 'app/styles/global';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import { View } from 'modules/styled/uni';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -20,18 +13,17 @@ if (Platform.OS === 'android') {
   ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 }
 
-let styles;
-
 export default class UrlPreviewComponent extends Component {
   static propTypes = {
     actions: PropTypes.object,
     edit: PropTypes.bool,
     repost: PropTypes.object,
     size: PropTypes.string,
-    post: PropTypes.object,
+    image: PropTypes.string,
+    title: PropTypes.string,
     urlPreview: PropTypes.object,
     domain: PropTypes.string,
-    onPress: PropTypes.func
+    noLink: PropTypes.bool
   };
 
   constructor(props, state) {
@@ -40,7 +32,7 @@ export default class UrlPreviewComponent extends Component {
   }
 
   removeUrlPreview() {
-    this.props.actions.setCreaPostState({ urlPreview: null, postUrl: null });
+    this.props.actions.setCreatePostState({ urlPreview: null, postUrl: null });
   }
 
   previewMenu() {
@@ -63,97 +55,58 @@ export default class UrlPreviewComponent extends Component {
   }
 
   render() {
-    let preview = null;
-    let image;
-    let domain;
-    let height = 80;
-    let imageFlex = 0.4;
-    let fontSize = 15;
-    let maxLines = 3;
-    if (this.props.size === 'small') {
-      height = 55;
-      imageFlex = 0.25;
-      fontSize = 13;
-    }
-    let body = this.props.post && this.props.post.body;
-    body = this.props.urlPreview ? this.props.urlPreview.title || body : null;
+    const { noLink, urlPreview, image, domain, size, title } = this.props;
+    const isSmall = size === 'small';
+    const height = isSmall ? 55 : 80;
+    const imageFlex = isSmall ? 0.35 : 0.4;
+    const fontSize = isSmall ? 13 : 15;
 
-    if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
-      const previewImage = this.props.urlPreview.image;
-      image = (
-        <Image
-          resizeMode={'cover'}
-          source={previewImage ? { uri: previewImage } : require('app/public/img/missing.png')}
-          style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
-        />
-      );
-    } else {
-      // height = null;
-      // addStyle = {
-      //   borderWidth: 0
-      // };
-    }
+    const img = image || (urlPreview && urlPreview.image);
+    const body = title || (urlPreview && urlPreview.title);
+    const domainUrl = domain || (urlPreview && urlPreview.domain);
 
-    if (this.props.domain) {
-      if (this.props.size === 'small') maxLines = 2;
-      domain = (
-        <Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
-          from: {this.props.domain}
-        </Text>
-      );
-    }
+    const imageEl = img && (
+      <Image
+        resizeMode={'cover'}
+        source={img ? { uri: img } : require('app/public/img/missing.png')}
+        style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
+      />
+    );
 
-    if (this.props.urlPreview) {
-      preview = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.createPostInput, { height, marginTop: 5 }]}
-          onPress={this.props.onPress || this.previewMenu}
-        >
-          <View style={[styles.innerPreview]}>
-            {image || <View style={{ width: 5 }} />}
-            <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
-              <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
-                {body}
-              </Text>
-              {domain}
-            </View>
+    const domainEl = domainUrl && (
+      <Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
+        from: {domainUrl}
+      </Text>
+    );
+
+    const maxLines = isSmall && domainEl ? 2 : 3;
+
+    return urlPreview ? (
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={{ height }}
+        disabled={noLink}
+      >
+        <View h={height} border align={'stretch'} fdirection={'row'} flex={1}>
+          {imageEl || <View style={{ width: 5 }} />}
+          <View style={{ flex: 1, padding: 5, justifyContent: 'center' }}>
+            <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
+              {body}
+            </Text>
+            <Text>{domainEl}</Text>
           </View>
-        </TouchableHighlight>
-      );
-    } else {
-      preview = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.createPostInput, styles.preview, { height }]}
-          onPress={this.previewMenu}
-        >
-          <View style={styles.innerPreview}>
-            <CustomSpinner size={'small'} visible />
-          </View>
-        </TouchableHighlight>
-      );
-    }
-
-    return preview;
+        </View>
+      </TouchableHighlight>
+    ) : (
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={{ height }}
+        onPress={this.previewMenu}
+      >
+        <View h={height} border align={'stretch'} fdirection={'row'} flex={1}>
+          <CustomSpinner size={'small'} visible />
+        </View>
+      </TouchableHighlight>
+    );
   }
 }
-
-const localStyles = StyleSheet.create({
-  preview: {
-    height: 100
-  },
-  innerPreview: {
-    borderRadius: 0,
-    borderColor: greyText,
-    borderStyle: 'solid',
-    borderWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    flex: 1,
-    overflow: 'hidden'
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };

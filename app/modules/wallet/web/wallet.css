@@ -91,8 +91,6 @@
 
 .walletContainer {
   text-align: center;
-  margin: auto;
-  align-self: center;
   padding: 40px 20px;
   /*@extend %flatBorder;*/
   background: $lightBg;

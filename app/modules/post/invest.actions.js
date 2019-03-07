@@ -1,13 +1,17 @@
-/* eslint-disable no-console */
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
+import { setPostsSimple } from 'modules/post/post.actions';
 
 const Alert = alert.Alert();
 
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
-const postSchema = new schema.Entity('posts', { metaPost: linkSchema }, { idAttribute: '_id' });
+const postSchema = new schema.Entity(
+  'posts',
+  { metaPost: linkSchema },
+  { idAttribute: '_id' }
+);
 
 const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 
@@ -31,13 +35,6 @@ export function undoPostVote(post) {
   return {
     type: types.UNDO_POST_INVESTMENT,
     payload: post
-  };
-}
-
-export function setPosts(data) {
-  return {
-    type: 'SET_POSTS_SIMPLE',
-    payload: { data }
   };
 }
 
@@ -101,7 +98,7 @@ export function vote(amount, post, user, undo) {
   };
 }
 
-export function getInvestments(token, userId, skip, limit) {
+export function getInvestments(userId, skip, limit) {
   return async dispatch => {
     try {
       dispatch(loadingInvestments());
@@ -112,7 +109,7 @@ export function getInvestments(token, userId, skip, limit) {
         query: { skip, limit }
       });
       const data = normalize({ investments: res }, { investments: [investmentSchema] });
-      dispatch(setPosts(data));
+      dispatch(setPostsSimple(data));
       dispatch(setInvestments(data, userId, skip));
     } catch (err) {
       // console.log(err);

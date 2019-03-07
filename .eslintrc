@@ -6,6 +6,9 @@
     settings: {
         "import/resolver": {
             "babel-module": {}
+        },
+        "react": {
+            "version": "detect"
         }
     },
     "parser": "babel-eslint",
@@ -20,8 +23,10 @@
         "react/forbid-prop-types": "off",
         "react/jsx-uses-vars": 2,
         "react/jsx-uses-react": 1,
-        "react/no-unused-prop-types": 1,
-        "react/prop-types": 1,
+        "react/no-unused-prop-types": 2,
+        "react/prop-types": 2,
+        "no-console": 2,
+        "no-unused-expressions": 0,
         "import/no-extraneous-dependencies": 0,
         "import/prefer-default-export": 0,
         "no-underscore-dangle": 0,
@@ -35,6 +40,7 @@
         "no-nested-ternary": 0,
         "no-mixed-operators": 0,
         "no-confusing-arrow": 0,
+        "no-use-before-define": 0,
         // "no-restricted-properties": 0,
         "prefer-destructuring": [1, {
           "VariableDeclarator": {
@@ -60,7 +66,8 @@
     },
     env: {
         browser: true,
-        node: true
+        node: true,
+        jest: true,
     },
     "globals" : {
         "web3": false

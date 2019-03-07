@@ -150,8 +150,8 @@ export default class CustomListView extends Component {
           this.listview = c;
         }}
         enableEmptySections
-        removeClippedSubviews
-        pageSize={1}
+        removeClippedSubviews={false}
+        pageSize={2}
         initialListSize={10}
         scrollEventThrottle={10}
         automaticallyAdjustContentInsets={false}

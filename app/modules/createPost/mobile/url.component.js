@@ -6,7 +6,8 @@ import {
   Text,
   TouchableHighlight,
   Platform,
-  ScrollView
+  ScrollView,
+  InteractionManager
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {
@@ -16,8 +17,19 @@ import {
   greyText,
   borderGrey
 } from 'app/styles/global';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
+// import * as authActions from 'modules/auth/auth.actions';
+import * as createPostActions from 'modules/createPost/createPost.actions';
+// import * as postActions from 'modules/post/post.actions';
+import * as tagActions from 'modules/tag/tag.actions';
+import * as userActions from 'modules/user/user.actions';
+// import * as navigationActions from 'modules/navigation/navigation.actions';
+import * as tooltipActions from 'modules/tooltip/tooltip.actions';
+
 import * as utils from 'app/utils';
-import UserName from 'modules/user/mobile/avatar.component';
+import UserName from 'modules/user/avatarbox.component';
 import PostBody from 'modules/post/mobile/postBody.component';
 import PostInfo from 'modules/post/mobile/postInfo.component';
 import TextBody from 'modules/text/mobile/textBody.component';
@@ -29,17 +41,18 @@ const URL_REGEX = new RegExp(
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/
 );
 
-export default class UrlComponent extends Component {
+class UrlComponent extends Component {
   static propTypes = {
     postUrl: PropTypes.string,
-    share: PropTypes.bool,
     createPreview: PropTypes.object,
-    actions: PropTypes.object,
     postBody: PropTypes.string,
     urlPreview: PropTypes.object,
+    share: PropTypes.bool,
+    actions: PropTypes.object,
     repost: PropTypes.object,
     users: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+    tags: PropTypes.array
   };
 
   constructor(props, context) {
@@ -55,7 +68,9 @@ export default class UrlComponent extends Component {
       this.createPreview(this.props.postUrl);
     }
     setTimeout(() => this.initTooltips('shareTip'), 1000);
-    if (!this.props.share) this.input.focus();
+    InteractionManager.runAfterInteractions(() => {
+      if (!this.props.tags.length) this.props.actions.getParentTags();
+    });
   }
 
   componentWillReceiveProps(next) {
@@ -63,6 +78,10 @@ export default class UrlComponent extends Component {
       this.createPreview(next.postUrl);
       this.input.focus();
     }
+  }
+
+  componentWillUnmount() {
+    this.input.blur();
   }
 
   initTooltips(name) {
@@ -87,7 +106,7 @@ export default class UrlComponent extends Component {
 
   setMention(user) {
     const postBody = this.props.postBody.replace(this.mention, '@' + user._id);
-    this.props.actions.setCreaPostState({ postBody });
+    this.props.actions.setCreatePostState({ postBody });
     this.props.actions.setUserSearch([]);
     this.input.focus();
   }
@@ -124,7 +143,7 @@ export default class UrlComponent extends Component {
         return null;
       });
       if (postUrl) {
-        this.props.actions.setCreaPostState({ postUrl });
+        this.props.actions.setCreatePostState({ postUrl });
         this.createPreview(postUrl);
       }
     }
@@ -147,49 +166,22 @@ export default class UrlComponent extends Component {
       postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
     }
 
-    this.props.actions.setCreaPostState({ postBody, bodyTags, bodyMentions });
+    this.props.actions.setCreatePostState({ postBody, bodyTags, bodyMentions });
   }
 
   createPreview(postUrl) {
-    utils.post.generatePreviewServer(postUrl).then(results => {
+    this.props.actions.generatePreviewServer(postUrl).then(results => {
       if (results) {
         const newBody = this.props.postBody
           ? this.props.postBody.replace(`${postUrl}`, '').trim()
           : '';
-        let tags = [];
-        if (results.tags) {
-          tags = results.tags.split(',');
-        }
-        const keywords = [...tags];
-        let pKeywords = [];
-        keywords.forEach(k => {
-          pKeywords = [...k.trim().split(';'), ...pKeywords];
-        });
-        pKeywords = pKeywords.map(tag => tag.trim());
 
-        tags = tags.map(tag =>
-          tag
-          .trim()
-          .toLowerCase()
-          .replace(/\s/g, '')
-        );
-        let pTags = [];
-        tags.forEach(tag => {
-          pTags = [...pTags, ...tag.split(';')];
-        });
-        pTags = pTags.map(tag =>
-          tag
-          .trim()
-          .toLowerCase()
-          .replace(/\s/g, '')
-        );
-
-        this.props.actions.setCreaPostState({
+        this.props.actions.setCreatePostState({
           postBody: newBody,
           domain: results.domain,
           postUrl: results.url,
-          articleTags: pTags,
           keywords: results.keywords,
+          postTags: results.tags,
           articleAuthor: results.articleAuthor,
           shortText: results.shortText,
           urlPreview: {
@@ -199,7 +191,7 @@ export default class UrlComponent extends Component {
           }
         });
       } else {
-        this.props.actions.setCreaPostState({ postUrl: null });
+        this.props.actions.setCreatePostState({ postUrl: null });
       }
     });
   }
@@ -230,7 +222,7 @@ export default class UrlComponent extends Component {
     if (this.props.user && !this.props.share && !this.props.repost) {
       userHeader = (
         <View style={styles.createPostUser}>
-          <View style={styles.innerBorder}>
+          <View style={[styles.innerBorder, { paddingVertical: 10 }]}>
             <UserName
               style={styles.innerBorder}
               user={this.props.user}
@@ -267,7 +259,7 @@ export default class UrlComponent extends Component {
           underlayColor={'transparent'}
           style={styles.postButton}
           onPress={() =>
-            this.props.actions.setCreaPostState({
+            this.props.actions.setCreatePostState({
               postBody: '"' + this.props.urlPreview.description + '"'
             })
           }
@@ -298,7 +290,7 @@ export default class UrlComponent extends Component {
       );
     }
 
-    const input = (
+    return (
       <ScrollView
         keyboardShouldPersistTaps={'always'}
         ref={c => (this.scrollView = c)}
@@ -308,8 +300,13 @@ export default class UrlComponent extends Component {
         }}
         contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 260 }}
       >
+        <NavigationEvents
+          onWillBlur={() => {
+            this.input.blur();
+          }}
+        />
         {userHeader}
-        <View style={[{ flex: 1 }]}>
+        <View style={[{ flex: 1, marginTop: 8 }]}>
           <TextInput
             ref={c => {
               this.input = c;
@@ -320,6 +317,7 @@ export default class UrlComponent extends Component {
               styles.createPostInput,
               { maxHeight: 280 }
             ]}
+            autoFocus
             underlineColorAndroid={'transparent'}
             placeholder={urlPlaceholder}
             placeholderTextColor={greyText}
@@ -354,12 +352,12 @@ export default class UrlComponent extends Component {
         {userSearch}
         {repostBody}
         {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
-          <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
+          <View style={{ marginVertical: 8 }}>
+            <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
+          </View>
         ) : null}
       </ScrollView>
     );
-
-    return input;
   }
 }
 
@@ -412,3 +410,35 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...localStyles, ...globalStyles };
+
+function mapStateToProps(state) {
+  return {
+    user: state.auth.user,
+    users: state.user,
+    postUrl: state.createPost.postUrl,
+    createPreview: state.createPost.createPreview,
+    postBody: state.createPost.postBody,
+    urlPreview: state.createPost.urlPreview,
+    repost: state.createPost.repost,
+    tags: state.tags.parentTags
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(
+      {
+        ...createPostActions,
+        ...tagActions,
+        ...userActions,
+        ...tooltipActions
+      },
+      dispatch
+    )
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UrlComponent);

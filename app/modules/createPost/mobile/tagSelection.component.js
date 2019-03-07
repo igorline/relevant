@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
-import { View, TextInput, Alert, StyleSheet } from 'react-native';
+import { TextInput, Alert, StyleSheet, ScrollView } from 'react-native';
+import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
 import Tags from 'modules/tag/mobile/tags.component';
+import styled from 'styled-components/primitives';
+import { colors, sizing, layout } from 'app/styles';
+
+const Input = styled(TextInput)`
+  padding: ${sizing(1.5)};
+  background-color: ${colors.white};
+  ${layout.universalBorder()}
+  ${p => (p.isFocused ? `border-color: ${colors.blue};}` : null)}
+  margin-bottom: ${sizing(2)}
+`;
 
 let styles;
 
@@ -10,13 +21,14 @@ class TagSelection extends Component {
   static propTypes = {
     createPost: PropTypes.object,
     actions: PropTypes.object,
-    scrollToElement: PropTypes.func
+    communityTags: PropTypes.object
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      input: ''
+      input: '',
+      inputFocused: false
     };
 
     this.toggleTag = this.toggleTag.bind(this);
@@ -28,17 +40,20 @@ class TagSelection extends Component {
     this.bodyTags = [];
   }
 
+  onFocus() {
+    this.setState({ inputFocused: true });
+  }
+
+  onBlur() {
+    this.setState({ inputFocused: false });
+  }
+
   componentWillMount() {
     const props = this.props.createPost;
     if (props) {
       this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
-
-      this.tags = props.articleTags.map(tag => {
-        const tagObj = { _id: tag };
-        // this code pre-selects first three tags
-        // if (i < 3) this.bodyTags.push(tagObj);
-        return tagObj;
-      });
+      this.tags = props.keywords.map(tag => ({ _id: tag }));
+      this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
       if (props.postCategory) this.setTopicTags(props.postCategory, true);
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
@@ -68,12 +83,11 @@ class TagSelection extends Component {
     this.setState({ input: input.toLowerCase() });
     if (input === '') {
       this.inputTags = [];
-      this.props.actions.setCreaPostState({
+      this.props.actions.setCreatePostState({
         allTags: [...this.inputTags, ...this.selectedTags]
       });
     }
     const words = input.split(' ');
-    // if (input[input.length - 1] !== ' ' && input[input.length - 1] !== ',') return null;
     const tags = words
     .map(word => {
       word = word
@@ -88,7 +102,7 @@ class TagSelection extends Component {
       return Alert.alert('👋 too many topics!');
     }
     this.inputTags = tags;
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       allTags: [...this.inputTags, ...this.selectedTags]
     });
     return null;
@@ -112,7 +126,7 @@ class TagSelection extends Component {
       this.selectedTags.push({ _id: tag });
     }
 
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       allTags: [...this.inputTags, ...this.selectedTags],
       selectedTags: this.selectedTags
     });
@@ -123,7 +137,7 @@ class TagSelection extends Component {
   render() {
     const { selectedTopic } = this;
     const selectedTags = [...this.selectedTags, ...this.inputTags];
-    let tags = [...this.inputTags, ...this.topicTags, ...this.tags];
+    let tags = [...this.inputTags, ...this.communityTags, ...this.tags];
 
     tags = [...new Set(tags.map(t => t._id))];
     // hide current category
@@ -132,30 +146,28 @@ class TagSelection extends Component {
     }
 
     return (
-      <View style={{ flexDirection: 'column' }}>
-        <TextInput
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          underlineColorAndroid={'transparent'}
-          onFocus={() => this.props.scrollToElement()}
-          onChangeText={input => this.processInput(input)}
-          ref={c => {
-            this.input = c;
-          }}
-          style={[styles.font15, styles.topicInput]}
-          value={this.state.input}
-          multiline={false}
-          placeholder={'Select additional topics or create your own'}
-        />
-        <View style={styles.break} />
-        <Tags
-          noReorder
-          noScroll
-          toggleTag={this.toggleTag}
-          tags={{ tags, selectedTags }}
-        />
-        <View style={styles.break} />
-      </View>
+      <ScrollView style={{ flexDirection: 'column' }}>
+        <View p={2} pt={3}>
+          <Input
+            autoCapitalize={'none'}
+            autoCorrect={false}
+            underlineColorAndroid={'transparent'}
+            onChangeText={input => this.processInput(input)}
+            ref={c => {
+              this.input = c;
+            }}
+            onBlur={() => this.onBlur()}
+            onFocus={() => this.onFocus()}
+            value={this.state.input}
+            multiline={false}
+            isFocused={this.state.inputFocused}
+            placeholder={'Select additional topics or create your own'}
+          />
+          <View style={styles.break} />
+          <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
+          <View style={styles.break} />
+        </View>
+      </ScrollView>
     );
   }
 }

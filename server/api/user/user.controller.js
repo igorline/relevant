@@ -1,15 +1,19 @@
-import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
+import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import { signToken } from 'server/auth/auth.service';
+import Invite from 'server/api/invites/invite.model';
+import { BANNED_USER_HANDLES, EMAIL_REWARD } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
+import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
-const TwitterWorker = require('../../utils/twitterWorker');
+// const TwitterWorker = require('../../utils/twitterWorker');
 
 async function sendConfirmation(user, newUser) {
   let text = '';
@@ -19,16 +23,15 @@ async function sendConfirmation(user, newUser) {
       user.confirmCode
     }`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Relevant Email Confirmation',
-      html: `${text}Click on this link to confirm your email address:
+      html: `${text}Click on this link to confirm your email address and get ${EMAIL_REWARD} Relevant Coins:
       <br />
       <br />
       <a href="${url}" target="_blank">${url}</a>
       <br />
       <br />
-      Once you confirm your email you will be able to invite your friends to the app!
       `
     };
     await mail.send(data);
@@ -85,40 +88,55 @@ exports.forgot = async (req, res, next) => {
 };
 
 exports.confirm = async (req, res, next) => {
-  let user;
-  let middleware = false;
-  if (req.params.user) middleware = true;
   try {
+    let user;
+    let middleware = false;
+    if (!req.params) req.params = {};
+    if (req.params.user) middleware = true;
     const confirmCode = req.params.code || req.body.code;
     const handle = req.params.user || req.body.user;
     if (!handle || !confirmCode) throw new Error('Missing user id or confirmation token');
-    user = await User.findOne({ handle, confirmCode }, 'confirmCode confirmed email');
-    if (user && !user.confirmed) {
-      // Invite.generateCodes(user);
+    user = await User.findOne({ handle, confirmCode });
+    if (!user) throw new Error('Wrong confirmation code');
+
+    if (!user.confirmed) {
       user.confirmed = true;
+      user = await user.addReward({ type: 'email' });
       user = await user.save();
     } else {
-      req.unconfirmed = true;
+      req.unconfirmed = true; // ?
     }
-    if (!user) throw new Error('Wrong confirmation code');
+    return middleware ? next() : res.status(200).json(user);
   } catch (err) {
-    return middleware ? next() : err;
+    return next(err);
   }
-  return middleware ? next() : res.status(200).json(user);
 };
 
 exports.sendConfirmationCode = async (req, res, next) => {
   try {
     let user = await User.findOne({ handle: req.user.handle }, 'email confirmCode');
-    const rand = await crypto.randomBytes(32);
-    const token = rand.toString('hex');
-    user.confirmCode = token;
+    user.confirmCode = uuid();
     user = await user.save();
     const status = await sendConfirmation(user);
     return res.status(200).json(status);
   } catch (err) {
     return next(err);
   }
+};
+
+exports.webOnboard = (req, res, next) => {
+  const { handle } = req.user;
+  const { step } = req.params;
+  const path = `webOnboard.${step}`;
+  User.findOneAndUpdate(
+    { handle },
+    { $set: { [path]: true } },
+    { projection: 'webOnboard', new: true }
+  )
+  .then(newUser => {
+    res.status(200).json(newUser);
+  })
+  .catch(next);
 };
 
 exports.onboarding = (req, res, next) => {
@@ -188,7 +206,7 @@ exports.search = (req, res, next) => {
   const query = {
     $and: [{ $or: [{ name }, { handle: name }] }, { handle: { $nin: blocked } }]
   };
-  User.find(query, 'name image')
+  User.find(query, 'handle name image')
   .sort({ handle: 1 })
   .limit(parseInt(limit, 10))
   .then(users => {
@@ -236,8 +254,8 @@ exports.checkUser = async (req, res, next) => {
       query = { email };
     }
 
-    const userExists = await User.findOne(query, 'handle');
-    if (userExists) return res.status(200).json({ type });
+    const userExists = await User.findOne(query, 'handle', '_id handle');
+    if (userExists) return res.status(200).json(userExists);
     return res.status(200).json(null);
   } catch (err) {
     return next(err);
@@ -322,25 +340,19 @@ exports.list = async (req, res, next) => {
 
 /**
  * Creates a new user
- * make sure to mimic logic in updateHandle TODO - refactor
  */
 exports.create = async (req, res, next) => {
   try {
-    const rand = await crypto.randomBytes(32);
-    const confirmCode = rand.toString('hex');
+    const confirmCode = uuid();
     let { user } = req.body;
+    const { invitecode } = req.body;
 
-    let invite;
-    // if (community === 'relevant') {
-    //   invite = await Invite.checkInvite(req.body.invite);
-    // }
-
-    const confirmed = invite && invite.email === user.email;
-
-    if (user.name === 'everyone') throw new Error('username taken');
+    if (BANNED_USER_HANDLES.includes(user.name)) {
+      throw new Error('this username is taken');
+    }
+    if (!user.email) throw new Error('missing email');
 
     const userObj = {
-      _id: user.name,
       handle: user.name,
       name: user.name,
       phone: user.phone,
@@ -350,27 +362,27 @@ exports.create = async (req, res, next) => {
       provider: 'local',
       role: 'user',
       relevance: 0,
-      confirmed,
       confirmCode
     };
 
     user = new User(userObj);
     user = await user.save();
 
-    if (invite) {
-      await invite.registered(user);
+    if (invitecode) {
+      user = await Invite.processInvite({ invitecode, user });
     }
-
-    const token = jwt.sign({ _id: user._id }, process.env.SESSION_SECRET, {
-      expiresIn: 60 * 5 * 60
-    });
-
-    if (!confirmed) sendConfirmation(user, true);
-    // else Invite.generateCodes(user);
-
+    // const confirmed = invite && invite.email === user.email;
     user = await user.initialCoins();
-    user = await user.save();
+    // if (invite) user = await invite.referral(user);
 
+    const token = signToken(user._id, 'user');
+    if (!user.confirmed) sendConfirmation(user, true);
+
+    user = await user.save();
+    user = user.toObject();
+    delete user.hashedPassword;
+    delete user.salt;
+    delete user.password;
     return res.status(200).json({ token, user });
   } catch (err) {
     return next(err);
@@ -385,8 +397,8 @@ exports.show = async function show(req, res, next) {
     let { user } = req;
     let handle = req.params.id;
     let me = null;
-    if (!handle) {
-      handle = req.user.handle;
+    if (!handle && user) {
+      handle = user.handle;
       me = true;
     }
 
@@ -404,14 +416,14 @@ exports.show = async function show(req, res, next) {
     user = await User.findOne({ handle }).populate({
       path: 'relevance',
       match: { community, global: true },
-      select: 'pagerank relevanceRecord'
+      select: 'pagerank relevanceRecord community'
     });
 
     if (!user) throw new Error('no such user ', handle);
     user = await user.getSubscriptions();
 
     // topic relevance
-    const relevance = await Relevance.find({ user: handle, tag: { $ne: null } })
+    const relevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
     .sort('-relevance')
     .limit(5);
     const userObj = user.toObject();
@@ -454,19 +466,24 @@ exports.destroy = async (req, res, next) => {
   }
 };
 
-// TODO refactor to use same logic as create
+exports.updateComunity = async (req, res, next) => {
+  try {
+    const { user } = req;
+    if (!user) throw new Error('missing user');
+    const { community } = req.body;
+    user.community = community;
+    await user.save();
+    return res.status(200).json({ succcess: true });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 exports.updateHandle = async (req, res, next) => {
   try {
     let { user } = req;
-    const twitterId = user._id;
-    if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
-    if (
-      user._id.toString() !== user.twitterId.toString() &&
-      user._id.toString() !== user.twitter.id_str
-    ) {
-      throw new Error("TwitterId doesn't match user", user._id, user.twitterId);
-    }
+    if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
     const { handle } = req.body.user;
     if (!handle) throw new Error('missing handle');
@@ -477,33 +494,15 @@ exports.updateHandle = async (req, res, next) => {
       if (used) throw new Error('This handle is already taken');
     }
 
-    user = await User.findOne(
-      { _id: twitterId },
-      '+email +twitterAuthSecret +twitterAuthToken +twitterEmail'
-    );
-    user = user.toObject();
-    user.role = 'user';
     user.handle = handle;
-    user._id = handle;
+    user.role = 'user';
 
-    const updatedUser = new User(user);
+    // TODO - do we still want to do this?
+    // await TwitterWorker.updateTwitterPosts(user._id);
 
-    await User.findOne({ _id: twitterId }).remove();
-
-    user = updatedUser;
-
-    const token = jwt.sign(
-      { _id: user._id, role: user.role },
-      process.env.SESSION_SECRET,
-      { expiresIn: 60 * 5 * 60 }
-    );
-
-    await TwitterWorker.updateTwitterPosts(user._id);
-
-    user = await user.initialCoins();
     user = await user.save();
 
-    return res.status(200).json({ token, user });
+    return res.status(200).json(user);
   } catch (err) {
     return next(err);
   }
@@ -546,12 +545,16 @@ exports.update = async (req, res, next) => {
     if (updateName || updateImage) {
       const newUser = {
         name: user.name,
-        image: user.image
+        image: user.image,
+        handle: user.handle,
+        _id: user._id
       };
 
       // Do this on a separate thread?
-      await Post.update(
-        { user: user.handle },
+      await Post.update({ user: user._id }, { embeddedUser: newUser }, { multi: true });
+
+      await CommunityMember.update(
+        { user: user._id },
         { embeddedUser: newUser },
         { multi: true }
       );
@@ -567,24 +570,24 @@ exports.block = async (req, res, next) => {
     let { user } = req;
     const { block } = req.body;
 
-    if (user.handle === block) throw new Error("You can't block yourself!");
+    if (user._id === block) throw new Error("You can't block yourself!");
 
     const userPromise = User.findOneAndUpdate(
-      { handle: user.handle },
+      { _id: user._id },
       { $addToSet: { blocked: block } },
       { new: true }
     );
     const blockPromise = User.findOneAndUpdate(
-      { handle: block },
-      { $addToSet: { blockedBy: user.handle } },
+      { _id: block },
+      { $addToSet: { blockedBy: user._id } },
       { new: true }
     );
 
     // clear any existing subscriptions
-    const sub1 = Subscription.remove({ following: user.handle, follower: block });
-    const sub2 = Subscription.remove({ following: block, follower: user.handle });
-    const feed1 = Feed.remove({ userId: user.handle, from: block });
-    const feed2 = Feed.remove({ userId: block, from: user.handle });
+    const sub1 = Subscription.remove({ following: user._id, follower: block });
+    const sub2 = Subscription.remove({ following: block, follower: user._id });
+    const feed1 = Feed.remove({ userId: user._id, from: block });
+    const feed2 = Feed.remove({ userId: block, from: user._id });
 
     const results = await Promise.all([
       userPromise,
@@ -611,8 +614,8 @@ exports.unblock = async (req, res, next) => {
       { new: true }
     );
     block = await User.findOneAndUpdate(
-      { handle: block },
-      { $pull: { blockedBy: user.handle } }
+      { _id: block },
+      { $pull: { blockedBy: user._id } }
     );
     res.status(200).json(user);
   } catch (err) {
@@ -623,7 +626,7 @@ exports.unblock = async (req, res, next) => {
 exports.blocked = async (req, res, next) => {
   try {
     let { user } = req;
-    user = await User.findOne({ handle: user.handle }).populate('blocked');
+    user = await User.findOne({ _id: user._id }).populate('blocked');
     res.status(200).json(user);
   } catch (err) {
     next(err);

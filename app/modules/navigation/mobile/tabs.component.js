@@ -5,7 +5,7 @@ import { globalStyles, fullWidth } from 'app/styles/global';
 
 let styles;
 
-class Tabs extends Component {
+class HeaderTabs extends Component {
   static propTypes = {
     scrollValue: PropTypes.object,
     tabs: PropTypes.array,
@@ -96,4 +96,4 @@ const localStyles = StyleSheet.create({
 
 styles = { ...globalStyles, ...localStyles };
 
-export default Tabs;
+export default HeaderTabs;

@@ -2,8 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
-
+import styled from 'styled-components';
+import * as colors from 'app/styles/colors';
 import Avatar from './avatar.component';
+
+const Handle = styled.div`
+  a {
+    color: ${colors.secondaryText};
+  }
+  color: ${colors.secondaryText};
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+`;
 
 export default function AvatarBox(props) {
   const { user, reverse } = props;
@@ -12,7 +22,7 @@ export default function AvatarBox(props) {
 
   let timestamp;
   if (props.date) {
-    timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';
+    timestamp = numbers.getTimestamp(Date.parse(props.date));
   }
   let premsg;
   let className = reverse ? 'reverse ' : '';
@@ -57,13 +67,12 @@ export default function AvatarBox(props) {
           </Link>
           {relevance}
         </div>
-        <div className="gray">
-          @
+        <Handle>
           <Link to={profileLink} onClick={e => e.stopPropagation()}>
-            {user.handle}
+            @{user.handle}
           </Link>
           {timestamp}
-        </div>
+        </Handle>
       </div>
       {reverse ? <Avatar auth={props.auth} user={user} /> : null}
     </div>
@@ -74,10 +83,7 @@ AvatarBox.propTypes = {
   user: PropTypes.object,
   noPic: PropTypes.bool,
   auth: PropTypes.object,
-  date: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.instanceOf(Date)
-  ]),
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
   small: PropTypes.bool,
   topic: PropTypes.string,
   repost: PropTypes.object,
