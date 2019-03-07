@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 // TODO move this to Community Member
 const RelevanceSchema = new Schema(
   {
-    user: { type: String, ref: 'User', index: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     tag: { type: String, ref: 'Tag' },
     global: { type: Boolean, default: false },
     topTopic: { type: Boolean, deafault: false },
@@ -30,7 +30,8 @@ const RelevanceSchema = new Schema(
         time: Date
       }
     ],
-    topTopics: [{ type: String, ref: 'Tag' }]
+    topTopics: [{ type: String, ref: 'Tag' }],
+    invites: { type: Number, default: 0 }
   },
   {
     timestamps: true
@@ -39,6 +40,8 @@ const RelevanceSchema = new Schema(
 
 RelevanceSchema.index({ user: 1, relevance: 1 });
 RelevanceSchema.index({ user: 1, communityId: 1 });
+RelevanceSchema.index({ user: 1, communityId: 1, global: 1 });
+RelevanceSchema.index({ user: 1, community: 1, global: 1 });
 
 // update user relevance and save record
 RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord() {
@@ -51,6 +54,22 @@ RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord()
   relevanceRecord = this.relevanceRecord.slice(0, 10);
   this.relevanceRecord = relevanceRecord;
   return this;
+};
+
+RelevanceSchema.statics.create = async function create({
+  userId,
+  community,
+  communityId
+}) {
+  try {
+    return this.model('Relevance').findOneAndUpdate(
+      { user: userId, communityId, global: true },
+      { community },
+      { upsert: true }
+    );
+  } catch (err) {
+    throw err;
+  }
 };
 
 // DEPRECATED

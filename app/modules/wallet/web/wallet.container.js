@@ -2,37 +2,47 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { BondedTokenContainer } from 'bonded-token';
 import * as authActions from 'modules/auth/auth.actions';
+import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
-import Footer from 'modules/navigation/web/footer.component';
-import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
+// import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
+import Earning from 'modules/wallet/earning.component';
 import { initDrizzle } from 'app/utils/eth';
-import Wallet from './wallet.component';
-import Balance from './balance.component';
-
-if (process.env.BROWSER === true) {
-  require('./wallet.css');
-}
+import Balance from 'modules/wallet/balance.component';
+import { View } from 'modules/styled/uni';
+import get from 'lodash/get';
+import moment from 'moment';
+import InfScroll from 'modules/listview/web/infScroll.component';
+import { computeUserPayout } from 'app/utils/rewards';
+import PostPreview from 'modules/post/web/post.component';
 
 let drizzle;
+
+const PAGE_SIZE = 50;
 
 class WalletContainer extends Component {
   static propTypes = {
     user: PropTypes.object,
     auth: PropTypes.object,
     contract: PropTypes.object,
+    actions: PropTypes.object,
+    earnings: PropTypes.object
   };
 
   static contextTypes = {
     store: PropTypes.object
   };
 
+  state = {
+    reloading: false
+  };
+
   componentDidMount() {
     const { isAuthenticated } = this.props.auth;
     if (isAuthenticated) {
       // eslint-disable-next-line
-      drizzle = initDrizzle(this.context.store);
+      // temporarily disabled
+      // drizzle = initDrizzle(this.context.store);
     }
   }
 
@@ -43,30 +53,75 @@ class WalletContainer extends Component {
     }
   }
 
-  renderHeader() {
-    if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
-      return null;
+  hasMore = true;
+
+  load = (page, length) => {
+    this.hasMore = page * PAGE_SIZE <= length;
+    if (this.hasMore) {
+      this.props.actions.getEarnings(null, PAGE_SIZE, length);
     }
-    return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
-  }
+  };
+
+  reload = () => this.load(0, 0);
+
+  renderHeader = () => (
+    // eslint-disable-line
+    // if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
+    //   return null;
+    // }
+    // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
+
+    <View>
+      <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
+    </View>
+  );
+
+  renderRow = ({ item }) => {
+    if (!item) return null;
+    const earning = item;
+
+    const payout = computeUserPayout(earning);
+    if (!payout) return null;
+
+    const month = moment(earning.createdAt).format('MMMM');
+    const showMonth = this.previousMonth !== month;
+    this.previousMonth = month;
+
+    return (
+      <Earning
+        key={earning._id}
+        earning={earning}
+        payout={payout}
+        month={showMonth ? month : null}
+        PostPreview={PostPreview}
+      />
+    );
+  };
 
   render() {
-    const { contract } = this.props;
-    // TODO - edge case needs to be fixed inside bonded component
-    // this throws error with HMR
-    // BondedContainer needs to check that contract is initialized in propsToState method
+    const { contract, earnings } = this.props;
     if (contract && !contract.initialized) return null;
+
+    const { list } = earnings;
+    const entities = list.map(id => earnings.entities[id]);
+    this.previousMonth = null;
+
     return (
-      <div style={{ flex: 1 }}>
-        <div className={'banner'}>{this.renderHeader()}</div>
-        <BondedTokenContainer {...this.props}>
-          <div className={'row pageContainer column'}>
-            <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
-            <Wallet user={this.props.user} />
-          </div>
-        </BondedTokenContainer>
-        <Footer />
-      </div>
+      <View mb={8}>
+        {this.renderHeader()}
+        <View>
+          <InfScroll
+            data={list}
+            loadMore={p => this.load(p, list.length)}
+            hasMore={this.hasMore}
+            key="recent-activties"
+            className={'parent'}
+            style={{ position: 'relative', marginBottom: 20 }}
+          >
+            {entities.map(item => this.renderRow({ item }))}
+          </InfScroll>
+        </View>
+      </View>
     );
   }
 }
@@ -74,9 +129,10 @@ class WalletContainer extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    earnings: state.earnings,
     user: state.auth.user,
     drizzleStatus: state.drizzleStatus,
-    contract: state.contracts.RelevantCoin,
+    contract: get(state, 'contracts.RelevantCoin'),
     accounts: state.accounts,
     contracts: state.contracts,
     accountBalances: state.accountBalances,
@@ -91,7 +147,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions
+      ...authActions,
+      ...earningsActions
     },
     dispatch
   )

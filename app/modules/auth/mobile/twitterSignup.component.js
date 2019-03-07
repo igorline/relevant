@@ -8,11 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert
+  Alert,
+  StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
-import { globalStyles } from 'app/styles/global';
+import { globalStyles, IphoneX } from 'app/styles/global';
 import { NAME_PATTERN } from 'app/utils/text';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import TwitterButton from './TwitterButton.component';
@@ -23,7 +24,8 @@ export default class TwitterSignup extends Component {
   static propTypes = {
     auth: PropTypes.object,
     actions: PropTypes.object,
-    admin: PropTypes.object
+    admin: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -52,36 +54,33 @@ export default class TwitterSignup extends Component {
     if (this.usernameExists) {
       return Alert.alert('This handle is already taken');
     }
-    const loginData = this.props.auth.twitter;
-    loginData.userName = this.state.username;
-    loginData.signup = true;
-    loginData.invite = this.props.auth.currentInvite;
-    return this.props.actions.twitterAuth(
-      loginData,
-      this.props.admin ? this.props.admin.currentInvite : null
-    );
+    const twitterProfile = this.props.auth.twitter;
+    const { preUser } = this.props.auth;
+    preUser.handle = this.state.username;
+
+    this.props.actions.updateHandle(preUser, twitterProfile.token);
+    return null;
   }
 
   checkUser(name) {
+    const { preUser } = this.props.auth;
+    if (!preUser) return null;
     this.nameError = null;
-    const toCheck = name || this.state.username;
-    if (toCheck) {
-      const string = toCheck;
-      const match = NAME_PATTERN.test(string);
-      if (match) {
-        this.props.actions.checkUser(string, 'name')
-        .then(results => {
-          if (!results) {
-            this.usernameExists = true;
-            this.nameError = 'This handle is already taken';
-          } else this.usernameExists = false;
-          this.setState({});
-        });
-      } else {
-        this.nameError =
-          'username can only contain letters, numbers, dashes and underscores';
-      }
+    const string = name || this.state.username;
+    if (!string) return null;
+    const match = NAME_PATTERN.test(string);
+    if (!match) {
+      return (this.nameError =
+        'username can only contain letters, numbers, dashes and underscores');
     }
+    this.props.actions.checkUser(string, 'name').then(results => {
+      if (results && (!preUser && results._id !== preUser._id)) {
+        this.usernameExists = true;
+        this.nameError = 'This handle is already taken';
+      } else this.usernameExists = false;
+      this.setState({});
+    });
+    return true;
   }
 
   renderUserName() {
@@ -97,8 +96,7 @@ export default class TwitterSignup extends Component {
             clearTextOnFocus={false}
             placeholder="username"
             onChangeText={username => {
-              username = username.replace('@', '')
-              .trim();
+              username = username.replace('@', '').trim();
               this.setState({ username });
               this.checkUser(username.trim());
             }}
@@ -133,15 +131,7 @@ export default class TwitterSignup extends Component {
         <TouchableOpacity
           // style={[styles.largeButton, {flex: 1}]}
           onPress={() => {
-            this.props.actions.push(
-              {
-                key: 'signup',
-                title: 'image',
-                component: 'image',
-                back: true
-              },
-              'auth'
-            );
+            this.props.navigation.navigate({ routeName: 'signup' });
           }}
         >
           <Text style={[styles.signInText, styles.active]}>Sign up with email</Text>
@@ -165,7 +155,9 @@ export default class TwitterSignup extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+        keyboardVerticalOffset={
+          Platform.OS === 'android' ? StatusBar.currentHeight / 2 + 64 : IphoneX ? 88 : 64
+        }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
@@ -193,12 +185,6 @@ export default class TwitterSignup extends Component {
     );
   }
 }
-
-TwitterSignup.propTypes = {
-  auth: PropTypes.object,
-  actions: PropTypes.object,
-  admin: PropTypes.object
-};
 
 const localStyles = StyleSheet.create({
   forgot: {

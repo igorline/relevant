@@ -18,7 +18,8 @@ let styles;
 class CommentInput extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    postId: PropTypes.string,
+    parentPost: PropTypes.object,
+    parentComment: PropTypes.object,
     auth: PropTypes.object,
     onFocus: PropTypes.func,
     scrollToBottom: PropTypes.func,
@@ -48,33 +49,41 @@ class CommentInput extends Component {
   }
 
   createComment() {
+    const {
+      parentPost,
+      parentComment,
+      auth,
+      actions,
+      onFocus,
+      scrollToBottom
+    } = this.props;
     if (!this.state.comment || !this.state.comment.length) {
       return Alert.alert('no comment');
     }
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      post: this.props.postId,
+      parentPost: parentPost._id,
+      parentComment: parentComment._id,
+      linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
-      user: this.props.auth.user._id
+      user: auth.user._id
     };
 
     this.setState({ comment: '', inputHeight: 50 });
     this.textInput.blur();
-    this.props.onFocus('new');
-    this.props.actions.setUserSearch([]);
+    onFocus('new');
+    actions.setUserSearch([]);
 
-    return this.props.actions
-    .createComment(this.props.auth.token, commentObj)
-    .then(success => {
+    return this.props.actions.createComment(commentObj).then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
         return;
       }
-      this.props.scrollToBottom();
+      scrollToBottom();
     });
   }
 
@@ -190,11 +199,30 @@ class CommentInput extends Component {
 export default CommentInput;
 
 const localStyles = StyleSheet.create({
+  commentInput: {
+    flex: 1,
+    padding: 10,
+    height: 200
+  },
+  commentInputParent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: 'lightgrey',
+    backgroundColor: 'white',
+    height: 180
+  },
   inputImage: {
     height: 25,
     width: 25,
     borderRadius: 12.5,
     marginLeft: mainPadding
+  },
+  commentSubmit: {
+    flex: 0,
+    width: 75,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

@@ -8,11 +8,12 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
-import { globalStyles } from 'app/styles/global';
+import { globalStyles, IphoneX } from 'app/styles/global';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 
 let styles;
@@ -26,7 +27,6 @@ class Forgot extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.back = this.back.bind(this);
     this.forgotPassword = this.forgotPassword.bind(this);
     this.state = {
       username: null,
@@ -56,7 +56,7 @@ class Forgot extends Component {
 
       const res = await this.props.actions.forgotPassword(this.state.username);
       if (res && res.email) {
-        this.props.actions.pop('auth');
+        this.props.navigation.navigate('mainAuth');
         this.setState({ sendingEmail: false });
         Alert.alert(
           'Success',
@@ -67,10 +67,6 @@ class Forgot extends Component {
     } catch (err) {
       Alert.alert(err);
     }
-  }
-
-  back() {
-    this.props.actions.pop(this.props.navigation.main);
   }
 
   render() {
@@ -88,7 +84,9 @@ class Forgot extends Component {
       <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+        keyboardVerticalOffset={
+          Platform.OS === 'android' ? StatusBar.currentHeight / 2 + 64 : IphoneX ? 88 : 64
+        }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}

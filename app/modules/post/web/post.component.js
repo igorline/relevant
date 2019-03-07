@@ -3,23 +3,29 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import AvatarBox from 'modules/user/web/avatarbox.component';
-import Tag from 'modules/tag/web/tag.component';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
-import Popup from 'modules/ui/web/popup';
+import * as animationActions from 'modules/animation/animation.actions';
+import styled from 'styled-components/primitives';
+import { sizing } from 'app/styles';
+import SingleComment from 'modules/comment/web/singleComment.container';
+import PostButtons from 'modules/post/postbuttons.component';
+import PostInfo from 'modules/post/postinfo.component';
+import { routing } from 'app/utils';
+import { View, Text, Divider } from 'modules/styled/uni';
+import get from 'lodash/get';
 
-import PostButtons from './postbuttons.component';
-import PostInfo from './postinfo.component';
+const PostButtonContainer = styled.View`
+  width: ${sizing(12)};
+`;
 
-if (process.env.BROWSER === true) {
-  require('./post.css');
-}
-
-class Post extends Component {
+export class Post extends Component {
   static propTypes = {
-    post: PropTypes.object,
+    post: PropTypes.shape({
+      data: PropTypes.object
+    }),
+    postState: PropTypes.object,
     repost: PropTypes.object,
     link: PropTypes.object,
     actions: PropTypes.object,
@@ -28,10 +34,23 @@ class Post extends Component {
     user: PropTypes.object,
     showDescription: PropTypes.bool,
     history: PropTypes.object,
+    usersState: PropTypes.object,
+    sort: PropTypes.string,
+    noComments: PropTypes.bool,
+    firstPost: PropTypes.object,
+    comment: PropTypes.object,
+    children: PropTypes.object,
+    hideDivider: PropTypes.bool,
+    hidePostButtons: PropTypes.bool,
+    hideAvatar: PropTypes.bool,
+    noLink: PropTypes.bool,
+    preview: PropTypes.bool,
+    avatarText: PropTypes.func,
+    singlePost: PropTypes.bool
   };
 
   deletePost() {
-    // TODO custom confirm
+    // TODO: custom confirm
     // eslint-disable-next-line
     const okToDelete = confirm('Are you sure you want to delete this post?');
     if (!okToDelete) return;
@@ -39,7 +58,7 @@ class Post extends Component {
   }
 
   editPost() {
-    const { post, link } = this.props;
+    const { post, link = {} } = this.props;
     this.props.actions.clearCreatePost();
     const editPost = {
       edit: true,
@@ -58,135 +77,147 @@ class Post extends Component {
         domain: link.domain
       }
     };
-    this.props.actions.setCreaPostState(editPost);
+    this.props.actions.setCreatePostState(editPost);
     this.props.history.push(this.props.location.pathname + '#newpost');
   }
 
   render() {
-    const { post, repost, link, auth } = this.props;
-    const { community } = auth;
+    const {
+      post,
+      auth,
+      sort,
+      noComments,
+      link,
+      firstPost,
+      hideDivider,
+      hidePostButtons,
+      comment,
+      hideAvatar,
+      noLink,
+      preview,
+      avatarText,
+      singlePost,
+      actions = { actions }
+    } = this.props;
+    const { community: currentCommunity } = auth;
+    const { community: postCommunity } = post;
+    const community = postCommunity || currentCommunity;
 
-    let popup;
+    const isLink = post.type === 'link';
 
     if (post === 'notFound') {
       return (
-        <div>
-          <h1>Post not found</h1>
-        </div>
+        <View>
+          <Text>Post not found</Text>
+        </View>
       );
     }
     if (!post) return null;
 
-    let postInfo;
-    if (link) {
-      postInfo = <PostInfo post={link} />;
-    } else if (repost) {
-      postInfo = <PostInfo post={repost} />;
-    } else {
-      postInfo = <PostInfo post={post} />;
-    }
+    const parentPost = post.parentPost || post;
+    const postUrl = routing.getPostUrl(community, parentPost);
+    const renderComment = !noComments && comment;
 
-    let user = post.user || post.twitterUser;
+    // TODO pass post buttons as prop to Post?
+    const postEl = isLink ? (
+      <View fdirection={'row'} m={`4 4 ${renderComment ? 0 : 4} 0`}>
+        {!hidePostButtons && (
+          <PostButtonContainer>
+            <PostButtons post={post} {...this.props} />
+          </PostButtonContainer>
+        )}
+        <View flex={1}>
+          <PostInfo
+            post={post}
+            link={link}
+            community={community}
+            postUrl={postUrl}
+            sort={sort}
+            firstPost={firstPost}
+            noLink={noLink}
+            actions={actions}
+            singlePost={singlePost}
+          />
+          {this.props.children}
+        </View>
+      </View>
+    ) : (
+      <SingleComment
+        hideAvatar={hideAvatar}
+        comment={post}
+        postUrl={postUrl}
+        parentPost={post}
+        hidePostButtons={hidePostButtons}
+        nestingLevel={hidePostButtons ? 0.5 : 0}
+        hideBorder
+        noLink={noLink}
+        avatarText={avatarText}
+        actions={actions}
+        preview={preview}
+      />
+    );
 
-    if (auth.user && auth.user._id === post.user) {
-      popup = (
-        <Popup
-          options={[
-            { text: 'Edit Post', action: this.editPost.bind(this) },
-            { text: 'Delete Post', action: this.deletePost.bind(this) }
-          ]}
-        >
-          <span className={'optionDots'}>...</span>
-        </Popup>
-      );
-    }
+    const commentCommunity = get(comment, 'community') || community;
+    const commentUrl = routing.getPostUrl(commentCommunity, parentPost);
 
-    user = this.props.user.users[user] || user;
+    const commentEl = renderComment ? (
+      <SingleComment
+        comment={comment}
+        postUrl={commentUrl}
+        parentPost={post}
+        hidePostButtons
+        hideBorder
+        nestingLevel={hidePostButtons ? 0 : 1.5}
+        actions={actions}
+        preview={preview}
+      />
+    ) : null;
 
-    if (user && !user._id) {
-      user = post.embeddedUser;
-    }
-
-    // TODO better?
-    if (!user && post.twitter) {
-      user = post.embeddedUser;
-    }
-
-    const openPost = repost ? repost._id : post._id;
+    const previewEl = preview && link && (link.url || link.image) && (
+      <View m={'4 4 0 4'}>
+        <PostInfo
+          post={post}
+          link={link}
+          community={community}
+          postUrl={postUrl}
+          sort={sort}
+          firstPost={firstPost}
+          noLink={noLink}
+          actions={actions}
+        />
+      </View>
+    );
 
     return (
-      <div
-        className="post"
-        onClick={() => this.props.history.push('/' + community + '/post/' + openPost)}
-      >
-        {postInfo}
-        <div className="postContent">
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <AvatarBox
-                user={user}
-                auth={this.props.auth}
-                date={post.postDate}
-                repost={repost}
-              />
-              {popup}
-            </div>
-
-            <div className="postBody">
-              <PostBody auth={this.props.auth} community={community} repost={repost} post={post} />
-              {repost && (
-                <div className="repostBody">
-                  <AvatarBox
-                    user={repost.embeddedUser}
-                    auth={this.props.auth}
-                    date={post.postDate}
-                  />
-                  <div>
-                    <PostBody post={repost} community={community} />
-                  </div>
-                </div>
-              )}
-              {this.props.showDescription && (
-                <div className="postDescription">{post.description}</div>
-              )}
-              <PostButtons post={post} {...this.props} />
-            </div>
-          </div>
-        </div>
-      </div>
+      <View fdirection={'column'}>
+        {previewEl}
+        {isLink && previewEl ? <View mt={4} /> : postEl}
+        {commentEl}
+        {hideDivider ? null : <Divider m={'0 4'} />}
+      </View>
     );
   }
 }
 
-function PostBody(props) {
-  const { post, community, repost } = props;
-  const { body } = post;
-  const tags = (post.tags || []).map(tag => (
-    <Tag {...props} name={tag} community={community} key={tag} />
-  ));
-  return (
-    <div className={repost ? 'repostText' : ''}>
-      <pre>{body}</pre> {tags}
-    </div>
-  );
-}
-
-PostBody.propTypes = {
-  post: PropTypes.object,
-  repost: PropTypes.object,
-  community: PropTypes.string
-};
-
-export default withRouter(connect(
-  () => ({}),
-  dispatch => ({
-    actions: bindActionCreators(
-      {
-        ...createPostActions,
-        ...postActions,
-        ...investActions
-      },
-      dispatch
-    )
-  })
-)(Post));
+export default withRouter(
+  connect(
+    state => ({
+      community: state.community.communities[state.community.active],
+      usersState: state.user,
+      auth: state.auth,
+      earnings: state.earnings,
+      myPostInv: state.investments.myPostInv
+    }),
+    dispatch => ({
+      actions: bindActionCreators(
+        {
+          ...createPostActions,
+          ...postActions,
+          ...investActions,
+          ...animationActions
+        },
+        dispatch
+      )
+    })
+  )(Post)
+);

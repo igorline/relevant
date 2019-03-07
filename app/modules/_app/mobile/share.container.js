@@ -1,33 +1,93 @@
-import { StyleSheet, View, KeyboardAvoidingView } from 'react-native';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { StyleSheet, View, KeyboardAvoidingView, AppState, Platform } from 'react-native';
+import PropTypes from 'prop-types';
 import Modal from 'react-native-modalbox';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShareExtension from 'react-native-share-extension';
-import * as createPostActions from 'modules/createPost/createPost.actions';
-import Transitioner from 'modules/navigation/mobile/Transitioner';
 
+import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import * as postActions from 'modules/post/post.actions';
-import CreatePost from 'modules/createPost/mobile/createPost.container';
-import Auth from 'modules/auth/mobile/auth.container';
 
-import * as utils from 'app/utils';
-import Card from 'modules/navigation/mobile/card.component';
+import Auth from 'modules/auth/mobile/auth.component';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import UrlComponent from 'modules/createPost/mobile/url.component';
+import Categories from 'modules/createPost/mobile/categories.component';
 
-import { fullWidth, fullHeight } from 'app/styles/global';
+import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
+import CreatePostHeaderRight from 'modules/createPost/mobile/createPostHeaderRight.component';
+import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
+import { setTopLevelNavigator, withProps } from 'app/utils/nav';
+
+import { text, token, post } from 'app/utils';
+import { fullWidth, fullHeight, darkGrey, IphoneX } from 'app/styles/global';
 
 const KBView = KeyboardAvoidingView;
-
 let style;
+
+export const ShareStack = createStackNavigator(
+  {
+    createPostUrl: {
+      screen: withProps(UrlComponent),
+      params: {
+        title: 'Share On Relevant',
+        left: 'Close',
+        next: 'Next',
+        share: true
+      }
+    },
+    createPostTags: {
+      screen: withProps(Categories),
+      params: {
+        title: 'Post Category',
+        share: true
+      }
+    },
+    shareAuth: {
+      screen: withProps(Auth),
+      params: {
+        left: 'Close',
+        share: true
+      }
+    }
+  },
+  {
+    initialRouteName: 'createPostUrl',
+    headerLayoutPreset: 'center',
+    cardOverlayEnabled: true,
+    cardShadowEnabled: true,
+
+    defaultNavigationOptions: props => ({
+      gesturesEnabled: true,
+      gestureResponseDistance: {
+        horizontal: fullWidth
+      },
+      headerStyle: {
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomColor: darkGrey,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        height: 45,
+        marginTop: Platform.OS === 'ios' ? (IphoneX ? -40 : -20) : 0
+      },
+      headerTitle: <HeaderTitle {...props} />,
+      headerRight: <CreatePostHeaderRight {...props} />,
+      headerLeft: <HeaderLeft {...props} />
+    })
+  }
+);
+
+const ShareAppContainer = createAppContainer(ShareStack);
 
 class ShareContainer extends Component {
   static propTypes = {
-    actions: PropTypes.object,
-    auth: PropTypes.object,
-    navigation: PropTypes.object
+    actions: PropTypes.object
+  };
+
+  state = {
+    token: null
   };
 
   constructor(props, context) {
@@ -39,55 +99,26 @@ class ShareContainer extends Component {
       data: {}
     };
     this.closeModal = this.closeModal.bind(this);
-    this.renderScene = this.renderScene.bind(this);
+    AppState.addEventListener('change', this.handleAppStateChange.bind(this));
   }
 
   componentWillMount() {
     const community = 'relevant';
     this.props.actions.setCommunity(community);
-    utils.token
+    token
     .get()
-    .then(() => {
-      this.props.actions.replaceRoute(
-        {
-          key: 'createPost',
-          component: 'createPost',
-          title: 'Share on Relevant',
-          next: 'Next',
-          back: 'Cancel'
-        },
-        0,
-        'home'
-      );
-      // need to to do this because the navigator renderer
-      // is using this object to display info and above to render transition
-      this.props.actions.replaceRoute(
-        {
-          key: 'createPost',
-          component: 'createPost',
-          title: 'Share on Relevant',
-          next: 'Next',
-          left: 'Cancel',
-          back: true
-        },
-        0,
-        'createPost'
-      );
+    .then(tk => {
+      this.setState({ token: tk });
+      if (!tk) this.props.actions.replace('shareAuth');
     })
     .catch(() => {
-      this.props.actions.replaceRoute(
-        {
-          key: 'auth',
-          component: 'login'
-        },
-        0,
-        'home'
-      );
+      // console.warn(e);
     });
   }
 
   async componentDidMount() {
     try {
+      this.props.actions.getUser();
       const data = await ShareExtension.data();
       this.data = data;
       this.setState({
@@ -98,10 +129,10 @@ class ShareContainer extends Component {
 
       let url = data.url || data.value;
       if (url) {
-        const words = utils.text.getWords(url);
-        url = words.find(word => utils.post.URL_REGEX.test(word));
+        const words = text.getWords(url);
+        url = words.find(word => post.URL_REGEX.test(word));
       }
-      this.props.actions.setCreaPostState({
+      this.props.actions.setCreatePostState({
         postUrl: url || null,
         postBody: data.selection || !url ? data.value : '',
         createPreview: {}
@@ -109,22 +140,14 @@ class ShareContainer extends Component {
     } catch (e) {
       // console.log('share extension error', e);
     }
-    this.props.actions.getUser(null, true);
   }
 
-  componentWillReceiveProps(next) {
-    if (!this.props.auth.token && next.auth.token) {
-      this.props.actions.replaceRoute(
-        {
-          key: 'createPost',
-          component: 'createPost',
-          title: 'Share on Relevant',
-          next: 'Next',
-          back: 'Cancel'
-        },
-        0,
-        'home'
-      );
+  handleAppStateChange(currentAppState) {
+    if (currentAppState === 'extension' && !this.state.token) {
+      token.get().then(tk => {
+        this.setState({ token: tk });
+        if (tk) this.props.actions.replace('createPostUrl');
+      });
     }
   }
 
@@ -138,56 +161,7 @@ class ShareContainer extends Component {
     });
   }
 
-  renderScene(props) {
-    const { component } = props.scene.route;
-
-    switch (component) {
-      case 'login':
-        return (
-          <Auth
-            share
-            authType={component}
-            navProps={props}
-            navigator={this.props.actions}
-          />
-        );
-      case 'createPost':
-        return (
-          <CreatePost
-            share
-            close={this.closeModal}
-            step={'url'}
-            navProps={props}
-            navigator={this.props.actions}
-          />
-        );
-      case 'categories':
-        return (
-          <CreatePost
-            share
-            step={'categories'}
-            navProps={props}
-            navigator={this.props.actions}
-          />
-        );
-      case 'createPostFinish':
-        return (
-          <CreatePost
-            share
-            close={this.closeModal}
-            step={'post'}
-            navProps={props}
-            navigator={this.props.actions}
-          />
-        );
-      default:
-        return null;
-    }
-  }
-
   render() {
-    const scene = this.props.navigation;
-
     return (
       <Modal
         backdrop
@@ -211,25 +185,12 @@ class ShareContainer extends Component {
           }}
         >
           <View style={style.modalBody}>
-            <Transitioner
-              style={{ backgroundColor: 'white', paddingBottom: 0 }}
-              navigation={{ state: scene }}
-              configureTransition={utils.transitionConfig}
-              render={transitionProps =>
-                transitionProps.scene.route.ownCard ? (
-                  this.renderScene(transitionProps)
-                ) : (
-                  <Card
-                    style={{ backgroundColor: 'white', paddingBottom: 0 }}
-                    renderScene={this.renderScene}
-                    // back={this.back}
-                    {...this.props}
-                    header={false}
-                    // scroll={this.props.navigation.sroll}
-                    {...transitionProps}
-                  />
-                )
-              }
+            <ShareAppContainer
+              ref={navigatorRef => {
+                setTopLevelNavigator(navigatorRef);
+              }}
+              // navigation={this.props.navigation}
+              screenProps={{ close: this.closeModal, share: true }}
             />
           </View>
         </KBView>
@@ -250,17 +211,11 @@ style = StyleSheet.create({
     padding: 0,
     overflow: 'hidden',
     paddingBottom: 0
-    // maxHeight: fullHeight * 0.9,
   }
 });
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    post: state.post,
-    user: state.user,
-    navigation: state.navigation.home
-  };
+function mapStateToProps() {
+  return {};
 }
 
 function mapDispatchToProps(dispatch) {

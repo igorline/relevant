@@ -11,7 +11,8 @@ router.post(
   auth.hasRole('admin'),
   controller.sendPostNotification
 );
-router.put('/', auth.isAuthenticated(), controller.update);
+
+router.put('/', auth.isAuthenticated(), auth.communityMember(), controller.update);
 router.put('/flag', auth.isAuthenticated(), controller.flag);
 
 router.get('/', auth.authMiddleware(), controller.index);
@@ -21,6 +22,6 @@ router.get('/:id', auth.blocked(), asyncMiddleware(controller.findById));
 router.get('/user/:id', auth.blocked(), controller.userPosts);
 router.get('/preview/generate', controller.preview);
 
-router.delete('/:id', auth.isAuthenticated(), controller.delete);
+router.delete('/:id', auth.isAuthenticated(), controller.remove);
 
 module.exports = router;

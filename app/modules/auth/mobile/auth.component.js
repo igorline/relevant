@@ -12,19 +12,22 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Prompt from 'rn-prompt';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as adminActions from 'modules/admin/admin.actions';
+import * as authActions from 'modules/auth/auth.actions';
 import { globalStyles, fullWidth, fullHeight, smallScreen } from 'app/styles/global';
+import { get } from 'lodash';
 
 let styles;
 
 class Auth extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    actions: PropTypes.object,
+    // actions: PropTypes.object,
     // need this prop to pass to child components
     // eslint-disable-next-line
-    navigation: PropTypes.object,
-    // admin: PropTypes.object,
-    share: PropTypes.bool // flag for share extension
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -61,30 +64,15 @@ class Auth extends Component {
   }
 
   login() {
-    this.props.actions.push(
-      {
-        key: 'login',
-        title: 'Login',
-        showBackButton: true,
-        back: true
-      },
-      'auth'
-    );
+    this.props.navigation.navigate({ routeName: 'login' });
   }
 
   signup() {
     // if (this.props.admin.currentInvite) {
-    return this.props.actions.push(
-      {
-        key: 'twitterSignup',
-        title: 'Signup',
-        showBackButton: true,
-        back: true
-        // code: this.props.admin.currentInvite.code,
-        // email: this.props.admin.currentInvite.email
-      },
-      'auth'
-    );
+    return this.props.navigation.navigate({
+      routeName: 'twitterSignup',
+      title: 'Signup'
+    });
     // }
 
     // // Android
@@ -159,7 +147,7 @@ class Auth extends Component {
       const words = text.split(/\s/);
       const l = words.length - 1;
       return words.map((t, j) => {
-        if (special.find(w => t === w)) {
+        if (special.find(w => t.replace(/\.|,/, '') === w)) {
           return (
             <Text
               key={j + t}
@@ -184,8 +172,9 @@ class Auth extends Component {
           <View>
             <View key={i} style={styles.authSlide}>
               {sentance(
-                'Relevant is a social news reader that values quality over clicks',
-                ['Relevant', 'quality', 'clicks']
+                'Curated by communities, not clicks',
+
+                ['Relevant', 'communities', 'clicks']
               )}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
@@ -198,10 +187,7 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance(
-                'Discover relevant content and silence the noise of the attention economy',
-                ['relevant', 'noise', 'content']
-              )}
+              {sentance('Discover content that’s relevant to you', ['relevant', 'you'])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
           </View>
@@ -210,11 +196,9 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Earn rewards by sharing articles that are worth reading', [
+              {sentance('Connect with thought leaders, build trust and earn rewards', [
                 'rewards',
-                'Earn',
-                'worth',
-                'reading'
+                'trust'
               ])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
@@ -224,7 +208,7 @@ class Auth extends Component {
         return (
           <View key={i} style={styles.authSlide}>
             {sentance(
-              'Join the community and help us build a better information environment for all',
+              'Find your community and help us build a better information environment for all',
               ['Join', 'community', 'for', 'all']
             )}
             <Text allowFontScaling={false} style={styles.slideText} />
@@ -236,7 +220,9 @@ class Auth extends Component {
   }
 
   render() {
-    const { isAuthenticated } = this.props.auth;
+    const share = get(this.props.navigation, 'state.params');
+    const { auth } = this.props;
+    const { isAuthenticated } = auth;
 
     let intro = (
       <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -259,7 +245,7 @@ class Auth extends Component {
       </View>
     );
 
-    if (this.props.share) intro = <View style={{ flex: 1 }} />;
+    if (share) intro = <View style={{ flex: 1 }} />;
 
     let cta = (
       <View style={styles.authPadding}>
@@ -278,7 +264,7 @@ class Auth extends Component {
       </View>
     );
 
-    if (this.props.share) {
+    if (share) {
       cta = (
         <View style={{ flex: 1, alignSelf: 'center' }}>
           <Text
@@ -319,7 +305,7 @@ class Auth extends Component {
           <View style={styles.authDivider} />
         </View>
 
-        {this.props.share ? null : intro}
+        {share ? null : intro}
 
         {cta}
 
@@ -327,24 +313,23 @@ class Auth extends Component {
           title={this.promptTitle || ''}
           visible={this.state.promptVisible}
           onCancel={() => this.setState({ promptVisible: false })}
-          onSubmit={code => {
-            this.props.actions.checkInviteCode(code)
-            .then(invite => {
-              if (invite) {
-                this.props.actions.push(
-                  {
-                    key: 'twitterSignup',
-                    title: 'Signup',
-                    showBackButton: true,
-                    back: true,
-                    email: invite.email,
-                    code: invite.code
-                  },
-                  'auth'
-                );
+          onSubmit={() => {
+            // this.props.actions.checkInviteCode(code)
+            // .then(invite => {
+            //   if (invite) {
+            this.props.navigation.navigate(
+              {
+                key: 'twitterSignup',
+                title: 'Signup'
               }
-              this.setState({ promptVisible: false });
-            });
+              // {
+              //   email: invite.email,
+              //   code: invite.code
+              // },
+            );
+            // }
+            this.setState({ promptVisible: false });
+            // });
           }}
         />
       </View>
@@ -360,12 +345,14 @@ const localStyles = StyleSheet.create({
   strokeText: {
     fontSize: smallScreen ? 32 : 36,
     fontFamily: 'HelveticaNeueLTStd-BdOu',
-    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : smallScreen ? 39 : 46
+    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : smallScreen ? 39 : 46,
+    color: 'black'
   },
   slideText: {
-    fontFamily: 'Libre Caslon Display',
-    fontSize: smallScreen ? 32 : 36,
-    lineHeight: smallScreen ? 40 : 45
+    fontFamily: 'HelveticaNeue',
+    fontSize: smallScreen ? 30 : 34,
+    lineHeight: smallScreen ? 40 : 45,
+    color: 'black'
   },
   relevant: {
     height: smallScreen ? 40 : 45
@@ -447,4 +434,22 @@ const localStyles = StyleSheet.create({
 
 styles = { ...localStyles, ...globalStyles };
 
-export default Auth;
+const mapStateToProps = state => ({
+  auth: state.auth,
+  admin: state.admin
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      ...authActions,
+      ...adminActions
+    },
+    dispatch
+  )
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Auth);

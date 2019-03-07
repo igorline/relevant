@@ -27,7 +27,7 @@ export default class InfScroll extends Component {
       this.attachScrollListener();
       this.data = this.props.data;
     }
-    if (!this.props.data.length < this.data.length) this.pageLoaded = this.props.pageStart;
+    if (!this.props.data.length < this.data.length) { this.pageLoaded = this.props.pageStart; }
   }
 
   componentWillUnmount() {
@@ -77,11 +77,14 @@ export default class InfScroll extends Component {
       const scrollTop =
         scrollEl.pageYOffset !== undefined
           ? scrollEl.pageYOffset
-          : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+          : (document.documentElement || document.body.parentNode || document.body)
+          .scrollTop;
       if (this.props.isReverse) {
         offset = scrollTop;
       } else {
-        offset = this.calculateTopPosition(el) + (el.offsetHeight - scrollTop - window.innerHeight);
+        offset =
+          this.calculateTopPosition(el) +
+          (el.offsetHeight - scrollTop - window.innerHeight);
       }
     } else if (this.props.isReverse) {
       offset = el.parentNode.scrollTop;
@@ -118,6 +121,7 @@ export default class InfScroll extends Component {
       threshold,
       useCapture,
       useWindow,
+      data,
       ...props
     } = this.props;
 
@@ -125,7 +129,21 @@ export default class InfScroll extends Component {
       this.scrollComponent = node;
     };
 
-    return React.createElement(element, props, children, hasMore && (loader || this.defaultLoader));
+    // This breaks activity ref above!
+    // TODO: get loading to work
+    // if (!data) {
+    //   return <div>...Loading</div>;
+    // }
+    // if (!data.length) {
+    //   return <div>Nothing here</div>;
+    // }
+
+    return React.createElement(
+      element,
+      props,
+      children,
+      hasMore && (loader || this.defaultLoader)
+    );
   }
 }
 

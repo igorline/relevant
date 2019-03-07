@@ -7,7 +7,9 @@
     "@babel/plugin-syntax-dynamic-import",
     "@babel/transform-exponentiation-operator",
     "@loadable/babel-plugin",
+    ["styled-components"],
     "@babel/plugin-proposal-class-properties",
+    "inline-react-svg",
     ["module-resolver", {
       "root": ["./app", "./app/modules"],
       "alias": {
@@ -20,11 +22,46 @@
     }]
   ],
   "env": {
+    "test": {
+      "plugins": [
+        ["styled-components"],
+        ["module-resolver", {
+          "root": ["./app", "./app/modules"],
+          "alias": {
+            "server": "./server",
+            "modules": "./app/modules",
+            "core": "./app/core",
+            "app": "./app",
+            "react-native-linear-gradient": "react-native-web-linear-gradient"
+          },
+        }]
+      ],
+      "presets": [
+        ["@babel/preset-env"],
+        "@babel/preset-react",
+      ],
+    },
     "development_web": {
+      "plugins": [
+        "styled-components",
+        ["module-resolver", {
+        "root": ["./app", "./app/modules"],
+          "alias": {
+            "server": "./server",
+            "modules": "./app/modules",
+            "core": "./app/core",
+            "app": "./app",
+            "react-native-linear-gradient": "react-native-web-linear-gradient"
+
+          },
+          "cwd": "babelrc",
+        }]
+      ],
       "presets": [
         "@babel/preset-env",
         "@babel/preset-react",
       ],
+
     },
     "development": {
       "presets": [
@@ -34,6 +71,9 @@
     "production": {
       "plugins": [
         "transform-remove-console",
+      ],
+      "presets": [
+        ["module:metro-react-native-babel-preset"],
       ]
     }
   },

@@ -11,7 +11,6 @@ if (process.env.BROWSER === true) {
   require('./richText.css');
 }
 
-// NOT USED
 class RichText extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -20,12 +19,14 @@ class RichText extends Component {
     className: PropTypes.string,
     placeholder: PropTypes.string,
     onBlur: PropTypes.func,
-    onFocus: PropTypes.func
+    onFocus: PropTypes.func,
+    body: PropTypes.string
   };
 
   state = {
     body: '',
-    userSearchIndex: -1
+    userSearchIndex: -1,
+    text: ''
   };
 
   constructor(props) {
@@ -36,27 +37,45 @@ class RichText extends Component {
     this.parseBody = this.parseBody.bind(this);
   }
 
-  componentDidUpdate() {
-    this.lengthDelta = 0;
-  }
-
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(props, state) {
+    if (props.body === state.body) return null;
     return {
-      body: nextProps.body
+      body: props.body,
+      text: props.body
     };
   }
 
-  parseBody(text = '') {
+  componentDidUpdate(prevProps, prevState) {
+    this.lengthDelta = 0;
+    if (prevState.text === this.state.text) return null;
+    const { text } = this.state;
+    const data = this.parseBody(text, prevState);
+    return this.props.onChange(text, data);
+  }
+
+  parseBody(text = '', prevState) {
+    const { userSearch } = this.props;
     text = text.replace(/&nbsp;/gi, ' ');
     const words = textUtils.getWords(text);
 
-    const url = words.find(word => post.URL_REGEX.test(word.toLowerCase()));
+    let shouldParseUrl = false;
+
+    if (prevState) {
+      const prevLength = prevState.text.length || 0;
+      if (text.length - prevLength > 1) shouldParseUrl = true;
+      if (words[words.length - 1] == '') shouldParseUrl = true; // eslint-disable-line
+      if (text[text.length - 1] == '\n') shouldParseUrl = true; // eslint-disable-line
+    }
+
+    const url = shouldParseUrl
+      ? words.find(word => post.URL_REGEX.test(word.toLowerCase()))
+      : null;
 
     const lastWord = words[words.length - 1];
     if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
-    } else {
+    } else if (userSearch.length) {
       this.props.actions.setUserSearch([]);
     }
 
@@ -66,32 +85,30 @@ class RichText extends Component {
     return {
       url,
       tags,
-      mentions
+      mentions,
+      shouldParseUrl
     };
   }
 
   handleChange(e) {
-    const data = this.parseBody(e.target.value);
-    this.props.onChange(e.target.value, data);
+    this.setState({ text: e.target.value });
   }
 
   handleSetMention(user) {
     if (!user) return;
 
     // replace the partial @username with @username plus a nbsp
-    this.lengthDelta = user._id.length - this.mention.length + 2;
-    // const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0'); // nbsp
+    this.lengthDelta = user.handle.length - this.mention.length + 2;
+    const body =
+      this.state.text.slice(0, -this.mention.length) + '@' + user.handle + '\u00A0';
 
-    const body = this.state.body.slice(0, -this.mention.length) + '@' + user._id + '\u00A0';
-
-    this.setState({ body, userSearchIndex: -1 });
+    this.setState({ text: body, userSearchIndex: -1 });
     const data = this.parseBody(body);
     this.props.onChange(body, data);
     this.props.actions.setUserSearch([]);
   }
 
   handleKeyDown(e) {
-    // console.log(e.keyCode);
     const userCount = this.props.userSearch.length;
     switch (e.keyCode) {
       case 37: // left

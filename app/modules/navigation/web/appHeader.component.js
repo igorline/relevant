@@ -4,12 +4,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Avatar from 'modules/user/web/avatar.component';
-import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
 import * as notifActions from 'modules/activity/activity.actions';
-import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
-import Activity from 'modules/activity/web/activity.container';
-import RequestInvite from 'modules/web_splash/requestInvite.component';
+// import Activity from 'modules/activity/web/activity.container';
+import SplashComponent from 'modules/web_splash/splash.component';
 import { matchPath } from 'react-router';
 
 if (process.env.BROWSER === true) {
@@ -25,7 +23,7 @@ class AppHeader extends Component {
     toggleLogin: PropTypes.func,
     location: PropTypes.object,
     auth: PropTypes.object,
-    history: PropTypes.object,
+    history: PropTypes.object
   };
 
   state = {
@@ -35,10 +33,10 @@ class AppHeader extends Component {
   };
 
   componentDidMount() {
-    this.getNotificationCount();
-    window.addEventListener('focus', () => {
-      this.getNotificationCount();
-    });
+    // this.getNotificationCount();
+    // window.addEventListener('focus', () => {
+    //   this.getNotificationCount();
+    // });
 
     window.addEventListener('click', e => {
       if (e.target.classList.contains('activityButton')) return true;
@@ -49,27 +47,25 @@ class AppHeader extends Component {
     });
   }
 
-  componentDidUpdate(prevProps) {
-    const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
-    const { isAuthenticated } = this.props.auth;
-    if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
-  }
+  // componentDidUpdate(prevProps) {
+  //   // const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
+  //   // const { isAuthenticated } = this.props.auth;
+  //   // if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
+  // }
 
-  getNotificationCount() {
-    const now = new Date();
-    const { isAuthenticated } = this.props.auth;
-    if (now - this.state.timeSinceNotificationCount < 5000) return;
-    if (isAuthenticated) {
-      this.props.actions.getNotificationCount();
-      this.setState({ timeSinceNotificationCount: now });
-    }
-  }
+  // getNotificationCount() {
+  //   const now = new Date();
+  //   const { isAuthenticated } = this.props.auth;
+  //   if (now - this.state.timeSinceNotificationCount < 5000) return;
+  //   if (isAuthenticated) {
+  //     this.props.actions.getNotificationCount();
+  //     this.setState({ timeSinceNotificationCount: now });
+  //   }
+  // }
 
   renderActivity() {
     if (!this.props.isAuthenticated) return null;
-    const activity = this.state.activity ? (
-      <Activity close={() => this.setState({ activity: false })} />
-    ) : null;
+    const activity = this.state.activity ? null : null;
     const { count } = this.props.notif;
     const badge = count ? <span className={'badge'}>{count}</span> : null;
     return (
@@ -129,25 +125,8 @@ class AppHeader extends Component {
   renderSubHeaer() {
     const loggedIn = this.props.auth.isAuthenticated;
     let cta;
-
-    const signup = (
-      <div className="signupCTA">
-        <div className="basicButton">
-          <a
-            target="_blank"
-            href="https://hackernoon.com/relevant-an-introduction-5b79ef7afa9"
-          >
-            Read more about Relevant
-          </a>
-        </div>
-        <Link to="/user/signup">
-          <ShadowButton>Sign Up</ShadowButton>
-        </Link>
-      </div>
-    );
-
     if (!loggedIn) {
-      cta = <RequestInvite type={'app'} cta={signup} />;
+      cta = <SplashComponent type={'app'} cta="SIGN_UP" />;
     }
     return cta;
   }
@@ -163,11 +142,14 @@ class AppHeader extends Component {
       strict: false
     }) || { params: {} };
     if (
-      match.params.sort === 'post' ||
-      match.params.community === 'user' ||
-      match.params.community === 'auth' ||
-      match.params.community === 'info'
-    ) match.params = {};
+      match &&
+      (match.params.sort === 'post' ||
+        match.params.community === 'user' ||
+        match.params.community === 'auth' ||
+        match.params.community === 'info')
+    ) {
+      match.params = {};
+    }
 
     return (
       <div className="headerContainer appHeader">
@@ -178,13 +160,7 @@ class AppHeader extends Component {
                 <img src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
               </Link>
             </div>
-            <div className="tabContainer">
-              <DiscoverTabs
-                match={match || { params: {} } }
-                location={this.props.location}
-                auth={this.props.auth}
-              />
-            </div>
+            <div className="tabContainer" />
 
             <div className={'rightNav'}>
               {this.renderWallet()}
@@ -216,7 +192,9 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppHeader));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AppHeader)
+);

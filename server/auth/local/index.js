@@ -32,6 +32,7 @@ router.post('/', (req, res, next) => {
       delete user.twitter;
 
       const token = auth.signToken(user._id, user.role);
+      req.universalCookies.set('token', token);
 
       return res.json({ token });
     } catch (error) {

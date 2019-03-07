@@ -274,7 +274,6 @@
 }
 
 .postbuttons {
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -315,6 +314,7 @@
   min-width: 30px;
   img {
     margin-left: 1px;
+    margin-right: 2px;
     margin-bottom: -1px;
     height: 11px;
     width: auto;

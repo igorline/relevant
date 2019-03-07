@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 
@@ -41,7 +41,7 @@ function AdminHeader(props) {
 }
 
 AdminHeader.propTypes = {
-  children: PropTypes.node
+  route: PropTypes.object
 };
 
-export default AdminHeader;
+export default withRouter(AdminHeader);

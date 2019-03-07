@@ -1,10 +1,26 @@
 import * as types from 'core/actionTypes';
-import * as utils from 'app/utils';
+import { api, alert } from 'app/utils';
+
+const Alert = alert.Alert();
 
 export function addCommunity(community) {
   return {
     type: types.ADD_COMMUNITY,
     payload: community
+  };
+}
+
+export function modifyCommunity(community) {
+  return {
+    type: types.UPDATE_COMMUNITY,
+    payload: community
+  };
+}
+
+export function removeCommunity(communitySlug) {
+  return {
+    type: types.REMOVE_COMMUNITY,
+    payload: communitySlug
   };
 }
 
@@ -15,14 +31,52 @@ export function setCommunities(communities) {
   };
 }
 
+export function setCommunityMembers(slug, members) {
+  return {
+    type: types.SET_COMMUNITY_MEMBERS,
+    payload: { slug, members }
+  };
+}
+
+// currently in auth, should move to community
+// export function setCommunity(community) {
+//   return dispatch => {
+//     api.setCommunity(community);
+//     return dispatch({
+//       type: types.SET_COMMUNITY,
+//       payload: community
+//     });
+//   };
+// }
+
 export function getCommunityAdmins() {}
 
-export function getCommunityMembers() {}
+export function getCommunityMembers({ slug, skip, limit }) {
+  return async dispatch => {
+    try {
+      const members = await api.request({
+        method: 'GET',
+        endpoint: 'community',
+        params: {
+          slug,
+          members: 'members'
+        },
+        query: {
+          skip,
+          limit
+        }
+      });
+      return dispatch(setCommunityMembers(slug, members));
+    } catch (error) {
+      return false;
+    }
+  };
+}
 
 export function getCommunities() {
   return async dispatch => {
     try {
-      const res = await utils.api.request({
+      const res = await api.request({
         method: 'GET',
         endpoint: 'community'
       });
@@ -37,14 +91,47 @@ export function getCommunities() {
 export function createCommunity(community) {
   return async dispatch => {
     try {
-      const responseJSON = await utils.api.request({
+      const responseJSON = await api.request({
         method: 'POST',
         endpoint: 'community',
         body: JSON.stringify(community)
       });
-      return dispatch(addCommunity(responseJSON));
-    } catch (error) {
-      return false;
+      dispatch(addCommunity(responseJSON));
+      return Alert.alert('Community Created', 'success');
+    } catch (err) {
+      return Alert.alert(err.message);
+    }
+  };
+}
+
+export function updateCommunity(community) {
+  return async dispatch => {
+    try {
+      const responseJSON = await api.request({
+        method: 'PUT',
+        endpoint: `community/${community._id}`,
+        body: JSON.stringify(community)
+      });
+      dispatch(modifyCommunity(responseJSON));
+      return Alert.alert('Community Updated', 'success');
+    } catch (err) {
+      return Alert.alert(err.message);
+    }
+  };
+}
+
+export function deleteCommunity(community) {
+  const { slug } = community;
+  return async dispatch => {
+    try {
+      await api.request({
+        method: 'DELETE',
+        endpoint: `community/${slug}`
+      });
+      dispatch(removeCommunity(slug));
+      return Alert.alert('Community Removed', 'success');
+    } catch (err) {
+      return Alert.alert(err.message);
     }
   };
 }

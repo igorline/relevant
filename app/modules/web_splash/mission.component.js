@@ -22,9 +22,9 @@ export default class Mission extends Component {
 
           <div className={'libre pitch'}>
             <p>
-              Our mission is to create a token-backed <b>qualitative metric</b> for the information
-              economy — making the <b>human values</b> of veracity, expertise and agency{' '}
-              <b>economically valuable</b>
+              Our mission is to create a token-backed <b>qualitative metric</b> for the
+              information economy — making the <b>human values</b> of veracity, expertise
+              and agency <b>economically valuable</b>
             </p>
           </div>
         </panel>
@@ -35,11 +35,7 @@ export default class Mission extends Component {
             href="https://blog.relevant.community/relevant-an-introduction-5b79ef7afa9"
             target={'_blank'}
           >
-            Read
-            <br />
-            Introduction
-            <br />
-            Paper
+            Read Introduction Paper
           </a>
         </panel>
 

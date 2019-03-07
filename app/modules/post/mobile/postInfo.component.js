@@ -10,10 +10,8 @@ import {
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import UserName from 'modules/user/mobile/avatar.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import { globalStyles, greyText } from 'app/styles/global';
-import { numbers } from 'app/utils';
 
 let ActionSheet = ActionSheetIOS;
 if (Platform.OS === 'android') {
@@ -30,10 +28,11 @@ class PostInfo extends Component {
     actions: PropTypes.object,
     edit: PropTypes.func,
     delete: PropTypes.func,
-    users: PropTypes.object,
     big: PropTypes.bool,
     preview: PropTypes.bool,
-    repost: PropTypes.object
+    repost: PropTypes.bool,
+    user: PropTypes.object,
+    avatarText: PropTypes.func
   };
 
   constructor(props, context) {
@@ -61,11 +60,9 @@ class PostInfo extends Component {
   }
 
   componentDidMount() {
-    const { post, auth } = this.props;
-    const { user } = post;
+    const { auth, user } = this.props;
     if (!user) return;
-    const userId = user._id || user;
-    if (auth && userId && userId === auth.user._id) {
+    if (auth && user._id === auth.user._id) {
       this.menu = this.ownerMenu;
       this.myPost = true;
     }
@@ -80,7 +77,7 @@ class PostInfo extends Component {
 
   toggleEditing() {
     const { post, actions } = this.props;
-    actions.setCreaPostState({
+    actions.setCreatePostState({
       postBody: post.body,
       nativeImage: true,
       postUrl: post.link,
@@ -94,15 +91,13 @@ class PostInfo extends Component {
       edit: true,
       editPost: post
     });
-    actions.push(
-      {
-        key: 'createPost',
-        back: true,
-        title: 'Edit Post',
-        next: 'Update'
-      },
-      'home'
-    );
+    actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Edit Post',
+      next: 'Update',
+      left: 'Cancel'
+    });
   }
 
   setTag(tag) {
@@ -120,10 +115,7 @@ class PostInfo extends Component {
       return Linking.openURL('https://twitter.com/' + post.embeddedUser.handle);
     }
 
-    return actions.goToProfile({
-      name: post.embeddedUser.name,
-      _id: post.user._id || post.user
-    });
+    return actions.goToProfile(post.embeddedUser);
   }
 
   showActionSheet() {
@@ -152,13 +144,10 @@ class PostInfo extends Component {
   }
 
   render() {
-    const { post, users, big, preview, repost } = this.props;
+    const { post, big, preview, repost, user, avatarText } = this.props;
     let postActions;
 
-    if (!post.embeddedUser) return null;
-
-    let postTime = moment(post.createdAt);
-    postTime = ' • ' + numbers.timeSince(postTime) + ' ago';
+    if (!user) return null;
 
     if (this.myPost) {
       postActions = (
@@ -171,30 +160,19 @@ class PostInfo extends Component {
       );
     }
 
-    let userId = post.user ? post.user._id || post.user : null;
-    if (post.twitterUser) userId = post.twitterUser;
-    let user = users[userId];
-
-    if (!user || !user._id) {
-      user = {};
-      user = post.embeddedUser;
-      if (post.twitter) {
-        user._id = user.handle;
-      }
-    }
-
     const userEl = (
-      <UserName
-        big={big}
+      <AvatarBox
         user={user}
         setSelected={this.setSelected}
-        postTime={postTime}
+        postTime={post.postDate}
         twitter={post.twitter}
+        showRelevance
+        avatarText={avatarText}
       />
     );
 
     let info = (
-      <View style={[styles.postHeader, preview ? { paddingTop: 10 } : null]}>
+      <View style={[styles.postHeader, preview ? { paddingTop: 0 } : null]}>
         <View style={styles.postInfo}>
           {userEl}
           <View style={[styles.infoRight]}>{repost ? null : postActions}</View>
@@ -211,7 +189,7 @@ class PostInfo extends Component {
               big={big}
               user={user}
               setSelected={this.setSelected}
-              postTime={postTime}
+              postTime={post.postDate}
             />
             <View style={[styles.infoRight]}>
               {this.props.repost ? null : postActions}

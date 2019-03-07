@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { NEW_USER_COINS, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
+import {
+  newUserCoins,
+  POWER_REGEN_INTERVAL,
+  MAX_AIRDROP,
+  getRewardForType
+} from '../../config/globalConstants';
 import { NAME_PATTERN } from '../../../app/utils/text';
 import * as ethUtils from '../../utils/ethereum';
 
@@ -11,7 +16,8 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
-    _id: { type: String, required: true },
+    // Comment out to automatically generate _id
+    // _id: { type: Schema.Types.Mixed, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
@@ -28,6 +34,8 @@ const UserSchema = new Schema(
     // relevance: { type: Number, default: 0, select: false },
 
     balance: { type: Number, default: 0 },
+    lockedTokens: { type: Number, default: 0 },
+
     deviceTokens: {
       // select: false,
       type: [String]
@@ -49,6 +57,14 @@ const UserSchema = new Schema(
     postCount: { type: Number, default: 0 },
     investmentCount: { type: Number, default: 0 },
     onboarding: { type: Number, default: 0 },
+
+    webOnboard: {
+      type: Schema.Types.Mixed,
+      default: {
+        onboarding: false
+      }
+    },
+
     lastFeedNotification: { type: Date, default: new Date(0) },
     confirmed: { type: Boolean, default: false },
     confirmCode: { type: String, select: false },
@@ -63,11 +79,11 @@ const UserSchema = new Schema(
     bio: { type: String, default: '' },
 
     blocked: {
-      type: [{ type: String, ref: 'User' }],
+      type: [{ type: Schema.Types.Object, ref: 'User' }],
       select: false
     },
     blockedBy: {
-      type: [{ type: String, ref: 'User' }],
+      type: [{ type: Schema.Types.Object, ref: 'User' }],
       select: false
     },
 
@@ -86,7 +102,7 @@ const UserSchema = new Schema(
     twitterEmail: { type: String, select: false },
     twitterAuthToken: { type: String, select: false },
     twitterAuthSecret: { type: String, select: false },
-    twitterId: { type: Number, unique: true, index: true, sparse: true },
+    twitterId: { type: String, unique: true, index: true, sparse: true },
 
     // used to query twitter feed
     lastTweetId: { type: Number },
@@ -99,7 +115,12 @@ const UserSchema = new Schema(
       nonce: Number,
       sig: String,
       amount: Number
-    }
+    },
+    airdropTokens: { type: Number, default: 0 },
+    referralTokens: { type: Number, default: 0 },
+
+    version: String,
+    community: String
   },
   {
     toJSON: { virtuals: true },
@@ -109,9 +130,8 @@ const UserSchema = new Schema(
 );
 
 // UserSchema.index({ name: 'text' });
-
+UserSchema.index({ handle: 1 });
 UserSchema.statics.events = new EventEmitter();
-// UserSchema.index({ handle: 1 });
 
 /**
  * Virtuals
@@ -345,7 +365,7 @@ UserSchema.methods.updateMeta = async function updateMeta() {
       { multi: true }
     );
 
-    await this.model('Comment').update(
+    await this.model('CommunityMember').update(
       { user: this._id },
       { embeddedUser: newUser },
       { multi: true }
@@ -356,17 +376,70 @@ UserSchema.methods.updateMeta = async function updateMeta() {
   }
 };
 
-UserSchema.methods.initialCoins = async function initialCoins() {
-  await this.model('Treasury')
-  .findOneAndUpdate(
-    {},
-    { $inc: { balance: -NEW_USER_COINS } },
-    { new: true, upsert: true }
-  )
-  .exec();
+UserSchema.methods.addReward = async function addReward({ type, user }) {
+  try {
+    const amount = getRewardForType(type);
+    const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
 
-  this.balance += NEW_USER_COINS;
-  return this;
+    // TODO - update this and tie it to smart contract
+    await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
+
+    this.balance += airdropTokens;
+    this.airdropTokens += airdropTokens;
+    if (type === 'referral' || type === 'publicLink') {
+      this.referralTokens += airdropTokens;
+    }
+
+    const notification = {
+      forUser: this._id,
+      type: `reward_${type}`,
+      coin: airdropTokens,
+      byUser: user ? user._id : null,
+      byUsersHandle: user ? [user.handle] : null
+    };
+    await this.model('Notification').createNotification(notification);
+
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
+};
+
+UserSchema.methods.initialCoins = async function initialCoins(invite) {
+  try {
+    const airdropTokens = newUserCoins(this, invite);
+
+    if (!airdropTokens) return this;
+    // TODO - update this and tie it to smart contract
+    await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
+
+    this.balance += airdropTokens;
+    this.airdropTokens += airdropTokens;
+
+    const type = this.twitterId ? 'twitter' : 'email';
+    const notification = {
+      forUser: this._id,
+      type: `reward_${type}`,
+      coin: airdropTokens
+    };
+    await this.model('Notification').createNotification(notification);
+
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
 };
 
 UserSchema.methods.updateBalance = async function updateBalance() {
@@ -381,11 +454,8 @@ UserSchema.methods.updatePower = function updatePower() {
   // elapsed time in seconds
   // prevent votes from being more often than 5s apart
   const now = new Date();
-  const elapsedTime = new Date(now).getTime() - new Date(this.lastVote || 0).getTime();
-  if (elapsedTime < 5 * 1000 && process.env.NODE_ENV === 'production') {
-    throw new Error('you cannot up-vote posts more often than 5s');
-  }
   this.lastVote = now;
+  const elapsedTime = new Date(now).getTime() - new Date(this.lastVote || 0).getTime();
   const voteRegen = Math.max((elapsedTime / POWER_REGEN_INTERVAL) * 1);
   const votePower = Math.min(this.votePower + voteRegen, 1);
   this.votePower = votePower;

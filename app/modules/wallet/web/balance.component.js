@@ -9,13 +9,16 @@ export default class Balance extends Component {
     user: PropTypes.object,
     contract: PropTypes.object,
     actions: PropTypes.object,
-    wallet: PropTypes.object
+    wallet: PropTypes.object,
+    earnings: PropTypes.object
   };
 
   // this context comes from the BondedTokenContainer
   static contextType = BondingCurveContext;
 
   async cashOut() {
+    return null;
+    // eslint-disable-next-line
     const { actions, user, contract } = this.props;
     try {
       const decimals = contract.methods.decimals.cacheCall();
@@ -38,6 +41,16 @@ export default class Balance extends Component {
     } catch (err) {
       throw err;
     }
+  }
+
+  renderEarnigns() {
+    const { list } = this.props.earnings;
+    return list.map(earning => (
+      <div>
+        status: {earning.status} stakedTokens: {earning.stakedTokens} earned:{' '}
+        {earning.earned}
+      </div>
+    ));
   }
 
   render() {
@@ -74,7 +87,7 @@ export default class Balance extends Component {
           <span>
             Warning: Your connected account doesn't not match the current Metamask account
           </span>
-          <Link to={'/wallet#connectAccount'}>
+          <Link to={'/user/wallet#connectAccount'}>
             <button className={'shadowButton'}>Connect Account</button>
           </Link>
         </div>
@@ -85,7 +98,7 @@ export default class Balance extends Component {
       accountWarning = (
         <div className="warningRow">
           <span>Warning: your Metamask account is not connected to Relevant</span>
-          <Link to={'/wallet#connectAccount'}>
+          <Link to={'/user/wallet#connectAccount'}>
             <button className={'shadowButton'}>Connect Account</button>
           </Link>
         </div>
@@ -167,6 +180,8 @@ export default class Balance extends Component {
               <span>$ {fixed(usd)} USD</span>
             </div>
           </section>
+
+          {this.renderEarnigns()}
         </div>
       </div>
     );

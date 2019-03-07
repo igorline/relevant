@@ -11,10 +11,12 @@ class EthTools extends Component {
     account: PropTypes.string,
     user: PropTypes.object,
     RelevantCoin: PropTypes.object,
-    children: PropTypes.node
+    children: PropTypes.node,
+    network: PropTypes.number,
+    status: PropTypes.string
   };
 
-  initialState = {
+  state = {
     balance: 0,
     connectedBalance: 0,
     account: null,
@@ -23,9 +25,6 @@ class EthTools extends Component {
     network: null,
     status: null,
     nonce: null
-  };
-  state = {
-    balance: 0
   };
 
   queryBalance(address) {
@@ -47,15 +46,13 @@ class EthTools extends Component {
     let differentAccount = true;
     let nonce = null;
 
-    if (!user) {
-      return this.initialState;
-    }
+    if (!user) return null;
 
     const decimals = toNumber(RelevantCoin.methods.decimals.fromCache(), 0);
 
     connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
 
-    if (!connectedAccount && !account) return this.initialState;
+    if (!connectedAccount && !account) return null;
 
     if (account) {
       balance = toNumber(RelevantCoin.methods.balanceOf.fromCache(account), decimals);

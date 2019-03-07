@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as postActions from 'modules/post/post.actions';
-import Post from 'modules/post/web/post.component';
+import PostComponent from 'modules/post/web/post.component';
 
 class TopPosts extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    topPosts: PropTypes.object
+    topPosts: PropTypes.array
   };
 
   componentDidMount() {
@@ -21,7 +21,7 @@ class TopPosts extends Component {
 
     const postsEl = topPosts.map(p => (
       <div key={p._id}>
-        <Post {...this.props} post={p} />
+        <PostComponent {...this.props} post={p} />
         <button onClick={() => this.props.actions.sendPostNotification(p)}>
           Send 'Top Post' notification
         </button>

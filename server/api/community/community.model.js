@@ -1,7 +1,6 @@
-import { NAME_PATTERN } from '../../../app/utils/text';
-import * as ethUtils from '../../utils/ethereum';
-
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import { NAME_PATTERN } from 'app/utils/text';
+import * as ethUtils from 'server/utils/ethereum';
 
 const { Schema } = mongoose;
 
@@ -28,12 +27,22 @@ const CommunitySchema = new Schema(
     lastTwitterUpdate: { type: Date },
     maxUserRank: { type: Number },
     maxPostRank: { type: Number },
-    numberOfElements: { type: Number }
+    numberOfElements: { type: Number },
+    memberCount: { type: Number },
+    inactive: Boolean
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
+
+CommunitySchema.virtual('members', {
+  ref: 'CommunityMember',
+  localField: 'slug',
+  foreignField: 'community'
+});
 
 CommunitySchema.index({ slug: 1 });
 
@@ -58,9 +67,16 @@ CommunitySchema.pre('remove', async function remove(next) {
   }
 });
 
-// CommunitySchema.methods.updateMemberWeights = async function updateMemberWeights(members) {
-
-// }
+CommunitySchema.methods.updateMemeberCount = async function updateMemeberCount() {
+  try {
+    this.memberCount = await this.model('CommunityMember').count({
+      communityId: this._id
+    });
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
+};
 
 CommunitySchema.methods.leave = async function leave(userId) {
   try {
@@ -116,6 +132,7 @@ CommunitySchema.methods.leave = async function leave(userId) {
     });
 
     memberships = await Promise.all(updatedMemberships);
+    await this.updateMemeberCount();
   } catch (err) {
     throw err;
   }
@@ -123,15 +140,26 @@ CommunitySchema.methods.leave = async function leave(userId) {
 
 CommunitySchema.methods.join = async function join(userId, role) {
   try {
+    const { _id: communityId, slug: community } = this;
     const user = await this.model('User').findOne(
       { _id: userId },
-      'name balance ethAddress image'
+      'name balance ethAddress image handle'
     );
+    if (!user) throw new Error('missing user');
     let member = await this.model('CommunityMember').findOne({
       user: userId,
       communityId: this._id
     });
-    if (member) throw new Error('member already exists ', userId);
+
+    if (member && role === 'admin') {
+      member.role = role;
+      return member.save();
+    }
+
+    if (member) return member;
+
+    await this.model('Relevance').create({ userId, communityId, community });
+
     let userBalance = user.balance || 0;
     let tokenBalance = 0;
     const ethAddress = user.ethAddress[0];
@@ -160,11 +188,11 @@ CommunitySchema.methods.join = async function join(userId, role) {
 
     member = {
       user: userId,
-      embededUser: user,
+      embeddedUser: user,
       weight,
       balance: tokensToAdd,
-      communityId: this._id,
-      community: this.slug,
+      communityId,
+      community,
       reputation: 0,
       role: role || 'user'
     };
@@ -183,6 +211,7 @@ CommunitySchema.methods.join = async function join(userId, role) {
     // console.log('totalWeights should be 1 ', totalWeight);
     // console.log('totalBalance should be ', userBalance, ' ', totalBalance);
 
+    await this.updateMemeberCount();
     return member;
   } catch (err) {
     throw err;
@@ -196,7 +225,7 @@ CommunitySchema.statics.getBalances = async function getBalances() {
       {
         $group: {
           _id: '$community',
-          balance: { $sum: '$balance' }
+          stakedTokens: { $sum: '$balance' }
         }
       }
     ]);

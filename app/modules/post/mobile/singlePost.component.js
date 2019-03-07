@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
   RefreshControl,
-  TouchableHighlight,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
@@ -12,29 +8,34 @@ import {
   Keyboard
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, IphoneX } from 'app/styles/global';
+import { IphoneX } from 'app/styles/global';
 import Comment from 'modules/comment/mobile/comment.component';
 import CommentInput from 'modules/comment/mobile/commentInput.component';
 import UserSearchComponent from 'modules/createPost/mobile/userSearch.component';
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
+import { View, MobileDivider, Divider } from 'modules/styled/uni';
+import PostButtons from 'modules/post/mobile/postButtons.component';
 import Post from './post.component';
-
-let styles;
 
 const inputOffset = IphoneX ? 59 + 33 : 59;
 
 class SinglePostComponent extends Component {
   static propTypes = {
     postId: PropTypes.string,
-    postComments: PropTypes.object,
+    postComments: PropTypes.array,
     posts: PropTypes.object,
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     post: PropTypes.object,
     error: PropTypes.bool,
     actions: PropTypes.object,
     related: PropTypes.array,
     link: PropTypes.object,
-    users: PropTypes.object
+    users: PropTypes.object,
+    comments: PropTypes.object,
+    myPostInv: PropTypes.object,
+    auth: PropTypes.object,
+    admin: PropTypes.object,
+    comment: PropTypes.object
   };
 
   constructor(props) {
@@ -50,7 +51,6 @@ class SinglePostComponent extends Component {
     this.comments = null;
     this.renderRow = this.renderRow.bind(this);
     this.dataSource = null;
-    this.renderComments = this.renderComments.bind(this);
     this.loadMoreComments = this.loadMoreComments.bind(this);
     this.longFormat = false;
     this.total = null;
@@ -64,17 +64,12 @@ class SinglePostComponent extends Component {
     this.renderRelated = this.renderRelated.bind(this);
   }
 
+  comments = [];
+  nestingLevel = {};
+
   componentWillMount() {
     this.id = this.props.postId;
-
-    const comments = this.props.postComments.data || [];
-    if (comments) {
-      this.comments = comments.map(c => this.props.posts.posts[c]);
-      this.total = comments.total || 0;
-      if (this.total > 10) this.longFormat = true;
-    }
-
-    // this.loaded = true;
+    this.getChildren(this.id);
 
     // InteractionManager.runAfterInteractions(() => {
     requestAnimationFrame(() => {
@@ -83,20 +78,35 @@ class SinglePostComponent extends Component {
     });
 
     setTimeout(() => {
-      if (this.props.scene.openComment) {
-        if (this.props.scene.commentCount && this.comments) {
+      const { params } = this.props.navigation.state;
+      if (params && params.openComment) {
+        if (params.commentCount && this.comments) {
           this.scrollToBottom(true);
-        } else if (!this.props.scene.commentCount) {
+        } else if (!params.commentCount) {
           this.input.textInput.focus();
+        }
+        if (params.comment) {
+          this.setState({ activeComment: params.comment });
         }
       }
       this.forceUpdate();
     }, 100);
   }
 
+  getChildren = (id = this.props.postId, nestingLevel = 0) => {
+    if (nestingLevel === 0) this.comments = [];
+    const { comments, posts } = this.props;
+    const children = comments.childComments[id] || [];
+    children.forEach(c => {
+      this.nestingLevel[c] = nestingLevel;
+      this.comments.push(posts.posts[c]);
+      this.getChildren(c, nestingLevel + 1);
+    });
+  };
+
   componentWillReceiveProps(next) {
     if (next.postComments && next.postComments !== this.props.postComments) {
-      if (!this.comments && this.props.scene.openComment) {
+      if (!this.comments && this.props.navigation.state.openComment) {
         this.scrollToBottom(true);
       }
 
@@ -132,6 +142,7 @@ class SinglePostComponent extends Component {
     if (Platform.OS === 'android') {
       Keyboard.addListener('keyboardDidShow', scroll);
     }
+    this.setState({ activeComment: this.comments[index], activeIndex: index });
   }
 
   scrollToBottom() {
@@ -156,12 +167,143 @@ class SinglePostComponent extends Component {
     this.props.actions.getSelectedPost(this.id);
   }
 
-  renderComments() {
-    const comments = this.props.postComments.data || [];
-    this.comments = comments.map(c => this.props.posts.posts[c]);
-
-    if (this.props.post) {
+  renderRelated() {
+    const relatedEl = this.props.related.map(r => {
+      const post = { _id: r.commentary[0], title: r.title };
       return (
+        <View key={r._id} style={{ paddingHorizontal: 15 }}>
+          <UrlPreview
+            size={'small'}
+            urlPreview={r}
+            onPress={() => this.props.actions.goToPost(post)}
+            domain={r.domain}
+            actions={this.props.actions}
+          />
+        </View>
+      );
+    });
+    return relatedEl;
+  }
+
+  renderHeader() {
+    return (
+      <View
+        onLayout={e => {
+          this.headerHeight = e.nativeEvent.layout.height;
+        }}
+      >
+        <Post
+          singlePost
+          key={0}
+          navigation={this.props.navigation}
+          post={this.props.post}
+          link={this.props.link}
+          actions={this.props.actions}
+          focusInput={() => this.input.textInput.focus()}
+        />
+        {this.renderRelated()}
+      </View>
+    );
+  }
+
+  renderRow({ item, index }) {
+    const comment = item;
+    if (!comment) return null;
+
+    const { post, myPostInv, auth, actions, navigation, users } = this.props;
+
+    const setupReply = _comment =>
+      this.setState({ activeComment: _comment, activeIndex: index });
+    const focusInput = () => this.input.textInput.focus();
+
+    const user = users.users[comment.user] || comment.embeddedUser;
+    const nestingLevel = this.nestingLevel[comment._id];
+
+    return (
+      <View key={comment._id} index={index} fdirection={'column'} flex={1}>
+        {nestingLevel ? (
+          <View ml={nestingLevel * 3 - 1} mr={2}>
+            <Divider />
+          </View>
+        ) : (
+          <MobileDivider />
+        )}
+        <Comment
+          singlePost
+          actions={actions}
+          auth={auth}
+          parentEditing={this.toggleEditing}
+          scrollToComment={() => this.scrollToComment(index)}
+          comment={comment}
+          nestingLevel={nestingLevel}
+          user={user}
+          renderButtons={() => (
+            <PostButtons
+              isComment
+              parentPost={post}
+              post={comment}
+              actions={actions}
+              auth={auth}
+              navigation={navigation}
+              myPostInv={myPostInv[comment._id]}
+              setupReply={setupReply}
+              focusInput={focusInput}
+            />
+          )}
+        />
+      </View>
+    );
+  }
+
+  renderUserSuggestions() {
+    let parentEl = null;
+    if (this.props.users.search) {
+      if (this.props.users.search.length) {
+        parentEl = (
+          <View
+            style={{
+              position: 'absolute',
+              top: this.state.top - this.state.suggestionHeight,
+              left: 0,
+              right: 0,
+              flex: 1,
+              maxHeight: this.state.top,
+              backgroundColor: 'white',
+              borderTopWidth: 1,
+              borderTopColor: '#F0F0F0'
+            }}
+            onLayout={e => {
+              this.setState({ suggestionHeight: e.nativeEvent.layout.height });
+            }}
+          >
+            <UserSearchComponent
+              style={{ paddingTop: inputOffset }}
+              setSelected={this.input.setMention}
+              users={this.props.users.search}
+            />
+          </View>
+        );
+      }
+    }
+    return parentEl;
+  }
+
+  render() {
+    const { post } = this.props;
+    if (!post) return null;
+    const { activeComment, activeIndex, editing } = this.state;
+
+    // TODO this is hacky;
+    this.getChildren();
+
+    return (
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{ flex: 1, backgroundColor: 'white' }}
+        keyboardVerticalOffset={
+          inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
+        }
+      >
         <FlatList
           ref={c => (this.scrollView = c)}
           data={this.comments}
@@ -189,146 +331,23 @@ class SinglePostComponent extends Component {
             />
           }
         />
-      );
-    }
-    return <View style={{ flex: 1 }} />;
-  }
 
-  renderRelated() {
-    const relatedEl = this.props.related.map(r => {
-      const post = { _id: r.commentary[0], title: r.title };
-      return (
-        <View key={r._id} style={{ paddingHorizontal: 15 }}>
-          <UrlPreview
-            size={'small'}
-            urlPreview={r}
-            onPress={() => this.props.actions.goToPost(post)}
-            domain={r.domain}
-            actions={this.props.actions}
-          />
-        </View>
-      );
-    });
-    return relatedEl;
-  }
-
-  renderHeader() {
-    let loadEarlier;
-
-    const headerEl = (
-      <Post
-        singlePost
-        key={0}
-        scene={this.props.scene}
-        post={this.props.post}
-        link={this.props.link}
-        actions={this.props.actions}
-        focusInput={() => this.input.textInput.focus()}
-      />
-    );
-
-    if (this.longFormat) {
-      if (this.comments && this.total) {
-        if (this.total > this.comments.length) {
-          loadEarlier = (
-            <TouchableHighlight
-              key={1}
-              underlayColor={'transparent'}
-              onPress={this.loadMoreComments}
-              style={styles.loadMoreButton}
-            >
-              <Text>load earlier...</Text>
-            </TouchableHighlight>
-          );
-        }
-      }
-    }
-
-    return (
-      <View
-        onLayout={e => {
-          this.headerHeight = e.nativeEvent.layout.height;
-        }}
-      >
-        {headerEl}
-        {this.renderRelated()}
-        {loadEarlier}
-      </View>
-    );
-  }
-
-  renderRow({ item, index }) {
-    const comment = item;
-    if (!comment) return null;
-    return (
-      <Comment
-        {...this.props}
-        key={item._id}
-        parentEditing={this.toggleEditing}
-        index={index}
-        scrollToComment={() => this.scrollToComment(index)}
-        parentId={this.id}
-        comment={comment}
-        parentView={this.scrollView}
-        users={this.props.users}
-      />
-    );
-  }
-
-  renderUserSuggestions() {
-    let parentEl = null;
-    if (this.props.users.search) {
-      if (this.props.users.search.length) {
-        parentEl = (
-          <View
-            style={{
-              position: 'absolute',
-              top: this.state.top - this.state.suggestionHeight,
-              left: 0,
-              right: 0,
-              maxHeight: this.state.top,
-              backgroundColor: 'white',
-              borderTopWidth: 1,
-              borderTopColor: '#F0F0F0'
-            }}
-            onLayout={e => {
-              this.setState({ suggestionHeight: e.nativeEvent.layout.height });
-            }}
-          >
-            <UserSearchComponent
-              style={{ paddingTop: inputOffset }}
-              setSelected={this.input.setMention}
-              users={this.props.users.search}
-            />
-          </View>
-        );
-      }
-    }
-    return parentEl;
-  }
-
-  render() {
-    return (
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        style={{ flex: 1, backgroundColor: 'white' }}
-        keyboardVerticalOffset={
-          inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)
-        }
-      >
-        {this.renderComments()}
         {this.renderUserSuggestions()}
 
         <CommentInput
+          parentPost={post}
+          parentComment={activeComment}
           ref={c => (this.input = c)}
           postId={this.id}
-          editing={this.state.editing}
+          editing={editing}
           {...this.props}
           scrollView={this.scrollView}
           scrollToBottom={this.scrollToBottom}
           updatePosition={params => this.setState(params)}
+          onBlur={() => this.setState({ comment: null, index: null })}
           onFocus={() => {
-            this.scrollToBottom();
+            if (typeof activeIndex === 'number') this.scrollToComment(activeIndex);
+            else this.scrollToBottom();
           }}
         />
       </KeyboardAvoidingView>
@@ -336,40 +355,4 @@ class SinglePostComponent extends Component {
   }
 }
 
-const localStyles = StyleSheet.create({
-  postScroll: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    flexWrap: 'nowrap',
-    justifyContent: 'flex-start'
-  },
-  comment: {
-    marginLeft: 25,
-    marginRight: 4,
-    marginBottom: 10
-  },
-  commentary: {
-    marginRight: 4,
-    marginLeft: 4,
-    marginTop: 3,
-    marginBottom: 10
-  },
-  postContainer: {
-    paddingBottom: 25,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0'
-  },
-  tagsRow: {
-    flexDirection: 'row',
-    paddingTop: 10,
-    paddingBottom: 10,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    flex: 1
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };
-
 export default SinglePostComponent;
-

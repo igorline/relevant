@@ -3,18 +3,27 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
-import Header from 'modules/navigation/web/header.component';
-import AppHeader from 'modules/navigation/web/appHeader.component';
+import { renderRoutes, matchRoutes } from 'react-router-config';
+import routes from 'modules/_app/web/routes';
+
+// import Header from 'modules/navigation/web/header.component';
+import AuthContainer from 'modules/auth/web/auth.container';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
+import { getEarnings } from 'modules/wallet/earnings.actions';
+import { getCommunities } from 'modules/community/community.actions';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
-import AuthContainer from 'modules/auth/web/auth.container';
 import Modal from 'modules/ui/web/modal';
-import CreatePost from 'modules/createPost/web/createPost.container';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';
+import { GlobalStyle } from 'app/styles';
+import * as modals from 'modules/ui/modals';
+import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
+import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
+import queryString from 'query-string';
+import get from 'lodash/get';
+import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -32,42 +41,88 @@ class App extends Component {
     user: PropTypes.object,
     children: PropTypes.node,
     history: PropTypes.object,
-    route: PropTypes.object
+    route: PropTypes.object,
+    activeCommunity: PropTypes.string,
+    globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
   };
 
   state = {
-    openLoginModal: false
+    openLoginModal: false,
+    authType: null
   };
 
   componentWillMount() {
+    const { actions } = this.props;
     const { community } = this.props.auth;
     if (community && community !== 'home') {
-      this.props.actions.setCommunity(community);
+      actions.setCommunity(community);
     }
   }
 
   componentDidMount() {
-    const { actions, auth } = this.props;
+    const { actions, auth, location, history } = this.props;
     const { community } = auth;
 
-    actions.setCommunity(community);
-    actions.getUser();
+    if (community && location.pathname === '/') {
+      history.replace(`/${community}/new`);
+    }
 
+    actions.setCommunity(community);
+    actions.getCommunities();
+    actions.getUser();
+    actions.getEarnings('pending');
+
+    if (auth.user && auth.user.webOnboard && !auth.user.webOnboard.onboarding) {
+      actions.showModal('onboarding');
+      actions.webOnboard('onboarding');
+    }
+
+    const parsed = queryString.parse(location.search);
+    if (parsed.invitecode) {
+      actions.setInviteCode(parsed.invitecode);
+      if (auth.isAuthenticated) {
+        actions.redeemInvite(parsed.invitecode);
+      } else {
+        this.toggleLogin('signup');
+      }
+    }
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
     //   this.props.actions.refreshTab('discover');
     // });
+    //
   }
 
+  handleUserLogin = () => {
+    const { auth, actions } = this.props;
+    if (!auth.user.webOnboard.onboarding) {
+      actions.showModal('onboarding');
+      actions.webOnboard('onboarding');
+    }
+    if (auth.invitecode) {
+      actions.redeemInvite(auth.invitecode);
+    }
+  };
+
   componentDidUpdate(prevProps) {
-    const { actions, auth, location, match } = this.props;
-    const { community } = match.params;
-    // const { isAuthenticated } = auth;
-    if (community && auth.community !== community) {
-      if (community === 'home') {
-        this.props.history.push(`/${auth.community}/new`);
-      } else actions.setCommunity(community);
+    const { actions, auth, location } = this.props;
+    // const { community } = match.params;
+    // if (community && activeCommunity !== community) {
+    //   if (community === 'home') {
+    //     this.props.history.push(`/${activeCommunity}/new`);
+    //   } else actions.setCommunity(community);
+    // }
+
+    const route = matchRoutes(routes, location.pathname);
+    const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
+
+    if (
+      newCommunity &&
+      newCommunity !== auth.community &&
+      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
+    ) {
+      actions.setCommunity(newCommunity);
     }
 
     if (location.pathname !== prevProps.location.pathname) {
@@ -80,23 +135,68 @@ class App extends Component {
     if (userId !== PrevUserId) {
       actions.userToSocket(userId);
     }
+
+    if (!prevProps.auth.user && auth.user) {
+      this.handleUserLogin();
+    }
+    // const match = matchPath(history.location.pathname, {
+    //   // You can share this string as a constant if you want
+    //   path: "/articles/:id"
+    // });
   }
 
-  toggleLogin() {
-    this.setState({ openLoginModal: !this.state.openLoginModal });
+  toggleLogin(authType) {
+    this.setState({ openLoginModal: !this.state.openLoginModal, authType });
   }
 
   closeModal() {
     this.props.history.push(this.props.location.pathname);
   }
 
+  renderModal() {
+    const { location, history } = this.props; // eslint-disable-line
+    let { globalModal } = this.props;
+    const { hash } = location;
+    let hashModal;
+    if (hash) {
+      hashModal = hash.substring(1);
+    }
+    // if (!hash && globalModal) {
+    //   history.push(location.pathname + `#${globalModal}`);
+    // }
+    if (hashModal) {
+      globalModal = hashModal;
+    }
+    if (!globalModal) return null;
+    globalModal = modals[globalModal] || globalModal;
+    const { Body } = globalModal;
+    const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    return (
+      <Modal
+        {...globalModal}
+        close={() => {
+          this.props.actions.hideModal();
+          this.closeModal();
+        }}
+        visible
+      >
+        <Body
+          {...bodyProps}
+          close={() => {
+            this.props.actions.hideModal();
+            this.closeModal();
+          }}
+        />
+      </Modal>
+    );
+  }
+
   render() {
-    const { location, user, match, children } = this.props;
+    const { location, user, children } = this.props;
     const temp = user && user.role === 'temp';
-    const create = location.hash === '#newpost';
     const connectAccount = location.hash === '#connectAccount';
 
-    let mobileEl = (
+    const mobileEl = (
       <div className="mobileSplash">
         <h1>Relevant browser version doesn't currently support mobile devices</h1>
         <p>Please download a dedicated mobile app:</p>
@@ -121,20 +221,34 @@ class App extends Component {
       </div>
     );
 
-    let header = (
-      <AppHeader
-        location={location}
-        match={match}
-        toggleLogin={this.toggleLogin.bind(this)}
-      />
-    );
-    if (location.pathname === '/') {
-      header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
-      mobileEl = null;
-    }
+    let header;
+    // if (location.pathname === '/') {
+    //   header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
+    //   mobileEl = null;
+    // }
 
     return (
-      <main>
+      <div>
+        <GlobalStyle />
+        <TextTooltip
+          type={'dark'}
+          scrollHide
+          id="mainTooltip"
+          multiline
+          ref={c => (this.tooltip = c)}
+        />
+        <CustomTooltip id="tooltip" multiline ref={c => (this.tooltip = c)} />
+
+        <div
+          pointerEvents={'none'}
+          style={{
+            top: '0',
+            left: '0',
+            zIndex: '10000'
+          }}
+        >
+          <UpvoteAnimation />
+        </div>
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>
@@ -145,6 +259,7 @@ class App extends Component {
             toggleLogin={this.toggleLogin.bind(this)}
             open={this.state.openLoginModal || temp}
             modal
+            type={this.state.authType}
             {...this.props}
           />
           <Eth.Consumer>
@@ -158,38 +273,38 @@ class App extends Component {
             )}
           </Eth.Consumer>
         </EthTools>
-        <Modal
-          title="New Post"
-          visible={create}
-          className="createPostModal"
-          close={() => this.props.history.push(location.pathname)}
-        >
-          <CreatePost modal />
-        </Modal>
+        {this.renderModal()}
         <ToastContainer />
         {mobileEl}
         {renderRoutes(this.props.route.routes)}
-      </main>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  auth: state.auth
+  auth: state.auth,
+  activeCommunity: state.community.active,
+  navigation: state.navigation,
+  globalModal: state.navigation.modal
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...navigationActions,
-      ...authActions
+      ...authActions,
+      getCommunities,
+      getEarnings
     },
     dispatch
   )
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);

@@ -4,22 +4,37 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as UserActions from 'modules/user/user.actions';
 import * as PostActions from 'modules/post/post.actions';
-import Eth from 'modules/web_ethTools/eth.context';
-import Profile from './profile.component';
-import UserPosts from './userPosts.component';
+import { logoutAction } from 'modules/auth/auth.actions';
+import { authProps } from 'app/utils/propValidation';
+import Profile from 'modules/profile/profile.component';
+import UserPosts from 'modules/profile/web/userPosts.component';
+import { Divider } from 'modules/styled/uni';
+import { sizing } from 'app/styles';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 const pageSize = 10;
 
 class ProfileContainer extends Component {
   static propTypes = {
-    actions: PropTypes.object,
-    match: PropTypes.object
+    actions: PropTypes.object.isRequired,
+    match: PropTypes.object,
+    usersState: PropTypes.object.isRequired,
+    auth: authProps
   };
 
-  constructor() {
-    super();
-    this.state = {};
-    this.grabPosts = this.grabPosts.bind(this);
+  state = {
+    user: {},
+    isOwner: false
+  };
+
+  static getDerivedStateFromProps(props) {
+    const { auth, match, usersState } = props;
+    const handle = match.params.id;
+    const userId = usersState.handleToId[handle];
+    const user = usersState.users[userId];
+    if (!user) return null;
+    const isOwner = auth.user && user._id === auth.user._id;
+    return { user, isOwner };
   }
 
   // Get user object based on userid param in route
@@ -29,10 +44,10 @@ class ProfileContainer extends Component {
   }
 
   // Get array of posts based on userid param in route
-  grabPosts(l) {
+  grabPosts = l => {
     const { id } = this.props.match.params;
     this.props.actions.getUserPosts(l || 0, pageSize, id);
-  }
+  };
 
   componentDidMount() {
     this.grabUser();
@@ -48,8 +63,15 @@ class ProfileContainer extends Component {
   render() {
     return (
       <div style={{ flex: 1 }}>
-        <Eth.Consumer>{wallet => <Profile wallet={wallet} {...this.props} />}</Eth.Consumer>
-        <UserPosts {...this.props} load={this.grabPosts} pageSize={pageSize} />
+        <Profile key={this.state.user._id + 'profile'} {...this.props} {...this.state} />
+        <Divider m={sizing(4)} />
+        <UserPosts
+          key={this.state.user._id}
+          {...this.props}
+          {...this.state}
+          load={this.grabPosts}
+          pageSize={pageSize}
+        />
       </div>
     );
   }
@@ -58,10 +80,11 @@ class ProfileContainer extends Component {
 const mapStateToProps = state => ({
   auth: state.auth,
   isAuthenticated: state.auth.isAuthenticated,
-  user: state.user,
+  usersState: state.user,
   posts: state.posts,
   investments: state.investments,
-  myPostInv: state.investments.myPostInv
+  myPostInv: state.investments.myPostInv,
+  community: state.community
 });
 
 const mapDispatchToProps = dispatch =>
@@ -74,7 +97,9 @@ const mapDispatchToProps = dispatch =>
           {},
           {
             ...UserActions,
-            ...PostActions
+            ...PostActions,
+            logoutAction,
+            showModal
           }
         ),
         dispatch

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { LinkFont, Tag, View } from 'modules/styled/uni';
+import { colors } from 'app/styles';
 
 if (process.env.BROWSER === true) {
   require('./selectTags.css');
@@ -24,29 +26,36 @@ export default class TagInput extends Component {
   render() {
     const { selectedTags, deselectTag, selectTag } = this.props;
     const tagEls = selectedTags.map((tag, i) => (
-      <span
+      <Tag
         key={i}
-        className={'selected'}
+        m={0}
+        mr={1}
+        mt={1}
+        disabled={false}
         role={'checkbox'}
         aria-checked
         onClick={() => deselectTag(tag)}
       >
         #{tag}
-      </span>
+      </Tag>
     ));
     const input = this.state.input || '';
 
     return (
       <div>
-        Tags: <span className="selectTags">{tagEls}</span>
+        <View>
+          <LinkFont c={colors.black}>Your Tags </LinkFont>
+          <View display="flex" fdirection="row" wrap="wrap">
+            {tagEls}
+          </View>
+        </View>
         <div className="tagInput">
           <input
             placeholder={this.props.placeholderText}
             value={this.state.input}
             onKeyDown={e => {
               if (e.keyCode === 13) {
-                const tag = e.target.value.trim()
-                .replace('#', '');
+                const tag = e.target.value.trim().replace('#', '');
                 selectTag(tag);
                 return this.setState({ input: '' });
               }
@@ -54,9 +63,7 @@ export default class TagInput extends Component {
             }}
             onBlur={e => {
               let tags = e.target.value.split(/,|#/);
-              tags = tags.map(t => t.trim()
-              .replace('#', ''))
-              .filter(t => t.length);
+              tags = tags.map(t => t.trim().replace('#', '')).filter(t => t.length);
               if (tags.length) {
                 selectTag(tags);
               }
@@ -65,8 +72,7 @@ export default class TagInput extends Component {
             onChange={e => {
               const tags = e.target.value;
               let tagsArr = tags.split(/,|#/);
-              tagsArr = tagsArr.map(t => t.trim())
-              .filter(t => t.length);
+              tagsArr = tagsArr.map(t => t.trim()).filter(t => t.length);
               if (tagsArr.length > 1) {
                 selectTag(tagsArr[0]);
                 return this.setState({ input: tagsArr[1] });

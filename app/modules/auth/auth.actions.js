@@ -38,10 +38,17 @@ const reqOptions = async () => {
 export function setCommunity(community) {
   return dispatch => {
     utils.api.setCommunity(community);
-    return dispatch({
+    dispatch({
       type: types.SET_COMMUNITY,
       payload: community
     });
+  };
+}
+
+export function setInviteCode(code) {
+  return {
+    type: types.SET_INVITE_CODE,
+    payload: code
   };
 }
 
@@ -124,6 +131,21 @@ export function loginUserRequest() {
 export function logout() {
   return {
     type: types.LOGOUT_USER
+  };
+}
+
+export function cacheCommunity(community) {
+  return async () => {
+    try {
+      await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/updateCommunity',
+        body: JSON.stringify({ community })
+      });
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
   };
 }
 
@@ -256,7 +278,7 @@ function setupUser(user, dispatch) {
     let p = user.postCount;
     let i = user.investmentCount;
 
-    r = r === 0 ? '0' : r < 25 ? '25' : r < 200 ? '200' : 'manu';
+    r = r === 0 ? '0' : r < 25 ? '25' : r < 200 ? '200' : 'many';
     p = p === 0 ? '0' : p < 10 ? '10' : p < 30 ? '30' : 'many';
     i = i === 0 ? '0' : i < 25 ? '75' : i < 200 ? '200' : 'many';
 
@@ -293,8 +315,13 @@ export function getUser(callback) {
       dispatch(loginUserFailure('Server error'));
       if (callback) callback({ ok: false });
       // need this in case user is logged in but there is an error getting account
-      // if (error.message !== 'Network request failed') {
-      //   dispatch(logoutAction());
+      // if (
+      //   error.message !== 'Network request failed' &&
+      //   error.message !== 'Failed to fetch'
+      // ) {
+      // window.alert('REMOVING TOKEN!' + error.message); // eslint-disable-line
+      // console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
+      // dispatch(logoutAction());
       // }
       // throw error;
       return null;
@@ -315,6 +342,23 @@ export function setOnboardingStep(step) {
       return true;
     })
     .catch(() => false);
+}
+
+export function webOnboard(step) {
+  return async () => {
+    try {
+      await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/webonboard',
+        params: { step }
+      });
+      return true;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
+  };
 }
 
 export function loginUser(user) {
@@ -376,18 +420,13 @@ export function checkUser(string, type) {
       }
     })
     .then(response => response.json())
-    .then(responseJSON => {
-      if (responseJSON) {
-        return false;
-      }
-      return true;
-    })
+    .then(responseJSON => responseJSON)
     .catch(error => {
       Alert.alert(error.message);
     });
 }
 
-export function createUser(user, invite) {
+export function createUser(user, invitecode) {
   return dispatch =>
     fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
@@ -396,7 +435,7 @@ export function createUser(user, invite) {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ user, invite })
+      body: JSON.stringify({ user, invitecode })
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
@@ -436,9 +475,7 @@ export function updateHandle(user) {
         path: '/updateHandle',
         body: JSON.stringify({ user })
       });
-      await utils.token.set(result.token);
-      dispatch(loginUserSuccess(result.token));
-      dispatch(getUser());
+      setupUser(result, dispatch);
       return true;
     } catch (err) {
       Alert.alert(err.message);
@@ -456,7 +493,10 @@ export function sendConfirmation() {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(responseJSON => {
-      Alert.alert('A confirmation email has been sent to ' + responseJSON.email);
+      Alert.alert(
+        'A confirmation email has been sent to ' + responseJSON.email,
+        'success'
+      );
       return true;
     })
     .catch(err => {
@@ -491,7 +531,7 @@ export function resetPassword(password, token) {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(() => {
-      Alert.alert('Your password has been updated! Try loggin in.');
+      Alert.alert('Your password has been updated! Try loggin in.', 'success');
       return true;
     })
     .catch(err => {
@@ -607,14 +647,21 @@ export function twitterAuth(profile, invite) {
         path: 'twitter/login',
         body: JSON.stringify({ profile, invite })
       });
+      if (!result) {
+        throw new Error('Twitter Auth failed');
+      }
       dispatch(setLoading(false));
-      if (result.token && result.user) {
+      if (result.user && result.user.role === 'temp') {
+        await utils.token.set(result.token);
+        dispatch(loginUserSuccess(result.token));
+
+        dispatch(setPreUser(result.user));
+        dispatch(setTwitter({ ...profile, token: result.token }));
+        return false;
+      } else if (result.token && result.user) {
         await utils.token.set(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);
-      }
-      if (result.twitter) {
-        dispatch(setTwitter(profile));
       }
       return true;
     } catch (error) {
@@ -665,5 +712,23 @@ export function userToSocket(user) {
   return dispatch => {
     if (!user) return;
     dispatch({ type: 'server/storeUser', payload: user });
+  };
+}
+
+export function redeemInvite(invitecode) {
+  return async dispatch => {
+    try {
+      const user = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'invites',
+        path: '/',
+        body: JSON.stringify({ invitecode })
+      });
+      dispatch(setInviteCode(null));
+      dispatch(updateAuthUser(user));
+    } catch (err) {
+      dispatch(setInviteCode(null));
+      // Alert.alert(err.message);
+    }
   };
 }

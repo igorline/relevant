@@ -7,23 +7,29 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 const Alert = alert.Alert();
 
 const apiServer = process.env.API_SERVER + '/api/';
-
-const commentSchema = new schema.Entity('comments', {}, { idAttribute: '_id' });
-
 const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
-
 const repostSchema = new schema.Entity('posts', { idAttribute: '_id' });
 
 let metaPostSchema;
-
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
-const postSchema = new schema.Entity(
+const parentPostSchema = new schema.Entity(
+  'posts',
+  {
+    metaPost: linkSchema,
+    user: userSchema
+  },
+  { idAttribute: '_id' }
+);
+
+export const postSchema = new schema.Entity(
   'posts',
   {
     user: userSchema,
     repost: { post: repostSchema },
-    metaPost: linkSchema
+    metaPost: linkSchema,
+    parentPost: parentPostSchema,
+    commentPost: parentPostSchema
   },
   { idAttribute: '_id' }
 );
@@ -45,7 +51,6 @@ const feedSchema = new schema.Entity(
     idAttribute: '_id',
     processStrategy: (value, parent, key) => {
       value[key] = value.commentary;
-      // console.log(value)
       return value;
     }
   }
@@ -142,6 +147,13 @@ export function setPosts(data, type, index) {
       type,
       index
     }
+  };
+}
+
+export function setPostsSimple(data) {
+  return {
+    type: types.SET_POSTS_SIMPLE,
+    payload: { data }
   };
 }
 
@@ -251,38 +263,6 @@ export function clearSelectedPost() {
   };
 }
 
-export function archiveComments(postId) {
-  return {
-    type: types.ARCHIVE_COMMENTS,
-    payload: postId
-  };
-}
-
-export function addComment(postId, newComment) {
-  return {
-    type: types.ADD_COMMENT,
-    payload: {
-      comment: newComment,
-      postId
-    }
-  };
-}
-
-export function setComments(postId, comments, index, total) {
-  let num = 0;
-  if (!total) total = 0;
-  if (index) num = index;
-  return {
-    type: types.SET_COMMENTS,
-    payload: {
-      data: comments,
-      index: num,
-      postId,
-      total
-    }
-  };
-}
-
 // this function queries the meta posts
 export function getPosts(skip, tags, sort, limit) {
   let tagsString = '';
@@ -293,10 +273,7 @@ export function getPosts(skip, tags, sort, limit) {
 
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
-  let endpoint = 'metaPost';
-  // TODO migrate community
-  // if (community === 'crypto')
-  endpoint = 'communityFeed';
+  const endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {
@@ -317,7 +294,7 @@ export function getPosts(skip, tags, sort, limit) {
       const dataType = feedSchema;
       const data = normalize({ [type]: res }, { [type]: [dataType] });
 
-      dispatch(setUsers(data.entities.users));
+      // dispatch(setUsers(data.entities.users));
 
       if (topic) {
         dispatch(setTopic(data, type, skip, topic));
@@ -366,18 +343,6 @@ export function addUpdatedComment(comment) {
   };
 }
 
-export function updateComment(comment) {
-  return dispatch =>
-    api
-    .request({
-      method: 'PUT',
-      endpoint: 'comment',
-      body: JSON.stringify(comment)
-    })
-    .then(res => dispatch(updatePost(res)))
-    .catch(error => Alert.alert(error.message));
-}
-
 export function editPost(post) {
   return async dispatch => {
     try {
@@ -390,59 +355,6 @@ export function editPost(post) {
       return true;
     } catch (err) {
       Alert.alert('Post error please try again', err.message);
-      return false;
-    }
-  };
-}
-
-export function deleteComment(id) {
-  return async dispatch => {
-    try {
-      await api.request({
-        method: 'DELETE',
-        endpoint: 'comment',
-        path: '/' + id
-      });
-      return dispatch(removePost(id));
-    } catch (err) {
-      return false;
-    }
-  };
-}
-
-export function getComments(post, skip, limit) {
-  return async dispatch => {
-    try {
-      if (!skip) skip = 0;
-      if (!limit) limit = 0;
-
-      const responseJSON = await api.request({
-        method: 'GET',
-        endpoint: 'comment',
-        query: { post, skip, limit }
-      });
-
-      dispatch(errorActions.setError('comments', false));
-      const data = normalize({ [post]: responseJSON.data }, { [post]: [commentSchema] });
-      dispatch(setComments(post, data, skip, responseJSON.total));
-    } catch (err) {
-      dispatch(errorActions.setError('comments', true, err.message));
-    }
-  };
-}
-
-export function createComment(tk, commentObj) {
-  return async dispatch => {
-    try {
-      const response = await api.request({
-        method: 'POST',
-        endpoint: 'comment',
-        path: '/',
-        body: JSON.stringify(commentObj)
-      });
-      dispatch(addComment(response.parentPost, response));
-      return true;
-    } catch (err) {
       return false;
     }
   };
@@ -599,7 +511,6 @@ export function getTopPosts() {
         endpoint: 'post',
         path: '/topPosts'
       });
-      // console.log('top posts ', responseJSON);
       return dispatch(setTopPosts(responseJSON));
     } catch (error) {
       return false;

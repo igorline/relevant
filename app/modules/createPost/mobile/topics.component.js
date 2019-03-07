@@ -42,7 +42,8 @@ export default class topics extends Component {
   componentWillReceiveProps(next) {
     if (
       next.selectedTopic &&
-      (!this.props.selectedTopic || this.props.selectedTopic._id !== next.selectedTopic._id)
+      (!this.props.selectedTopic ||
+        this.props.selectedTopic._id !== next.selectedTopic._id)
     ) {
       this.goToElement = true;
     } else this.goToElement = false;
@@ -64,9 +65,12 @@ export default class topics extends Component {
           key={topic._id}
           topic={topic}
           scrollToElement={() => {
-            this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
+            this.scrollView.scrollToIndex({ viewPosition: 0.2, index });
             const scroll = () => {
-              setTimeout(() => this.scrollView.scrollToIndex({ viewPosition: 0.1, index }), 1);
+              setTimeout(
+                () => this.scrollView.scrollToIndex({ viewPosition: 0.2, index }),
+                1
+              );
               Keyboard.removeListener('keyboardDidShow', scroll);
             };
             if (Platform.OS === 'android') {

@@ -6,11 +6,14 @@ const { Schema } = mongoose;
 const NotificationSchema = new Schema(
   {
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    forUser: { type: String, ref: 'User' },
-    byUser: { type: String, ref: 'User' },
-    byUsers: [{ type: String, ref: 'User' }],
+    forUser: { type: Schema.Types.ObjectId, ref: 'User' },
+    byUser: { type: Schema.Types.ObjectId, ref: 'User' },
+    byUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    byUsersHandle: [String],
+    group: [String],
     totalUsers: Number,
     read: { type: Boolean, default: false },
+    // Deprecated
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
     amount: Number,
     coin: Number,

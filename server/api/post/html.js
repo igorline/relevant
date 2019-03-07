@@ -303,12 +303,16 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
 
   if (ampKeywords && ampKeywords.length && !keywords.length) {
     if (Array.isArray(ampKeywords)) {
-      keywords = ampKeywords.filter(k => !k.match('@'));
+      ampKeywords = ampKeywords.filter(k => !k.match('@')).map(k => k.toLowerCase());
     }
   }
 
   keywords = keywords.map(k => k.toLowerCase());
-  keywords = [...new Set(keywords)];
+  keywords = [...new Set([...(keywords || []), ...(ampKeywords || [])])];
+
+  keywords = keywords
+  .map(k => k.replace(/tag:|publication:|elevated:false|lockedpostsource:0/, ''))
+  .filter(k => k.trim() !== '');
 
   let doc = jsdom.jsdom(body, {
     features: {

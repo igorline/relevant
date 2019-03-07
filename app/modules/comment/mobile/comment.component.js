@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View,
   ActionSheetIOS,
   TouchableHighlight,
   Platform,
@@ -10,12 +9,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles, darkGrey } from 'app/styles/global';
+import { globalStyles } from 'app/styles/global';
 import TextEdit from 'modules/text/mobile/textEdit.component';
 import { text as textUtil } from 'app/utils';
 import TextBody from 'modules/text/mobile/textBody.component';
 import PostInfo from 'modules/post/mobile/postInfo.component';
-import PostButtons from 'modules/post/mobile/postButtons.component';
+import { View, Image } from 'modules/styled/uni';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -30,14 +29,13 @@ class Comment extends Component {
     comment: PropTypes.object,
     actions: PropTypes.object,
     parentEditing: PropTypes.func,
-    navigator: PropTypes.object,
-    scene: PropTypes.object,
     scrollToComment: PropTypes.func,
     auth: PropTypes.object,
-    myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
-    users: PropTypes.object,
-    focusInput: PropTypes.func
+    user: PropTypes.object,
+    nestingLevel: PropTypes.number,
+    renderButtons: PropTypes.func,
+    preview: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -50,7 +48,6 @@ class Comment extends Component {
       editing: false,
       height: 0
     };
-    this.singleComment = null;
     this.deleteComment = this.deleteComment.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
@@ -59,10 +56,7 @@ class Comment extends Component {
 
   componentDidMount() {
     const { body } = this.props.comment;
-    if (body) {
-      this.setState({ editedText: body });
-    }
-    this.setSelected = this.setSelected.bind(this);
+    if (body) this.setState({ editedText: body });
   }
 
   saveEdit(body) {
@@ -74,8 +68,7 @@ class Comment extends Component {
     comment.body = body;
     comment.mentions = mentions;
     this.setState({ editing: false, editedText: body });
-    return this.props.actions.updateComment(comment)
-    .then(results => {
+    return this.props.actions.updateComment(comment).then(results => {
       if (results) {
         this.setState({ editedText: null });
         Alert.alert('Comment updated');
@@ -117,17 +110,6 @@ class Comment extends Component {
     this.props.actions.deleteComment(this.props.comment._id);
   }
 
-  setTag(tag) {
-    this.props.actions.selectTag({ _id: tag.replace('#', '') });
-    this.props.navigator.changeTab('discover');
-  }
-
-  setSelected(user) {
-    if (!user) return;
-    if (this.props.scene && this.props.scene.id === user._id) return;
-    this.props.actions.goToProfile(user);
-  }
-
   editComment() {
     if (!this.state.editing) {
       this.props.scrollToComment();
@@ -139,91 +121,93 @@ class Comment extends Component {
   }
 
   render() {
-    const { comment, auth } = this.props;
-    const { user } = auth;
-
+    const {
+      comment,
+      auth,
+      nestingLevel,
+      renderButtons,
+      user,
+      actions,
+      singlePost
+    } = this.props;
     if (!comment) return null;
-    let optionsEl = null;
-    let editingEl = null;
-    let owner = false;
-    let commentUserId = null;
+    const { editing } = this.state;
+    const owner = auth.user && auth.user._id === user._id;
 
-    if (this.state.editing) {
-      editingEl = (
-        <TextEdit
-          style={[styles.darkGrey, styles.editingInput]}
-          text={this.state.editedText || comment.body}
-          toggleFunction={this.editComment}
-          saveEditFunction={this.saveEdit}
-          onChange={e => {
-            const h = e.nativeEvent.contentSize.height;
-            if (h !== this.height) {
-              this.height = h;
-            }
-          }}
-        />
-      );
-    }
-
-    if (comment.user && typeof comment.user === 'object') {
-      commentUserId = comment.user._id;
-    } else {
-      commentUserId = comment.user;
-    }
-
-    if (user && user._id && user._id === commentUserId) {
-      owner = true;
-    }
-
-    if (owner) {
-      optionsEl = (
-        <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
-          <TouchableHighlight underlayColor={'transparent'} onPress={this.showActionSheet}>
-            <Text style={styles.dots}>...</Text>
-          </TouchableHighlight>
-        </View>
-      );
-    }
-
-    const textBody = (
-      <TextBody {...this.props} style={styles.commentBodyText} post={comment} body={comment.body} />
+    const editingEl = editing && (
+      <TextEdit
+        style={[styles.darkGrey, styles.editingInput]}
+        text={this.state.editedText || comment.body}
+        toggleFunction={this.editComment}
+        saveEditFunction={this.saveEdit}
+        onChange={e => {
+          const h = e.nativeEvent.contentSize.height;
+          if (h !== this.height) {
+            this.height = h;
+          }
+        }}
+      />
     );
 
-    const myPostInv = this.props.myPostInv[comment._id];
+    const optionsEl = owner && (
+      <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={this.showActionSheet}>
+          <Text style={styles.dots}>...</Text>
+        </TouchableHighlight>
+      </View>
+    );
+
+    const textBody = (
+      <View mt={2} mb={1} bc={'pink'}>
+        <TextBody
+          {...this.props}
+          style={styles.commentaryText}
+          post={comment}
+          body={comment.body}
+        />
+      </View>
+    );
+
     return (
       <View
         ref={c => {
           this.singleComment = c;
         }}
         onLayout={() => null}
-        style={[styles.commentContainer]}
+        mr={2}
+        mb={2}
+        ml={nestingLevel ? 2 + nestingLevel * 3 - 3 : 2}
+        flex={1}
+        fdirection={'row'}
       >
-        <View style={styles.commentHeader}>
-          <PostInfo
-            post={comment}
-            actions={this.props.actions}
-            auth={this.props.auth}
-            singlePost={this.props.singlePost}
-            delete={this.deleteComment}
-            edit={this.editComment}
-            users={this.props.users}
+        {nestingLevel ? (
+          <Image
+            h={2}
+            w={2}
+            mt={5}
+            mr={1}
+            resizeMode={'contain'}
+            source={require('app/public/img/reply.png')}
           />
-          {optionsEl}
-        </View>
+        ) : null}
+        <View flex={1}>
+          <View mt={2} fdirection={'row'} align={'center'} justify={'space-between'}>
+            <PostInfo
+              post={comment}
+              actions={actions}
+              auth={auth}
+              singlePost={singlePost}
+              delete={this.deleteComment}
+              edit={this.editComment}
+              user={user}
+            />
+            {optionsEl}
+          </View>
 
-        <View style={{ paddingLeft: 33, paddingRight: 10 }}>
-          {this.state.editing ? editingEl : textBody}
-        </View>
+          <View mt={1}>{this.state.editing ? editingEl : textBody}</View>
 
-        <PostButtons
-          comment
-          post={comment}
-          isComment
-          actions={this.props.actions}
-          auth={this.props.auth}
-          myPostInv={myPostInv}
-          focusInput={this.props.focusInput}
-        />
+          {renderButtons()}
+        </View>
       </View>
     );
   }
@@ -232,27 +216,10 @@ class Comment extends Component {
 export default Comment;
 
 const localStyles = StyleSheet.create({
-  commentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingBottom: 10
-  },
-  commentContainer: {
-    padding: 15
-  },
-  commentAvatar: {
-    height: 25,
-    width: 25,
-    borderRadius: 12.5,
-    marginRight: 10
-  },
-  commentBodyText: {
-    color: darkGrey,
+  commentaryText: {
     fontFamily: 'Georgia',
-    fontSize: 30 / 2,
-    lineHeight: 42 / 2,
-    paddingTop: 5
+    fontSize: 36 / 2,
+    lineHeight: 54 / 2
   }
 });
 

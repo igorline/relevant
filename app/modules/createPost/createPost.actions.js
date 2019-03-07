@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
 import * as types from 'core/actionTypes';
-import * as utils from 'app/utils';
+import { api, alert } from 'app/utils';
 
-const Alert = utils.alert.Alert();
+const Alert = alert.Alert();
 
-export function setCreaPostState(state) {
+export function setCreatePostState(state) {
   return {
     type: types.SET_CREATE_POST_STATE,
     payload: state
@@ -28,7 +27,7 @@ export function clearCreatePost() {
 export function submitPost(post) {
   return async () => {
     try {
-      await utils.api.request({
+      await api.request({
         method: 'POST',
         endpoint: 'post',
         body: JSON.stringify(post)
@@ -39,4 +38,18 @@ export function submitPost(post) {
       return false;
     }
   };
+}
+
+// TODO update to use api util
+export function generatePreviewServer(link) {
+  return () =>
+    fetch(
+      process.env.API_SERVER +
+        '/api/post/preview/generate?url=' +
+        encodeURIComponent(link),
+      { method: 'GET' }
+    )
+    .then(response => response.json())
+    .then(responseJSON => responseJSON)
+    .catch(Alert);
 }

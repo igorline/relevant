@@ -34,24 +34,14 @@ export default function configureStore(initialState = {}) {
   if (process.env.BROWSER) {
     // only use the socket middleware on client and not on server
     const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
-    middleware = applyMiddleware(
-      thunk,
-      socketIoMiddleware,
-      sagaMiddleware
-    );
+    middleware = applyMiddleware(thunk, socketIoMiddleware, sagaMiddleware);
   } else {
     middleware = applyMiddleware(thunk, sagaMiddleware);
   }
 
   if (process.env.BROWSER && process.env.DEVTOOLS) {
-    const devTools =
-      typeof window === 'object' && typeof window.devToolsExtension !== 'undefined'
-        ? window.devToolsExtension()
-        : f => f;
-    middleware = compose(
-      middleware,
-      devTools
-    );
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    middleware = composeEnhancers(middleware);
   }
   // Create final store and subscribe router in debug env ie. for devtools
   const store = middleware(createStore)(rootReducer, initialState);

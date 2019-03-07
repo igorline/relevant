@@ -13,15 +13,17 @@ import tags from 'modules/tag/tag.reducer';
 import stats from 'modules/stats/stats.reducer';
 import tooltip from 'modules/tooltip/tooltip.reducer';
 import error from 'modules/ui/error.reducer';
+import earnings from 'modules/wallet/earnings.reducer';
+import navigation from 'modules/navigation/navigation.reducer';
+import { reducer as formReducer } from 'redux-form';
 
 import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
-let navigation = {};
 let drizzleReducers = {};
 if (process.env.WEB !== 'true') {
-  navigation = require('modules/navigation/navigation.reducer').default;
+  // might need this form for conditional require
 } else {
   // block these imports in package.json in react-native field
   const drizzle = require('drizzle');
@@ -35,6 +37,7 @@ const appReducer = combineReducers({
   posts,
   user,
   socket,
+  form: formReducer,
   notif,
   error,
   animation,
@@ -51,76 +54,52 @@ const appReducer = combineReducers({
   subscriptions,
   admin,
   community,
+  earnings,
   ...drizzleReducers
 });
 
-/* eslint-disable */
+const initialState = {
+  posts: appReducer.posts,
+  user: appReducer.user,
+  stats: appReducer.stats
+};
+
+// Purpose of this reducer is to swap out community state
+// we swap out posts, user data and stats
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
-    if (process.env.WEB != 'true') {
-      let {
-        auth,
-        community,
-        socket,
+    const { community } = state.auth; // eslint-disable-line
 
-        // MOBILE
-        navigation
-      } = state;
+    if (community === action.payload) return appReducer(state, action);
 
-      if (auth.community) {
-        communityState = {
-          ...communityState,
-          [auth.community]: state
-        };
-      }
-
-      state = {
-        ...communityState[action.payload],
-        // TODO needs work?
-        socket,
-        auth: { ...auth, community: action.payload },
-        navigation
-      };
-    } else {
-      let {
-        auth,
-        community,
-        socket,
-
-        // DESKTOP
-        // keep drizzle stuff - really need a nested state!
-        contracts,
-        drizzleStatus,
-        transactions,
-        transactionStack,
-        web3,
-        accounts,
-        accountBalances
-      } = state;
-
-      if (auth.community) {
-        communityState = {
-          ...communityState,
-          [auth.community]: state
-        };
-      }
-
-      state = {
-        ...communityState[action.payload],
-        // TODO needs work?
-        socket,
-        auth: { ...auth, community: action.payload },
-
-        community,
-        contracts,
-        drizzleStatus,
-        transactions,
-        transactionStack,
-        web3,
-        accounts,
-        accountBalances
+    const { posts, user, stats } = state; // eslint-disable-line
+    if (community) {
+      communityState = {
+        ...communityState,
+        [community]: {
+          posts,
+          user,
+          stats
+        }
       };
     }
+
+    const cachedCommunityState = communityState[action.payload] || initialState;
+    const authUser =
+      (state.auth.user &&
+        cachedCommunityState.user &&
+        cachedCommunityState.user.users[state.auth.user._id] &&
+        cachedCommunityState.user.users[state.auth.user._id]) ||
+      state.auth.user;
+    // console.log('hmmmm...', authUser.relevance.community);
+
+    const newState = {
+      ...state,
+      ...cachedCommunityState,
+      auth: { ...state.auth, community: action.payload, user: authUser }
+    };
+
+    return appReducer(newState, action);
   }
   return appReducer(state, action);
 };

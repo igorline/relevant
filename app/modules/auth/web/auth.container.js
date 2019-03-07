@@ -4,19 +4,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as authActions from 'modules/auth/auth.actions';
-import * as queryString from 'query-string';
+import queryString from 'query-string';
 import Modal from 'modules/ui/web/modal';
 import LoginForm from './login';
 import SignupForm from './signup';
 import ConfirmEmail from './confirmEmail.component';
 import Forgot from './forgot.component';
 import ResetPassword from './resetPassword.component';
-
-let styles;
-
-if (process.env.BROWSER === true) {
-  require('./auth.css');
-}
 
 class AuthContainer extends Component {
   static propTypes = {
@@ -28,8 +22,9 @@ class AuthContainer extends Component {
     toggleLogin: PropTypes.func,
     user: PropTypes.object,
     open: PropTypes.bool,
-    route: PropTypes.object,
-    history: PropTypes.object
+    match: PropTypes.object,
+    history: PropTypes.object,
+    type: PropTypes.string
   };
 
   constructor(props) {
@@ -48,11 +43,12 @@ class AuthContainer extends Component {
 
     this.state = {
       redirectTo: redirectRoute,
-      type: 'login'
+      type: props.type
     };
   }
 
   componentWillReceiveProps(next) {
+    if (!this.state.type) this.setState({ type: next.type || 'login' });
     if (this.props.modal) return;
     const { redirect } = queryString.parse(this.props.location.search);
     const redirectTo = redirect;
@@ -81,13 +77,16 @@ class AuthContainer extends Component {
   }
 
   async signup(data) {
+    const { invitecode } = this.props.auth;
+    const { createUser } = this.props.actions;
     try {
       const user = {
         name: data.username,
         email: data.email,
-        password: data.password
+        password: data.password,
+        image: data.image
       };
-      const signedUp = await this.props.actions.createUser(user);
+      const signedUp = await createUser(user, invitecode);
       if (signedUp) this.close();
     } catch (err) {
       // TODO error handling
@@ -112,20 +111,19 @@ class AuthContainer extends Component {
   }
 
   render() {
-    const { user, route } = this.props;
+    const { user, match, modal, open } = this.props;
     let confirm;
     let auth;
     let visible = true;
 
-    let path = this.props.modal ? this.state.type : route.path;
-    // route.path;
+    let path = modal ? this.state.type : match.path.replace('/user/', '');
 
-    if (this.props.user && this.props.user.role === 'temp') {
+    if (user && user.role === 'temp') {
       path = 'signup';
       confirm = true;
     }
-    if (this.props.modal) {
-      visible = this.props.open;
+    if (modal) {
+      visible = open;
     }
 
     let title = '';
@@ -140,11 +138,15 @@ class AuthContainer extends Component {
       // } else if (isAuthenticated) {
       //   auth = <button onClick={() => this.logout()}>logout</button>;
     } else if (path === 'login') {
-      auth = <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />;
+      auth = (
+        <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />
+      );
       title = 'Sign In';
     } else if (path === 'signup') {
-      auth = <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />;
-      title = 'Sign Up';
+      auth = (
+        <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
+      );
+      title = 'Join the Community';
     } else if (path === 'resetPassword/:token') {
       auth = <ResetPassword authNav={this.authNav} {...this.props} />;
       title = 'Reset Password';
@@ -152,7 +154,7 @@ class AuthContainer extends Component {
 
     return (
       <Modal visible={visible} close={this.close.bind(this)} title={title}>
-        <div className="authContainer" style={styles.authContainer}>
+        <div>
           {user && !confirm ? (
             <div className="authStatus">You are logged in as @{user.handle}</div>
           ) : (
@@ -164,16 +166,6 @@ class AuthContainer extends Component {
     );
   }
 }
-
-styles = {
-  authContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    fontSize: '20px',
-    paddingTop: '20px'
-  }
-};
 
 const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,
@@ -187,13 +179,15 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions,
+      ...authActions
     },
     dispatch
   )
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthContainer));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AuthContainer)
+);

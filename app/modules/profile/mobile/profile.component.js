@@ -15,6 +15,7 @@ import { globalStyles, mainPadding, greyText } from 'app/styles/global';
 import { numbers } from 'app/utils';
 import Percent from 'modules/stats/mobile/percent.component';
 import StatRow from 'modules/stats/mobile/statRow.component';
+// import CoinStat from 'modules/stats/coinStat.component';
 import Bio from './bio.component';
 
 const defaultImg = require('app/public/img/default_user.jpg');
@@ -32,7 +33,7 @@ class ProfileComponent extends Component {
   static propTypes = {
     actions: PropTypes.object,
     user: PropTypes.object,
-    myProfile: PropTypes.bool,
+    isOwner: PropTypes.bool,
     scrollTo: PropTypes.func
   };
 
@@ -92,8 +93,7 @@ class ProfileComponent extends Component {
   }
 
   goToTopic(tag) {
-    const name = tag.replace('#', '')
-    .trim();
+    const name = tag.replace('#', '').trim();
     const topic = {
       _id: name,
       categoryName: '#' + name
@@ -140,7 +140,7 @@ class ProfileComponent extends Component {
 
     let optionsEl;
 
-    if (!this.props.myProfile) {
+    if (!this.props.isOwner) {
       optionsEl = (
         <TouchableOpacity
           style={{
@@ -252,12 +252,12 @@ class ProfileComponent extends Component {
           {bottomSection}
         </View>
 
-        {user.bio !== '' ? (
+        {user.bio !== '' || this.props.isOwner ? (
           <Bio
             scrollTo={this.props.scrollTo}
             user={user}
             actions={this.props.actions}
-            myProfile={this.props.myProfile}
+            isOwner={this.props.isOwner}
           />
         ) : null}
 

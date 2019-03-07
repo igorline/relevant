@@ -32,9 +32,7 @@ const renderApp = appRoutes => {
   hydrate(
     <AppContainer>
       <Provider store={store}>
-        <div className="parent">
-          <Router history={history}>{renderRoutes(appRoutes)}</Router>
-        </div>
+        <Router history={history}>{renderRoutes(appRoutes)}</Router>
       </Provider>
     </AppContainer>,
     rootElement

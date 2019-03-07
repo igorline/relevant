@@ -2,14 +2,17 @@ import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 
 const CommunitySchema = new schema.Entity('communities', {}, { idAttribute: 'slug' });
+const MemberSchema = new schema.Entity('members', {}, { idAttribute: '_id' });
 
 const initialState = {
   communities: {},
-  list: []
+  list: [],
+  active: null,
+  members: {},
+  communityMembers: {}
 };
 
-// NOTE: comment objects are stored in posts state
-export default function comments(state = initialState, action) {
+export default function community(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMUNITIES: {
       const normalized = normalize(action.payload, [CommunitySchema]);
@@ -23,14 +26,58 @@ export default function comments(state = initialState, action) {
       };
     }
 
+    case types.SET_COMMUNITY: {
+      return {
+        ...state,
+        active: action.payload
+      };
+    }
+
+    case types.REMOVE_COMMUNITY: {
+      const updatedCommunities = { ...state.communities };
+      delete updatedCommunities[action.payload];
+      return {
+        ...state,
+        communities: {
+          ...updatedCommunities
+        }
+      };
+    }
+
+    case types.SET_COMMUNITY_MEMBERS: {
+      const { members, slug } = action.payload;
+      const data = normalize(members, [MemberSchema]);
+      return {
+        ...state,
+        communityMembers: {
+          ...state.communityMembers,
+          [slug]: data.result
+        },
+        members: {
+          ...state.members,
+          ...data.entities.members
+        }
+      };
+    }
+
     case types.ADD_COMMUNITY: {
       return {
         ...state,
         communities: {
           ...state.communities,
-          [action.payload._id]: action.payload
+          [action.payload.slug]: action.payload
         },
-        list: [...new Set([...state.list, action.payload._id])]
+        list: [...new Set([...state.list, action.payload.slug])]
+      };
+    }
+
+    case types.UPDATE_COMMUNITY: {
+      return {
+        ...state,
+        communities: {
+          ...state.communities,
+          [action.payload.slug]: action.payload
+        }
       };
     }
 

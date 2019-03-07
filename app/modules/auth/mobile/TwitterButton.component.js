@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, NativeModules, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, NativeModules, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { globalStyles } from 'app/styles/global';
@@ -18,7 +18,6 @@ export default class TwitterButton extends Component {
   static propTypes = {
     type: PropTypes.string,
     actions: PropTypes.object,
-    admin: PropTypes.object,
     children: PropTypes.node,
     auth: PropTypes.object
   };
@@ -30,30 +29,32 @@ export default class TwitterButton extends Component {
     };
   }
 
-  _twitterSignIn() {
-    RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
-    RNTwitterSignIn.logIn()
-    .then(loginData => {
+  async _twitterSignIn() {
+    try {
+      const { invitecode } = this.props.auth;
+      RNTwitterSignIn.init(
+        Constants.TWITTER_COMSUMER_KEY,
+        Constants.TWITTER_CONSUMER_SECRET
+      );
+      const loginData = await RNTwitterSignIn.logIn();
+
       const { authToken, authTokenSecret } = loginData;
-      if (authToken && authTokenSecret) {
-        if (this.props.type === 'signup') {
-          loginData.singup = true;
-        }
-        this.props.actions.setTwitter(loginData);
-        return this.props.actions
-        .twitterAuth(loginData, this.props.admin ? this.props.admin.currentInvite : null)
-        .then(() => {
-          setTimeout(() => {
-            this.props.actions.reloadTab('discover');
-          }, 3000);
-        })
-        .catch(err => Alert.alert(err));
+      if (!authToken || !authTokenSecret) throw new Error('Twitter login failed');
+
+      // this.props.actions.setTwitter(loginData);
+      const serverLogin = await this.props.actions.twitterAuth({
+        ...loginData,
+        invitecode
+      });
+
+      if (serverLogin) {
+        setTimeout(() => {
+          this.props.actions.reloadTab('discover');
+        }, 3000);
       }
-      return null;
-    })
-    .catch(error => {
-      Alert.alert(error);
-    });
+    } catch (error) {
+      // Alert.alert(error.message);
+    }
   }
 
   render() {

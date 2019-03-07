@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as postActions from 'modules/post/post.actions';
-import Post from 'modules/post/web/post.component';
+import PostComponent from 'modules/post/web/post.component';
 
 class Flagged extends Component {
   static propTypes = {
@@ -39,7 +39,10 @@ class Flagged extends Component {
     flaggedPosts = flaggedPosts.filter(p => p);
 
     const deleteEl = post => {
-      if (post.user._id === this.props.auth.user._id || this.props.auth.user.role === 'admin') {
+      if (
+        post.user._id === this.props.auth.user._id ||
+        this.props.auth.user.role === 'admin'
+      ) {
         return (
           <button style={{ margin: 'auto' }} onClick={() => this.deletePost(post)}>
             Delete
@@ -51,7 +54,7 @@ class Flagged extends Component {
 
     const postsEl = flaggedPosts.map(p => (
       <div>
-        <Post key={p._id} {...this.props} flagged={p.flagged} post={p} />
+        <PostComponent key={p._id} {...this.props} flagged={p.flagged} post={p} />
         {deleteEl(p)}
       </div>
     ));
@@ -69,7 +72,6 @@ export default connect(
   state => ({
     auth: state.auth,
     flagged: state.posts.flagged,
-    metaPosts: state.posts.metaPosts.flagged,
     posts: state.posts.posts,
     all: state.posts
   }),

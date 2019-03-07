@@ -1,7 +1,11 @@
 @import 'styles/global.css';
 
-.editor {
+#editor {
+  min-height: 300px;
   @extend %input;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-wrap: normal;
   p {
     margin: 0;
   }
@@ -11,13 +15,14 @@
   }
   &:empty:before {
     content: attr(placeholder);
-    font-family: system-ui, Arial, sans-serif;
+    font-family: HelveticaNeue, system-ui, Arial, sans-serif;
     display: block;
-    font-size: 15px;
+    font-size: 14px;
     color: $greyText;
   }
 }
 
 .editor:focus, .editor.active {
   @extend %activeInput;
+  font-size: 14px;
 }
