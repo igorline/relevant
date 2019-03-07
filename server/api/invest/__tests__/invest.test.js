@@ -1,6 +1,7 @@
 import CommunityMember from 'server/api/community/community.member.model';
 import { sanitize, toObject } from 'server/test/utils';
 import Invest from 'server/api/invest/invest.model';
+import Post from 'server/api/post/post.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
 import computePageRank from 'server/utils/pagerankCompute';
 import { create } from 'server/api/invest/invest.controller';
@@ -43,6 +44,14 @@ describe('ethRewards', () => {
       let apiRes = toObject(res.json.mock.calls[0][0]);
       apiRes = sanitize(apiRes, 'rankChange');
       expect(apiRes).toMatchSnapshot();
+    });
+
+    test('rank should update', async () => {
+      const post = await Post.findOne({ _id: link1._id }).populate({
+        path: 'data',
+        communityId
+      });
+      expect(post.data.rank).toBeGreaterThan(0);
     });
   });
 
