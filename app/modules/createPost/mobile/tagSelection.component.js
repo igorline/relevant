@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, Alert, StyleSheet, ScrollView } from 'react-native';
+import { TextInput, Alert, StyleSheet } from 'react-native';
 import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
@@ -56,6 +56,11 @@ class TagSelection extends Component {
       this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
       if (props.postCategory) this.setTopicTags(props.postCategory, true);
       else this.selectedTags = [...new Set(this.bodyTags)];
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.communityTags !== this.props.communityTags) {
+      this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
     }
   }
 
@@ -146,28 +151,26 @@ class TagSelection extends Component {
     }
 
     return (
-      <ScrollView style={{ flexDirection: 'column' }}>
-        <View p={2} pt={3}>
-          <Input
-            autoCapitalize={'none'}
-            autoCorrect={false}
-            underlineColorAndroid={'transparent'}
-            onChangeText={input => this.processInput(input)}
-            ref={c => {
-              this.input = c;
-            }}
-            onBlur={() => this.onBlur()}
-            onFocus={() => this.onFocus()}
-            value={this.state.input}
-            multiline={false}
-            isFocused={this.state.inputFocused}
-            placeholder={'Select additional topics or create your own'}
-          />
-          <View style={styles.break} />
-          <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
-          <View style={styles.break} />
-        </View>
-      </ScrollView>
+      <View p={2} pt={3} style={{ flexDirection: 'column' }}>
+        <Input
+          autoCapitalize={'none'}
+          autoCorrect={false}
+          underlineColorAndroid={'transparent'}
+          onChangeText={input => this.processInput(input)}
+          ref={c => {
+            this.input = c;
+          }}
+          onBlur={() => this.onBlur()}
+          onFocus={() => this.onFocus()}
+          value={this.state.input}
+          multiline={false}
+          isFocused={this.state.inputFocused}
+          placeholder={'Select additional topics or create your own'}
+        />
+        <View style={styles.break} />
+        <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
+        <View style={styles.break} />
+      </View>
     );
   }
 }
