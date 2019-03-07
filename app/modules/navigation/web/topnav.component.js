@@ -9,6 +9,7 @@ import AuthContainer from 'modules/auth/web/auth.container';
 import Breadcrumbs from 'modules/navigation/web/breadcrumbs.component';
 import { View, Text, LinkFont } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
+import styledComponents from 'styled-components';
 import { colors, layout, sizing } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { getNotificationCount } from 'modules/activity/activity.actions';
@@ -36,6 +37,22 @@ const Badge = styled(View)`
   margin-bottom: ${sizing(1)};
 `;
 
+const ActionButton = styledComponents(Button)`
+  ${p =>
+    !p.showResponsive
+      ? ''
+      : `
+    position: fixed;
+    bottom: ${sizing(4)};
+    right: ${sizing(4)};
+    height: ${sizing(10)};
+    width: ${sizing(10)};
+    min-width: 0;
+    border-radius: 100%;
+    background-color: ${colors.blue};
+  `}
+`;
+
 class TopNav extends Component {
   static propTypes = {
     location: PropTypes.object,
@@ -45,7 +62,8 @@ class TopNav extends Component {
     actions: PropTypes.object,
     notif: PropTypes.object,
     community: PropTypes.object,
-    view: PropTypes.object
+    view: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   state = {};
@@ -93,7 +111,8 @@ class TopNav extends Component {
   }
 
   render() {
-    const { location, auth, className, actions, notif } = this.props;
+    const { location, auth, className, actions, notif, navigation } = this.props;
+    const showResponsive = navigation.width <= layout.mediumScreenWidth;
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
@@ -137,27 +156,33 @@ class TopNav extends Component {
             )}
 
             <View fdirection="row" d="flex" flex={1} align="center" justify="flex-end">
-              <Ulink
-                onClick={e => {
-                  e.preventDefault();
-                  actions.showModal('onboarding');
-                }}
-                align={'center'}
-                mr={2}
-                hu
-                color={colors.blue}
-                to="/home"
-              >
-                <LinkFont c={colors.blue}>Get Started</LinkFont>
-              </Ulink>
+              {showResponsive ? null : (
+                <Ulink
+                  onClick={e => {
+                    e.preventDefault();
+                    actions.showModal('onboarding');
+                  }}
+                  align={'center'}
+                  mr={2}
+                  hu
+                  color={colors.blue}
+                  to="/home"
+                >
+                  <LinkFont c={colors.blue}>Get Started</LinkFont>
+                </Ulink>
+              )}
               {auth.isAuthenticated ? (
                 <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                  <Button>New Post</Button>
+                  <ActionButton showResponsive={showResponsive}>New Post</ActionButton>
                 </Link>
               ) : (
-                <Button onClick={this.toggleLogin} color={colors.blue}>
+                <ActionButton
+                  showResponsive={showResponsive}
+                  onClick={this.toggleLogin}
+                  color={colors.blue}
+                >
                   Login
-                </Button>
+                </ActionButton>
               )}
             </View>
           </View>
@@ -181,7 +206,8 @@ class TopNav extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    notif: state.notif
+    notif: state.notif,
+    navigation: state.navigation
   };
 }
 
