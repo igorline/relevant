@@ -7,7 +7,8 @@ const router = express.Router();
 router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/count', auth.isAuthenticated(), auth.communityMember(), controller.count);
 
-router.put('/', controller.checkInviteCode);
+// router.put('/', controller.checkInviteCode);
+router.put('/', auth.isAuthenticated(), controller.adminInvite);
 
 router.post('/', auth.isAuthenticated(), auth.communityMember(), controller.create);
 router.post('/email', auth.isAuthenticated(), controller.sendEmail);

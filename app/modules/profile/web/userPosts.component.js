@@ -21,6 +21,7 @@ class UserPosts extends Component {
       isInfiniteLoading: false
     };
     this.load = this.load.bind(this);
+    this.hasMore = true;
   }
 
   load(page, length) {
@@ -71,6 +72,7 @@ class UserPosts extends Component {
     const { length } = posts;
     return (
       <InfScroll
+        key="userPosts"
         data={postIds}
         loadMore={p => this.load(p, length)}
         hasMore={this.hasMore}

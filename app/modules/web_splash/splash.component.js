@@ -162,7 +162,13 @@ class Splash extends Component {
             <View mt={5} mb={8}>
               <SubHeader fs={2.5} lh={4}>
                 Join the thought leaders, build trust and earn rewards.{' '}
-                <ULink to={learnMoreUrl} display="inline" td="underline">
+                <ULink
+                  to={learnMoreUrl}
+                  external
+                  target="_blank"
+                  display="inline"
+                  td="underline"
+                >
                   Learn More
                 </ULink>
               </SubHeader>

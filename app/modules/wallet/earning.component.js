@@ -62,9 +62,9 @@ export default class Earning extends Component {
             <BodyText c={colors.secondaryText}>{get(earning, 'status')}</BodyText>
           </View>
           {payout < 0 ? (
-            <BodyText c={colors.red}>- {numbers.abbreviateNumber(payout)} RNT</BodyText>
+            <BodyText c={colors.red}>- {numbers.abbreviateNumber(payout)} REL</BodyText>
           ) : (
-            <BodyText c={colors.green}>+ {numbers.abbreviateNumber(payout)} RNT</BodyText>
+            <BodyText c={colors.green}>+ {numbers.abbreviateNumber(payout)} REL</BodyText>
           )}
         </View>
 

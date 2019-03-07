@@ -8,3 +8,9 @@ export const referralWithEmail = {
   type: 'referral',
   email: 'carol@carol.com'
 };
+
+export const adminReferral = {
+  name: 'carol',
+  type: 'admin',
+  email: 'carol@carol.com'
+};

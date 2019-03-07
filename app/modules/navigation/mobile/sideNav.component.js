@@ -6,18 +6,12 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components/primitives';
 import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
-// import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
-import { layout, colors, mixins } from 'app/styles';
+import { colors, mixins } from 'app/styles';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import { View, Image } from 'modules/styled/uni';
 import { SafeAreaView } from 'react-navigation';
 import ULink from 'modules/navigation/ULink.component';
 import SideNavFooter from 'modules/navigation/sideNavFooter.component';
-
-const SideNavSection = styled.View`
-  background-color: ${colors.secondaryBG};
-  ${layout.universalBorder('bottom')}
-`;
 
 const LogoContainer = styled(View)`
   background-color: ${colors.secondaryBG};
@@ -46,12 +40,12 @@ const SideNav = props => (
           </View>
         </ULink>
       </LogoContainer>
-      <SideNavSection flex={1}>
+      <View flex={1}>
         <NavProfileComponent {...props} mobile />
-      </SideNavSection>
-      <SideNavSection flex={1}>
+      </View>
+      <View flex={1}>
         <CommunityNav {...props} mobile />
-      </SideNavSection>
+      </View>
       <View mt={4} flex={1}>
         <SideNavFooter mobile {...props} />
       </View>

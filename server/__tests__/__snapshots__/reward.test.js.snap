@@ -7,7 +7,7 @@ Object {
   "community": "relevant",
   "communityId": "c00000000000000000000001",
   "createdAt": "[SANITIZED]",
-  "earned": 3.44e-16,
+  "earned": 3e-16,
   "estimatedPostPayout": 0,
   "payoutTime": "[SANITIZED]",
   "post": "000000000000000000000003",
@@ -30,7 +30,7 @@ Object {
   "communityId": "c00000000000000000000002",
   "createdAt": "[SANITIZED]",
   "earned": 0,
-  "estimatedPostPayout": 4e-15,
+  "estimatedPostPayout": 2e-16,
   "payoutTime": "[SANITIZED]",
   "post": "000000000000000000000006",
   "shares": 6.663332499583073,
@@ -50,7 +50,7 @@ Object {
   "_id": "[SANITIZED]",
   "byUsers": Array [],
   "byUsersHandle": Array [],
-  "coin": 3.44e-16,
+  "coin": 3e-16,
   "coinType": "eth",
   "createdAt": "[SANITIZED]",
   "forUser": "a00000000000000000000000",
@@ -70,14 +70,14 @@ Object {
   "payoutData": Object {
     "crypto": Object {
       "community": "crypto",
-      "distributedRewards": 4000,
+      "distributedRewards": 200,
       "payouts": Object {
-        "b00000000000000000000000": 4000,
+        "b00000000000000000000000": 200,
       },
       "postPayouts": Array [
         Object {
-          "payout": 4000,
-          "payoutShare": 1,
+          "payout": 200,
+          "payoutShare": 0.05,
           "rank": 100,
           "title": "000000000000000000000005",
         },
@@ -85,29 +85,29 @@ Object {
     },
     "relevant": Object {
       "community": "relevant",
-      "distributedRewards": 857,
+      "distributedRewards": 599,
       "payouts": Object {
-        "a00000000000000000000000": 344,
-        "b00000000000000000000000": 325,
-        "c00000000000000000000000": 188,
+        "a00000000000000000000000": 300,
+        "b00000000000000000000000": 189,
+        "c00000000000000000000000": 110,
       },
       "postPayouts": Array [
         Object {
-          "payout": 344.03681517854847,
-          "payoutShare": 0.05733946919642474,
+          "payout": 300,
+          "payoutShare": 0.05,
           "rank": 66.91,
           "title": "000000000000000000000003",
         },
         Object {
-          "payout": 514.1784713474046,
-          "payoutShare": 0.08569641189123411,
+          "payout": 300,
+          "payoutShare": 0.05,
           "rank": 100,
           "title": "000000000000000000000004",
         },
       ],
     },
   },
-  "totalDistributedRewards": 4857,
+  "totalDistributedRewards": 799,
 }
 `;
 

@@ -27,6 +27,7 @@ exports.rewards = async () => {
   let rewardPool;
   try {
     rewardPool = await allocateRewards();
+    console.log('rewardPool', rewardPool); // eslint-disable;
   } catch (err) {
     console.log(err);
   }
@@ -36,6 +37,8 @@ exports.rewards = async () => {
 
     // const stakedTokens = await Community.getBalances();
     const stakedTokens = await Earnings.stakedTokens();
+    console.log('stakedTokens', stakedTokens);
+
     const totalBalance = stakedTokens.reduce((a, c) => c.stakedTokens + a, 0);
     if (totalBalance === 0) return (computingRewards = false);
 
@@ -98,7 +101,7 @@ exports.rewards = async () => {
 
 async function allocateRewards() {
   await Eth.mintRewardTokens();
-  const rewardPool = await Eth.getParam('rewardPool', { noConvert: true });
+  const rewardPool = await Eth.getParam('rewardFund', { noConvert: true });
   return rewardPool;
 }
 
@@ -152,6 +155,7 @@ async function postRewards(community) {
 
   community.rewardFund = rewardPool;
   community.currentShares *= 1 - Math.min(1, decay);
+  community.topPostShares *= 1 - Math.min(1, decay);
   community.postCount *= 1 - Math.min(1, decay);
 
   // add post relevance to treasury
@@ -200,7 +204,9 @@ async function computePostPayout({ posts, community }) {
       return post.save();
     }
     // linear reward curve
-    post.payoutShare = post.pagerank / (community.topPostShares || 1);
+
+    // cap rewards share at 1/20th of the fund - especially for the first rewards?
+    post.payoutShare = Math.min(0.05, post.pagerank / (community.topPostShares || 1));
     post.payout = community.rewardFund * post.payoutShare;
     return post.save();
   });

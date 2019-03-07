@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import Community from 'server/api/community/community.model';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
@@ -21,6 +22,8 @@ exports.get = async (req, res, next) => {
     // const skip = parseInt(req.query.skip, 10) || 0;
 
     const { community } = req.query;
+    const cObj = await Community.findOne({ slug: community }, '_id');
+    const communityId = cObj._id;
 
     let query = null;
     let parentPost = null;
@@ -28,7 +31,7 @@ exports.get = async (req, res, next) => {
 
     if (req.query.post) {
       parentPost = req.query.post;
-      query = { parentPost, hidden: { $ne: true } };
+      query = { parentPost, hidden: { $ne: true }, communityId };
     }
 
     const total = await Post.count(query);
@@ -37,11 +40,11 @@ exports.get = async (req, res, next) => {
     .populate({
       path: 'embeddedUser.relevance',
       select: 'pagerank',
-      match: { community, global: true }
+      match: { communityId, global: true }
     })
     .populate({
       path: 'data',
-      match: { community }
+      match: { communityId }
     })
     .sort({ pagerank: -1 });
 

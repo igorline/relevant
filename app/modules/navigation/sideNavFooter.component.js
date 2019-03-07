@@ -46,7 +46,7 @@ const icons = [
 
 const SideNavFooter = ({ actions, mobile }) => (
   <View m={mobile ? 2 : 4}>
-    <BodyText>© 2018 Relevant Community Inc.</BodyText>
+    <BodyText>© 2019 Relevant Protocols Inc.</BodyText>
     <BodyText inline={1} mt={1}>
       <ULink to="/eula.html" external target="_blank">
         <InlineText>Content Policy</InlineText>

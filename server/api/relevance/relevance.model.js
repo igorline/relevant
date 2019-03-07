@@ -40,6 +40,8 @@ const RelevanceSchema = new Schema(
 
 RelevanceSchema.index({ user: 1, relevance: 1 });
 RelevanceSchema.index({ user: 1, communityId: 1 });
+RelevanceSchema.index({ user: 1, communityId: 1, global: 1 });
+RelevanceSchema.index({ user: 1, community: 1, global: 1 });
 
 // update user relevance and save record
 RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord() {
