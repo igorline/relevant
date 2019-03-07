@@ -1,49 +1,55 @@
+/* eslint no-console: 0 */
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { VOTE_COST_RATIO, SLOPE, EXPONENT } from '../../config/globalConstants';
-import Earnigns from '../earnings/earnings.model';
+import { VOTE_COST_RATIO, SLOPE, EXPONENT } from 'server/config/globalConstants';
+// import Community from 'server/api/community/community.model';
+import Earnings from 'server/api/earnings/earnings.model';
+import { computePostPayout } from 'app/utils/rewards';
 
 const InvestSchemaEvents = new EventEmitter();
-let Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-let InvestSchema = new Schema({
-  investor: { type: String, ref: 'User' },
-  post: { type: Schema.Types.ObjectId, ref: 'Post' },
-  poster: { type: String, ref: 'User' },
-  author: { type: String, ref: 'User' },
-  ownPost: { type: Boolean, default: false },
-  amount: Number,
+const TEST_ENV = process.env.NODE_ENV === 'test';
 
-  community: String,
-  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
-  // voteWeight is DEPRECATED same as shares - shares is better
-  // TODO convert this in old data
-  // voteWeight: { type: Number, default: 0 },
-  shares: { type: Number, default: 0 },
-  stakedTokens: { type: Number, default: 0 },
+const InvestSchema = new Schema(
+  {
+    post: { type: Schema.Types.ObjectId, ref: 'Post' },
+    investor: { type: Schema.Types.ObjectId, ref: 'User' },
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
 
-  paidOut: { type: Boolean, default: false },
-  payoutDate: { type: Date },
+    ownPost: { type: Boolean, default: false },
+    amount: Number,
 
+    community: String,
+    communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+    // voteWeight is DEPRECATED same as shares - shares is better
+    // TODO convert this in old data
+    // voteWeight: { type: Number, default: 0 },
+    shares: { type: Number, default: 0 },
+    stakedTokens: { type: Number, default: 0 },
 
-  // EVERYTHING BELOW SHOULD BE REMOVED - DEPRECATED
+    paidOut: { type: Boolean, default: false },
+    payoutDate: { type: Date },
 
-  // vote weight
-  relevantPoints: { type: Number, default: 0 },
-  rankChange: { type: Number, default: 0 },
+    // EVERYTHING BELOW SHOULD BE REMOVED - DEPRECATED
 
-  // this info helps us determine how much the
-  // investor (or author) has earned from this post
-  upvotes: { type: Number, default: 0 },
-  downVotes: { type: Number, default: 0 },
-  lastInvestor: { type: String, ref: 'User' },
-  partialUsers: { type: Number, default: 0 },
-  relevance: { type: Number, default: 0 },
-  partialRelevance: { type: Number, default: 0 },
-}, {
-  timestamps: true
-});
+    // vote weight
+    relevantPoints: { type: Number, default: 0 },
+    rankChange: { type: Number, default: 0 },
 
+    // this info helps us determine how much the
+    // investor (or author) has earned from this post
+    upvotes: { type: Number, default: 0 },
+    downVotes: { type: Number, default: 0 },
+    updatePowerInvestor: { type: String, ref: 'User' },
+    partialUsers: { type: Number, default: 0 },
+    relevance: { type: Number, default: 0 },
+    partialRelevance: { type: Number, default: 0 }
+  },
+  {
+    timestamps: true
+  }
+);
 
 // InvestSchema.index({ community: 1 });
 InvestSchema.index({ post: 1 });
@@ -55,177 +61,144 @@ InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
 
 InvestSchema.statics.events = InvestSchemaEvents;
 
-InvestSchema.statics.createVote = async function createVote(props) {
-  let { user, post, relevanceToAdd, amount, investment, community, communityId } = props;
+async function undoInvest({ post, investment, user }) {
+  post.data.shares -= investment.shares;
+  post.data.balance = Math.max(post.data.balance - investment.stakedTokens, 0);
+  const returnTokens = Math.min(user.lockedTokens, investment.stakedTokens);
+  user.lockedTokens = (user.lockedTokens || 0) - returnTokens;
+  console.log('UNLOCK TOKENS', investment.stakedTokens, user.balance, user.lockedTokens);
 
-  // undo investment
-  if (investment) {
-    // TODO remove notification
-    if (amount > 0) {
-      post.data.shares -= investment.shares;
-      post.data.balance -= investment.stakedTokens;
-    }
-    post.data.totalStaked -= investment.stakedTokens;
-    await investment.remove();
-    return investment;
+  post.data.totalShares -= investment.stakedTokens;
+  const earning = await Earnings.findOne({ user: user._id, post: post._id });
+  if (earning) {
+    await earning.remove();
+    earning.updateClient({ actionType: 'REMOVE_EARNING' });
   }
+  await user.save();
+  await post.save();
+  await investment.remove();
+  return investment;
+}
 
-  user = user.updatePower();
+InvestSchema.statics.createVote = async function createVote(props) {
+  const { post, relevanceToAdd, community, communityId, amount } = props;
+  let { user, investment } = props;
+
+  // user = user.updatePower();
   user = await user.updateBalance();
-  let userBalance = user.balance + user.tokenBalance;
-  console.log(user.handle, 'balance', userBalance);
+  const userBalance = user.balance + user.tokenBalance;
+
+  investment = await this.findOne({ investor: user._id, post: post._id });
+  if (investment) return undoInvest({ post, investment, user });
 
   let shares = 0;
-  // TODO analyze ways to get around this via sybil nodes
-  let votePower = user.votePower;
-  amount *= votePower;
-
-  // compute tokens allocated to this specific community
-  let communityMember = await this.model('CommunityMember').findOne({ user: user._id, community: post.community }, 'weight');
-  userBalance *= communityMember.weight;
-
-  console.log('vote power ', votePower);
   let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
-  console.log('user balance', userBalance);
-  console.log('staked tokens', stakedTokens);
-  console.log('post.data.balance', post.data.balance);
-  console.log('amount ', amount);
 
-  // TODO downvotes!
-  let sign = 1;
-  if (amount !== 0) sign = Math.abs(amount) / amount;
+  // can only invest in top-level posts
+  let canInvest = false;
+  const now = new Date();
+
+  const leeway = TEST_ENV ? 1000 * 60 : 0;
+
+  if (
+    !post.parentPost &&
+    user.lockedTokens + stakedTokens <= userBalance &&
+    post.data.eligibleForReward &&
+    !post.data.paidOut &&
+    post.data.payoutTime &&
+    new Date(post.data.payoutTime).getTime() + leeway > now.getTime()
+  ) {
+    canInvest = true;
+  }
+
+  if (!canInvest) stakedTokens = 0;
+  console.log('canInvest', canInvest);
+
+  // TODO - total tokens staked within a community instead
+  const communityInstance = await this.model('Community').findOne({ _id: communityId });
+  // userBalance *= communityMember.weight;
 
   // only compute shares for upvotes
   // for downvotes only track staked tokens
   // we can use totalStaked to rank by stake
-  if (amount > 0) {
-    let nexp = EXPONENT + 1;
-    shares = ((post.data.balance + stakedTokens) / SLOPE * nexp) ** (1 / nexp) - (post.data.shares || 0);
-    console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
-
-    shares *= sign;
-    stakedTokens *= sign;
-
-    post.data.shares += shares;
-    post.data.balance += stakedTokens;
+  // only stake on top-level posts
+  if (canInvest) {
+    const { balance, shares: postShares } = post.data;
+    const nexp = EXPONENT + 1;
+    stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
+    shares =
+      (((Math.max(balance, 0) + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) -
+      (postShares || 0);
+    console.log(user.handle, 'got', shares, 'for', stakedTokens, 'staked tokens');
   }
 
-  post.data.totalStaked += stakedTokens;
+  investment = new (this.model('Invest'))({
+    investor: user._id,
+    post: post._id,
+    author: post.user,
+    amount,
+    relevantPoints: relevanceToAdd,
+    ownPost: post.user === user._id,
+    shares,
+    stakedTokens,
+    community,
+    communityId,
+    // TODO track parentPost && linkPost/aboutLink?
+    // parentPost: post.parentPost,
+    // linkPost: post.linkPost,
+    payoutDate: post.data.payoutDate,
+    paidOut: post.data.paidOut
+  });
+  await investment.save();
+
+  if (!canInvest) return investment;
+
+  post.data.shares += shares;
+  post.data.balance += stakedTokens;
+  user.lockedTokens += stakedTokens;
+  post.data.totalShares += stakedTokens;
+  post.data.expectedPayout = computePostPayout(post.data, communityInstance);
+
+  await user.save();
   await post.data.save();
 
-  investment = await this.findOneAndUpdate(
+  if (amount > 0) {
+    await updateUserEarnings({
+      user,
+      post,
+      shares,
+      stakedTokens,
+      community,
+      communityId
+    });
+  }
+
+  return investment;
+};
+
+async function updateUserEarnings({
+  user,
+  post,
+  shares,
+  stakedTokens,
+  community,
+  communityId
+}) {
+  const earning = await Earnings.findOneAndUpdate(
+    { user: user._id, post: post._id },
     {
-      investor: user._id,
-      post: post._id
-    },
-    {
-      investor: user._id,
-      author: post.user,
-      amount,
-      relevantPoints: relevanceToAdd,
-      post: post._id,
-      ownPost: post.user === user._id,
       shares,
       stakedTokens,
       community,
       communityId,
-      // TODO track parentPost && linkPost/aboutLink?
-      // parentPost: post.parentPost,
-      // linkPost: post.linkPost,
-      payoutDate: post.data.payoutDate,
-      paidOut: post.data.paidOut,
+      payoutTime: post.data.payoutTime,
+      estimatedPostPayout: post.data.expectedPayout,
+      totalPostShares: post.data.shares,
+      status: 'pending'
     },
-    {
-      new: true,
-      upsert: true,
-    }
+    { new: true, upsert: true }
   );
-  return investment;
-};
-
-
-/**
- * DEPRECATED - NOT USED WITH PAGERANK
- * When the amount is not a whole number, we save add up the increments and save the list of users
- * once we reach a whole number we send the update to the user
- */
-InvestSchema.statics.updateUserInvestment = async function updateEarnings(
-  user, investor, post, relevance, amount) {
-  let earnings;
-  let fromUser;
-  let totalUsers;
-  try {
-    earnings = await this.findOne({ investor: investor._id, post: post._id });
-
-    if (!earnings) {
-      // DEPRECATED should never be called,
-      // but should check and update older posts
-      earnings = new this({
-        investor: investor._id,
-        post: post._id,
-        author: post.user,
-        relevance: 0,
-        partialRelevance: 0,
-        partialUsers: 0,
-        ownPost: investor._id === post.user,
-        amount: 0,
-        relevantPoints: 0,
-      });
-    }
-
-    // TODO do we want to filter out all negative relevance here?
-    if (amount > 0) {
-      earnings.lastInvestor = user._id;
-    } else {
-      earnings.lastInvestor = user._id;
-    }
-
-    if (Math.abs(relevance) < 1) {
-      earnings.partialRelevance += relevance;
-      earnings.partialUsers += 1;
-      relevance = 0;
-
-      if (Math.abs(earnings.partialRelevance) >= 1) {
-        relevance = Math.round(earnings.partialRelevance);
-        earnings.partialRelevance -= relevance;
-        earnings.relevance += relevance;
-        totalUsers = earnings.partialUsers;
-        earnings.partialUsers = 0;
-        fromUser = earnings.lastInvestor;
-      }
-    } else {
-      relevance = Math.round(relevance);
-      earnings.relevance += relevance;
-      totalUsers = 1;
-      fromUser = earnings.lastInvestor;
-    }
-
-    this.model('RelevanceStats').updateUserStats(investor, relevance);
-
-    // updates amount earned by user from post
-    earnings = await earnings.save();
-
-    // console.log(earnings.investor, ' ', earnings.partialRelevance, ' ', relevance);
-
-    if (Math.abs(relevance) >= 1) {
-      let earningsEvent = {
-        _id: user._id,
-        type: 'UPDATE_EARNINGS',
-        payload: [earnings]
-      };
-      this.events.emit('investEvent', earningsEvent);
-    }
-  } catch (err) {
-    console.log('update user invest error ', err);
-    console.log(earnings);
-  }
-  return {
-    relevance,
-    fromUser,
-    totalUsers
-  };
-};
-
+  earning.updateClient({ actionType: 'ADD_EARNING' });
+}
 
 module.exports = mongoose.model('Invest', InvestSchema);
-

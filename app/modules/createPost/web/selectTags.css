@@ -1,0 +1,49 @@
+@import 'styles/global.css';
+
+.selectTags {
+  font-family: 'HelveticaNeue', 'Arial', sans-serif;
+  font-size: 12px;
+  margin-top: 10px;
+  color: #111112;
+  span {
+    cursor: pointer;
+    display: inline-block;
+    white-space: nowrap;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    /*border: 1px solid #c0c0c0;*/
+    background-color: hsl(0,0%,95%);
+    color: $greyText;
+    &.selected {
+      background: $blue;
+      /*border: 1px solid $blue;*/
+      color: white;
+      &::after {
+        font-weight: bold;
+        margin-left: 8px;
+        content: '✕';
+      };
+    }
+  }
+}
+
+.tagInput input {
+  font-size: 12px;
+  font-family: 'HelveticaNeue', 'Arial', sans-serif;
+  line-height: 1.5;
+  padding: 8px 15px;
+  margin: 10px 0 0 0;
+  background: white;
+  box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
+  border-radius: 0px;
+  white-space: pre-line;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.tagInput input:focus, .tagInput input.active {
+  @extend %activeInput;
+}

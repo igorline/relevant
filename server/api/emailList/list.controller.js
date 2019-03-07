@@ -1,41 +1,30 @@
 import List from './list.model';
 import * as InviteController from '../invites/invite.controller';
-// List.collection.dropIndexes(function (err, results) {
-//   console.log(err);
-// });
 
-// List.find({}).sort('-updatedAt').limit(20).then(i => console.log(i));
+// List.count({ status: { $exists: false } }).then(c => console.log('Waitlist', c));
+// List.find({}).then(u => u.map(c => console.log('List', c.toObject())));
 
-
-function handleError(res, statusCode) {
-  statusCode = statusCode || 500;
-  return (err) => {
-    console.log(err);
-    res.status(statusCode).json({ message: err.message });
-  };
-}
-
-// List.find({}).remove().exec();
-
-exports.index = async (req, res) => {
-  let list;
+exports.index = async (req, res, next) => {
   try {
-    list = await List.find({ status: { $ne: 'invited' } });
+    const list = await List.find({ status: { $ne: 'invited' } });
+    res.status(200).json(list);
   } catch (err) {
-    handleError(res)(err);
+    next(err);
   }
-  res.status(200).json(list);
 };
 
-exports.addWaitlist = async (req, res) => {
+exports.addWaitlist = async (req, res, next) => {
   try {
-    let email = req.body.email;
+    let { email } = req.body;
     if (!email) throw new Error('no email');
     email = email.trim();
-    let waitlist = await List.findOneAndUpdate({ email }, req.body, { upsert: true, new: true }).exec();
+    const waitlist = await List.findOneAndUpdate({ email }, req.body, {
+      upsert: true,
+      new: true
+    }).exec();
     res.status(200).json(waitlist);
   } catch (err) {
-    handleError(res)(err);
+    next(err);
   }
 };
 
@@ -48,7 +37,7 @@ exports.addWaitlist = async (req, res) => {
     email: eamil
   }]
  */
-exports.invite = async (req, res) => {
+exports.invite = async req => {
   let invites = req.body;
   invites = await InviteController.createInvites(invites);
   await List.update(
@@ -59,13 +48,12 @@ exports.invite = async (req, res) => {
   return invites;
 };
 
-exports.delete = async (req, res) => {
+exports.delete = async (req, res, next) => {
   try {
-    let id = req.params.id;
+    const { id } = req.params;
     await List.findOne({ _id: id }).remove();
     res.sendStatus(200);
   } catch (err) {
-    handleError(res)(err);
+    next(err);
   }
 };
-

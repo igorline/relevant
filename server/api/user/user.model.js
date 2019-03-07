@@ -1,112 +1,137 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { NEW_USER_COINS, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
+import {
+  newUserCoins,
+  POWER_REGEN_INTERVAL,
+  MAX_AIRDROP,
+  getRewardForType
+} from '../../config/globalConstants';
 import { NAME_PATTERN } from '../../../app/utils/text';
 import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
 const authTypes = ['github', 'twitter', 'facebook', 'google'];
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-const UserSchema = new Schema({
-  _id: { type: String, required: true },
-  handle: { type: String, unique: true, required: true },
-  publicKey: { type: String, unique: true, sparse: true },
-  name: String,
-  email: { type: String, lowercase: true, select: false },
-  phone: { type: String, select: false },
-  role: {
-    type: String,
-    default: 'user'
+const UserSchema = new Schema(
+  {
+    // Comment out to automatically generate _id
+    // _id: { type: Schema.Types.Mixed, required: true },
+    handle: { type: String, unique: true, required: true },
+    publicKey: { type: String, unique: true, sparse: true },
+    name: String,
+    email: { type: String, lowercase: true, select: false },
+    phone: { type: String, select: false },
+    role: {
+      type: String,
+      default: 'user'
+    },
+    online: { type: Boolean, default: false },
+    messages: { type: Number, default: 0 },
+
+    // keep this - hack to keep relevance out, but not have it overridden by toObject
+    // relevance: { type: Number, default: 0, select: false },
+
+    balance: { type: Number, default: 0 },
+    lockedTokens: { type: Number, default: 0 },
+
+    deviceTokens: {
+      // select: false,
+      type: [String]
+    },
+    image: String,
+    hashedPassword: { type: String, select: false },
+    provider: String,
+    salt: { type: String, select: false },
+    facebook: {},
+    twitter: { type: Object, select: false },
+    google: {},
+    github: {},
+    relevanceRecord: [
+      {
+        relevance: Number,
+        time: Date
+      }
+    ],
+    postCount: { type: Number, default: 0 },
+    investmentCount: { type: Number, default: 0 },
+    onboarding: { type: Number, default: 0 },
+
+    webOnboard: {
+      type: Schema.Types.Mixed,
+      default: {
+        onboarding: false
+      }
+    },
+
+    lastFeedNotification: { type: Date, default: new Date(0) },
+    confirmed: { type: Boolean, default: false },
+    confirmCode: { type: String, select: false },
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
+    following: Number,
+    followers: Number,
+
+    votePower: { type: Number, default: 1 },
+    lastVote: { type: Date, default: new Date() },
+
+    bio: { type: String, default: '' },
+
+    blocked: {
+      type: [{ type: Schema.Types.Object, ref: 'User' }],
+      select: false
+    },
+    blockedBy: {
+      type: [{ type: Schema.Types.Object, ref: 'User' }],
+      select: false
+    },
+
+    level: Number,
+    rank: Number,
+    percentRank: Number,
+    topTopics: [{ type: String, ref: 'Tag' }],
+    totalUsers: Number,
+
+    accumilatedDecay: { type: Number, select: false },
+    estimatedPayout: { type: Number },
+    lastPayout: { type: Number },
+
+    twitterHandle: { type: String },
+    twitterImage: { type: String },
+    twitterEmail: { type: String, select: false },
+    twitterAuthToken: { type: String, select: false },
+    twitterAuthSecret: { type: String, select: false },
+    twitterId: { type: String, unique: true, index: true, sparse: true },
+
+    // used to query twitter feed
+    lastTweetId: { type: Number },
+
+    tokenBalance: { type: Number, default: 0 },
+    ethAddress: [String],
+
+    // eth cash out
+    cashOut: {
+      nonce: Number,
+      sig: String,
+      amount: Number
+    },
+    airdropTokens: { type: Number, default: 0 },
+    referralTokens: { type: Number, default: 0 },
+
+    version: String,
+    community: String
   },
-  online: { type: Boolean, default: false },
-  messages: { type: Number, default: 0 },
-
-  // keep this - hack to keep relevance out, but not have it overridden by toObject
-  // relevance: { type: Number, default: 0, select: false },
-
-  balance: { type: Number, default: 0 },
-  deviceTokens: {
-    // select: false,
-    type: [String]
-  },
-  image: String,
-  hashedPassword: { type: String, select: false },
-  provider: String,
-  salt: { type: String, select: false },
-  facebook: {},
-  twitter: { type: Object, select: false },
-  google: {},
-  github: {},
-  relevanceRecord: [{
-    relevance: Number,
-    time: Date,
-  }],
-  postCount: { type: Number, default: 0 },
-  investmentCount: { type: Number, default: 0 },
-  onboarding: { type: Number, default: 0 },
-  lastFeedNotification: { type: Date, default: new Date(0) },
-  confirmed: { type: Boolean, default: false },
-  confirmCode: { type: String, select: false },
-  resetPasswordToken: { type: String, select: false },
-  resetPasswordExpires: { type: Date, select: false },
-  following: Number,
-  followers: Number,
-
-  votePower: { type: Number, default: 1 },
-  lastVote: { type: Date, default: new Date() },
-
-  bio: { type: String, default: '' },
-
-  blocked: {
-    type: [{ type: String, ref: 'User' }],
-    select: false,
-  },
-  blockedBy: {
-    type: [{ type: String, ref: 'User' }],
-    select: false
-  },
-
-  level: Number,
-  rank: Number,
-  percentRank: Number,
-  topTopics: [{ type: String, ref: 'Tag' }],
-  totalUsers: Number,
-
-  accumilatedDecay: { type: Number, select: false },
-  estimatedPayout: { type: Number },
-  lastPayout: { type: Number },
-
-  twitterHandle: { type: String },
-  twitterImage: { type: String },
-  twitterEmail: { type: String, select: false },
-  twitterAuthToken: { type: String, select: false },
-  twitterAuthSecret: { type: String, select: false },
-  twitterId: { type: Number, unique: true, index: true, sparse: true },
-
-  // used to query twitter feed
-  lastTweetId: { type: Number },
-
-  tokenBalance: { type: Number, default: 0 },
-  ethAddress: [String],
-
-  // eth cash out
-  cashOut: {
-    nonce: Number,
-    sig: String,
-    amount: Number,
-  },
-}, {
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true },
-  timestamps: true,
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    timestamps: true
+  }
+);
 
 // UserSchema.index({ name: 'text' });
-
+UserSchema.index({ handle: 1 });
 UserSchema.statics.events = new EventEmitter();
-// UserSchema.index({ handle: 1 });
 
 /**
  * Virtuals
@@ -116,7 +141,7 @@ UserSchema.virtual('relevance', {
   ref: 'Relevance',
   localField: '_id',
   foreignField: 'user',
-  justOne: true,
+  justOne: true
 });
 
 UserSchema.virtual('password')
@@ -130,8 +155,7 @@ UserSchema.virtual('password')
 });
 
 // Public profile information
-UserSchema.virtual('profile')
-.get(function getProfile() {
+UserSchema.virtual('profile').get(function getProfile() {
   return {
     name: this.name,
     role: this.role
@@ -139,8 +163,7 @@ UserSchema.virtual('profile')
 });
 
 // Non-sensitive info we'll be putting in the token
-UserSchema.virtual('token')
-.get(function getToken() {
+UserSchema.virtual('token').get(function getToken() {
   return {
     _id: this._id,
     role: this.role
@@ -152,42 +175,31 @@ UserSchema.virtual('token')
  */
 
 // Validate handle
-UserSchema
-.path('handle')
-.validate(
+UserSchema.path('handle').validate(
   handle => NAME_PATTERN.test(handle),
   'Username can only contain letters, numbers, dashes and underscores'
 );
 
 // Validate _id
-UserSchema
-.path('_id')
-.validate(
+UserSchema.path('_id').validate(
   handle => NAME_PATTERN.test(handle),
   'Username can only contain letters, numbers, dashes and underscores'
 );
 
-
 // Validate empty email
-UserSchema
-.path('email')
-.validate(function vEmail(email) {
+UserSchema.path('email').validate(function vEmail(email) {
   if (authTypes.indexOf(this.provider) !== -1) return true;
   return email.length;
 }, 'Email cannot be blank');
 
 // Validate empty password
-UserSchema
-.path('hashedPassword')
-.validate(function vHashedPassword(hashedPassword) {
+UserSchema.path('hashedPassword').validate(function vHashedPassword(hashedPassword) {
   if (authTypes.indexOf(this.provider) !== -1) return true;
   return hashedPassword.length;
 }, 'Password cannot be blank');
 
 // Validate email is not taken
-UserSchema
-.path('email')
-.validate(function vEmailTaken(value) {
+UserSchema.path('email').validate(function vEmailTaken(value) {
   this.constructor.findOne({ email: value }, (err, user) => {
     if (err) throw err;
     if (user) {
@@ -198,8 +210,7 @@ UserSchema
   });
 }, 'The specified email address is already in use.');
 
-
-let validatePresenceOf = value => value && value.length;
+const validatePresenceOf = value => value && value.length;
 
 /**
  * Pre-save hook
@@ -209,11 +220,13 @@ UserSchema.pre('save', async function preSave(next) {
     this.postCount = await this.model('Post').count({ user: this._id });
     if (!this.isNew) return next();
 
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1) {
+    if (
+      !validatePresenceOf(this.hashedPassword) &&
+      authTypes.indexOf(this.provider) === -1
+    ) {
       next(new Error('Invalid password'));
     } else next();
   } catch (err) {
-    console.log(err);
     next(err);
   }
   return null;
@@ -224,12 +237,10 @@ UserSchema.pre('remove', async function preRemove(next) {
     await this.model('CommunityMember').remove({ user: this._id });
     next();
   } catch (err) {
-    console.log(err);
     next(err);
   }
   return null;
 });
-
 
 /**
  * Methods
@@ -265,7 +276,7 @@ UserSchema.methods = {
    */
   encryptPassword: function encryptPassword(password) {
     if (!password || !this.salt) return '';
-    let salt = new Buffer(this.salt, 'base64');
+    const salt = Buffer.from(this.salt, 'base64');
     return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64');
   },
 
@@ -288,31 +299,31 @@ UserSchema.methods = {
 
   // get following and followers
   getSubscriptions: function getSubscriptions() {
-    // let user = this.toObject();
-    return this.model('Subscription').count({ follower: this._id })
-    .then((following) => {
+    return this.model('Subscription')
+    .count({ follower: this._id })
+    .then(following => {
       this.following = following;
       return this.model('Subscription').count({ following: this._id });
     })
-    .then((followers) => {
+    .then(followers => {
       this.followers = followers;
       return this;
     })
-    .catch(err => {
-      console.log(err);
-      return this;
-    });
-  },
+    .catch(() => this);
+  }
 };
 
 UserSchema.methods.getRelevance = async function getRelevance(community) {
   try {
-    let rel = await this.model('Relevance').findOne({ community, user: this._id, global: true });
+    const rel = await this.model('Relevance').findOne({
+      community,
+      user: this._id,
+      global: true
+    });
     this.relevance = rel ? rel.relevance : 0;
     return this;
   } catch (err) {
-    console.log('failed get relevance ', err);
-    return null;
+    throw err;
   }
 };
 
@@ -323,13 +334,12 @@ UserSchema.methods.updatePostCount = async function updatePostCount() {
     await this.updateClient();
     return this;
   } catch (err) {
-    console.log('failed to update post count ', err);
-    return null;
+    throw err;
   }
 };
 
 UserSchema.methods.updateClient = function updateClient(actor) {
-  let userData = {
+  const userData = {
     _id: this._id,
     type: 'UPDATE_USER',
     payload: this
@@ -343,7 +353,7 @@ UserSchema.methods.updateClient = function updateClient(actor) {
 
 UserSchema.methods.updateMeta = async function updateMeta() {
   try {
-    let newUser = {
+    const newUser = {
       name: this.name,
       image: this.image
     };
@@ -355,31 +365,85 @@ UserSchema.methods.updateMeta = async function updateMeta() {
       { multi: true }
     );
 
-    await this.model('Comment').update(
+    await this.model('CommunityMember').update(
       { user: this._id },
       { embeddedUser: newUser },
       { multi: true }
     );
     return true;
   } catch (err) {
-    console.log(err);
-    return false;
+    throw err;
   }
 };
 
-UserSchema.methods.initialCoins = async function initialCoins() {
-  await this.model('Treasury').findOneAndUpdate(
-    {},
-    { $inc: { balance: -NEW_USER_COINS } },
-    { new: true, upsert: true }
-  ).exec();
+UserSchema.methods.addReward = async function addReward({ type, user }) {
+  try {
+    const amount = getRewardForType(type);
+    const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
 
-  this.balance += NEW_USER_COINS;
-  return this;
+    // TODO - update this and tie it to smart contract
+    await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
+
+    this.balance += airdropTokens;
+    this.airdropTokens += airdropTokens;
+    if (type === 'referral' || type === 'publicLink') {
+      this.referralTokens += airdropTokens;
+    }
+
+    const notification = {
+      forUser: this._id,
+      type: `reward_${type}`,
+      coin: airdropTokens,
+      byUser: user ? user._id : null,
+      byUsersHandle: user ? [user.handle] : null
+    };
+    await this.model('Notification').createNotification(notification);
+
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
+};
+
+UserSchema.methods.initialCoins = async function initialCoins(invite) {
+  try {
+    const airdropTokens = newUserCoins(this, invite);
+
+    if (!airdropTokens) return this;
+    // TODO - update this and tie it to smart contract
+    await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
+
+    this.balance += airdropTokens;
+    this.airdropTokens += airdropTokens;
+
+    const type = this.twitterId ? 'twitter' : 'email';
+    const notification = {
+      forUser: this._id,
+      type: `reward_${type}`,
+      coin: airdropTokens
+    };
+    await this.model('Notification').createNotification(notification);
+
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
 };
 
 UserSchema.methods.updateBalance = async function updateBalance() {
-  let ethAddress = this.ethAddress[0];
+  const ethAddress = this.ethAddress[0];
   if (ethAddress) {
     this.tokenBalance = await ethUtils.getBalance(ethAddress);
   }
@@ -389,17 +453,11 @@ UserSchema.methods.updateBalance = async function updateBalance() {
 UserSchema.methods.updatePower = function updatePower() {
   // elapsed time in seconds
   // prevent votes from being more often than 5s apart
-  let now = new Date();
-  console.log('lastVote', this.lastVote);
-  let elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote || 0)).getTime();
-  console.log('elapsed time since last upvote ', elapsedTime / 1000, 's');
-  if (elapsedTime < 5 * 1000 && process.env.NODE_ENV === 'production') {
-    throw new Error('you cannot up-vote posts more often than 5s');
-  }
+  const now = new Date();
   this.lastVote = now;
-  let voteRegen = Math.max(elapsedTime / POWER_REGEN_INTERVAL * 1);
-  console.log('voteRegen ', voteRegen);
-  let votePower = Math.min(this.votePower + voteRegen, 1);
+  const elapsedTime = new Date(now).getTime() - new Date(this.lastVote || 0).getTime();
+  const voteRegen = Math.max((elapsedTime / POWER_REGEN_INTERVAL) * 1);
+  const votePower = Math.min(this.votePower + voteRegen, 1);
   this.votePower = votePower;
   // async?
   this.save();

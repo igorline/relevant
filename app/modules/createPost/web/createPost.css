@@ -1,0 +1,81 @@
+@import 'styles/global.css';
+
+.modal .createPostContainer {
+  width: 600px;
+  margin: 0 80px;
+  text-align: left;
+  border: none;
+}
+
+.postInput {
+  min-height: 200px;
+  padding: 15px;
+}
+
+.createPostContainer {
+  border-bottom: 1px solid $borderGrey;
+  padding-bottom: 40px;
+  margin-top: 0px;
+  /*padding-top: 20px;*/
+
+  .addFromLink {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+  }
+  .addTextFromLink {
+    color: #3E3EFF;
+    font-family: Helvetica, sans-serif;
+    font-size: 13px;
+    text-align: right;
+    border: 0;
+    background: transparent;
+    display: inline;
+    margin: 0;
+  }
+  .urlPreview {
+    margin: 40px 0 20px 0;
+  }
+  .avatarBox {
+    margin: 20px 0 20px 0;
+  }
+  .postinfo {
+    cursor: default;
+    user-select: none;
+    margin-bottom: 20px;
+  }
+  row {
+    align-self: flex-end;
+    .basicButton {
+      margin-right: 30px;
+    }
+  }
+  button {
+    align-self: flex-end;
+    float:right;
+    margin: 30px 0px 10px 0px;
+  }
+}
+
+.removeUrl {
+  font-size: 12px;
+  position: absolute;
+  right: 5px;
+  bottom: -20px;
+}
+
+.createOptions {
+  position: relative;
+  padding: 20px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  select {
+    font-size: 14px;
+    height: 40px;
+  }
+  select {
+    line-height: 18px;
+  }
+}

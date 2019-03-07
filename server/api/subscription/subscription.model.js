@@ -1,18 +1,19 @@
-'use strict';
+const mongoose = require('mongoose');
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-var SubscriptionSchema = new Schema({
-  follower: { type: String, ref: 'User' },
-  following: { type: String, ref: 'User' },
-  amount: Number,
-  category: [{ type: String, ref: 'Tag' }],
-}, {
-  timestamps: true
-});
+const SubscriptionSchema = new Schema(
+  {
+    follower: { type: Schema.Types.ObjectId, ref: 'User' },
+    following: { type: Schema.Types.ObjectId, ref: 'User' },
+    amount: Number,
+    category: [{ type: String, ref: 'Tag' }]
+  },
+  {
+    timestamps: true
+  }
+);
 
 SubscriptionSchema.index({ following: 1, follower: 1 });
 
 module.exports = mongoose.model('Subscription', SubscriptionSchema);
-

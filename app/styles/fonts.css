@@ -1,0 +1,92 @@
+@font-face {
+  font-family: 'Outline';
+  src: url('/fonts/helvetica-outline.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/BebasNeue-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/BebasNeue-Bold.otf') format('opentype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Libre';
+  src: url('/fonts/LibreCaslonDisplay-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Libre';
+  src: url('/fonts/librecaslontext-bold.otf');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'BebasNeueRelevantRegular';
+  src: url('/fonts/BebasNeue-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'BebasNeueRelevantBold';
+  src: url('/fonts/BebasNeue-Bold.otf') format('opentype');
+  font-weight: bold;
+}
+
+
+
+.libre {
+  font-family: 'Libre';
+}
+
+.outline {
+  font-family: 'Outline';
+}
+
+.georgia {
+  font-family: 'Georgia';
+}
+
+.bebasRegular {
+  font-family: 'Bebas';
+}
+
+h1 {
+  font-family: 'Bebas';
+  font-size: 43px;
+  line-height: 39px;
+  font-weight: bold;
+}
+
+.subH {
+  font-family: 'Arial';
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.callout {
+  font-family: 'Libre';
+  font-size: 64px;
+  font-weight: 100;
+  color: #242425;
+  margin: 10px 0 10px 0;
+}
+
+
+h2 {
+  font-family: 'Outline';
+  font-size: 44px;
+  color: #242425;
+  margin: 40px 0 40px 0;
+}
+
+@media screen
+  and (max-width: 736px) {
+  h1 {
+    font-size: 34px;
+    line-height: 39px;
+  }
+}

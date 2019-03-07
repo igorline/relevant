@@ -1,29 +1,135 @@
+import PostData from 'server/api/post/postData.model';
+import { MINIMUM_RANK } from 'server/config/globalConstants';
+import Community from 'server/api/community/community.model';
 import Feed from './communityFeed.model';
 import Post from '../post/post.model';
 
-function handleError(res, statusCode) {
-  statusCode = statusCode || 500;
-  return (err) => {
-    console.log(err);
-    res.status(statusCode).send(err);
-  };
-}
-
-// Feed.findOne({ metaPost: null }).then(console.log);
-
-exports.get = async (req, res) => {
+exports.get = async (req, res, next) => {
   try {
     // TODO - right now sorting commentary by latest and relevance
     // only works for community's own posts
     // solution: populate postData then populate with postData post
     // TODO - for now isolate commentary to given community
-    let community = req.query.community;
-    let user = req.user;
+    const { community } = req.query;
+    const { user } = req;
 
-    let skip = parseInt(req.query.skip, 10) || 0;
-    let limit = parseInt(req.query.limit, 10) || 5;
-    let tag = req.query.tag || null;
-    let sort = req.query.sort;
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const tag = req.query.tag || null;
+    const { sort } = req.query;
+    let sortQuery;
+    let commentarySort;
+
+    const cObj = await Community.findOne({ slug: community }, '_id');
+    const communityId = cObj._id;
+
+    let query = { communityId, isInFeed: true };
+    if (sort === 'rank') {
+      sortQuery = { rank: -1 };
+      query.pagerank = { $gt: MINIMUM_RANK };
+      commentarySort = { pagerank: -1 };
+    } else {
+      sortQuery = { latestComment: -1 };
+      commentarySort = { postDate: -1 };
+    }
+
+    let blocked = [];
+    if (req.user) {
+      blocked = [...(req.user.blocked || []), ...(req.user.blockedBy || [])];
+    }
+
+    if (tag) query = { ...query, tags: tag };
+
+    const feed = await PostData.find(query)
+    .sort(sortQuery)
+    .skip(skip)
+    .limit(limit)
+    .populate({
+      path: 'post',
+      populate: [
+        // { path: 'data', match: { communityId } },
+        {
+          path: 'commentary',
+          match: {
+            // TODO implement intra-community commentary
+            communityId,
+            type: 'post',
+
+            // TODO - we should probably sort the non-community commentary
+            // with some randomness on client side
+            // repost: { $exists: false },
+            user: { $nin: blocked },
+            hidden: { $ne: true }
+          },
+          options: { sort: commentarySort },
+          populate: [
+            { path: 'data' },
+            {
+              path: 'embeddedUser.relevance',
+              select: 'pagerank',
+              match: { communityId, global: true }
+            }
+          ]
+        },
+        { path: 'metaPost' },
+        {
+          path: 'embeddedUser.relevance',
+          select: 'pagerank',
+          match: { communityId, global: true }
+        }
+      ]
+    });
+
+    // console.log(feed)
+
+    const posts = [];
+    feed.forEach(async f => {
+      if (f.post) {
+        // if (f.post.commentary.length && f.post.commentary.find(p => p.twitter)) {
+        //   console.log(f.post.toObject());
+        // }
+        const data = { ...f.toObject() };
+        delete data.post;
+        f.post.data = data;
+        posts.push(f.post);
+      } else {
+        // just in case - this shouldn't happen
+        console.log('error: post is null!', f.toObject()); // eslint-disable-line
+        // await f.remove();
+      }
+    });
+
+    // TODO worker thread?
+    if (user) {
+      const postIds = [];
+      posts.forEach(post => {
+        postIds.push(post._id);
+        post.commentary.forEach(comment => {
+          postIds.push(comment._id || comment);
+        });
+      });
+      Post.sendOutInvestInfo(postIds, user._id);
+    }
+
+    res.status(200).json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getOld = async (req, res, next) => {
+  try {
+    // TODO - right now sorting commentary by latest and relevance
+    // only works for community's own posts
+    // solution: populate postData then populate with postData post
+    // TODO - for now isolate commentary to given community
+    const { community } = req.query;
+    const { user } = req;
+
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const tag = req.query.tag || null;
+    const { sort } = req.query;
     let sortQuery;
     let commentarySort;
 
@@ -38,16 +144,14 @@ exports.get = async (req, res) => {
 
     let blocked = [];
     if (req.user) {
-      blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
+      blocked = [...(req.user.blocked || []), ...(req.user.blockedBy || [])];
     }
 
     let query = { community, post: { $exists: true } };
 
     if (tag) query = { tags: tag, community };
-    let feed;
-    let posts = [];
 
-    feed = await Feed.find(query)
+    const feed = await Feed.find(query)
     .sort(sortQuery)
     .skip(skip)
     .limit(limit)
@@ -65,7 +169,7 @@ exports.get = async (req, res) => {
             // with some randomness on client side
             repost: { $exists: false },
             user: { $nin: blocked },
-            $or: [{ hidden: { $ne: true } }],
+            $or: [{ hidden: { $ne: true } }]
           },
           options: { sort: commentarySort },
           populate: [
@@ -73,71 +177,33 @@ exports.get = async (req, res) => {
             {
               path: 'embeddedUser.relevance',
               select: 'pagerank',
-              match: { community, global: true },
-            },
+              match: { community, global: true }
+            }
           ]
         },
         { path: 'metaPost' },
         {
           path: 'embeddedUser.relevance',
           select: 'pagerank',
-          match: { community, global: true },
-        },
+          match: { community, global: true }
+        }
       ]
     });
 
-    feed.forEach(async (f) => {
+    const posts = [];
+    feed.forEach(async f => {
       if (f.post) {
-        // --------- fix random twitter posts
-        // if (!f.post.commentary.length && f.post.type === 'link') {
-        //   console.log(f);
-        //   // await f.remove();
-        // }
-
-        // ------- fix wrong time
-
-        // let com = f.post.commentary;
-        // let latest = f.latestPost;
-        // let latestPost = 0;
-        // com.forEach(c => {
-        //   let date = c.data.postDate;
-        //   if (new Date(date).getTime() > new Date(latestPost).getTime()) {
-        //     latestPost = date;
-        //   }
-        // });
-        // let diff = new Date(latest).getTime() - new Date(latestPost).getTime();
-        // if (diff > 0) {
-        //   console.log('difference ', diff / (1000 * 60 * 60), 'h');
-        //   console.log('latestPost ', latestPost);
-        //   console.log('fix latest', latest);
-        //   console.log('fix post', f.post.data.latestComment);
-        //   console.log(f);
-        //   f.latestPost = latestPost;
-        //   await f.save();
-        //   f.post.data.latestComment = latestPost;
-        //   await f.post.data.save();
-        // }
         posts.push(f.post);
-
-        // let com = f.post.commentary;
-        // com.forEach(async c => {
-        //   if (c.twitter && c.data.pagerank === 0 && c.upVotes === 0) {
-        //     console.log(c);
-        //     await f.remove();
-        //     c.hidden = true;
-        //     await c.save();
-        //   }
-        // });
       } else {
         // just in case - this shouldn't happen
-        console.log('error: post is null!');
-        await f.remove();
+        console.log('error: post is null!'); // eslint-disable-line
+        // await f.remove();
       }
     });
 
     // TODO worker thread?
     if (user) {
-      let postIds = [];
+      const postIds = [];
       posts.forEach(meta => {
         postIds.push(meta._id);
         meta.commentary.forEach(post => {
@@ -149,7 +215,6 @@ exports.get = async (req, res) => {
 
     res.status(200).json(posts);
   } catch (err) {
-    handleError(res)(err);
+    next(err);
   }
 };
-

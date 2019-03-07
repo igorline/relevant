@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
 
-let Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-let EmailSchema = new Schema({
+const EmailSchema = new Schema({
   html: String,
   email: String,
   subject: String,
-  campaign: String,
+  campaign: String
 });
 
 module.exports = mongoose.model('Email', EmailSchema);
-

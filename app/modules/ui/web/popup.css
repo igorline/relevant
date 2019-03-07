@@ -1,0 +1,24 @@
+@import 'styles/global.css';
+
+.popup {
+  position: relative;
+  user-select: none;
+  z-index: 1;
+  cursor: pointer;
+}
+.popupOptions {
+  min-width: 140px;
+  top: 25px;
+  right: 5px;
+  cursor: pointer;
+  @extend %popupMenu;
+  a {
+    display: block;
+  }
+}
+.optionDots {
+  font-weight: bold;
+  font-size: 18px;
+  color: $greyText;
+  pointer-events: none;
+}

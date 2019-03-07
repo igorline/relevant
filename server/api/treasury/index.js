@@ -1,9 +1,7 @@
+const express = require('express');
+const controller = require('./treasury.controller');
 
-let express = require('express');
-let controller = require('./treasury.controller');
-let auth = require('../../auth/auth.service');
-
-let router = express.Router();
+const router = express.Router();
 
 router.get('/', controller.index);
 

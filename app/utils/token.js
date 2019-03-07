@@ -1,11 +1,10 @@
 let userDefaults;
 let cookie;
 
-if (process.env.WEB != 'true' && process.env.NODE_ENV !== 'test') {
-  // userDefaults = require('react-native-user-defaults').default;
+if (process.env.WEB !== 'true') {
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
-  let Cookies = require('universal-cookie');
+  const Cookies = require('universal-cookie');
   cookie = new Cookies();
 }
 
@@ -15,33 +14,34 @@ let token;
 
 export function get() {
   return new Promise((resolve, reject) => {
-
     if (token) return resolve(token);
 
     if (userDefaults) {
-      return userDefaults.get('token', APP_GROUP_ID)
-      .then((newToken) => {
+      return userDefaults
+      .get('token', APP_GROUP_ID)
+      .then(newToken => {
         if (newToken) {
           token = newToken;
           return resolve(token);
         }
-        console.log('userDefaults didn\'t find token');
-        return reject();
+        return resolve(null);
       })
       .catch(err => reject(err));
     }
     // WEB
-    let newToken = cookie.get('token', { path: '/' });
+    const newToken = cookie.get('token', { path: '/' });
     if (newToken) {
       token = newToken;
       return resolve(token);
     }
-    return reject();
+    return resolve(token);
+    // reject(new Error('not logged in'));
   });
 }
 
 export function remove() {
   token = null;
+  console.log('REMOVING TOKEN!'); // eslint-disable-line
   if (userDefaults) {
     return new Promise(resolve => {
       userDefaults.remove('token', APP_GROUP_ID);
@@ -50,7 +50,6 @@ export function remove() {
   }
   return new Promise(resolve => {
     cookie.remove('token', { path: '/' });
-    console.log("REMOVED TOKEN ", cookie.get('token'));
     resolve();
   });
 }
@@ -68,4 +67,3 @@ export function set(newToken) {
     resolve();
   });
 }
-

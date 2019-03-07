@@ -3,8 +3,8 @@
 // }
 delete process.env.BROWSER;
 process.env.WEB = 'true';
-require('babel-core/register');
-require('babel-polyfill');
+require('@babel/register');
+require('@babel/polyfill');
 
 require('dotenv').config({ silent: true });
 

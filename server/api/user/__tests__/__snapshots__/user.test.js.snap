@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User api/user/create create user 1`] = `
+Object {
+  "__v": 0,
+  "_id": "[SANITIZED]",
+  "airdropTokens": 0,
+  "balance": 0,
+  "bio": "",
+  "blocked": Array [],
+  "blockedBy": Array [],
+  "confirmCode": "[SANITIZED]",
+  "confirmed": false,
+  "createdAt": "[SANITIZED]",
+  "deviceTokens": Array [],
+  "email": "alice@alice.com",
+  "ethAddress": Array [],
+  "handle": "Alice",
+  "id": "[SANITIZED]",
+  "image": "alice-pic.jpg",
+  "investmentCount": 0,
+  "lastFeedNotification": 1970-01-01T00:00:00.000Z,
+  "lastVote": "[SANITIZED]",
+  "lockedTokens": 0,
+  "messages": 0,
+  "name": "Alice",
+  "onboarding": 0,
+  "online": false,
+  "postCount": 0,
+  "profile": Object {
+    "name": "Alice",
+    "role": "user",
+  },
+  "provider": "local",
+  "referralTokens": 0,
+  "relevance": null,
+  "relevanceRecord": Array [],
+  "role": "user",
+  "token": Object {
+    "_id": "[SANITIZED]",
+    "role": "user",
+  },
+  "tokenBalance": 0,
+  "topTopics": Array [],
+  "updatedAt": "[SANITIZED]",
+  "votePower": 1,
+  "webOnboard": Object {
+    "onboarding": false,
+  },
+}
+`;
