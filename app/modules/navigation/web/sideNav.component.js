@@ -10,9 +10,15 @@ import { colors, layout, mixins } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import ULink from 'modules/navigation/ULink.component';
 import { Image, View } from 'modules/styled/web';
+import MenuIcon from 'modules/ui/web/menuIcon.component';
+
+const Container = styled.div`
+  position: sticky;
+  z-index: 100;
+  top: 0;
+`;
 
 const SideNavContent = styled.div`
-  position: sticky;
   background: ${colors.secondaryBG};
   width: ${layout.sideNavWidth};
   max-width: ${layout.sideNavWidth};
@@ -31,8 +37,7 @@ const SideNavScroll = styled.div`
   width: ${layout.sideNavWidth};
 `;
 
-const LogoContainer = styled.div`
-  position: sticky;
+const LogoContainer = styled(View)`
   background: ${colors.secondaryBG};
   height: ${layout.headerHeight};
   top: 0;
@@ -44,11 +49,19 @@ const LogoContainer = styled.div`
 const SideNav = props => {
   const logoLink = `/${props.community || 'relevant'}/new`;
   return (
-    <SideNavContent flex={1} className={props.className}>
-      <SideNavScroll flex={1}>
-        <LogoContainer bb>
-          <ULink align={'flex-start'} to={logoLink}>
-            <View pl={4} h={layout.headerHeight} align={'center'} fdirection={'row'}>
+    <Container>
+      <SideNavContent flex={1} className={props.className}>
+        <SideNavScroll flex={1}>
+          <LogoContainer
+            bb
+            h={layout.headerHeight}
+            align="center"
+            fdirection="row"
+            justify="space-between"
+            pl={4}
+            pr={4}
+          >
+            <ULink align={'flex-start'} to={logoLink}>
               <Image
                 h={4}
                 w={22}
@@ -56,30 +69,33 @@ const SideNav = props => {
                 src={'/img/logo-opt.png'}
                 alt={'Relevant'}
               />
-            </View>
-          </ULink>
-        </LogoContainer>
-        <View flex={1}>
-          <NavProfileComponent />
-        </View>
-        <View flex={1}>
-          <CommunityNav {...props} />
-        </View>
-        <SideNavFooter />
-      </SideNavScroll>
-    </SideNavContent>
+            </ULink>
+            <MenuIcon />
+          </LogoContainer>
+          <View flex={1}>
+            <NavProfileComponent />
+          </View>
+          <View flex={1}>
+            <CommunityNav {...props} />
+          </View>
+          <SideNavFooter />
+        </SideNavScroll>
+      </SideNavContent>
+    </Container>
   );
 };
 
 SideNav.propTypes = {
   className: PropTypes.string,
   actions: PropTypes.object,
-  community: PropTypes.string
+  community: PropTypes.string,
+  navigation: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   community: state.auth.community,
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  navigation: state.navigation
 });
 
 export default connect(

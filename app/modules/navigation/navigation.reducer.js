@@ -23,7 +23,7 @@ const initialState = {
   profile: {},
   myProfile: {},
   modal: null,
-  sideNavIsOpen: true,
+  sideNavIsOpen: false,
   width: null
 };
 

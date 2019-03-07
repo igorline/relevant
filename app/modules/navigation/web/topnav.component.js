@@ -13,6 +13,7 @@ import { colors, layout, sizing } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { getNotificationCount } from 'modules/activity/activity.actions';
 import Ulink from 'modules/navigation/ULink.component';
+import MenuIcon from 'modules/ui/web/menuIcon.component';
 
 const Nav = styled(View)`
   position: sticky;
@@ -66,7 +67,9 @@ class TopNav extends Component {
     if (
       this.state.timeSinceNotificationCount &&
       now.getTime() - this.state.timeSinceNotificationCount.getTime() < 30000
-    ) { return; }
+    ) {
+      return;
+    }
     if (isAuthenticated) {
       this.setState({ timeSinceNotificationCount: now });
       this.props.actions.getNotificationCount();
@@ -102,6 +105,7 @@ class TopNav extends Component {
           fdirection="row"
           align="center"
         >
+          <MenuIcon mr={2} />
           <DiscoverTabs />
           <View
             justify="space-between"
