@@ -12,6 +12,7 @@ const PostSchema = new Schema(
   {
     body: String,
     title: String,
+    description: String,
     community: String,
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     tags: [{ type: String, ref: 'Tag' }],
@@ -165,19 +166,21 @@ PostSchema.pre('save', async function save(next) {
   }
 });
 
-PostSchema.methods.addPostData = async function addPostData(community) {
+PostSchema.methods.addPostData = async function addPostData(postObject) {
   const eligibleForReward = !this.parentPost && !this.twitter;
-
+  const now = new Date();
   const data = new (this.model('PostData'))({
     eligibleForReward,
     hidden: this.hidden,
     type: this.type,
     parentPost: this.parentPost,
-    postDate: this.postDate || this.createdAt,
-    payoutTime: this.payoutTime,
+    postDate: now, // if we are creating post data object date is new!
+    payoutTime: postObject ? postObject.payoutTime : this.payoutTime,
+    // payoutTime: this.payoutTime,
+    // postDate: this.postDate || this.createdAt,
     post: this._id,
-    community: community ? community.slug : this.community,
-    communityId: community ? community._id : this.communityId,
+    community: postObject ? postObject.community : this.community,
+    communityId: postObject ? postObject.communityId : this.communityId,
     relevance: this.relevance,
     rank: this.rank,
     relevanceNeg: this.relevanceNeg,
@@ -290,9 +293,10 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       postDate,
       payoutTime,
       hidden,
+      image,
+      title,
       url,
-      communityId,
-      community
+      communityId
     } = postObject;
 
     let post = await this.model('Post')
@@ -301,6 +305,9 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
 
     if (!post) {
       const parentObj = {
+        image,
+        title,
+        description: linkObject.description,
         url,
         tags,
         postDate,
@@ -315,10 +322,7 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
     const eligibleForReward = !post.parentPost && !post.twitter;
 
     if (!post.data) {
-      post = await post.addPostData({
-        slug: community,
-        _id: communityId
-      });
+      post = await post.addPostData(postObject);
     } else if (!post.data.eligibleForReward && eligibleForReward) {
       post.data.eligibleForReward = eligibleForReward;
       post.data.postDate = postDate;

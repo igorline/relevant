@@ -145,6 +145,10 @@ class PostButtons extends Component {
       }
     }
 
+    const postRank = post.data
+      ? Math.round(post.data.pagerank) + post.data.upVotes - post.data.downVotes
+      : 0;
+
     return (
       <View className={className}>
         <View
@@ -176,7 +180,7 @@ class PostButtons extends Component {
                 }
               })}
             >
-              {post.data ? Math.round(post.data.relevance) : 0}
+              {postRank || 0}
             </NumericalValue>
           </View>
           <PostButton
