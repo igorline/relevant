@@ -652,8 +652,7 @@ exports.create = async (req, res, next) => {
       user: user._id,
       mentions: req.body.mentions,
       postDate: now,
-      payoutTime,
-      eligibleForRewards: true
+      payoutTime
     };
 
     // TODO Work on better length limits
@@ -681,19 +680,21 @@ exports.create = async (req, res, next) => {
     if (!hasChildComment) return res.status(200).json(linkParent);
 
     let newPost = new Post(postObject);
-    newPost = await newPost.addPostData();
+    newPost = await newPost.save();
 
     if (linkParent) {
       newPost.linkParent = linkParent;
       newPost.parentPost = linkParent;
-      newPost.data.parentPost = linkParent;
       newPost.metaPost = linkParent.metaPost;
-      newPost = await newPost.save();
-      await linkParent.save();
     }
+
+    newPost = await newPost.addPostData();
+    newPost.data.parentPost = linkParent;
 
     newPost = await newPost.addUserInfo(author);
     newPost = await newPost.save();
+
+    if (linkParent) await linkParent.save();
 
     // TODO should you invest in own comment?
     // await Invest.createVote({

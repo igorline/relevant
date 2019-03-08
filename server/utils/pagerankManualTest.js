@@ -5,7 +5,7 @@ import request from 'supertest';
 import computePageRank from './pagerankCompute';
 import Community from '../api/community/community.model';
 
-const community = 'relevant';
+const community = 'crypto';
 
 const { app, db } = require('../server.js');
 
