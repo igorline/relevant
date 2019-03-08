@@ -336,7 +336,7 @@ async function updateItemRank(props) {
       }
     );
 
-    if (postData.needsRankUpdate) {
+    if (postData && postData.needsRankUpdate) {
       postData.needsRankUpdate = false;
       post.data = postData;
       post = await post.updateRank({ communityId });
