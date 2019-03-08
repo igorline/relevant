@@ -505,9 +505,9 @@ export function sendConfirmation() {
     });
 }
 
-export function forgotPassword(user) {
+export function forgotPassword(user, query) {
   return async () =>
-    fetch(process.env.API_SERVER + '/api/user/forgot', {
+    fetch(process.env.API_SERVER + '/api/user/forgot' + (query || ''), {
       method: 'PUT',
       ...(await reqOptions()),
       body: JSON.stringify({ user })

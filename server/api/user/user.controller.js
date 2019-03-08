@@ -1,6 +1,7 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import { BANNED_USER_HANDLES, EMAIL_REWARD } from 'server/config/globalConstants';
@@ -19,7 +20,7 @@ async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = 'Welcome to Relevant! ';
   try {
-    const url = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
+    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
       user.confirmCode
     }`;
     const data = {
@@ -29,7 +30,7 @@ async function sendConfirmation(user, newUser) {
       html: `${text}Click on this link to confirm your email address and get ${EMAIL_REWARD} Relevant Coins:
       <br />
       <br />
-      <a href="${url}" target="_blank">${url}</a>
+      <a href="${confirmUrl}" target="_blank">${confirmUrl}</a>
       <br />
       <br />
       `
@@ -41,17 +42,19 @@ async function sendConfirmation(user, newUser) {
   return { email: user.email };
 }
 
-async function sendResetEmail(user) {
+async function sendResetEmail(user, queryString) {
   let status;
   try {
-    const url = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}`;
+    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${
+      user.resetPasswordToken
+    }${queryString}`;
     const data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
       subject: 'Reset Relevant Password',
       html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
-      ${url}<br/><br/>
+      ${resetUrl}<br/><br/>
       If you did not request this, please ignore this email and your password will remain unchanged.`
     };
     status = await mail.send(data);
@@ -64,7 +67,10 @@ async function sendResetEmail(user) {
 exports.forgot = async (req, res, next) => {
   let email;
   try {
+    const urlParts = url.parse(req.url, true);
+    const queryString = urlParts.search || '';
     const string = req.body.user;
+
     email = /^.+@.+\..+$/.test(string);
     const query = email ? { email: string } : { handle: string };
     let user = await User.findOne(
@@ -76,7 +82,7 @@ exports.forgot = async (req, res, next) => {
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000;
     user = await user.save();
-    await sendResetEmail(user);
+    await sendResetEmail(user, queryString);
     return res.status(200).json({ email: user.email, username: user.handle });
   } catch (err) {
     let error = new Error("Couldn't find user with this name ", err);
