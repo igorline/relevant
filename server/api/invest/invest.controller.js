@@ -271,7 +271,7 @@ exports.create = async (req, res, next) => {
     amount = Math.min(1, amount);
 
     // ------ post ------
-    post = await Post.findOne({ _id: post._id }, '-comments')
+    post = await Post.findOne({ _id: post._id })
     .populate({ path: 'parentPost' })
     .populate({ path: 'data', match: { community } });
     // .populate('investments').exec();
@@ -279,7 +279,7 @@ exports.create = async (req, res, next) => {
 
     // unhide twitter commentary
     if (amount > 0 && post.hidden && post.parentPost) {
-      await post.parentPost.insertIntoFeed(communityId);
+      await post.parentPost.insertIntoFeed(communityId, community);
       post.hidden = false;
     }
     post.hidden = false;
