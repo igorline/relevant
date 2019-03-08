@@ -234,6 +234,7 @@ export default async function computePageRank(params) {
         maxRel
       });
       post.data.pagerank = u.pagerank;
+      post.pagerank = u.pagerank;
     }
 
     array.forEach(async u => {
@@ -316,11 +317,32 @@ async function updateItemRank(props) {
     if (Number.isNaN(rank)) {
       return null;
     }
-    return PostData.findOneAndUpdate(
+    let post = await Post.findOneAndUpdate(
+      { _id: u.id },
+      { pagerank: rank },
+      // { new: true },
+      {
+        new: true,
+        fields: 'pagerank pagerankRaw post rank relevance parentPost communityId'
+      }
+    );
+    const postData = await PostData.findOneAndUpdate(
       { post: u.id, communityId },
       { pagerank: rank, pagerankRaw: u.rank },
-      { new: true, fields: 'pagerank pagerankRaw post rank relevance' }
+      // { new: true },
+      {
+        new: true,
+        fields: 'pagerank pagerankRaw post rank relevance postDate communityId'
+      }
     );
+
+    if (postData.needsRankUpdate) {
+      postData.needsRankUpdate = false;
+      post.data = postData;
+      post = await post.updateRank({ communityId });
+    }
+
+    return post.data || postData;
   }
   return null;
 }

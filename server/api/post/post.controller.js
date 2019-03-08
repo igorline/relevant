@@ -667,7 +667,7 @@ exports.create = async (req, res, next) => {
     let linkParent;
     if (postUrl) {
       linkParent = await Post.newLinkPost({ linkObject, postObject });
-      await linkParent.insertIntoFeed(communityId);
+      await linkParent.insertIntoFeed(communityId, community);
       // await Invest.createVote({
       //   post: linkParent,
       //   user: author,
@@ -705,7 +705,7 @@ exports.create = async (req, res, next) => {
     //   communityId
     // });
 
-    if (!postUrl) await newPost.insertIntoFeed(communityId);
+    if (!postUrl) await newPost.insertIntoFeed(communityId, community);
 
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);

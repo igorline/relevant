@@ -269,8 +269,9 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
     // TODO - deprecate this once we don't use this in the feed
     post.rank = rank;
-    if (post.communityId === communityId) {
+    if (post.communityId && post.communityId.toString() === communityId.toString()) {
       post.pagerank = post.data.pagerank;
+      // console.log('updating post pagerank', post.pagerank);
     }
 
     await post.data.save();
@@ -319,7 +320,7 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
         _id: communityId
       });
     } else if (!post.data.eligibleForReward && eligibleForReward) {
-      post.data = eligibleForReward;
+      post.data.eligibleForReward = eligibleForReward;
       post.data.postDate = postDate;
       post.data.payoutTime = payoutTime;
     }
@@ -366,7 +367,10 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
   }
 };
 
-PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
+PostSchema.methods.insertIntoFeed = async function insertIntoFeed(
+  communityId,
+  community
+) {
   try {
     const post = this;
     if (post.parentPost) throw new Error("Child comments don't go in the feed");
@@ -381,7 +385,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
 
     const newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
-      payload: { communityId }
+      payload: { communityId, community }
     };
     this.model('Post').events.emit('postEvent', newPostEvent);
     return post;

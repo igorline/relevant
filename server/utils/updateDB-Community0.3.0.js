@@ -468,6 +468,7 @@ async function updatePostData(community) {
         parentData.type = p.type;
         parentData.parentPost = null;
         parentData.relevance = Math.max(p.data.relevance, parentData.relevance) || 0;
+        parentData.pagerank = Math.max(p.data.pagerank, parentData.pagerank) || 0;
         parentPost.relevance = parentData.relevance;
         if (!parentData.community) parentData.community = p.community;
         if (!parentData.communityId) parentData.communityId = p.communityId;
@@ -676,10 +677,11 @@ async function userTokens() {
 
 async function cleanUpCommunityFunds() {
   const communities = await Community.find({});
-  communities.map(c =>
-    // eslint-disable-line
-    // console.log(c.toObject());
-    console.log(c.slug, c.rewardFund)
+  communities.map(
+    c =>
+      // eslint-disable-line
+      // console.log(c.toObject());
+      console.log(c.slug, c.rewardFund)
     // c.rewardFund = 0;
     // c.topPostShares = 0;
     // c.currentPosts = 0;
@@ -711,8 +713,8 @@ async function runUpdates() {
 
     // await cleanInvites();
 
-    await userTokens();
-    await cleanUpCommunityFunds();
+    // await userTokens();
+    // await cleanUpCommunityFunds();
 
     // DON'T NEED
     // await cleanupPostData();
