@@ -11,7 +11,8 @@ class ResetPassword extends Component {
     match: PropTypes.object,
     actions: PropTypes.object,
     history: PropTypes.object,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
+    authNav: PropTypes.func
   };
 
   constructor(props) {
@@ -25,7 +26,7 @@ class ResetPassword extends Component {
 
   submit(vals) {
     this.props.actions.resetPassword(vals.password, this.token).then(success => {
-      if (success) this.props.history.push('/user/login');
+      if (success) this.props.authNav('login');
     });
   }
 
