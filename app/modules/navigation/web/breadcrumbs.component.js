@@ -29,7 +29,7 @@ class Breakcrumbs extends Component {
     const refreshPostsEl = (
       <StyledNavLink
         to="#"
-        nClick={() => actions.refreshTab('discover')}
+        onClick={() => actions.refreshTab('discover')}
         ml={1}
         c={colors.blue}
         hu
