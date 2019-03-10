@@ -96,8 +96,8 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta name="twitter:description" content="${meta.description}" />
         <meta name="twitter:image" content="${meta.image}" />
 
-        ${rnWebStyles}
         ${cssStyleTags}
+        ${rnWebStyles}
         ${styledComponentsTags}
 
         <!-- Global site tag (gtag.js) - Google Analytics -->

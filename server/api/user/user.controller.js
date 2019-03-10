@@ -24,7 +24,7 @@ async function sendConfirmation(user, newUser) {
       user.confirmCode
     }`;
     const data = {
-      from: 'Relevant <info@relevant.community>',
+      from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
       subject: 'Relevant Email Confirmation',
       html: `${text}Click on this link to confirm your email address and get ${EMAIL_REWARD} Relevant Coins:
@@ -52,10 +52,10 @@ async function sendResetEmail(user, queryString) {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
       subject: 'Reset Relevant Password',
-      html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.<br />
+      html: `You are receiving this because you have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
       ${resetUrl}<br/><br/>
-      If you did not request this, please ignore this email and your password will remain unchanged.`
+      If you did not request a password reset, please ignore this email and your password will remain unchanged.`
     };
     status = await mail.send(data);
   } catch (err) {

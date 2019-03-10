@@ -43,7 +43,7 @@ class CommentInput extends Component {
   }
 
   setMention(user) {
-    const comment = this.state.comment.replace(this.mention, '@' + user._id);
+    const comment = this.state.comment.replace(this.mention, '@' + user.handle);
     this.setState({ comment });
     this.props.actions.setUserSearch([]);
   }
