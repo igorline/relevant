@@ -1,10 +1,29 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Avatar from 'modules/user/web/avatar.component';
+import Avatar from 'modules/user/avatarbox.component';
+import { View } from 'modules/styled/uni';
+import styled from 'styled-components/primitives';
+import { colors } from 'app/styles';
 
-if (process.env.BROWSER === true) {
-  require('./userSearch.css');
-}
+const UserSelect = styled(View)`
+  &:hover {
+    background: ${colors.darkLightGrey};
+  }
+  ${p =>
+    p.selected
+      ? `
+    background: ${colors.darkLightGrey};
+  `
+      : ''}
+`;
+
+const Container = styled(View)`
+  max-height: 250px;
+  min-width: 250px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background: white;
+`;
 
 const USER_ELEMENT_HEIGHT = 38;
 
@@ -31,24 +50,30 @@ export default class UserSuggestion extends Component {
     }
     const selected = this.props.userSearchIndex;
     const inner = this.props.users.map((user, i) => (
-      <button
+      <UserSelect
+        p={'1 3'}
         key={i}
-        className={selected === i ? 'selected' : ''}
+        selected={selected === i ? 'selected' : ''}
         onClick={() => this.props.onChange(user)}
       >
         <Avatar user={user} nolink />
-        <span className="username">{user.handle}</span>
-      </button>
+      </UserSelect>
     ));
     return (
-      <div
+      <Container
+        wrap
+        fdirection={'row'}
+        bl
+        bb
+        br
+        mt={'1px'}
         ref={el => {
           this.el = el;
         }}
         className="userSearch"
       >
         {inner}
-      </div>
+      </Container>
     );
   }
 }

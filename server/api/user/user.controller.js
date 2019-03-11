@@ -4,7 +4,7 @@ import sigUtil from 'eth-sig-util';
 import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
-import { BANNED_USER_HANDLES, EMAIL_REWARD } from 'server/config/globalConstants';
+import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
@@ -18,19 +18,23 @@ import * as ethUtils from '../../utils/ethereum';
 
 async function sendConfirmation(user, newUser) {
   let text = '';
-  if (newUser) text = 'Welcome to Relevant! ';
+  if (newUser) text = ', welcome to Relevant';
   try {
     const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
       user.confirmCode
     }`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Relevant Email Confirmation',
-      html: `${text}Click on this link to confirm your email address and get ${EMAIL_REWARD} Relevant Coins:
+      html: `
+        Hi @${user.handle}${text}!
       <br />
       <br />
-      <a href="${confirmUrl}" target="_blank">${confirmUrl}</a>
+        ${text}Please click on the link below to confirm your email address:
+      <br />
+      <br />
+      <a href="${confirmUrl}" target="_blank">Confirm Email</a>
       <br />
       <br />
       `
@@ -49,10 +53,13 @@ async function sendResetEmail(user, queryString) {
       user.resetPasswordToken
     }${queryString}`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Reset Relevant Password',
-      html: `You are receiving this because you have requested the reset of the password for your account.<br />
+      html: `
+      Hi, @${user.handle}
+      <br/><br/>
+      You are receiving this because you have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
       ${resetUrl}<br/><br/>
       If you did not request a password reset, please ignore this email and your password will remain unchanged.`
@@ -120,7 +127,10 @@ exports.confirm = async (req, res, next) => {
 
 exports.sendConfirmationCode = async (req, res, next) => {
   try {
-    let user = await User.findOne({ handle: req.user.handle }, 'email confirmCode');
+    let user = await User.findOne(
+      { handle: req.user.handle },
+      'email confirmCode name handle'
+    );
     user.confirmCode = uuid();
     user = await user.save();
     const status = await sendConfirmation(user);

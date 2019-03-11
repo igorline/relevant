@@ -35,7 +35,7 @@ async function sendInviteCodes(user, codes) {
       'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
     // let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Invitation Codes!',
       html: `If you know a thought leader who posesses valuable information, send them one of these invite codes:

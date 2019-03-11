@@ -270,7 +270,7 @@ class App extends Component {
         {this.renderModal()}
         <ToastContainer />
         {renderRoutes(this.props.route.routes)}
-        {mobileEl}
+        <span>{mobileEl}</span>
       </div>
     );
   }

@@ -197,10 +197,16 @@ PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
+  const post = this.toObject();
+  // Prevent over-writing post object
+  // TODO - normalize on client instead
+  if (post.parentPost && post.parentPost._id) {
+    post.parentPost = post.parentPost._id;
+  }
   const postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
-    payload: this
+    payload: post
   };
   this.model('Post').events.emit('postEvent', postNote);
 };
@@ -472,34 +478,35 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 
         const users = await this.model('User').find(query, 'deviceTokens');
 
-        users.forEach(user => {
+        users.forEach(async user => {
           let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
           if (mention === 'everyone' && post.body) alert = post.body;
           const payload = { 'Mention from': textParent.embeddedUser.name };
           apnData.sendNotification(user, alert, payload);
+
+          const dbNotificationObj = {
+            post: post._id,
+            forUser: user._id,
+            group,
+            byUser: mUser._id || mUser,
+            amount: null,
+            type: type + 'Mention',
+            personal: true,
+            read: false
+          };
+
+          const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
+          const note = await newDbNotification.save();
+
+          const newNotifObj = {
+            _id: group ? null : mention,
+            type: 'ADD_ACTIVITY',
+            payload: note
+          };
+
+          this.events.emit('postEvent', newNotifObj);
         });
 
-        const dbNotificationObj = {
-          post: post._id,
-          forUser: users._id,
-          group,
-          byUser: mUser._id || mUser,
-          amount: null,
-          type: type + 'Mention',
-          personal: true,
-          read: false
-        };
-
-        const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
-        const note = await newDbNotification.save();
-
-        const newNotifObj = {
-          _id: group ? null : mention,
-          type: 'ADD_ACTIVITY',
-          payload: note
-        };
-
-        this.events.emit('postEvent', newNotifObj);
         return null;
       } catch (err) {
         throw err;

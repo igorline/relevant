@@ -5,7 +5,8 @@ import {
   CTALink,
   CommentText,
   SecondaryText,
-  Spacer
+  Spacer,
+  Touchable
 } from 'modules/styled/uni';
 import get from 'lodash.get';
 import PropTypes from 'prop-types';
@@ -17,6 +18,15 @@ import { colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import Linkify from 'linkifyjs/react';
+import * as linkify from 'linkifyjs';
+import mentionPlugin from 'linkifyjs/plugins/mention';
+import hashTagPlugin from 'linkifyjs/plugins/hashtag';
+
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
+
+mentionPlugin(linkify);
+hashTagPlugin(linkify);
 
 const PostButtonsContainer = styled.View`
   /* margin-right: ${sizing(4)}; */
@@ -46,7 +56,8 @@ class Comment extends Component {
     focusedComment: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     scrollTo: PropTypes.func,
     preview: PropTypes.bool,
-    inMainFeed: PropTypes.bool
+    inMainFeed: PropTypes.bool,
+    history: PropTypes.object
   };
 
   state = {
@@ -135,7 +146,8 @@ class Comment extends Component {
       noLink,
       avatarText,
       preview,
-      inMainFeed
+      inMainFeed,
+      history
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -174,14 +186,26 @@ class Comment extends Component {
     let body = (
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
-          onClick={e => {
-            let link;
-            try {
-              link = e.target.getAttribute('href');
-            } catch (err) {
-              //
+          options={{
+            tagName: {
+              mention: () => Link,
+              hashtag: () => Link
+            },
+            attributes: (href, type) => {
+              if (type === 'mention') {
+                return {
+                  to: '/user/profile' + href
+                };
+              }
+              if (type === 'hashtag') {
+                return {
+                  to: `/${auth.community}/top/${href.replace('#', '')}`
+                };
+              }
+              return {
+                onClick: e => e.stopPropagation()
+              };
             }
-            return link ? window.open(e.target.href) : true;
           }}
         >
           {text}
@@ -197,9 +221,9 @@ class Comment extends Component {
 
     if (postUrl) {
       body = (
-        <ULink to={postUrl} noLink={noLink}>
+        <Touchable to={postUrl} onClick={() => (noLink ? null : history.push(postUrl))}>
           {body}
-        </ULink>
+        </Touchable>
       );
     }
 
@@ -317,4 +341,4 @@ class Comment extends Component {
     );
   }
 }
-export default Comment;
+export default withRouter(Comment);
