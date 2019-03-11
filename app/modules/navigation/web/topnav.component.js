@@ -195,7 +195,7 @@ class TopNav extends Component {
             />
           </View>
         </View>
-        <View fdirection="row" mt={showResponsive ? 1 : 0}>
+        <View fdirection="row" mt={showResponsive ? 1 : 0} ml={showResponsive ? 7.5 : 0}>
           <Breadcrumbs />
         </View>
       </Nav>
