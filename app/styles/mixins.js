@@ -5,10 +5,13 @@ import { mediumScreenWidth, smallScreenWidth } from './layout';
 
 // This assumes we are working with 2 breakpoints/3 sizes
 function responsiveHandler(val) {
-  const WIDTH = window.innerWidth;
   if (!Array.isArray(val)) {
     return val;
   }
+  if (!window) {
+    return val[0];
+  }
+  const WIDTH = window.innerWidth;
   if (val.length === 1) {
     return val[0];
   }
