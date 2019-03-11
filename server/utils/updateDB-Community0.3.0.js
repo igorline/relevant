@@ -691,6 +691,20 @@ async function cleanUpCommunityFunds() {
   );
 }
 
+// async function restoreRewards() {
+//   const launchDate = new Date('March 5, 2019 12:00:00');
+//   let rewards = await Earnings.find({ status: 'paidout', createdAt: { $gt: launchDate } })
+//   .populate('user')
+//   .populate('post')
+//   .sort('createdAt');
+//   rewards.forEach(async r => {
+//     r.user.balance += r.earned;
+//     await r.user.save();
+//     console.log(r.user.handle, r.user.balance);
+//     console.log('rewards', r.user.handle, r.post.title, r.earned, r.payoutTime);
+//   });
+// }
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -715,6 +729,8 @@ async function runUpdates() {
 
     // await userTokens();
     // await cleanUpCommunityFunds();
+
+    // await restoreRewards();
 
     // DON'T NEED
     // await cleanupPostData();
