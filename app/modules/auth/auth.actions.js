@@ -505,9 +505,9 @@ export function sendConfirmation() {
     });
 }
 
-export function forgotPassword(user) {
+export function forgotPassword(user, query) {
   return async () =>
-    fetch(process.env.API_SERVER + '/api/user/forgot', {
+    fetch(process.env.API_SERVER + '/api/user/forgot' + (query || ''), {
       method: 'PUT',
       ...(await reqOptions()),
       body: JSON.stringify({ user })
@@ -712,5 +712,23 @@ export function userToSocket(user) {
   return dispatch => {
     if (!user) return;
     dispatch({ type: 'server/storeUser', payload: user });
+  };
+}
+
+export function redeemInvite(invitecode) {
+  return async dispatch => {
+    try {
+      const user = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'invites',
+        path: '/',
+        body: JSON.stringify({ invitecode })
+      });
+      dispatch(setInviteCode(null));
+      dispatch(updateAuthUser(user));
+    } catch (err) {
+      dispatch(setInviteCode(null));
+      // Alert.alert(err.message);
+    }
   };
 }

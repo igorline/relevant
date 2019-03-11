@@ -1,6 +1,7 @@
 import uuid from 'uuid/v4';
 import Relevance from 'server/api/relevance/relevance.model';
 import { totalAllowedInvites } from 'server/config/globalConstants';
+import Community from 'server/api/community/community.model';
 // import User from 'server/api/user/user.model';
 import Invite from './invite.model';
 import mail from '../../mail';
@@ -73,7 +74,7 @@ exports.create = async (req, res, next) => {
 
     if (!user.relevance) {
       user.relevance = await Relevance.findOne({
-        user: user._id.toString(),
+        user: user._id,
         communityId,
         global: true
       });
@@ -233,7 +234,7 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
     html = await inlineCss(emailStyle + html, { url: 'https://relevant.community' });
 
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: invite.email,
       subject: 'Your Relevant Invitation',
       html
@@ -248,16 +249,36 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
   }
 };
 
-exports.checkInviteCode = async (req, res, next) => {
+exports.adminInvite = async (req, res, next) => {
   try {
-    const { code } = req.body;
-    if (!code) throw new Error('No invitation code');
-    const invite = await Invite.findOne({ code, redeemed: false });
-    if (!invite) throw new Error('Invalid invitation code');
-    invite.status = 'checked';
-    invite.save();
-    if (invite.email) invite.email = invite.email.trim();
-    return res.status(200).json(invite);
+    const { user } = req;
+    const { invitecode } = req.body;
+    if (!invitecode) throw new Error('No invitation code');
+    const invite = await Invite.findOne({
+      code: invitecode,
+      redeemed: { $ne: true }
+    });
+    if (!invite) throw new Error('Missing or used invite');
+
+    const { communityId } = invite;
+
+    const communityInstance = await Community.findOne({ _id: communityId });
+    const role = invite.type === 'admin' ? 'admin' : null;
+    await communityInstance.join(user._id, role);
+
+    invite.redeemed = true;
+    await invite.save();
+
+    const relevance = await Relevance.findOne({
+      user: user._id,
+      communityId,
+      global: true
+    });
+    relevance.pagerank = 70;
+    await relevance.save();
+    user.relevance = relevance;
+
+    return res.status(200).json(user);
   } catch (err) {
     return next(err);
   }

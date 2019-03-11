@@ -1,3 +1,4 @@
+const computePageRank = require('./utils/pagerankCompute').default;
 const queue = require('queue');
 const Stats = require('./api/statistics/statistics.model');
 const Relevance = require('./api/relevance/relevance.model');
@@ -212,6 +213,12 @@ async function basicIncome(done) {
   });
 }
 
+// eslint-disable-next-line
+async function pagerank(community) {
+  const communityId = (await Community.findOne({ slug: community }))._id;
+  await computePageRank({ communityId, community, debug: true });
+}
+
 function getNextUpdateTime() {
   console.log('get next time');
   const now = new Date();
@@ -261,6 +268,7 @@ function startRewards() {
   updateRewards();
 }
 
+// eslint-disable-next-line
 function startTwitterUpdate() {
   setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
   TwitterWorker.updateTwitterPosts();
@@ -272,7 +280,7 @@ function startTwitterUpdate() {
 // startRewards();
 
 if (process.env.NODE_ENV !== 'production') {
-  startTwitterUpdate();
+  // startTwitterUpdate();
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -293,6 +301,8 @@ if (process.env.NODE_ENV === 'production') {
     startBasicIncomeUpdate();
   }, getNextUpdateTime());
 }
+
+// pagerank('crypto');
 
 // setTimeout(TwitterWorker.updateTwitterPosts, 5000);
 

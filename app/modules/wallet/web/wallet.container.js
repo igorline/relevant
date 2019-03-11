@@ -41,11 +41,9 @@ class WalletContainer extends Component {
     const { isAuthenticated } = this.props.auth;
     if (isAuthenticated) {
       // eslint-disable-next-line
-      drizzle = initDrizzle(this.context.store);
+      // temporarily disabled
+      // drizzle = initDrizzle(this.context.store);
     }
-    // if (!this.props.earnings.list.length) {
-    //   this.load(0, 0);
-    // }
   }
 
   componentDidUpdate(prevProps) {

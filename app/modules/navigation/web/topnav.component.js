@@ -111,7 +111,7 @@ class TopNav extends Component {
   }
 
   render() {
-    const { location, auth, className, actions, notif, navigation } = this.props;
+    const { auth, className, actions, notif, navigation } = this.props;
     const showResponsive = navigation.width <= layout.mediumScreenWidth;
     const { user } = auth;
     const temp = user && user.role === 'temp';
@@ -172,7 +172,11 @@ class TopNav extends Component {
                 </Ulink>
               )}
               {auth.isAuthenticated ? (
-                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                <Link
+                  onClick={() => actions.showModal('newpost')}
+                  to={'#'}
+                  disabled={!auth.user}
+                >
                   <ActionButton showResponsive={showResponsive}>New Post</ActionButton>
                 </Link>
               ) : (

@@ -3,9 +3,9 @@ import User from 'server/api/user/user.model';
 import Notification from 'server/api/notification/notification.model';
 import CommunityMember from 'server/api/community/community.member.model';
 import { response } from 'jest-mock-express';
-import { create } from 'server/api/invites/invite.controller';
+import { create, adminInvite } from 'server/api/invites/invite.controller';
 import { create as createUser } from 'server/api/user/user.controller';
-import { referral, referralWithEmail } from 'app/mockdata/invite';
+import { referral, referralWithEmail, adminReferral } from 'app/mockdata/invite';
 import { twitter } from 'app/mockdata';
 import { sanitize, toObject } from 'server/test/utils';
 import { getUsers, getCommunities } from 'server/test/seedData';
@@ -27,6 +27,7 @@ process.env.TEST_SUITE = 'invites';
 describe('CreatePost', () => {
   let {
     alice,
+    bob,
     relevant,
     communityMember,
     res,
@@ -40,7 +41,7 @@ describe('CreatePost', () => {
 
   beforeAll(async () => {
     ({ relevant } = getCommunities());
-    ({ alice } = getUsers());
+    ({ alice, bob } = getUsers());
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
     await Invite.ensureIndexes();
@@ -171,6 +172,40 @@ describe('CreatePost', () => {
         '-createdAt'
       );
       expect(inviterNote.coin).toBe(PUBLIC_LINK_REWARD);
+    });
+  });
+
+  describe('admin invite', () => {
+    test('create admin invite', async () => {
+      alice.role = 'admin';
+      req = {
+        user: alice,
+        body: adminReferral,
+        communityMember
+      };
+      await create(req, res, next);
+      const apiRes = toObject(res.json.mock.calls[0][0]);
+      invite = apiRes.invite[0];
+      expect(invite.code).toBeDefined();
+      expect(invite.type).toBe('admin');
+    });
+
+    test('should be able to redeem admin invite', async () => {
+      req = {
+        user: bob,
+        body: {
+          invitecode: invite.code
+        }
+      };
+      await adminInvite(req, res, next);
+      const user = toObject(res.json.mock.calls[0][0]);
+      expect(user.relevance.pagerank).toBeGreaterThan(50);
+
+      const bobMember = await CommunityMember.findOne({
+        communityId: invite.communityId,
+        user: bob._id
+      });
+      expect(bobMember.role).toBe('admin');
     });
   });
 });

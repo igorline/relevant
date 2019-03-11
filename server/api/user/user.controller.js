@@ -1,6 +1,7 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
@@ -14,27 +15,28 @@ import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
-// User.find({ handle: 'ed' }).remove().exec();
-// Post.find({ 'embeddedUser.handle': 'ed' }).remove().exec();
 
 async function sendConfirmation(user, newUser) {
   let text = '';
-  if (newUser) text = 'Welcome to Relevant! ';
+  if (newUser) text = ', welcome to Relevant';
   try {
-    const url = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
+    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
       user.confirmCode
     }`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Relevant Email Confirmation',
-      html: `${text}Click on this link to confirm your email address:
+      html: `
+        Hi @${user.handle}${text}!
       <br />
       <br />
-      <a href="${url}" target="_blank">${url}</a>
+        ${text}Please click on the link below to confirm your email address:
       <br />
       <br />
-      Once you confirm your email you will be able to invite your friends to the app!
+      <a href="${confirmUrl}" target="_blank">Confirm Email</a>
+      <br />
+      <br />
       `
     };
     await mail.send(data);
@@ -44,18 +46,23 @@ async function sendConfirmation(user, newUser) {
   return { email: user.email };
 }
 
-async function sendResetEmail(user) {
+async function sendResetEmail(user, queryString) {
   let status;
   try {
-    const url = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}`;
+    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${
+      user.resetPasswordToken
+    }${queryString}`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: user.email,
       subject: 'Reset Relevant Password',
-      html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.<br />
+      html: `
+      Hi, @${user.handle}
+      <br/><br/>
+      You are receiving this because you have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
-      ${url}<br/><br/>
-      If you did not request this, please ignore this email and your password will remain unchanged.`
+      ${resetUrl}<br/><br/>
+      If you did not request a password reset, please ignore this email and your password will remain unchanged.`
     };
     status = await mail.send(data);
   } catch (err) {
@@ -67,7 +74,10 @@ async function sendResetEmail(user) {
 exports.forgot = async (req, res, next) => {
   let email;
   try {
+    const urlParts = url.parse(req.url, true);
+    const queryString = urlParts.search || '';
     const string = req.body.user;
+
     email = /^.+@.+\..+$/.test(string);
     const query = email ? { email: string } : { handle: string };
     let user = await User.findOne(
@@ -79,7 +89,7 @@ exports.forgot = async (req, res, next) => {
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000;
     user = await user.save();
-    await sendResetEmail(user);
+    await sendResetEmail(user, queryString);
     return res.status(200).json({ email: user.email, username: user.handle });
   } catch (err) {
     let error = new Error("Couldn't find user with this name ", err);
@@ -117,7 +127,10 @@ exports.confirm = async (req, res, next) => {
 
 exports.sendConfirmationCode = async (req, res, next) => {
   try {
-    let user = await User.findOne({ handle: req.user.handle }, 'email confirmCode');
+    let user = await User.findOne(
+      { handle: req.user.handle },
+      'email confirmCode name handle'
+    );
     user.confirmCode = uuid();
     user = await user.save();
     const status = await sendConfirmation(user);

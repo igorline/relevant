@@ -12,6 +12,7 @@ const PostSchema = new Schema(
   {
     body: String,
     title: String,
+    description: String,
     community: String,
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     tags: [{ type: String, ref: 'Tag' }],
@@ -109,7 +110,7 @@ PostSchema.virtual('reposted', {
 PostSchema.virtual('commentary', {
   ref: 'Post',
   localField: '_id',
-  foreignField: 'linkParent'
+  foreignField: 'parentPost'
 });
 
 PostSchema.virtual('embeddedUser.relevance', {
@@ -135,13 +136,22 @@ PostSchema.virtual('children', {
 
 PostSchema.index({ twitter: 1 });
 PostSchema.index({ parentPost: 1, hidden: 1 });
+PostSchema.index({ parentPost: 1, pagerank: 1, hidden: 1 });
+
 PostSchema.index({ twitter: 1, twitterId: 1 });
 
 PostSchema.index({ rank: 1 });
-PostSchema.index({ postDate: 1 });
-PostSchema.index({ _id: 1, user: 1 });
+PostSchema.index({ postDate: -1 });
+PostSchema.index({ postDate: -1, community: 1 });
+
+PostSchema.index({ postDate: -1, communitId: 1, parentPost: 1 });
 PostSchema.index({ _id: 1, community: 1, user: 1 });
-PostSchema.index({ postDate: 1, tags: 1 });
+
+PostSchema.index({ _id: 1, user: 1 });
+PostSchema.index({ _id: -1, communityId: 1, user: 1 });
+
+PostSchema.index({ communityId: 1, user: 1 });
+PostSchema.index({ postDate: -1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
 PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
@@ -156,19 +166,21 @@ PostSchema.pre('save', async function save(next) {
   }
 });
 
-PostSchema.methods.addPostData = async function addPostData(community) {
+PostSchema.methods.addPostData = async function addPostData(postObject) {
   const eligibleForReward = !this.parentPost && !this.twitter;
-
+  const now = new Date();
   const data = new (this.model('PostData'))({
     eligibleForReward,
     hidden: this.hidden,
     type: this.type,
     parentPost: this.parentPost,
-    postDate: this.postDate || this.createdAt,
-    payoutTime: this.payoutTime,
+    postDate: now, // if we are creating post data object date is new!
+    payoutTime: postObject ? postObject.payoutTime : this.payoutTime,
+    // payoutTime: this.payoutTime,
+    // postDate: this.postDate || this.createdAt,
     post: this._id,
-    community: community ? community.slug : this.community,
-    communityId: community ? community._id : this.communityId,
+    community: postObject ? postObject.community : this.community,
+    communityId: postObject ? postObject.communityId : this.communityId,
     relevance: this.relevance,
     rank: this.rank,
     relevanceNeg: this.relevanceNeg,
@@ -185,10 +197,16 @@ PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
+  const post = this.toObject();
+  // Prevent over-writing post object
+  // TODO - normalize on client instead
+  if (post.parentPost && post.parentPost._id) {
+    post.parentPost = post.parentPost._id;
+  }
   const postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
-    payload: this
+    payload: post
   };
   this.model('Post').events.emit('postEvent', postNote);
 };
@@ -256,13 +274,13 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
     if (topComment) rank = Math.max(rank, topComment.rank);
 
-    // post.data.rank = rank;
-    // post.data.pagerank = Math.max(post.data.pagerank, topComment.pagerank) || 0;
+    post.data.rank = rank;
 
     // TODO - deprecate this once we don't use this in the feed
     post.rank = rank;
-    if (post.communityId === communityId) {
+    if (post.communityId && post.communityId.toString() === communityId.toString()) {
       post.pagerank = post.data.pagerank;
+      // console.log('updating post pagerank', post.pagerank);
     }
 
     await post.data.save();
@@ -281,9 +299,10 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       postDate,
       payoutTime,
       hidden,
+      image,
+      title,
       url,
-      communityId,
-      community
+      communityId
     } = postObject;
 
     let post = await this.model('Post')
@@ -292,6 +311,9 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
 
     if (!post) {
       const parentObj = {
+        image,
+        title,
+        description: linkObject.description,
         url,
         tags,
         postDate,
@@ -303,11 +325,14 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       post = await new (this.model('Post'))(parentObj);
     }
 
+    const eligibleForReward = !post.parentPost && !post.twitter;
+
     if (!post.data) {
-      post = await post.addPostData({
-        slug: community,
-        _id: communityId
-      });
+      post = await post.addPostData(postObject);
+    } else if (!post.data.eligibleForReward && eligibleForReward) {
+      post.data.eligibleForReward = eligibleForReward;
+      post.data.postDate = postDate;
+      post.data.payoutTime = payoutTime;
     }
 
     const combinedTags = [...new Set([...(post.tags || []), ...(tags || [])])];
@@ -352,7 +377,10 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
   }
 };
 
-PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
+PostSchema.methods.insertIntoFeed = async function insertIntoFeed(
+  communityId,
+  community
+) {
   try {
     const post = this;
     if (post.parentPost) throw new Error("Child comments don't go in the feed");
@@ -367,7 +395,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
 
     const newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
-      payload: { communityId }
+      payload: { communityId, community }
     };
     this.model('Post').events.emit('postEvent', newPostEvent);
     return post;
@@ -450,34 +478,35 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 
         const users = await this.model('User').find(query, 'deviceTokens');
 
-        users.forEach(user => {
+        users.forEach(async user => {
           let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
           if (mention === 'everyone' && post.body) alert = post.body;
           const payload = { 'Mention from': textParent.embeddedUser.name };
           apnData.sendNotification(user, alert, payload);
+
+          const dbNotificationObj = {
+            post: post._id,
+            forUser: user._id,
+            group,
+            byUser: mUser._id || mUser,
+            amount: null,
+            type: type + 'Mention',
+            personal: true,
+            read: false
+          };
+
+          const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
+          const note = await newDbNotification.save();
+
+          const newNotifObj = {
+            _id: group ? null : mention,
+            type: 'ADD_ACTIVITY',
+            payload: note
+          };
+
+          this.events.emit('postEvent', newNotifObj);
         });
 
-        const dbNotificationObj = {
-          post: post._id,
-          forUser: users._id,
-          group,
-          byUser: mUser._id || mUser,
-          amount: null,
-          type: type + 'Mention',
-          personal: true,
-          read: false
-        };
-
-        const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
-        const note = await newDbNotification.save();
-
-        const newNotifObj = {
-          _id: group ? null : mention,
-          type: 'ADD_ACTIVITY',
-          payload: note
-        };
-
-        this.events.emit('postEvent', newNotifObj);
         return null;
       } catch (err) {
         throw err;
@@ -498,7 +527,9 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
   try {
     const post = this;
 
-    post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+    if (!post.data) {
+      post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+    }
     const { shares } = post.data;
 
     if (post.type !== 'link') throw new Error('Should not prune anything but links');
@@ -533,16 +564,21 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
 
 async function updateParentPostOnRemovingChild(post) {
   const { communityId } = post;
+
   if (!communityId) {
     throw new Error('error missing post community id!', post.toObject());
   }
-  let parent = await post.model('Post').findOne({ _id: post.linkParent });
+  let parent = await post
+  .model('Post')
+  .findOne({ _id: post.linkParent })
+  .populate({ path: 'data', match: { communityId } });
+
   if (parent) parent = await parent.pruneFeed({ communityId });
 
   if (!parent) return null;
+  if (post.hidden) return parent;
 
-  parent.data = await post.model('PostData').findOne({ post: parent._id, communityId });
-
+  // parent.data = await post.model('PostData').findOne({ post: parent._id, communityId });
   if (!post.data) {
     post.data = await post.model('PostData').findOne({ post: post._id, communityId });
   }

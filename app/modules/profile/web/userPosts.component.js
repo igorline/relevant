@@ -21,6 +21,7 @@ class UserPosts extends Component {
       isInfiniteLoading: false
     };
     this.load = this.load.bind(this);
+    this.hasMore = true;
   }
 
   load(page, length) {
@@ -43,7 +44,6 @@ class UserPosts extends Component {
         ...post.embeddedUser,
         _id: post.user
       };
-      const link = this.props.posts.links[post.metaPost];
 
       let parentPost;
       const parentId = post.parentPost;
@@ -51,6 +51,11 @@ class UserPosts extends Component {
         parentPost = this.props.posts.posts[parentId];
       }
       const postUrl = routing.getPostUrl(community, post);
+
+      let link = this.props.posts.links[post.metaPost];
+      if (!link && parentPost) {
+        link = this.props.posts.links[parentPost.metaPost];
+      }
 
       return (
         <View shrink={1} key={id} fdirection="column">
@@ -71,6 +76,7 @@ class UserPosts extends Component {
     const { length } = posts;
     return (
       <InfScroll
+        key="userPosts"
         data={postIds}
         loadMore={p => this.load(p, length)}
         hasMore={this.hasMore}
