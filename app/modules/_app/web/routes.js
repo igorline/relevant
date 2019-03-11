@@ -72,7 +72,6 @@ const routes = [
         path: '/',
         component: WithSideNav,
         routes: [
-          { path: '/user/wallet', component: Wallet, exact: true },
           {
             path: '/admin',
             component: withAuth(AdminHeader, 'admin'),
@@ -106,6 +105,8 @@ const routes = [
             path: '/',
             component: WithTopNav,
             routes: [
+              // WALLET
+              { path: '/user/wallet', component: Wallet, exact: true },
               // USER
               { path: '/user/login', component: Auth, exact: true },
               { path: '/user/signup', component: Auth, exact: true },
