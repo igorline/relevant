@@ -23,19 +23,6 @@ function responsiveHandler(val) {
     }
   }
   return val;
-  // if (WIDTH >= breakpoints[0]) {
-  //   return val[0];
-  // }
-  // if (WIDTH >= breakpoints[1]) {
-  //   return val[1];
-  // }
-  // if (val.length > 2 && WIDTH < breakpoints[1]) {
-  //   return val[2];
-  // }
-  // if (val.length === 2 && width < breakpoints[1]) {
-  //   return val[1];
-  // }
-  // return val;
 }
 
 function size(value) {
