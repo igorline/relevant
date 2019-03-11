@@ -60,17 +60,17 @@ export function closeDrawer() {
 
 export function push(route) {
   return dispatch => {
-    // check if we need this
-    // console.log('c', route.community, route.community !== 'undefined');
-    if (route.community && route.community !== '') {
-      dispatch(setCommunity(route.community));
-    }
     if (dismissKeyboard) dismissKeyboard();
     if (native) {
       dispatchNavigatorAction(DrawerActions.closeDrawer());
       dispatchNavigatorAction(
         NavigationActions.navigate({ routeName: route.key || route, params: route })
       );
+    }
+    // check if we need this
+    // console.log('c', route.community, route.community !== 'undefined');
+    if (route.community && route.community !== '') {
+      dispatch(setCommunity(route.community));
     }
   };
 }

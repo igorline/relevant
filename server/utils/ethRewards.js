@@ -256,7 +256,7 @@ async function distributeUserRewards(posts, _community) {
 
       // TODO diff decimal?
       const reward = curationPayout / 10 ** 18;
-      user.balance += Math.min(reward, 0);
+      user.balance += Math.max(reward, 0);
 
       const earning = await Earnings.updateRewardsRecord({
         user: user._id,
