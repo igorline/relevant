@@ -62,8 +62,8 @@ class MenuIcon extends Component {
 MenuIcon.propTypes = {
   actions: PropTypes.object,
   navigation: PropTypes.object,
-  ml: PropTypes.string,
-  mr: PropTypes.string
+  ml: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  mr: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 const mapStateToProps = state => ({

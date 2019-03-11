@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {
+  showModal,
+  openWebSideNav,
+  closeWebSideNav
+} from 'modules/navigation/navigation.actions';
 import styled from 'styled-components';
 import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
 import SideNavFooter from 'modules/navigation/sideNavFooter.component';
 import { colors, layout, mixins } from 'app/styles';
-import { showModal } from 'modules/navigation/navigation.actions';
+import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
 import { Image, View } from 'modules/styled/web';
 import MenuIcon from 'modules/ui/web/menuIcon.component';
@@ -46,50 +51,59 @@ const LogoContainer = styled(View)`
   ${mixins.border}
 `;
 
-const SideNav = props => {
-  const logoLink = `/${props.community || 'relevant'}/new`;
-  return (
-    <Container>
-      <SideNavContent flex={1} className={props.className}>
-        <SideNavScroll flex={1}>
-          <LogoContainer
-            bb
-            h={layout.headerHeight}
-            align="center"
-            fdirection="row"
-            justify="space-between"
-            pl={4}
-            pr={4}
-          >
-            <ULink align={'flex-start'} to={logoLink}>
-              <Image
-                h={4}
-                w={22}
-                resizeMode={'contain'}
-                src={'/img/logo-opt.png'}
-                alt={'Relevant'}
-              />
-            </ULink>
-            <MenuIcon />
-          </LogoContainer>
-          <View flex={1}>
-            <NavProfileComponent />
-          </View>
-          <View flex={1}>
-            <CommunityNav {...props} />
-          </View>
-          <SideNavFooter />
-        </SideNavScroll>
-      </SideNavContent>
-    </Container>
-  );
-};
+class SideNav extends Component {
+  componentDidUpdate(prevProps) {
+    if (prevProps.location !== this.props.location) {
+      this.props.actions.closeWebSideNav();
+    }
+  }
+  render() {
+    const { community, className } = this.props;
+    const logoLink = `/${community || 'relevant'}/new`;
+    return (
+      <Container>
+        <SideNavContent flex={1} className={className}>
+          <SideNavScroll flex={1}>
+            <LogoContainer
+              bb
+              h={layout.headerHeight}
+              align="center"
+              fdirection="row"
+              justify="space-between"
+              pl={4}
+              pr={4}
+            >
+              <ULink align={'flex-start'} to={logoLink}>
+                <Image
+                  h={4}
+                  w={22}
+                  resizeMode={'contain'}
+                  src={'/img/logo-opt.png'}
+                  alt={'Relevant'}
+                />
+              </ULink>
+              <MenuIcon />
+            </LogoContainer>
+            <View flex={1}>
+              <NavProfileComponent />
+            </View>
+            <View flex={1}>
+              <CommunityNav {...this.props} />
+            </View>
+            <SideNavFooter />
+          </SideNavScroll>
+        </SideNavContent>
+      </Container>
+    );
+  }
+}
 
 SideNav.propTypes = {
   className: PropTypes.string,
   actions: PropTypes.object,
   community: PropTypes.string,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  location: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -98,9 +112,18 @@ const mapStateToProps = state => ({
   navigation: state.navigation
 });
 
-export default connect(
-  mapStateToProps,
-  dispatch => ({
-    actions: bindActionCreators({ showModal }, dispatch)
-  })
-)(SideNav);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      actions: bindActionCreators(
+        {
+          showModal,
+          openWebSideNav,
+          closeWebSideNav
+        },
+        dispatch
+      )
+    })
+  )(SideNav)
+);
