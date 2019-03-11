@@ -129,7 +129,11 @@ export default function PostTitle(props) {
   //   </TextView>;
 
   return (
-    <View flex={1} fdirection={'column'} justify={mobile ? 'center' : 'flex-start'}>
+    <View
+      fdirection={'column'}
+      flex={[1, 'auto']}
+      justify={mobile ? 'center' : 'flex-start'}
+    >
       <View>
         {titleEl}
         {/* {postUrl && timestamp }{' • '} */}

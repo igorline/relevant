@@ -43,8 +43,8 @@ const ActionButton = styledComponents(Button)`
       ? ''
       : `
     position: fixed;
-    bottom: ${sizing(4)};
-    right: ${sizing(4)};
+    bottom: ${sizing(2)};
+    right: ${sizing(2)};
     height: ${sizing(10)};
     width: ${sizing(10)};
     min-width: 0;

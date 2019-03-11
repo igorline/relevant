@@ -1,12 +1,49 @@
 import { css } from 'styled-components';
 import { lineColor } from './colors';
 import sizing from './sizing';
+import { mediumScreenWidth, smallScreenWidth } from './layout';
 
-function size(units) {
+// This assumes we are working with 2 breakpoints/3 sizes
+function responsiveHandler(val) {
+  const WIDTH = window.innerWidth;
+  if (!Array.isArray(val)) {
+    return val;
+  }
+  if (val.length === 1) {
+    return val[0];
+  }
+  const breakpoints = [mediumScreenWidth, smallScreenWidth, 0];
+  for (let i = 0; i < breakpoints.length; i++) {
+    if (WIDTH >= breakpoints[i]) {
+      if (val.length > i) {
+        return val[i];
+      } else if (val.length > i - 1) {
+        return val[i - 1];
+      }
+    }
+  }
+  return val;
+  // if (WIDTH >= breakpoints[0]) {
+  //   return val[0];
+  // }
+  // if (WIDTH >= breakpoints[1]) {
+  //   return val[1];
+  // }
+  // if (val.length > 2 && WIDTH < breakpoints[1]) {
+  //   return val[2];
+  // }
+  // if (val.length === 2 && width < breakpoints[1]) {
+  //   return val[1];
+  // }
+  // return val;
+}
+
+function size(value) {
+  const units = responsiveHandler(value);
   if (typeof units === 'number') return sizing(units);
   if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
   const uArray = units.split(' ');
-  if (uArray.lenght === 1) sizing(Number(units));
+  if (uArray.length === 1) sizing(Number(units));
   return uArray.map(u => sizing(Number(u))).join(' ');
 }
 
@@ -93,15 +130,15 @@ export const border = css`
 
 export const flex = css`
   position: relative;
-  ${p => (p.flex ? `flex: ${p.flex}` : '')};
-  ${p => (p.fdirection ? `flex-direction: ${p.fdirection}` : '')};
-  ${p => (p.justify ? `justify-content: ${p.justify}` : '')};
-  ${p => (p.align ? `align-items: ${p.align}` : '')};
-  ${p => (p.shrink ? `flex-shrink: ${p.grow}` : '')};
-  ${p => (p.grow ? `flex-grow: ${p.grow}` : '')};
+  ${p => (p.flex ? `flex: ${responsiveHandler(p.flex)}` : '')};
+  ${p => (p.fdirection ? `flex-direction: ${responsiveHandler(p.fdirection)}` : '')};
+  ${p => (p.justify ? `justify-content: ${responsiveHandler(p.justify)}` : '')};
+  ${p => (p.align ? `align-items: ${responsiveHandler(p.align)}` : '')};
+  ${p => (p.shrink ? `flex-shrink: ${responsiveHandler(p.grow)}` : '')};
+  ${p => (p.grow ? `flex-grow: ${responsiveHandler(p.grow)}` : '')};
   ${p => (p.wrap ? 'flex-wrap: wrap' : '')};
   ${p => (p.inline ? '' : 'display: flex')};
-  ${p => (p.alignself ? `align-self: ${p.alignself}` : '')};
+  ${p => (p.alignself ? `align-self: ${responsiveHandler(p.alignself)}` : '')};
 `;
 
 export const link = css`
