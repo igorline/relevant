@@ -23,7 +23,7 @@ export default function PostInfo(props) {
   const title = getTitle({ post, link, firstPost });
 
   const postContent = (
-    <View fdirection={'row'}>
+    <View fdirection={['row', 'column']}>
       <ULink external to={post.url} target="_blank" noLink={noLink}>
         <View flex={1} w={20} h={10} mr={2}>
           {imageUrl ? (
