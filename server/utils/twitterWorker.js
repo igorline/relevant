@@ -27,7 +27,7 @@ let allUsers;
 let userCounter = 0;
 let processedTweets = 0;
 
-const q = queue({ concurrency: 1 });
+const q = queue({ concurrency: 5 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -322,14 +322,20 @@ async function getUserFeed(user) {
 async function cleanup() {
   const now = new Date();
   const cutoffDate = now.getTime() - 30 * 24 * 60 * 60 * 1000;
-  const posts = await Post.find(
-    {
-      twitter: true,
-      hidden: true,
-      postDate: { $lt: cutoffDate }
-    },
-    'metaPost postDate linkParent parentPost linkPost metaPost type tags community communityId hidden twitter data'
-  ).limit(5000);
+
+  console.log('RUN CLEAN!');
+  const totalToClean = await Post.count({
+    twitter: true,
+    hidden: true,
+    postDate: { $lt: cutoffDate }
+  });
+  console.log('total posts to clean', totalToClean);
+
+  const posts = await Post.find({
+    twitter: true,
+    hidden: true,
+    postDate: { $lt: cutoffDate }
+  }).limit(10000);
 
   console.log('clearing twitter posts ', posts.length, ' posts');
   const removePosts = await posts.map((p, i) =>

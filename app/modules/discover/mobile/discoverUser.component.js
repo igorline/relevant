@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, mainPadding } from 'app/styles/global';
 import Stats from 'modules/stats/mobile/stats.component';
-import UserName from 'modules/user/mobile/avatar.component';
+import UserName from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 
 let styles;

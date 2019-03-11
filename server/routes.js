@@ -60,11 +60,13 @@ module.exports = app => {
 
   BANNED_COMMUNITY_SLUGS.forEach(c => {
     app.get(`/${c}/*`, currentUser(), handleRender);
+    app.get(`/${c}`, currentUser(), handleRender);
   });
   // app.get('/home/*', currentUser(), handleRender);
   // app.get('/info/*', currentUser(), handleRender);
   // app.get('/user/*', currentUser(), handleRender);
   // app.get('/admin/*', currentUser(), handleRender);
+  app.get('/:community', currentUser(), handleRender);
   app.get('/:community/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
 };

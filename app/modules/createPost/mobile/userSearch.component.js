@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ListView, View } from 'react-native';
 import PropTypes from 'prop-types';
-import UserName from 'modules/user/mobile/avatar.component';
+import UserName from 'modules/user/avatarbox.component';
 
 export default class UserSearchComponent extends Component {
   static propTypes = {
@@ -11,7 +11,7 @@ export default class UserSearchComponent extends Component {
 
   renderRow(rowData) {
     return (
-      <View style={{ padding: 5 }}>
+      <View style={{ padding: 5, flex: 1 }}>
         <UserName user={rowData} setSelected={this.props.setSelected} />
       </View>
     );

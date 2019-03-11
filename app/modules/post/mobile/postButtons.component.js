@@ -15,7 +15,6 @@ import Share from 'react-native-share';
 import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, greyText, fullHeight } from 'app/styles/global';
-import { numbers } from 'app/utils';
 import { get } from 'lodash';
 import { userVotePower } from 'server/config/globalConstants';
 
@@ -378,6 +377,10 @@ class PostButtons extends Component {
       // rIcon = null;
     }
 
+    const postRank = post.data
+      ? Math.round(post.data.pagerank) + post.data.upVotes - post.data.downVotes
+      : 0;
+
     const stat = (
       <TouchableOpacity
         onPress={() =>
@@ -393,7 +396,7 @@ class PostButtons extends Component {
         >
           <View style={[styles.textRow, { alignItems: 'center' }]}>
             <Text style={[styles.smallInfo, styles.greyText]}>
-              {typeof r !== 'number' ? r : numbers.abbreviateNumber(r)}
+              {typeof r !== 'number' ? r : postRank}
             </Text>
           </View>
         </View>

@@ -67,13 +67,15 @@ async function undoInvest({ post, investment, user }) {
   const returnTokens = Math.min(user.lockedTokens, investment.stakedTokens);
   user.lockedTokens = (user.lockedTokens || 0) - returnTokens;
   console.log('UNLOCK TOKENS', investment.stakedTokens, user.balance, user.lockedTokens);
+  post.data.needsRankUpdate = true;
 
-  post.data.totalStaked -= investment.stakedTokens;
+  post.data.totalShares -= investment.stakedTokens;
   const earning = await Earnings.findOne({ user: user._id, post: post._id });
   if (earning) {
     await earning.remove();
     earning.updateClient({ actionType: 'REMOVE_EARNING' });
   }
+  await post.data.save();
   await user.save();
   await post.save();
   await investment.remove();
@@ -156,9 +158,9 @@ InvestSchema.statics.createVote = async function createVote(props) {
   post.data.shares += shares;
   post.data.balance += stakedTokens;
   user.lockedTokens += stakedTokens;
-  post.data.totalStaked += stakedTokens;
+  post.data.totalShares += stakedTokens;
   post.data.expectedPayout = computePostPayout(post.data, communityInstance);
-
+  post.data.needsRankUpdate = true;
   await user.save();
   await post.data.save();
 

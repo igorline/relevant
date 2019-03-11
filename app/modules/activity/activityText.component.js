@@ -91,7 +91,7 @@ const ActivityText = ({ activity, amount }) => {
     case 'commentMention':
     case 'postMention':
     case 'mention':
-      text = `mentioned you in the ${postType}`;
+      text = `mentioned you in a ${postType}`;
       break;
 
     // text = 'mentioned you in a comment';

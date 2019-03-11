@@ -27,7 +27,7 @@ class Auth extends Component {
     // actions: PropTypes.object,
     // need this prop to pass to child components
     // eslint-disable-next-line
-    navigation: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -71,7 +71,7 @@ class Auth extends Component {
     // if (this.props.admin.currentInvite) {
     return this.props.navigation.navigate({
       routeName: 'twitterSignup',
-      title: 'Signup',
+      title: 'Signup'
     });
     // }
 
@@ -147,7 +147,7 @@ class Auth extends Component {
       const words = text.split(/\s/);
       const l = words.length - 1;
       return words.map((t, j) => {
-        if (special.find(w => t === w)) {
+        if (special.find(w => t.replace(/\.|,/, '') === w)) {
           return (
             <Text
               key={j + t}
@@ -172,8 +172,9 @@ class Auth extends Component {
           <View>
             <View key={i} style={styles.authSlide}>
               {sentance(
-                'Relevant is a social news reader that values quality over clicks',
-                ['Relevant', 'quality', 'clicks']
+                'Curated by communities, not clicks',
+
+                ['Relevant', 'communities', 'clicks']
               )}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
@@ -186,10 +187,7 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance(
-                'Discover relevant content and silence the noise of the attention economy',
-                ['relevant', 'noise', 'content']
-              )}
+              {sentance('Discover content that’s relevant to you', ['relevant', 'you'])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
           </View>
@@ -198,11 +196,9 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Earn rewards by sharing articles that are worth reading', [
+              {sentance('Connect with thought leaders, build trust and earn rewards', [
                 'rewards',
-                'Earn',
-                'worth',
-                'reading'
+                'trust'
               ])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
@@ -212,7 +208,7 @@ class Auth extends Component {
         return (
           <View key={i} style={styles.authSlide}>
             {sentance(
-              'Join the community and help us build a better information environment for all',
+              'Find your community and help us build a better information environment for all',
               ['Join', 'community', 'for', 'all']
             )}
             <Text allowFontScaling={false} style={styles.slideText} />
@@ -324,8 +320,8 @@ class Auth extends Component {
             this.props.navigation.navigate(
               {
                 key: 'twitterSignup',
-                title: 'Signup',
-              },
+                title: 'Signup'
+              }
               // {
               //   email: invite.email,
               //   code: invite.code
@@ -349,12 +345,14 @@ const localStyles = StyleSheet.create({
   strokeText: {
     fontSize: smallScreen ? 32 : 36,
     fontFamily: 'HelveticaNeueLTStd-BdOu',
-    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : smallScreen ? 39 : 46
+    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : smallScreen ? 39 : 46,
+    color: 'black'
   },
   slideText: {
-    fontFamily: 'Libre Caslon Display',
-    fontSize: smallScreen ? 32 : 36,
-    lineHeight: smallScreen ? 40 : 45
+    fontFamily: 'HelveticaNeue',
+    fontSize: smallScreen ? 30 : 34,
+    lineHeight: smallScreen ? 40 : 45,
+    color: 'black'
   },
   relevant: {
     height: smallScreen ? 40 : 45
@@ -445,7 +443,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...authActions,
-      ...adminActions,
+      ...adminActions
     },
     dispatch
   )

@@ -129,9 +129,9 @@ class InviteModal extends Component {
         <View mt={6} display="flex" fdirection="column">
           <SecondaryText>Public Invite Link</SecondaryText>
           <BodyText inline={1} mt={1}>
-            Share this public invitation link to earn{' '}
-            <CoinStat size={2} amount={PUBLIC_LINK_REWARD} inline={1} /> coin
-            {PUBLIC_LINK_REWARD === 1 ? '' : 's'} per invite, perpetually.
+            Earn <CoinStat size={2} amount={PUBLIC_LINK_REWARD} inline={1} /> coin
+            {PUBLIC_LINK_REWARD === 1 ? '' : 's'} for each user who signs up for Relevant
+            using your public invite code.
           </BodyText>
           <LinkFont
             mt={1}
@@ -152,13 +152,13 @@ class InviteModal extends Component {
         <Divider pt={6} />
         <View display="flex" fdirection="column" mt={6}>
           <SecondaryText>
-            Private Invite: {count[community.active]} remaining
+            Private Invite: Your have {count[community.active]} referral invite
+            {count[community.active] > 1 ? 's' : ''} left.
           </SecondaryText>
           <BodyText inline={1} mt={1}>
-            A private link will earn{' '}
-            <CoinStat size={2} amount={REFERRAL_REWARD} inline={1} /> coin
-            {REFERRAL_REWARD === 1 ? '' : 's'} per invite, and invitees will be given a
-            Reputation boost.
+            Share your Reputation with trustworthy friends with your private invite codes.
+            Earn <CoinStat size={2} amount={REFERRAL_REWARD} inline={1} /> coin
+            {REFERRAL_REWARD === 1 ? '' : 's'} per signup.
           </BodyText>
         </View>
         <ULink
@@ -185,11 +185,11 @@ class InviteModal extends Component {
         ) : null}
         <ModalDivider pt={6} />
         <View mt={6} fdirection={'column'}>
-          <Header>Invitations</Header>
+          <Header>Private Invites</Header>
           <BodyText inline={1} fdirection="row">
-            Your invites have earned{' '}
+            Here’s how many coins you’ve made from invites so far:{' '}
             <CoinStat size={2} amount={user.referralTokens} inline={1} /> coin
-            {user.referralTokens === 1 ? '' : 's'} so far
+            {user.referralTokens === 1 ? '' : 's'}
           </BodyText>
           <View mt={4} fdirection="column">
             {invitesEl}
