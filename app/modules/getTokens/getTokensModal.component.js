@@ -26,13 +26,17 @@ class GetTokensModal extends Component {
         <View display="flex" fdirection="row" align="center">
           <BodyText c={colors.secondaryText} inline={1}>
             Connect your Relevant account with your Twitter account to earn{' '}
-            <CoinStat inline={1} size={2} amount={TWITTER_REWARD} />{' '}
+            <CoinStat
+              inline={1}
+              size={2}
+              amount={user.confirmed ? TWITTER_REWARD : TWITTER_REWARD + EMAIL_REWARD}
+            />{' '}
             {TWITTER_REWARD > 1 ? 'coins' : 'coin'}
           </BodyText>
         </View>
         {twitterButton}
         <Divider mt={4} />
-        {user.confirmed ? (
+        {!user.confirmed ? (
           <View fdirection="column">
             <View display="flex" fdirection="row" align="center" mt={4}>
               <BodyText c={colors.secondaryText} inline={1}>

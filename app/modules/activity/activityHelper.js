@@ -32,6 +32,9 @@ export function getActivityParams(activity) {
     case 'partialDownvote':
     case 'reward_referral':
     case 'reward_referredBy':
+    case 'mention':
+    case 'commentMention':
+    case 'postMention':
       if (activity.byUser) userImage = activity.byUser;
       else emoji = '☺️';
       byUser = activity.byUser;

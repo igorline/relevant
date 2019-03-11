@@ -127,8 +127,8 @@ async function sendFlagEmail() {
   try {
     const flaggedUrl = `${process.env.API_SERVER}/admin/flagged`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
-      to: 'contact@4real.io',
+      from: 'Relevant <info@relevant.community>',
+      to: 'info@relevant.community',
       subject: 'Inapproprate Content',
       html: `Someone has flagged a post for inappropriate content
       <br />

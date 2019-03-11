@@ -184,7 +184,6 @@ export default class SingleActivity extends Component {
     const { mobile } = this.props;
     const activity = this.props.singleActivity;
     if (!activity) return null;
-
     const p = mobile ? 2 : 4;
 
     if (activity.type === 'comment') {
