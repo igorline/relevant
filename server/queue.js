@@ -174,7 +174,7 @@ async function updateReputation() {
 }
 
 async function basicIncome(done) {
-  const topicRelevance = await Relevance.find({});
+  const topicRelevance = await Relevance.find({ global: true });
 
   function updateTopicRelevance() {
     console.log('updating topic relevance');

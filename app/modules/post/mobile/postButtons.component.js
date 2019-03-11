@@ -302,7 +302,7 @@ class PostButtons extends Component {
     const parentPostId = parentPost._id || parentPost;
 
     if (get(navigation, 'state.params.id') === parentPostId) {
-      setupReply(post);
+      if (setupReply) setupReply(post);
       if (this.props.focusInput) focusInput();
       return;
     }
@@ -465,7 +465,7 @@ class PostButtons extends Component {
 
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {link && link.url && !isComment ? newCommentary : null}
-            {twitter || isComment ? null : comments}
+            {twitter ? null : comments}
           </View>
 
           {/*          <InvestModal
