@@ -124,7 +124,7 @@ class TopNav extends Component {
           fdirection="row"
           align="center"
         >
-          <MenuIcon mr={2} />
+          <MenuIcon mr={4} />
           <DiscoverTabs />
           <View
             justify="space-between"
@@ -195,7 +195,7 @@ class TopNav extends Component {
             />
           </View>
         </View>
-        <View fdirection="row">
+        <View fdirection="row" mt={showResponsive ? 1 : 0}>
           <Breadcrumbs />
         </View>
       </Nav>
