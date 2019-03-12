@@ -66,9 +66,10 @@ class Post extends PureComponent {
 
     if (commentary && commentary.length) {
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
-    } else if (post.type !== 'link') {
-      commentaryEl = <Commentary {...this.props} commentary={[post]} />;
     }
+    // else if (post.type !== 'link') {
+    //   commentaryEl = <Commentary {...this.props} commentary={[post]} />;
+    // }
 
     if (post && post.repost) {
       let repost = this.props.posts.posts[post.repost.post];
@@ -95,6 +96,8 @@ class Post extends PureComponent {
           noLink={noLink}
         />
       );
+    } else {
+      imageEl = <Commentary {...this.props} commentary={[post]} />;
     }
 
     return (
