@@ -34,7 +34,8 @@ export default class SingleActivity extends Component {
       user: PropTypes.object.isRequired
     }).isRequired,
     mobile: PropTypes.bool,
-    PostComponent: PropTypes.func
+    PostComponent: PropTypes.func,
+    navigation: PropTypes.object
   };
 
   renderName(activity, user) {
@@ -96,7 +97,7 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, mobile, auth } = this.props;
+    const { PostComponent, actions, mobile, auth, navigation } = this.props;
     const { post } = activity;
 
     const parentId = post.parentPost || post._id;
@@ -119,6 +120,7 @@ export default class SingleActivity extends Component {
             hidePostButtons
             preview
             noLink={mobile}
+            navigation={navigation}
           />
         </View>
       </ULink>
@@ -160,7 +162,7 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent, mobile } = this.props;
+    const { PostComponent, mobile, navigation } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
@@ -170,9 +172,11 @@ export default class SingleActivity extends Component {
       <View m={mobile ? '2 0 2 2' : 0}>
         <PostComponent
           post={post}
+          commentary={[post]}
           hidePostButtons
           preview
           hideDivider
+          navigation={navigation}
           avatarText={() => <ActivityText activity={activity} amount={amount} />}
         />
         {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}

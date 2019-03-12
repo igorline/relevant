@@ -101,29 +101,6 @@ exports.forgot = async (req, res, next) => {
   }
 };
 
-// exports.confirmGet = async (req, res, next) => {
-//   try {
-//     console.log('confirm user', req.params);
-//     const handle = req.params.user;
-//     const confirmCode = req.params.code;
-//     if (!handle || !confirmCode) throw new Error('Missing user id or confirmation token');
-//     let user = await User.findOne({ handle, confirmCode });
-//     if (!user) throw new Error('Wrong confirmation code');
-
-//     console.log('user', user.toObject());
-//     if (!user.confirmed) {
-//       user.confirmed = true;
-//       user = await user.addReward({ type: 'email' });
-//       user = await user.save();
-//     } else {
-//       req.unconfirmed = true; // ?
-//     }
-//     return res.status(200).json(user);
-//   } catch (err) {
-//     return next(err);
-//   }
-// };
-
 exports.confirm = async (req, res, next) => {
   try {
     let user;

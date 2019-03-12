@@ -19,7 +19,7 @@ const PostPreview = props => {
   return (
     <View>
       <ULink
-        onPress={() => actions.goToPost({ _id: parentId })}
+        onPress={() => actions.goToPost({ _id: parentId, community })}
         to={`/${community}/post/${parentId}`}
       >
         <View>

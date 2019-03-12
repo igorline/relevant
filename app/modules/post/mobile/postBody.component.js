@@ -43,11 +43,9 @@ class PostBody extends Component {
 
   render() {
     const { post, short, repost, preview, comment, avatarText } = this.props;
-    let body;
-    if (post) {
-      if (post.body) body = post.body.trim();
-      if (body === '') body = null;
-    }
+    let body = post.body || post.description;
+    if (body === '') body = null;
+    if (body) body = body.trim();
 
     let maxTextLength = 100;
 
