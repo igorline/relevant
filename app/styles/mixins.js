@@ -28,14 +28,14 @@ function responsiveHandler(val) {
   return val;
 }
 
-function size(value) {
+export const size = value => {
   const units = responsiveHandler(value);
   if (typeof units === 'number') return sizing(units);
   if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
   const uArray = units.split(' ');
   if (uArray.length === 1) sizing(Number(units));
   return uArray.map(u => sizing(Number(u))).join(' ');
-}
+};
 
 export const color = css`
   ${p => (p.c ? `color: ${p.c};` : '')};
@@ -94,6 +94,7 @@ export const width = css`
 
 export const height = css`
   ${p => (p.h ? `height: ${size(p.h)};` : '')};
+  ${p => (p.minHeight ? `min-height: ${size(p.minHeight)};` : '')};
 `;
 
 export const background = css`
