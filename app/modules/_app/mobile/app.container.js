@@ -129,8 +129,27 @@ class Application extends Component {
   handleOpenURL = url => {
     const { actions, navigation, auth } = this.props;
 
-    let newCommunity = url.url.split(/\/|\?/)[3];
+    const params = url.url.split(/\/\//)[1].split(/\/|\?/);
+
+    let newCommunity = params[0];
     newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
+
+    // handle confirm email link
+    if (url.url.match('/user/confirm')) {
+      const user = params[2];
+      const confirmCode = params[3];
+      actions.confirmEmail(user, confirmCode);
+    }
+
+    if (
+      !newCommunity ||
+      newCommunity === 'user' ||
+      newCommunity === 'info' ||
+      newCommunity === 'admin'
+    ) {
+      newCommunity = 'relevant';
+    }
+
     if (
       newCommunity &&
       newCommunity !== '' &&
