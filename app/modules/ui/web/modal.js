@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
 import { View, Image, Header, Touchable } from 'modules/styled/uni';
-import { colors, sizing, layout } from 'app/styles';
+import { colors, mixins, layout } from 'app/styles';
 
 const ModalParent = styled.View`
   position: fixed;
@@ -28,17 +28,14 @@ const ModalScroll = styled.View`
 
 const Modal = styled(View)`
   z-index: 5;
-  justify-content: space-between;
-  flex-direction: column;
   ${layout.modalShadow}
-  margin: ${sizing(6)} 0;
   max-width: 100vw;
 `;
 
 const CloseButton = styled(Image)`
   position: absolute;
-  top: ${sizing(6)};
-  right: ${sizing(6)};
+  ${p => (p.top ? `top: ${mixins.size(p.top)};` : null)}
+  ${p => (p.right ? `right: ${mixins.size(p.right)};` : null)}
   cursor: pointer;
   z-index: 10;
 `;
@@ -79,12 +76,23 @@ export default class ModalComponent extends Component {
     return (
       <ModalParent onClick={close}>
         <ModalScroll>
-          <Modal bg={colors.white} w={95} p={'6'} onClick={e => e.stopPropagation()}>
+          <Modal
+            bg={colors.white}
+            w={[95, '100vw']}
+            p={[6, 3]}
+            justify={['space-between', 'center']}
+            fdirection="column"
+            margin={['6 0', '3 0']}
+            minHeight={['auto', '100vh']}
+            onClick={e => e.stopPropagation()}
+          >
             {hideX ? null : (
               <Touchable onPress={() => close()}>
                 <CloseButton
                   w={3}
                   h={3}
+                  top={[6, 3]}
+                  right={[6, 3]}
                   resizeMode={'contain'}
                   source={require('app/public/img/x.png')}
                 />
