@@ -8,7 +8,11 @@ function responsiveHandler(val) {
   if (!Array.isArray(val)) {
     return val;
   }
-  if (!window) {
+  try {
+    if (!window) {
+      return val[0];
+    }
+  } catch (e) {
     return val[0];
   }
   const WIDTH = window.innerWidth;
@@ -125,7 +129,7 @@ export const flex = css`
   ${p => (p.fdirection ? `flex-direction: ${responsiveHandler(p.fdirection)}` : '')};
   ${p => (p.justify ? `justify-content: ${responsiveHandler(p.justify)}` : '')};
   ${p => (p.align ? `align-items: ${responsiveHandler(p.align)}` : '')};
-  ${p => (p.shrink ? `flex-shrink: ${responsiveHandler(p.grow)}` : '')};
+  ${p => (p.shrink ? `flex-shrink: ${responsiveHandler(p.shrink)}` : '')};
   ${p => (p.grow ? `flex-grow: ${responsiveHandler(p.grow)}` : '')};
   ${p => (p.wrap ? 'flex-wrap: wrap' : '')};
   ${p => (p.inline ? '' : 'display: flex')};
