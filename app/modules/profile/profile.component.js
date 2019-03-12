@@ -39,50 +39,52 @@ export default class Profile extends Component {
 
     return (
       <View
-        m={sizing(4)}
+        m={[4, 2]}
         display="flex"
         fdirection="row"
         align="flex-start"
-        justify="space-between"
+        justify="flex-start"
       >
         <UAvatar user={user} size={9} />
-        <View ml={sizing(2)} grow={1}>
-          <View fdirection="row" display="flex" justify="space-between" align="baseline">
-            <View display="flex" fdirection="row" align="baseline">
+        <View ml={sizing(2)} grow={1} shrink={1} wrap={1}>
+          <View
+            fdirection="row"
+            display="flex"
+            justify="space-between"
+            align="baseline"
+            wrap={1}
+          >
+            <View display="flex" fdirection="row" align="baseline" shrink={1} wrap={1}>
               <Header mr={sizing(2)}>{user.name}</Header>
-              <View display="flex" fdirection="row" align={'baseline'}>
-                <RStat size={1.75} user={user} mr={2} align="baseline" />
-                <Percent size={1.75} user={user} align="baseline" />
-                <CoinStat size={1.75} user={user} isOwner={isOwner} align="baseline" />
-              </View>
+              <RStat size={1.75} user={user} mr={2} align="baseline" />
+              <Percent size={1.75} user={user} align="baseline" />
+              <CoinStat size={1.75} user={user} isOwner={isOwner} align="baseline" />
             </View>
             {isOwner ? (
-              <View align={'center'}>
-                <ULink
-                  onClick={() => {
-                    actions.logoutAction(user);
-                  }}
-                  onPress={() => {
-                    actions.logoutAction(user);
-                  }}
-                  color={colors.blue}
-                  to="#"
-                >
-                  Logout
-                </ULink>
-              </View>
+              <ULink
+                onClick={() => {
+                  actions.logoutAction(user);
+                }}
+                onPress={() => {
+                  actions.logoutAction(user);
+                }}
+                color={colors.blue}
+                to="#"
+              >
+                Logout
+              </ULink>
             ) : (
               <View />
             )}
           </View>
           {user.bio ? (
-            <View mt={3}>
+            <View mt={[3, 2]}>
               <SecondaryText>{user.bio}</SecondaryText>
             </View>
           ) : null}
           {isOwner ? (
-            <View fdirection="row" align="center">
-              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+            <View fdirection="row" align="center" mt={1}>
+              <AltLink mr={sizing(0.5)}>
                 <ULink
                   c={colors.black}
                   to="/settings"
