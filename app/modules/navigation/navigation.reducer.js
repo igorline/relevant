@@ -24,7 +24,8 @@ const initialState = {
   myProfile: {},
   modal: null,
   sideNavIsOpen: false,
-  width: null
+  width: null,
+  isResponsive: false
 };
 
 function navigationState(state = initialState, action) {
@@ -32,7 +33,8 @@ function navigationState(state = initialState, action) {
     case SET_WIDTH:
       return {
         ...state,
-        width: action.payload.width
+        width: action.payload.width,
+        isResponsive: action.payload.isResponsive
       };
     case OPEN_WEB_SIDE_NAV:
       return {

@@ -15,6 +15,7 @@ import {
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction } from 'app/utils/nav';
 import { setCommunity } from 'modules/auth/auth.actions';
+import { layout } from 'app/styles';
 
 let dismissKeyboard;
 let safariView;
@@ -142,10 +143,12 @@ export function setView(type, view) {
 }
 
 export function setWidth(width) {
+  const isResponsive = width <= layout.mediumScreenWidth;
   return {
     type: SET_WIDTH,
     payload: {
-      width
+      width,
+      isResponsive
     }
   };
 }
