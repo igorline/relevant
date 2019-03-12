@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, Text, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, mainPadding, borderGrey } from 'app/styles/global';
 import Pills from 'modules/ui/mobile/pills.component';
+import { Image, Divider, View } from 'modules/styled/uni';
 // import UAvatar from 'modules/user/UAvatar.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
@@ -25,7 +26,8 @@ export default class Commentary extends Component {
     commentary: PropTypes.array,
     navigation: PropTypes.object,
     preview: PropTypes.bool,
-    avatarText: PropTypes.object
+    avatarText: PropTypes.object,
+    isReply: PropTypes.bool
   };
 
   constructor(props) {
@@ -68,7 +70,8 @@ export default class Commentary extends Component {
       focusInput,
       tooltip,
       myPostInv,
-      preview
+      preview,
+      isReply
     } = this.props;
 
     const i = index;
@@ -153,47 +156,60 @@ export default class Commentary extends Component {
           preview ? { marginHorizontal: 0, marginTop: 8 } : null
         ]}
       >
+        {isReply ? <Divider /> : null}
         <View style={[styles.commentary]}>
           {repostEl}
           {repostedBy}
-          <View style={[postStyle, { flex: 1 }]}>
-            <PostInfo
-              big
-              post={post}
-              actions={actions}
-              auth={auth}
-              singlePost={singlePost}
-              user={user}
-              navigation={this.props.navigation}
-              avatarText={this.props.avatarText}
-              preview
-            />
-            <PostBody
-              short
-              post={post}
-              editing={false}
-              actions={actions}
-              auth={auth}
-              singlePost={singlePost}
-              navigation={this.props.navigation}
-              avatarText={this.props.avatarText}
-              preview={preview}
-            />
-            {!hideButtons && (
-              <PostButtons
+          <View flex={1} fdirection={'row'} m={'2 0'}>
+            {isReply ? (
+              <Image
+                h={2}
+                w={2}
+                mt={1}
+                mr={1}
+                resizeMode={'contain'}
+                source={require('app/public/img/reply.png')}
+              />
+            ) : null}
+            <View style={[postStyle, { flex: 1 }]}>
+              <PostInfo
+                big
                 post={post}
-                parentPost={post.parentPost ? post.parentPost : post}
-                comment={post}
-                link={link}
-                tooltip={index === 0 ? tooltip : null}
-                comments={post.comments || null}
                 actions={actions}
                 auth={auth}
-                myPostInv={myPostInv[post._id]}
-                focusInput={focusInput}
+                singlePost={singlePost}
+                user={user}
                 navigation={this.props.navigation}
+                avatarText={this.props.avatarText}
+                preview
               />
-            )}
+              <PostBody
+                short
+                post={post}
+                editing={false}
+                actions={actions}
+                auth={auth}
+                singlePost={singlePost}
+                navigation={this.props.navigation}
+                avatarText={this.props.avatarText}
+                preview={preview}
+              />
+              {!hideButtons && (
+                <PostButtons
+                  post={post}
+                  parentPost={post.parentPost ? post.parentPost : post}
+                  comment={post}
+                  link={link}
+                  tooltip={index === 0 ? tooltip : null}
+                  comments={post.comments || null}
+                  actions={actions}
+                  auth={auth}
+                  myPostInv={myPostInv[post._id]}
+                  focusInput={focusInput}
+                  navigation={this.props.navigation}
+                />
+              )}
+            </View>
           </View>
         </View>
       </View>
@@ -201,7 +217,7 @@ export default class Commentary extends Component {
   }
 
   render() {
-    const { commentary, preview } = this.props;
+    const { commentary, preview, isReply } = this.props;
     const pills = (
       <View style={{ marginVertical: 16 }}>
         <Pills
@@ -213,15 +229,15 @@ export default class Commentary extends Component {
       </View>
     );
     return (
-      <View style={{ marginVertical: !preview ? 16 : 0 }}>
+      <View style={{ marginBottom: !preview ? 16 : 0 }}>
+        {isReply ? <Divider m={'0 2'} /> : null}
         <FlatList
+          style={{ marginTop: !preview ? 16 : 0 }}
           ref={c => (this.scrollView = c)}
           scrollEnabled={commentary.length > 1}
           keyExtractor={(item, index) => index.toString()}
           horizontal={!preview}
           data={commentary}
-          // nestedScrollEnabled
-          // bounces={false}
           renderItem={this.renderItem}
           pagingEnabled
           contentContainerStyle={[!preview ? styles.postScroll : null]}
@@ -252,8 +268,6 @@ const localStyles = StyleSheet.create({
   },
   commentary: {
     flexGrow: 1,
-    marginTop: 10,
-    marginBottom: 10,
     flexDirection: 'column'
   },
   repost: {

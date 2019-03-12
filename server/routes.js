@@ -65,10 +65,6 @@ module.exports = app => {
     app.get(`/${c}`, currentUser(), handleRender);
   });
 
-  // app.get('/home/*', currentUser(), handleRender);
-  // app.get('/info/*', currentUser(), handleRender);
-  // app.get('/user/*', currentUser(), handleRender);
-  // app.get('/admin/*', currentUser(), handleRender);
   app.get('/:community', currentUser(), handleRender);
   app.get('/:community/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
