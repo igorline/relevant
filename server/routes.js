@@ -36,7 +36,9 @@ module.exports = app => {
   app.use('/api/twitterFeed', require('./api/twitterFeed'));
   app.use('/api/communityFeed', require('./api/communityFeed'));
   app.use('/api/community', require('./api/community'));
-  app.get('/confirm/:user/:code', userController.confirm);
+  app.get('/confirm/:user/:code', userController.confirm); // deprecate
+  app.get('/user/confirm/:user/:code', userController.confirm);
+  app.get('/user/:user/confirm/:code', userController.confirm);
 
   // TODO - check if community exists here and redirect if not
   // app.use('/home', (req, res) => res.redirect('/relevant/new'));
@@ -62,6 +64,7 @@ module.exports = app => {
     app.get(`/${c}/*`, currentUser(), handleRender);
     app.get(`/${c}`, currentUser(), handleRender);
   });
+
   // app.get('/home/*', currentUser(), handleRender);
   // app.get('/info/*', currentUser(), handleRender);
   // app.get('/user/*', currentUser(), handleRender);

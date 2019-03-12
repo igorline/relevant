@@ -61,15 +61,16 @@ class Post extends PureComponent {
       return blocked;
     }
 
+    const isLinkPost = link && (link.url || link.image);
+
     // TODO... need to filter out reposted?
     // commentary = commentary.filter(p => p && p._id !== reposted);
 
     if (commentary && commentary.length) {
-      commentaryEl = <Commentary {...this.props} commentary={commentary} />;
+      commentaryEl = (
+        <Commentary isLinkPost={isLinkPost} {...this.props} commentary={commentary} />
+      );
     }
-    // else if (post.type !== 'link') {
-    //   commentaryEl = <Commentary {...this.props} commentary={[post]} />;
-    // }
 
     if (post && post.repost) {
       let repost = this.props.posts.posts[post.repost.post];
@@ -81,7 +82,7 @@ class Post extends PureComponent {
     const postUrl = routing.getPostUrl(community, post);
 
     if (link && (link.url || link.image)) {
-      imageEl = (
+      imageEl = isLinkPost ? (
         <PostImage
           key={link._id}
           auth={auth}
@@ -95,9 +96,9 @@ class Post extends PureComponent {
           preview={preview}
           noLink={noLink}
         />
+      ) : (
+        <Commentary {...this.props} commentary={[post]} />
       );
-    } else {
-      imageEl = <Commentary {...this.props} commentary={[post]} />;
     }
 
     return (
