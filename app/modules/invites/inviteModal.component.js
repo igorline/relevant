@@ -13,7 +13,11 @@ import {
 import { colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
-import { REFERRAL_REWARD, PUBLIC_LINK_REWARD } from 'server/config/globalConstants';
+import {
+  REFERRAL_REWARD,
+  PUBLIC_LINK_REWARD,
+  MAX_AIRDROP
+} from 'server/config/globalConstants';
 import { copyToClipBoard } from 'utils/text';
 import { Animated } from 'react-native';
 
@@ -191,7 +195,7 @@ class InviteModal extends Component {
           <BodyText inline={1} fdirection="row">
             Here’s how many coins you’ve made from invites so far:{' '}
             <CoinStat size={2} amount={user.referralTokens} inline={1} /> coin
-            {user.referralTokens === 1 ? '' : 's'}
+            {user.referralTokens === 1 ? '' : 's'} (max amount is {MAX_AIRDROP})
           </BodyText>
           <View mt={4} fdirection="column">
             {invitesEl}

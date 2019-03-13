@@ -85,7 +85,12 @@ export default function UserName(props) {
                 <RStat inline={1} align={'baseline'} lh={1.75} size={1.75} user={user} />
               </Text>
             )}
-            {avatarText ? <Text inline={1}> {avatarText()}</Text> : null}
+            {avatarText ? (
+              <Text c={colors.black} inline={1}>
+                {' '}
+                {avatarText()}
+              </Text>
+            ) : null}
             {condensedView && handleEl}
           </Text>
           {!condensedView && handleEl}
