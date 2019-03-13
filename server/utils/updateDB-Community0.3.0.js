@@ -48,18 +48,6 @@ async function updateMemberCount() {
   return Promise.all(communities);
 }
 
-// check empty post data
-async function cleanupPostData() {
-  let postData = await PostData.find({}).populate('post');
-  postData = postData
-  .filter(d => !d.post)
-  .map(d => {
-    console.log(d.toObject());
-    return d.remove();
-  });
-  return Promise.all(postData);
-}
-
 async function updateUserIdType() {
   let users = await User.find(
     {},
@@ -546,55 +534,6 @@ async function fixMessedUpPost() {
   return posts;
 }
 
-let page = 0;
-const limit = 1000;
-async function removeEmptyTwitterParents() {
-  const total = await Post.count({
-    parentPost: { $exists: false },
-    hidden: false,
-    type: 'link',
-    twitter: { $ne: true }
-  });
-  console.log('total posts', total);
-
-  const posts = await Post.find(
-    {
-      parentPost: { $exists: false },
-      hidden: false,
-      twitter: { $ne: true }
-    },
-    'title url embeddedUser type twitter parentPost community postDate hidden'
-  )
-  .populate({ path: 'children', select: '_id twitter relevance' })
-  .skip(page * limit)
-  .limit(limit);
-  page++;
-
-  console.log('total', page * limit);
-  posts.forEach((p, i) => {
-    q.push(async cb => {
-      if (!p.children.length) {
-        console.log(p.toObject());
-        const remove = await p.remove();
-      } else {
-        const notTW = p.children.filter(c => !c.twitter || c.relevance > 0);
-        if (notTW.length) {
-          console.log('post has children', notTW.length);
-        }
-      }
-      if (i === limit - 1) removeEmptyTwitterParents();
-      return setTimeout(cb, 1);
-    });
-  });
-
-  return new Promise((resolve, reject) => {
-    q.start((queErr, results) => {
-      if (queErr) return reject(queErr);
-      return resolve('finished queue');
-    });
-  });
-}
-
 async function addTagsToData() {
   const postData = await PostData.find({ isInFeed: true }).populate('post');
   const updated = postData.map(pd => {
@@ -602,31 +541,6 @@ async function addTagsToData() {
     return pd.save();
   });
   return Promise.all(updated);
-}
-
-async function checkEmbeddedUser() {
-  let posts = await Post.find({
-    embeddedUser: { $exists: true },
-    twitter: { $ne: true },
-    // eslint-disable-next-line
-    $where: function() {
-      return (
-        this.user !== this.embeddedUser._id ||
-        !this.embeddedUser.handle ||
-        !this.embeddedUser.name
-      );
-    }
-  }).populate('user');
-  posts = posts.map(p => {
-    if (!p.user) return console.log('post is missing user', p.toObject());
-    p.embeddedUser.handle = p.user.handle;
-    p.embeddedUser._id = p.user._id;
-    p.embeddedUser.name = p.user.name;
-
-    console.log('posts missing embeddedUser', p.embeddedUser.toObject());
-    return p.save();
-  });
-  return Promise.all(posts);
 }
 
 async function makeSurePostHaveCommunityId() {
@@ -705,6 +619,16 @@ async function cleanUpCommunityFunds() {
 //   });
 // }
 
+async function notificationCheck() {
+  const user = await User.find({ handle: 'billy' });
+  const notes = await Notification.find({ user: user._id, type: 'comment' })
+  .populate({ path: 'post', select: 'title body' })
+  .populate({ path: 'fromUser', select: 'handle' })
+  .sort('-createdAt')
+  .limit(20);
+  notes.map(n => console.log(n.toObject()));
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -732,15 +656,9 @@ async function runUpdates() {
 
     // await restoreRewards();
 
-    // DON'T NEED
-    // await cleanupPostData();
-    // await convertIdToObject();
-    // await removeEmptyTwitterParents();
+    // notification check
+    // await notificationCheck();
 
-    // GE RID OF
-    // checkMessedUpPost(); // shouldn't be necessary
-
-    // await checkEmbeddedUser();
     console.log('finished db updates');
   } catch (err) {
     console.log(err);
