@@ -15,8 +15,7 @@ import Share from 'react-native-share';
 import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, greyText, fullHeight } from 'app/styles/global';
-import { get } from 'lodash';
-import { userVotePower } from 'server/config/globalConstants';
+import get from 'lodash/get';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -155,11 +154,13 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await actions.vote(amount, post, auth.user, !newVote);
+      const voteResult = await actions.vote(amount, post, auth.user, !newVote);
 
-      if (!newVote) return;
+      if (!newVote || !voteResult || voteResult.undoInvest) return;
 
-      const upvoteAmount = userVotePower(auth.user.relevance.pagerank);
+      const startRank = post.data ? post.data.pagerank : 0;
+      const total = startRank + voteResult.rankChange + 1;
+      const upvoteAmount = Math.round(total) - Math.round(startRank);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
@@ -361,14 +362,6 @@ class PostButtons extends Component {
 
     let r = post.data ? post.data.relevance : null;
     const rel = r;
-
-    // let rIcon = (
-    //   <Image
-    //     resizeMode={'contain'}
-    //     style={styles.smallR}
-    //     source={require('app/public/img/icons/smallR.png')}
-    //   />
-    // );
 
     const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
 

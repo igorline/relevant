@@ -90,13 +90,22 @@ class App extends Component {
         });
       }
     }
+
     // TODO do this after a timeout
-    // window.addEventListener('focus', () => {
-    //   if (this.props.newPosts)
-    //   this.props.actions.refreshTab('discover');
-    // });
-    //
+    window.addEventListener('blur', () => {
+      this.backgroundTime = new Date().getTime();
+    });
+
+    // TODO do this after a timeout
+    window.addEventListener('focus', () => this.reloadTabs());
   }
+
+  reloadTabs = () => {
+    const now = new Date().getTime();
+    if (now - this.backgroundTime > 10 * 60 * 1000) {
+      this.props.actions.reloadAllTabs();
+    }
+  };
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
