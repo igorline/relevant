@@ -131,7 +131,7 @@ class Application extends Component {
 
     const params = url.url.split(/\/\//)[1].split(/\/|\?/);
 
-    let newCommunity = params[0];
+    let newCommunity = params[1];
     newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
 
     // handle confirm email link

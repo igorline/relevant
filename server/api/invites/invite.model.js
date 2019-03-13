@@ -81,7 +81,7 @@ InviteSchema.statics.processInvite = async function processInvite({ invitecode, 
 
 async function publicReward({ user, inviter }) {
   await inviter.addReward({ type: 'publicLink', user });
-  return user;
+  return user.addReward({ type: 'publicInvite', user: inviter });
 }
 
 async function referralRewards({ invite, user, Invite }) {
