@@ -33,7 +33,8 @@ export class Discover extends Component {
     auth: PropTypes.object,
     posts: PropTypes.object,
     user: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    reload: PropTypes.number
   };
 
   constructor(props, context) {
@@ -88,6 +89,11 @@ export class Discover extends Component {
     }
 
     if (tag !== prevProps.match.params.tag) {
+      this.load(sort, this.props);
+      alreadyLoading = true;
+    }
+
+    if (this.props.reload !== prevProps.reload) {
       this.load(sort, this.props);
       alreadyLoading = true;
     }
@@ -187,7 +193,8 @@ function mapStateToProps(state) {
     tags: state.tags,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
-    refresh: state.view.refresh.discover
+    refresh: state.view.refresh.discover,
+    reload: state.navigation.reload
   };
 }
 
