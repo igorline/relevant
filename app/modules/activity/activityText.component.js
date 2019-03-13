@@ -146,7 +146,25 @@ const ActivityText = ({ activity, amount }) => {
     case 'reward_referral':
       return (
         <Text inline={1} align="baseline">
-          <BodyText inline={1}>{'signed up via your invite link, you got '}</BodyText>
+          <BodyText inline={1}>{'signed up via your referral link, you got '}</BodyText>
+          <CoinStat
+            inline
+            size={1.75}
+            lh={1.75}
+            amount={Number(coin)}
+            mr={0}
+            ml={0}
+            slef={'flex-end'}
+            align="baseline"
+          />
+          <BodyText inline={1}>{' coins for your referral'}</BodyText>
+        </Text>
+      );
+
+    case 'reward_publicLink':
+      return (
+        <Text inline={1} align="baseline">
+          <BodyText inline={1}>{'signed up via your public link, you got '}</BodyText>
           <CoinStat
             inline
             size={1.75}
@@ -178,6 +196,26 @@ const ActivityText = ({ activity, amount }) => {
             align="baseline"
           />
           <BodyText inline={1}>{' coins and some reputation!'}</BodyText>
+        </Text>
+      );
+
+    case 'reward_publicInvite':
+      return (
+        <Text inline={1} align="baseline">
+          <BodyText inline={1}>
+            {"gave you a referral, so you're getting started with an extra "}
+          </BodyText>
+          <CoinStat
+            inline
+            size={1.75}
+            lh={1.75}
+            amount={Number(coin)}
+            mr={0}
+            ml={0}
+            slef={'flex-end'}
+            align="baseline"
+          />
+          <BodyText inline={1}>{' coins.'}</BodyText>
         </Text>
       );
 

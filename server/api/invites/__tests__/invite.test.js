@@ -164,6 +164,7 @@ describe('CreatePost', () => {
     test('should be able to get reward for public link', async () => {
       req = { body: { user: { ...user2, name: 'bobby' }, invitecode: alice.handle } };
       await createUser(req, res, next);
+      const invitee = toObject(res.json.mock.calls[0][0].user);
 
       const inviter = await User.findOne({ _id: alice._id });
       expect(inviter.referralTokens).toBe(3 * REFERRAL_REWARD + PUBLIC_LINK_REWARD);
@@ -171,7 +172,16 @@ describe('CreatePost', () => {
       const inviterNote = await Notification.findOne({ forUser: alice._id }).sort(
         '-createdAt'
       );
+
+      expect(inviterNote.type).toBe('reward_publicLink');
       expect(inviterNote.coin).toBe(PUBLIC_LINK_REWARD);
+
+      const inviteeNote = await Notification.findOne({ forUser: invitee._id }).sort(
+        '-createdAt'
+      );
+
+      expect(inviteeNote.type).toBe('reward_publicInvite');
+      expect(inviteeNote.coin).toBe(PUBLIC_LINK_REWARD);
     });
   });
 

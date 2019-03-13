@@ -69,7 +69,7 @@ class InviteModal extends Component {
   render() {
     const { auth, community, count, inviteList, invites, onShare } = this.props;
     const { user } = auth;
-    const publicInviteUrl = `/${community.active}?invitecode=${auth.user.handle}`;
+    const publicInviteUrl = `/${auth.community}?invitecode=${auth.user.handle}`;
     const origin =
       window && window.location ? window.location.origin : 'https://relevant.community';
 
@@ -124,24 +124,26 @@ class InviteModal extends Component {
       );
     });
 
+    const url = publicLink;
+
     return (
       <View display="flex" fdirection="column">
         <View mt={6} display="flex" fdirection="column">
           <SecondaryText>Public Invite Link</SecondaryText>
           <BodyText inline={1} mt={1}>
-            Earn <CoinStat size={2} amount={PUBLIC_LINK_REWARD} inline={1} /> coin
-            {PUBLIC_LINK_REWARD === 1 ? '' : 's'} for each user who signs up for Relevant
-            using your public invite code.
+            You and each new users get{' '}
+            <CoinStat size={2} amount={PUBLIC_LINK_REWARD} inline={1} /> coin
+            {PUBLIC_LINK_REWARD === 1 ? '' : 's'} per signup via your public invite code.
           </BodyText>
           <LinkFont
             mt={1}
-            onClick={() => copyToClipBoard(publicLink)}
+            onClick={() => copyToClipBoard(url)}
             c={colors.blue}
             onPress={() =>
               onShare({
                 title: 'Join Relevant',
                 message: 'Join Relevant',
-                publicLink,
+                url: publicLink,
                 subject: 'Join Relevant'
               })
             }
