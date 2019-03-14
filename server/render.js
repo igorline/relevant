@@ -90,7 +90,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta property="og:url" content="${meta.url}" />
         <meta property="og:image" content="${meta.image}" />
 
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content="${meta.type}" />
         <meta name="twitter:site" content="@4realglobal" />
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
@@ -144,6 +144,8 @@ export function fetchMeta(initialState) {
   let url;
   let post;
 
+  let type = 'summary_large_image';
+
   const { community } = initialState.auth;
 
   if (initialState.posts.posts) {
@@ -160,13 +162,14 @@ export function fetchMeta(initialState) {
     }
   }
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
+  if (!image) type = 'summary';
   image =
     image || post
       ? 'https://relevant.community/img/r-big.png'
       : 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
-  return { title, description, image, url };
+  return { title, description, image, url, type };
 }
 
 export async function handleRouteData({ req, store }) {
