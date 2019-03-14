@@ -142,11 +142,13 @@ export function fetchMeta(initialState) {
   let description;
   let image;
   let url;
+  let post;
 
   const { community } = initialState.auth;
+
   if (initialState.posts.posts) {
     const postId = Object.keys(initialState.posts.posts)[0];
-    let post = postId ? initialState.posts.posts[postId] : null;
+    post = postId ? initialState.posts.posts[postId] : null;
     if (post) {
       if (post.metaPost) {
         post = initialState.posts.links[post.metaPost] || post;
@@ -158,7 +160,7 @@ export function fetchMeta(initialState) {
     }
   }
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image = image || 'https://relevant.community/img/fbimg.png';
+  image = image || post ? '' : 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
   return { title, description, image, url };
