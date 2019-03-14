@@ -57,7 +57,10 @@ exports.show = (req, res, next) => {
       }
     }
   })
-  .populate({ path: 'post', populate: { path: 'metaPost' } })
+  .populate({
+    path: 'post',
+    populate: [{ path: 'metaPost' }, { path: 'parentPost' }]
+  })
   .then(notifications => res.status(200).json(notifications))
   .catch(next);
 };
