@@ -32,7 +32,7 @@ async function sendConfirmation(user, newUser) {
         Hi @${user.handle}${text}!
       <br />
       <br />
-        ${text}Please click on the link below to confirm your email address:
+        Please click on the link below to confirm your email address:
       <br />
       <br />
       <a href="${confirmUrl}" target="_blank">Confirm Email</a>
