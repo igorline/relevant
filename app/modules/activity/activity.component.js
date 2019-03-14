@@ -100,10 +100,12 @@ export default class SingleActivity extends Component {
     const { PostComponent, actions, mobile, auth, navigation } = this.props;
     const { post } = activity;
 
-    const parentId = post.parentPost || post._id;
+    const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
     const linkToPost = `/${post.community}/post/${parentId}`;
 
     const link = post.metaPost || post.parentPost;
+    // TODO hack should normalize in reducer
+    // if (post.parentPost) post.parentPost = post.parentPost._id;
 
     const newCommunity = post.community !== auth.community ? post.community : null;
 

@@ -14,7 +14,7 @@ const PostPreview = props => {
   if (!post) return null;
 
   const link = post && post.metaPost && posts.links[post.metaPost];
-  const parentId = post.parentPost ? post.parentPost : post._id;
+  const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
 
   return (
     <View>
