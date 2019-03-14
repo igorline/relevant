@@ -78,7 +78,7 @@ const ActivityText = ({ activity, amount }) => {
 
     case 'commentAlso':
     case 'postAlso':
-      text = 'commented on this post';
+      text = 'commented on a post';
       // text = `commented on this ${postType}`;
       break;
 

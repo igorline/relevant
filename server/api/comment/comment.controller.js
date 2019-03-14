@@ -205,7 +205,7 @@ async function sendNotifications({
     const ownPost = postAuthor && commentor._id.equals(postAuthor._id);
     const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
 
-    const noteType = !ownPost && !ownComment ? (type += 'Also') : 'comment';
+    const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
 
     if (repost && ownPost) type = 'repost';
 
@@ -215,6 +215,7 @@ async function sendNotifications({
       byUser: user._id,
       amount: null,
       type: noteType,
+      source: type,
       personal: true,
       read: false
     };

@@ -619,15 +619,56 @@ async function cleanUpCommunityFunds() {
 //   });
 // }
 
-async function notificationCheck() {
-  const user = await User.find({ handle: 'billy' });
-  const notes = await Notification.find({ user: user._id, type: 'comment' })
-  .populate({ path: 'post', select: 'title body' })
-  .populate({ path: 'fromUser', select: 'handle' })
-  .sort('-createdAt')
-  .limit(20);
-  notes.map(n => console.log(n.toObject()));
-}
+// async function notificationCheck() {
+//   const launchDate = new Date('March 5, 2019 12:00:00');
+//   let replies = await Post.find({
+//     parentComment: { $exists: true },
+//     createdAt: { $gt: launchDate }
+//   })
+//   .populate('parentComment');
+
+//   console.log('found', replies.length, 'replies');
+
+//   replies = replies.map(async reply => {
+//     const { parentComment } = reply;
+//     if (!parentComment) return console.log('missing parent comment', reply._id);
+//     const author = reply.parentComment.user;
+//     if (author.toString() === reply.user.toString()) return console.log('comment on own post');
+//     const authorNote = await Notification.findOne({
+//       forUser: author,
+//       byUser: { $ne: author },
+//       post: reply._id,
+//       type: 'comment',
+//     });
+//     if (!authorNote) {
+//       console.log('missing notification',
+//         reply.parentComment.embeddedUser.handle,
+//         reply.parentComment.body,
+//         reply.embeddedUser.handle,
+//         reply.body
+//       );
+
+//       const dbNotificationObj = {
+//         // post: reply.parentPost || reply._id,
+//         post: reply._id,
+//         forUser: author,
+//         byUser: reply.user,
+//         amount: null,
+//         type: 'comment',
+//         source: 'comment',
+//         personal: true,
+//         read: false
+//       };
+
+//       const newDbNotification = new Notification(dbNotificationObj);
+
+//       console.log(newDbNotification.toObject());
+//       const note = await newDbNotification.save();
+//     } else {
+//       console.log('note exists');
+//     }
+//   });
+// }
 
 async function runUpdates() {
   try {

@@ -160,7 +160,7 @@ export default class Commentary extends Component {
         <View style={[styles.commentary]}>
           {repostEl}
           {repostedBy}
-          <View flex={1} fdirection={'row'} m={'2 0'}>
+          <View flex={1} fdirection={'row'} m={`2 0 ${preview ? 0 : 2} 0`}>
             {isReply ? (
               <Image
                 h={2}

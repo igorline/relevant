@@ -103,10 +103,10 @@ export default class SingleActivity extends Component {
     const parentId = post.parentPost || post._id;
     const linkToPost = `/${post.community}/post/${parentId}`;
 
+    const link = post.metaPost || post.parentPost;
+
     const newCommunity = post.community !== auth.community ? post.community : null;
-    // const parentPost = post.parentPost || post;
-    // const postUrl = routing.getPostUrl(community, parentPost);
-    // const renderComment = !noComments && comment;
+
     const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
 
     return (
@@ -114,8 +114,7 @@ export default class SingleActivity extends Component {
         <View>
           <PostComponent
             post={post}
-            // comment={post}
-            link={post.metaPost}
+            link={link}
             hideDivider
             hidePostButtons
             preview
@@ -166,20 +165,19 @@ export default class SingleActivity extends Component {
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
-    const p = mobile ? 2 : 4;
-
     return (
-      <View m={mobile ? '2 0 2 2' : 0}>
-        <PostComponent
-          post={post}
-          commentary={[post]}
-          hidePostButtons
-          preview
-          hideDivider
-          navigation={navigation}
-          avatarText={() => <ActivityText activity={activity} amount={amount} />}
-        />
-        {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}
+      <View>
+        <View m={mobile ? '0 2 0 2' : 0}>
+          <PostComponent
+            post={post}
+            hidePostButtons
+            preview
+            hideDivider
+            navigation={navigation}
+            avatarText={() => <ActivityText activity={activity} amount={amount} />}
+          />
+        </View>
+        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
       </View>
     );
   }
@@ -213,9 +211,9 @@ export default class SingleActivity extends Component {
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={mobile ? 2 : 4} />
+          <View mt={mobile ? 0 : 4} />
         )}
-        {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}
+        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
       </View>
     );
   }

@@ -429,7 +429,7 @@ exports.update = async (req, res, next) => {
 
     newPost = await Post.findOne({ _id: req.body._id });
 
-    if (communityId !== newPost.communityId) throw new Error("Community doesn't match");
+    if (!communityId.equals(newPost.communityId)) { throw new Error("Community doesn't match"); }
 
     const prevMentions = [...newPost.mentions];
     const prevTags = [...newPost.mentions];

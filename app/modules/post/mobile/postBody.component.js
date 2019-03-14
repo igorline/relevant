@@ -68,8 +68,8 @@ class PostBody extends Component {
     }
 
     if (preview) {
-      numberOfLines = 2;
-      maxTextLength = 10;
+      numberOfLines = 3;
+      maxTextLength = 30;
       postStyle = styles.previewText;
     }
 
@@ -90,7 +90,7 @@ class PostBody extends Component {
         <View
           style={[
             styles.postBody,
-            this.props.preview ? { marginTop: 10 } : null,
+            preview ? { marginTop: 10, marginBottom: 0 } : null,
             avatarText ? { marginLeft: 6 * 8 } : null
           ]}
         >
@@ -119,7 +119,7 @@ const localStyles = StyleSheet.create({
     marginTop: 24,
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 15
+    marginBottom: 16
   },
   bodyText: {
     fontFamily: 'Georgia',
