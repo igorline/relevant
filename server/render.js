@@ -159,10 +159,10 @@ export function fetchMeta(initialState) {
       image = post.image;
       description = post.body;
       url = `https://relevant.community/${community}/post/${postId}`;
+      if (!image) type = 'summary';
     }
   }
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  if (!image) type = 'summary';
   image =
     image || post
       ? 'https://relevant.community/img/r-big.png'
