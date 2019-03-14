@@ -267,9 +267,9 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     const shouldOpen = projOffsetX > drawerWidth / 2;
 
     if (shouldOpen) {
-      this._animateDrawer(startOffsetX, drawerWidth, velocityX * 2);
+      this._animateDrawer(startOffsetX, drawerWidth, velocityX * 3);
     } else {
-      this._animateDrawer(startOffsetX, 0, velocityX * 2);
+      this._animateDrawer(startOffsetX, 0, velocityX * 3);
     }
   };
 

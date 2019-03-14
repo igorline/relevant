@@ -94,7 +94,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta name="twitter:site" content="@4realglobal" />
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
-        <meta name="twitter:image" content="${meta.image}" />
+        ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
 
         ${cssStyleTags}
         ${rnWebStyles}
@@ -160,7 +160,10 @@ export function fetchMeta(initialState) {
     }
   }
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image = image || post ? '' : 'https://relevant.community/img/fbimg.png';
+  image =
+    image || post
+      ? 'https://relevant.community/img/r-big.png'
+      : 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
   return { title, description, image, url };
