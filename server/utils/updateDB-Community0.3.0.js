@@ -670,6 +670,26 @@ async function cleanUpCommunityFunds() {
 //   });
 // }
 
+// async function fixOldComment() {
+//   const comments = await Post.find({
+//     hidden: { $ne: true },
+//     type: 'comment',
+//     parentComment: { $exists: false }
+//   })
+//   .populate('parentPost');
+
+//   comments.map(c => {
+//     // console.log(c.parentPost.toObject());
+//     const { parentPost } = c.parentPost || {};
+//     if (c.parentPost && parentPost && !parentPost.equals(c.parentPost._id)) {
+//       c.parentComment = c.parentPost._id;
+//       c.parentPost = parentPost;
+//       // return c.save();
+//       // console.log(c.createdAt, c.parentPost, c.parentComment);
+//     } else return console.log('no nested parent');
+//   });
+// }
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -699,6 +719,8 @@ async function runUpdates() {
 
     // notification check
     // await notificationCheck();
+
+    // await fixOldComment();
 
     console.log('finished db updates');
   } catch (err) {
