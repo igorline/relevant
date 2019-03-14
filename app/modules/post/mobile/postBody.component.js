@@ -27,8 +27,9 @@ class PostBody extends Component {
 
   goToPost() {
     const { post, actions } = this.props;
+    const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
     if (!actions || !post || !post._id) return;
-    actions.goToPost({ ...post, _id: post.parentPost || post._id });
+    actions.goToPost({ ...post, _id: parentId });
   }
 
   showInvestors() {

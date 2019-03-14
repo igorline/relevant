@@ -3,7 +3,8 @@ import codePush from 'react-native-code-push';
 import { Provider } from 'react-redux';
 import configureStore from 'app/core/mobile/configureStore';
 import AppContainer from 'modules/_app/mobile/app.container';
-import { createAppContainer, createDrawerNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 import Analytics from 'react-native-firebase-analytics';
 import { setTopLevelNavigator } from 'app/utils/nav';
 import SideNav from 'modules/navigation/mobile/sideNav.component';
@@ -41,7 +42,8 @@ export const MainStack = createDrawerNavigator(
   {
     drawerType: 'slide',
     edgeWidth: 100,
-    // minSwipeDistance: 1,
+    minSwipeDistance: 2,
+    useNativeAnimations: true,
     contentComponent: SideNav,
     drawerWidth: () => Math.min(320, fullWidth * 0.9),
     defaultNavigationOptions: () => ({
