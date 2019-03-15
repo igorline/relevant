@@ -51,8 +51,8 @@ class Comment extends Component {
     scrollTo: PropTypes.func,
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
-    history: PropTypes.object
-    // navigation: PropTypes.object,
+    history: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   state = {
@@ -142,7 +142,8 @@ class Comment extends Component {
       avatarText,
       preview,
       inMainFeed,
-      history
+      history,
+      navigation
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -227,7 +228,7 @@ class Comment extends Component {
     return (
       <View ref={this.el}>
         <Spacer nestingLevel={nestingLevel} m={'4 4 0 0'}>
-          {!hidePostButtons ? (
+          {!hidePostButtons && !navigation.isResponsive ? (
             <View w={12}>
               <PostButtons {...this.props} post={comment} />
             </View>
@@ -269,6 +270,11 @@ class Comment extends Component {
                 justify="flex-start"
                 aligns="center"
               >
+                {!hidePostButtons && navigation.isResponsive ? (
+                  <View w={12}>
+                    <PostButtons {...this.props} post={comment} horizontal />
+                  </View>
+                ) : null}
                 <ULink
                   hu
                   to="#"
