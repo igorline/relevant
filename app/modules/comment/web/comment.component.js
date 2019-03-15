@@ -57,7 +57,12 @@ class Comment extends Component {
     scrollTo: PropTypes.func,
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
-    history: PropTypes.object
+    history: PropTypes.object,
+    additionalNesting: PropTypes.number
+  };
+
+  static defaultProps = {
+    additionalNesting: 0
   };
 
   state = {
@@ -147,7 +152,8 @@ class Comment extends Component {
       avatarText,
       preview,
       inMainFeed,
-      history
+      history,
+      additionalNesting
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -182,7 +188,6 @@ class Comment extends Component {
       text = lines.slice(0, 3).join('\n');
       readMore = text.length < comment.body.length;
     }
-
     let body = (
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
@@ -228,10 +233,13 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
-
     return (
       <View ref={this.el}>
-        <Spacer nestingLevel={nestingLevel} m={'4 4 0 0'}>
+        <Spacer
+          nestingLevel={nestingLevel}
+          additionalNesting={additionalNesting}
+          m={'4 4 0 0'}
+        >
           {!hidePostButtons ? (
             <PostButtonsContainer>
               <PostButtons {...this.props} post={comment} />
@@ -260,7 +268,8 @@ class Comment extends Component {
                   text={'Update'}
                   cancel={this.cancel}
                   {...this.props}
-                  nestingLevel={null}
+                  nestingLevel={nestingLevel}
+                  additionalNesting={additionalNesting}
                   autoFocus
                 />
               </View>
@@ -318,11 +327,10 @@ class Comment extends Component {
           <CommentForm
             isReply
             nestingLevel={nestingLevel}
-            additionalNesting={hidePostButtons ? 0 : 1.5}
             p={4}
-            // mt={4}
             text={'Comment'}
             {...this.props}
+            additionalNesting={additionalNesting + (hidePostButtons ? 0 : 1.5)}
             parentComment={comment}
             cancel={this.cancel}
             autoFocus

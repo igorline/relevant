@@ -179,10 +179,11 @@ export const Spacer = styled(View)`
   flex-direction: row;
   position: relative;
   padding-left: ${p => {
-    if (p.nestingLevel !== undefined && p.nestingLevel !== null) {
-      return sizing(p.nestingLevel * NESTING_UNIT);
+    if (Number.isInteger(p.nestingLevel) || Number.isInteger(p.additionalNesting)) {
+      const total = (p.nestingLevel || 0) + (p.additionalNesting || 0);
+      return sizing(total * NESTING_UNIT);
     }
-    return sizing(NESTING_UNIT);
+    return 0;
   }}
   flex-grow: 1;
 `;

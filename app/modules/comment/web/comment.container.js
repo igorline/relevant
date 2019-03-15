@@ -55,6 +55,7 @@ class Comments extends Component {
       <div>
         <CommentForm
           {...this.props}
+          nestingLevel={0}
           additionalNesting={1.5}
           text={'Comment'}
           parentPost={post}
