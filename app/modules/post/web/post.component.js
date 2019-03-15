@@ -148,7 +148,8 @@ export class Post extends Component {
         postUrl={postUrl}
         parentPost={post}
         hidePostButtons={hidePostButtons}
-        nestingLevel={hidePostButtons ? 0.5 : 0}
+        nestingLevel={0}
+        additionalNesting={hidePostButtons ? 0.5 : 0}
         hideBorder
         noLink={noLink}
         avatarText={avatarText}
@@ -168,7 +169,8 @@ export class Post extends Component {
         parentPost={post}
         hidePostButtons
         hideBorder
-        nestingLevel={hidePostButtons ? 0 : 1.5}
+        additionalNesting={hidePostButtons ? 0 : 1.5}
+        nestingLevel={0}
         actions={actions}
         preview={preview}
         inMainFeed
