@@ -15,11 +15,12 @@ class PostButtons extends Component {
     post: PropTypes.shape({
       data: PropTypes.object
     }),
-    community: PropTypes.object,
+    // community: PropTypes.object,
     actions: PropTypes.object,
     className: PropTypes.string,
-    earnings: PropTypes.object,
-    color: PropTypes.string
+    // earnings: PropTypes.object,
+    color: PropTypes.string,
+    horizontal: PropTypes.bool
   };
 
   constructor(props) {
@@ -119,7 +120,16 @@ class PostButtons extends Component {
   render() {
     // TODO show tooltip here with pending earnigns and other stats
     // eslint-disable-next-line
-    const { post, auth, community, className, earnings, myPostInv, color } = this.props;
+    const {
+      post,
+      auth,
+      // community,
+      className,
+      // earnings,
+      myPostInv,
+      color,
+      horizontal
+    } = this.props;
 
     // let pendingPayouts = 0;
     // if (earnings) {
@@ -155,6 +165,7 @@ class PostButtons extends Component {
           ref={c => (this.investButton = c)}
           onLayout={() => {}}
           align="center"
+          fdirection={horizontal ? 'row' : 'column'}
           style={{ opacity: 1 }} // need this to make animations work on android
         >
           <PostButton
@@ -171,6 +182,7 @@ class PostButtons extends Component {
               c={color || colors.secondaryText}
               fs={2}
               lh={2}
+              m={horizontal ? '0 1' : null}
               data-place={'right'}
               data-for="mainTooltip"
               data-tip={JSON.stringify({
