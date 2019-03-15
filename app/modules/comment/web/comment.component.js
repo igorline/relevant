@@ -14,8 +14,7 @@ import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { colors, sizing } from 'app/styles';
-import styled from 'styled-components/primitives';
+import { colors, layout } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import Linkify from 'linkifyjs/react';
 import * as linkify from 'linkifyjs';
@@ -27,11 +26,6 @@ import { withRouter } from 'react-router';
 
 mentionPlugin(linkify);
 hashTagPlugin(linkify);
-
-const PostButtonsContainer = styled.View`
-  /* margin-right: ${sizing(4)}; */
-  width: ${sizing(12)};
-`;
 
 class Comment extends Component {
   static propTypes = {
@@ -241,9 +235,9 @@ class Comment extends Component {
           m={'4 4 0 0'}
         >
           {!hidePostButtons ? (
-            <PostButtonsContainer>
+            <View w={layout.POST_BUTTONS_WIDTH}>
               <PostButtons {...this.props} post={comment} />
-            </PostButtonsContainer>
+            </View>
           ) : null}
           <View fdirection="column" grow={1} shrink={1}>
             <View fdirection={'row'} justify={'space-between'} zIndex={2}>
@@ -330,7 +324,10 @@ class Comment extends Component {
             p={4}
             text={'Comment'}
             {...this.props}
-            additionalNesting={additionalNesting + (hidePostButtons ? 0 : 1.5)}
+            additionalNesting={
+              additionalNesting +
+              (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)
+            }
             parentComment={comment}
             cancel={this.cancel}
             autoFocus

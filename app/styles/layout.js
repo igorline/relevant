@@ -18,6 +18,14 @@ export const sideNavWidth = sizing(40);
 export const mediumScreenWidth = '714px';
 export const smallScreenWidth = '414px';
 
+export const NESTING_UNIT = 8;
+export const POST_BUTTONS_NESTING_UNITS = 1.5;
+export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * NESTING_UNIT;
+
+export const NESTING_UNIT_RESONSIVE = 6;
+export const POST_BUTTONS_WIDTH_RESPONSIVE =
+  POST_BUTTONS_NESTING_UNITS * NESTING_UNIT_RESONSIVE;
+
 // this is handled by mixins now — deprecated
 export const universalBorder = (side, color, width) => `
   border${side ? `-${side}` : ''}-color: ${color || colors.lineColor};
