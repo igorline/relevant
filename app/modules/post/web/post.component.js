@@ -7,18 +7,12 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import styled from 'styled-components/primitives';
-import { sizing } from 'app/styles';
 import SingleComment from 'modules/comment/web/singleComment.container';
 import PostButtons from 'modules/post/postbuttons.component';
 import PostInfo from 'modules/post/postinfo.component';
 import { routing } from 'app/utils';
 import { View, Text, Divider } from 'modules/styled/uni';
 import get from 'lodash/get';
-
-const PostButtonContainer = styled.View`
-  width: ${sizing(12)};
-`;
 
 export class Post extends Component {
   static propTypes = {
@@ -46,7 +40,8 @@ export class Post extends Component {
     noLink: PropTypes.bool,
     preview: PropTypes.bool,
     avatarText: PropTypes.func,
-    singlePost: PropTypes.bool
+    singlePost: PropTypes.bool,
+    navigation: PropTypes.object
   };
 
   deletePost() {
@@ -97,6 +92,7 @@ export class Post extends Component {
       preview,
       avatarText,
       singlePost,
+      navigation,
       actions = { actions }
     } = this.props;
     const { community: currentCommunity } = auth;
@@ -121,22 +117,24 @@ export class Post extends Component {
     // TODO pass post buttons as prop to Post?
     const postEl = isLink ? (
       <View fdirection={'row'} m={`4 4 ${renderComment ? 0 : 4} 0`}>
-        {!hidePostButtons && (
-          <PostButtonContainer>
+        {!hidePostButtons && !navigation.isResponsive && (
+          <View w={12}>
             <PostButtons post={post} {...this.props} />
-          </PostButtonContainer>
+          </View>
         )}
         <View flex={1}>
           <PostInfo
+            auth={auth}
+            navigation={navigation}
             post={post}
             link={link}
-            community={community}
             postUrl={postUrl}
             sort={sort}
             firstPost={firstPost}
             noLink={noLink}
             actions={actions}
             singlePost={singlePost}
+            community={community}
           />
           {this.props.children}
         </View>
@@ -179,6 +177,8 @@ export class Post extends Component {
     const previewEl = preview && link && (link.url || link.image) && (
       <View m={'4 4 0 4'}>
         <PostInfo
+          auth={auth}
+          navigation={navigation}
           post={post}
           link={link}
           community={community}
@@ -209,7 +209,8 @@ export default withRouter(
       usersState: state.user,
       auth: state.auth,
       earnings: state.earnings,
-      myPostInv: state.investments.myPostInv
+      myPostInv: state.investments.myPostInv,
+      navigation: state.navigation
     }),
     dispatch => ({
       actions: bindActionCreators(

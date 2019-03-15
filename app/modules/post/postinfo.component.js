@@ -6,10 +6,15 @@ import Gradient from 'modules/post/gradient.component';
 import { ActivityIndicator } from 'react-native-web';
 import { View, Image } from 'modules/styled/uni';
 import { getTitle, getFavIcon } from 'app/utils/post';
+import PostInfoMobile from 'modules/post/postinfo.mobile.component';
 import PostTitle from './postTitle.component';
 
 export default function PostInfo(props) {
-  const { post, link, firstPost, noLink } = props;
+  const { post, link, firstPost, noLink, navigation } = props;
+  const { community, ...rest } = props;
+  if (navigation.isResponsive) {
+    return <PostInfoMobile {...rest} />;
+  }
   if (post.loading) {
     return (
       <View>
@@ -49,5 +54,7 @@ PostInfo.propTypes = {
   community: PropTypes.string,
   postUrl: PropTypes.string,
   firstPost: PropTypes.object,
-  noLinks: PropTypes.bool
+  noLinks: PropTypes.bool,
+  navigation: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
 };
