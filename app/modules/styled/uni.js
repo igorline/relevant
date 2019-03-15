@@ -173,15 +173,13 @@ export const MobileDivider = styled(View)`
   background-color: ${colors.dividerBg};
 `;
 
-const NESTING_UNIT = 8;
-
 export const Spacer = styled(View)`
   flex-direction: row;
   position: relative;
   padding-left: ${p => {
     if (Number.isInteger(p.nestingLevel) || Number.isInteger(p.additionalNesting)) {
       const total = (p.nestingLevel || 0) + (p.additionalNesting || 0);
-      return sizing(total * NESTING_UNIT);
+      return sizing(total * layout.NESTING_UNIT);
     }
     return 0;
   }}
