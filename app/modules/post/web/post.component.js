@@ -148,8 +148,8 @@ export class Post extends Component {
         postUrl={postUrl}
         parentPost={post}
         hidePostButtons={hidePostButtons}
+        additionalNesting={0}
         nestingLevel={0}
-        additionalNesting={hidePostButtons ? 0.5 : 0}
         hideBorder
         noLink={noLink}
         avatarText={avatarText}
