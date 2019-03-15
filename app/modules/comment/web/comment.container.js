@@ -4,6 +4,7 @@ import get from 'lodash.get';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { layout } from 'app/styles';
 import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -55,7 +56,8 @@ class Comments extends Component {
       <div>
         <CommentForm
           {...this.props}
-          additionalNesting={1.5}
+          nestingLevel={0}
+          additionalNesting={layout.POST_BUTTONS_NESTING_UNITS}
           text={'Comment'}
           parentPost={post}
           p={'0 4 4 4'}

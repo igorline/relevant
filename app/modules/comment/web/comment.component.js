@@ -14,8 +14,7 @@ import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { colors, sizing } from 'app/styles';
-import styled from 'styled-components/primitives';
+import { colors, layout } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import Linkify from 'linkifyjs/react';
 import * as linkify from 'linkifyjs';
@@ -27,11 +26,6 @@ import { withRouter } from 'react-router';
 
 mentionPlugin(linkify);
 hashTagPlugin(linkify);
-
-const PostButtonsContainer = styled.View`
-  /* margin-right: ${sizing(4)}; */
-  width: ${sizing(12)};
-`;
 
 class Comment extends Component {
   static propTypes = {
@@ -57,7 +51,12 @@ class Comment extends Component {
     scrollTo: PropTypes.func,
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
-    history: PropTypes.object
+    history: PropTypes.object,
+    additionalNesting: PropTypes.number
+  };
+
+  static defaultProps = {
+    additionalNesting: 0
   };
 
   state = {
@@ -147,7 +146,8 @@ class Comment extends Component {
       avatarText,
       preview,
       inMainFeed,
-      history
+      history,
+      additionalNesting
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -182,7 +182,6 @@ class Comment extends Component {
       text = lines.slice(0, 3).join('\n');
       readMore = text.length < comment.body.length;
     }
-
     let body = (
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
@@ -228,14 +227,17 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
-
     return (
       <View ref={this.el}>
-        <Spacer nestingLevel={nestingLevel} m={'4 4 0 0'}>
+        <Spacer
+          nestingLevel={nestingLevel}
+          additionalNesting={additionalNesting}
+          m={'4 4 0 0'}
+        >
           {!hidePostButtons ? (
-            <PostButtonsContainer>
+            <View w={layout.POST_BUTTONS_WIDTH}>
               <PostButtons {...this.props} post={comment} />
-            </PostButtonsContainer>
+            </View>
           ) : null}
           <View fdirection="column" grow={1} shrink={1}>
             <View fdirection={'row'} justify={'space-between'} zIndex={2}>
@@ -260,7 +262,8 @@ class Comment extends Component {
                   text={'Update'}
                   cancel={this.cancel}
                   {...this.props}
-                  nestingLevel={null}
+                  nestingLevel={nestingLevel}
+                  additionalNesting={additionalNesting}
                   autoFocus
                 />
               </View>
@@ -318,11 +321,13 @@ class Comment extends Component {
           <CommentForm
             isReply
             nestingLevel={nestingLevel}
-            additionalNesting={hidePostButtons ? 0 : 1.5}
             p={4}
-            // mt={4}
             text={'Comment'}
             {...this.props}
+            additionalNesting={
+              additionalNesting +
+              (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)
+            }
             parentComment={comment}
             cancel={this.cancel}
             autoFocus

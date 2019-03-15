@@ -81,7 +81,7 @@ InviteSchema.statics.processInvite = async function processInvite({ invitecode, 
 
 async function publicReward({ user, inviter }) {
   await inviter.addReward({ type: 'publicLink', user });
-  return user;
+  return user.addReward({ type: 'publicInvite', user: inviter });
 }
 
 async function referralRewards({ invite, user, Invite }) {
@@ -112,7 +112,7 @@ async function referralRewards({ invite, user, Invite }) {
     const vote = new (Invite.model('Invest'))({
       investor: inviter._id,
       author: user._id,
-      amount: Math.min(1, (100 - inviter.relevance.pagerank + 10) / 100),
+      amount: Math.min(1, (100 - inviter.relevance.pagerank + 50) / 100),
       ownPost: false,
       communityId,
       community

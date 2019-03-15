@@ -726,6 +726,7 @@ export function redeemInvite(invitecode) {
       });
       dispatch(setInviteCode(null));
       dispatch(updateAuthUser(user));
+      Alert.alert('You are now a trusted admin of the community!', 'success');
     } catch (err) {
       dispatch(setInviteCode(null));
       // Alert.alert(err.message);

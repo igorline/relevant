@@ -15,6 +15,7 @@ import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
+// User.findOne({ handle: 'future' }).then(u => console.log(u.toObject()))
 
 async function sendConfirmation(user, newUser) {
   let text = '';
@@ -31,7 +32,7 @@ async function sendConfirmation(user, newUser) {
         Hi @${user.handle}${text}!
       <br />
       <br />
-        ${text}Please click on the link below to confirm your email address:
+        Please click on the link below to confirm your email address:
       <br />
       <br />
       <a href="${confirmUrl}" target="_blank">Confirm Email</a>

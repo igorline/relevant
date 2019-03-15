@@ -343,10 +343,12 @@ exports.create = async (req, res, next) => {
       undoInvest = true;
       relevanceToAdd = -investment.relevantPoints;
     }
+
     post.data.relevance += relevanceToAdd;
     if (relevanceToAdd !== 0) {
-      if (amount < 0) post.data.downVotes++;
-      else post.data.upVotes++;
+      const vote = undoInvest ? -1 : 1;
+      if (amount < 0) post.data.downVotes += vote;
+      else post.data.upVotes += vote;
     }
 
     // ------ update investment records ------
@@ -369,14 +371,6 @@ exports.create = async (req, res, next) => {
 
     // update subscriptions
     const subscription = await updateSubscriptions({ post, user, amount });
-
-    res.status(200).json({
-      investment,
-      success: true,
-      subscription,
-      undoInvest
-    });
-    post.updateClient();
 
     // TODO - put the rest into queue on worker;
     const initialPostRank = post.data.pagerank;
@@ -411,7 +405,16 @@ exports.create = async (req, res, next) => {
       await post.parentPost.updateRank({ communityId });
       await post.parentPost.save();
     }
+
+    res.status(200).json({
+      investment,
+      success: true,
+      subscription,
+      undoInvest,
+      rankChange: post.data.pagerank - initialPostRank
+    });
     post.updateClient();
+
     Earnings.updateEarnings({ post, communityId });
 
     // updates user investments

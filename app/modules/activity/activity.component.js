@@ -34,7 +34,8 @@ export default class SingleActivity extends Component {
       user: PropTypes.object.isRequired
     }).isRequired,
     mobile: PropTypes.bool,
-    PostComponent: PropTypes.func
+    PostComponent: PropTypes.func,
+    navigation: PropTypes.object
   };
 
   renderName(activity, user) {
@@ -96,16 +97,18 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, mobile, auth } = this.props;
+    const { PostComponent, actions, mobile, auth, navigation } = this.props;
     const { post } = activity;
 
-    const parentId = post.parentPost || post._id;
+    const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
     const linkToPost = `/${post.community}/post/${parentId}`;
 
+    const link = post.metaPost || post.parentPost;
+    // TODO hack should normalize in reducer
+    // if (post.parentPost) post.parentPost = post.parentPost._id;
+
     const newCommunity = post.community !== auth.community ? post.community : null;
-    // const parentPost = post.parentPost || post;
-    // const postUrl = routing.getPostUrl(community, parentPost);
-    // const renderComment = !noComments && comment;
+
     const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
 
     return (
@@ -113,12 +116,12 @@ export default class SingleActivity extends Component {
         <View>
           <PostComponent
             post={post}
-            // comment={post}
-            link={post.metaPost}
+            link={link}
             hideDivider
             hidePostButtons
             preview
             noLink={mobile}
+            navigation={navigation}
           />
         </View>
       </ULink>
@@ -160,22 +163,23 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent, mobile } = this.props;
+    const { PostComponent, mobile, navigation } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
-    const p = mobile ? 2 : 4;
-
     return (
-      <View m={mobile ? '2 0 2 2' : 0}>
-        <PostComponent
-          post={post}
-          hidePostButtons
-          preview
-          hideDivider
-          avatarText={() => <ActivityText activity={activity} amount={amount} />}
-        />
-        {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}
+      <View>
+        <View m={mobile ? '0 2 0 2' : 0}>
+          <PostComponent
+            post={post}
+            hidePostButtons
+            preview
+            hideDivider
+            navigation={navigation}
+            avatarText={() => <ActivityText activity={activity} amount={amount} />}
+          />
+        </View>
+        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
       </View>
     );
   }
@@ -209,9 +213,9 @@ export default class SingleActivity extends Component {
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={mobile ? 2 : 4} />
+          <View mt={mobile ? 0 : 4} />
         )}
-        {mobile ? <Divider mt={p} /> : <Divider m={'2 4 0 4'} />}
+        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
       </View>
     );
   }

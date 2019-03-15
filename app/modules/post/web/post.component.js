@@ -7,18 +7,13 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import styled from 'styled-components/primitives';
-import { sizing } from 'app/styles';
+import { layout } from 'app/styles';
 import SingleComment from 'modules/comment/web/singleComment.container';
 import PostButtons from 'modules/post/postbuttons.component';
 import PostInfo from 'modules/post/postinfo.component';
 import { routing } from 'app/utils';
 import { View, Text, Divider } from 'modules/styled/uni';
 import get from 'lodash/get';
-
-const PostButtonContainer = styled.View`
-  width: ${sizing(12)};
-`;
 
 export class Post extends Component {
   static propTypes = {
@@ -122,9 +117,9 @@ export class Post extends Component {
     const postEl = isLink ? (
       <View fdirection={'row'} m={`4 4 ${renderComment ? 0 : 4} 0`}>
         {!hidePostButtons && (
-          <PostButtonContainer>
+          <View w={layout.POST_BUTTONS_WIDTH}>
             <PostButtons post={post} {...this.props} />
-          </PostButtonContainer>
+          </View>
         )}
         <View flex={1}>
           <PostInfo
@@ -148,7 +143,8 @@ export class Post extends Component {
         postUrl={postUrl}
         parentPost={post}
         hidePostButtons={hidePostButtons}
-        nestingLevel={hidePostButtons ? 0.5 : 0}
+        additionalNesting={0}
+        nestingLevel={0}
         hideBorder
         noLink={noLink}
         avatarText={avatarText}
@@ -168,7 +164,8 @@ export class Post extends Component {
         parentPost={post}
         hidePostButtons
         hideBorder
-        nestingLevel={hidePostButtons ? 0 : 1.5}
+        additionalNesting={hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
+        nestingLevel={0}
         actions={actions}
         preview={preview}
         inMainFeed

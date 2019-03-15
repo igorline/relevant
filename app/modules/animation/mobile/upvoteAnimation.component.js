@@ -39,7 +39,7 @@ class UpvoteAnimation extends Component {
   componentWillUpdate(next) {
     if (this.props.animation.upvote !== next.animation.upvote) {
       this.parent = next.animation.parents.upvote;
-      this.amount = Math.min(20, next.animation.amount.upvote) || 10;
+      this.amount = next.animation.amount.upvote;
       this.investAni();
     }
   }
@@ -75,15 +75,17 @@ class UpvoteAnimation extends Component {
     }
 
     const i = 0;
-    coinArr.push(
-      <VoteNumber
-        destroy={this.destroy}
-        parent={this.parent}
-        amount={this.amount}
-        key={i}
-        specialKey={i}
-      />
-    );
+    if (this.amount) {
+      coinArr.push(
+        <VoteNumber
+          destroy={this.destroy}
+          parent={this.parent}
+          amount={this.amount}
+          key={i}
+          specialKey={i}
+        />
+      );
+    }
     this.setState({ coinAni: coinArr, investAni: newArr });
   }
 

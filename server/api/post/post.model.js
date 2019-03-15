@@ -618,13 +618,13 @@ PostSchema.post('remove', async function postRemove(post, next) {
     .exec();
 
     let metaPost;
-    let commentNote;
-    if (post.type === 'link' && !post.parentParent) {
-      metaPost = await this.model('MetaPost')
-      .remove({ post: post._id })
-      .exec();
-    }
+    // if (post.type === 'link' && !post.parentParent) {
+    //   metaPost = await this.model('MetaPost')
+    //   .remove({ post: post._id })
+    //   .exec();
+    // }
 
+    let commentNote;
     // remove notifications
     if (post.type === 'comment' || post.type === 'repost') {
       commentNote = this.model('Notification')
