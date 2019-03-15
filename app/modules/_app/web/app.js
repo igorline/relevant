@@ -94,11 +94,12 @@ class App extends Component {
     this.updateWidth();
     window.addEventListener('resize', this.updateWidth);
     // TODO do this after a timeout
-    // window.addEventListener('focus', () => {
-    //   if (this.props.newPosts)
-    //   this.props.actions.refreshTab('discover');
-    // });
-    //
+    window.addEventListener('blur', () => {
+      this.backgroundTime = new Date().getTime();
+    });
+
+    // TODO do this after a timeout
+    window.addEventListener('focus', () => this.reloadTabs());
   }
 
   setWidth = () => {
@@ -109,6 +110,13 @@ class App extends Component {
   updateWidth = () => {
     this.debouncedSetWidth();
   };
+  reloadTabs = () => {
+    const now = new Date().getTime();
+    if (now - this.backgroundTime > 10 * 60 * 1000) {
+      this.props.actions.reloadAllTabs();
+    }
+  };
+
   handleUserLogin = () => {
     const { auth, actions } = this.props;
     if (!auth.user.webOnboard.onboarding) {

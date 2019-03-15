@@ -4,6 +4,7 @@ const auth = require('../../auth/auth.service');
 
 const router = express.Router();
 
+// router.get('/confirm/:user/:code', controller.confirm);
 router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/sendConfirmation', auth.isAuthenticated(), controller.sendConfirmationCode);
 router.get('/search', auth.blocked(), controller.search);
@@ -12,7 +13,6 @@ router.get('/blocked', auth.isAuthenticated(), controller.blocked);
 router.get('/user/:id', auth.blocked(), controller.show);
 router.get('/general/list', auth.blocked(), controller.list);
 router.get('/testData', controller.testData);
-
 router.get('/check/user', controller.checkUser);
 
 router.post('/', controller.create);

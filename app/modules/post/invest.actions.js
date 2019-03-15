@@ -89,6 +89,8 @@ export function vote(amount, post, user, undo) {
           post
         })
       });
+      if (res.undoInvest) dispatch(undoPostVote(post._id));
+      else dispatch(updatePostVote({ post: post._id, amount }));
       return res;
     } catch (error) {
       if (undo) dispatch(updatePostVote({ post: post._id, amount }));

@@ -5,8 +5,6 @@ import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import ReactTooltip from 'react-tooltip';
-import { userVotePower } from 'server/config/globalConstants';
-import get from 'lodash/get';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -71,12 +69,13 @@ class PostButtons extends Component {
       if (!auth.isAuthenticated) throw new Error('You must be logged in to upvote posts');
 
       const amount = 1;
-      await actions.vote(amount, post, auth.user, vote);
+      const voteResult = await actions.vote(amount, post, auth.user, vote);
 
-      if (vote) return null;
+      if (!voteResult || voteResult.undoInvest) return null;
 
-      const pagerank = get(auth.user, 'relevance.pagerank');
-      const upvoteAmount = userVotePower(pagerank);
+      const startRank = post.data ? post.data.pagerank : 0;
+      const total = startRank + voteResult.rankChange + 1;
+      const upvoteAmount = Math.round(total) - Math.round(startRank);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };

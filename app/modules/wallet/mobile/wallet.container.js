@@ -11,14 +11,15 @@ import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
-import { FlatList, RefreshControl } from 'react-native';
+import CustomListView from 'modules/listview/mobile/customList.component';
 import moment from 'moment';
 import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
+import { withNavigation } from 'react-navigation';
 
 let drizzle;
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 30;
 
 class WalletContainer extends Component {
   static propTypes = {
@@ -26,7 +27,9 @@ class WalletContainer extends Component {
     auth: PropTypes.object,
     contract: PropTypes.object,
     actions: PropTypes.object,
-    earnings: PropTypes.object
+    earnings: PropTypes.object,
+    reload: PropTypes.number,
+    refresh: PropTypes.number
   };
 
   static contextTypes = {
@@ -36,6 +39,12 @@ class WalletContainer extends Component {
   state = {
     reloading: false
   };
+
+  needsReload = new Date().getTime();
+
+  shouldComponentUpdate(next) {
+    return next.navigation.isFocused();
+  }
 
   componentDidMount() {
     const { isAuthenticated } = this.props.auth;
@@ -53,15 +62,25 @@ class WalletContainer extends Component {
     if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
       drizzle = initDrizzle(this.context.store);
     }
+
+    if (this.props.refresh !== prevProps.refresh) {
+      this.scrollToTop();
+    }
+
+    if (this.props.reload !== prevProps.reload) {
+      this.needsReload = new Date().getTime();
+    }
   }
 
-  hasMore = true;
-
-  load = (page, length) => {
-    this.hasMore = page * PAGE_SIZE <= length;
-    if (this.hasMore) {
-      this.props.actions.getEarnings(null, PAGE_SIZE, length);
+  scrollToTop = () => {
+    const view = this.listview;
+    if (view && view.listview) {
+      view.listview.scrollTo({ y: 0, animated: true });
     }
+  };
+
+  load = (view, length) => {
+    this.props.actions.getEarnings(null, PAGE_SIZE, length);
   };
 
   reload = () => this.load(0, 0);
@@ -80,7 +99,7 @@ class WalletContainer extends Component {
     </View>
   );
 
-  renderRow = ({ item }) => {
+  renderRow = item => {
     if (!item) return null;
     const earning = item;
 
@@ -112,29 +131,22 @@ class WalletContainer extends Component {
 
     return (
       <View flex={1}>
-        <FlatList
-          ref={c => (this.scrollView = c)}
+        <CustomListView
+          ref={c => {
+            this.listview = c;
+          }}
+          // key={tab.id}
+          view={0}
           data={entities}
-          renderItem={this.renderRow}
-          keyExtractor={(item, index) => index.toString()}
-          // removeClippedSubviews
-          pageSize={2}
-          initialListSize={10}
-          keyboardShouldPersistTaps={'always'}
-          keyboardDismissMode={'interactive'}
-          onEndReachedThreshold={100}
-          overScrollMode={'always'}
-          style={{ flex: 1 }}
-          ListHeaderComponent={this.renderHeader}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.reloading}
-              onRefresh={this.reload}
-              tintColor="#000000"
-              colors={['#000000', '#000000', '#000000']}
-              progressBackgroundColor="#ffffff"
-            />
-          }
+          loaded
+          renderRow={this.renderRow}
+          renderHeader={this.renderHeader}
+          load={this.load}
+          type={'posts'}
+          parent={'feed'}
+          active
+          needsReload={this.needsReload}
+          actions={this.props.actions}
         />
       </View>
     );
@@ -155,7 +167,9 @@ function mapStateToProps(state) {
       transactions: state.transactions,
       web3: state.web3,
       transactionStack: state.transactionStack
-    }
+    },
+    refresh: state.navigation.wallet.refresh,
+    reload: state.navigation.wallet.reload
   };
 }
 
@@ -169,7 +183,9 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WalletContainer);
+export default withNavigation(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(WalletContainer)
+);
