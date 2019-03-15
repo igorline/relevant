@@ -90,11 +90,11 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta property="og:url" content="${meta.url}" />
         <meta property="og:image" content="${meta.image}" />
 
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content="${meta.type}" />
         <meta name="twitter:site" content="@4realglobal" />
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
-        <meta name="twitter:image" content="${meta.image}" />
+        ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
 
         ${cssStyleTags}
         ${rnWebStyles}
@@ -142,11 +142,15 @@ export function fetchMeta(initialState) {
   let description;
   let image;
   let url;
+  let post;
+
+  let type = 'summary_large_image';
 
   const { community } = initialState.auth;
+
   if (initialState.posts.posts) {
     const postId = Object.keys(initialState.posts.posts)[0];
-    let post = postId ? initialState.posts.posts[postId] : null;
+    post = postId ? initialState.posts.posts[postId] : null;
     if (post) {
       if (post.metaPost) {
         post = initialState.posts.links[post.metaPost] || post;
@@ -155,13 +159,17 @@ export function fetchMeta(initialState) {
       image = post.image;
       description = post.body;
       url = `https://relevant.community/${community}/post/${postId}`;
+      if (!image) type = 'summary';
     }
   }
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image = image || 'https://relevant.community/img/fbimg.png';
+  image =
+    image || post
+      ? 'https://relevant.community/img/r-big.png'
+      : 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
-  return { title, description, image, url };
+  return { title, description, image, url, type };
 }
 
 export async function handleRouteData({ req, store }) {

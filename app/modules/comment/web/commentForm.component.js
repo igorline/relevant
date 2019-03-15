@@ -177,7 +177,8 @@ class CommentForm extends Component {
         {...rest}
         bg={backgroundColor}
         pt={paddingTop}
-        nestingLevel={(nestingLevel || 0) + (additionalNesting || 0)}
+        nestingLevel={nestingLevel}
+        additionalNesting={additionalNesting}
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>
           {this.state.focused ? null : (

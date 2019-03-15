@@ -539,7 +539,7 @@ export async function computeApproxPageRank(params) {
     let oldWeight;
 
     const a = Math.abs(amount);
-    const twoA = 2 * a;
+    const twoA = author ? 2 * a : a;
     if (amount >= 0) {
       if (undoInvest) {
         postWeight = a / (degree + twoA);

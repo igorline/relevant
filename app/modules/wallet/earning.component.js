@@ -5,7 +5,6 @@ import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
 import { View, BodyText } from 'modules/styled/uni';
 import ReactTooltip from 'react-tooltip';
-// import PostPreview from 'modules/post/postPreview.container';
 
 export default class Earning extends Component {
   static propTypes = {
@@ -19,12 +18,6 @@ export default class Earning extends Component {
   componentDidMount() {
     if (ReactTooltip.rebuild) ReactTooltip.rebuild();
   }
-
-  // componentDidUpdate(prevProps) {
-  // if (prevProps.earnings.list.length !== this.props.earnings.list.length) {
-  //   ReactTooltip.rebuild();
-  // }
-  // }
 
   render() {
     const { earning, month, payout, mobile, PostPreview } = this.props;

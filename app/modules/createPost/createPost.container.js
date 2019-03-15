@@ -158,8 +158,8 @@ class CreatePostContainer extends Component {
       this.setSate({ validate: 'Please select at least one topic' });
       return 'Please select at least one topic';
     }
-    if (!this.state.body && !this.state.postUrl) {
-      this.setState({ validate: 'Please paste article link' });
+    if (!this.state.body || !this.state.body.trim().length) {
+      this.setState({ validate: 'Please write something' });
       return 'Can not create empty post';
     }
     return true;
@@ -327,7 +327,7 @@ class CreatePostContainer extends Component {
 
   render() {
     const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
-    const { body, url, submitting, postUrl } = this.state;
+    const { body, url, submitting } = this.state;
     const { community } = this.props;
     const articleTags = this.state.keywords;
     let communityTags = [];
@@ -346,7 +346,7 @@ class CreatePostContainer extends Component {
       );
     }
     const submitDisabled =
-      submitting || !this.state.selectedTags.length || (!body.length && !postUrl);
+      submitting || !this.state.selectedTags.length || !body || !body.trim().length;
     return (
       <View>
         <View display="flex" fdirection="row" align="center">

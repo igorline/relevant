@@ -54,7 +54,9 @@ class Profile extends Component {
     this.changeView = this.changeView.bind(this);
     this.offset = 0;
     this.needsReload = new Date().getTime();
-    this.tabs = [{ id: 0, title: 'Posts' }, { id: 1, title: 'Upvotes' }];
+    // this.tabs = [{ id: 0, title: 'Posts' }, { id: 1, title: 'Upvotes' }];
+    this.tabs = [{ id: 0, title: 'Posts' }];
+
     this.scrollTo = this.scrollTo.bind(this);
   }
 
@@ -126,14 +128,14 @@ class Profile extends Component {
       const post = posts.posts[rowData];
       if (!post) return null;
       const link = posts.links[post.metaPost];
-      return <Post post={post} link={link} {...this.props} />;
+      return <Post {...this.props} post={post} commentary={[post]} link={link} />;
     }
     if (view === 1) {
       const investment = investments.investments[rowData];
       const post = posts.posts[investment.post];
       if (!post) return null;
       const link = posts.links[post.metaPost];
-      return <Post post={post} link={link} {...this.props} />;
+      return <Post {...this.props} post={post} commentary={[post]} link={link} />;
     }
     return null;
   }

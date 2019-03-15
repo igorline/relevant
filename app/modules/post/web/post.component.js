@@ -7,6 +7,7 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
+import { layout } from 'app/styles';
 import SingleComment from 'modules/comment/web/singleComment.container';
 import PostButtons from 'modules/post/postbuttons.component';
 import PostInfo from 'modules/post/postinfo.component';
@@ -118,7 +119,7 @@ export class Post extends Component {
     const postEl = isLink ? (
       <View fdirection={'row'} m={`4 4 ${renderComment ? 0 : 4} 0`}>
         {!hidePostButtons && !navigation.isResponsive && (
-          <View w={12}>
+          <View w={layout.POST_BUTTONS_WIDTH}>
             <PostButtons post={post} {...this.props} />
           </View>
         )}
@@ -146,7 +147,8 @@ export class Post extends Component {
         postUrl={postUrl}
         parentPost={post}
         hidePostButtons={hidePostButtons}
-        nestingLevel={hidePostButtons ? 0.5 : 0}
+        additionalNesting={0}
+        nestingLevel={0}
         hideBorder
         noLink={noLink}
         avatarText={avatarText}
@@ -166,7 +168,8 @@ export class Post extends Component {
         parentPost={post}
         hidePostButtons
         hideBorder
-        nestingLevel={hidePostButtons ? 0 : 1.5}
+        additionalNesting={hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
+        nestingLevel={0}
         actions={actions}
         preview={preview}
         inMainFeed

@@ -14,7 +14,7 @@ import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { colors } from 'app/styles';
+import { colors, layout } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import Linkify from 'linkifyjs/react';
 import * as linkify from 'linkifyjs';
@@ -52,7 +52,12 @@ class Comment extends Component {
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
     history: PropTypes.object,
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
+    additionalNesting: PropTypes.number
+  };
+
+  static defaultProps = {
+    additionalNesting: 0
   };
 
   state = {
@@ -143,7 +148,8 @@ class Comment extends Component {
       preview,
       inMainFeed,
       history,
-      navigation
+      navigation,
+      additionalNesting
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -178,7 +184,6 @@ class Comment extends Component {
       text = lines.slice(0, 3).join('\n');
       readMore = text.length < comment.body.length;
     }
-
     let body = (
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
@@ -224,12 +229,15 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
-
     return (
       <View ref={this.el}>
-        <Spacer nestingLevel={nestingLevel} m={'4 4 0 0'}>
+        <Spacer
+          nestingLevel={nestingLevel}
+          additionalNesting={additionalNesting}
+          m={'4 4 0 0'}
+        >
           {!hidePostButtons && !navigation.isResponsive ? (
-            <View w={12}>
+            <View w={layout.POST_BUTTONS_WIDTH}>
               <PostButtons {...this.props} post={comment} />
             </View>
           ) : null}
@@ -256,7 +264,8 @@ class Comment extends Component {
                   text={'Update'}
                   cancel={this.cancel}
                   {...this.props}
-                  nestingLevel={null}
+                  nestingLevel={nestingLevel}
+                  additionalNesting={additionalNesting}
                   autoFocus
                 />
               </View>
@@ -319,11 +328,13 @@ class Comment extends Component {
           <CommentForm
             isReply
             nestingLevel={nestingLevel}
-            additionalNesting={hidePostButtons ? 0 : 1.5}
             p={4}
-            // mt={4}
             text={'Comment'}
             {...this.props}
+            additionalNesting={
+              additionalNesting +
+              (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)
+            }
             parentComment={comment}
             cancel={this.cancel}
             autoFocus
