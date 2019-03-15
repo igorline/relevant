@@ -14,7 +14,8 @@ class Activity extends Component {
   static propTypes = {
     auth: PropTypes.object,
     notif: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    reload: PropTypes.number
   };
 
   constructor(props, context) {
@@ -41,16 +42,12 @@ class Activity extends Component {
     this.load(0, 0);
   }
 
-  // TODO implement this for browser - also for discover
-  // componentWillReceiveProps(next) {
-  //   if (this.props.refresh !== next.refresh) {
-  //     this.scrollToTop();
-  //   }
-  //   if (this.props.reload !== next.reload) {
-  //     this.props.actions.markRead();
-  //     this.needsReload = new Date().getTime();
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    if (this.props.reload !== prevProps.reload) {
+      this.props.actions.markRead();
+      this.load(0, 0);
+    }
+  }
 
   load(page, length) {
     if (!this.ready) return;
@@ -103,11 +100,11 @@ function mapStateToProps(state) {
     online: state.user.online,
     stats: state.stats,
     error: state.error.activity,
-    posts: state.posts
+    posts: state.posts,
 
     // TODO how do we deal with these?
     // refresh: state.navigation.activity.refresh,
-    // reload: state.navigation.activity.reload,
+    reload: state.navigation.reload
   };
 }
 

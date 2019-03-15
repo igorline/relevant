@@ -32,6 +32,8 @@ export function getActivityParams(activity) {
     case 'partialDownvote':
     case 'reward_referral':
     case 'reward_referredBy':
+    case 'reward_publicInvite':
+    case 'reward_publicLink':
     case 'mention':
     case 'commentMention':
     case 'postMention':

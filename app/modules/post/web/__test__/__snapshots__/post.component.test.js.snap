@@ -46,6 +46,7 @@ exports[`Snapshot Post Web 1`] = `
 >
   <SingleCommnetContainer
     actions={Object {}}
+    additionalNesting={0}
     comment={
       Object {
         "_id": "000000000000000000000001",
