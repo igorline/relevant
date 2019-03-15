@@ -91,7 +91,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta property="og:image" content="${meta.image}" />
 
         <meta name="twitter:card" content="${meta.type}" />
-        <meta name="twitter:site" content="@4realglobal" />
+        <meta name="twitter:site" content="@relevantfeed" />
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
         ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
@@ -162,11 +162,11 @@ export function fetchMeta(initialState) {
       if (!image) type = 'summary';
     }
   }
+
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image =
-    image || post
-      ? 'https://relevant.community/img/r-big.png'
-      : 'https://relevant.community/img/fbimg.png';
+  image = post
+    ? post.image || 'https://relevant.community/img/r-big.png'
+    : 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
   return { title, description, image, url, type };
