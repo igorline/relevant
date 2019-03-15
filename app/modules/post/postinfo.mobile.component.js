@@ -7,9 +7,13 @@ import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { getFavIcon, getTitle } from 'app/utils/post';
-import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import PostTitle from './postTitle.component';
 import PostButtons from './postbuttons.component';
+
+let UrlPreview;
+if (process.env.WEB !== 'true') {
+  UrlPreview = require('modules/createPost/mobile/urlPreview.component');
+}
 
 const GradientContainer = styled(View)`
   position: absolute;
@@ -48,7 +52,6 @@ export default function ImagePost(props) {
   );
 
   const imageHeight = preview ? PREVIEW_HEIGHT : IMAGE_HEIGHT;
-
   const postContent = (
     <View fdirection={'row'}>
       <ULink
@@ -58,15 +61,16 @@ export default function ImagePost(props) {
         target="_blank"
         onPress={() => actions.goToUrl(post.url)}
         noLink={noLink}
+        style={{ flex: 1 }}
       >
-        <View h={imageHeight} flex={1}>
+        <View h={imageHeight} flex={1} bg="red">
           {imgBg || <Gradient flex={1} title={title} />}
         </View>
       </ULink>
 
       <TitleContainer fdirection={'row'} p={'0 2 2 0'} pl={preview ? 2 : 0}>
         {!preview && (
-          <View w={7} pt={1}>
+          <View w={8} pt={1}>
             <PostButtons color={colors.white} post={post} {...props} />
           </View>
         )}
@@ -75,7 +79,7 @@ export default function ImagePost(props) {
     </View>
   );
 
-  if (preview) {
+  if (preview && UrlPreview) {
     return (
       <UrlPreview
         size="small"

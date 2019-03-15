@@ -21,7 +21,8 @@ class Comments extends Component {
     auth: PropTypes.object,
     post: PropTypes.object,
     myPostInv: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   state = {
@@ -48,7 +49,17 @@ class Comments extends Component {
   }
 
   render() {
-    const { comments, posts, post, auth, actions, myPostInv, user, match } = this.props;
+    const {
+      comments,
+      posts,
+      post,
+      auth,
+      actions,
+      myPostInv,
+      user,
+      match,
+      navigation
+    } = this.props;
     const children = comments.childComments[post._id] || [];
     const focusedComment = get(match, 'params.commentId', null);
     return (
@@ -85,6 +96,7 @@ class Comments extends Component {
                   actions={actions}
                   focusedComment={focusedComment}
                   scrollTo={this.scrollTo}
+                  navigation={navigation}
                 />
               );
             })}
@@ -101,7 +113,8 @@ export default withRouter(
       auth: state.auth,
       comments: state.comments,
       myPostInv: state.investments.myPostInv,
-      user: state.user
+      user: state.user,
+      navigation: state.navigation
     }),
     dispatch => ({
       actions: bindActionCreators(
