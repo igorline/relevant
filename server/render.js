@@ -166,7 +166,7 @@ export function fetchMeta(initialState) {
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
   image = post
     ? post.image || 'https://relevant.community/img/r-big.png'
-    : 'https://relevant.community/img/fbimg.png';
+    : 'https://relevant.community/img/fbImage.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
   return { title, description, image, url, type };
