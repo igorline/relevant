@@ -7,13 +7,9 @@ import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { getFavIcon, getTitle } from 'app/utils/post';
+import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import PostTitle from './postTitle.component';
 import PostButtons from './postbuttons.component';
-
-let UrlPreview;
-if (process.env.WEB !== 'true') {
-  UrlPreview = require('modules/createPost/mobile/urlPreview.component');
-}
 
 const GradientContainer = styled(View)`
   position: absolute;
@@ -79,7 +75,7 @@ export default function ImagePost(props) {
     </View>
   );
 
-  if (preview && UrlPreview) {
+  if (preview) {
     return (
       <UrlPreview
         size="small"

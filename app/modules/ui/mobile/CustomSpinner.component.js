@@ -1,15 +1,25 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles } from 'app/styles/global';
+import style from 'styled-components/primitives';
 
-let styles;
+const SpinnerContainer = style.View`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+`;
 
 export default function Spinner(props) {
   return (
-    <View pointerEvents={'none'} style={styles.spinnerContainer}>
+    <SpinnerContainer pointerEvents={'none'}>
       <ActivityIndicator animating={props.visible} size={props.size || 'large'} />
-    </View>
+    </SpinnerContainer>
   );
 }
 
@@ -17,19 +27,3 @@ Spinner.propTypes = {
   visible: PropTypes.bool,
   size: PropTypes.string
 };
-
-const localStyles = StyleSheet.create({
-  spinnerContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexGrow: 1
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };
