@@ -117,7 +117,7 @@ export class Post extends Component {
 
     // TODO pass post buttons as prop to Post?
     const postEl = isLink ? (
-      <View fdirection={'row'} m={`4 4 ${renderComment ? 0 : 4} 0`}>
+      <View fdirection={'row'} m={[`4 4 ${renderComment ? 0 : 4} 0`, 0]}>
         {!hidePostButtons && !navigation.isResponsive && (
           <View w={layout.POST_BUTTONS_WIDTH}>
             <PostButtons post={post} {...this.props} />
@@ -160,7 +160,8 @@ export class Post extends Component {
 
     const commentCommunity = get(comment, 'community') || community;
     const commentUrl = routing.getPostUrl(commentCommunity, parentPost);
-
+    const additionalNesting =
+      hidePostButtons || navigation.isResponsive ? 0 : layout.POST_BUTTONS_NESTING_UNITS;
     const commentEl = renderComment ? (
       <SingleComment
         comment={comment}
@@ -168,7 +169,7 @@ export class Post extends Component {
         parentPost={post}
         hidePostButtons
         hideBorder
-        additionalNesting={hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
+        additionalNesting={additionalNesting}
         nestingLevel={0}
         actions={actions}
         preview={preview}
@@ -178,7 +179,7 @@ export class Post extends Component {
     ) : null;
 
     const previewEl = preview && link && (link.url || link.image) && (
-      <View m={'4 4 0 4'}>
+      <View m={['4 4 0 4', 0]}>
         <PostInfo
           auth={auth}
           navigation={navigation}

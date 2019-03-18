@@ -176,12 +176,16 @@ export const MobileDivider = styled(View)`
 export const Spacer = styled(View)`
   flex-direction: row;
   position: relative;
-  padding-left: ${p => {
+  ${p => {
     if (Number.isInteger(p.nestingLevel) || Number.isInteger(p.additionalNesting)) {
       const total = (p.nestingLevel || 0) + (p.additionalNesting || 0);
-      return sizing(total * layout.NESTING_UNIT);
+      const UNIT = p.isResponsive ? layout.NESTING_UNIT_RESONSIVE : layout.NESTING_UNIT;
+      if (!total * UNIT) {
+        return '';
+      }
+      return `padding-left: ${sizing(total * UNIT)};`;
     }
-    return 0;
+    return '';
   }}
   flex-grow: 1;
 `;
