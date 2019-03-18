@@ -14,13 +14,17 @@ const props = {
   userState: user.usersState,
   auth: auth.auth,
   location: { pathname: 'post/' + post.post1._id },
-  history: { push: jest.fn() }
+  history: { push: jest.fn() },
+  navigation: {}
 };
 
 test('Snapshot Post Web', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <Post {...props} />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });
