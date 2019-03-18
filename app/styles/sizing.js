@@ -1,10 +1,20 @@
+import { mediumScreenWidth } from './layout';
+
 let isNative = true;
 if (process.env.WEB === 'true') {
   isNative = false;
 }
 
 export default function(unit, type) {
-  if (!isNative) {
+  let isResponsive = false;
+  try {
+    if (window.innerWidth <= mediumScreenWidth) {
+      isResponsive = true;
+    }
+  } catch (e) {
+    //
+  }
+  if (!isNative || isResponsive) {
     if (type) return `${unit}${type}`;
     return `${unit * 7.2}px`;
   }
