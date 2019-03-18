@@ -68,10 +68,12 @@ class Comments extends Component {
         <CommentForm
           {...this.props}
           nestingLevel={0}
-          additionalNesting={layout.POST_BUTTONS_NESTING_UNITS}
+          additionalNesting={
+            navigation.isResponsive ? 0 : layout.POST_BUTTONS_NESTING_UNITS
+          }
           text={'Comment'}
           parentPost={post}
-          p={'0 4 4 4'}
+          p={['0 4 4 4', '4 4 2 4']}
           isReply
         />
         <Divider />

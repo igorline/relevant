@@ -31,7 +31,8 @@ class CommentForm extends Component {
     nestingLevel: PropTypes.number,
     additionalNesting: PropTypes.number,
     autoFocus: PropTypes.bool,
-    history: PropTypes.object
+    history: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -161,6 +162,7 @@ class CommentForm extends Component {
       nestingLevel,
       additionalNesting,
       autoFocus,
+      navigation,
       ...rest
     } = this.props;
     if (!auth.isAuthenticated) return null;
@@ -175,10 +177,11 @@ class CommentForm extends Component {
         fdirection="row"
         grow={1}
         {...rest}
-        bg={backgroundColor}
         pt={paddingTop}
-        nestingLevel={nestingLevel}
-        additionalNesting={additionalNesting}
+        bg={backgroundColor}
+        nestingLevel={navigation.isResponsive ? 0 : nestingLevel}
+        additionalNesting={navigation.isResponsive ? 0 : additionalNesting}
+        isResponsive={navigation.isResponsive}
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>
           {this.state.focused ? null : (
