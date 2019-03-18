@@ -3,17 +3,17 @@ import handleRender from './render';
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
 
-// let base;
-// if (process.env.NODE_ENV === 'production') {
-//   base = 'relevant.community';
-// } else {
-//   base = 'localhost';
-// }
-
-// const subdomainOptions = { base, removeWWW: true };
+function wwwRedirect(req, res, next) {
+  if (req.headers.host.slice(0, 4) === 'www.') {
+    const newHost = req.headers.host.slice(4);
+    return res.redirect(301, req.protocol + '://' + newHost + req.originalUrl);
+  }
+  return next();
+}
 
 module.exports = app => {
-  // app.use(require('./utils/subdomain')(subdomainOptions));
+  app.set('trust proxy', true);
+  app.use(wwwRedirect);
 
   // API
   app.use('/api/user', require('./api/user'));
