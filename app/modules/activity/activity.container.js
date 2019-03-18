@@ -15,7 +15,8 @@ class Activity extends Component {
     auth: PropTypes.object,
     notif: PropTypes.object,
     actions: PropTypes.object,
-    reload: PropTypes.number
+    reload: PropTypes.number,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -58,11 +59,13 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
+    const { navigation } = this.props;
     return (
       <SingleActivity
         PostComponent={PostComponent}
         key={rowData._id}
         singleActivity={rowData}
+        mobile={navigation.isResponsive}
         {...this.props}
       />
     );
@@ -101,6 +104,7 @@ function mapStateToProps(state) {
     stats: state.stats,
     error: state.error.activity,
     posts: state.posts,
+    navigation: state.navigation,
 
     // TODO how do we deal with these?
     // refresh: state.navigation.activity.refresh,
