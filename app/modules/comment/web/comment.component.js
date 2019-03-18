@@ -280,6 +280,7 @@ class Comment extends Component {
                 fdirection="row"
                 justify="space-between"
                 aligns="center"
+                wrap={1} // stop-gap to avoid the page dimenisons breaking on deeply nested comments
               >
                 {!hidePostButtons && navigation.isResponsive ? (
                   <View w={12}>
