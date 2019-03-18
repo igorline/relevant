@@ -200,7 +200,9 @@ export class Post extends Component {
         {previewEl}
         {isLink && previewEl ? <View mt={4} /> : postEl}
         {commentEl}
-        {hideDivider ? null : <Divider m={'0 4'} />}
+        {hideDivider ? null : (
+          <Divider m={'0 4'} isResponsive={navigation.isResponsive} />
+        )}
       </View>
     );
   }
