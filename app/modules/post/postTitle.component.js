@@ -72,7 +72,13 @@ export default function PostTitle(props) {
   const tagEl = tags.length ? (
     <InlineText c={c || colors.blue}>
       {tags.map(tag => (
-        <Tag name={tag} community={community} key={tag} noLink={noLink} />
+        <Tag
+          name={tag}
+          community={community}
+          key={tag}
+          noLink={noLink}
+          c={c || colors.blue}
+        />
       ))}
     </InlineText>
   ) : null;
