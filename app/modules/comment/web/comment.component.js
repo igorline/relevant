@@ -278,7 +278,7 @@ class Comment extends Component {
               <View
                 ml={condensedView ? 5 : 0}
                 fdirection="row"
-                justify="flex-start"
+                justify="space-between"
                 aligns="center"
               >
                 {!hidePostButtons && navigation.isResponsive ? (
@@ -286,41 +286,43 @@ class Comment extends Component {
                     <PostButtons {...this.props} post={comment} horizontal />
                   </View>
                 ) : null}
-                <ULink
-                  hu
-                  to="#"
-                  authrequired={true}
-                  onClick={e => {
-                    e.preventDefault();
-                    setActiveComment(comment.id);
-                  }}
-                  onPress={e => {
-                    e.preventDefault();
-                    setActiveComment(comment.id);
-                  }}
-                >
-                  <CTALink mr={3} mb={4} c={colors.blue}>
-                    Reply
-                  </CTALink>
-                </ULink>
-                <ULink
-                  hu
-                  to="#"
-                  authrequired={true}
-                  onClick={e => {
-                    e.preventDefault();
-                    this.copyToClipboard();
-                  }}
-                  onPress={e => {
-                    e.preventDefault();
-                    this.copyToClipboard();
-                  }}
-                >
-                  <CTALink mr={3} c={colors.blue}>
-                    Share
-                  </CTALink>
-                </ULink>
-                {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
+                <View fdirection="row">
+                  <ULink
+                    hu
+                    to="#"
+                    inline
+                    authrequired={true}
+                    onClick={e => {
+                      e.preventDefault();
+                      setActiveComment(comment.id);
+                    }}
+                    onPress={e => {
+                      e.preventDefault();
+                      setActiveComment(comment.id);
+                    }}
+                  >
+                    <CTALink mr={3} mb={4} c={colors.blue}>
+                      Reply
+                    </CTALink>
+                  </ULink>
+                  <ULink
+                    hu
+                    to="#"
+                    authrequired={true}
+                    inline
+                    onClick={e => {
+                      e.preventDefault();
+                      this.copyToClipboard();
+                    }}
+                    onPress={e => {
+                      e.preventDefault();
+                      this.copyToClipboard();
+                    }}
+                  >
+                    <CTALink c={colors.blue}>Share</CTALink>
+                  </ULink>
+                  {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
+                </View>
               </View>
             )}
           </View>
