@@ -345,7 +345,7 @@ class Comment extends Component {
             autoFocus
           />
         )}
-        {!hideBorder && <Divider m={'0 4'} />}
+        {!hideBorder && <Divider m={'0 4'} isResponsive={navigation.isResponsive} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}

@@ -52,9 +52,24 @@ export const ImageWrapper = styled.View`
 `;
 
 export const Divider = styled.View`
-  ${mixins.margin}
-  ${mixins.padding}
-  ${layout.universalBorder('bottom')}
+  ${p => {
+    if (p.isResponsive) {
+      return `
+        height: ${sizing(4)};
+        background-color: ${colors.dividerBg};
+      `;
+    }
+    return `
+      ${mixins.margin}
+      ${mixins.padding}
+      ${layout.universalBorder('bottom')}
+    `;
+  }}
+`;
+
+export const MobileDivider = styled(View)`
+  height: ${sizing(4)};
+  background-color: ${colors.dividerBg};
 `;
 
 export const Header = styled(Text)`
@@ -166,11 +181,6 @@ export const NumericalValue = styled(Text)`
   ${mixins.font}
   ${mixins.inheritfont}
   ${mixins.color}
-`;
-
-export const MobileDivider = styled(View)`
-  height: ${sizing(4)};
-  background-color: ${colors.dividerBg};
 `;
 
 export const Spacer = styled(View)`

@@ -179,7 +179,11 @@ export default class SingleActivity extends Component {
             avatarText={() => <ActivityText activity={activity} amount={amount} />}
           />
         </View>
-        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
+        {mobile ? (
+          <Divider mt={4} isResponsive={mobile} />
+        ) : (
+          <Divider m={'2 4 0 4'} isResponsive={mobile} />
+        )}
       </View>
     );
   }

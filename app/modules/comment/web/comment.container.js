@@ -76,7 +76,7 @@ class Comments extends Component {
           p={['0 4 4 4', '4 4 2 4']}
           isReply
         />
-        <Divider />
+        <Divider isResponsive={navigation.isResponsive} />
         {children.length !== 0 ? (
           <div>
             {children.map(id => {
