@@ -94,6 +94,7 @@ export const inheritcolor = css`
 
 export const width = css`
   ${p => (p.w ? `width: ${size(p.w)};` : '')};
+  ${p => (p.minWidth ? `min-width: ${size(p.minWidth)};` : '')};
 `;
 
 export const height = css`

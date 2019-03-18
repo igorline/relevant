@@ -219,10 +219,17 @@ class CommentForm extends Component {
                 bg="transparent"
                 c={colors.secondaryText}
                 disabled={!auth.isAuthenticated}
+                p={[null, '0 4']}
+                minWidth={1}
               >
                 Cancel
               </Button>
-              <Button onClick={this.handleSubmit} disabled={!auth.isAuthenticated}>
+              <Button
+                onClick={this.handleSubmit}
+                disabled={!auth.isAuthenticated}
+                p={[null, '0 4']}
+                minWidth={1}
+              >
                 {this.props.text}
               </Button>
             </View>

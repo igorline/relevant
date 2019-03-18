@@ -14,7 +14,7 @@ export default function(unit, type) {
   } catch (e) {
     //
   }
-  if (!isNative || isResponsive) {
+  if (!isNative && !isResponsive) {
     if (type) return `${unit}${type}`;
     return `${unit * 7.2}px`;
   }
