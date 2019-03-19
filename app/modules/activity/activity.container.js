@@ -65,7 +65,7 @@ class Activity extends Component {
         PostComponent={PostComponent}
         key={rowData._id}
         singleActivity={rowData}
-        mobile={navigation.isResponsive}
+        mobile={navigation.screenSize}
         {...this.props}
       />
     );

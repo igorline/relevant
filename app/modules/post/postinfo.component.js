@@ -12,7 +12,7 @@ import PostTitle from './postTitle.component';
 export default function PostInfo(props) {
   const { post, link, firstPost, noLink, navigation } = props;
   const { community, ...rest } = props;
-  if (navigation.isResponsive) {
+  if (navigation.screenSize) {
     return <PostInfoMobile {...rest} />;
   }
   if (post.loading) {

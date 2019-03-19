@@ -1,4 +1,4 @@
-import { mediumScreenWidth } from './layout';
+import { getScreenSize } from 'app/utils/nav';
 
 let isNative = true;
 if (process.env.WEB === 'true') {
@@ -6,15 +6,13 @@ if (process.env.WEB === 'true') {
 }
 
 export default function(unit, type) {
-  let isResponsive = false;
+  let screenSize = 0;
   try {
-    if (window.innerWidth <= mediumScreenWidth) {
-      isResponsive = true;
-    }
+    screenSize = getScreenSize(window.innerWidth);
   } catch (e) {
     //
   }
-  if (!isNative && !isResponsive) {
+  if (!isNative && screenSize === 0) {
     if (type) return `${unit}${type}`;
     return `${unit * 7.2}px`;
   }

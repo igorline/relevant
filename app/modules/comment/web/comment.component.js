@@ -234,10 +234,10 @@ class Comment extends Component {
         <Spacer
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
-          isResponsive={navigation.isResponsive}
+          screenSize={navigation.screenSize}
           m={['4 4 0 0', '4 4 0 4']}
         >
-          {!hidePostButtons && !navigation.isResponsive ? (
+          {!hidePostButtons && !navigation.screenSize ? (
             <View w={layout.POST_BUTTONS_WIDTH}>
               <PostButtons {...this.props} post={comment} />
             </View>
@@ -282,7 +282,7 @@ class Comment extends Component {
                 aligns="center"
                 wrap={1} // stop-gap to avoid the page dimenisons breaking on deeply nested comments
               >
-                {!hidePostButtons && navigation.isResponsive ? (
+                {!hidePostButtons && navigation.screenSize ? (
                   <View w={12}>
                     <PostButtons {...this.props} post={comment} horizontal />
                   </View>
@@ -345,7 +345,7 @@ class Comment extends Component {
             autoFocus
           />
         )}
-        {!hideBorder && <Divider m={['0 4', 0]} isResponsive={navigation.isResponsive} />}
+        {!hideBorder && <Divider m={['0 4', 0]} screenSize={navigation.screenSize} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}

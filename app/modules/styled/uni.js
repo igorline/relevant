@@ -55,7 +55,7 @@ export const Divider = styled.View`
   ${mixins.margin}
   ${mixins.padding}
   ${p => {
-    if (p.isResponsive) {
+    if (p.screenSize && p.screenSize > 0) {
       return `
         height: ${sizing(4)};
         background-color: ${colors.dividerBg};
@@ -187,7 +187,7 @@ export const Spacer = styled(View)`
   ${p => {
     if (Number.isInteger(p.nestingLevel) || Number.isInteger(p.additionalNesting)) {
       const total = (p.nestingLevel || 0) + (p.additionalNesting || 0);
-      const UNIT = p.isResponsive ? layout.NESTING_UNIT_RESONSIVE : layout.NESTING_UNIT;
+      const UNIT = p.screenSize > 0 ? layout.NESTING_UNIT_RESONSIVE : layout.NESTING_UNIT;
       if (!total * UNIT) {
         return '';
       }

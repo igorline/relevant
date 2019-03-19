@@ -69,14 +69,14 @@ class Comments extends Component {
           {...this.props}
           nestingLevel={0}
           additionalNesting={
-            navigation.isResponsive ? 0 : layout.POST_BUTTONS_NESTING_UNITS
+            navigation.screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS
           }
           text={'Comment'}
           parentPost={post}
           p={['0 4 4 4', '4 4 2 4']}
           isReply
         />
-        <Divider isResponsive={navigation.isResponsive} />
+        <Divider screenSize={navigation.screenSize} />
         {children.length !== 0 ? (
           <div>
             {children.map(id => {
