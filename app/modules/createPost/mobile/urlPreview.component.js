@@ -1,65 +1,27 @@
 import React, { Component } from 'react';
-import { Image, Text, TouchableHighlight, ActionSheetIOS, Platform } from 'react-native';
 import PropTypes from 'prop-types';
-import RNBottomSheet from 'react-native-bottom-sheet';
-import { greyText } from 'app/styles/global';
+import { colors, sizing } from 'app/styles';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
-import { View } from 'modules/styled/uni';
-
-let ActionSheet = ActionSheetIOS;
-
-if (Platform.OS === 'android') {
-  ActionSheet = RNBottomSheet;
-  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
-}
+import { View, Text, Image } from 'modules/styled/uni';
+import ULink from 'modules/navigation/ULink.component';
 
 export default class UrlPreviewComponent extends Component {
   static propTypes = {
-    actions: PropTypes.object,
-    edit: PropTypes.bool,
-    repost: PropTypes.object,
     size: PropTypes.string,
     image: PropTypes.string,
     title: PropTypes.string,
     urlPreview: PropTypes.object,
     domain: PropTypes.string,
-    noLink: PropTypes.bool
+    noLink: PropTypes.bool,
+    urlMenu: PropTypes.func
   };
 
-  constructor(props, state) {
-    super(props, state);
-    this.previewMenu = this.previewMenu.bind(this);
-  }
-
-  removeUrlPreview() {
-    this.props.actions.setCreatePostState({ urlPreview: null, postUrl: null });
-  }
-
-  previewMenu() {
-    if (this.props.edit || this.props.repost) return;
-    ActionSheet.showActionSheetWithOptions(
-      {
-        options: ['Remove Url', 'Cancel'],
-        cancelButtonIndex: 1,
-        destructiveButtonIndex: 0
-      },
-      buttonIndex => {
-        switch (buttonIndex) {
-          case 0:
-            this.removeUrlPreview();
-            break;
-          default:
-        }
-      }
-    );
-  }
-
   render() {
-    const { noLink, urlPreview, image, domain, size, title } = this.props;
+    const { noLink, urlPreview, image, domain, size, title, urlMenu } = this.props;
     const isSmall = size === 'small';
-    const height = isSmall ? 55 : 80;
+    const height = isSmall ? 7 : 10;
     const imageFlex = isSmall ? 0.35 : 0.4;
-    const fontSize = isSmall ? 13 : 15;
+    const fontSize = isSmall ? 1.5 : 2;
 
     const img = image || (urlPreview && urlPreview.image);
     const body = title || (urlPreview && urlPreview.title);
@@ -69,12 +31,12 @@ export default class UrlPreviewComponent extends Component {
       <Image
         resizeMode={'cover'}
         source={img ? { uri: img } : require('app/public/img/missing.png')}
-        style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
+        flex={imageFlex}
       />
     );
 
     const domainEl = domainUrl && (
-      <Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
+      <Text fs={fontSize} c={colors.grey} pd={1 / 4}>
         from: {domainUrl}
       </Text>
     );
@@ -82,31 +44,33 @@ export default class UrlPreviewComponent extends Component {
     const maxLines = isSmall && domainEl ? 2 : 3;
 
     return urlPreview ? (
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        style={{ height }}
-        disabled={noLink}
-      >
-        <View h={height} border align={'stretch'} fdirection={'row'} flex={1}>
-          {imageEl || <View style={{ width: 5 }} />}
-          <View style={{ flex: 1, padding: 5, justifyContent: 'center' }}>
-            <Text numberOfLines={maxLines} style={{ color: greyText, fontSize }}>
-              {body}
-            </Text>
-            <Text>{domainEl}</Text>
+      <View border>
+        <ULink underlayColor={'transparent'} onPress={urlMenu} to={'#'} disabled={noLink}>
+          <View h={height} align={'stretch'} fdirection={'row'}>
+            {imageEl || null}
+            <View flex={1} p={0.5} fdirection={'column'} justify={'center'}>
+              <Text
+                style={{
+                  maxHeight: sizing(maxLines * fontSize * 1.33),
+                  overflow: 'hidden'
+                }}
+                fs={fontSize}
+                numberOfLines={maxLines}
+                c={colors.grey}
+              >
+                {body}
+              </Text>
+              <Text>{domainEl}</Text>
+            </View>
           </View>
-        </View>
-      </TouchableHighlight>
+        </ULink>
+      </View>
     ) : (
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        style={{ height }}
-        onPress={this.previewMenu}
-      >
+      <ULink underlayColor={'transparent'} style={{ height }} onPress={urlMenu} to={'#'}>
         <View h={height} border align={'stretch'} fdirection={'row'} flex={1}>
           <CustomSpinner size={'small'} visible />
         </View>
-      </TouchableHighlight>
+      </ULink>
     );
   }
 }
