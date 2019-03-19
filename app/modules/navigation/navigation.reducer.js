@@ -25,7 +25,7 @@ const initialState = {
   modal: null,
   sideNavIsOpen: false,
   width: null,
-  isResponsive: false
+  screenSize: 0
 };
 
 function navigationState(state = initialState, action) {
@@ -34,7 +34,7 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         width: action.payload.width,
-        isResponsive: action.payload.isResponsive
+        screenSize: action.payload.screenSize
       };
     case OPEN_WEB_SIDE_NAV:
       return {

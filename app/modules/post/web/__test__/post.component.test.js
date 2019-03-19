@@ -16,7 +16,7 @@ const props = {
   location: { pathname: 'post/' + post.post1._id },
   history: { push: jest.fn() },
   navigation: {
-    isResponsive: false
+    screenSize: 0
   }
 };
 

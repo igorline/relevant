@@ -19,7 +19,7 @@ class ProfileContainer extends Component {
     match: PropTypes.object,
     usersState: PropTypes.object.isRequired,
     auth: authProps,
-    isResponsive: PropTypes.bool
+    screenSize: PropTypes.bool
   };
 
   state = {
@@ -61,11 +61,11 @@ class ProfileContainer extends Component {
   }
 
   render() {
-    const { isResponsive } = this.props;
+    const { screenSize } = this.props;
     return (
       <div style={{ flex: 1 }}>
         <Profile key={this.state.user._id + 'profile'} {...this.props} {...this.state} />
-        <Divider m={[4, 0]} isResponsive={isResponsive} />
+        <Divider m={[4, 0]} screenSize={screenSize} />
         <UserPosts
           key={this.state.user._id}
           {...this.props}
@@ -86,7 +86,7 @@ const mapStateToProps = state => ({
   investments: state.investments,
   myPostInv: state.investments.myPostInv,
   community: state.community,
-  isResponsive: state.navigation.isResponsive
+  screenSize: state.navigation.screenSize
 });
 
 const mapDispatchToProps = dispatch =>

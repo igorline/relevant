@@ -179,9 +179,9 @@ class CommentForm extends Component {
         {...rest}
         pt={paddingTop}
         bg={backgroundColor}
-        nestingLevel={navigation.isResponsive ? 0 : nestingLevel}
-        additionalNesting={navigation.isResponsive ? 0 : additionalNesting}
-        isResponsive={navigation.isResponsive}
+        nestingLevel={navigation.screenSize ? 0 : nestingLevel}
+        additionalNesting={navigation.screenSize ? 0 : additionalNesting}
+        screenSize={navigation.screenSize}
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>
           {this.state.focused ? null : (

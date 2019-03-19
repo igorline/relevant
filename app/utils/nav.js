@@ -1,5 +1,6 @@
 import React from 'react';
 import { Animated } from 'react-native';
+import { layout } from 'app/styles';
 
 let NativeAnimatedModule = null;
 if (process.env.WEB !== 'true') {
@@ -16,6 +17,17 @@ export function transtionConfig() {
     overshootClamping: true
   };
 }
+
+export const getScreenSize = width => {
+  const breakpoints = [layout.mediumScreenWidth, layout.smallScreenWidth, 0];
+  let screenSize = 0;
+  for (let i = 0; i < breakpoints.length; i++) {
+    if (width <= breakpoints[i]) {
+      screenSize = i + 1;
+    }
+  }
+  return screenSize;
+};
 
 export const withProps = component => {
   const Comp = component;
