@@ -52,7 +52,7 @@ class Comment extends Component {
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
     history: PropTypes.object,
-    navigation: PropTypes.object,
+    screenSize: PropTypes.number,
     additionalNesting: PropTypes.number
   };
 
@@ -148,7 +148,7 @@ class Comment extends Component {
       preview,
       inMainFeed,
       history,
-      navigation,
+      screenSize,
       additionalNesting
     } = this.props;
     if (!comment) return null;
@@ -234,10 +234,10 @@ class Comment extends Component {
         <Spacer
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
-          screenSize={navigation.screenSize}
+          screenSize={screenSize}
           m={['4 4 0 0', '4 4 0 4']}
         >
-          {!hidePostButtons && !navigation.screenSize ? (
+          {!hidePostButtons && !screenSize ? (
             <View w={layout.POST_BUTTONS_WIDTH}>
               <PostButtons {...this.props} post={comment} />
             </View>
@@ -282,7 +282,7 @@ class Comment extends Component {
                 aligns="center"
                 wrap={1} // stop-gap to avoid the page dimenisons breaking on deeply nested comments
               >
-                {!hidePostButtons && navigation.screenSize ? (
+                {!hidePostButtons && screenSize ? (
                   <View w={12}>
                     <PostButtons {...this.props} post={comment} horizontal />
                   </View>
@@ -345,7 +345,7 @@ class Comment extends Component {
             autoFocus
           />
         )}
-        {!hideBorder && <Divider m={['0 4', 0]} screenSize={navigation.screenSize} />}
+        {!hideBorder && <Divider m={['0 4', 0]} screenSize={screenSize} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}

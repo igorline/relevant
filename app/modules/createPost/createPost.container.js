@@ -45,7 +45,7 @@ class CreatePostContainer extends Component {
     location: PropTypes.object,
     history: PropTypes.object,
     community: PropTypes.object,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   constructor(props) {
@@ -305,13 +305,13 @@ class CreatePostContainer extends Component {
 
   renderPreview() {
     if (!this.state.urlPreview) return null;
-    const { auth, navigation } = this.props;
+    const { auth, screenSize } = this.props;
     return (
       <div style={{ position: 'relative' }}>
         <PostInfo
           small
           auth={auth}
-          navigation={navigation}
+          screenSize={screenSize}
           close={this.clearUrl.bind(this)}
           post={this.state.urlPreview}
           link={this.state.linkPreview}
@@ -441,7 +441,7 @@ function mapStateToProps(state) {
     tags: state.tags,
     userSearch: state.user.search,
     community: state.community,
-    navigation: state.navigation
+    screenSize: state.navigation.screenSize
   };
 }
 

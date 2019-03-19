@@ -19,7 +19,7 @@ class ProfileContainer extends Component {
     match: PropTypes.object,
     usersState: PropTypes.object.isRequired,
     auth: authProps,
-    screenSize: PropTypes.bool
+    screenSize: PropTypes.number
   };
 
   state = {
