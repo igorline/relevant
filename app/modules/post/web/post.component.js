@@ -174,12 +174,11 @@ export class Post extends Component {
         actions={actions}
         preview={preview}
         inMainFeed
-        // preview
       />
     ) : null;
 
     const previewEl = preview && link && (link.url || link.image) && (
-      <View m={['4 4 0 4', 0]}>
+      <View m={'4 4 0 4'}>
         <PostInfo
           auth={auth}
           navigation={navigation}
@@ -191,6 +190,7 @@ export class Post extends Component {
           firstPost={firstPost}
           noLink={noLink}
           actions={actions}
+          preview={preview}
         />
       </View>
     );
