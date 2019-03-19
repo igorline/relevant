@@ -32,7 +32,7 @@ class CommentForm extends Component {
     additionalNesting: PropTypes.number,
     autoFocus: PropTypes.bool,
     history: PropTypes.object,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   constructor(props, context) {
@@ -162,7 +162,7 @@ class CommentForm extends Component {
       nestingLevel,
       additionalNesting,
       autoFocus,
-      navigation,
+      screenSize,
       ...rest
     } = this.props;
     if (!auth.isAuthenticated) return null;
@@ -179,9 +179,9 @@ class CommentForm extends Component {
         {...rest}
         pt={paddingTop}
         bg={backgroundColor}
-        nestingLevel={navigation.screenSize ? 0 : nestingLevel}
-        additionalNesting={navigation.screenSize ? 0 : additionalNesting}
-        screenSize={navigation.screenSize}
+        nestingLevel={screenSize ? 0 : nestingLevel}
+        additionalNesting={screenSize ? 0 : additionalNesting}
+        screenSize={screenSize}
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>
           {this.state.focused ? null : (

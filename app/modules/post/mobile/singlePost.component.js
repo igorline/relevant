@@ -223,7 +223,7 @@ class SinglePostComponent extends Component {
       <View key={comment._id} index={index} fdirection={'column'} flex={1}>
         {nestingLevel ? (
           <View ml={nestingLevel * 3 - 1} mr={2}>
-            <Divider screenSize={navigation.screenSize} />
+            <Divider />
           </View>
         ) : (
           <MobileDivider />
