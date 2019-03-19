@@ -52,6 +52,8 @@ export const ImageWrapper = styled.View`
 `;
 
 export const Divider = styled.View`
+  ${mixins.margin}
+  ${mixins.padding}
   ${p => {
     if (p.isResponsive) {
       return `
@@ -59,11 +61,7 @@ export const Divider = styled.View`
         background-color: ${colors.dividerBg};
       `;
     }
-    return `
-      ${mixins.margin}
-      ${mixins.padding}
-      ${layout.universalBorder('bottom')}
-    `;
+    return layout.universalBorder('bottom');
   }}
 `;
 
