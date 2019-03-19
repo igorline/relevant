@@ -169,7 +169,7 @@ export default class SingleActivity extends Component {
     post.embeddedUser = byUser;
     return (
       <View>
-        <View m={mobile ? '0 2 0 2' : 0}>
+        <View m={['0 4', '0 2']}>
           <PostComponent
             post={post}
             hidePostButtons
@@ -179,11 +179,7 @@ export default class SingleActivity extends Component {
             avatarText={() => <ActivityText activity={activity} amount={amount} />}
           />
         </View>
-        {mobile ? (
-          <Divider mt={4} isResponsive={mobile} />
-        ) : (
-          <Divider m={'2 4 0 4'} isResponsive={mobile} />
-        )}
+        <Divider m={['2 4 0 4', 0]} isResponsive={mobile} />
       </View>
     );
   }
@@ -219,7 +215,7 @@ export default class SingleActivity extends Component {
         ) : (
           <View mt={mobile ? 0 : 4} />
         )}
-        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
+        <Divider m={['2 4 0 4', 0]} isResponsive={mobile} />
       </View>
     );
   }

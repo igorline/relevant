@@ -411,7 +411,7 @@ class CreatePostContainer extends Component {
                 }}
               />
             </View>
-            <Divider mt={4} />
+            <Divider mt={[4, 0]} />
           </View>
         ) : null}
         <View display="flex" fdirection="row" mt={2} justify="flex-end">
