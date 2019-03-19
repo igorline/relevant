@@ -16,7 +16,7 @@ class Activity extends Component {
     notif: PropTypes.object,
     actions: PropTypes.object,
     reload: PropTypes.number,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   constructor(props, context) {
@@ -59,13 +59,13 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
-    const { navigation } = this.props;
+    const { screenSize } = this.props;
     return (
       <SingleActivity
         PostComponent={PostComponent}
         key={rowData._id}
         singleActivity={rowData}
-        mobile={navigation.screenSize}
+        screenSize={screenSize}
         {...this.props}
       />
     );
@@ -104,7 +104,7 @@ function mapStateToProps(state) {
     stats: state.stats,
     error: state.error.activity,
     posts: state.posts,
-    navigation: state.navigation,
+    screenSize: state.navigation.screenSize,
 
     // TODO how do we deal with these?
     // refresh: state.navigation.activity.refresh,

@@ -33,7 +33,7 @@ export default class SingleActivity extends Component {
     auth: PropTypes.shape({
       user: PropTypes.object.isRequired
     }).isRequired,
-    mobile: PropTypes.bool,
+    screenSize: PropTypes.number,
     PostComponent: PropTypes.func,
     navigation: PropTypes.object
   };
@@ -97,7 +97,7 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, mobile, auth, navigation } = this.props;
+    const { PostComponent, actions, screenSize, auth, navigation } = this.props;
     const { post } = activity;
 
     const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
@@ -112,7 +112,7 @@ export default class SingleActivity extends Component {
     const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
 
     return (
-      <ULink to={linkToPost} noLink={!mobile} onPress={onPress}>
+      <ULink to={linkToPost} noLink={!screenSize} onPress={onPress}>
         <View>
           <PostComponent
             post={post}
@@ -120,7 +120,7 @@ export default class SingleActivity extends Component {
             hideDivider
             hidePostButtons
             preview
-            noLink={mobile}
+            noLink={!!screenSize}
             navigation={navigation}
           />
         </View>
@@ -129,7 +129,7 @@ export default class SingleActivity extends Component {
   }
 
   renderActivity(activity) {
-    const { mobile, actions } = this.props;
+    const { screenSize, actions } = this.props;
     const { emoji, image, byUser } = activityHelper.getActivityParams(activity);
     const amount = numbers.abbreviateNumber(activity.amount);
     return (
@@ -148,7 +148,7 @@ export default class SingleActivity extends Component {
             {this.renderName(activity, byUser)}
             <ActivityText activity={activity} amount={amount} />
           </InlineText>
-          <View>{mobile ? this.renderDate(activity) : null}</View>
+          <View>{screenSize ? this.renderDate(activity) : null}</View>
         </View>
       </View>
     );
@@ -163,7 +163,7 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent, mobile, navigation } = this.props;
+    const { PostComponent, screenSize, navigation } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
@@ -179,16 +179,16 @@ export default class SingleActivity extends Component {
             avatarText={() => <ActivityText activity={activity} amount={amount} />}
           />
         </View>
-        <Divider m={['2 4 0 4', 0]} screenSize={mobile} />
+        <Divider m={['2 4 0 4', 0]} screenSize={screenSize} />
       </View>
     );
   }
 
   render() {
-    const { mobile } = this.props;
+    const { screenSize } = this.props;
     const activity = this.props.singleActivity;
     if (!activity) return null;
-    const p = mobile ? 2 : 4;
+    const p = screenSize ? 2 : 4;
 
     if (activity.type === 'comment') {
       return this.renderComment(activity);
@@ -200,22 +200,22 @@ export default class SingleActivity extends Component {
           mr={p}
           ml={p}
           mt={4}
-          mb={mobile ? 2 : 0}
+          mb={screenSize ? 2 : 0}
           fdirection="row"
           justify="space-between"
           align="center"
         >
           {this.renderActivity(activity)}
-          {mobile ? null : this.renderDate(activity)}
+          {screenSize ? null : this.renderDate(activity)}
         </View>
         {activity.post ? (
-          <View m={0} ml={mobile ? 8 : 6} pr={mobile ? 2 : 0}>
+          <View m={0} ml={screenSize ? 8 : 6} pr={screenSize ? 2 : 0}>
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={mobile ? 0 : 4} />
+          <View mt={screenSize ? 0 : 4} />
         )}
-        <Divider m={['2 4 0 4', 0]} screenSize={mobile} />
+        <Divider m={['2 4 0 4', 0]} screenSize={screenSize} />
       </View>
     );
   }
