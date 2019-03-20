@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import RichText from 'modules/text/web/richText.component';
 import get from 'lodash.get';
+import ReactGA from 'react-ga';
 
 import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -212,9 +213,10 @@ class CreatePostContainer extends Component {
       history.push(`/${auth.community}/new/`);
       actions.refreshTab('discover');
 
-      // Analytics.logEvent('newPost', {
-      //   viaShare: this.props.share
-      // });
+      ReactGA.event({
+        category: 'User',
+        action: 'Created a Post'
+      });
     } catch (err) {
       // TODO error handling
       alert.browserAlerts.alert(err.message);
