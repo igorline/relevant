@@ -82,7 +82,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-        <title>Relevant: A Social News Reader</title>
+        <title>Relevant: Curated by Communities, Not Clicks</title>
         <link rel="icon" href="https://relevant.community/favicon.ico?v=2" />
         <meta name="description" content="${meta.description}" />
         <meta property="og:description" content="${meta.description}" />
@@ -99,16 +99,6 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         ${cssStyleTags}
         ${rnWebStyles}
         ${styledComponentsTags}
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51795165-6"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-51795165-6');
-        </script>
 
         <!-- Facebook Pixel Code -->
         <script>

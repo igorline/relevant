@@ -10,6 +10,7 @@ let PushNotification;
 let userDefaults;
 
 let Analytics;
+let ReactGA;
 let Platform;
 let okToRequestPermissions = true;
 
@@ -19,6 +20,8 @@ if (process.env.WEB !== 'true') {
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
   Platform = ReactNative.Platform;
   PushNotification = require('react-native-push-notification');
+} else {
+  ReactGA = require('react-ga').default;
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -273,20 +276,6 @@ export function addDeviceToken(user) {
 
 function setupUser(user, dispatch) {
   dispatch(setUser(user));
-  if (Analytics) {
-    let r = user.relevance;
-    let p = user.postCount;
-    let i = user.investmentCount;
-
-    r = r === 0 ? '0' : r < 25 ? '25' : r < 200 ? '200' : 'many';
-    p = p === 0 ? '0' : p < 10 ? '10' : p < 30 ? '30' : 'many';
-    i = i === 0 ? '0' : i < 25 ? '75' : i < 200 ? '200' : 'many';
-
-    Analytics.setUserProperty('relevance', r);
-    Analytics.setUserProperty('posts', p);
-    Analytics.setUserProperty('upvotes', i);
-  }
-
   dispatch(setSelectedUserData(user));
   if (process.env.WEB !== 'true') {
     dispatch(addDeviceToken(user));
@@ -442,6 +431,11 @@ export function createUser(user, invitecode) {
     .then(responseJSON => {
       if (responseJSON.token) {
         return utils.token.set(responseJSON.token).then(() => {
+          ReactGA.event({
+            category: 'User',
+            action: 'Created an Account'
+          });
+          Analytics.logEvent('Created an Account');
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());
           return true;
@@ -475,6 +469,11 @@ export function updateHandle(user) {
         path: '/updateHandle',
         body: JSON.stringify({ user })
       });
+      ReactGA.event({
+        category: 'User',
+        action: 'Created an Account'
+      });
+      Analytics.logEvent('Created an Account');
       setupUser(result, dispatch);
       return true;
     } catch (err) {
