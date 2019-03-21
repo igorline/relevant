@@ -116,6 +116,7 @@ export const BodyText = styled(Text)`
 
 export const Button = styled.button`
   ${layout.button}
+  ${layout.buttonFont}
   ${p =>
     p.disabled
       ? `

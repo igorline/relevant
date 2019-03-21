@@ -132,6 +132,7 @@ export const Touchable = styled.Touchable``;
 
 export const Button = styled(Text)`
   ${layout.button}
+  ${layout.buttonFont}
   ${p => (!p.mobile ? 'cursor: pointer;' : '')}
   ${p =>
     p.disabled
