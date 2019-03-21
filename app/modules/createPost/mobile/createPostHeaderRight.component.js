@@ -232,21 +232,18 @@ class CreatePostHeaderRight extends Component {
   render() {
     const { state } = this.props.navigation;
     const { params } = state;
+    const { postBody } = this.props.createPost;
 
     if (state.routeName === 'shareAuth') {
       return null;
     }
 
     this.enableNext = false;
-    if (this.props.createPost.postBody && this.props.createPost.postBody.length) {
+    const hasBody = postBody && postBody.trim().length;
+    if (hasBody) {
       this.enableNext = true;
     }
-    if (this.props.createPost.postUrl && this.props.createPost.urlPreview) {
-      this.enableNext = true;
-    }
-    if (this.props.createPost.postUrl && !this.props.createPost.urlPreview) {
-      this.enableNext = true;
-    }
+
     if (this.state.creatingPost) this.enabledNext = false;
 
     const rightText = params && params.next ? params.next : 'Post';

@@ -109,12 +109,18 @@ const routes = [
               // USER
               { path: '/user/login', component: Auth, exact: true },
               { path: '/user/signup', component: Auth, exact: true },
+              {
+                path: '/user/confirm/:id/:code',
+                component: ProfileContainer,
+                exact: true
+              },
               { path: '/user/profile/:id', component: ProfileContainer, exact: true },
               { path: '/user/activity', component: ActivityContainer, exact: true },
               { path: '/user/forgot', component: Auth, exact: true },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!
               { path: '/user/resetPassword/:token', component: Auth, exact: true },
               { path: '/user/confirm/:user/:code', component: Auth, exact: true },
+              { path: '/user/confirmEmail', component: Auth, exact: true },
               { path: '/user/invite/:code', component: Invite, exact: true },
               { path: '/community/all', component: CommunityList, exact: true },
               { path: '/:community/post/:id', component: PostContainer, exact: true },

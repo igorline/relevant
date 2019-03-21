@@ -1,29 +1,36 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+import routes from 'modules/_app/web/routes';
+import queryString from 'query-string';
+import get from 'lodash/get';
+
+import * as navigationActions from 'modules/navigation/navigation.actions';
+import * as authActions from 'modules/auth/auth.actions';
+import * as modals from 'modules/ui/modals';
+
+import { renderRoutes, matchRoutes } from 'react-router-config';
+import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { renderRoutes, matchRoutes } from 'react-router-config';
-import routes from 'modules/_app/web/routes';
-
-// import Header from 'modules/navigation/web/header.component';
-import AuthContainer from 'modules/auth/web/auth.container';
-import * as navigationActions from 'modules/navigation/navigation.actions';
-import * as authActions from 'modules/auth/auth.actions';
 import { getEarnings } from 'modules/wallet/earnings.actions';
-import { getCommunities } from 'modules/community/community.actions';
+
+import AuthContainer from 'modules/auth/web/auth.container';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
 import Modal from 'modules/ui/web/modal';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
+import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
+
 import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
-import * as modals from 'modules/ui/modals';
-import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
-import queryString from 'query-string';
-import get from 'lodash/get';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
+
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-51795165-6');
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -54,9 +61,7 @@ class App extends Component {
   componentWillMount() {
     const { actions } = this.props;
     const { community } = this.props.auth;
-    if (community && community !== 'home') {
-      actions.setCommunity(community);
-    }
+    actions.setCommunity(community || 'relevant');
   }
 
   componentDidMount() {
@@ -67,7 +72,7 @@ class App extends Component {
       history.replace(`/${community}/new`);
     }
 
-    actions.setCommunity(community);
+    if (community) actions.setCommunity(community);
     actions.getCommunities();
     actions.getUser();
     actions.getEarnings('pending');
@@ -82,17 +87,30 @@ class App extends Component {
       actions.setInviteCode(parsed.invitecode);
       if (auth.isAuthenticated) {
         actions.redeemInvite(parsed.invitecode);
-      } else {
-        this.toggleLogin('signup');
+      } else if (!location.pathname.match('resetPassword')) {
+        history.push({
+          pathname: '/user/signup',
+          search: `${location.search}&redirect=${location.pathname}`
+        });
       }
     }
+
     // TODO do this after a timeout
-    // window.addEventListener('focus', () => {
-    //   if (this.props.newPosts)
-    //   this.props.actions.refreshTab('discover');
-    // });
-    //
+    window.addEventListener('blur', () => {
+      this.backgroundTime = new Date().getTime();
+    });
+
+    // TODO do this after a timeout
+    window.addEventListener('focus', () => this.reloadTabs());
+    history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
   }
+
+  reloadTabs = () => {
+    const now = new Date().getTime();
+    if (now - this.backgroundTime > 10 * 60 * 1000) {
+      this.props.actions.reloadAllTabs();
+    }
+  };
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
@@ -102,7 +120,12 @@ class App extends Component {
     }
     if (auth.invitecode) {
       actions.redeemInvite(auth.invitecode);
+      ReactGA.event({
+        category: 'User',
+        action: 'Redeemed Invite'
+      });
     }
+    ReactGA.set({ userId: auth.user._id });
   };
 
   componentDidUpdate(prevProps) {
@@ -221,12 +244,6 @@ class App extends Component {
       </div>
     );
 
-    let header;
-    // if (location.pathname === '/') {
-    //   header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
-    //   mobileEl = null;
-    // }
-
     return (
       <div>
         <GlobalStyle />
@@ -250,11 +267,7 @@ class App extends Component {
           <UpvoteAnimation />
         </div>
         <EthTools>
-          {header}
-          <div style={{ display: 'flex', width: '100%' }}>
-            {/* <CommunityNav {...this.props} /> */}
-            {children}
-          </div>
+          <div style={{ display: 'flex', width: '100%' }}>{children}</div>
           <AuthContainer
             toggleLogin={this.toggleLogin.bind(this)}
             open={this.state.openLoginModal || temp}
@@ -275,8 +288,8 @@ class App extends Component {
         </EthTools>
         {this.renderModal()}
         <ToastContainer />
-        {mobileEl}
         {renderRoutes(this.props.route.routes)}
+        <span>{mobileEl}</span>
       </div>
     );
   }

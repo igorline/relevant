@@ -43,7 +43,7 @@ class CommentInput extends Component {
   }
 
   setMention(user) {
-    const comment = this.state.comment.replace(this.mention, '@' + user._id);
+    const comment = this.state.comment.replace(this.mention, '@' + user.handle);
     this.setState({ comment });
     this.props.actions.setUserSearch([]);
   }
@@ -64,7 +64,7 @@ class CommentInput extends Component {
     const comment = this.state.comment.trim();
     const commentObj = {
       parentPost: parentPost._id,
-      parentComment: parentComment._id,
+      parentComment: parentComment ? parentComment._id : null,
       linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: comment,
       tags: this.commentTags,

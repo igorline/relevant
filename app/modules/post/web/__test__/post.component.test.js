@@ -18,9 +18,12 @@ const props = {
 };
 
 test('Snapshot Post Web', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <Post {...props} />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });

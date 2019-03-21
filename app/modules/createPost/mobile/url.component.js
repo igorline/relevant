@@ -105,7 +105,7 @@ class UrlComponent extends Component {
   }
 
   setMention(user) {
-    const postBody = this.props.postBody.replace(this.mention, '@' + user._id);
+    const postBody = this.props.postBody.replace(this.mention, '@' + user.handle);
     this.props.actions.setCreatePostState({ postBody });
     this.props.actions.setUserSearch([]);
     this.input.focus();

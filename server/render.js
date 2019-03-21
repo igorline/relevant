@@ -82,7 +82,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-        <title>Relevant: A Social News Reader</title>
+        <title>Relevant: Curated by Communities, Not Clicks</title>
         <link rel="icon" href="https://relevant.community/favicon.ico?v=2" />
         <meta name="description" content="${meta.description}" />
         <meta property="og:description" content="${meta.description}" />
@@ -90,25 +90,15 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta property="og:url" content="${meta.url}" />
         <meta property="og:image" content="${meta.image}" />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@4realglobal" />
+        <meta name="twitter:card" content="${meta.type}" />
+        <meta name="twitter:site" content="@relevantfeed" />
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
-        <meta name="twitter:image" content="${meta.image}" />
+        ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
 
-        ${rnWebStyles}
         ${cssStyleTags}
+        ${rnWebStyles}
         ${styledComponentsTags}
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51795165-6"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-51795165-6');
-        </script>
 
         <!-- Facebook Pixel Code -->
         <script>
@@ -142,11 +132,15 @@ export function fetchMeta(initialState) {
   let description;
   let image;
   let url;
+  let post;
+
+  let type = 'summary_large_image';
 
   const { community } = initialState.auth;
+
   if (initialState.posts.posts) {
     const postId = Object.keys(initialState.posts.posts)[0];
-    let post = postId ? initialState.posts.posts[postId] : null;
+    post = postId ? initialState.posts.posts[postId] : null;
     if (post) {
       if (post.metaPost) {
         post = initialState.posts.links[post.metaPost] || post;
@@ -155,13 +149,17 @@ export function fetchMeta(initialState) {
       image = post.image;
       description = post.body;
       url = `https://relevant.community/${community}/post/${postId}`;
+      if (!image) type = 'summary';
     }
   }
+
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image = image || 'https://relevant.community/img/fbimg.png';
+  image = post
+    ? post.image || 'https://relevant.community/img/r-big.png'
+    : 'https://relevant.community/img/fbImage.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
-  return { title, description, image, url };
+  return { title, description, image, url, type };
 }
 
 export async function handleRouteData({ req, store }) {

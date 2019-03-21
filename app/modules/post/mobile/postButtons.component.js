@@ -15,9 +15,7 @@ import Share from 'react-native-share';
 import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, greyText, fullHeight } from 'app/styles/global';
-import { numbers } from 'app/utils';
-import { get } from 'lodash';
-import { userVotePower } from 'server/config/globalConstants';
+import get from 'lodash/get';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -156,11 +154,13 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await actions.vote(amount, post, auth.user, !newVote);
+      const voteResult = await actions.vote(amount, post, auth.user, !newVote);
 
-      if (!newVote) return;
+      if (!newVote || !voteResult || voteResult.undoInvest) return;
 
-      const upvoteAmount = userVotePower(auth.user.relevance.pagerank);
+      const startRank = post.data ? post.data.pagerank : 0;
+      const total = startRank + voteResult.rankChange + 1;
+      const upvoteAmount = Math.round(total) - Math.round(startRank);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
@@ -303,7 +303,7 @@ class PostButtons extends Component {
     const parentPostId = parentPost._id || parentPost;
 
     if (get(navigation, 'state.params.id') === parentPostId) {
-      setupReply(post);
+      if (setupReply) setupReply(post);
       if (this.props.focusInput) focusInput();
       return;
     }
@@ -363,20 +363,16 @@ class PostButtons extends Component {
     let r = post.data ? post.data.relevance : null;
     const rel = r;
 
-    // let rIcon = (
-    //   <Image
-    //     resizeMode={'contain'}
-    //     style={styles.smallR}
-    //     source={require('app/public/img/icons/smallR.png')}
-    //   />
-    // );
-
     const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
 
     if (!r) {
       r = 'Vote';
       // rIcon = null;
     }
+
+    const postRank = post.data
+      ? Math.round(post.data.pagerank) + post.data.upVotes - post.data.downVotes
+      : 0;
 
     const stat = (
       <TouchableOpacity
@@ -393,7 +389,7 @@ class PostButtons extends Component {
         >
           <View style={[styles.textRow, { alignItems: 'center' }]}>
             <Text style={[styles.smallInfo, styles.greyText]}>
-              {typeof r !== 'number' ? r : numbers.abbreviateNumber(r)}
+              {typeof r !== 'number' ? r : postRank}
             </Text>
           </View>
         </View>
@@ -462,7 +458,7 @@ class PostButtons extends Component {
 
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {link && link.url && !isComment ? newCommentary : null}
-            {twitter || isComment ? null : comments}
+            {twitter ? null : comments}
           </View>
 
           {/*          <InvestModal

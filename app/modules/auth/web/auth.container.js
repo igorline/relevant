@@ -36,7 +36,10 @@ class AuthContainer extends Component {
     this.authNav = this.authNav.bind(this);
     this.close = this.close.bind(this);
 
-    const defaultRoute = '/' + this.props.auth.community + '/new';
+    const { community } = this.props.auth;
+
+    // TODO default view '/'
+    const defaultRoute = community ? `/${community}/new` : '/relevant/new';
 
     const { redirect } = queryString.parse(this.props.location.search);
     const redirectRoute = redirect || defaultRoute;
@@ -71,9 +74,9 @@ class AuthContainer extends Component {
   }
 
   authNav(type) {
-    if (this.props.modal) {
-      this.setState({ type });
-    } else this.props.history.push('/user/' + type);
+    const { location, modal, history } = this.props;
+    if (modal) this.setState({ type });
+    else history.push(`/user/${type}` + location.search);
   }
 
   async signup(data) {

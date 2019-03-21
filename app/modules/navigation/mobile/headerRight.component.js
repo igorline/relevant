@@ -78,7 +78,6 @@ class HeaderRight extends Component {
             const newUser = this.props.auth.user;
             newUser.image = results.url;
             this.props.actions.updateUser(newUser);
-            setTimeout(() => this.props.actions.getSelectedUser(newUser._id), 250);
           } else {
             Alert.alert('Error uploading image');
           }
@@ -119,19 +118,7 @@ class HeaderRight extends Component {
             this.initImage();
             break;
           case 2:
-            this.props.actions.getUser().then(user => {
-              if (!user.confirmed) {
-                Alert.alert('Please confirm your email first', '', [
-                  { text: 'Cancel', onPress: () => {}, style: 'cancel' },
-                  {
-                    text: 'Resend Email',
-                    onPress: () => this.props.actions.sendConfirmation()
-                  }
-                ]);
-              } else {
-                this.props.actions.viewInvites();
-              }
-            });
+            this.props.actions.push('invites');
             break;
           case 3:
             this.props.actions.viewBlocked();

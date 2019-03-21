@@ -40,6 +40,7 @@ Object {
     "updatedAt": "[SANITIZED]",
     "upvotes": 0,
   },
+  "rankChange": "[SANITIZED]",
   "subscription": Object {
     "__v": 0,
     "_id": "[SANITIZED]",

@@ -10,9 +10,11 @@ const withAuth = (Component, role) => {
     if (role && props.user) {
       if (role !== props.user.role) authenticated = false;
     }
-    return authenticated
-      ? <Component {...props} />
-      : <Redirect to={{ pathname: '/', state: { from: props.location } }} />;
+    return authenticated ? (
+      <Component {...props} />
+    ) : (
+      <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    );
   };
 
   AuthComponent.propTypes = {
@@ -21,11 +23,12 @@ const withAuth = (Component, role) => {
     user: PropTypes.object
   };
 
-  return withRouter(connect(
-    state => ({
+  return withRouter(
+    connect(state => ({
       authenticated: state.auth.isAuthenticated,
       user: state.auth.user
-    }))(AuthComponent));
+    }))(AuthComponent)
+  );
 };
 
 export default withAuth;

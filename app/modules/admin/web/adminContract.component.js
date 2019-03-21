@@ -7,7 +7,7 @@ export default class AdminContract extends Component {
   static propTypes = {
     RelevantCoin: PropTypes.object,
     user: PropTypes.object,
-    wallet: PropTypes.object,
+    wallet: PropTypes.object
   };
 
   // this context comes from the BondedTokenContainer

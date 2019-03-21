@@ -154,6 +154,7 @@ export class Post extends Component {
         avatarText={avatarText}
         actions={actions}
         preview={preview}
+        inMainFeed={!singlePost}
       />
     );
 
@@ -170,6 +171,8 @@ export class Post extends Component {
         nestingLevel={hidePostButtons ? 0 : 1.5}
         actions={actions}
         preview={preview}
+        inMainFeed
+        // preview
       />
     ) : null;
 
