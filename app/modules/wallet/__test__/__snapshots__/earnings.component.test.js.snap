@@ -404,10 +404,7 @@ exports[`Snapshot Paidout Web 1`] = `
       }
     }
   >
-    <Preview
-      community="relevant"
-      postId="5c45483709a5b05cd0646d7c"
-    />
+    Preview
   </div>
 </div>
 `;
@@ -814,10 +811,7 @@ exports[`Snapshot Pending Web 1`] = `
       }
     }
   >
-    <Preview
-      community="relevant"
-      postId="5c3d07d0348c61cc78023449"
-    />
+    Preview
   </div>
 </div>
 `;
