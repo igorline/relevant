@@ -9,7 +9,7 @@ import { View } from 'modules/styled/uni';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 
 const PostPreview = props => {
-  const { posts, mobile, postId, community, actions, navigation, auth } = props;
+  const { posts, postId, community, actions, navigation, auth, screenSize } = props;
   const post = posts.posts[postId];
   if (!post) return null;
 
@@ -23,7 +23,7 @@ const PostPreview = props => {
         to={`/${community}/post/${parentId}`}
       >
         <View>
-          {mobile ? (
+          {screenSize ? (
             <PostInfoMobile
               preview
               link={link}
@@ -52,7 +52,7 @@ const PostPreview = props => {
 
 PostPreview.propTypes = {
   posts: PropTypes.object,
-  mobile: PropTypes.bool,
+  screenSize: PropTypes.number,
   postId: PropTypes.string,
   community: PropTypes.string,
   actions: PropTypes.object,
