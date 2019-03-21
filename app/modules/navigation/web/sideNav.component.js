@@ -70,8 +70,7 @@ class SideNav extends Component {
               align="center"
               fdirection="row"
               justify="space-between"
-              pl={4}
-              pr={4}
+              p={['0 4', '0 2']}
             >
               <ULink align={'flex-start'} to={logoLink}>
                 <Image
