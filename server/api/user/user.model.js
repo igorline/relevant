@@ -11,7 +11,7 @@ import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
-const authTypes = ['github', 'twitter', 'facebook', 'google'];
+const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit'];
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -46,6 +46,9 @@ const UserSchema = new Schema(
     salt: { type: String, select: false },
     facebook: {},
     twitter: { type: Object, select: false },
+    reddit: { type: Object, select: false },
+    redditId: String,
+    redditAuth: { type: Object, select: false },
     google: {},
     github: {},
     relevanceRecord: [
