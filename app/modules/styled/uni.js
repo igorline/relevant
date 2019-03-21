@@ -21,6 +21,7 @@ export const Text = styled.Text`
   ${mixins.background}
   ${mixins.border}
   ${mixins.color}
+  ${mixins.height}
 `;
 
 export const InlineText = styled.Text`

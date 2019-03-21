@@ -163,13 +163,13 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent, screenSize, navigation } = this.props;
+    const { PostComponent, navigation } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
     return (
       <View>
-        <View m={['0 4', '0 2']}>
+        <View m={['0 4', 0]}>
           <PostComponent
             post={post}
             hidePostButtons
@@ -179,7 +179,7 @@ export default class SingleActivity extends Component {
             avatarText={() => <ActivityText activity={activity} amount={amount} />}
           />
         </View>
-        <Divider m={['2 4 0 4', 0]} screenSize={screenSize} />
+        <Divider m={'2 0 0 0'} />
       </View>
     );
   }
@@ -188,7 +188,6 @@ export default class SingleActivity extends Component {
     const { screenSize } = this.props;
     const activity = this.props.singleActivity;
     if (!activity) return null;
-    const p = screenSize ? 2 : 4;
 
     if (activity.type === 'comment') {
       return this.renderComment(activity);
@@ -197,10 +196,7 @@ export default class SingleActivity extends Component {
     return (
       <View>
         <View
-          mr={p}
-          ml={p}
-          mt={4}
-          mb={screenSize ? 2 : 0}
+          m={['4 4 0 4', '4 2 2 4']}
           fdirection="row"
           justify="space-between"
           align="center"
@@ -209,13 +205,13 @@ export default class SingleActivity extends Component {
           {screenSize ? null : this.renderDate(activity)}
         </View>
         {activity.post ? (
-          <View m={0} ml={screenSize ? 8 : 6} pr={screenSize ? 2 : 0}>
+          <View m={0} ml={[6, 5.5]} pr={0}>
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={screenSize ? 0 : 4} />
+          <View mt={[4, 0]} />
         )}
-        <Divider m={['2 4 0 4', 0]} screenSize={screenSize} />
+        <Divider m={'2 0 0 0'} />
       </View>
     );
   }

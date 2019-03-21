@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, AppState, Linking, Platform, StatusBar, YellowBox } from 'react-native';
+import {
+  View,
+  AppState,
+  Linking,
+  Platform,
+  StatusBar,
+  YellowBox,
+  Dimensions
+} from 'react-native';
 
 import { setCustomText } from 'react-native-global-props';
 import PropTypes from 'prop-types';
@@ -67,6 +75,8 @@ class Application extends Component {
   componentDidMount() {
     const { navigation, actions } = this.props;
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
+    const { width } = Dimensions.get('window');
+    this.props.actions.setWidth(width);
 
     // TODO - error state & loading state
     //   const { error } = this.props;
