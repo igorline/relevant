@@ -12,10 +12,10 @@ class CommunityActive extends Component {
     children: PropTypes.node,
     getCommunityMembers: PropTypes.func,
     members: PropTypes.array,
-    mobile: PropTypes.bool,
     actions: PropTypes.object,
     view: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   componentDidMount() {
@@ -40,17 +40,16 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children, members, mobile, actions, view } = this.props;
+    const { community, children, members, actions, view, screenSize } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
-    const limitedMembers = members.slice(0, mobile ? 14 : 12);
-    const p = mobile ? 2 : 4;
+    const limitedMembers = members.slice(0, screenSize ? 14 : 12);
     const sort = get(view, 'discover.sort') || 'new';
     return (
       <View bg={colors.white} mr={'1px'}>
-        <View mt={p} />
+        <View mt={[4, 2]} />
         {children}
-        <View bb p={`0 ${p} 4 ${p}`}>
+        <View bb p={['0 4 4 4', '0 2 4 2']}>
           <View m={'0.5 0 0 5.5'}>
             {topics.map(topic => (
               <ULink
