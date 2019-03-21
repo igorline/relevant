@@ -24,7 +24,7 @@ export default class Earning extends Component {
     const { community, post } = earning;
     if (!earning) return null;
     return (
-      <View m={mobile ? '0 2' : '0 4'} key={earning._id}>
+      <View m={['0 4', '0 2']} key={earning._id}>
         {month ? (
           <View mt={4}>
             <BodyText>{month.toUpperCase()}</BodyText>
