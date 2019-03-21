@@ -177,6 +177,7 @@ export const Tag = styled(Text)`
 
 export const NumericalValue = styled(Text)`
   ${fonts.numericalValue}
+  ${mixins.width}
   ${mixins.font}
   ${mixins.inheritfont}
   ${mixins.color}

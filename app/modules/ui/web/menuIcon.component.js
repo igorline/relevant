@@ -9,7 +9,6 @@ import { colors, layout } from 'app/styles';
 
 const Menu = styled(View)`
   display: flex;
-  z-index: 100;
   cursor: pointer;
   width: 25px;
   height: 25px;
@@ -62,8 +61,8 @@ class MenuIcon extends Component {
 MenuIcon.propTypes = {
   actions: PropTypes.object,
   navigation: PropTypes.object,
-  ml: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  mr: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ml: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
+  mr: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array])
 };
 
 const mapStateToProps = state => ({

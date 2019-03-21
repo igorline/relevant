@@ -20,6 +20,7 @@ const ModalParent = styled.View`
 `;
 
 const ModalScroll = styled.View`
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 100vh;
