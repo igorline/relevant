@@ -48,18 +48,6 @@ async function updateMemberCount() {
   return Promise.all(communities);
 }
 
-// check empty post data
-async function cleanupPostData() {
-  let postData = await PostData.find({}).populate('post');
-  postData = postData
-  .filter(d => !d.post)
-  .map(d => {
-    console.log(d.toObject());
-    return d.remove();
-  });
-  return Promise.all(postData);
-}
-
 async function updateUserIdType() {
   let users = await User.find(
     {},
@@ -468,6 +456,7 @@ async function updatePostData(community) {
         parentData.type = p.type;
         parentData.parentPost = null;
         parentData.relevance = Math.max(p.data.relevance, parentData.relevance) || 0;
+        parentData.pagerank = Math.max(p.data.pagerank, parentData.pagerank) || 0;
         parentPost.relevance = parentData.relevance;
         if (!parentData.community) parentData.community = p.community;
         if (!parentData.communityId) parentData.communityId = p.communityId;
@@ -545,55 +534,6 @@ async function fixMessedUpPost() {
   return posts;
 }
 
-let page = 0;
-const limit = 1000;
-async function removeEmptyTwitterParents() {
-  const total = await Post.count({
-    parentPost: { $exists: false },
-    hidden: false,
-    type: 'link',
-    twitter: { $ne: true }
-  });
-  console.log('total posts', total);
-
-  const posts = await Post.find(
-    {
-      parentPost: { $exists: false },
-      hidden: false,
-      twitter: { $ne: true }
-    },
-    'title url embeddedUser type twitter parentPost community postDate hidden'
-  )
-  .populate({ path: 'children', select: '_id twitter relevance' })
-  .skip(page * limit)
-  .limit(limit);
-  page++;
-
-  console.log('total', page * limit);
-  posts.forEach((p, i) => {
-    q.push(async cb => {
-      if (!p.children.length) {
-        console.log(p.toObject());
-        const remove = await p.remove();
-      } else {
-        const notTW = p.children.filter(c => !c.twitter || c.relevance > 0);
-        if (notTW.length) {
-          console.log('post has children', notTW.length);
-        }
-      }
-      if (i === limit - 1) removeEmptyTwitterParents();
-      return setTimeout(cb, 1);
-    });
-  });
-
-  return new Promise((resolve, reject) => {
-    q.start((queErr, results) => {
-      if (queErr) return reject(queErr);
-      return resolve('finished queue');
-    });
-  });
-}
-
 async function addTagsToData() {
   const postData = await PostData.find({ isInFeed: true }).populate('post');
   const updated = postData.map(pd => {
@@ -601,31 +541,6 @@ async function addTagsToData() {
     return pd.save();
   });
   return Promise.all(updated);
-}
-
-async function checkEmbeddedUser() {
-  let posts = await Post.find({
-    embeddedUser: { $exists: true },
-    twitter: { $ne: true },
-    // eslint-disable-next-line
-    $where: function() {
-      return (
-        this.user !== this.embeddedUser._id ||
-        !this.embeddedUser.handle ||
-        !this.embeddedUser.name
-      );
-    }
-  }).populate('user');
-  posts = posts.map(p => {
-    if (!p.user) return console.log('post is missing user', p.toObject());
-    p.embeddedUser.handle = p.user.handle;
-    p.embeddedUser._id = p.user._id;
-    p.embeddedUser.name = p.user.name;
-
-    console.log('posts missing embeddedUser', p.embeddedUser.toObject());
-    return p.save();
-  });
-  return Promise.all(posts);
 }
 
 async function makeSurePostHaveCommunityId() {
@@ -690,6 +605,109 @@ async function cleanUpCommunityFunds() {
   );
 }
 
+// async function restoreRewards() {
+//   const launchDate = new Date('March 5, 2019 12:00:00');
+//   let rewards = await Earnings.find({ status: 'paidout', createdAt: { $gt: launchDate } })
+//   .populate('user')
+//   .populate('post')
+//   .sort('createdAt');
+//   rewards.forEach(async r => {
+//     r.user.balance += r.earned;
+//     await r.user.save();
+//     console.log(r.user.handle, r.user.balance);
+//     console.log('rewards', r.user.handle, r.post.title, r.earned, r.payoutTime);
+//   });
+// }
+
+// async function notificationCheck() {
+//   const launchDate = new Date('March 5, 2019 12:00:00');
+//   let replies = await Post.find({
+//     parentComment: { $exists: true },
+//     createdAt: { $gt: launchDate }
+//   })
+//   .populate('parentComment');
+
+//   console.log('found', replies.length, 'replies');
+
+//   replies = replies.map(async reply => {
+//     const { parentComment } = reply;
+//     if (!parentComment) return console.log('missing parent comment', reply._id);
+//     const author = reply.parentComment.user;
+//     if (author.toString() === reply.user.toString()) return console.log('comment on own post');
+//     const authorNote = await Notification.findOne({
+//       forUser: author,
+//       byUser: { $ne: author },
+//       post: reply._id,
+//       type: 'comment',
+//     });
+//     if (!authorNote) {
+//       console.log('missing notification',
+//         reply.parentComment.embeddedUser.handle,
+//         reply.parentComment.body,
+//         reply.embeddedUser.handle,
+//         reply.body
+//       );
+
+//       const dbNotificationObj = {
+//         // post: reply.parentPost || reply._id,
+//         post: reply._id,
+//         forUser: author,
+//         byUser: reply.user,
+//         amount: null,
+//         type: 'comment',
+//         source: 'comment',
+//         personal: true,
+//         read: false
+//       };
+
+//       const newDbNotification = new Notification(dbNotificationObj);
+
+//       console.log(newDbNotification.toObject());
+//       const note = await newDbNotification.save();
+//     } else {
+//       console.log('note exists');
+//     }
+//   });
+// }
+
+// async function fixOldComment() {
+//   const comments = await Post.find({
+//     hidden: { $ne: true },
+//     type: 'comment',
+//     parentComment: { $exists: false }
+//   })
+//   .populate('parentPost');
+
+//   comments.map(c => {
+//     // console.log(c.parentPost.toObject());
+//     const { parentPost } = c.parentPost || {};
+//     if (c.parentPost && parentPost && !parentPost.equals(c.parentPost._id)) {
+//       c.parentComment = c.parentPost._id;
+//       c.parentPost = parentPost;
+//       // return c.save();
+//       // console.log(c.createdAt, c.parentPost, c.parentComment);
+//     } else return console.log('no nested parent');
+//   });
+// }
+
+async function unlockTokens() {
+  const earnings = await Earnings.find({ status: 'expired' }).populate('user');
+  earnings.map(e => {
+    console.log(
+      'stakedTokens',
+      e.stakedTokens,
+      'lockedTokens',
+      e.user.lockedTokens,
+      '/',
+      e.user.balance
+    );
+    e.user.lockedTokens = Math.max(e.user.lockedTokens - e.stakedTokens, 0);
+    console.log(e.user.handle, e.user.lockedTokens);
+    // return e.user.save();
+    return null;
+  });
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -712,18 +730,18 @@ async function runUpdates() {
 
     // await cleanInvites();
 
-    await userTokens();
-    await cleanUpCommunityFunds();
+    // await userTokens();
+    // await cleanUpCommunityFunds();
 
-    // DON'T NEED
-    // await cleanupPostData();
-    // await convertIdToObject();
-    // await removeEmptyTwitterParents();
+    // await restoreRewards();
 
-    // GE RID OF
-    // checkMessedUpPost(); // shouldn't be necessary
+    // notification check
+    // await notificationCheck();
 
-    // await checkEmbeddedUser();
+    // await fixOldComment();
+
+    // await unlockTokens();
+
     console.log('finished db updates');
   } catch (err) {
     console.log(err);

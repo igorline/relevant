@@ -27,8 +27,9 @@ class PostBody extends Component {
 
   goToPost() {
     const { post, actions } = this.props;
+    const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
     if (!actions || !post || !post._id) return;
-    actions.goToPost({ ...post, _id: post.parentPost || post._id });
+    actions.goToPost({ ...post, _id: parentId });
   }
 
   showInvestors() {
@@ -43,11 +44,9 @@ class PostBody extends Component {
 
   render() {
     const { post, short, repost, preview, comment, avatarText } = this.props;
-    let body;
-    if (post) {
-      if (post.body) body = post.body.trim();
-      if (body === '') body = null;
-    }
+    let body = post.body || post.description;
+    if (body === '') body = null;
+    if (body) body = body.trim();
 
     let maxTextLength = 100;
 
@@ -70,8 +69,8 @@ class PostBody extends Component {
     }
 
     if (preview) {
-      numberOfLines = 2;
-      maxTextLength = 10;
+      numberOfLines = 3;
+      maxTextLength = 30;
       postStyle = styles.previewText;
     }
 
@@ -92,7 +91,7 @@ class PostBody extends Component {
         <View
           style={[
             styles.postBody,
-            this.props.preview ? { marginTop: 10 } : null,
+            preview ? { marginTop: 10, marginBottom: 0 } : null,
             avatarText ? { marginLeft: 6 * 8 } : null
           ]}
         >
@@ -121,7 +120,7 @@ const localStyles = StyleSheet.create({
     marginTop: 24,
     flex: 1,
     justifyContent: 'center',
-    marginBottom: 15
+    marginBottom: 16
   },
   bodyText: {
     fontFamily: 'Georgia',

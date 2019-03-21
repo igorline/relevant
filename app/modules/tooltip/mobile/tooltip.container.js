@@ -212,7 +212,8 @@ class Tooltip extends Component {
         <Text style={[styles.mediumButtonText, { color: 'white' }]}>Got It</Text>
       </TouchableOpacity>
     );
-    const dismiss = helper.data[tooltip.name].noButton || false;
+    // const dismiss = helper.data[tooltip.name].noButton || true;
+    const dismiss = true;
 
     return (
       <TouchableHighlight

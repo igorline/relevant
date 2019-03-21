@@ -99,8 +99,7 @@ class RichText extends Component {
 
     // replace the partial @username with @username plus a nbsp
     this.lengthDelta = user.handle.length - this.mention.length + 2;
-    const body =
-      this.state.text.slice(0, -this.mention.length) + '@' + user.handle + '\u00A0';
+    const body = this.state.text.slice(0, -this.mention.length) + '@' + user.handle + ' ';
 
     this.setState({ text: body, userSearchIndex: -1 });
     const data = this.parseBody(body);

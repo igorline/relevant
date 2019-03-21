@@ -59,9 +59,9 @@ class Forgot extends Component {
         this.props.navigation.navigate('mainAuth');
         this.setState({ sendingEmail: false });
         Alert.alert(
-          'Success',
           `We have set an email to ${res.email}
-      with a link to reset the password for ${res.username}.`
+      with a link to reset the password for ${res.username}.`,
+          "If you don't see a password reset email in your inbox, please check your spam folder."
         );
       }
     } catch (err) {

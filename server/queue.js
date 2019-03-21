@@ -1,3 +1,4 @@
+const computePageRank = require('./utils/pagerankCompute').default;
 const queue = require('queue');
 const Stats = require('./api/statistics/statistics.model');
 const Relevance = require('./api/relevance/relevance.model');
@@ -173,7 +174,7 @@ async function updateReputation() {
 }
 
 async function basicIncome(done) {
-  const topicRelevance = await Relevance.find({});
+  const topicRelevance = await Relevance.find({ global: true });
 
   function updateTopicRelevance() {
     console.log('updating topic relevance');
@@ -210,6 +211,12 @@ async function basicIncome(done) {
     console.log('error: queue timeout', job);
     next();
   });
+}
+
+// eslint-disable-next-line
+async function pagerank(community) {
+  const communityId = (await Community.findOne({ slug: community }))._id;
+  await computePageRank({ communityId, community, debug: true });
 }
 
 function getNextUpdateTime() {
@@ -294,6 +301,8 @@ if (process.env.NODE_ENV === 'production') {
     startBasicIncomeUpdate();
   }, getNextUpdateTime());
 }
+
+// pagerank('crypto');
 
 // setTimeout(TwitterWorker.updateTwitterPosts, 5000);
 

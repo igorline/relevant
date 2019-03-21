@@ -46,7 +46,7 @@ exports.get = async (req, res, next) => {
       path: 'data',
       match: { communityId }
     })
-    .sort({ pagerank: -1 });
+    .sort({ pagerank: -1, createdAt: 1 });
 
     const toSend = comments;
     res.status(200).json({ data: toSend, total });
@@ -72,7 +72,6 @@ exports.create = async (req, res, next) => {
   let user = req.user._id;
   const { community, communityId } = req.communityMember;
   const {
-    parentComment,
     linkParent,
     text: body,
     tags,
@@ -80,7 +79,7 @@ exports.create = async (req, res, next) => {
     repost = false,
     metaPost
   } = req.body;
-  let { parentPost } = req.body;
+  let { parentPost, parentComment } = req.body;
 
   const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
 
@@ -105,6 +104,7 @@ exports.create = async (req, res, next) => {
     user = await User.findOne({ _id: user });
 
     parentPost = await Post.findOne({ _id: parentPost });
+    parentComment = await Post.findOne({ _id: parentComment });
 
     if (repost) comment = await createRepost(comment, parentPost, user);
 
@@ -133,21 +133,34 @@ exports.create = async (req, res, next) => {
       { _id: parentPost.user },
       'name _id deviceTokens'
     );
+    const commentAuthor =
+      parentComment &&
+      (await User.findOne({ _id: parentComment.user }, 'name _id deviceTokens'));
 
-    let otherCommentors = await Post.find({ post: parentPost._id }).populate(
+    let otherCommentors = await Post.find({ parentPost: parentPost._id }).populate(
       'user',
       'name _id deviceTokens'
     );
 
     otherCommentors = otherCommentors.map(comm => comm.user).filter(u => u);
-    otherCommentors.push(postAuthor);
+    if (postAuthor) otherCommentors.push(postAuthor);
+    if (commentAuthor) otherCommentors.push(commentAuthor);
 
     let voters = await Invest.find({ post: parentPost._id }).populate(
       'investor',
       'name _id deviceTokens'
     );
+
+    let commentVoters =
+      parentComment &&
+      (await Invest.find({ post: parentComment._id }).populate(
+        'investor',
+        'name _id deviceTokens'
+      ));
+
+    commentVoters = commentVoters ? commentVoters.map(v => v.investor) : [];
     voters = voters.map(v => v.investor);
-    otherCommentors = [...otherCommentors, ...voters];
+    otherCommentors = [...otherCommentors, ...voters, ...commentVoters];
     otherCommentors = otherCommentors.filter(u => u);
 
     // filter out duplicates
@@ -161,24 +174,38 @@ exports.create = async (req, res, next) => {
 
     otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u.handle));
     otherCommentors.forEach(commentor =>
-      sendNotifications({ commentor, postAuthor, repost, parentPost, user, comment })
+      sendNotifications({
+        commentor,
+        postAuthor,
+        commentAuthor,
+        repost,
+        parentPost,
+        user,
+        comment,
+        type
+      })
     );
   } catch (err) {
     next(err);
   }
 };
 
-async function sendNotifications({ commentor, postAuthor, repost, user, comment }) {
+async function sendNotifications({
+  commentor,
+  postAuthor,
+  commentAuthor,
+  repost,
+  user,
+  comment,
+  type
+}) {
   try {
     if (user._id.equals(commentor._id)) return;
 
-    let type = 'comment';
-    let ownPost = false;
+    const ownPost = postAuthor && commentor._id.equals(postAuthor._id);
+    const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
 
-    if (postAuthor && commentor._id.equals(postAuthor._id)) {
-      ownPost = true;
-    }
-    type = !ownPost ? (type += 'Also') : type;
+    const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
 
     if (repost && ownPost) type = 'repost';
 
@@ -187,7 +214,8 @@ async function sendNotifications({ commentor, postAuthor, repost, user, comment 
       forUser: commentor._id,
       byUser: user._id,
       amount: null,
-      type,
+      type: noteType,
+      source: type,
       personal: true,
       read: false
     };
@@ -202,8 +230,8 @@ async function sendNotifications({ commentor, postAuthor, repost, user, comment 
     };
     CommentEvents.emit('comment', newNotifsObj);
 
-    let action = ` commented on ${ownPost ? 'your' : 'a'} post`;
-    if (comment.repost && ownPost) action = ' reposted your post';
+    let action = ` commented on ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
+    if (comment.repost && ownPost) action = ` reposted your ${type}`;
 
     const alert = user.name + action;
     const payload = { commentFrom: user.name };

@@ -234,7 +234,7 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
     html = await inlineCss(emailStyle + html, { url: 'https://relevant.community' });
 
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
+      from: 'Relevant <info@relevant.community>',
       to: invite.email,
       subject: 'Your Relevant Invitation',
       html

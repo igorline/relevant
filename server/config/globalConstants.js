@@ -23,7 +23,7 @@ export const MINIMUM_RANK = 1; // minimum rank to be considered for rewards
 
 export const REP_CUTOFF = 2; // number of years before we ignore votes
 
-export const PUBLIC_LINK_REWARD = 1; // amount of tokens you get for public referral
+export const PUBLIC_LINK_REWARD = 5; // amount of tokens you get for public referral
 export const REFERRAL_REWARD = 20; // amount of tokens awarded both the referrer and referee
 export const TWITTER_REWARD = 20; // amount of tokens awarded for connecting twitter
 export const EMAIL_REWARD = 20; // amount of tokens awarded for connecting email
@@ -43,7 +43,7 @@ export const totalAllowedInvites = pagerank => {
   return 100;
 };
 
-export const MAX_AIRDROP = 200;
+export const MAX_AIRDROP = 300;
 
 export const getRewardForType = type => {
   switch (type) {
@@ -56,6 +56,7 @@ export const getRewardForType = type => {
     case 'referredBy':
       return REFERRAL_REWARD;
     case 'publicLink':
+    case 'publicInvite':
       return PUBLIC_LINK_REWARD;
     default:
       return 0;

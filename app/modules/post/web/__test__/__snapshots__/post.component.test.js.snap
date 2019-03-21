@@ -96,6 +96,7 @@ exports[`Snapshot Post Web 1`] = `
       }
     }
     hideBorder={true}
+    inMainFeed={true}
     nestingLevel={0}
     parentPost={
       Object {

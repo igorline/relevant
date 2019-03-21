@@ -12,11 +12,13 @@
     "inline-react-svg",
     ["module-resolver", {
       "root": ["./app", "./app/modules"],
+      "extensions": [".ios.js", ".android.js", ".js", ".json"],
       "alias": {
         "server": "./server",
         "modules": "./app/modules",
         "core": "./app/core",
         "app": "./app",
+        "react-native-gesture-handler/DrawerLayout": "./app/modules/ui/mobile/DrawerLayout"
       },
       "cwd": "babelrc",
     }]

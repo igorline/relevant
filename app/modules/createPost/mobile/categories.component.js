@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { InteractionManager } from 'react-native';
+import { InteractionManager, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as tagActions from 'modules/tag/tag.actions';
+import { setCommunity } from 'modules/auth/auth.actions';
 import TagSelection from './tagSelection.component';
+import CommunitySelection from './communitySelection.component';
 
 class Categories extends Component {
   static propTypes = {
@@ -49,20 +51,20 @@ class Categories extends Component {
     if (community) {
       const activeCommunity = get(community.communities, community.active, {}) || {};
       communityTags = get(activeCommunity, 'topics', []);
-      // || [].map(t => t._id);
     }
-    // const { selectedTopic } = this;
-    // let tagSelection;
     if (!this.props.tags) {
       return null;
     }
     return (
-      <TagSelection
-        topic={null}
-        communityTags={communityTags}
-        actions={actions}
-        createPost={createPost}
-      />
+      <ScrollView>
+        <CommunitySelection actions={actions} community={community} />
+        <TagSelection
+          topic={null}
+          communityTags={communityTags}
+          actions={actions}
+          createPost={createPost}
+        />
+      </ScrollView>
     );
   }
 }
@@ -81,7 +83,8 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...createPostActions,
-        ...tagActions
+        ...tagActions,
+        setCommunity
       },
       dispatch
     )

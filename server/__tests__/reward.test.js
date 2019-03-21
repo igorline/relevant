@@ -11,7 +11,7 @@ import * as Eth from 'server/utils/ethereum';
 
 // this will define the database name where the tests are run
 process.env.TEST_SUITE = 'eth-rewards';
-let { alice, bob, carol, relevant, crypto, link1, link2, link3, link4 } = {};
+let { alice, bob, carol, relevant, crypto, link1, link2, link3, link4, link5 } = {};
 
 jest.mock('server/utils/ethereum');
 
@@ -21,7 +21,7 @@ describe('ethRewards', () => {
 
   beforeEach(() => {
     ({ alice, bob, carol } = getUsers());
-    ({ link1, link2, link3, link4 } = getPosts());
+    ({ link1, link2, link3, link4, link5 } = getPosts());
     ({ relevant, crypto } = getCommunities());
     global.console = { log: jest.fn() }; // hides logs
   });
@@ -58,6 +58,7 @@ describe('ethRewards', () => {
       await Invest.createVote({ ...relevantVote, user: carol, post: link2 });
       await Invest.createVote({ ...cryptoVote, user: bob, post: link3 });
       await Invest.createVote({ ...cryptoVote, user: bob, post: link4 });
+      await Invest.createVote({ ...cryptoVote, user: carol, post: link5 });
 
       invest = sanitize(invest);
       expect(invest).toMatchSnapshot();
@@ -82,6 +83,19 @@ describe('ethRewards', () => {
     test('locked tokens should be returned', async () => {
       const user = await User.findOne({ _id: alice._id }, 'lockedTokens');
       expect(user.lockedTokens).toBe(0);
+    });
+
+    test('nopayout locked tokens should be returned', async () => {
+      const user = await User.findOne({ _id: carol._id }, 'lockedTokens');
+      expect(user.lockedTokens).toBe(0);
+    });
+
+    test('nopayout earning should be expired', async () => {
+      const earning = await Earnings.findOne(
+        { user: carol._id, post: link5._id },
+        'status'
+      );
+      expect(earning.status).toBe('expired');
     });
 
     test('mature posts should be paidout', async () => {
@@ -116,6 +130,7 @@ describe('ethRewards', () => {
       const totalBalance = updatedBalances.reduce((a, c) => c.stakedTokens + a, 0);
       expect(totalBalance).toBe(postStake.balance);
     });
+
     // test('logs should match', async () => {
     //   const logs = console.log.mock.calls
     //   .map(log => log.map(l => JSON.stringify(l)).join(' ').trim())

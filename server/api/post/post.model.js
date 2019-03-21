@@ -12,6 +12,7 @@ const PostSchema = new Schema(
   {
     body: String,
     title: String,
+    description: String,
     community: String,
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     tags: [{ type: String, ref: 'Tag' }],
@@ -165,19 +166,21 @@ PostSchema.pre('save', async function save(next) {
   }
 });
 
-PostSchema.methods.addPostData = async function addPostData(community) {
+PostSchema.methods.addPostData = async function addPostData(postObject) {
   const eligibleForReward = !this.parentPost && !this.twitter;
-
+  const now = new Date();
   const data = new (this.model('PostData'))({
     eligibleForReward,
     hidden: this.hidden,
     type: this.type,
     parentPost: this.parentPost,
-    postDate: this.postDate || this.createdAt,
-    payoutTime: this.payoutTime,
+    postDate: now, // if we are creating post data object date is new!
+    payoutTime: postObject ? postObject.payoutTime : this.payoutTime,
+    // payoutTime: this.payoutTime,
+    // postDate: this.postDate || this.createdAt,
     post: this._id,
-    community: community ? community.slug : this.community,
-    communityId: community ? community._id : this.communityId,
+    community: postObject ? postObject.community : this.community,
+    communityId: postObject ? postObject.communityId : this.communityId,
     relevance: this.relevance,
     rank: this.rank,
     relevanceNeg: this.relevanceNeg,
@@ -194,10 +197,16 @@ PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
+  const post = this.toObject();
+  // Prevent over-writing post object
+  // TODO - normalize on client instead
+  if (post.parentPost && post.parentPost._id) {
+    post.parentPost = post.parentPost._id;
+  }
   const postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
-    payload: this
+    payload: post
   };
   this.model('Post').events.emit('postEvent', postNote);
 };
@@ -269,8 +278,9 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
     // TODO - deprecate this once we don't use this in the feed
     post.rank = rank;
-    if (post.communityId === communityId) {
+    if (post.communityId && post.communityId.toString() === communityId.toString()) {
       post.pagerank = post.data.pagerank;
+      // console.log('updating post pagerank', post.pagerank);
     }
 
     await post.data.save();
@@ -289,9 +299,10 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       postDate,
       payoutTime,
       hidden,
+      image,
+      title,
       url,
-      communityId,
-      community
+      communityId
     } = postObject;
 
     let post = await this.model('Post')
@@ -300,6 +311,9 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
 
     if (!post) {
       const parentObj = {
+        image,
+        title,
+        description: linkObject.description,
         url,
         tags,
         postDate,
@@ -314,12 +328,9 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
     const eligibleForReward = !post.parentPost && !post.twitter;
 
     if (!post.data) {
-      post = await post.addPostData({
-        slug: community,
-        _id: communityId
-      });
+      post = await post.addPostData(postObject);
     } else if (!post.data.eligibleForReward && eligibleForReward) {
-      post.data = eligibleForReward;
+      post.data.eligibleForReward = eligibleForReward;
       post.data.postDate = postDate;
       post.data.payoutTime = payoutTime;
     }
@@ -366,7 +377,10 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
   }
 };
 
-PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
+PostSchema.methods.insertIntoFeed = async function insertIntoFeed(
+  communityId,
+  community
+) {
   try {
     const post = this;
     if (post.parentPost) throw new Error("Child comments don't go in the feed");
@@ -381,7 +395,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
 
     const newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
-      payload: { communityId }
+      payload: { communityId, community }
     };
     this.model('Post').events.emit('postEvent', newPostEvent);
     return post;
@@ -464,34 +478,35 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 
         const users = await this.model('User').find(query, 'deviceTokens');
 
-        users.forEach(user => {
+        users.forEach(async user => {
           let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
           if (mention === 'everyone' && post.body) alert = post.body;
           const payload = { 'Mention from': textParent.embeddedUser.name };
           apnData.sendNotification(user, alert, payload);
+
+          const dbNotificationObj = {
+            post: post._id,
+            forUser: user._id,
+            group,
+            byUser: mUser._id || mUser,
+            amount: null,
+            type: type + 'Mention',
+            personal: true,
+            read: false
+          };
+
+          const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
+          const note = await newDbNotification.save();
+
+          const newNotifObj = {
+            _id: group ? null : mention,
+            type: 'ADD_ACTIVITY',
+            payload: note
+          };
+
+          this.events.emit('postEvent', newNotifObj);
         });
 
-        const dbNotificationObj = {
-          post: post._id,
-          forUser: users._id,
-          group,
-          byUser: mUser._id || mUser,
-          amount: null,
-          type: type + 'Mention',
-          personal: true,
-          read: false
-        };
-
-        const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
-        const note = await newDbNotification.save();
-
-        const newNotifObj = {
-          _id: group ? null : mention,
-          type: 'ADD_ACTIVITY',
-          payload: note
-        };
-
-        this.events.emit('postEvent', newNotifObj);
         return null;
       } catch (err) {
         throw err;
@@ -603,13 +618,13 @@ PostSchema.post('remove', async function postRemove(post, next) {
     .exec();
 
     let metaPost;
-    let commentNote;
-    if (post.type === 'link' && !post.parentParent) {
-      metaPost = await this.model('MetaPost')
-      .remove({ post: post._id })
-      .exec();
-    }
+    // if (post.type === 'link' && !post.parentParent) {
+    //   metaPost = await this.model('MetaPost')
+    //   .remove({ post: post._id })
+    //   .exec();
+    // }
 
+    let commentNote;
     // remove notifications
     if (post.type === 'comment' || post.type === 'repost') {
       commentNote = this.model('Notification')

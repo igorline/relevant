@@ -53,8 +53,10 @@ export default class Balance extends Component {
     const { user, wallet, mobile } = this.props;
     if (!user) return null;
     const metaMaskTokens = wallet.connectedBalance || user.tokenBalance;
-    const airdropTokens = user.airdropToknes;
-
+    const { airdropTokens, lockedTokens } = user;
+    const stakingPower = user.balance
+      ? Math.round(100 * (1 - lockedTokens / user.balance))
+      : 0;
     // <Tooltip
     //   name='cashOut'
     //   text={'You can cash out your earnings once you earn 100 tokens'}
@@ -88,8 +90,12 @@ export default class Balance extends Component {
               )}`
               : ''}
             {airdropTokens
-              ? `   AirdropTokens: ${numbers.abbreviateNumber(user.airdropTokens)}`
+              ? `   Airdrop Coins: ${numbers.abbreviateNumber(user.airdropTokens)}`
               : ''}
+            {lockedTokens
+              ? `   Locked Coins: ${numbers.abbreviateNumber(lockedTokens)}`
+              : ''}
+            {stakingPower ? `   Staking Power: ${stakingPower}%` : ''}
           </SecondaryText>
         </View>
         {!mobile ? (
