@@ -29,6 +29,10 @@ import { GlobalStyle } from 'app/styles';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-51795165-6');
+
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
   require('app/styles/fonts.css');
@@ -100,6 +104,7 @@ class App extends Component {
 
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
+    history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
   }
 
   setWidth = () => {
@@ -125,7 +130,12 @@ class App extends Component {
     }
     if (auth.invitecode) {
       actions.redeemInvite(auth.invitecode);
+      ReactGA.event({
+        category: 'User',
+        action: 'Redeemed Invite'
+      });
     }
+    ReactGA.set({ userId: auth.user._id });
   };
 
   componentDidUpdate(prevProps) {

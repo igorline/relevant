@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import SafariView from 'react-native-safari-view';
 import { AppContainer, RootStack } from 'modules/_app/mobile/mainRouter';
+import Analytics from 'react-native-firebase-analytics';
 
 // Animiations
 import InvestAnimation from 'modules/animation/mobile/investAnimation.component';
@@ -104,6 +105,7 @@ class Application extends Component {
         // });
         // return this.props.navigation.dispatch(resetAction);
       }
+      Analytics.setUserId(user._id);
       const { community } = user;
       if (community) actions.setCommunity(community);
       return null;
@@ -124,6 +126,8 @@ class Application extends Component {
   componentWillReceiveProps(next) {
     const { auth, actions } = this.props;
     if (!auth.user && next.auth.user) {
+      Analytics.setUserId(next.auth.user._id);
+
       actions.userToSocket(next.auth.user._id);
       actions.getNotificationCount();
 

@@ -690,6 +690,24 @@ async function cleanUpCommunityFunds() {
 //   });
 // }
 
+async function unlockTokens() {
+  const earnings = await Earnings.find({ status: 'expired' }).populate('user');
+  earnings.map(e => {
+    console.log(
+      'stakedTokens',
+      e.stakedTokens,
+      'lockedTokens',
+      e.user.lockedTokens,
+      '/',
+      e.user.balance
+    );
+    e.user.lockedTokens = Math.max(e.user.lockedTokens - e.stakedTokens, 0);
+    console.log(e.user.handle, e.user.lockedTokens);
+    // return e.user.save();
+    return null;
+  });
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -721,6 +739,8 @@ async function runUpdates() {
     // await notificationCheck();
 
     // await fixOldComment();
+
+    // await unlockTokens();
 
     console.log('finished db updates');
   } catch (err) {
