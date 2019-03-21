@@ -21,7 +21,6 @@ const Nav = styled(View)`
   background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
   z-index: 100;
   height: ${layout.headerHeight};
-  padding: 0 ${sizing(4)};
   top: 0;
   left: ${layout.sideNavWidth};
 `;
@@ -116,7 +115,7 @@ class TopNav extends Component {
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <Nav className={className} fdirection="column" justify="center">
+      <Nav className={className} fdirection="column" justify="center" p={['0 4', '0 2']}>
         <View
           zIndex={1}
           justify="space-between"
@@ -124,7 +123,7 @@ class TopNav extends Component {
           fdirection="row"
           align="center"
         >
-          <MenuIcon mr={4} />
+          <MenuIcon mr={[4, 2]} />
           <DiscoverTabs />
           <View
             justify="space-between"

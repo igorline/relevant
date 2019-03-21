@@ -196,7 +196,7 @@ export default class SingleActivity extends Component {
     return (
       <View>
         <View
-          m={['4 4 0 4', '4 2 2 4']}
+          m={['4 4 0 4', '4 2 2 2']}
           fdirection="row"
           justify="space-between"
           align="center"
@@ -209,7 +209,7 @@ export default class SingleActivity extends Component {
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={[4, 0]} />
+          <View mt={[2, 0]} />
         )}
         <Divider m={'2 0 0 0'} />
       </View>

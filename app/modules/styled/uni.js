@@ -60,6 +60,12 @@ export const Divider = styled.View`
       return `
         height: ${sizing(4)};
         background-color: ${colors.dividerBg};
+        // border-width: 0;
+        // shadow-color: #000000;
+        // shadow-radius: 5;
+        // shadow-opacity: 0.5;
+        // shadowOffset: { width: 5, height: 5 },
+        // box-shadow: inset 0 8 12 -10 #000000;
       `;
     }
     return layout.universalBorder('bottom');
