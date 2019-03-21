@@ -4,6 +4,7 @@ import { browserAlerts } from 'app/utils/alert';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
+import get from 'lodash.get';
 import ReactTooltip from 'react-tooltip';
 
 class PostButtons extends Component {
@@ -37,7 +38,7 @@ class PostButtons extends Component {
   }
 
   initTooltips = () => {
-    if (!this.props.actions.setTooltipData) return;
+    if (!get(this.props, 'actions.setTooltipData')) return;
     ['vote'].forEach(name => {
       this.props.actions.setTooltipData({
         name,

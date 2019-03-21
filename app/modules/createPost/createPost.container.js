@@ -310,6 +310,7 @@ class CreatePostContainer extends Component {
       <div style={{ position: 'relative' }}>
         <PostInfo
           small
+          preview={!!screenSize}
           auth={auth}
           screenSize={screenSize}
           close={this.clearUrl.bind(this)}
@@ -382,10 +383,10 @@ class CreatePostContainer extends Component {
           </PasteTextFromLink>
         </View>
 
-        <View mt={3}>{this.renderPreview()}</View>
+        <View mt={[3, 2]}>{this.renderPreview()}</View>
 
         {body || url ? (
-          <View mt={3}>
+          <View mt={[3, 2]}>
             <TagInput
               selectedTags={this.state.selectedTags}
               selectTag={this.selectTags}
@@ -398,7 +399,7 @@ class CreatePostContainer extends Component {
                 !this.state.selectedTags.length ? 'Please add at least one tag' : ''
               }
             />
-            <View mt={4}>
+            <View mt={[4, 2]}>
               <SelectTags
                 text={'Suggested tags'}
                 tags={allTags}
@@ -411,7 +412,7 @@ class CreatePostContainer extends Component {
                 }}
               />
             </View>
-            <Divider mt={[4, 0]} />
+            <Divider mt={[4, 2]} />
           </View>
         ) : null}
         <View display="flex" fdirection="row" mt={2} justify="flex-end">

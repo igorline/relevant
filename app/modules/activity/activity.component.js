@@ -209,7 +209,7 @@ export default class SingleActivity extends Component {
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={[2, 0]} />
+          <View mt={[4, 0]} />
         )}
         <Divider m={'2 0 0 0'} />
       </View>

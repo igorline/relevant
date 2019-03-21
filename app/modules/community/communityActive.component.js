@@ -67,7 +67,7 @@ class CommunityActive extends Component {
               </ULink>
             ))}
           </View>
-          <SecondaryText mt={3}>{community.description}</SecondaryText>
+          <SecondaryText mt={[3, 2]}>{community.description}</SecondaryText>
           <CommunityLink mt={3} mb={2} c={colors.black}>
             {`${totalMembers} Members`}
           </CommunityLink>
