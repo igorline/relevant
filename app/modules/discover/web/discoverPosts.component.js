@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
 import get from 'lodash.get';
+// import { LinkFont } from 'modules/styled/uni';
+// import { colors } from 'styles';
 
 class DiscoverPosts extends Component {
   static propTypes = {
@@ -11,8 +13,8 @@ class DiscoverPosts extends Component {
     load: PropTypes.func,
     sort: PropTypes.string,
     tag: PropTypes.string,
-    auth: PropTypes.object,
-    actions: PropTypes.object
+    auth: PropTypes.object
+    // actions: PropTypes.object
   };
 
   constructor(props) {
@@ -98,16 +100,16 @@ class DiscoverPosts extends Component {
     const posts = this.renderDiscover(sort, tag);
 
     const { length } = posts;
-    const newPosts = this.props.posts.newPostsAvailable[this.props.auth.community];
-    const refreshPosts = (
-      <a className="refresh" onClick={() => this.props.actions.refreshTab('discover')}>
-        Load latests Posts
-      </a>
-    );
+    // const newPosts = this.props.posts.newPostsAvailable[auth.community];
+    // const refreshPosts = (
+    //   <a onClick={() => this.props.actions.refreshTab('discover')}>
+    //     <LinkFont ml={4} c={colors.blue}>See New Posts</LinkFont>
+    //   </a>
+    // );
+    // {newPosts ? refreshPosts : null}
 
     return (
       <div style={{ position: 'relative' }}>
-        {newPosts ? refreshPosts : null}
         <InfScroll
           // this resets the inf scroll with community
           key={this.props.auth.community}

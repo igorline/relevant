@@ -81,7 +81,7 @@ export default class Profile extends Component {
             </View>
           ) : null}
           {isOwner ? (
-            <View fdirection="row" align="center">
+            <View mt={sizing(1)} fdirection="row" align="center">
               <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
                 <ULink
                   c={colors.black}

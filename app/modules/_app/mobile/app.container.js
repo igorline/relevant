@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import SafariView from 'react-native-safari-view';
 import { AppContainer, RootStack } from 'modules/_app/mobile/mainRouter';
+import Analytics from 'react-native-firebase-analytics';
 
 // Animiations
 import InvestAnimation from 'modules/animation/mobile/investAnimation.component';
@@ -94,6 +95,7 @@ class Application extends Component {
         // });
         // return this.props.navigation.dispatch(resetAction);
       }
+      Analytics.setUserId(user._id);
       const { community } = user;
       if (community) actions.setCommunity(community);
       return null;
@@ -114,6 +116,8 @@ class Application extends Component {
   componentWillReceiveProps(next) {
     const { auth, actions } = this.props;
     if (!auth.user && next.auth.user) {
+      Analytics.setUserId(next.auth.user._id);
+
       actions.userToSocket(next.auth.user._id);
       actions.getNotificationCount();
 
@@ -129,8 +133,27 @@ class Application extends Component {
   handleOpenURL = url => {
     const { actions, navigation, auth } = this.props;
 
-    let newCommunity = url.url.split(/\/|\?/)[3];
+    const params = url.url.split(/\/\//)[1].split(/\/|\?/);
+
+    let newCommunity = params[1];
     newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
+
+    // handle confirm email link
+    if (url.url.match('/user/confirm')) {
+      const user = params[2];
+      const confirmCode = params[3];
+      actions.confirmEmail(user, confirmCode);
+    }
+
+    if (
+      !newCommunity ||
+      newCommunity === 'user' ||
+      newCommunity === 'info' ||
+      newCommunity === 'admin'
+    ) {
+      newCommunity = 'relevant';
+    }
+
     if (
       newCommunity &&
       newCommunity !== '' &&

@@ -18,7 +18,7 @@ class TextBody extends Component {
     maxTextLength: PropTypes.number,
     showAllMentions: PropTypes.bool,
     numberOfLines: PropTypes.number,
-    style: Text.propTypes.style,
+    style: Text.propTypes.style
   };
 
   constructor(props, context) {
@@ -44,8 +44,7 @@ class TextBody extends Component {
 
   goToTopic(tag) {
     const topic = {
-      _id: tag.replace('#', '')
-      .trim(),
+      _id: tag.replace('#', '').trim(),
       categoryName: tag
     };
     this.props.actions.goToTopic(topic);
@@ -82,8 +81,7 @@ class TextBody extends Component {
       word.text = section;
       if (section.match(/^#/)) {
         word.type = 'hashtag';
-        const ind = extraTags.indexOf(word.text.replace('#', '')
-        .trim());
+        const ind = extraTags.indexOf(word.text.replace('#', '').trim());
         if (ind > -1) extraTags.splice(ind, 1);
       } else if (section.match(/^@/)) {
         const m = section.replace('@', '');

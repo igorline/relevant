@@ -34,11 +34,7 @@ export default function configureStore(initialState = {}) {
   if (process.env.BROWSER) {
     // only use the socket middleware on client and not on server
     const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
-    middleware = applyMiddleware(
-      thunk,
-      socketIoMiddleware,
-      sagaMiddleware
-    );
+    middleware = applyMiddleware(thunk, socketIoMiddleware, sagaMiddleware);
   } else {
     middleware = applyMiddleware(thunk, sagaMiddleware);
   }

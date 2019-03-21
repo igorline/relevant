@@ -7,13 +7,16 @@ import { auth, earnings } from 'app/mockdata';
 
 const props = {
   earnings: earnings.earnings,
-  user: auth.auth.user,
+  user: auth.auth.user
 };
 
 test('Snapshot NavProfile', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <NavProfile {...props} />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });

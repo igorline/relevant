@@ -83,10 +83,7 @@ AvatarBox.propTypes = {
   user: PropTypes.object,
   noPic: PropTypes.bool,
   auth: PropTypes.object,
-  date: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.instanceOf(Date)
-  ]),
+  date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
   small: PropTypes.bool,
   topic: PropTypes.string,
   repost: PropTypes.object,

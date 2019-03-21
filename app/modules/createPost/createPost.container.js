@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import RichText from 'modules/text/web/richText.component';
 import get from 'lodash.get';
+import ReactGA from 'react-ga';
 
 import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -157,8 +158,8 @@ class CreatePostContainer extends Component {
       this.setSate({ validate: 'Please select at least one topic' });
       return 'Please select at least one topic';
     }
-    if (!this.state.body && !this.state.postUrl) {
-      this.setState({ validate: 'Please paste article link' });
+    if (!this.state.body || !this.state.body.trim().length) {
+      this.setState({ validate: 'Please write something' });
       return 'Can not create empty post';
     }
     return true;
@@ -212,9 +213,10 @@ class CreatePostContainer extends Component {
       history.push(`/${auth.community}/new/`);
       actions.refreshTab('discover');
 
-      // Analytics.logEvent('newPost', {
-      //   viaShare: this.props.share
-      // });
+      ReactGA.event({
+        category: 'User',
+        action: 'Created a Post'
+      });
     } catch (err) {
       // TODO error handling
       alert.browserAlerts.alert(err.message);
@@ -323,7 +325,7 @@ class CreatePostContainer extends Component {
 
   render() {
     const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
-    const { body, url, submitting, postUrl } = this.state;
+    const { body, url, submitting } = this.state;
     const { community } = this.props;
     const articleTags = this.state.keywords;
     let communityTags = [];
@@ -342,7 +344,7 @@ class CreatePostContainer extends Component {
       );
     }
     const submitDisabled =
-      submitting || !this.state.selectedTags.length || (!body.length && !postUrl);
+      submitting || !this.state.selectedTags.length || !body || !body.trim().length;
     return (
       <View>
         <View display="flex" fdirection="row" align="center">

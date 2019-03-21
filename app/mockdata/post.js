@@ -113,6 +113,21 @@ export const linkPost4 = {
   domain: 'link.domain5'
 };
 
+export const linkPost5 = {
+  _id: '000000000000000000000007',
+  title: 'An Awesome Link #6',
+  tags: ['tag51', 'tag52'],
+  postDate: new Date(),
+  payoutTime: new Date(),
+  url: 'https://example.com/linkPost5',
+  image: 'link_img6.jpg',
+  type: 'link',
+  community: 'crypto',
+  communityId: 'c00000000000000000000002',
+  hidden: false,
+  domain: 'link.domain6'
+};
+
 export const createPost = {
   url: 'https://example.com/testPost1',
   image: 'link_img1.jpg',

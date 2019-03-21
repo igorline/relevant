@@ -9,7 +9,8 @@ import FormField from 'modules/styled/form/field.component';
 export default class Forgot extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    authNav: PropTypes.func
+    authNav: PropTypes.func,
+    location: PropTypes.object
   };
 
   constructor(props) {
@@ -25,7 +26,8 @@ export default class Forgot extends Component {
   }
 
   async sendEmail() {
-    const res = await this.props.actions.forgotPassword(this.state.username);
+    const redirect = this.props.location.search;
+    const res = await this.props.actions.forgotPassword(this.state.username, redirect);
     if (res && res.email) {
       this.setState({ sentEmailTo: res.email });
     }
@@ -38,7 +40,9 @@ export default class Forgot extends Component {
       content = (
         <LinkFont c={colors.black}>
           We have set an email to {this.state.sentEmailTo} with a link to reset your
-          password.
+          password.{'\n'}
+          If you don't see a password reset email in your inbox, please check your spam
+          folder.
         </LinkFont>
       );
     } else {
