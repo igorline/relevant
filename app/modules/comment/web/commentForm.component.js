@@ -220,7 +220,7 @@ class CommentForm extends Component {
                 c={colors.secondaryText}
                 disabled={!auth.isAuthenticated}
                 p={[null, '0 4']}
-                minWidth={1}
+                minwidth={1}
               >
                 Cancel
               </Button>
@@ -228,7 +228,7 @@ class CommentForm extends Component {
                 onClick={this.handleSubmit}
                 disabled={!auth.isAuthenticated}
                 p={[null, '0 4']}
-                minWidth={1}
+                minwidth={1}
               >
                 {this.props.text}
               </Button>

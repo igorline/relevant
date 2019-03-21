@@ -182,6 +182,8 @@ class PostButtons extends Component {
               c={color || colors.secondaryText}
               fs={2}
               lh={2}
+              minwidth={horizontal ? 3 : null}
+              justify="center"
               m={horizontal ? '0 1' : null}
               data-place={'right'}
               data-for="mainTooltip"

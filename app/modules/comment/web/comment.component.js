@@ -235,7 +235,7 @@ class Comment extends Component {
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
           screenSize={screenSize}
-          m={['4 4 0 0', '2 2 0 2']}
+          m={['4 4 0 0', '4 2 2 2']}
         >
           {!hidePostButtons && !screenSize ? (
             <View w={layout.POST_BUTTONS_WIDTH}>

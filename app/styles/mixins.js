@@ -66,7 +66,7 @@ export const inheritcolor = css`
 
 export const width = css`
   ${p => (p.w ? `width: ${size(p.w)};` : '')};
-  ${p => (p.minWidth ? `min-width: ${size(p.minWidth)};` : '')};
+  ${p => (p.minwidth ? `min-width: ${size(p.minwidth)};` : '')};
 `;
 
 export const height = css`
