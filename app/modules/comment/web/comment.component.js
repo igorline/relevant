@@ -235,7 +235,7 @@ class Comment extends Component {
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
           screenSize={screenSize}
-          m={['4 4 0 0', '4 4 0 4']}
+          m={['4 4 0 0', '2 2 0 2']}
         >
           {!hidePostButtons && !screenSize ? (
             <View w={layout.POST_BUTTONS_WIDTH}>
@@ -261,7 +261,7 @@ class Comment extends Component {
               <View mt={2}>
                 <CommentForm
                   edit
-                  p={['auto', 4]}
+                  p={['auto', 2]}
                   comment={comment}
                   text={'Update'}
                   cancel={this.cancel}
@@ -333,7 +333,7 @@ class Comment extends Component {
           <CommentForm
             isReply
             nestingLevel={nestingLevel}
-            p={[4, 4]}
+            p={[4, 2]}
             text={'Comment'}
             {...this.props}
             additionalNesting={

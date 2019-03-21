@@ -178,7 +178,7 @@ export class Post extends Component {
     ) : null;
 
     const previewEl = preview && link && (link.url || link.image) && (
-      <View m={'4 4 0 4'}>
+      <View m={['4 4 0 4', '4 2 0 2']}>
         <PostInfo
           auth={auth}
           screenSize={screenSize}
