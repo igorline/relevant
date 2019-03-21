@@ -10,7 +10,14 @@ import Invest from 'server/api/invest/invest.model';
 import Community from 'server/api/community/community.model';
 import User from 'server/api/user/user.model';
 
-import { post1, linkPost1, linkPost2, linkPost3, linkPost4 } from 'app/mockdata/post';
+import {
+  post1,
+  linkPost1,
+  linkPost2,
+  linkPost3,
+  linkPost4,
+  linkPost5
+} from 'app/mockdata/post';
 import { allUsers } from 'app/mockdata/user';
 import { allCommunities } from 'app/mockdata/community';
 
@@ -53,12 +60,16 @@ async function setupPosts() {
   await link4.save();
   link4 = await link4.addPostData();
 
+  let link5 = new Post(linkPost5);
+  await link5.save();
+  link5 = await link5.addPostData();
+
   delete post1.link;
   let postI1 = new Post(post1);
   await postI1.save();
   postI1 = await postI1.addPostData();
 
-  postInstances = { postI1, link1, link2, link3, link4 };
+  postInstances = { postI1, link1, link2, link3, link4, link5 };
 }
 
 async function setupUsers() {

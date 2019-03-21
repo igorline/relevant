@@ -39,6 +39,12 @@ async function generateList(type) {
       // now.setDate(now.getDate() - 5);
       query = { status: 'email sent', createdAt: { $lt: now } };
       users = await Invite.find(query);
+
+      // const now = new Date();
+      // now.setDate(now.getDate() - 5);
+      query = { status: { $exists: false } };
+      const waitlist = await List.find(query);
+      users = [...users, ...waitlist];
     } else if (type === 'currentUsers') {
       const now = new Date();
       // now.setDate(now.getDate() - 5);
@@ -85,11 +91,16 @@ async function generateList(type) {
           type === 'notregistered' || type === 'waitlist' ? user.name : '@' + user.handle,
         vars
       };
+      u.address = u.address.trim();
 
-      // console.log('handle', user.handle, u.name);
+      console.log('handle', user.handle, u.name, u.address);
       list.members().create(u, err => {
         if (err) {
-          list.members(u.address).update(u, console.log);
+          try {
+            list.members(u.address).update(u, console.log);
+          } catch (error) {
+            console.log('err updating', u);
+          }
         }
         // console.log
       });
