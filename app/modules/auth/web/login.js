@@ -7,7 +7,8 @@ import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import queryString from 'query-string';
 
-const twitterIcon = '/img/icons/twitter_white.png';
+const twitterIcon = require('app/public/img/icons/twitter_white.png');
+const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
@@ -109,8 +110,20 @@ class LoginForm extends Component {
               ml={2}
             >
               <Button bg={colors.twitterBlue}>
-                <Image source={twitterIcon} w={2} h={2} mr={2} />
+                <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
                 Sign In with Twitter
+              </Button>
+            </ULink>
+          ) : null}
+          {!local ? (
+            <ULink
+              to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
+              external
+              ml={2}
+            >
+              <Button bg={colors.redditColor}>
+                <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
+                Sign In with Reddit
               </Button>
             </ULink>
           ) : null}

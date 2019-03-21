@@ -45,6 +45,7 @@ export function getActivityParams(activity) {
     case 'reward':
     case 'reward_twitter':
     case 'reward_email':
+    case 'reward_reddit':
       emoji = '☺️';
       break;
     case 'topPost':

@@ -124,10 +124,12 @@ const ActivityText = ({ activity, amount }) => {
 
     case 'reward_twitter':
     case 'reward_email':
-      text =
-        activity.type === 'reward_twitter'
-          ? 'connecting your Twitter account'
-          : 'verifying your email';
+    // eslint-disable-next-line
+    case 'reward_reddit':
+      let txt;
+      if (activity.type === 'reward_twitter') txt = 'connecting your Twitter account';
+      if (activity.type === 'reward_email') txt = 'verifying your email';
+      if (activity.type === 'reward_reddit') txt = 'connecting your Reddit account';
       return (
         <Text inline={1} align="baseline">
           <BodyText inline={1}>{'You got '}</BodyText>
@@ -141,7 +143,7 @@ const ActivityText = ({ activity, amount }) => {
             slef={'flex-end'}
             align="baseline"
           />
-          <BodyText inline={1}>{` coins for ${text}`}</BodyText>
+          <BodyText inline={1}>{` coins for ${txt}`}</BodyText>
         </Text>
       );
 
