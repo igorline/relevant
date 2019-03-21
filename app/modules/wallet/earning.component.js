@@ -4,23 +4,18 @@ import get from 'lodash.get';
 import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
 import { View, BodyText } from 'modules/styled/uni';
-import ReactTooltip from 'react-tooltip';
 
 export default class Earning extends Component {
   static propTypes = {
     earning: PropTypes.object,
     month: PropTypes.string,
     payout: PropTypes.number,
-    mobile: PropTypes.bool,
+    screenSize: PropTypes.number,
     PostPreview: PropTypes.func
   };
 
-  componentDidMount() {
-    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
-  }
-
   render() {
-    const { earning, month, payout, mobile, PostPreview } = this.props;
+    const { earning, month, payout, screenSize, PostPreview } = this.props;
     const { community, post } = earning;
     if (!earning) return null;
     return (
@@ -33,20 +28,16 @@ export default class Earning extends Component {
           <View />
         )}
         <View
-          border
+          bt
+          bl
+          br
+          bb={!post}
           p={'1.5 2'}
           fdirection="row"
           mt={2}
           bg={colors.secondaryBG}
           grow={1}
           justify="space-between"
-          data-for="tooltip"
-          data-tip={JSON.stringify({
-            type: 'EARNING',
-            props: {
-              earning
-            }
-          })}
         >
           <View display="flex" fdirection="row">
             <BodyText mr={4}>
@@ -60,8 +51,11 @@ export default class Earning extends Component {
             <BodyText c={colors.green}>+ {numbers.abbreviateNumber(payout)} REL</BodyText>
           )}
         </View>
-
-        {mobile ? <PostPreview mobile community={community} postId={post} /> : null}
+        {post ? (
+          <View border={screenSize ? null : 1}>
+            <PostPreview screenSize={screenSize} community={community} postId={post} />
+          </View>
+        ) : null}
       </View>
     );
   }
