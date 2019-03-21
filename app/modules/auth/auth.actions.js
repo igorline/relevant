@@ -431,11 +431,12 @@ export function createUser(user, invitecode) {
     .then(responseJSON => {
       if (responseJSON.token) {
         return utils.token.set(responseJSON.token).then(() => {
-          ReactGA.event({
-            category: 'User',
-            action: 'Created an Account'
-          });
-          Analytics.logEvent('Created an Account');
+          ReactGA &&
+              ReactGA.event({
+                category: 'User',
+                action: 'Created an Account'
+              });
+          Analytics && Analytics.logEvent('Created an Account');
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());
           return true;
@@ -469,11 +470,12 @@ export function updateHandle(user) {
         path: '/updateHandle',
         body: JSON.stringify({ user })
       });
-      ReactGA.event({
-        category: 'User',
-        action: 'Created an Account'
-      });
-      Analytics.logEvent('Created an Account');
+      ReactGA &&
+        ReactGA.event({
+          category: 'User',
+          action: 'Created an Account'
+        });
+      Analytics && Analytics.logEvent('Created an Account');
       setupUser(result, dispatch);
       return true;
     } catch (err) {
