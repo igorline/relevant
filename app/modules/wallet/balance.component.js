@@ -62,7 +62,7 @@ export default class Balance extends Component {
     //   text={'You can cash out your earnings once you earn 100 tokens'}
     // >
     return (
-      <View m={mobile ? '2 2 0 2' : '4 4 2 4'}>
+      <View m={['4 4 2 4', '2 2 0 2']}>
         {!mobile ? (
           <View>
             <Header>Relevant Tokens</Header>
@@ -122,7 +122,7 @@ export default class Balance extends Component {
             />
           </View>
         ) : null}
-        <Header mt={mobile ? 4 : 9}>Recent Activity</Header>
+        <Header mt={[9, 4]}>Recent Activity</Header>
         {!mobile ? (
           <BodyText mt={2}>
             Your rewards for upvoting links and discussion threads that are relevant to
