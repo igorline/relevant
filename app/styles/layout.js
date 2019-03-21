@@ -39,17 +39,20 @@ export const textRow = {
   alignItems: 'center'
 };
 
+export const buttonFont = {
+  fontSize: sizing(1.5),
+  color: colors.white,
+  fontFamily: 'HelveticaNeue-Medium'
+};
+
 export const button = {
   background: colors.blue,
-  color: 'white',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   height: sizing(6),
   minWidth: sizing(18),
   padding: `0 ${sizing(2)}`,
-  fontSize: sizing(1.5),
-  fontFamily: 'HelveticaNeue-Medium',
   margin: 0
 };
 
