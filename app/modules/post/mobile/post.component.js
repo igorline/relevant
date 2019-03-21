@@ -45,13 +45,10 @@ class Post extends PureComponent {
 
     const { community } = auth;
     let { post } = this.props;
-    let imageEl;
 
     const separator = (
       <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
     );
-
-    let commentaryEl;
 
     if (!auth.user) return null;
 
@@ -61,14 +58,20 @@ class Post extends PureComponent {
       return blocked;
     }
 
+    const isLinkPost = link && (link.url || link.image);
+
+    const renderComment = (commentary && commentary.length) || (isLinkPost && post.body);
     // TODO... need to filter out reposted?
     // commentary = commentary.filter(p => p && p._id !== reposted);
 
-    if (commentary && commentary.length) {
-      commentaryEl = <Commentary {...this.props} commentary={commentary} />;
-    } else if (post.type !== 'link') {
-      commentaryEl = <Commentary {...this.props} commentary={[post]} />;
-    }
+    const commentaryEl = renderComment ? (
+      <Commentary
+        isReply={!isLinkPost}
+        isLinkPost={isLinkPost}
+        {...this.props}
+        commentary={commentary || [post]}
+      />
+    ) : null;
 
     if (post && post.repost) {
       let repost = this.props.posts.posts[post.repost.post];
@@ -79,28 +82,28 @@ class Post extends PureComponent {
     const title = getTitle({ post, link });
     const postUrl = routing.getPostUrl(community, post);
 
-    if (link && (link.url || link.image)) {
-      imageEl = (
-        <PostImage
-          key={link._id}
-          auth={auth}
-          actions={actions}
-          post={post}
-          link={link}
-          title={title}
-          postUrl={postUrl}
-          myPostInv={myPostInv}
-          singlePost={singlePost}
-          preview={preview}
-          noLink={noLink}
-        />
-      );
-    }
+    const postEl = isLinkPost ? (
+      <PostImage
+        key={link._id}
+        auth={auth}
+        actions={actions}
+        post={post}
+        link={link}
+        title={title}
+        postUrl={postUrl}
+        myPostInv={myPostInv}
+        singlePost={singlePost}
+        preview={preview}
+        noLink={noLink}
+      />
+    ) : (
+      <Commentary {...this.props} commentary={[post]} />
+    );
 
     return (
       <View style={{ overflow: 'hidden' }}>
         <View>
-          {imageEl}
+          {postEl}
           {commentaryEl}
         </View>
         {!singlePost && !hideDivider ? separator : null}

@@ -127,8 +127,8 @@ async function sendFlagEmail() {
   try {
     const flaggedUrl = `${process.env.API_SERVER}/admin/flagged`;
     const data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
-      to: 'contact@4real.io',
+      from: 'Relevant <info@relevant.community>',
+      to: 'info@relevant.community',
       subject: 'Inapproprate Content',
       html: `Someone has flagged a post for inappropriate content
       <br />
@@ -429,7 +429,7 @@ exports.update = async (req, res, next) => {
 
     newPost = await Post.findOne({ _id: req.body._id });
 
-    if (communityId !== newPost.communityId) throw new Error("Community doesn't match");
+    if (!communityId.equals(newPost.communityId)) { throw new Error("Community doesn't match"); }
 
     const prevMentions = [...newPost.mentions];
     const prevTags = [...newPost.mentions];
@@ -652,8 +652,7 @@ exports.create = async (req, res, next) => {
       user: user._id,
       mentions: req.body.mentions,
       postDate: now,
-      payoutTime,
-      eligibleForRewards: true
+      payoutTime
     };
 
     // TODO Work on better length limits
@@ -667,7 +666,7 @@ exports.create = async (req, res, next) => {
     let linkParent;
     if (postUrl) {
       linkParent = await Post.newLinkPost({ linkObject, postObject });
-      await linkParent.insertIntoFeed(communityId);
+      await linkParent.insertIntoFeed(communityId, community);
       // await Invest.createVote({
       //   post: linkParent,
       //   user: author,
@@ -681,19 +680,21 @@ exports.create = async (req, res, next) => {
     if (!hasChildComment) return res.status(200).json(linkParent);
 
     let newPost = new Post(postObject);
-    newPost = await newPost.addPostData();
+    newPost = await newPost.save();
 
     if (linkParent) {
       newPost.linkParent = linkParent;
       newPost.parentPost = linkParent;
-      newPost.data.parentPost = linkParent;
       newPost.metaPost = linkParent.metaPost;
-      newPost = await newPost.save();
-      await linkParent.save();
     }
+
+    newPost = await newPost.addPostData();
+    newPost.data.parentPost = linkParent;
 
     newPost = await newPost.addUserInfo(author);
     newPost = await newPost.save();
+
+    if (linkParent) await linkParent.save();
 
     // TODO should you invest in own comment?
     // await Invest.createVote({
@@ -705,7 +706,7 @@ exports.create = async (req, res, next) => {
     //   communityId
     // });
 
-    if (!postUrl) await newPost.insertIntoFeed(communityId);
+    if (!postUrl) await newPost.insertIntoFeed(communityId, community);
 
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);

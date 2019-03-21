@@ -248,26 +248,27 @@ async function distributeUserRewards(posts, _community) {
 
       distributedRewards += curationPayout;
 
-      if (curationPayout === 0) return null;
-
       payouts[user._id] = payouts[user._id]
         ? payouts[user._id] + curationPayout
         : curationPayout;
 
       // TODO diff decimal?
       const reward = curationPayout / 10 ** 18;
-      user.balance += Math.min(reward, 0);
+      user.balance += Math.max(reward, 0);
 
       const earning = await Earnings.updateRewardsRecord({
         user: user._id,
         post: post.post,
         earned: reward,
-        status: 'paidout',
+        status: curationPayout ? 'paidout' : 'expired',
         community,
         communityId
       });
+
       user.lockedTokens = Math.max(user.lockedTokens - earning.stakedTokens, 0);
       await user.save();
+
+      if (curationPayout === 0) return null;
 
       console.log('Awarded', user.name, reward, 'tokens for', post.post);
       return sendNotification({

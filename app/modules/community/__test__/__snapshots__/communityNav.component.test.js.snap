@@ -297,7 +297,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "WebkitFlexDirection": "column",
                 "WebkitFlexShrink": 0,
                 "alignItems": "stretch",
-                "backgroundColor": "rgba(0,0,0,0.00)",
+                "backgroundColor": "rgba(153,153,153,1.00)",
                 "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
                 "borderLeftStyle": "solid",

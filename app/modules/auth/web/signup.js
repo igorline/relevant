@@ -186,10 +186,7 @@ class SignupForm extends Component {
           </Touchable>
         </View>
         <LinkFont mt={4}>
-          Already registered?{' '}
-          <ULink onClick={() => this.props.authNav('login')} to="#" c={colors.blue}>
-            Sign In
-          </ULink>
+          Already registered? <a onClick={() => this.props.authNav('login')}>Sign In</a>
         </LinkFont>
       </View>
     );

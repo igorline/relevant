@@ -6,11 +6,12 @@ import { colors } from 'app/styles';
 import * as communityActions from 'modules/community/community.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
-import styled, { css } from 'styled-components/primitives';
+import { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
+import CommunityListItem from 'modules/community/communityListItem.component';
 import get from 'lodash.get';
-import { Image, View, CommunityLink, BodyText } from 'modules/styled/uni';
+import { View, BodyText } from 'modules/styled/uni';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
@@ -22,10 +23,6 @@ const linkStyle = css`
     text-decoration-color: ${colors.black};
     background: ${colors.white};
   }
-`;
-
-const CommunityImage = styled(Image)`
-  background-color: ${p => (p.image ? 'transparent' : colors.grey)};
 `;
 
 export class Community extends Component {
@@ -44,9 +41,6 @@ export class Community extends Component {
   renderCommunityLink(community) {
     const { mobile, actions } = this.props;
     const padding = mobile ? 2 : 4;
-    const image = community.image
-      ? { uri: community.image }
-      : require('app/public/img/default_community.png');
     return (
       <ULink
         styles={linkStyle}
@@ -60,19 +54,7 @@ export class Community extends Component {
           actions.setCommunity(community.slug);
         }}
       >
-        <View p={`1 ${padding}`} align={'center'} fdirection={'row'}>
-          <CommunityImage
-            w={4}
-            h={4}
-            mr={1.5}
-            image={community.image}
-            source={image}
-            resizeMode={'cover'}
-          />
-          <CommunityLink lh={1.75} c={colors.black}>
-            {community.name}
-          </CommunityLink>
-        </View>
+        <CommunityListItem community={community} p={`1 ${padding}`} />
       </ULink>
     );
   }

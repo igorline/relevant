@@ -5,8 +5,7 @@ import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import ReactTooltip from 'react-tooltip';
-import { userVotePower } from 'server/config/globalConstants';
-import get from 'lodash/get';
+import ReactGA from 'react-ga';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -71,12 +70,13 @@ class PostButtons extends Component {
       if (!auth.isAuthenticated) throw new Error('You must be logged in to upvote posts');
 
       const amount = 1;
-      await actions.vote(amount, post, auth.user, vote);
+      const voteResult = await actions.vote(amount, post, auth.user, vote);
 
-      if (vote) return null;
+      if (!voteResult || voteResult.undoInvest) return null;
 
-      const pagerank = get(auth.user, 'relevance.pagerank');
-      const upvoteAmount = userVotePower(pagerank);
+      const startRank = post.data ? post.data.pagerank : 0;
+      const total = startRank + voteResult.rankChange + 1;
+      const upvoteAmount = Math.round(total) - Math.round(startRank);
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
@@ -84,9 +84,10 @@ class PostButtons extends Component {
         actions.triggerAnimation('upvote', { parent, amount: upvoteAmount });
       });
 
-      // browserAlerts.alert('Success!');
-      // TODO nalytics
-      // Analytics.logEvent('upvote');
+      ReactGA.event({
+        category: 'User',
+        action: 'Upvoted a Post'
+      });
       return true;
     } catch (err) {
       return browserAlerts.alert(err.message);
@@ -106,6 +107,10 @@ class PostButtons extends Component {
       // TODO animations
       // this.props.actions.triggerAnimation('vote', -1);
       // this.props.actions.triggerAnimation('irrelevant', -1);
+      ReactGA.event({
+        category: 'User',
+        action: 'Downvoted a Post'
+      });
     } catch (err) {
       browserAlerts.alert(err.message);
     }
@@ -145,6 +150,10 @@ class PostButtons extends Component {
       }
     }
 
+    const postRank = post.data
+      ? Math.round(post.data.pagerank) + post.data.upVotes - post.data.downVotes
+      : 0;
+
     return (
       <View className={className}>
         <View
@@ -176,7 +185,7 @@ class PostButtons extends Component {
                 }
               })}
             >
-              {post.data ? Math.round(post.data.relevance) : 0}
+              {postRank || 0}
             </NumericalValue>
           </View>
           <PostButton

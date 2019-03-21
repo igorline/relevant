@@ -48,10 +48,23 @@ describe('CreatePost', () => {
       expect(apiRes.parentPost.data.isInFeed).toBe(true);
       expect(apiRes.data.isInFeed).toBe(false);
       expect(apiRes.image).toBe(createPost.image);
+      expect(apiRes.data.eligibleForReward).toBe(false);
       linkPostId = apiRes._id;
       linkParentId = apiRes.parentPost._id;
       apiRes = sanitize(apiRes, 'post');
       expect(apiRes).toMatchSnapshot();
+    });
+
+    test('expect parentPost to be created', async () => {
+      const postParent = await Post.findOne({ _id: linkParentId }).populate({
+        path: 'data',
+        match: { communityId: relevant._id }
+      });
+      expect(postParent.data.eligibleForReward).toBe(true);
+      expect(postParent.title).toBe(createPost.title);
+      expect(postParent.image).toBe(createPost.image);
+      expect(postParent.url).toBe(createPost.url);
+      expect(postParent.description).toBe(createPost.description);
     });
 
     test('create text post', async () => {
