@@ -613,16 +613,16 @@ export async function computeApproxPageRank(params) {
         // we undo the downvote AFTER pagerank recompute
         // TODO we can avoid this for posts by querying all
         // upvotes for a post and adding them together
-        oldWeight = (w - a) / degree;
+        oldWeight = (w - a) / (degree + a);
         postWeight = a / (degree + twoA - a);
         if (userVotes && author) {
           author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         }
         if (post && postVotes) post.data.pagerankRawNeg -= userR * postWeight;
       } else {
-        oldWeight = (w - a) / degree;
+        oldWeight = (w + a) / (degree - a);
         postWeight = a / degree;
-        if (author) author.relevance.pagerankRaw -= userR * (userWeight - oldWeight);
+        if (author) author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         post.data.pagerankRawNeg += userR * postWeight;
       }
     }
