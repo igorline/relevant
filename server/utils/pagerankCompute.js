@@ -438,7 +438,7 @@ function processUpvote(params) {
 function createPostNode({ post, rankedNodes, nstart, user, rankedPosts, downvote }) {
   if (!post) return null;
   const { _id, data, title } = post;
-  const postId = downvote ? _id : _id + '__neg';
+  const postId = downvote ? _id + '__neg' : _id;
   rankedNodes[postId] = rankedNodes[postId] || {};
   rankedPosts[postId] = rankedPosts[postId] || post;
   if (!rankedNodes[user._id][postId]) {
@@ -520,15 +520,15 @@ export async function computeApproxPageRank(params) {
     const nstart = {};
     const now = new Date();
 
-    // if (investment && investment.post) {
-    //   investment.post = await Post.findOne(
-    //     { _id: investment.post },
-    //     'data body'
-    //   ).populate({
-    //     path: 'data',
-    //     select: 'pagerank relevance pagerankRaw pagerankRawNeg'
-    //   });
-    // }
+    if (investment && investment.post) {
+      investment.post = await Post.findOne(
+        { _id: investment.post },
+        'data body'
+      ).populate({
+        path: 'data',
+        select: 'pagerank relevance pagerankRaw pagerankRawNeg'
+      });
+    }
 
     upvotes.forEach(upvote =>
       processUpvote({
@@ -614,7 +614,7 @@ export async function computeApproxPageRank(params) {
         // TODO we can avoid this for posts by querying all
         // upvotes for a post and adding them together
         oldWeight = (w - a) / degree;
-        postWeight = a / (degree + 1);
+        postWeight = a / (degree + twoA - a);
         if (userVotes && author) {
           author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         }
@@ -647,7 +647,6 @@ export async function computeApproxPageRank(params) {
         100,
         (100 * Math.log(N * pRankNeg + 1)) / Math.log(N * maxPostRank + 1)
       );
-      console.log(post.data.pagerankRawNeg, normRank, normRankNeg);
 
       post.data.pagerank = normRank - normRankNeg;
     }
