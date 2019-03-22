@@ -5,7 +5,7 @@ import request from 'supertest';
 import computePageRank from './pagerankCompute';
 import Community from '../api/community/community.model';
 
-const community = 'relevant';
+const community = 'crypto';
 
 const { app, db } = require('../server.js');
 
@@ -21,6 +21,6 @@ describe('Pagerank', () => {
       const communityId = (await Community.findOne({ slug: community }))._id;
       await computePageRank({ communityId, community, debug: true });
     },
-    30 * 1000
+    60 * 1000
   );
 });
