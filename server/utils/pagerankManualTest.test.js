@@ -5,7 +5,7 @@ import request from 'supertest';
 import computePageRank from './pagerankCompute';
 import Community from '../api/community/community.model';
 
-const community = 'crypto';
+const community = 'relevant';
 
 const { app, db } = require('../server.js');
 
@@ -15,8 +15,12 @@ beforeAll(async () => {
 });
 
 describe('Pagerank', () => {
-  test('Log Current Pagerank', async () => {
-    const communityId = (await Community.findOne({ slug: community }))._id;
-    await computePageRank({ communityId, community, debug: true });
-  });
+  test(
+    'Log Current Pagerank',
+    async () => {
+      const communityId = (await Community.findOne({ slug: community }))._id;
+      await computePageRank({ communityId, community, debug: true });
+    },
+    30 * 1000
+  );
 });

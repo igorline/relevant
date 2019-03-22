@@ -48,7 +48,7 @@ export default async function computePageRank(params) {
     // only look at votes up to a REP_CUTOFF years ago
     const timeLimit = new Date().setFullYear(new Date().getFullYear() - REP_CUTOFF);
 
-    const upvotes = await Invest.find({
+    const votes = await Invest.find({
       communityId,
       createdAt: { $gt: timeLimit },
       ownPost: { $ne: true },
@@ -83,17 +83,20 @@ export default async function computePageRank(params) {
       }
     });
 
-    upvotes.forEach(upvote => {
-      const user = upvote.investor;
+    votes.forEach(vote => {
+      const user = vote.investor;
       if (!user) return null;
-      const postAuthor = upvote.author;
-      const { post: postObj } = upvote;
-      // if (user && !originalUsers[user._id]) {
-      //   originalUsers[user._id] = user;
-      //   originalRelevance[user._id] = user.relevance ? user.relevance.relevance : 0;
-      // }
-      if (postObj && !originalPosts[postObj._id]) {
-        originalPosts[postObj._id] = postObj._id;
+      const postAuthor = vote.author;
+      const { post: postObj } = vote;
+
+      const postId = postObj
+        ? vote.amount < 0
+          ? postObj._id + '__neg'
+          : postObj._id
+        : null;
+
+      if (postObj && !originalPosts[postId]) {
+        originalPosts[postId] = postObj._id;
       }
       if (postAuthor && !originalUsers[postAuthor._id]) {
         originalUsers[postAuthor._id] = postAuthor;
@@ -105,7 +108,7 @@ export default async function computePageRank(params) {
         rankedNodes,
         rankedPosts,
         nstart,
-        upvote,
+        upvote: vote,
         user,
         now
       });
@@ -126,7 +129,7 @@ export default async function computePageRank(params) {
       }
     });
 
-    // TODO prune users with no upvotes
+    // TODO prune users with no votes
     Object.keys(rankedNodes).forEach(u => {
       if (!originalUsers[u] && !originalPosts[u]) {
         return delete rankedNodes[u];
@@ -197,6 +200,8 @@ export default async function computePageRank(params) {
       { _id: communityId },
       { maxPostRank: maxPost || 50, maxUserRank: max || 50, numberOfElements: N }
     );
+
+    array = mergeNegativeNodes(array);
 
     const maxRel = array.reduce((p, n) => Math.max(p, n.relevance || 0), 0);
     array = array.sort((a, b) => a.rank - b.rank);
@@ -276,6 +281,19 @@ export default async function computePageRank(params) {
   }
 }
 
+function mergeNegativeNodes(array) {
+  const newArray = [];
+  array.forEach(node => {
+    if (node.id.match('__neg')) return null;
+    const negativeNode = array.find(
+      n => n.id.match('__neg') && n.id.replace('__neg', '') === node.id
+    );
+    node.rankNeg = negativeNode ? negativeNode.rank : 0;
+    return newArray.push(node);
+  });
+  return newArray;
+}
+
 async function updateItemRank(props) {
   const { max, maxPost, u, N, debug, communityId, community, maxRel } = props;
   let { min, minPost } = props;
@@ -288,8 +306,12 @@ async function updateItemRank(props) {
     (100 * Math.log(N * (u.rank - minPost) + 1)) /
       Math.log(N * (maxPost - minPost) + 1) || 0;
 
+  const postRankNeg =
+    (100 * Math.log(N * (u.rankNeg - minPost) + 1)) /
+      Math.log(N * (maxPost - minPost) + 1) || 0;
+
   if (u.type === 'post') {
-    rank = postRank;
+    rank = postRank - postRankNeg;
   }
 
   rank = rank.toFixed(2);
@@ -322,15 +344,16 @@ async function updateItemRank(props) {
       { pagerank: rank },
       {
         new: true,
-        fields: 'pagerank pagerankRaw title rank relevance parentPost communityId'
+        fields: 'pagerank title rank relevance parentPost communityId'
       }
     );
     const postData = await PostData.findOneAndUpdate(
       { post: u.id, communityId },
-      { pagerank: rank, pagerankRaw: u.rank },
+      { pagerank: rank, pagerankRaw: u.rank, pagerankRawNeg: u.rankNeg },
       {
         new: true,
-        fields: 'pagerank pagerankRaw post rank relevance postDate communityId'
+        fields:
+          'pagerank pagerankRaw pagerankRawNeg post rank relevance postDate communityId'
       }
     );
 
@@ -362,7 +385,7 @@ function processUpvote(params) {
   // if (!upvote.author) return;
 
   let a = amount;
-  if (!a) a = 1;
+  if (!a) a = 0;
 
   // time discount (RELEVANCE_DECAY month half-life)
   const t = now.getTime() - upvote.createdAt.getTime();
@@ -382,32 +405,54 @@ function processUpvote(params) {
     };
   }
 
-  if (post) {
-    const { _id, data, title } = post;
-    rankedNodes[_id] = {};
-    rankedPosts[_id] = post;
-    if (!rankedNodes[user._id][_id]) {
-      rankedNodes[user._id][_id] = {
-        weight: 0,
-        negative: 0,
-        total: 0,
-        title
-      };
-    }
-    nstart[_id] = data ? Math.max(data.pagerankRaw, 0) : 0;
-  }
-
   if (a < 0) {
+    const downvote = true;
+    const postId = createPostNode({
+      post,
+      rankedNodes,
+      rankedPosts,
+      nstart,
+      user,
+      downvote
+    });
+
     // console.log(user._id, 'downvoted', upvote.author, upvote.post.body);
     if (authorId) rankedNodes[userId][authorId].negative += -a;
-    if (post) rankedNodes[userId][post._id].negative += -a;
+    // here we use a different note to track post downvotes
+    if (post) {
+      rankedNodes[userId][postId].weight += -a;
+      rankedNodes[userId][postId].total += -a;
+    }
   } else {
     if (authorId) rankedNodes[userId][authorId].weight += a;
-    if (post) rankedNodes[userId][post._id].weight += a;
+    const postId = createPostNode({ post, rankedNodes, rankedPosts, nstart, user });
+    if (post) {
+      rankedNodes[userId][postId].weight += a;
+      rankedNodes[userId][postId].total += Math.abs(a);
+    }
   }
   if (authorId) rankedNodes[userId][authorId].total += Math.abs(a);
   // here total shouldn't really matter
-  if (post) rankedNodes[userId][post._id].total += Math.abs(a);
+}
+
+function createPostNode({ post, rankedNodes, nstart, user, rankedPosts, downvote }) {
+  if (!post) return null;
+  const { _id, data, title } = post;
+  const postId = downvote ? _id : _id + '__neg';
+  rankedNodes[postId] = rankedNodes[postId] || {};
+  rankedPosts[postId] = rankedPosts[postId] || post;
+  if (!rankedNodes[user._id][postId]) {
+    rankedNodes[user._id][postId] = {
+      weight: 0,
+      negative: 0,
+      total: 0,
+      title
+    };
+  }
+  nstart[postId] = data
+    ? Math.max(downvote ? data.pagerankRawNeg : data.pagerankRaw, 0)
+    : 0;
+  return postId;
 }
 
 export async function computeApproxPageRank(params) {
@@ -466,7 +511,7 @@ export async function computeApproxPageRank(params) {
       options: { select: 'data body' },
       populate: {
         path: 'data',
-        select: 'pagerank relevance pagerankRaw'
+        select: 'pagerank relevance pagerankRaw pagerankRawNeg'
       }
     });
 
@@ -475,15 +520,15 @@ export async function computeApproxPageRank(params) {
     const nstart = {};
     const now = new Date();
 
-    if (investment && investment.post) {
-      investment.post = await Post.findOne(
-        { _id: investment.post },
-        'data body'
-      ).populate({
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw'
-      });
-    }
+    // if (investment && investment.post) {
+    //   investment.post = await Post.findOne(
+    //     { _id: investment.post },
+    //     'data body'
+    //   ).populate({
+    //     path: 'data',
+    //     select: 'pagerank relevance pagerankRaw pagerankRawNeg'
+    //   });
+    // }
 
     upvotes.forEach(upvote =>
       processUpvote({
@@ -519,6 +564,7 @@ export async function computeApproxPageRank(params) {
       if (!postVotes) {
         post.data.pagerank = 0;
         post.data.pagerankRaw = 0;
+        post.data.pagerankRawNeg = 0;
         await post.data.save();
       }
       userVotes = await Invest.count({ author: authorId, ownPost: false });
@@ -568,16 +614,16 @@ export async function computeApproxPageRank(params) {
         // TODO we can avoid this for posts by querying all
         // upvotes for a post and adding them together
         oldWeight = (w - a) / degree;
-        postWeight = a / degree;
+        postWeight = a / (degree + 1);
         if (userVotes && author) {
           author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         }
-        if (post && postVotes) post.data.pagerankRaw += userR * postWeight;
+        if (post && postVotes) post.data.pagerankRawNeg -= userR * postWeight;
       } else {
         oldWeight = (w - a) / degree;
         postWeight = a / degree;
         if (author) author.relevance.pagerankRaw -= userR * (userWeight - oldWeight);
-        post.data.pagerankRaw -= userR * postWeight;
+        post.data.pagerankRawNeg += userR * postWeight;
       }
     }
 
@@ -590,11 +636,20 @@ export async function computeApproxPageRank(params) {
     }
 
     if (post) {
-      const pA = Math.max(post.data.pagerankRaw, 0);
-      post.data.pagerank = Math.min(
+      const pRank = Math.max(post.data.pagerankRaw, 0);
+      const pRankNeg = Math.max(post.data.pagerankRawNeg || 0, 0);
+
+      const normRank = Math.min(
         100,
-        (100 * Math.log(N * pA + 1)) / Math.log(N * maxPostRank + 1)
+        (100 * Math.log(N * pRank + 1)) / Math.log(N * maxPostRank + 1)
       );
+      const normRankNeg = Math.min(
+        100,
+        (100 * Math.log(N * pRankNeg + 1)) / Math.log(N * maxPostRank + 1)
+      );
+      console.log(post.data.pagerankRawNeg, normRank, normRankNeg);
+
+      post.data.pagerank = normRank - normRankNeg;
     }
 
     await Promise.all([
