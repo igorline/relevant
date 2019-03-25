@@ -28,11 +28,11 @@ export const padding = css`
 `;
 
 const margincss = (p, screen) => `
-  ${p.m ? `margin: ${size(p.m, screen)}  !important` : ''};
-  ${p.mb ? `margin-bottom: ${size(p.mb, screen)}  !important` : ''};
-  ${p.ml ? `margin-left: ${size(p.ml, screen)}  !important` : ''};
-  ${p.mr ? `margin-right: ${size(p.mr, screen)}  !important` : ''};
-  ${p.mt ? `margin-top: ${size(p.mt, screen)} !important` : ''};
+  ${p.m ? `margin: ${size(p.m, screen)}` : ''};
+  ${p.mb ? `margin-bottom: ${size(p.mb, screen)}` : ''};
+  ${p.ml ? `margin-left: ${size(p.ml, screen)}` : ''};
+  ${p.mr ? `margin-right: ${size(p.mr, screen)}` : ''};
+  ${p.mt ? `margin-top: ${size(p.mt, screen)}` : ''};
 `;
 
 // const MARGIN_VALS = {
