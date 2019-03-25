@@ -10,6 +10,7 @@ import configureStore from 'core/web/configureStore';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 import path from 'path';
 import { AppRegistry } from 'react-native-web';
+import useragent from 'express-useragent';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -45,6 +46,7 @@ export const initStore = compose(
 
 export default async function handleRender(req, res) {
   const store = initStore(req);
+  global.userAgent = useragent.parse(req.headers['user-agent']);
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
