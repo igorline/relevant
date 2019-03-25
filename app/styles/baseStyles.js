@@ -34,6 +34,10 @@ export const GlobalStyle = createGlobalStyle`
     color: ${colors.blue};
   }
 
+  .smartbanner-top.smartbanner-android {
+    top: -80px !important;
+  }
+
   @media screen
   and (max-device-width: 414px) {
     html {
