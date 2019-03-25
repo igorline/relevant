@@ -40,7 +40,9 @@ export default class Forgot extends Component {
       content = (
         <LinkFont c={colors.black}>
           We have set an email to {this.state.sentEmailTo} with a link to reset your
-          password.
+          password.{'\n'}
+          If you don't see a password reset email in your inbox, please check your spam
+          folder.
         </LinkFont>
       );
     } else {

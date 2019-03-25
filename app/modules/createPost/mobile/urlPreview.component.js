@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { colors, sizing } from 'app/styles';
+import { colors } from 'app/styles';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import { View, Text, Image } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
@@ -36,7 +36,7 @@ export default class UrlPreviewComponent extends Component {
     );
 
     const domainEl = domainUrl && (
-      <Text fs={fontSize} c={colors.grey} pd={1 / 4}>
+      <Text numberOfLines={1} fs={fontSize} c={colors.grey} pt={1 / 4}>
         from: {domainUrl}
       </Text>
     );
@@ -48,19 +48,27 @@ export default class UrlPreviewComponent extends Component {
         <ULink underlayColor={'transparent'} onPress={urlMenu} to={'#'} disabled={noLink}>
           <View h={height} align={'stretch'} fdirection={'row'}>
             {imageEl || null}
-            <View flex={1} p={0.5} fdirection={'column'} justify={'center'}>
+            <View
+              flex={1}
+              p={0.5}
+              fdirection={'column'}
+              justify={'center'}
+              style={{
+                overflow: 'hidden'
+              }}
+            >
               <Text
                 style={{
-                  maxHeight: sizing(maxLines * fontSize * 1.33),
                   overflow: 'hidden'
                 }}
+                maxheight={maxLines * fontSize * 1.33}
                 fs={fontSize}
                 numberOfLines={maxLines}
                 c={colors.grey}
               >
                 {body}
               </Text>
-              <Text>{domainEl}</Text>
+              {domainEl}
             </View>
           </View>
         </ULink>

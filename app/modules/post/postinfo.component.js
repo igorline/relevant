@@ -10,9 +10,9 @@ import PostInfoMobile from 'modules/post/postinfo.mobile.component';
 import PostTitle from './postTitle.component';
 
 export default function PostInfo(props) {
-  const { post, link, firstPost, noLink, navigation } = props;
+  const { post, link, firstPost, noLink, screenSize } = props;
   const { community, ...rest } = props;
-  if (navigation.isResponsive) {
+  if (screenSize) {
     return <PostInfoMobile {...rest} />;
   }
   if (post.loading) {
@@ -55,6 +55,6 @@ PostInfo.propTypes = {
   postUrl: PropTypes.string,
   firstPost: PropTypes.object,
   noLinks: PropTypes.bool,
-  navigation: PropTypes.object.isRequired,
+  screenSize: PropTypes.number,
   auth: PropTypes.object.isRequired
 };

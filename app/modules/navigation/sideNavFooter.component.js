@@ -8,16 +8,21 @@ const EmailIcon = require('app/public/img/email.png');
 const SlackIcon = require('app/public/img/slack.png');
 const MediumIcon = require('app/public/img/medium.png');
 
-const FooterIcon = ({ href, source, target, actions }) => (
-  <ULink
-    external
-    to={href}
-    onPress={() => actions.goToUrl(href)}
-    target={target || '_self'}
-  >
-    <Image w={3} h={2.3} mr={1.5} resizeMode={'contain'} source={source} />
-  </ULink>
-);
+const FooterIcon = ({ href, source, target, actions }) => {
+  if (!source) {
+    return null;
+  }
+  return (
+    <ULink
+      external
+      to={href}
+      onPress={() => actions.goToUrl(href)}
+      target={target || '_self'}
+    >
+      <Image w={3} h={2.3} mr={1.5} resizeMode={'contain'} source={source} />
+    </ULink>
+  );
+};
 
 FooterIcon.propTypes = {
   href: PropTypes.string,
@@ -50,8 +55,8 @@ const icons = [
   }
 ];
 
-const SideNavFooter = ({ actions, mobile }) => (
-  <View m={mobile ? 2 : 4}>
+const SideNavFooter = ({ actions }) => (
+  <View m={[4, 2]}>
     <BodyText>© 2019 Relevant Protocols Inc.</BodyText>
     <BodyText inline={1} mt={1}>
       <ULink to="/info/faq">
@@ -75,8 +80,7 @@ const SideNavFooter = ({ actions, mobile }) => (
 );
 
 SideNavFooter.propTypes = {
-  actions: PropTypes.object,
-  mobile: PropTypes.bool
+  actions: PropTypes.object
 };
 
 export default SideNavFooter;

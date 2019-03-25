@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import RichText from 'modules/text/web/richText.component';
 import get from 'lodash.get';
+import ReactGA from 'react-ga';
 
 import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -45,7 +46,7 @@ class CreatePostContainer extends Component {
     location: PropTypes.object,
     history: PropTypes.object,
     community: PropTypes.object,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   constructor(props) {
@@ -213,9 +214,10 @@ class CreatePostContainer extends Component {
       history.push(`/${auth.community}/new/`);
       actions.refreshTab('discover');
 
-      // Analytics.logEvent('newPost', {
-      //   viaShare: this.props.share
-      // });
+      ReactGA.event({
+        category: 'User',
+        action: 'Created a Post'
+      });
     } catch (err) {
       // TODO error handling
       alert.browserAlerts.alert(err.message);
@@ -305,13 +307,14 @@ class CreatePostContainer extends Component {
 
   renderPreview() {
     if (!this.state.urlPreview) return null;
-    const { auth, navigation } = this.props;
+    const { auth, screenSize } = this.props;
     return (
       <div style={{ position: 'relative' }}>
         <PostInfo
           small
+          preview={!!screenSize}
           auth={auth}
-          navigation={navigation}
+          screenSize={screenSize}
           close={this.clearUrl.bind(this)}
           post={this.state.urlPreview}
           link={this.state.linkPreview}
@@ -382,10 +385,10 @@ class CreatePostContainer extends Component {
           </PasteTextFromLink>
         </View>
 
-        <View mt={3}>{this.renderPreview()}</View>
+        <View mt={[3, 2]}>{this.renderPreview()}</View>
 
         {body || url ? (
-          <View mt={3}>
+          <View mt={[3, 2]}>
             <TagInput
               selectedTags={this.state.selectedTags}
               selectTag={this.selectTags}
@@ -398,7 +401,7 @@ class CreatePostContainer extends Component {
                 !this.state.selectedTags.length ? 'Please add at least one tag' : ''
               }
             />
-            <View mt={4}>
+            <View mt={[4, 2]}>
               <SelectTags
                 text={'Suggested tags'}
                 tags={allTags}
@@ -411,7 +414,7 @@ class CreatePostContainer extends Component {
                 }}
               />
             </View>
-            <Divider mt={4} />
+            <Divider mt={[4, 2]} />
           </View>
         ) : null}
         <View display="flex" fdirection="row" mt={2} justify="flex-end">
@@ -441,7 +444,7 @@ function mapStateToProps(state) {
     tags: state.tags,
     userSearch: state.user.search,
     community: state.community,
-    navigation: state.navigation
+    screenSize: state.navigation.screenSize
   };
 }
 

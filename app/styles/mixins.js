@@ -1,39 +1,11 @@
 import { css } from 'styled-components';
 import { lineColor } from './colors';
 import sizing from './sizing';
-import { mediumScreenWidth, smallScreenWidth } from './layout';
-
-// This assumes we are working with 2 breakpoints/3 sizes
-function responsiveHandler(val) {
-  if (!Array.isArray(val)) {
-    return val;
-  }
-  try {
-    if (!window) {
-      return val[0];
-    }
-  } catch (e) {
-    return val[0];
-  }
-  const WIDTH = window.innerWidth;
-  if (val.length === 1) {
-    return val[0];
-  }
-  const breakpoints = [mediumScreenWidth, smallScreenWidth, 0];
-  for (let i = 0; i < breakpoints.length; i++) {
-    if (WIDTH >= breakpoints[i]) {
-      if (val.length > i) {
-        return val[i];
-      } else if (val.length > i - 1) {
-        return val[i - 1];
-      }
-    }
-  }
-  return val;
-}
+import { responsiveHandler } from './responsive';
 
 export const size = value => {
   const units = responsiveHandler(value);
+
   if (typeof units === 'number') return sizing(units);
   if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
   const uArray = units.split(' ');
@@ -94,11 +66,13 @@ export const inheritcolor = css`
 
 export const width = css`
   ${p => (p.w ? `width: ${size(p.w)};` : '')};
+  ${p => (p.minwidth ? `min-width: ${size(p.minwidth)};` : '')};
 `;
 
 export const height = css`
   ${p => (p.h ? `height: ${size(p.h)};` : '')};
   ${p => (p.minHeight ? `min-height: ${size(p.minHeight)};` : '')};
+  ${p => (p.maxheight ? `max-height: ${size(p.maxheight)};` : '')};
 `;
 
 export const background = css`

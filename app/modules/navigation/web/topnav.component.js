@@ -21,7 +21,6 @@ const Nav = styled(View)`
   background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
   z-index: 100;
   height: ${layout.headerHeight};
-  padding: 0 ${sizing(4)};
   top: 0;
   left: ${layout.sideNavWidth};
 `;
@@ -39,7 +38,7 @@ const Badge = styled(View)`
 
 const ActionButton = styledComponents(Button)`
   ${p =>
-    !p.showResponsive
+    !p.screenSize
       ? ''
       : `
     position: fixed;
@@ -63,7 +62,7 @@ class TopNav extends Component {
     notif: PropTypes.object,
     community: PropTypes.object,
     view: PropTypes.object,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   state = {};
@@ -111,12 +110,11 @@ class TopNav extends Component {
   }
 
   render() {
-    const { auth, className, actions, notif, navigation } = this.props;
-    const showResponsive = navigation.width <= layout.mediumScreenWidth;
+    const { auth, className, actions, notif, screenSize } = this.props;
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <Nav className={className} fdirection="column" justify="center">
+      <Nav className={className} fdirection="column" justify="center" p={['0 4', '0 2']}>
         <View
           zIndex={1}
           justify="space-between"
@@ -124,7 +122,7 @@ class TopNav extends Component {
           fdirection="row"
           align="center"
         >
-          <MenuIcon mr={4} />
+          <MenuIcon mr={[4, 2]} />
           <DiscoverTabs />
           <View
             justify="space-between"
@@ -156,7 +154,7 @@ class TopNav extends Component {
             )}
 
             <View fdirection="row" d="flex" flex={1} align="center" justify="flex-end">
-              {showResponsive ? null : (
+              {screenSize ? null : (
                 <Ulink
                   onClick={e => {
                     e.preventDefault();
@@ -177,11 +175,11 @@ class TopNav extends Component {
                   to={'#'}
                   disabled={!auth.user}
                 >
-                  <ActionButton showResponsive={showResponsive}>New Post</ActionButton>
+                  <ActionButton screenSize={screenSize}>New Post</ActionButton>
                 </Link>
               ) : (
                 <ActionButton
-                  showResponsive={showResponsive}
+                  screenSize={screenSize}
                   onClick={this.toggleLogin}
                   color={colors.blue}
                 >
@@ -199,7 +197,7 @@ class TopNav extends Component {
             />
           </View>
         </View>
-        <View fdirection="row" mt={showResponsive ? 1 : 0} ml={showResponsive ? 7.5 : 0}>
+        <View fdirection="row" mt={[0, 1]} ml={[0, 5.75]}>
           <Breadcrumbs />
         </View>
       </Nav>
@@ -211,7 +209,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     notif: state.notif,
-    navigation: state.navigation
+    screenSize: state.navigation.screenSize
   };
 }
 

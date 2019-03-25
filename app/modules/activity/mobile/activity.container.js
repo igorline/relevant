@@ -28,7 +28,8 @@ class Activity extends Component {
     reload: PropTypes.number,
     error: PropTypes.bool,
     online: PropTypes.array,
-    loaded: PropTypes.bool
+    loaded: PropTypes.bool,
+    screenSize: PropTypes.number
   };
 
   constructor(props, context) {
@@ -94,10 +95,11 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
+    const { screenSize } = this.props;
     if (this.state.view === 0) {
       return (
         <SingleActivity
-          mobile
+          screenSize={screenSize}
           PostComponent={PostComponent}
           singleActivity={rowData}
           {...this.props}
@@ -159,6 +161,7 @@ const mapStateToProps = state => ({
   error: state.error.activity,
   refresh: state.navigation.activity.refresh,
   reload: state.navigation.activity.reload,
+  screenSize: state.navigation.screenSize,
   posts: state.posts
 });
 

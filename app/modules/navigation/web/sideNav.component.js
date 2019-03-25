@@ -52,11 +52,12 @@ const LogoContainer = styled(View)`
 `;
 
 class SideNav extends Component {
-  componentDidUpdate(prevProps) {
-    if (prevProps.location !== this.props.location) {
+  componentDidMount() {
+    this.props.history.listen(() => {
       this.props.actions.closeWebSideNav();
-    }
+    });
   }
+
   render() {
     const { community, className } = this.props;
     const logoLink = `/${community || 'relevant'}/new`;
@@ -70,8 +71,7 @@ class SideNav extends Component {
               align="center"
               fdirection="row"
               justify="space-between"
-              pl={4}
-              pr={4}
+              p={['0 4', '0 2']}
             >
               <ULink align={'flex-start'} to={logoLink}>
                 <Image
@@ -103,7 +103,7 @@ SideNav.propTypes = {
   actions: PropTypes.object,
   community: PropTypes.string,
   navigation: PropTypes.object,
-  location: PropTypes.object
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => ({

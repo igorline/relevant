@@ -42,7 +42,7 @@ export class Post extends Component {
     preview: PropTypes.bool,
     avatarText: PropTypes.func,
     singlePost: PropTypes.bool,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   deletePost() {
@@ -93,7 +93,7 @@ export class Post extends Component {
       preview,
       avatarText,
       singlePost,
-      navigation,
+      screenSize,
       actions = { actions }
     } = this.props;
     const { community: currentCommunity } = auth;
@@ -118,7 +118,7 @@ export class Post extends Component {
     // TODO pass post buttons as prop to Post?
     const postEl = isLink ? (
       <View fdirection={'row'} m={[`4 4 ${renderComment ? 0 : 4} 0`, 0]}>
-        {!hidePostButtons && !navigation.isResponsive && (
+        {!hidePostButtons && !screenSize && (
           <View w={layout.POST_BUTTONS_WIDTH}>
             <PostButtons post={post} {...this.props} />
           </View>
@@ -126,7 +126,7 @@ export class Post extends Component {
         <View flex={1}>
           <PostInfo
             auth={auth}
-            navigation={navigation}
+            screenSize={screenSize}
             post={post}
             link={link}
             postUrl={postUrl}
@@ -161,13 +161,13 @@ export class Post extends Component {
     const commentCommunity = get(comment, 'community') || community;
     const commentUrl = routing.getPostUrl(commentCommunity, parentPost);
     const additionalNesting =
-      hidePostButtons || navigation.isResponsive ? 0 : layout.POST_BUTTONS_NESTING_UNITS;
+      hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS;
     const commentEl = renderComment ? (
       <SingleComment
         comment={comment}
         postUrl={commentUrl}
         parentPost={post}
-        hidePostButtons
+        hidePostButtons={screenSize === 0}
         hideBorder
         additionalNesting={additionalNesting}
         nestingLevel={0}
@@ -178,10 +178,10 @@ export class Post extends Component {
     ) : null;
 
     const previewEl = preview && link && (link.url || link.image) && (
-      <View m={'4 4 0 4'}>
+      <View m={['4 0 0 0']}>
         <PostInfo
           auth={auth}
-          navigation={navigation}
+          screenSize={screenSize}
           post={post}
           link={link}
           community={community}
@@ -198,9 +198,9 @@ export class Post extends Component {
     return (
       <View fdirection={'column'}>
         {previewEl}
-        {isLink && previewEl ? <View mt={4} /> : postEl}
+        {isLink && previewEl ? <View mt={2} /> : postEl}
         {commentEl}
-        {hideDivider ? null : <Divider m={'0 4'} />}
+        {hideDivider ? null : <Divider m={['0 4', 0]} screenSize={screenSize} />}
       </View>
     );
   }
@@ -214,7 +214,7 @@ export default withRouter(
       auth: state.auth,
       earnings: state.earnings,
       myPostInv: state.investments.myPostInv,
-      navigation: state.navigation
+      screenSize: state.navigation.screenSize
     }),
     dispatch => ({
       actions: bindActionCreators(

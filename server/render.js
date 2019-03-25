@@ -49,20 +49,26 @@ export default async function handleRender(req, res) {
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
   store.dispatch(setCommunity(store.getState().auth.community));
+  const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {
     await handleRouteData({ req, store });
     const { app, rnWebStyles } = renderApp({ url: req.url, store });
 
-    const html = renderFullPage({ app, rnWebStyles, initialState: store.getState() });
+    const html = renderFullPage({
+      app,
+      fullUrl,
+      rnWebStyles,
+      initialState: store.getState()
+    });
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage('', store.getState()));
+    res.send(renderFullPage({ initialState: store.getState(), fullUrl }));
   }
 }
 
-export function renderFullPage({ app, rnWebStyles, initialState }) {
+export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
   let cssStyleTags = '';
   let styledComponentsTags = '';
 
@@ -82,7 +88,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-        <title>Relevant: A Social News Reader</title>
+        <title>Relevant: Curated by Communities, Not Clicks</title>
         <link rel="icon" href="https://relevant.community/favicon.ico?v=2" />
         <meta name="description" content="${meta.description}" />
         <meta property="og:description" content="${meta.description}" />
@@ -91,24 +97,20 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta property="og:image" content="${meta.image}" />
 
         <meta name="twitter:card" content="${meta.type}" />
-        <meta name="twitter:site" content="@4realglobal" />
+        <meta name="twitter:site" content="@relevantfeed" />
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
         ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
 
+        <meta name="apple-itunes-app" content="app-id=1173025051 app-argument=${fullUrl}">
+
+        <meta name="google-play-app" content="app-id=com.relevantnative">
+        <link rel="apple-touch-icon" href="/img/r-big.png">
+        <link rel="android-touch-icon" href="/img/r-big.png">
+
         ${cssStyleTags}
         ${rnWebStyles}
         ${styledComponentsTags}
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51795165-6"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-51795165-6');
-        </script>
 
         <!-- Facebook Pixel Code -->
         <script>
@@ -162,11 +164,11 @@ export function fetchMeta(initialState) {
       if (!image) type = 'summary';
     }
   }
+
   title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image =
-    image || post
-      ? 'https://relevant.community/img/r-big.png'
-      : 'https://relevant.community/img/fbimg.png';
+  image = post
+    ? post.image || 'https://relevant.community/img/r-big.png'
+    : 'https://relevant.community/img/fbImage.png';
   url = url || 'https://relevant.community/';
   description = description || 'Join the discussion.';
   return { title, description, image, url, type };

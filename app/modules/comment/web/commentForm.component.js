@@ -32,7 +32,7 @@ class CommentForm extends Component {
     additionalNesting: PropTypes.number,
     autoFocus: PropTypes.bool,
     history: PropTypes.object,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   constructor(props, context) {
@@ -162,7 +162,7 @@ class CommentForm extends Component {
       nestingLevel,
       additionalNesting,
       autoFocus,
-      navigation,
+      screenSize,
       ...rest
     } = this.props;
     if (!auth.isAuthenticated) return null;
@@ -179,9 +179,9 @@ class CommentForm extends Component {
         {...rest}
         pt={paddingTop}
         bg={backgroundColor}
-        nestingLevel={navigation.isResponsive ? 0 : nestingLevel}
-        additionalNesting={navigation.isResponsive ? 0 : additionalNesting}
-        isResponsive={navigation.isResponsive}
+        nestingLevel={screenSize ? 0 : nestingLevel}
+        additionalNesting={screenSize ? 0 : additionalNesting}
+        screenSize={screenSize}
       >
         <View fdirection="column" flex={1} style={{ position: 'relative' }}>
           {this.state.focused ? null : (
@@ -219,10 +219,17 @@ class CommentForm extends Component {
                 bg="transparent"
                 c={colors.secondaryText}
                 disabled={!auth.isAuthenticated}
+                p={[null, '0 4']}
+                minwidth={1}
               >
                 Cancel
               </Button>
-              <Button onClick={this.handleSubmit} disabled={!auth.isAuthenticated}>
+              <Button
+                onClick={this.handleSubmit}
+                disabled={!auth.isAuthenticated}
+                p={[null, '0 4']}
+                minwidth={1}
+              >
                 {this.props.text}
               </Button>
             </View>

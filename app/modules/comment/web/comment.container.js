@@ -23,7 +23,7 @@ class Comments extends Component {
     post: PropTypes.object,
     myPostInv: PropTypes.object,
     user: PropTypes.object,
-    navigation: PropTypes.object
+    screenSize: PropTypes.number
   };
 
   state = {
@@ -59,7 +59,7 @@ class Comments extends Component {
       myPostInv,
       user,
       match,
-      navigation
+      screenSize
     } = this.props;
     const children = comments.childComments[post._id] || [];
     const focusedComment = get(match, 'params.commentId', null);
@@ -68,15 +68,13 @@ class Comments extends Component {
         <CommentForm
           {...this.props}
           nestingLevel={0}
-          additionalNesting={
-            navigation.isResponsive ? 0 : layout.POST_BUTTONS_NESTING_UNITS
-          }
+          additionalNesting={screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
           text={'Comment'}
           parentPost={post}
-          p={['0 4 4 4', '4 4 2 4']}
+          p={['0 4 4 4', '4 2 2 2']}
           isReply
         />
-        <Divider />
+        <Divider screenSize={screenSize} />
         {children.length !== 0 ? (
           <div>
             {children.map(id => {
@@ -100,7 +98,7 @@ class Comments extends Component {
                   actions={actions}
                   focusedComment={focusedComment}
                   scrollTo={this.scrollTo}
-                  navigation={navigation}
+                  screenSize={screenSize}
                 />
               );
             })}
@@ -118,7 +116,7 @@ export default withRouter(
       comments: state.comments,
       myPostInv: state.investments.myPostInv,
       user: state.user,
-      navigation: state.navigation
+      screenSize: state.navigation.screenSize
     }),
     dispatch => ({
       actions: bindActionCreators(

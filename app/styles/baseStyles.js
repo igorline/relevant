@@ -27,8 +27,8 @@ export const GlobalStyle = createGlobalStyle`
     position:relative;
     flex: 1;
     font-smooth: auto;
-    -moz-osx-font-smoothing: auto;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   a {
     color: ${colors.blue};
