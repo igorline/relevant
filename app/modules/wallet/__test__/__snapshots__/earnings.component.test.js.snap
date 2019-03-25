@@ -129,8 +129,6 @@ exports[`Snapshot Paidout Web 1`] = `
     </div>
   </div>
   <div
-    data-for="tooltip"
-    data-tip="{\\"type\\":\\"EARNING\\",\\"props\\":{\\"earning\\":{\\"community\\":\\"relevant\\",\\"communityId\\":null,\\"createdAt\\":\\"2019-02-05T05:42:29.684Z\\",\\"earned\\":0.0918203703714779,\\"estimatedPostPayout\\":0,\\"post\\":\\"5c45483709a5b05cd0646d7c\\",\\"shares\\":0,\\"source\\":\\"post\\",\\"stakedTokens\\":0,\\"status\\":\\"paidout\\",\\"totalPostShares\\":0,\\"type\\":\\"coins\\",\\"updatedAt\\":\\"2019-02-05T05:42:29.684Z\\",\\"user\\":\\"5c4267177f81360b10b4b196\\",\\"__v\\":0,\\"_id\\":\\"5c5922452de74dc9e56eeebb\\"}}}"
     style={
       Object {
         "WebkitAlignItems": "stretch",
@@ -146,9 +144,8 @@ exports[`Snapshot Paidout Web 1`] = `
         "WebkitJustifyContent": "space-between",
         "alignItems": "stretch",
         "backgroundColor": "rgba(248,248,248,1.00)",
-        "borderBottomColor": "rgba(221,221,221,1.00)",
         "borderBottomStyle": "solid",
-        "borderBottomWidth": "1px",
+        "borderBottomWidth": "0px",
         "borderLeftColor": "rgba(221,221,221,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
@@ -360,6 +357,55 @@ exports[`Snapshot Paidout Web 1`] = `
        REL
     </div>
   </div>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "1px",
+        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "1px",
+        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "1px",
+        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "1px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    Preview
+  </div>
 </div>
 `;
 
@@ -492,8 +538,6 @@ exports[`Snapshot Pending Web 1`] = `
     </div>
   </div>
   <div
-    data-for="tooltip"
-    data-tip="{\\"type\\":\\"EARNING\\",\\"props\\":{\\"earning\\":{\\"_id\\":\\"5c5086662de74dc9e5f61b66\\",\\"post\\":\\"5c3d07d0348c61cc78023449\\",\\"user\\":\\"5c4267177f81360b10b4b196\\",\\"__v\\":0,\\"community\\":\\"relevant\\",\\"communityId\\":\\"5ba92052a7c7a539ed46d76f\\",\\"status\\":\\"pending\\",\\"type\\":\\"coins\\",\\"earned\\":0,\\"shares\\":10,\\"estimatedPostPayout\\":600,\\"totalPostShares\\":100,\\"stakedTokens\\":60,\\"source\\":\\"post\\"}}}"
     style={
       Object {
         "WebkitAlignItems": "stretch",
@@ -509,9 +553,8 @@ exports[`Snapshot Pending Web 1`] = `
         "WebkitJustifyContent": "space-between",
         "alignItems": "stretch",
         "backgroundColor": "rgba(248,248,248,1.00)",
-        "borderBottomColor": "rgba(221,221,221,1.00)",
         "borderBottomStyle": "solid",
-        "borderBottomWidth": "1px",
+        "borderBottomWidth": "0px",
         "borderLeftColor": "rgba(221,221,221,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
@@ -720,6 +763,55 @@ exports[`Snapshot Pending Web 1`] = `
       10
        REL
     </div>
+  </div>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "1px",
+        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "1px",
+        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "1px",
+        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "1px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    Preview
   </div>
 </div>
 `;

@@ -6,10 +6,15 @@ import Gradient from 'modules/post/gradient.component';
 import { ActivityIndicator } from 'react-native-web';
 import { View, Image } from 'modules/styled/uni';
 import { getTitle, getFavIcon } from 'app/utils/post';
+import PostInfoMobile from 'modules/post/postinfo.mobile.component';
 import PostTitle from './postTitle.component';
 
 export default function PostInfo(props) {
-  const { post, link, firstPost, noLink } = props;
+  const { post, link, firstPost, noLink, screenSize } = props;
+  const { community, ...rest } = props;
+  if (screenSize) {
+    return <PostInfoMobile {...rest} />;
+  }
   if (post.loading) {
     return (
       <View>
@@ -23,7 +28,7 @@ export default function PostInfo(props) {
   const title = getTitle({ post, link, firstPost });
 
   const postContent = (
-    <View fdirection={'row'}>
+    <View fdirection={['row', 'column']}>
       <ULink external to={post.url} target="_blank" noLink={noLink}>
         <View flex={1} w={20} h={10} mr={2}>
           {imageUrl ? (
@@ -49,5 +54,7 @@ PostInfo.propTypes = {
   community: PropTypes.string,
   postUrl: PropTypes.string,
   firstPost: PropTypes.object,
-  noLinks: PropTypes.bool
+  noLinks: PropTypes.bool,
+  screenSize: PropTypes.number,
+  auth: PropTypes.object.isRequired
 };

@@ -33,7 +33,7 @@ export default class SingleActivity extends Component {
     auth: PropTypes.shape({
       user: PropTypes.object.isRequired
     }).isRequired,
-    mobile: PropTypes.bool,
+    screenSize: PropTypes.number,
     PostComponent: PropTypes.func,
     navigation: PropTypes.object
   };
@@ -97,7 +97,7 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, mobile, auth, navigation } = this.props;
+    const { PostComponent, actions, screenSize, auth, navigation } = this.props;
     const { post } = activity;
 
     const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
@@ -112,15 +112,15 @@ export default class SingleActivity extends Component {
     const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
 
     return (
-      <ULink to={linkToPost} noLink={!mobile} onPress={onPress}>
-        <View>
+      <ULink to={linkToPost} noLink={!screenSize} onPress={onPress}>
+        <View m={['0 4', '0 2']}>
           <PostComponent
             post={post}
             link={link}
             hideDivider
             hidePostButtons
             preview
-            noLink={mobile}
+            noLink={!!screenSize}
             navigation={navigation}
           />
         </View>
@@ -129,7 +129,7 @@ export default class SingleActivity extends Component {
   }
 
   renderActivity(activity) {
-    const { mobile, actions } = this.props;
+    const { screenSize, actions } = this.props;
     const { emoji, image, byUser } = activityHelper.getActivityParams(activity);
     const amount = numbers.abbreviateNumber(activity.amount);
     return (
@@ -148,7 +148,7 @@ export default class SingleActivity extends Component {
             {this.renderName(activity, byUser)}
             <ActivityText activity={activity} amount={amount} />
           </InlineText>
-          <View>{mobile ? this.renderDate(activity) : null}</View>
+          <View>{screenSize ? this.renderDate(activity) : null}</View>
         </View>
       </View>
     );
@@ -163,13 +163,13 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent, mobile, navigation } = this.props;
+    const { PostComponent, navigation } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
     return (
       <View>
-        <View m={mobile ? '0 2 0 2' : 0}>
+        <View m={['0 4', '0 2']}>
           <PostComponent
             post={post}
             hidePostButtons
@@ -179,16 +179,15 @@ export default class SingleActivity extends Component {
             avatarText={() => <ActivityText activity={activity} amount={amount} />}
           />
         </View>
-        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
+        <Divider m={'2 0 0 0'} />
       </View>
     );
   }
 
   render() {
-    const { mobile } = this.props;
+    const { screenSize } = this.props;
     const activity = this.props.singleActivity;
     if (!activity) return null;
-    const p = mobile ? 2 : 4;
 
     if (activity.type === 'comment') {
       return this.renderComment(activity);
@@ -197,25 +196,22 @@ export default class SingleActivity extends Component {
     return (
       <View>
         <View
-          mr={p}
-          ml={p}
-          mt={4}
-          mb={mobile ? 2 : 0}
+          m={['4 4 0 4', '4 2 0 2']}
           fdirection="row"
           justify="space-between"
           align="center"
         >
           {this.renderActivity(activity)}
-          {mobile ? null : this.renderDate(activity)}
+          {screenSize ? null : this.renderDate(activity)}
         </View>
         {activity.post ? (
-          <View m={0} ml={mobile ? 8 : 6} pr={mobile ? 2 : 0}>
+          <View m={0} ml={[6, 5.5]} pr={0}>
             {this.renderPostPreview(activity)}
           </View>
         ) : (
-          <View mt={mobile ? 0 : 4} />
+          <View mt={[4, 0]} />
         )}
-        {mobile ? <Divider mt={4} /> : <Divider m={'2 4 0 4'} />}
+        <Divider m={'2 0 0 0'} />
       </View>
     );
   }

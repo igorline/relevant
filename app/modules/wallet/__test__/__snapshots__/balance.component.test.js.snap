@@ -925,7 +925,12 @@ exports[`Snapshot Balance Web 1`] = `
   </div>
   <div
     dir="auto"
-    mt={9}
+    mt={
+      Array [
+        9,
+        4,
+      ]
+    }
     style={
       Object {
         "WebkitFlexBasis": "auto",

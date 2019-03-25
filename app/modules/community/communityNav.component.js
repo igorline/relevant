@@ -29,9 +29,9 @@ export class Community extends Component {
   static propTypes = {
     actions: PropTypes.object,
     community: PropTypes.object,
-    mobile: PropTypes.bool,
     view: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   componentDidMount() {
@@ -39,8 +39,7 @@ export class Community extends Component {
   }
 
   renderCommunityLink(community) {
-    const { mobile, actions } = this.props;
-    const padding = mobile ? 2 : 4;
+    const { actions } = this.props;
     return (
       <ULink
         styles={linkStyle}
@@ -54,7 +53,7 @@ export class Community extends Component {
           actions.setCommunity(community.slug);
         }}
       >
-        <CommunityListItem community={community} p={`1 ${padding}`} />
+        <CommunityListItem community={community} p={['1 4', '1 2']} />
       </ULink>
     );
   }
@@ -73,7 +72,7 @@ export class Community extends Component {
   }
 
   render() {
-    const { community, actions, mobile, view, auth } = this.props;
+    const { community, actions, view, auth, screenSize } = this.props;
     const { communityMembers, members, communities } = community;
     const activeCommunity = communities[community.active];
     const activeMembers = get(communityMembers, community.active, []).map(
@@ -87,8 +86,8 @@ export class Community extends Component {
               key={activeCommunity._id}
               community={activeCommunity}
               members={activeMembers}
-              mobile={mobile}
               actions={actions}
+              screenSize={screenSize}
               getCommunityMembers={get(actions, 'getCommunityMembers', null)}
               view={view}
               auth={auth}
@@ -98,7 +97,7 @@ export class Community extends Component {
           )}
           <View m={'2 0'}>{this.renderOtherCommunities()}</View>
         </View>
-        <BodyText m={mobile ? 2 : 4}>
+        <BodyText m={[4, 2]}>
           We'll be adding more communities in the coming weeks!{'\n\n'}
         </BodyText>
       </View>
@@ -109,7 +108,8 @@ export class Community extends Component {
 const mapStateToProps = state => ({
   community: state.community,
   auth: state.auth,
-  view: state.view
+  view: state.view,
+  screenSize: state.navigation.screenSize
 });
 
 const mapDispatchToProps = dispatch => ({

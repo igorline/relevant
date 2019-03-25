@@ -11,10 +11,17 @@ class Tag extends Component {
   };
 
   render() {
-    const { community, name, noLink } = this.props;
+    const { community, name, noLink, ...rest } = this.props;
     const link = `/${community}/top/${name}`;
     return (
-      <ULink hu type="text" to={link} onClick={e => e.stopPropagation()} noLink={noLink}>
+      <ULink
+        hu
+        type="text"
+        to={link}
+        onClick={e => e.stopPropagation()}
+        noLink={noLink}
+        {...rest}
+      >
         <InlineText>
           {'#'}
           {this.props.name}{' '}

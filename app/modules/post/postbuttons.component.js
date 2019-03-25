@@ -4,6 +4,7 @@ import { browserAlerts } from 'app/utils/alert';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
+import get from 'lodash.get';
 import ReactTooltip from 'react-tooltip';
 import ReactGA from 'react-ga';
 
@@ -14,11 +15,12 @@ class PostButtons extends Component {
     post: PropTypes.shape({
       data: PropTypes.object
     }),
-    community: PropTypes.object,
+    // community: PropTypes.object,
     actions: PropTypes.object,
     className: PropTypes.string,
-    earnings: PropTypes.object,
-    color: PropTypes.string
+    // earnings: PropTypes.object,
+    color: PropTypes.string,
+    horizontal: PropTypes.bool
   };
 
   constructor(props) {
@@ -37,7 +39,7 @@ class PostButtons extends Component {
   }
 
   initTooltips = () => {
-    if (!this.props.actions.setTooltipData) return;
+    if (!get(this.props, 'actions.setTooltipData')) return;
     ['vote'].forEach(name => {
       this.props.actions.setTooltipData({
         name,
@@ -124,7 +126,16 @@ class PostButtons extends Component {
   render() {
     // TODO show tooltip here with pending earnigns and other stats
     // eslint-disable-next-line
-    const { post, auth, community, className, earnings, myPostInv, color } = this.props;
+    const {
+      post,
+      auth,
+      // community,
+      className,
+      // earnings,
+      myPostInv,
+      color,
+      horizontal
+    } = this.props;
 
     // let pendingPayouts = 0;
     // if (earnings) {
@@ -160,6 +171,7 @@ class PostButtons extends Component {
           ref={c => (this.investButton = c)}
           onLayout={() => {}}
           align="center"
+          fdirection={horizontal ? 'row' : 'column'}
           style={{ opacity: 1 }} // need this to make animations work on android
         >
           <PostButton
@@ -176,6 +188,9 @@ class PostButtons extends Component {
               c={color || colors.secondaryText}
               fs={2}
               lh={2}
+              minwidth={horizontal ? 5 : null}
+              justify="center"
+              m={horizontal ? '0 1' : null}
               data-place={'right'}
               data-for="mainTooltip"
               data-tip={JSON.stringify({
