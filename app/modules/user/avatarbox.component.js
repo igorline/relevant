@@ -6,9 +6,9 @@ import ULink from 'modules/navigation/ULink.component';
 import Avatar from 'modules/user/UAvatar.component';
 import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
-import { Text, View, SecondaryText, Image } from 'modules/styled/uni';
+import { Text, View, SecondaryText, Image, BodyText } from 'modules/styled/uni';
 
-export const Name = styled(Text)``;
+export const Name = styled(BodyText)``;
 
 export default function UserName(props) {
   const {

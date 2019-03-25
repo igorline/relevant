@@ -61,7 +61,7 @@ class UserPosts extends Component {
         <View shrink={1} key={id} fdirection="column">
           <PostComponent
             {...this.props}
-            post={{ ...parentPost, ...link }}
+            post={parentPost}
             comment={post}
             link={{ ...parentPost, ...link }} // TODO - metapost is a pain
             repost={repost}

@@ -155,6 +155,8 @@ class AuthContainer extends Component {
       title = 'Reset Password';
     }
 
+    if (!visible) return null;
+
     return (
       <Modal visible={visible} close={this.close.bind(this)} title={title}>
         <div>

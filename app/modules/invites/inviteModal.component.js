@@ -207,7 +207,7 @@ class InviteModal extends Component {
 }
 
 InviteModal.propTypes = {
-  inviteList: PropTypes.array,
+  inviteList: PropTypes.object,
   invites: PropTypes.object,
   auth: PropTypes.object,
   community: PropTypes.object,

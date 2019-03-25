@@ -108,8 +108,8 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
         <link rel="apple-touch-icon" href="/img/r-big.png">
         <link rel="android-touch-icon" href="/img/r-big.png">
 
-        ${cssStyleTags}
         ${rnWebStyles}
+        ${cssStyleTags}
         ${styledComponentsTags}
 
         <!-- Facebook Pixel Code -->

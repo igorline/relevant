@@ -33,4 +33,11 @@ export const GlobalStyle = createGlobalStyle`
   a {
     color: ${colors.blue};
   }
+
+  @media screen
+  and (max-device-width: 414px) {
+    html {
+      font-size: 68%;
+    }
+  }
 `;

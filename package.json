@@ -44,6 +44,7 @@
     "babel-plugin-espower": "^2.1.2",
     "babel-plugin-transform-remove-console": "^6.8.5",
     "body-parser": "^1.18.1",
+    "body-scroll-lock": "^2.6.1",
     "bonded-token": "^0.1.0",
     "cheerio": "^0.22.0",
     "cheerio-without-node-native": "^0.20.0",
