@@ -97,6 +97,9 @@ export class Post extends Component {
       actions = { actions }
     } = this.props;
     const { community: currentCommunity } = auth;
+    if (!post) {
+      return null;
+    }
     const { community: postCommunity } = post;
     const community = postCommunity || currentCommunity;
 
