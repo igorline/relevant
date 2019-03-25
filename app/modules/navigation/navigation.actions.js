@@ -7,10 +7,13 @@ import {
   SCROLL,
   SET_WEB_VIEW,
   SHOW_MODAL,
-  HIDE_MODAL
+  HIDE_MODAL,
+  OPEN_WEB_SIDE_NAV,
+  CLOSE_WEB_SIDE_NAV,
+  SET_WIDTH
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
-import { dispatchNavigatorAction } from 'app/utils/nav';
+import { dispatchNavigatorAction, getScreenSize } from 'app/utils/nav';
 import { setCommunity } from 'modules/auth/auth.actions';
 
 let dismissKeyboard;
@@ -138,6 +141,17 @@ export function setView(type, view) {
   };
 }
 
+export function setWidth(width) {
+  const screenSize = getScreenSize(width);
+  return {
+    type: SET_WIDTH,
+    payload: {
+      width,
+      screenSize
+    }
+  };
+}
+
 export function setWebView(type, params) {
   return {
     type: SET_WEB_VIEW,
@@ -165,6 +179,18 @@ export function reloadTab(key) {
 export function reloadAllTabs() {
   return {
     type: RELOAD_ALL_TABS
+  };
+}
+
+export function openWebSideNav() {
+  return {
+    type: OPEN_WEB_SIDE_NAV
+  };
+}
+
+export function closeWebSideNav() {
+  return {
+    type: CLOSE_WEB_SIDE_NAV
   };
 }
 

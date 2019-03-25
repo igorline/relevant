@@ -49,20 +49,26 @@ export default async function handleRender(req, res) {
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
   store.dispatch(setCommunity(store.getState().auth.community));
+  const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {
     await handleRouteData({ req, store });
     const { app, rnWebStyles } = renderApp({ url: req.url, store });
 
-    const html = renderFullPage({ app, rnWebStyles, initialState: store.getState() });
+    const html = renderFullPage({
+      app,
+      fullUrl,
+      rnWebStyles,
+      initialState: store.getState()
+    });
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage('', store.getState()));
+    res.send(renderFullPage({ initialState: store.getState(), fullUrl }));
   }
 }
 
-export function renderFullPage({ app, rnWebStyles, initialState }) {
+export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
   let cssStyleTags = '';
   let styledComponentsTags = '';
 
@@ -95,6 +101,12 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
         ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
+
+        <meta name="apple-itunes-app" content="app-id=1173025051 app-argument=${fullUrl}">
+
+        <meta name="google-play-app" content="app-id=com.relevantnative">
+        <link rel="apple-touch-icon" href="/img/r-big.png">
+        <link rel="android-touch-icon" href="/img/r-big.png">
 
         ${cssStyleTags}
         ${rnWebStyles}

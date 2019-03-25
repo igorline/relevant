@@ -13,8 +13,8 @@ import ULink from 'modules/navigation/ULink.component';
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
 
 const TwitterButton = () => (
-  <ULink to="/auth/twitter" external mr="auto" mt={3}>
-    <ViewButton bg={colors.twitterBlue} m={0} c={colors.white} fdirection="row">
+  <ULink to="/auth/twitter" external mr="auto" mt={3} c={colors.white}>
+    <ViewButton bg={colors.twitterBlue} m={0} fdirection="row">
       <Image source={twitterIcon} w={2} h={2} mr={2} />
       <LinkFont c={colors.white}>Connect Twitter</LinkFont>
     </ViewButton>

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,9 +9,10 @@ import * as postActions from 'modules/post/post.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as investActions from 'modules/post/invest.actions';
-import PostImage from 'modules/post/postinfo.mobile.component';
+import PostInfo from 'modules/post/postinfo.mobile.component';
 import { getTitle } from 'app/utils/post';
 import { routing } from 'app/utils';
+import { View } from 'modules/styled/uni';
 import Commentary from './commentary.component';
 
 class Post extends PureComponent {
@@ -83,19 +84,21 @@ class Post extends PureComponent {
     const postUrl = routing.getPostUrl(community, post);
 
     const postEl = isLinkPost ? (
-      <PostImage
-        key={link._id}
-        auth={auth}
-        actions={actions}
-        post={post}
-        link={link}
-        title={title}
-        postUrl={postUrl}
-        myPostInv={myPostInv}
-        singlePost={singlePost}
-        preview={preview}
-        noLink={noLink}
-      />
+      <View m={preview ? '4 0 0 0' : 0}>
+        <PostInfo
+          key={link._id}
+          auth={auth}
+          actions={actions}
+          post={post}
+          link={link}
+          title={title}
+          postUrl={postUrl}
+          myPostInv={myPostInv}
+          singlePost={singlePost}
+          preview={preview}
+          noLink={noLink}
+        />
+      </View>
     ) : (
       <Commentary {...this.props} commentary={[post]} />
     );
@@ -104,7 +107,7 @@ class Post extends PureComponent {
       <View style={{ overflow: 'hidden' }}>
         <View>
           {postEl}
-          {commentaryEl}
+          {commentaryEl || (preview && isLinkPost ? <View mt={2} /> : null)}
         </View>
         {!singlePost && !hideDivider ? separator : null}
       </View>

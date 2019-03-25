@@ -10,6 +10,8 @@ import debug from 'debug';
 import configureStore from 'core/web/configureStore';
 import routes from 'modules/_app/web/routes';
 import { loadableReady } from '@loadable/component';
+// import SmartBanner from 'react-smartbanner';
+// import './node_modules/react-smartbanner/dist/main.css';
 
 const clientDebug = debug('app:client');
 const rootElement = document.getElementById('app');
@@ -49,3 +51,11 @@ if (module.hot) {
     renderApp(newRoutes);
   });
 }
+
+// render(<SmartBanner
+//   daysHidden={2}
+//   daysReminder={3}
+//   title={'Relevant Communities'}
+//   author={'Relevant Protocols'}
+//   position={'bottom'}
+// />, document.body);
