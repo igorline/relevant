@@ -1,10 +1,11 @@
 import { css } from 'styled-components';
 import { lineColor } from './colors';
 import sizing from './sizing';
+// import { smallScreenWidth } from './layout';
 import { responsiveHandler } from './responsive';
 
-export const size = value => {
-  const units = responsiveHandler(value);
+export const size = (value, screen) => {
+  const units = responsiveHandler(value, screen);
 
   if (typeof units === 'number') return sizing(units);
   if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
@@ -26,12 +27,24 @@ export const padding = css`
   ${p => (p.pt ? `padding-top: ${size(p.pt)}` : '')};
 `;
 
+const margincss = (p, screen) => `
+  ${p.m ? `margin: ${size(p.m, screen)}  !important` : ''};
+  ${p.mb ? `margin-bottom: ${size(p.mb, screen)}  !important` : ''};
+  ${p.ml ? `margin-left: ${size(p.ml, screen)}  !important` : ''};
+  ${p.mr ? `margin-right: ${size(p.mr, screen)}  !important` : ''};
+  ${p.mt ? `margin-top: ${size(p.mt, screen)} !important` : ''};
+`;
+
+// const MARGIN_VALS = {
+//   m: 'margin',
+//   mb: 'margin-bottom',
+//   ml: 'margin-left',
+//   mr: 'margin-right',
+//   mt: 'margin-top',
+// };
+
 export const margin = css`
-  ${p => (p.m ? `margin: ${size(p.m)}` : '')};
-  ${p => (p.mb ? `margin-bottom: ${size(p.mb)}` : '')};
-  ${p => (p.ml ? `margin-left: ${size(p.ml)}` : '')};
-  ${p => (p.mr ? `margin-right: ${size(p.mr)}` : '')};
-  ${p => (p.mt ? `margin-top: ${size(p.mt)}` : '')};
+  ${p => margincss(p, 0)}
 `;
 
 export const font = css`

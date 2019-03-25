@@ -3,10 +3,13 @@
 
 import { mediumScreenWidth, smallScreenWidth } from './layout';
 
-export const responsiveHandler = val => {
+export const responsiveHandler = (val, screen) => {
   if (!Array.isArray(val)) {
     return val;
   }
+
+  if (screen && val.length > 0) return val[screen];
+
   let WIDTH;
   try {
     if (process.env.BROWSER === true) {
