@@ -38,6 +38,7 @@ const SideNavScroll = styled.div`
   flex-direction: column;
   display: block;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch;
   flex: 1;
   width: ${layout.sideNavWidth};
 `;

@@ -20,7 +20,7 @@ const WithSideNav = props => {
       ) : null}
       <View fdirection="row" display="flex">
         {smallWidth ? (
-          <Menu isOpen={sideNavIsOpen}>
+          <Menu width={layout.sideNavWidth} isOpen={sideNavIsOpen}>
             <View fdirection="column" display="flex">
               <SideNav {...props} />
             </View>
