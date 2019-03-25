@@ -29,11 +29,18 @@ import { GlobalStyle } from 'app/styles';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
+import SmartBanner from 'react-smartbanner';
+
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-51795165-6');
+
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
   require('app/styles/fonts.css');
   require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
+  require('react-smartbanner/dist/main.css');
 }
 
 class App extends Component {
@@ -100,6 +107,7 @@ class App extends Component {
 
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
+    history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
   }
 
   setWidth = () => {
@@ -125,7 +133,12 @@ class App extends Component {
     }
     if (auth.invitecode) {
       actions.redeemInvite(auth.invitecode);
+      ReactGA.event({
+        category: 'User',
+        action: 'Redeemed Invite'
+      });
     }
+    ReactGA.set({ userId: auth.user._id });
   };
 
   componentDidUpdate(prevProps) {
@@ -222,6 +235,14 @@ class App extends Component {
     return (
       <div>
         <GlobalStyle />
+        <SmartBanner
+          daysHidden={2}
+          daysReminder={0}
+          title={'Relevant Communities'}
+          author={'Relevant Protocols'}
+          position={'top'}
+          // force={'ios'}
+        />
         <TextTooltip
           type={'dark'}
           scrollHide

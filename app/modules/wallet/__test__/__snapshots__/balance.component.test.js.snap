@@ -695,6 +695,8 @@ exports[`Snapshot Balance Web 1`] = `
       Unclaimed REL: 111
       
       
+      
+         Staking Power: 100%
     </div>
   </div>
   <div
@@ -923,7 +925,12 @@ exports[`Snapshot Balance Web 1`] = `
   </div>
   <div
     dir="auto"
-    mt={9}
+    mt={
+      Array [
+        9,
+        4,
+      ]
+    }
     style={
       Object {
         "WebkitFlexBasis": "auto",

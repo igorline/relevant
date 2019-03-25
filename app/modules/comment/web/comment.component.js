@@ -52,7 +52,7 @@ class Comment extends Component {
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
     history: PropTypes.object,
-    navigation: PropTypes.object,
+    screenSize: PropTypes.number,
     additionalNesting: PropTypes.number
   };
 
@@ -148,7 +148,7 @@ class Comment extends Component {
       preview,
       inMainFeed,
       history,
-      navigation,
+      screenSize,
       additionalNesting
     } = this.props;
     if (!comment) return null;
@@ -187,6 +187,7 @@ class Comment extends Component {
     let body = (
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
+          style={{ width: '100%' }}
           options={{
             tagName: {
               mention: () => Link,
@@ -234,10 +235,10 @@ class Comment extends Component {
         <Spacer
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
-          isResponsive={navigation.isResponsive}
-          m={['4 4 0 0', '4 4 0 4']}
+          screenSize={screenSize}
+          m={['4 4 0 0', `${preview ? '4 2 0 0' : '4 2 2 2'}`]}
         >
-          {!hidePostButtons && !navigation.isResponsive ? (
+          {!hidePostButtons && !screenSize ? (
             <View w={layout.POST_BUTTONS_WIDTH}>
               <PostButtons {...this.props} post={comment} />
             </View>
@@ -261,7 +262,7 @@ class Comment extends Component {
               <View mt={2}>
                 <CommentForm
                   edit
-                  p={['auto', 4]}
+                  p={['auto', 2]}
                   comment={comment}
                   text={'Update'}
                   cancel={this.cancel}
@@ -277,11 +278,13 @@ class Comment extends Component {
             {editing || (hidePostButtons && preview) ? null : (
               <View
                 ml={condensedView ? 5 : 0}
+                mb={[4, 2]}
                 fdirection="row"
                 justify="space-between"
-                aligns="center"
+                align="center"
+                wrap={1} // stop-gap to avoid the page dimenisons breaking on deeply nested comments
               >
-                {!hidePostButtons && navigation.isResponsive ? (
+                {!hidePostButtons && screenSize ? (
                   <View w={12}>
                     <PostButtons {...this.props} post={comment} horizontal />
                   </View>
@@ -301,7 +304,7 @@ class Comment extends Component {
                       setActiveComment(comment.id);
                     }}
                   >
-                    <CTALink mr={3} mb={4} c={colors.blue}>
+                    <CTALink mr={3} c={colors.blue}>
                       Reply
                     </CTALink>
                   </ULink>
@@ -332,7 +335,7 @@ class Comment extends Component {
           <CommentForm
             isReply
             nestingLevel={nestingLevel}
-            p={[4, 4]}
+            p={[4, 2]}
             text={'Comment'}
             {...this.props}
             additionalNesting={
@@ -344,7 +347,7 @@ class Comment extends Component {
             autoFocus
           />
         )}
-        {!hideBorder && <Divider m={'0 4'} />}
+        {!hideBorder && <Divider m={['0 4', 0]} screenSize={screenSize} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}

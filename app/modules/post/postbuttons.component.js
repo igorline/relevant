@@ -4,7 +4,9 @@ import { browserAlerts } from 'app/utils/alert';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
+import get from 'lodash.get';
 import ReactTooltip from 'react-tooltip';
+import ReactGA from 'react-ga';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -37,7 +39,7 @@ class PostButtons extends Component {
   }
 
   initTooltips = () => {
-    if (!this.props.actions.setTooltipData) return;
+    if (!get(this.props, 'actions.setTooltipData')) return;
     ['vote'].forEach(name => {
       this.props.actions.setTooltipData({
         name,
@@ -84,9 +86,10 @@ class PostButtons extends Component {
         actions.triggerAnimation('upvote', { parent, amount: upvoteAmount });
       });
 
-      // browserAlerts.alert('Success!');
-      // TODO nalytics
-      // Analytics.logEvent('upvote');
+      ReactGA.event({
+        category: 'User',
+        action: 'Upvoted a Post'
+      });
       return true;
     } catch (err) {
       return browserAlerts.alert(err.message);
@@ -106,6 +109,10 @@ class PostButtons extends Component {
       // TODO animations
       // this.props.actions.triggerAnimation('vote', -1);
       // this.props.actions.triggerAnimation('irrelevant', -1);
+      ReactGA.event({
+        category: 'User',
+        action: 'Downvoted a Post'
+      });
     } catch (err) {
       browserAlerts.alert(err.message);
     }
@@ -181,6 +188,8 @@ class PostButtons extends Component {
               c={color || colors.secondaryText}
               fs={2}
               lh={2}
+              minwidth={horizontal ? 5 : null}
+              justify="center"
               m={horizontal ? '0 1' : null}
               data-place={'right'}
               data-for="mainTooltip"

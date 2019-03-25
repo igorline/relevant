@@ -11,7 +11,8 @@ jest.mock('modules/post/postinfo.mobile.component', () => 'PostMobilePreview');
 const props = {
   earning: earnings.earningPaidout,
   payout: 10,
-  month: 'February'
+  month: 'February',
+  PostPreview: () => 'Preview'
 };
 
 test('Snapshot Paidout Web', () => {
@@ -28,7 +29,8 @@ test('Snapshot Paidout Web', () => {
 const propsPending = {
   earning: earnings.earningPending1,
   payout: 10,
-  month: 'February'
+  month: 'February',
+  PostPreview: () => 'Preview'
 };
 
 test('Snapshot Pending Web', () => {

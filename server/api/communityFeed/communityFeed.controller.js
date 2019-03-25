@@ -38,7 +38,7 @@ exports.get = async (req, res, next) => {
       blocked = [...(req.user.blocked || []), ...(req.user.blockedBy || [])];
     }
 
-    if (tag) query = { ...query, tags: tag };
+    if (tag) query = { ...query, tags: { $regex: `${tag}`, $options: 'i' } };
 
     const feed = await PostData.find(query)
     .sort(sortQuery)

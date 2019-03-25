@@ -20,6 +20,7 @@ const ModalParent = styled.View`
 `;
 
 const ModalScroll = styled.View`
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 100vh;
@@ -98,7 +99,11 @@ export default class ModalComponent extends Component {
                 />
               </Touchable>
             )}
-            {header ? <Header>{this.props.header || this.props.title}</Header> : null}
+            {header ? (
+              <Header pr={5} shrink={1}>
+                {this.props.header || this.props.title}
+              </Header>
+            ) : null}
             {children && <View mt={3}>{children}</View>}
             {footerEl && <View mt={6}>{footerEl}</View>}
           </Modal>
