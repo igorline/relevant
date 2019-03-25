@@ -4,7 +4,7 @@
         "details": [
             {
                 "appID": "D836GTA864.org.reactjs.native.Relevant",
-                "paths": [ "NOT /privacy.html", "*" ]
+                "paths": [ "NOT /info/faq", "NOT /eula.html", "NOT /privacy.html", "*" ]
             },
         ]
     }

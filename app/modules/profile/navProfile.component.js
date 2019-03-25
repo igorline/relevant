@@ -27,7 +27,6 @@ export class NavProfile extends Component {
   static propTypes = {
     user: PropTypes.object,
     earnings: PropTypes.object,
-    mobile: PropTypes.bool,
     actions: PropTypes.object,
     auth: PropTypes.object
   };
@@ -52,7 +51,7 @@ export class NavProfile extends Component {
   }
 
   render() {
-    const { user, earnings, mobile, actions } = this.props;
+    const { user, earnings, actions } = this.props;
     if (!user) return null;
 
     // TODO optimize this so its not on every render?
@@ -62,12 +61,11 @@ export class NavProfile extends Component {
       pendingPayouts += computeUserPayout(earning);
     });
 
-    const p = mobile ? 2 : 4;
     const hideGetTokens = user.twitterId && user.confirmed;
 
     return (
       <View bb flex={1}>
-        <View p={p} pb={p + 1}>
+        <View p={[4, 2]} pb={[5, 3]}>
           <View fdirection={'row'} justify="space-between" align="center">
             <Header>{user.name}</Header>
             <ULink hu to="/user/wallet" onPress={() => actions.goToTab('wallet')}>
@@ -75,7 +73,7 @@ export class NavProfile extends Component {
             </ULink>
           </View>
 
-          <View fdirection={'row'} align={'center'} mt={4}>
+          <View fdirection={'row'} align={'center'} mt={[4, 2]}>
             <UAvatar
               user={user}
               size={8}

@@ -127,8 +127,20 @@ class Profile extends Component {
     if (view === 0) {
       const post = posts.posts[rowData];
       if (!post) return null;
-      const link = posts.links[post.metaPost];
-      return <Post {...this.props} post={post} commentary={[post]} link={link} />;
+      let link = posts.links[post.metaPost];
+
+      let parentPost;
+      const parentId = post.parentPost;
+      if (parentId) {
+        parentPost = this.props.posts.posts[parentId];
+      }
+      if (!link && parentPost) {
+        link = this.props.posts.links[parentPost.metaPost];
+      }
+
+      return (
+        <Post {...this.props} post={parentPost || link} commentary={[post]} link={link} />
+      );
     }
     if (view === 1) {
       const investment = investments.investments[rowData];

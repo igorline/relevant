@@ -14,7 +14,7 @@ import get from 'lodash/get';
 import moment from 'moment';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
-import PostPreview from 'modules/post/web/post.component';
+import PostPreview from 'modules/post/postPreview.container';
 
 let drizzle;
 
@@ -26,7 +26,8 @@ class WalletContainer extends Component {
     auth: PropTypes.object,
     contract: PropTypes.object,
     actions: PropTypes.object,
-    earnings: PropTypes.object
+    earnings: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   static contextTypes = {
@@ -77,6 +78,7 @@ class WalletContainer extends Component {
   );
 
   renderRow = ({ item }) => {
+    const { screenSize } = this.props;
     if (!item) return null;
     const earning = item;
 
@@ -94,6 +96,7 @@ class WalletContainer extends Component {
         payout={payout}
         month={showMonth ? month : null}
         PostPreview={PostPreview}
+        screenSize={screenSize}
       />
     );
   };
@@ -136,6 +139,7 @@ function mapStateToProps(state) {
     accounts: state.accounts,
     contracts: state.contracts,
     accountBalances: state.accountBalances,
+    screenSize: state.navigation.screenSize,
     drizzle: {
       transactions: state.transactions,
       web3: state.web3,

@@ -277,10 +277,6 @@ select.shadowButton, button.shadowButton {
 @media screen
   and (max-width: 714px) {
 
-  body, html {
-    overflow-x: hidden;
-  }
-
   .mobileSplash {
     position: fixed;
     top:0;

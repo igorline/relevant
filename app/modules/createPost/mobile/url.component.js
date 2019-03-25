@@ -7,7 +7,8 @@ import {
   TouchableHighlight,
   Platform,
   ScrollView,
-  InteractionManager
+  InteractionManager,
+  ActionSheetIOS
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {
@@ -20,12 +21,9 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
-// import * as authActions from 'modules/auth/auth.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
-// import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import * as userActions from 'modules/user/user.actions';
-// import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 
 import * as utils from 'app/utils';
@@ -33,8 +31,17 @@ import UserName from 'modules/user/avatarbox.component';
 import PostBody from 'modules/post/mobile/postBody.component';
 import PostInfo from 'modules/post/mobile/postInfo.component';
 import TextBody from 'modules/text/mobile/textBody.component';
+import RNBottomSheet from 'react-native-bottom-sheet';
+
 import UserSearchComponent from './userSearch.component';
 import UrlPreview from './urlPreview.component';
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 let styles;
 const URL_REGEX = new RegExp(
@@ -50,6 +57,7 @@ class UrlComponent extends Component {
     share: PropTypes.bool,
     actions: PropTypes.object,
     repost: PropTypes.object,
+    edit: PropTypes.bool,
     users: PropTypes.object,
     user: PropTypes.object,
     tags: PropTypes.array
@@ -83,6 +91,29 @@ class UrlComponent extends Component {
   componentWillUnmount() {
     this.input.blur();
   }
+
+  removeUrlPreview = () => {
+    this.props.actions.setCreatePostState({ urlPreview: null, postUrl: null });
+  };
+
+  previewMenu = () => {
+    if (this.props.edit || this.props.repost) return;
+    ActionSheet.showActionSheetWithOptions(
+      {
+        options: ['Remove Url', 'Cancel'],
+        cancelButtonIndex: 1,
+        destructiveButtonIndex: 0
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 0:
+            this.removeUrlPreview();
+            break;
+          default:
+        }
+      }
+    );
+  };
 
   initTooltips(name) {
     this.props.actions.setTooltipData({
@@ -353,7 +384,7 @@ class UrlComponent extends Component {
         {repostBody}
         {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
           <View style={{ marginVertical: 8 }}>
-            <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
+            <UrlPreview {...this.props} size={'small'} urlMenu={this.previewMenu} />
           </View>
         ) : null}
       </ScrollView>

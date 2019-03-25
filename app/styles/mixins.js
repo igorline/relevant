@@ -1,14 +1,17 @@
 import { css } from 'styled-components';
 import { lineColor } from './colors';
 import sizing from './sizing';
+import { responsiveHandler } from './responsive';
 
-function size(units) {
+export const size = value => {
+  const units = responsiveHandler(value);
+
   if (typeof units === 'number') return sizing(units);
   if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
   const uArray = units.split(' ');
-  if (uArray.lenght === 1) sizing(Number(units));
+  if (uArray.length === 1) sizing(Number(units));
   return uArray.map(u => sizing(Number(u))).join(' ');
-}
+};
 
 export const color = css`
   ${p => (p.c ? `color: ${p.c};` : '')};
@@ -63,10 +66,13 @@ export const inheritcolor = css`
 
 export const width = css`
   ${p => (p.w ? `width: ${size(p.w)};` : '')};
+  ${p => (p.minwidth ? `min-width: ${size(p.minwidth)};` : '')};
 `;
 
 export const height = css`
   ${p => (p.h ? `height: ${size(p.h)};` : '')};
+  ${p => (p.minHeight ? `min-height: ${size(p.minHeight)};` : '')};
+  ${p => (p.maxheight ? `max-height: ${size(p.maxheight)};` : '')};
 `;
 
 export const background = css`
@@ -93,15 +99,15 @@ export const border = css`
 
 export const flex = css`
   position: relative;
-  ${p => (p.flex ? `flex: ${p.flex}` : '')};
-  ${p => (p.fdirection ? `flex-direction: ${p.fdirection}` : '')};
-  ${p => (p.justify ? `justify-content: ${p.justify}` : '')};
-  ${p => (p.align ? `align-items: ${p.align}` : '')};
-  ${p => (p.shrink ? `flex-shrink: ${p.grow}` : '')};
-  ${p => (p.grow ? `flex-grow: ${p.grow}` : '')};
+  ${p => (p.flex ? `flex: ${responsiveHandler(p.flex)}` : '')};
+  ${p => (p.fdirection ? `flex-direction: ${responsiveHandler(p.fdirection)}` : '')};
+  ${p => (p.justify ? `justify-content: ${responsiveHandler(p.justify)}` : '')};
+  ${p => (p.align ? `align-items: ${responsiveHandler(p.align)}` : '')};
+  ${p => (p.shrink ? `flex-shrink: ${responsiveHandler(p.shrink)}` : '')};
+  ${p => (p.grow ? `flex-grow: ${responsiveHandler(p.grow)}` : '')};
   ${p => (p.wrap ? 'flex-wrap: wrap' : '')};
   ${p => (p.inline ? '' : 'display: flex')};
-  ${p => (p.alignself ? `align-self: ${p.alignself}` : '')};
+  ${p => (p.alignself ? `align-self: ${responsiveHandler(p.alignself)}` : '')};
 `;
 
 export const link = css`
