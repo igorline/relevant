@@ -199,4 +199,5 @@ export const Spacer = styled(View)`
     return '';
   }}
   flex-grow: 1;
+  ${mixins.flex}
 `;
