@@ -158,7 +158,7 @@ class Comment extends Component {
     );
 
     const textBody = (
-      <View flex={1} mt={2} mb={1} bc={'pink'}>
+      <View flex={1} mt={2} mb={1}>
         <TextBody
           {...this.props}
           style={styles.commentaryText}

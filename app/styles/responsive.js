@@ -3,12 +3,10 @@
 
 import { mediumScreenWidth, smallScreenWidth } from './layout';
 
-export const responsiveHandler = (val, screen) => {
+export const responsiveHandler = val => {
   if (!Array.isArray(val)) {
     return val;
   }
-
-  if (screen && val.length > 0) return val[screen];
 
   let WIDTH;
   try {

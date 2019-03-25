@@ -27,24 +27,12 @@ export const padding = css`
   ${p => (p.pt ? `padding-top: ${size(p.pt)}` : '')};
 `;
 
-const margincss = (p, screen) => `
-  ${p.m ? `margin: ${size(p.m, screen)}` : ''};
-  ${p.mb ? `margin-bottom: ${size(p.mb, screen)}` : ''};
-  ${p.ml ? `margin-left: ${size(p.ml, screen)}` : ''};
-  ${p.mr ? `margin-right: ${size(p.mr, screen)}` : ''};
-  ${p.mt ? `margin-top: ${size(p.mt, screen)}` : ''};
-`;
-
-// const MARGIN_VALS = {
-//   m: 'margin',
-//   mb: 'margin-bottom',
-//   ml: 'margin-left',
-//   mr: 'margin-right',
-//   mt: 'margin-top',
-// };
-
 export const margin = css`
-  ${p => margincss(p, 0)}
+  ${p => (p.m ? `margin: ${size(p.m)}` : '')};
+  ${p => (p.mb ? `margin-bottom: ${size(p.mb)}` : '')};
+  ${p => (p.ml ? `margin-left: ${size(p.ml)}` : '')};
+  ${p => (p.mr ? `margin-right: ${size(p.mr)}` : '')};
+  ${p => (p.mt ? `margin-top: ${size(p.mt)}` : '')};
 `;
 
 export const font = css`
