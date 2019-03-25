@@ -91,7 +91,7 @@ class PostBody extends Component {
         <View
           style={[
             styles.postBody,
-            preview ? { marginTop: 10, marginBottom: 0 } : null,
+            preview ? { marginTop: 10, marginBottom: 16 } : null,
             avatarText ? { marginLeft: 6 * 8 } : null
           ]}
         >

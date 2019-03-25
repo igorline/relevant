@@ -9,7 +9,6 @@ import { authProps } from 'app/utils/propValidation';
 import Profile from 'modules/profile/profile.component';
 import UserPosts from 'modules/profile/web/userPosts.component';
 import { Divider } from 'modules/styled/uni';
-import { sizing } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 
 const pageSize = 10;
@@ -19,7 +18,8 @@ class ProfileContainer extends Component {
     actions: PropTypes.object.isRequired,
     match: PropTypes.object,
     usersState: PropTypes.object.isRequired,
-    auth: authProps
+    auth: authProps,
+    screenSize: PropTypes.number
   };
 
   state = {
@@ -61,10 +61,11 @@ class ProfileContainer extends Component {
   }
 
   render() {
+    const { screenSize } = this.props;
     return (
-      <div style={{ flex: 1 }}>
+      <div>
         <Profile key={this.state.user._id + 'profile'} {...this.props} {...this.state} />
-        <Divider m={sizing(4)} />
+        <Divider m={[4, 0]} screenSize={screenSize} />
         <UserPosts
           key={this.state.user._id}
           {...this.props}
@@ -84,7 +85,8 @@ const mapStateToProps = state => ({
   posts: state.posts,
   investments: state.investments,
   myPostInv: state.investments.myPostInv,
-  community: state.community
+  community: state.community,
+  screenSize: state.navigation.screenSize
 });
 
 const mapDispatchToProps = dispatch =>
