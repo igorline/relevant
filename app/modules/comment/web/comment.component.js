@@ -6,7 +6,8 @@ import {
   CommentText,
   SecondaryText,
   Spacer,
-  Touchable
+  Touchable,
+  Image
 } from 'modules/styled/uni';
 import get from 'lodash.get';
 import PropTypes from 'prop-types';
@@ -236,98 +237,118 @@ class Comment extends Component {
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
           screenSize={screenSize}
-          m={['4 4 0 0', `${preview ? '4 2 0 0' : '4 2 2 2'}`]}
+          m={['0 4 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
+          fdirection="column"
         >
-          {!hidePostButtons && !screenSize ? (
-            <View w={layout.POST_BUTTONS_WIDTH}>
-              <PostButtons {...this.props} post={comment} />
-            </View>
-          ) : null}
-          <View fdirection="column" grow={1} shrink={1}>
-            <View fdirection={'row'} justify={'space-between'} zIndex={2}>
-              {!hideAvatar && (
-                <AvatarBox
-                  twitter={comment.twitter}
-                  user={{ ...user, _id: comment.user }}
-                  postTime={comment.createdAt}
-                  showRelevance
-                  condensedView={condensedView}
-                  avatarText={avatarText}
-                  noLink={noLink}
-                />
-              )}
-              {popup}
-            </View>
-            {editing ? (
-              <View mt={2}>
-                <CommentForm
-                  edit
-                  p={['auto', 2]}
-                  comment={comment}
-                  text={'Update'}
-                  cancel={this.cancel}
-                  {...this.props}
-                  nestingLevel={nestingLevel}
-                  additionalNesting={additionalNesting}
-                  autoFocus
-                />
+          {nestingLevel > 0 && !hideBorder && (
+            <Divider
+              className="divider"
+              ml={hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_WIDTH / 3}
+            />
+          )}
+          <View fdirection="row" mt={4}>
+            {!hidePostButtons && !screenSize ? (
+              <View w={layout.POST_BUTTONS_WIDTH}>
+                <PostButtons {...this.props} post={comment} />
               </View>
-            ) : (
-              body
-            )}
-            {editing || (hidePostButtons && preview) ? null : (
-              <View
-                ml={condensedView ? 5 : 0}
-                mb={[4, 2]}
-                fdirection="row"
-                justify="space-between"
-                align="center"
-                wrap={1} // stop-gap to avoid the page dimenisons breaking on deeply nested comments
-              >
-                {!hidePostButtons && screenSize ? (
-                  <View w={12}>
-                    <PostButtons {...this.props} post={comment} horizontal />
-                  </View>
-                ) : null}
-                <View fdirection="row">
-                  <ULink
-                    hu
-                    to="#"
-                    inline
-                    authrequired={true}
-                    onClick={e => {
-                      e.preventDefault();
-                      setActiveComment(comment.id);
-                    }}
-                    onPress={e => {
-                      e.preventDefault();
-                      setActiveComment(comment.id);
-                    }}
-                  >
-                    <CTALink mr={3} c={colors.blue}>
-                      Reply
-                    </CTALink>
-                  </ULink>
-                  <ULink
-                    hu
-                    to="#"
-                    authrequired={true}
-                    inline
-                    onClick={e => {
-                      e.preventDefault();
-                      this.copyToClipboard();
-                    }}
-                    onPress={e => {
-                      e.preventDefault();
-                      this.copyToClipboard();
-                    }}
-                  >
-                    <CTALink c={colors.blue}>Share</CTALink>
-                  </ULink>
-                  {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
+            ) : null}
+            {screenSize > 0 && nestingLevel > 0 ? (
+              <Image
+                h={3}
+                w={2}
+                ml={-3}
+                mr={1}
+                resizeMode={'contain'}
+                source={require('app/public/img/reply.png')}
+              />
+            ) : null}
+            <View fdirection="column" grow={1} shrink={1}>
+              <View fdirection={'row'} justify={'space-between'} zIndex={2}>
+                {!hideAvatar && (
+                  <AvatarBox
+                    twitter={comment.twitter}
+                    user={{ ...user, _id: comment.user }}
+                    postTime={comment.createdAt}
+                    showRelevance
+                    condensedView={condensedView}
+                    avatarText={avatarText}
+                    noLink={noLink}
+                  />
+                )}
+                {popup}
+              </View>
+              {editing ? (
+                <View mt={2}>
+                  <CommentForm
+                    edit
+                    p={['auto', 2]}
+                    comment={comment}
+                    text={'Update'}
+                    cancel={this.cancel}
+                    {...this.props}
+                    nestingLevel={nestingLevel}
+                    additionalNesting={additionalNesting}
+                    autoFocus
+                  />
                 </View>
-              </View>
-            )}
+              ) : (
+                body
+              )}
+              {editing || (hidePostButtons && preview) ? null : (
+                <View
+                  ml={condensedView ? 5 : 0}
+                  mb={[4, 2]}
+                  fdirection="row"
+                  justify="space-between"
+                  align="center"
+                  wrap={1}
+                  // stop-gap to avoid the page dimenisons breaking on deeply nested comments
+                >
+                  {!hidePostButtons && screenSize ? (
+                    <View w={12}>
+                      <PostButtons {...this.props} post={comment} horizontal />
+                    </View>
+                  ) : null}
+                  <View fdirection="row">
+                    <ULink
+                      hu
+                      to="#"
+                      inline
+                      authrequired={true}
+                      onClick={e => {
+                        e.preventDefault();
+                        setActiveComment(comment.id);
+                      }}
+                      onPress={e => {
+                        e.preventDefault();
+                        setActiveComment(comment.id);
+                      }}
+                    >
+                      <CTALink mr={3} c={colors.blue}>
+                        Reply
+                      </CTALink>
+                    </ULink>
+                    <ULink
+                      hu
+                      to="#"
+                      authrequired={true}
+                      inline
+                      onClick={e => {
+                        e.preventDefault();
+                        this.copyToClipboard();
+                      }}
+                      onPress={e => {
+                        e.preventDefault();
+                        this.copyToClipboard();
+                      }}
+                    >
+                      <CTALink c={colors.blue}>Share</CTALink>
+                    </ULink>
+                    {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
+                  </View>
+                </View>
+              )}
+            </View>
           </View>
         </Spacer>
 
@@ -347,7 +368,6 @@ class Comment extends Component {
             autoFocus
           />
         )}
-        {!hideBorder && <Divider m={['0 4', 0]} screenSize={screenSize} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}
