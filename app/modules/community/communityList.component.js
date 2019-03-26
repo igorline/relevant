@@ -4,16 +4,22 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { joinCommunity } from 'community/community.actions';
-import styled from 'styled-components';
+import { css } from 'styled-components';
 
 import ULink from 'modules/navigation/ULink.component';
-import { Image, BodyText, Title, LinkFont, Header, Divider } from 'modules/styled/uni';
-
-import { View } from 'modules/styled/web';
+import {
+  View,
+  Image,
+  BodyText,
+  Title,
+  LinkFont,
+  Header,
+  Divider
+} from 'modules/styled/uni';
 
 import { colors } from 'app/styles';
 
-const CommunityItem = styled(View)`
+const linkStyles = css`
   :hover {
     background: ${colors.secondaryBG};
   }
@@ -26,7 +32,6 @@ class CommunityAdminList extends Component {
   };
 
   handleJoinCommunity = (e, community) => {
-    e.preventDefault();
     this.props.actions.joinCommunity(community);
   };
 
@@ -40,48 +45,40 @@ class CommunityAdminList extends Component {
         {Object.values(communities).map(c => {
           const communityURl = `/${c.slug}/new`;
           return (
-            <CommunityItem fdirection="row" align="flex-start" p={'2 4 2 4'} key={c._id}>
-              <ULink key={c.slug} to={communityURl}>
+            <ULink to={communityURl} key={c._id} styles={linkStyles}>
+              <View fdirection="row" align="flex-start" p={'2 4 2 4'}>
                 <Image source={c.image} h={8} w={8} mr={1} bg={colors.secondaryBG} />
-              </ULink>
-              <View fdirection="column" justify="space-between" shrink={1}>
-                <View fdirection="row">
-                  <BodyText inline={1}>
-                    <ULink key={c.slug} to={communityURl} inline={1}>
-                      <Title inline={1}>{c.name}</Title>
-                    </ULink>
-                    <ULink
-                      to="#"
-                      inline={1}
-                      ml={0.5}
-                      onPress={e => this.handleJoinCommunity(e, c)}
-                      onClick={e => this.handleJoinCommunity(e, c)}
-                      authrequired={true}
-                      c={colors.blue}
-                      hc={colors.black}
-                    >
-                      <LinkFont inline={1} c={colors.blue}>
+                <View fdirection="column" justify="space-between" shrink={1}>
+                  <View fdirection="row">
+                    <BodyText inline={1}>
+                      <Title inline={1}>{c.name} </Title>
+                      <LinkFont
+                        inline={1}
+                        c={colors.blue}
+                        onPress={e => this.handleJoinCommunity(e, c)}
+                        onClick={e => this.handleJoinCommunity(e, c)}
+                      >
                         Join Community
                       </LinkFont>
-                    </ULink>
+                    </BodyText>
+                  </View>
+                  <BodyText inline={1} c={colors.black} mt={0.5}>
+                    {c.description}
                   </BodyText>
+                  <LinkFont inline={1} c={colors.black} mt={0.5}>
+                    {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
+                  </LinkFont>
                 </View>
-                <BodyText inline={1} c={colors.black}>
-                  {c.description}
-                </BodyText>
-                <LinkFont inline={1} c={colors.black}>
-                  {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
-                </LinkFont>
               </View>
-            </CommunityItem>
+            </ULink>
           );
         })}
         <Divider m={'4 0'} />
         <Header m={'0 4'}>Start a Community on Relevant</Header>
         <BodyText m={'4 4 12 4'}>
           <ULink external to="mailto:info@relevant.community">
-            Get in touch
-          </ULink>{' '}
+            Get in touch{' '}
+          </ULink>
           if you'd like to start a community
         </BodyText>
       </View>
