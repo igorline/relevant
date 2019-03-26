@@ -72,9 +72,10 @@ const SideNavFooter = ({ actions }) => (
       </ULink>
     </BodyText>
     <View flex={1} fdirection={'row'} mt={2} mb={2}>
-      {icons.map(icon => (
-        <FooterIcon actions={actions} key={icon.href} {...icon} />
-      ))}
+      {icons.map(icon => {
+        if (!icon.source || typeof icon.source !== 'string') return null;
+        return <FooterIcon actions={actions} key={icon.href} {...icon} />;
+      })}
     </View>
   </View>
 );
