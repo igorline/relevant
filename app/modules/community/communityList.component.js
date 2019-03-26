@@ -37,21 +37,17 @@ class CommunityAdminList extends Component {
             <ULink key={c.slug} to={communityURl} mt={4}>
               <View fdirection="row" align="flex-start">
                 <Image source={c.image} h={8} w={8} mr={1} bg={colors.secondaryBG} />
-                <View fdirection="column" shrink={1}>
+                <View fdirection="column" h={8} justify="space-between" shrink={1}>
                   <Title inline={1}>
                     {c.name}
                     <CTALink inline={1} ml={0.5} onClick={this.handleJoinCommunity}>
                       Join Community
                     </CTALink>
                   </Title>
-                  <BodyText inline={1} c={colors.black} mt={1} numberOfLines={1}>
-                    {c.description}
-                    {c.description}
-                    {c.description}
-                    {c.description}
+                  <BodyText inline={1} c={colors.black} numberOfLines={1}>
                     {c.description}
                   </BodyText>
-                  <LinkFont inline={1} c={colors.black} mt={1}>
+                  <LinkFont inline={1} c={colors.black}>
                     {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
                   </LinkFont>
                 </View>
