@@ -68,9 +68,16 @@ class CommunityActive extends Component {
             ))}
           </View>
           <SecondaryText mt={[3, 2]}>{community.description}</SecondaryText>
-          <CommunityLink mt={3} mb={2} c={colors.black}>
-            {`${totalMembers} Members`}
-          </CommunityLink>
+          <View mt={3} mb={2} fdirection="row" justify="space-between">
+            <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
+            <ULink
+              to="#"
+              onPress={() => this.props.actions.showModal('communityMembers')}
+              onClick={() => this.props.actions.showModal('communityMembers')}
+            >
+              <CommunityLink c={colors.blue}>See All</CommunityLink>
+            </ULink>
+          </View>
           <View fdirection={'row'} wrap>
             {limitedMembers.map(member => (
               <UAvatar
