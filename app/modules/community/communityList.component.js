@@ -28,11 +28,15 @@ const linkStyles = css`
 class CommunityAdminList extends Component {
   static propTypes = {
     community: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    auth: PropTypes.object
   };
 
   handleJoinCommunity = (e, community) => {
-    this.props.actions.joinCommunity(community);
+    const { auth } = this.props;
+    if (auth.isAuthenticated) {
+      this.props.actions.joinCommunity(community);
+    }
   };
 
   render() {
@@ -88,7 +92,8 @@ class CommunityAdminList extends Component {
 
 const mapStateToProps = state => ({
   routing: state.routing,
-  community: state.community
+  community: state.community,
+  auth: state.auth
 });
 
 const mapDispatchToProps = dispatch => ({
