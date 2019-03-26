@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { joinCommunity } from 'community/community.actions';
+
 import ULink from 'modules/navigation/ULink.component';
 import {
   View,
   Image,
   BodyText,
   Title,
-  CTALink,
   LinkFont,
   Header,
   Divider
@@ -17,11 +19,13 @@ import { colors } from 'app/styles';
 
 class CommunityAdminList extends Component {
   static propTypes = {
-    community: PropTypes.object
+    community: PropTypes.object,
+    actions: PropTypes.object
   };
 
-  handleJoinCommunity = e => {
+  handleJoinCommunity = (e, community) => {
     e.preventDefault();
+    this.props.actions.joinCommunity(community);
   };
 
   render() {
@@ -34,25 +38,40 @@ class CommunityAdminList extends Component {
         {Object.values(communities).map(c => {
           const communityURl = `/${c.slug}/new`;
           return (
-            <ULink key={c.slug} to={communityURl} mt={4}>
-              <View fdirection="row" align="flex-start">
+            <View fdirection="row" align="flex-start" mt={4} key={c._id}>
+              <ULink key={c.slug} to={communityURl}>
                 <Image source={c.image} h={8} w={8} mr={1} bg={colors.secondaryBG} />
-                <View fdirection="column" h={8} justify="space-between" shrink={1}>
-                  <Title inline={1}>
-                    {c.name}
-                    <CTALink inline={1} ml={0.5} onClick={this.handleJoinCommunity}>
-                      Join Community
-                    </CTALink>
-                  </Title>
-                  <BodyText inline={1} c={colors.black} numberOfLines={1}>
-                    {c.description}
+              </ULink>
+              <View fdirection="column" h={8} justify="space-between" shrink={1}>
+                <View fdirection="row">
+                  <BodyText inline={1}>
+                    <ULink key={c.slug} to={communityURl} inline={1}>
+                      <Title inline={1}>{c.name}</Title>
+                    </ULink>
+                    <ULink
+                      to="#"
+                      inline={1}
+                      ml={0.5}
+                      onPress={e => this.handleJoinCommunity(e, c)}
+                      onClick={e => this.handleJoinCommunity(e, c)}
+                      authrequired={true}
+                      c={colors.blue}
+                      hc={colors.black}
+                    >
+                      <LinkFont inline={1} c={colors.blue}>
+                        Join Community
+                      </LinkFont>
+                    </ULink>
                   </BodyText>
-                  <LinkFont inline={1} c={colors.black}>
-                    {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
-                  </LinkFont>
                 </View>
+                <BodyText inline={1} c={colors.black} numberOfLines={1}>
+                  {c.description}
+                </BodyText>
+                <LinkFont inline={1} c={colors.black}>
+                  {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
+                </LinkFont>
               </View>
-            </ULink>
+            </View>
           );
         })}
         <Divider m={'4 0'} />
@@ -73,7 +92,14 @@ const mapStateToProps = state => ({
   community: state.community
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      joinCommunity
+    },
+    dispatch
+  )
+});
 
 export default withRouter(
   connect(
