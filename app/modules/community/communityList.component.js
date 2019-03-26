@@ -3,11 +3,25 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import ULink from 'modules/navigation/ULink.component';
-import { View, Image, BodyText, Title } from 'modules/styled/uni';
+import {
+  View,
+  Image,
+  BodyText,
+  Title,
+  CTALink,
+  LinkFont,
+  Header,
+  Divider
+} from 'modules/styled/uni';
+import { colors } from 'app/styles';
 
 class CommunityAdminList extends Component {
   static propTypes = {
     community: PropTypes.object
+  };
+
+  handleJoinCommunity = e => {
+    e.preventDefault();
   };
 
   render() {
@@ -15,16 +29,44 @@ class CommunityAdminList extends Component {
       community: { communities }
     } = this.props;
     return (
-      <View m={4} fdirection="column" wrap>
-        {Object.values(communities).map(c => (
-          <ULink key={c.slug} to={`/${c.slug}/new`} mt={2}>
-            <View mt={2} fdirection="row" align="center">
-              <Image source={c.image} h={4} w={4} />
-              <Title ml={1}>{c.name} </Title>
-            </View>
-            <BodyText inline={1}>{c.description}</BodyText>
-          </ULink>
-        ))}
+      <View m={'0 4'} fdirection="column">
+        <Header>Communities on Relevant</Header>
+        {Object.values(communities).map(c => {
+          const communityURl = `/${c.slug}/new`;
+          return (
+            <ULink key={c.slug} to={communityURl} mt={4}>
+              <View fdirection="row" align="flex-start">
+                <Image source={c.image} h={8} w={8} mr={1} bg={colors.secondaryBG} />
+                <View fdirection="column" shrink={1}>
+                  <Title inline={1}>
+                    {c.name}
+                    <CTALink inline={1} ml={0.5} onClick={this.handleJoinCommunity}>
+                      Join Community
+                    </CTALink>
+                  </Title>
+                  <BodyText inline={1} c={colors.black} mt={1} numberOfLines={1}>
+                    {c.description}
+                    {c.description}
+                    {c.description}
+                    {c.description}
+                    {c.description}
+                  </BodyText>
+                  <LinkFont inline={1} c={colors.black} mt={1}>
+                    {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
+                  </LinkFont>
+                </View>
+              </View>
+            </ULink>
+          );
+        })}
+        <Divider m={'4 0'} />
+        <Header>Start a Community on Relevant</Header>
+        <BodyText m={'4 0 12 0'}>
+          <ULink external to="mailto:info@relevant.community">
+            Get in touch
+          </ULink>{' '}
+          if you'd like to start a community
+        </BodyText>
       </View>
     );
   }
