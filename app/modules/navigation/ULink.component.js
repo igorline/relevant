@@ -190,7 +190,7 @@ export class ULinkComponent extends Component {
 }
 
 ULinkComponent.propTypes = {
-  inline: PropTypes.bool,
+  inline: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   hu: PropTypes.bool,
   type: PropTypes.string,
   navLink: PropTypes.bool,
