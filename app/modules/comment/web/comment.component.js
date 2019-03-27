@@ -281,7 +281,7 @@ class Comment extends Component {
                 <View mt={2}>
                   <CommentForm
                     edit
-                    p={['auto', 2]}
+                    p={[0, 2]}
                     comment={comment}
                     text={'Update'}
                     cancel={this.cancel}
