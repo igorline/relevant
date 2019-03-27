@@ -11,7 +11,7 @@ class TabBarContainer extends Component {
     navigation: PropTypes.object,
     actions: PropTypes.object,
     notif: PropTypes.object,
-    reducerNav: PropTypes.object,
+    reducerNav: PropTypes.object
   };
 
   constructor(props, context) {
@@ -62,9 +62,7 @@ class TabBarContainer extends Component {
   }
 
   render() {
-    return (
-      <TabBar {...this.props} changeTab={this.changeTab} />
-    );
+    return <TabBar {...this.props} changeTab={this.changeTab} />;
   }
 }
 

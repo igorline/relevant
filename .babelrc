@@ -27,6 +27,7 @@
     "test": {
       "plugins": [
         ["styled-components"],
+        ["@babel/plugin-transform-runtime"],
         ["module-resolver", {
           "root": ["./app", "./app/modules"],
           "alias": {

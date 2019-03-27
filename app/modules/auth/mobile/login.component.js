@@ -110,9 +110,9 @@ class Login extends Component {
       <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ?
-          StatusBar.currentHeight / 2 + 64 :
-          (IphoneX ? 88 : 64) }
+        keyboardVerticalOffset={
+          Platform.OS === 'android' ? StatusBar.currentHeight / 2 + 64 : IphoneX ? 88 : 64
+        }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
@@ -157,12 +157,10 @@ class Login extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate(
-                {
-                  routeName: 'forgot',
-                  params: { title: 'Forgot Password' },
-                },
-              );
+              this.props.navigation.navigate({
+                routeName: 'forgot',
+                params: { title: 'Forgot Password' }
+              });
             }}
           >
             <Text style={[styles.signInText, styles.active]}>Forgot your password?</Text>

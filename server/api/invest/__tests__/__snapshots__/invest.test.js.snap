@@ -23,6 +23,7 @@ Object {
         "_id": "[SANITIZED]",
         "pagerank": 0,
         "pagerankRaw": 0,
+        "pagerankRawNeg": 0,
         "post": "000000000000000000000003",
         "relevance": 20,
       },

@@ -8,14 +8,14 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const prodConfig = {};
 const isAnalyze = typeof process.env.BUNDLE_ANALYZE !== 'undefined';
 
-Object.keys(devConfig).forEach((key) => {
+Object.keys(devConfig).forEach(key => {
   prodConfig[key] = devConfig[key];
 });
 
 delete prodConfig.devtool;
 
 prodConfig.entry = {
-  app: ['./index.web.js', 'whatwg-fetch'],
+  app: ['./index.web.js', 'whatwg-fetch']
 };
 
 prodConfig.plugins = [
@@ -35,7 +35,7 @@ prodConfig.plugins = [
     }
   }),
   new webpack.NamedModulesPlugin(),
-  new LoadablePlugin(),
+  new LoadablePlugin()
 ];
 
 prodConfig.mode = 'production';
@@ -47,16 +47,16 @@ prodConfig.module.rules = [
       {
         loader: 'file-loader',
         options: {
-          name: '[path][name].[ext]',
-        },
-      },
+          name: '[path][name].[ext]'
+        }
+      }
     ]
   },
   {
     test: /\.css$|\.scss$/,
     use: [
       {
-        loader: MiniCssExtractPlugin.loader,
+        loader: MiniCssExtractPlugin.loader
         // fallback: 'style-loader',
       },
       'css-loader',
@@ -66,18 +66,20 @@ prodConfig.module.rules = [
   },
   {
     test: /\.(js|svg)$/,
-    use: [{
-      loader: 'babel-loader',
-      options: {
-        babelrc: true,
-        // This is a feature of `babel-loader` for Webpack (not Babel itself).
-        // It enables caching results in ./node_modules/.cache/babel-loader/
-        // directory for faster rebuilds.
-        cacheDirectory: true,
-      },
-    }],
+    use: [
+      {
+        loader: 'babel-loader',
+        options: {
+          babelrc: true,
+          // This is a feature of `babel-loader` for Webpack (not Babel itself).
+          // It enables caching results in ./node_modules/.cache/babel-loader/
+          // directory for faster rebuilds.
+          cacheDirectory: true
+        }
+      }
+    ],
     exclude: /node_modules/,
-    include: __dirname,
+    include: __dirname
   }
 ];
 

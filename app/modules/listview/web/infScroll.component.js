@@ -27,7 +27,9 @@ export default class InfScroll extends Component {
       this.attachScrollListener();
       this.data = this.props.data;
     }
-    if (!this.props.data.length < this.data.length) this.pageLoaded = this.props.pageStart;
+    if (!this.props.data.length < this.data.length) {
+      this.pageLoaded = this.props.pageStart;
+    }
   }
 
   componentWillUnmount() {
@@ -77,11 +79,14 @@ export default class InfScroll extends Component {
       const scrollTop =
         scrollEl.pageYOffset !== undefined
           ? scrollEl.pageYOffset
-          : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+          : (document.documentElement || document.body.parentNode || document.body)
+          .scrollTop;
       if (this.props.isReverse) {
         offset = scrollTop;
       } else {
-        offset = this.calculateTopPosition(el) + (el.offsetHeight - scrollTop - window.innerHeight);
+        offset =
+          this.calculateTopPosition(el) +
+          (el.offsetHeight - scrollTop - window.innerHeight);
       }
     } else if (this.props.isReverse) {
       offset = el.parentNode.scrollTop;
@@ -135,7 +140,12 @@ export default class InfScroll extends Component {
     //   return <div>Nothing here</div>;
     // }
 
-    return React.createElement(element, props, children, hasMore && (loader || this.defaultLoader));
+    return React.createElement(
+      element,
+      props,
+      children,
+      hasMore && (loader || this.defaultLoader)
+    );
   }
 }
 
