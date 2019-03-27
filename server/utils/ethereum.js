@@ -84,7 +84,7 @@ export async function sendTx(params) {
     const txParams = {
       jsonrpc: '2.0',
       nonce: web3.utils.numberToHex(nonce),
-      gasPrice: web3.utils.numberToHex(21 * 1e9), // '0x14f46b0400',
+      gasPrice: web3.utils.numberToHex(2.1 * 1e9), // '0x14f46b0400',
       gasLimit: web3.utils.numberToHex(6e6),
       to: instance.address,
       value: web3.utils.numberToHex(value),
