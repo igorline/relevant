@@ -29,7 +29,8 @@ class WalletContainer extends Component {
     actions: PropTypes.object,
     earnings: PropTypes.object,
     reload: PropTypes.number,
-    refresh: PropTypes.number
+    refresh: PropTypes.number,
+    screenSize: PropTypes.number
   };
 
   static contextTypes = {
@@ -93,13 +94,12 @@ class WalletContainer extends Component {
     // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
 
     <View>
-      <Eth.Consumer>
-        {wallet => <Balance wallet={wallet} mobile {...this.props} />}
-      </Eth.Consumer>
+      <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
     </View>
   );
 
   renderRow = item => {
+    const { screenSize } = this.props;
     if (!item) return null;
     const earning = item;
 
@@ -112,7 +112,7 @@ class WalletContainer extends Component {
 
     return (
       <Earning
-        mobile
+        screenSize={screenSize}
         earning={earning}
         payout={payout}
         month={showMonth ? month : null}
@@ -169,7 +169,8 @@ function mapStateToProps(state) {
       transactionStack: state.transactionStack
     },
     refresh: state.navigation.wallet.refresh,
-    reload: state.navigation.wallet.reload
+    reload: state.navigation.wallet.reload,
+    screenSize: state.navigation.screenSize
   };
 }
 

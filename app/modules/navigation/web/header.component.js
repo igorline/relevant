@@ -38,10 +38,7 @@ class Header extends Component {
   renderBlog() {
     return (
       <div className="navInner">
-        <a
-          className={'navLink'}
-          href="https://blog.relevant.community"
-        >
+        <a className={'navLink'} href="https://blog.relevant.community">
           Blog
         </a>
       </div>
@@ -62,7 +59,10 @@ class Header extends Component {
         <div className={'navLink'}>
           <Avatar size={42} user={this.props.user} noName />
         </div>
-        <div className={'navLink'} onClick={() => this.props.actions.logoutAction(this.props.user)}>
+        <div
+          className={'navLink'}
+          onClick={() => this.props.actions.logoutAction(this.props.user)}
+        >
           Logout
         </div>
       </div>
@@ -88,7 +88,9 @@ class Header extends Component {
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>
-          <div className={'rightNav'}>{desktopApp ? this.renderLoginButton() : <div />}</div>
+          <div className={'rightNav'}>
+            {desktopApp ? this.renderLoginButton() : <div />}
+          </div>
         </header>
       </div>
     );

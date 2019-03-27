@@ -4,7 +4,8 @@ import get from 'lodash.get';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from 'app/styles';
-import { StyledNavLink, View } from 'modules/styled/web';
+import { StyledNavLink } from 'modules/styled/web';
+import { View } from 'modules/styled/uni';
 import { refreshTab } from 'modules/navigation/navigation.actions';
 
 class Breakcrumbs extends Component {

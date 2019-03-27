@@ -27,8 +27,8 @@ export default function configureStore() {
   const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
   store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(
-    rootReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    rootReducer
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );
 
   socket.on('connect', () => {

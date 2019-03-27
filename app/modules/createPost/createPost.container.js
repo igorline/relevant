@@ -45,7 +45,8 @@ class CreatePostContainer extends Component {
     close: PropTypes.func,
     location: PropTypes.object,
     history: PropTypes.object,
-    community: PropTypes.object
+    community: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   constructor(props) {
@@ -306,10 +307,14 @@ class CreatePostContainer extends Component {
 
   renderPreview() {
     if (!this.state.urlPreview) return null;
+    const { auth, screenSize } = this.props;
     return (
       <div style={{ position: 'relative' }}>
         <PostInfo
           small
+          preview={!!screenSize}
+          auth={auth}
+          screenSize={screenSize}
           close={this.clearUrl.bind(this)}
           post={this.state.urlPreview}
           link={this.state.linkPreview}
@@ -380,10 +385,10 @@ class CreatePostContainer extends Component {
           </PasteTextFromLink>
         </View>
 
-        <View mt={3}>{this.renderPreview()}</View>
+        <View mt={[3, 2]}>{this.renderPreview()}</View>
 
         {body || url ? (
-          <View mt={3}>
+          <View mt={[3, 2]}>
             <TagInput
               selectedTags={this.state.selectedTags}
               selectTag={this.selectTags}
@@ -396,7 +401,7 @@ class CreatePostContainer extends Component {
                 !this.state.selectedTags.length ? 'Please add at least one tag' : ''
               }
             />
-            <View mt={4}>
+            <View mt={[4, 2]}>
               <SelectTags
                 text={'Suggested tags'}
                 tags={allTags}
@@ -409,7 +414,7 @@ class CreatePostContainer extends Component {
                 }}
               />
             </View>
-            <Divider mt={4} />
+            <Divider mt={[4, 2]} />
           </View>
         ) : null}
         <View display="flex" fdirection="row" mt={2} justify="flex-end">
@@ -438,7 +443,8 @@ function mapStateToProps(state) {
     users: state.user,
     tags: state.tags,
     userSearch: state.user.search,
-    community: state.community
+    community: state.community,
+    screenSize: state.navigation.screenSize
   };
 }
 

@@ -141,7 +141,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
     author: post.user,
     amount,
     relevantPoints: relevanceToAdd,
-    ownPost: post.user === user._id,
+    ownPost: user._id.equals(post.user),
     shares,
     stakedTokens,
     community,

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
-import get from 'lodash/get';
+import get from 'lodash.get';
 
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
@@ -28,6 +29,8 @@ import { GlobalStyle } from 'app/styles';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
+import SmartBanner from 'react-smartbanner';
+
 import ReactGA from 'react-ga';
 
 ReactGA.initialize('UA-51795165-6');
@@ -37,6 +40,7 @@ if (process.env.BROWSER === true) {
   require('app/styles/fonts.css');
   require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
+  require('react-smartbanner/dist/main.css');
 }
 
 class App extends Component {
@@ -91,7 +95,8 @@ class App extends Component {
         });
       }
     }
-
+    this.updateWidth();
+    window.addEventListener('resize', this.updateWidth);
     // TODO do this after a timeout
     window.addEventListener('blur', () => {
       this.backgroundTime = new Date().getTime();
@@ -102,6 +107,14 @@ class App extends Component {
     history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
   }
 
+  setWidth = () => {
+    this.props.actions.setWidth(window.innerWidth);
+  };
+
+  debouncedSetWidth = AwesomeDebouncePromise(this.setWidth, 100);
+  updateWidth = () => {
+    this.debouncedSetWidth();
+  };
   reloadTabs = () => {
     const now = new Date().getTime();
     if (now - this.backgroundTime > 10 * 60 * 1000) {
@@ -212,34 +225,17 @@ class App extends Component {
     const temp = user && user.role === 'temp';
     const connectAccount = location.hash === '#connectAccount';
 
-    const mobileEl = (
-      <div className="mobileSplash">
-        <h1>Relevant browser version doesn't currently support mobile devices</h1>
-        <p>Please download a dedicated mobile app:</p>
-        <p>
-          <a
-            href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8"
-            target="_blank"
-          >
-            <img alt="iOS App Store" src="https://relevant.community/img/appstore.png" />
-          </a>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <a
-            href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
-            target="_blank"
-          >
-            <img
-              alt="Google Play Store"
-              src="https://relevant.community/img/googleplaystore.png"
-            />
-          </a>
-        </p>
-      </div>
-    );
-
     return (
       <div>
         <GlobalStyle />
+        <SmartBanner
+          daysHidden={0}
+          daysReminder={0}
+          title={'Relevant Communities'}
+          // author={''}
+          position={'top'}
+          // force={'ios'}
+        />
         <TextTooltip
           type={'dark'}
           scrollHide
@@ -282,7 +278,6 @@ class App extends Component {
         {this.renderModal()}
         <ToastContainer />
         {renderRoutes(this.props.route.routes)}
-        <span>{mobileEl}</span>
       </div>
     );
   }

@@ -7,14 +7,23 @@ class Tag extends Component {
   static propTypes = {
     name: PropTypes.string,
     community: PropTypes.string,
-    noLink: PropTypes.bool
+    noLink: PropTypes.bool,
+    actions: PropTypes.object
   };
 
   render() {
-    const { community, name, noLink } = this.props;
+    const { community, name, noLink, actions, ...rest } = this.props;
     const link = `/${community}/top/${name}`;
     return (
-      <ULink hu type="text" to={link} onClick={e => e.stopPropagation()} noLink={noLink}>
+      <ULink
+        hu
+        type="text"
+        to={link}
+        onClick={e => e.stopPropagation()}
+        onPress={() => actions.goToTopic(name)}
+        noLink={noLink}
+        {...rest}
+      >
         <InlineText>
           {'#'}
           {this.props.name}{' '}

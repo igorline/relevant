@@ -14,7 +14,10 @@ const props = {
   userState: user.usersState,
   auth: auth.auth,
   location: { pathname: 'post/' + post.post1._id },
-  history: { push: jest.fn() }
+  history: { push: jest.fn() },
+  navigation: {
+    screenSize: 0
+  }
 };
 
 test('Snapshot Post Web', () => {

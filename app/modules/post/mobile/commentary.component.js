@@ -153,7 +153,7 @@ export default class Commentary extends Component {
         style={[
           styles.commentaryContainer,
           preview ? { width: 'auto', flex: 1 } : null,
-          preview ? { marginHorizontal: 0, marginTop: 8 } : null
+          preview ? { marginHorizontal: 0, marginTop: 16 } : null
         ]}
       >
         {isReply ? <Divider /> : null}
