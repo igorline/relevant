@@ -38,6 +38,12 @@ export const GlobalStyle = createGlobalStyle`
     top: -80px !important;
   }
 
+  // Hamburger menu transition time
+  .bm-overlay,
+  .bm-menu-wrap {
+    transition-duration: .3s !important;
+  }
+
   @media screen
   and (max-device-width: 414px) {
     html {
