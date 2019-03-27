@@ -26,7 +26,7 @@ export default class Commentary extends Component {
     commentary: PropTypes.array,
     navigation: PropTypes.object,
     preview: PropTypes.bool,
-    avatarText: PropTypes.object,
+    avatarText: PropTypes.func,
     isReply: PropTypes.bool
   };
 
