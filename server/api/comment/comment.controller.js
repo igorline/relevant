@@ -117,7 +117,7 @@ exports.create = async (req, res, next) => {
     await Invest.createVote({
       post: comment,
       user,
-      amount: 1,
+      amount: 0,
       relevanceToAdd: 0,
       community,
       communityId

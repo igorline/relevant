@@ -152,7 +152,7 @@ export default class CustomListView extends Component {
         enableEmptySections
         removeClippedSubviews={false}
         pageSize={1}
-        initialListSize={2}
+        initialListSize={3}
         scrollEventThrottle={10}
         automaticallyAdjustContentInsets={false}
         stickyHeaderIndices={this.props.stickyHeaderIndices}
