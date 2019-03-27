@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-  showModal,
-  openWebSideNav,
-  closeWebSideNav
-} from 'modules/navigation/navigation.actions';
+import { showModal, closeWebSideNav } from 'modules/navigation/navigation.actions';
 import styled from 'styled-components';
 import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
@@ -120,7 +116,6 @@ export default withRouter(
       actions: bindActionCreators(
         {
           showModal,
-          openWebSideNav,
           closeWebSideNav
         },
         dispatch

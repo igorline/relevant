@@ -13,7 +13,7 @@ const DiscoverTab = props => {
     url += `/${tag}`;
   }
   return (
-    <StyledNavLink to={url} mr={2}>
+    <StyledNavLink to={url} mr={[2, 1]}>
       {linkData.title}
     </StyledNavLink>
   );
