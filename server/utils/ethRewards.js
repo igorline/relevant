@@ -15,7 +15,7 @@ const queue = require('queue');
 
 const q = queue({ concurrency: 1 });
 // const debug = process.env.NODE_ENV === 'test';
-const debug = false;
+const debug = true;
 
 let computingRewards = false;
 

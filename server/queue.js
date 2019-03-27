@@ -277,7 +277,7 @@ function startTwitterUpdate() {
 // updateUserStats(/);
 // startTwitterUpdate();
 // startBasicIncomeUpdate();
-// startRewards();
+startRewards();
 
 if (process.env.NODE_ENV !== 'production') {
   // startTwitterUpdate();
