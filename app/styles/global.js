@@ -5,7 +5,7 @@ const fullHeight = Dimensions.get('window').height;
 
 const smallScreen = fullWidth <= 320 || false;
 
-const mainPadding = smallScreen ? 10 : 15;
+const mainPadding = smallScreen ? 16 : 16;
 
 const darkGrey = '#242425';
 const blue = '#4d4eff';

@@ -45,7 +45,8 @@ class SinglePostComponent extends Component {
       editing: false,
       reloading: false,
       top: 0,
-      suggestionHeight: 0
+      suggestionHeight: 0,
+      loaded: false
     };
     this.id = null;
     this.comments = null;
@@ -66,6 +67,12 @@ class SinglePostComponent extends Component {
 
   comments = [];
   nestingLevel = {};
+
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      this.setState({ loaded: true });
+    });
+  }
 
   componentWillMount() {
     this.id = this.props.postId;
@@ -207,6 +214,7 @@ class SinglePostComponent extends Component {
   }
 
   renderRow({ item, index }) {
+    if (!this.state.loaded) return null;
     const comment = item;
     if (!comment) return null;
 
@@ -311,7 +319,7 @@ class SinglePostComponent extends Component {
           keyExtractor={(item, index) => index.toString()}
           removeClippedSubviews
           pageSize={1}
-          initialListSize={10}
+          initialListSize={4}
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
           onEndReachedThreshold={100}

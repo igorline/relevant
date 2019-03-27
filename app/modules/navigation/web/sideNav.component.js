@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { showModal, closeWebSideNav } from 'modules/navigation/navigation.actions';
 import styled from 'styled-components';
 import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
 import SideNavFooter from 'modules/navigation/sideNavFooter.component';
 import { colors, layout, mixins } from 'app/styles';
-import { showModal } from 'modules/navigation/navigation.actions';
+import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
 import { Image, View } from 'modules/styled/web';
+import MenuIcon from 'modules/ui/web/menuIcon.component';
+
+const Container = styled.div`
+  position: sticky;
+  z-index: 100;
+  top: 0;
+`;
 
 const SideNavContent = styled.div`
-  position: sticky;
   background: ${colors.secondaryBG};
   width: ${layout.sideNavWidth};
   max-width: ${layout.sideNavWidth};
@@ -27,12 +34,12 @@ const SideNavScroll = styled.div`
   flex-direction: column;
   display: block;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch;
   flex: 1;
   width: ${layout.sideNavWidth};
 `;
 
-const LogoContainer = styled.div`
-  position: sticky;
+const LogoContainer = styled(View)`
   background: ${colors.secondaryBG};
   height: ${layout.headerHeight};
   top: 0;
@@ -41,50 +48,78 @@ const LogoContainer = styled.div`
   ${mixins.border}
 `;
 
-const SideNav = props => {
-  const logoLink = `/${props.community || 'relevant'}/new`;
-  return (
-    <SideNavContent flex={1} className={props.className}>
-      <SideNavScroll flex={1}>
-        <LogoContainer bb>
-          <ULink align={'flex-start'} to={logoLink}>
-            <View pl={4} h={layout.headerHeight} align={'center'} fdirection={'row'}>
-              <Image
-                h={4}
-                w={22}
-                resizeMode={'contain'}
-                src={'/img/logo-opt.png'}
-                alt={'Relevant'}
-              />
+class SideNav extends Component {
+  componentDidMount() {
+    this.props.history.listen(() => {
+      this.props.actions.closeWebSideNav();
+    });
+  }
+
+  render() {
+    const { community, className } = this.props;
+    const logoLink = `/${community || 'relevant'}/new`;
+    return (
+      <Container>
+        <SideNavContent flex={1} className={className}>
+          <SideNavScroll flex={1}>
+            <LogoContainer
+              bb
+              h={layout.headerHeight}
+              align="center"
+              fdirection="row"
+              justify="space-between"
+              p={['0 4', '0 2']}
+            >
+              <ULink align={'flex-start'} to={logoLink}>
+                <Image
+                  h={4}
+                  w={22}
+                  resizeMode={'contain'}
+                  src={'/img/logo-opt.png'}
+                  alt={'Relevant'}
+                />
+              </ULink>
+              <MenuIcon />
+            </LogoContainer>
+            <View flex={1}>
+              <NavProfileComponent />
             </View>
-          </ULink>
-        </LogoContainer>
-        <View flex={1}>
-          <NavProfileComponent />
-        </View>
-        <View flex={1}>
-          <CommunityNav {...props} />
-        </View>
-        <SideNavFooter />
-      </SideNavScroll>
-    </SideNavContent>
-  );
-};
+            <View flex={1}>
+              <CommunityNav {...this.props} />
+            </View>
+            <SideNavFooter />
+          </SideNavScroll>
+        </SideNavContent>
+      </Container>
+    );
+  }
+}
 
 SideNav.propTypes = {
   className: PropTypes.string,
   actions: PropTypes.object,
-  community: PropTypes.string
+  community: PropTypes.string,
+  navigation: PropTypes.object,
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   community: state.auth.community,
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  navigation: state.navigation
 });
 
-export default connect(
-  mapStateToProps,
-  dispatch => ({
-    actions: bindActionCreators({ showModal }, dispatch)
-  })
-)(SideNav);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      actions: bindActionCreators(
+        {
+          showModal,
+          closeWebSideNav
+        },
+        dispatch
+      )
+    })
+  )(SideNav)
+);

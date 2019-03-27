@@ -97,6 +97,14 @@ export async function sendTx(params) {
     tx.sign(pk);
     const serializedTx = tx.serialize();
 
+    // const estimate = await web3.eth.estimateGas({
+    //   from: acc,
+    //   nonce: web3.utils.numberToHex(nonce),
+    //   to: instance.address,
+    //   data
+    // });
+    // console.log(estimate);
+
     const transactionHash = await web3.eth
     .sendSignedTransaction('0x' + serializedTx.toString('hex'))
     .on('receipt', r => {
@@ -121,6 +129,7 @@ export async function sendTx(params) {
 export async function mintRewardTokens() {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast.call();
+  // console.log('lastMint', lastMint.toNumber());
   if (lastMint.toNumber() === 0) return null;
   const { data } = instance.releaseTokens.request().params[0];
   return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'releaseTokens' });

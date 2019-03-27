@@ -15,7 +15,7 @@ class Percent extends Component {
   };
 
   componentDidMount() {
-    this.percent = numbers.percentChange(get(this.props.user, 'relevance'));
+    this.percent = Math.max(0, numbers.percentChange(get(this.props.user, 'relevance')));
     this.percentPretty = numbers.abbreviateNumber(this.percent);
     this.animate();
   }
@@ -25,7 +25,10 @@ class Percent extends Component {
   }
 
   animate() {
-    const newPercent = numbers.percentChange(get(this.props.user, 'relevance'));
+    const newPercent = Math.max(
+      0,
+      numbers.percentChange(get(this.props.user, 'relevance'))
+    );
     const newPercentPretty = numbers.abbreviateNumber(newPercent);
 
     if (parseFloat(this.percentPretty) !== parseFloat(newPercentPretty)) {
@@ -46,7 +49,7 @@ class Percent extends Component {
       fontFamily = { fontFamily: this.props.fontFamily, letterSpacing: 0 };
     }
 
-    const percent = numbers.percentChange(user);
+    const percent = Math.max(0, numbers.percentChange(user));
 
     let percentComponent = null;
 

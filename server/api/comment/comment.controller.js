@@ -112,12 +112,12 @@ exports.create = async (req, res, next) => {
     comment = await comment.addPostData();
 
     // this will also save the new comment
-    comment = await Post.sendOutMentions(mentions, parentPost, user, comment);
+    comment = await Post.sendOutMentions(mentions, comment, user, comment);
 
     await Invest.createVote({
       post: comment,
       user,
-      amount: 1,
+      amount: 0,
       relevanceToAdd: 0,
       community,
       communityId
@@ -324,8 +324,7 @@ exports.update = async (req, res, next) => {
     newMentions = newMentions || [];
 
     if (newMentions.length) {
-      const post = { _id: newComment.parentPost };
-      Post.sendOutMentions(mentions, post, newComment.user, newComment);
+      Post.sendOutMentions(mentions, newComment, newComment.user, newComment);
     }
 
     await newComment.save();

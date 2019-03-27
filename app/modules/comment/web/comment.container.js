@@ -4,11 +4,12 @@ import get from 'lodash.get';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { layout } from 'app/styles';
 import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import { Divider } from 'modules/styled/uni';
+import { Divider, View } from 'modules/styled/uni';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 
@@ -21,7 +22,8 @@ class Comments extends Component {
     auth: PropTypes.object,
     post: PropTypes.object,
     myPostInv: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   state = {
@@ -48,44 +50,57 @@ class Comments extends Component {
   }
 
   render() {
-    const { comments, posts, post, auth, actions, myPostInv, user, match } = this.props;
+    const {
+      comments,
+      posts,
+      post,
+      auth,
+      actions,
+      myPostInv,
+      user,
+      match,
+      screenSize
+    } = this.props;
     const children = comments.childComments[post._id] || [];
     const focusedComment = get(match, 'params.commentId', null);
     return (
       <div>
         <CommentForm
           {...this.props}
-          additionalNesting={1.5}
+          nestingLevel={0}
+          additionalNesting={screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
           text={'Comment'}
           parentPost={post}
-          p={'0 4 4 4'}
+          p={['0 4 4 4', '4 2 2 2']}
           isReply
         />
-        <Divider />
         {children.length !== 0 ? (
           <div>
             {children.map(id => {
               const comment = posts.posts[id];
               if (!comment) return null;
               return (
-                <Comment
-                  key={id}
-                  auth={auth}
-                  comment={comment}
-                  actions={actions}
-                  myPostInv={myPostInv}
-                  user={user}
-                  activeComment={this.state.activeComment}
-                  setActiveComment={this.setActiveComment}
-                  parentPost={post._id}
-                  childComments={comments.childComments}
-                  posts={posts}
-                  parentPost={post}
-                  nestingLevel={0}
-                  actions={actions}
-                  focusedComment={focusedComment}
-                  scrollTo={this.scrollTo}
-                />
+                <View key={id}>
+                  <Divider m={['0 4', 0]} screenSize={screenSize} />
+                  <Comment
+                    auth={auth}
+                    comment={comment}
+                    actions={actions}
+                    myPostInv={myPostInv}
+                    user={user}
+                    activeComment={this.state.activeComment}
+                    setActiveComment={this.setActiveComment}
+                    parentPost={post._id}
+                    childComments={comments.childComments}
+                    posts={posts}
+                    parentPost={post}
+                    nestingLevel={0}
+                    actions={actions}
+                    focusedComment={focusedComment}
+                    scrollTo={this.scrollTo}
+                    screenSize={screenSize}
+                  />
+                </View>
               );
             })}
           </div>
@@ -101,7 +116,8 @@ export default withRouter(
       auth: state.auth,
       comments: state.comments,
       myPostInv: state.investments.myPostInv,
-      user: state.user
+      user: state.user,
+      screenSize: state.navigation.screenSize
     }),
     dispatch => ({
       actions: bindActionCreators(

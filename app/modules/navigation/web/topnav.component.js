@@ -9,17 +9,18 @@ import AuthContainer from 'modules/auth/web/auth.container';
 import Breadcrumbs from 'modules/navigation/web/breadcrumbs.component';
 import { View, Text, LinkFont } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
+import styledComponents from 'styled-components';
 import { colors, layout, sizing } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { getNotificationCount } from 'modules/activity/activity.actions';
 import Ulink from 'modules/navigation/ULink.component';
+import MenuIcon from 'modules/ui/web/menuIcon.component';
 
 const Nav = styled(View)`
   position: sticky;
   background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
   z-index: 100;
   height: ${layout.headerHeight};
-  padding: 0 ${sizing(4)};
   top: 0;
   left: ${layout.sideNavWidth};
 `;
@@ -35,6 +36,22 @@ const Badge = styled(View)`
   margin-bottom: ${sizing(1)};
 `;
 
+const ActionButton = styledComponents(Button)`
+  ${p =>
+    !p.screenSize
+      ? ''
+      : `
+    position: fixed;
+    bottom: ${sizing(2)};
+    right: ${sizing(2)};
+    height: ${sizing(10)};
+    width: ${sizing(10)};
+    min-width: 0;
+    border-radius: 100%;
+    background-color: ${colors.blue};
+  `}
+`;
+
 class TopNav extends Component {
   static propTypes = {
     location: PropTypes.object,
@@ -44,7 +61,8 @@ class TopNav extends Component {
     actions: PropTypes.object,
     notif: PropTypes.object,
     community: PropTypes.object,
-    view: PropTypes.object
+    view: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   state = {};
@@ -92,11 +110,11 @@ class TopNav extends Component {
   }
 
   render() {
-    const { auth, className, actions, notif } = this.props;
+    const { auth, className, actions, notif, screenSize } = this.props;
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <Nav className={className} fdirection="column" justify="center">
+      <Nav className={className} fdirection="column" justify="center" p={['0 4', '0 2']}>
         <View
           zIndex={1}
           justify="space-between"
@@ -104,6 +122,7 @@ class TopNav extends Component {
           fdirection="row"
           align="center"
         >
+          <MenuIcon mr={[4, 2]} />
           <DiscoverTabs />
           <View
             justify="space-between"
@@ -135,31 +154,37 @@ class TopNav extends Component {
             )}
 
             <View fdirection="row" d="flex" flex={1} align="center" justify="flex-end">
-              <Ulink
-                onClick={e => {
-                  e.preventDefault();
-                  actions.showModal('onboarding');
-                }}
-                align={'center'}
-                mr={2}
-                hu
-                color={colors.blue}
-                to="/home"
-              >
-                <LinkFont c={colors.blue}>Get Started</LinkFont>
-              </Ulink>
+              {screenSize ? null : (
+                <Ulink
+                  onClick={e => {
+                    e.preventDefault();
+                    actions.showModal('onboarding');
+                  }}
+                  align={'center'}
+                  mr={2}
+                  hu
+                  color={colors.blue}
+                  to="/home"
+                >
+                  <LinkFont c={colors.blue}>Get Started</LinkFont>
+                </Ulink>
+              )}
               {auth.isAuthenticated ? (
                 <Link
                   onClick={() => actions.showModal('newpost')}
                   to={'#'}
                   disabled={!auth.user}
                 >
-                  <Button>New Post</Button>
+                  <ActionButton screenSize={screenSize}>New Post</ActionButton>
                 </Link>
               ) : (
-                <Button onClick={this.toggleLogin} color={colors.blue}>
+                <ActionButton
+                  screenSize={screenSize}
+                  onClick={this.toggleLogin}
+                  color={colors.blue}
+                >
                   Login
-                </Button>
+                </ActionButton>
               )}
             </View>
           </View>
@@ -172,7 +197,7 @@ class TopNav extends Component {
             />
           </View>
         </View>
-        <View fdirection="row">
+        <View fdirection={'row'} mt={[0, 1]} ml={[0, 5.5]}>
           <Breadcrumbs />
         </View>
       </Nav>
@@ -183,7 +208,8 @@ class TopNav extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    notif: state.notif
+    notif: state.notif,
+    screenSize: state.navigation.screenSize
   };
 }
 

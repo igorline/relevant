@@ -21,7 +21,8 @@ class SingleComment extends Component {
     parentPostId: PropTypes.string,
     hidePostButtons: PropTypes.bool,
     hideBorderBottom: PropTypes.bool,
-    postUrl: PropTypes.string
+    postUrl: PropTypes.string,
+    screenSize: PropTypes.number
   };
 
   state = {
@@ -40,7 +41,7 @@ class SingleComment extends Component {
   };
 
   render() {
-    const { comment, nestingLevel } = this.props;
+    const { comment, nestingLevel, screenSize } = this.props;
     if (!comment) return null;
     return (
       <View>
@@ -49,6 +50,7 @@ class SingleComment extends Component {
           activeComment={this.state.activeComment}
           setActiveComment={this.setActiveComment}
           nestingLevel={nestingLevel || 0}
+          screenSize={screenSize}
         />
       </View>
     );
@@ -64,7 +66,8 @@ export default connect(
   state => ({
     auth: state.auth,
     myPostInv: state.investments.myPostInv,
-    user: state.user
+    user: state.user,
+    screenSize: state.navigation.screenSize
   }),
   dispatch => ({
     actions: bindActionCreators(

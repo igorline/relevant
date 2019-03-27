@@ -72,7 +72,14 @@ export default function PostTitle(props) {
   const tagEl = tags.length ? (
     <InlineText c={c || colors.blue}>
       {tags.map(tag => (
-        <Tag name={tag} community={community} key={tag} noLink={noLink} />
+        <Tag
+          actions={actions}
+          name={tag}
+          community={community}
+          key={tag}
+          noLink={noLink}
+          c={c || colors.blue}
+        />
       ))}
     </InlineText>
   ) : null;
@@ -129,7 +136,7 @@ export default function PostTitle(props) {
   //   </TextView>;
 
   return (
-    <View flex={1} fdirection={'column'} justify={mobile ? 'center' : 'flex-start'}>
+    <View fdirection={'column'} flex={1} justify={mobile ? 'center' : 'flex-start'}>
       <View>
         {titleEl}
         {/* {postUrl && timestamp }{' • '} */}

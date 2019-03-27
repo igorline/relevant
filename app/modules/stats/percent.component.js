@@ -11,7 +11,7 @@ export default function Percent(props) {
     return null;
   }
   const { align, mr, size, ...rest } = props;
-  const percent = numbers.percentChange(get(props.user, 'relevance'));
+  const percent = Math.max(0, numbers.percentChange(get(props.user, 'relevance')));
   const percentPretty = numbers.abbreviateNumber(percent);
   const isNegative = percent < 0;
   return (

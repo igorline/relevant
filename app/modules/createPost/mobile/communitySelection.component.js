@@ -21,7 +21,6 @@ class CommunitySelection extends Component {
 
   setCommunity(community) {
     this.props.actions.setCommunity(community.slug);
-    // console.log('set community', community);
   }
 
   render() {
@@ -36,7 +35,10 @@ class CommunitySelection extends Component {
     return (
       <View pt={3} style={{ flexDirection: 'column' }}>
         {Object.values(communities).map(c => (
-          <TouchableOpacity onPress={() => this.setCommunity(c)} key={c.slug}>
+          <TouchableOpacity
+            onPress={() => requestAnimationFrame(() => this.setCommunity(c))}
+            key={c.slug}
+          >
             <CommunityListItem
               p="1 2"
               community={c}
