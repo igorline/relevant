@@ -98,8 +98,9 @@ class WalletContainer extends Component {
     </View>
   );
 
-  renderRow = item => {
+  renderRow = (item, i) => {
     const { screenSize } = this.props;
+    if (i === 0) this.previousMonth = null;
     if (!item) return null;
     const earning = item;
 
@@ -127,7 +128,6 @@ class WalletContainer extends Component {
 
     const { list } = earnings;
     const entities = list.map(id => earnings.entities[id]);
-    this.previousMonth = null;
 
     return (
       <View flex={1}>
