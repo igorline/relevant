@@ -49,7 +49,11 @@ export default function ImagePost(props) {
 
   const imageHeight = preview ? PREVIEW_HEIGHT : IMAGE_HEIGHT;
   const postContent = (
-    <View fdirection={'row'}>
+    <View
+      // shouldRasterizeIOS
+      // renderToHardwareTextureAndroid
+      fdirection={'row'}
+    >
       <ULink
         onPress={goToPost}
         external
