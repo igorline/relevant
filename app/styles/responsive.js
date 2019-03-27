@@ -4,6 +4,15 @@ import get from 'lodash.get';
 
 import { mediumScreenWidth, smallScreenWidth } from './layout';
 
+let native = false;
+let NATIVE_WIDTH;
+if (process.env.WEB !== 'true') {
+  native = true;
+  const { Dimensions } = require('react-native');
+  const { width } = Dimensions.get('window');
+  NATIVE_WIDTH = width;
+}
+
 export const responsiveHandler = val => {
   if (!Array.isArray(val)) {
     return val;
@@ -14,13 +23,7 @@ export const responsiveHandler = val => {
 
   let WIDTH;
   try {
-    if (process.env.BROWSER === true) {
-      WIDTH = window.innerWidth;
-    } else {
-      const { Dimensions } = require('react-native');
-      const { width } = Dimensions.get('window');
-      WIDTH = width;
-    }
+    WIDTH = native ? NATIVE_WIDTH : window.innerWidth;
     if (!WIDTH) {
       return val[0];
     }
