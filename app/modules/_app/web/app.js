@@ -236,12 +236,12 @@ class App extends Component {
       <div>
         <GlobalStyle />
         <SmartBanner
-          daysHidden={2}
+          daysHidden={0}
           daysReminder={0}
           title={'Relevant Communities'}
-          author={'Relevant Protocols'}
+          // author={''}
           position={'top'}
-          // force={'ios'}
+          force={'ios'}
         />
         <TextTooltip
           type={'dark'}

@@ -73,6 +73,7 @@ export default function PostTitle(props) {
     <InlineText c={c || colors.blue}>
       {tags.map(tag => (
         <Tag
+          actions={actions}
           name={tag}
           community={community}
           key={tag}
