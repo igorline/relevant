@@ -14,10 +14,12 @@ const props = {
 };
 
 test('Snapshot AvatarBox Styled', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <AvatarBox {...props} />
     </MemoryRouter>
-  ).toJSON();
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });

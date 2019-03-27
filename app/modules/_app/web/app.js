@@ -81,10 +81,7 @@ class App extends Component {
     actions.getUser();
     actions.getEarnings('pending');
 
-    if (auth.user && auth.user.webOnboard && !auth.user.webOnboard.onboarding) {
-      actions.showModal('onboarding');
-      actions.webOnboard('onboarding');
-    }
+    if (auth.user) this.handleUserLogin();
 
     const parsed = queryString.parse(location.search);
     if (parsed.invitecode) {
@@ -175,10 +172,6 @@ class App extends Component {
     if (!prevProps.auth.user && auth.user) {
       this.handleUserLogin();
     }
-    // const match = matchPath(history.location.pathname, {
-    //   // You can share this string as a constant if you want
-    //   path: "/articles/:id"
-    // });
   }
 
   toggleLogin(authType) {
