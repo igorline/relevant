@@ -33,7 +33,7 @@ class DiscoverTabs extends Component {
       routes: [
         // { key: 'feed', title: SUB_TITLE },
         { key: 'new', title: 'New' },
-        { key: 'top', title: 'Trending' }
+        { key: 'top', title: 'Top' }
       ],
       headerHeight: 50
     };
@@ -53,8 +53,8 @@ class DiscoverTabs extends Component {
       this.topicId = params.id;
       this.state.routes = [
         { key: 'new', title: 'New' },
-        { key: 'top', title: 'Trending' },
-        { key: 'people', title: 'People' }
+        { key: 'top', title: 'Top' }
+        // { key: 'people', title: 'People' }
       ];
     }
     this.loaded = false;
