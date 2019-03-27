@@ -7,7 +7,7 @@ import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 // import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import Earning from 'modules/wallet/earning.component';
-import { initDrizzle } from 'app/utils/eth';
+// import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
@@ -17,7 +17,7 @@ import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
 import { withNavigation } from 'react-navigation';
 
-let drizzle;
+// let drizzle;
 
 const PAGE_SIZE = 30;
 
@@ -51,7 +51,7 @@ class WalletContainer extends Component {
     const { isAuthenticated } = this.props.auth;
     if (isAuthenticated) {
       // eslint-disable-next-line
-      drizzle = initDrizzle(this.context.store);
+      // drizzle = initDrizzle(this.context.store);
     }
     if (!this.props.earnings.list.length) {
       this.load(0, 0);
@@ -59,10 +59,10 @@ class WalletContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isAuthenticated } = this.props.auth;
-    if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
-      drizzle = initDrizzle(this.context.store);
-    }
+    // const { isAuthenticated } = this.props.auth;
+    // if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
+    //   drizzle = initDrizzle(this.context.store);
+    // }
 
     if (this.props.refresh !== prevProps.refresh) {
       this.scrollToTop();
@@ -71,6 +71,8 @@ class WalletContainer extends Component {
     if (this.props.reload !== prevProps.reload) {
       this.needsReload = new Date().getTime();
     }
+
+    if (!this.props.earnings.list.length) this.reload();
   }
 
   scrollToTop = () => {
@@ -80,8 +82,12 @@ class WalletContainer extends Component {
     }
   };
 
-  load = (view, length) => {
-    this.props.actions.getEarnings(null, PAGE_SIZE, length);
+  load = async (view, length) => {
+    if (this.loading) return null;
+    this.loading = true;
+    await this.props.actions.getEarnings(null, PAGE_SIZE, length);
+    this.loading = false;
+    return null;
   };
 
   reload = () => this.load(0, 0);
@@ -98,9 +104,9 @@ class WalletContainer extends Component {
     </View>
   );
 
-  renderRow = (item, i) => {
+  renderRow = (item, view, i) => {
     const { screenSize } = this.props;
-    if (i === 0) this.previousMonth = null;
+    if (parseInt(i, 10) === 0) this.previousMonth = null;
     if (!item) return null;
     const earning = item;
 
@@ -108,7 +114,7 @@ class WalletContainer extends Component {
     if (!payout || !earning) return null;
 
     const month = moment(earning.createdAt).format('MMMM');
-    const showMonth = this.previousMonth !== month;
+    const showMonth = month !== this.previousMonth;
     this.previousMonth = month;
 
     return (
