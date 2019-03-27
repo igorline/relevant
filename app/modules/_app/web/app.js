@@ -241,7 +241,7 @@ class App extends Component {
           title={'Relevant Communities'}
           // author={''}
           position={'top'}
-          force={'ios'}
+          // force={'ios'}
         />
         <TextTooltip
           type={'dark'}
