@@ -45,10 +45,10 @@ export async function members(req, res, next) {
     if (user) {
       blocked = [...user.blocked, ...user.blockedBy];
     }
-    const userId = user ? user._id : null;
+    // const userId = user ? user._id : null;
     const limit = req.params.limit || 20;
     const community = req.params.slug;
-    const isMember = await CommunityMember.findOne({ community, user: userId });
+    // const isMember = await CommunityMember.findOne({ community, user: userId });
     const users = await CommunityMember.find({
       community,
       'user.embeddedUser._id': {
@@ -57,10 +57,7 @@ export async function members(req, res, next) {
     })
     .sort({ role: 1, reputation: -1 })
     .limit(limit);
-    res.status(200).json({
-      users: users || [],
-      isMember: !!isMember
-    });
+    res.status(200).json(users || []);
   } catch (err) {
     next(err);
   }
