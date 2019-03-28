@@ -32,13 +32,8 @@ class CommunityMembers extends Component {
   };
 
   searchMembers = async val => {
-    // console.log('search user', val);
-    const results = await this.props.actions.searchMembers(val);
-    // console.log('ASYNC RESULTS', results);
-    // return results;
-    this.setState({
-      searchResults: results
-    });
+    const { community } = this.props;
+    return this.props.actions.searchMembers(val, community.active);
   };
 
   debouncedSearchMembers = AwesomeDebouncePromise(this.searchMembers, 100);
@@ -47,11 +42,10 @@ class CommunityMembers extends Component {
     this.setState({
       searchValue: e.target.value
     });
-    // const results = await
-    return this.debouncedSearchMembers(e.target.value);
-    // this.setState({
-    //   searchResults: results,
-    // });
+    const results = await this.debouncedSearchMembers(e.target.value);
+    this.setState({
+      searchResults: results
+    });
   };
 
   getTitle(role) {
@@ -95,18 +89,21 @@ class CommunityMembers extends Component {
                 </React.Fragment>
               );
             })}
-          {!!searchValue &&
-            searchResults.length &&
-            searchResults.map(user => {
+          {!!searchValue && searchResults.length
+            ? searchResults.map(user => {
               const title = role === user.role ? null : this.getTitle(user.role);
               role = user.role;
               return (
                 <React.Fragment key={user._id}>
                   {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
-                  <CommunityMember user={user} key={user._id} />
+                  <CommunityMember
+                    user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
+                    key={user._id}
+                  />
                 </React.Fragment>
               );
-            })}
+            })
+            : null}
         </View>
       </View>
     );

@@ -55,6 +55,36 @@ export async function members(req, res, next) {
   }
 }
 
+export async function memberSearch(req, res, next) {
+  try {
+    let blocked = [];
+    const { user } = req;
+    if (user) {
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
+
+    const { search, limit } = req.query;
+    const name = new RegExp(search, 'i');
+    const query = {
+      $and: [
+        { $or: [{ 'embeddedUser.name': name }, { 'embeddedUser.handle': name }] },
+        { 'embeddedUser._id': { $nin: blocked } }
+      ]
+    };
+    const community = req.params.slug;
+    CommunityMember.find({ community, ...query })
+    .sort({ role: 1, reputation: -1 })
+    .limit(parseInt(limit, 10))
+    .then(users => {
+      res.status(200).json(users || []);
+    });
+    // res.status(200).json(users);
+    // .catch(next);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function membership(req, res, next) {
   try {
     const user = req.user._id;
