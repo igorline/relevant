@@ -18,7 +18,7 @@ class CommunityMembersTitle extends Component {
     return (
       <View fdirection="row" align="baseline">
         <Header inline={1}>Community Members</Header>
-        <BodyText ml={1} inline={1}>
+        <BodyText ml={2} inline={1}>
           {activeCommunity.memberCount} Total
         </BodyText>
       </View>
