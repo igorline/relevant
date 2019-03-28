@@ -23,20 +23,6 @@ CommunityMember.propTypes = {
   user: PropTypes.object
 };
 
-// const CommunityMembersList = ({ title, members, memberIds }) => {
-//   if (!memberIds.length) return null;
-//   return (
-//     <View mt={2}>
-//       <SecondaryText>{title}</SecondaryText>
-//       {memberIds.map(memberId => {
-//         const user = members[memberId];
-//         console.log('user', user);
-//         return <CommunityMember user={user} key={user._id} />;
-//       })}
-//     </View>
-//   );
-// };
-
 class CommunityMembers extends Component {
   static propTypes = {
     community: PropTypes.object
