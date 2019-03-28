@@ -15,7 +15,6 @@ const CommunityMember = ({ user }) => (
       showRelevance
       condensedView={false}
     />
-    <SecondaryText>{user.role}</SecondaryText>
   </View>
 );
 
