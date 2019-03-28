@@ -4,7 +4,7 @@ const auth = require('../../auth/auth.service');
 
 const router = express.Router();
 
-router.get('/:slug/members', auth.currentUser(), controller.members);
+router.get('/:slug/members', auth.blocked(), controller.members);
 // Search by embedded user handle and name
 router.get('/:slug/members/search', auth.blocked(), controller.memberSearch);
 router.get('/membership/:user', auth.isAuthenticated(), controller.membership);

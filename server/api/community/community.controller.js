@@ -41,15 +41,26 @@ export async function index(req, res, next) {
 export async function members(req, res, next) {
   try {
     const { user } = req;
+    let blocked = [];
+    if (user) {
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
     const userId = user ? user._id : null;
     const limit = req.params.limit || 20;
     const community = req.params.slug;
-    let users = CommunityMember.find({ community, user: { $ne: userId } })
+    const isMember = await CommunityMember.findOne({ community, user: userId });
+    const users = await CommunityMember.find({
+      community,
+      'user.embeddedUser._id': {
+        $nin: blocked
+      }
+    })
     .sort({ role: 1, reputation: -1 })
     .limit(limit);
-    let me = userId ? CommunityMember.find({ user: userId, community }) : [];
-    [me, users] = await Promise.all([me, users]);
-    res.status(200).json([...me, ...(users || [])]);
+    res.status(200).json({
+      users: users || [],
+      isMember: !!isMember
+    });
   } catch (err) {
     next(err);
   }
