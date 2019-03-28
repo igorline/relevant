@@ -150,3 +150,22 @@ export function joinCommunity(community) {
     }
   };
 }
+
+export function searchMembers(val, community) {
+  const limit = 50;
+  return async () => {
+    try {
+      const res = await api.request({
+        method: 'GET',
+        endpoint: 'community',
+        path: `/${community}/members/search`,
+        query: { limit, search: val }
+      });
+      // dispatch(setUserSearch(res));
+      return res;
+    } catch (err) {
+      return err;
+      // dispatch(errorActions.setError('activity', true, err.message));
+    }
+  };
+}
