@@ -6,15 +6,16 @@ import { bindActionCreators } from 'redux';
 import { joinCommunity } from 'community/community.actions';
 import AvatarBox from 'modules/user/avatarbox.component';
 
-import { View, BodyText, Header } from 'modules/styled/uni';
+import { View, BodyText, SecondaryText } from 'modules/styled/uni';
 
 const CommunityMember = ({ user }) => (
-  <View fdirection="row">
+  <View fdirection="row" m={['1 0']}>
     <AvatarBox
       user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
       showRelevance
       condensedView={false}
     />
+    <SecondaryText>{user.role}</SecondaryText>
   </View>
 );
 
@@ -22,26 +23,56 @@ CommunityMember.propTypes = {
   user: PropTypes.object
 };
 
+// const CommunityMembersList = ({ title, members, memberIds }) => {
+//   if (!memberIds.length) return null;
+//   return (
+//     <View mt={2}>
+//       <SecondaryText>{title}</SecondaryText>
+//       {memberIds.map(memberId => {
+//         const user = members[memberId];
+//         console.log('user', user);
+//         return <CommunityMember user={user} key={user._id} />;
+//       })}
+//     </View>
+//   );
+// };
+
 class CommunityMembers extends Component {
   static propTypes = {
     community: PropTypes.object
-    // actions: PropTypes.object,
-    // auth: PropTypes.object
   };
+
+  getTitle(role) {
+    const TITLES = {
+      admin: 'Adminstrators',
+      user: 'Trusted Users'
+    };
+    return TITLES[role];
+  }
 
   render() {
     const { community } = this.props;
-    const { communities, active, members, communityMembers } = community;
-    const activeCommunity = communities[active];
+    const { active, members, communityMembers } = community;
+    const activeCommunityMembers = communityMembers[active];
+    // const admins = activeCommunityMembers.filter(member => members[member].role === 'admin');
+    // const others = activeCommunityMembers.filter(member => admins.indexOf(member) === -1);
+    let role;
     return (
       <View fdirection="column">
-        <Header>Community Members</Header>
-        <BodyText>{activeCommunity.memberCount} Total</BodyText>
-        {communityMembers[active].map(memberId => {
-          const user = members[memberId];
-          return <CommunityMember user={user} key={user._id} />;
-        })}
         <BodyText>Search bar</BodyText>
+        <View mt={2}>
+          {activeCommunityMembers.map(memberId => {
+            const user = members[memberId];
+            const title = role === user.role ? null : this.getTitle(user.role);
+            role = user.role;
+            return (
+              <React.Fragment key={user._id}>
+                {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
+                <CommunityMember user={user} key={user._id} />
+              </React.Fragment>
+            );
+          })}
+        </View>
       </View>
     );
   }
@@ -49,8 +80,8 @@ class CommunityMembers extends Component {
 
 const mapStateToProps = state => ({
   routing: state.routing,
-  community: state.community,
-  auth: state.auth
+  community: state.community
+  // auth: state.auth
 });
 
 const mapDispatchToProps = dispatch => ({
