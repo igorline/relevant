@@ -7,7 +7,7 @@ import { colors } from 'app/styles';
 import AsyncSelect from 'react-select/lib/Async';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as userActions from 'modules/user/user.actions';
+import { searchUser } from 'modules/user/user.actions';
 
 class AsyncAdminField extends Component {
   static propTypes = {
@@ -70,7 +70,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...userActions
+        searchUser
       },
       dispatch
     )
