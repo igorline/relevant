@@ -66,7 +66,7 @@ export function getCommunityMembers({ slug, skip, limit }) {
           limit
         }
       });
-      return dispatch(setCommunityMembers(slug, members.users));
+      return dispatch(setCommunityMembers(slug, members));
     } catch (error) {
       return false;
     }
