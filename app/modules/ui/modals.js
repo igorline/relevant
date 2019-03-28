@@ -7,6 +7,7 @@ import GetTokensModal from 'modules/getTokens/web/getTokensModal.container';
 // import AuthContainer from 'modules/auth/web/auth.container';
 import CreatePost from 'modules/createPost/createPost.container';
 import CommunityMembers from 'modules/community/communityMembers.component';
+import CommunityMembersTitle from 'modules/community/communityMembersTitle.component';
 
 export const onboarding = {
   title: 'Welcome To Relevant',
@@ -42,7 +43,7 @@ export const newpost = {
 };
 
 export const communityMembers = {
-  title: 'Community Members',
+  title: <CommunityMembersTitle />,
   Body: CommunityMembers,
   footer: () => {}
 };
