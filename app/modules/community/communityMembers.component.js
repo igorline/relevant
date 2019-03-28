@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { joinCommunity } from 'community/community.actions';
+import { joinCommunity, searchMembers } from 'community/community.actions';
 import AvatarBox from 'modules/user/avatarbox.component';
+import { connect } from 'react-redux';
+import { Input } from 'modules/styled/web';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import { View, BodyText, SecondaryText } from 'modules/styled/uni';
 
 const CommunityMember = ({ user }) => (
   <View fdirection="row" m={['1 0']}>
-    <AvatarBox
-      user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
-      showRelevance
-      condensedView={false}
-    />
+    <AvatarBox user={user} showRelevance condensedView={false} />
   </View>
 );
 
@@ -24,7 +22,36 @@ CommunityMember.propTypes = {
 
 class CommunityMembers extends Component {
   static propTypes = {
-    community: PropTypes.object
+    community: PropTypes.object,
+    actions: PropTypes.object
+  };
+
+  state = {
+    searchResults: [],
+    searchValue: ''
+  };
+
+  searchMembers = async val => {
+    // console.log('search user', val);
+    const results = await this.props.actions.searchMembers(val);
+    // console.log('ASYNC RESULTS', results);
+    // return results;
+    this.setState({
+      searchResults: results
+    });
+  };
+
+  debouncedSearchMembers = AwesomeDebouncePromise(this.searchMembers, 100);
+
+  handleChange = async e => {
+    this.setState({
+      searchValue: e.target.value
+    });
+    // const results = await
+    return this.debouncedSearchMembers(e.target.value);
+    // this.setState({
+    //   searchResults: results,
+    // });
   };
 
   getTitle(role) {
@@ -37,6 +64,7 @@ class CommunityMembers extends Component {
 
   render() {
     const { community } = this.props;
+    const { searchResults, searchValue } = this.state;
     const { active, members, communityMembers } = community;
     const activeCommunityMembers = communityMembers[active];
     // const admins = activeCommunityMembers.filter(member => members[member].role === 'admin');
@@ -45,18 +73,40 @@ class CommunityMembers extends Component {
     return (
       <View fdirection="column">
         <BodyText>Search bar</BodyText>
+        <Input
+          placeholder="Search"
+          onChange={this.handleChange}
+          value={searchValue}
+          type="search"
+        />
         <View mt={2}>
-          {activeCommunityMembers.map(memberId => {
-            const user = members[memberId];
-            const title = role === user.role ? null : this.getTitle(user.role);
-            role = user.role;
-            return (
-              <React.Fragment key={user._id}>
-                {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
-                <CommunityMember user={user} key={user._id} />
-              </React.Fragment>
-            );
-          })}
+          {!searchValue &&
+            activeCommunityMembers.map(memberId => {
+              const user = members[memberId];
+              const title = role === user.role ? null : this.getTitle(user.role);
+              role = user.role;
+              return (
+                <React.Fragment key={user._id}>
+                  {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
+                  <CommunityMember
+                    user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
+                    key={user._id}
+                  />
+                </React.Fragment>
+              );
+            })}
+          {!!searchValue &&
+            searchResults.length &&
+            searchResults.map(user => {
+              const title = role === user.role ? null : this.getTitle(user.role);
+              role = user.role;
+              return (
+                <React.Fragment key={user._id}>
+                  {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
+                  <CommunityMember user={user} key={user._id} />
+                </React.Fragment>
+              );
+            })}
         </View>
       </View>
     );
@@ -72,7 +122,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      joinCommunity
+      joinCommunity,
+      searchMembers
     },
     dispatch
   )
