@@ -40,10 +40,20 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children, members, actions, view, screenSize } = this.props;
+    const { community, children, members, actions, view, screenSize, auth } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
-    const limitedMembers = members.slice(0, screenSize ? 14 : 12);
+    const allMembers = members.filter(
+      member => member.embeddedUser._id !== auth.user._id
+    );
+    const isMember = !!(
+      auth.user.memberships &&
+      auth.user.memberships.filter(membership => membership.community === community.slug)
+    );
+    if (isMember) {
+      allMembers.unshift({ _id: auth.user._id, embeddedUser: auth.user });
+    }
+    const limitedMembers = allMembers.slice(0, screenSize ? 14 : 12);
     const sort = get(view, 'discover.sort') || 'new';
     return (
       <View bg={colors.white} mr={'1px'}>
