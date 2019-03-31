@@ -43,15 +43,19 @@ class CommunityActive extends Component {
     const { community, children, members, actions, view, screenSize, auth } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
-    const allMembers = members.filter(
-      member => member.embeddedUser._id !== auth.user._id
-    );
-    const isMember = !!(
-      auth.user.memberships &&
-      auth.user.memberships.filter(membership => membership.community === community.slug)
-    );
-    if (isMember) {
-      allMembers.unshift({ _id: auth.user._id, embeddedUser: auth.user });
+    const userId = get(auth, 'user._id', null);
+    const allMembers = members.filter(member => member.embeddedUser._id !== userId);
+    let isMember;
+    if (auth.user) {
+      isMember = !!(
+        auth.user.memberships &&
+        auth.user.memberships.filter(
+          membership => membership.community === community.slug
+        )
+      );
+      if (isMember) {
+        allMembers.unshift({ _id: userId, embeddedUser: auth.user });
+      }
     }
     const limitedMembers = allMembers.slice(0, screenSize ? 14 : 12);
     const sort = get(view, 'discover.sort') || 'new';
