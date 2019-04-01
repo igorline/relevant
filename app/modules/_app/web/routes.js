@@ -112,7 +112,12 @@ const routes = [
               { path: '/user/signup', component: Auth, exact: true },
               {
                 path: '/user/confirm/:id/:code',
-                component: ProfileContainer,
+                component: Auth,
+                exact: true
+              },
+              {
+                path: '/user/confirm',
+                component: Auth,
                 exact: true
               },
               { path: '/user/profile/:id', component: ProfileContainer, exact: true },

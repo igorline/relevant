@@ -430,7 +430,8 @@ exports.show = async function show(req, res, next) {
       }
     }
 
-    user = await User.findOne({ handle }).populate({
+    const select = me ? '+email' : null;
+    user = await User.findOne({ handle }, select).populate({
       path: 'relevance',
       match: { community, global: true },
       select: 'pagerank relevanceRecord community'
