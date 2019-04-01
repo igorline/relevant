@@ -6,7 +6,8 @@ import {
   CommentText,
   SecondaryText,
   Spacer,
-  Touchable
+  Touchable,
+  Image
 } from 'modules/styled/uni';
 import get from 'lodash.get';
 import PropTypes from 'prop-types';
@@ -14,8 +15,7 @@ import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { colors, sizing } from 'app/styles';
-import styled from 'styled-components/primitives';
+import { colors, layout } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import Linkify from 'linkifyjs/react';
 import * as linkify from 'linkifyjs';
@@ -27,11 +27,6 @@ import { withRouter } from 'react-router';
 
 mentionPlugin(linkify);
 hashTagPlugin(linkify);
-
-const PostButtonsContainer = styled.View`
-  /* margin-right: ${sizing(4)}; */
-  width: ${sizing(12)};
-`;
 
 class Comment extends Component {
   static propTypes = {
@@ -57,7 +52,13 @@ class Comment extends Component {
     scrollTo: PropTypes.func,
     preview: PropTypes.bool,
     inMainFeed: PropTypes.bool,
-    history: PropTypes.object
+    history: PropTypes.object,
+    screenSize: PropTypes.number,
+    additionalNesting: PropTypes.number
+  };
+
+  static defaultProps = {
+    additionalNesting: 0
   };
 
   state = {
@@ -147,7 +148,9 @@ class Comment extends Component {
       avatarText,
       preview,
       inMainFeed,
-      history
+      history,
+      screenSize,
+      additionalNesting
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -182,10 +185,10 @@ class Comment extends Component {
       text = lines.slice(0, 3).join('\n');
       readMore = text.length < comment.body.length;
     }
-
     let body = (
       <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
         <Linkify
+          style={{ width: '100%' }}
           options={{
             tagName: {
               mention: () => Link,
@@ -228,89 +231,124 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
-
     return (
       <View ref={this.el}>
-        <Spacer nestingLevel={nestingLevel} m={'4 4 0 0'}>
-          {!hidePostButtons ? (
-            <PostButtonsContainer>
-              <PostButtons {...this.props} post={comment} />
-            </PostButtonsContainer>
-          ) : null}
-          <View fdirection="column" grow={1} shrink={1}>
-            <View fdirection={'row'} justify={'space-between'} zIndex={2}>
-              {!hideAvatar && (
-                <AvatarBox
-                  twitter={comment.twitter}
-                  user={{ ...user, _id: comment.user }}
-                  postTime={comment.createdAt}
-                  showRelevance
-                  condensedView={condensedView}
-                  avatarText={avatarText}
-                  noLink={noLink}
-                />
+        <Spacer
+          nestingLevel={nestingLevel}
+          additionalNesting={additionalNesting}
+          screenSize={screenSize}
+          m={['0 4 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
+          fdirection="column"
+        >
+          {nestingLevel > 0 && !hideBorder && (
+            <Divider
+              className="divider"
+              ml={hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_WIDTH / 3}
+            />
+          )}
+          <View fdirection="row" mt={4}>
+            {!hidePostButtons && !screenSize ? (
+              <View w={layout.POST_BUTTONS_WIDTH}>
+                <PostButtons {...this.props} post={comment} />
+              </View>
+            ) : null}
+            {screenSize > 0 && nestingLevel > 0 ? (
+              <Image
+                h={3}
+                w={2}
+                ml={-3}
+                mr={1}
+                resizeMode={'contain'}
+                source={require('app/public/img/reply.png')}
+              />
+            ) : null}
+            <View fdirection="column" grow={1} shrink={1}>
+              <View fdirection={'row'} justify={'space-between'} zIndex={2}>
+                {!hideAvatar && (
+                  <AvatarBox
+                    twitter={comment.twitter}
+                    user={{ ...user, _id: comment.user }}
+                    postTime={comment.createdAt}
+                    showRelevance
+                    condensedView={condensedView}
+                    avatarText={avatarText}
+                    noLink={noLink}
+                  />
+                )}
+                {popup}
+              </View>
+              {editing ? (
+                <View mt={2}>
+                  <CommentForm
+                    edit
+                    p={[0, 2]}
+                    comment={comment}
+                    text={'Update'}
+                    cancel={this.cancel}
+                    {...this.props}
+                    nestingLevel={nestingLevel}
+                    additionalNesting={additionalNesting}
+                    autoFocus
+                  />
+                </View>
+              ) : (
+                body
               )}
-              {popup}
+              {editing || (hidePostButtons && preview) ? null : (
+                <View
+                  ml={condensedView ? 5 : 0}
+                  mb={[4, 2]}
+                  fdirection="row"
+                  justify="space-between"
+                  align="center"
+                  wrap={1}
+                  // stop-gap to avoid the page dimenisons breaking on deeply nested comments
+                >
+                  {!hidePostButtons && screenSize ? (
+                    <View w={12}>
+                      <PostButtons {...this.props} post={comment} horizontal />
+                    </View>
+                  ) : null}
+                  <View fdirection="row">
+                    <ULink
+                      hu
+                      to="#"
+                      inline
+                      authrequired={true}
+                      onClick={e => {
+                        e.preventDefault();
+                        setActiveComment(comment.id);
+                      }}
+                      onPress={e => {
+                        e.preventDefault();
+                        setActiveComment(comment.id);
+                      }}
+                    >
+                      <CTALink mr={3} c={colors.blue}>
+                        Reply
+                      </CTALink>
+                    </ULink>
+                    <ULink
+                      hu
+                      to="#"
+                      authrequired={true}
+                      inline
+                      onClick={e => {
+                        e.preventDefault();
+                        this.copyToClipboard();
+                      }}
+                      onPress={e => {
+                        e.preventDefault();
+                        this.copyToClipboard();
+                      }}
+                    >
+                      <CTALink c={colors.blue}>Share</CTALink>
+                    </ULink>
+                    {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
+                  </View>
+                </View>
+              )}
             </View>
-            {editing ? (
-              <View mt={2}>
-                <CommentForm
-                  edit
-                  comment={comment}
-                  text={'Update'}
-                  cancel={this.cancel}
-                  {...this.props}
-                  nestingLevel={null}
-                  autoFocus
-                />
-              </View>
-            ) : (
-              body
-            )}
-            {editing || (hidePostButtons && preview) ? null : (
-              <View
-                ml={condensedView ? 5 : 0}
-                fdirection="row"
-                justify="flex-start"
-                aligns="center"
-              >
-                <ULink
-                  hu
-                  to="#"
-                  authrequired={true}
-                  onClick={e => {
-                    e.preventDefault();
-                    setActiveComment(comment.id);
-                  }}
-                  onPress={e => {
-                    e.preventDefault();
-                    setActiveComment(comment.id);
-                  }}
-                >
-                  <CTALink mr={3} mb={4} c={colors.blue}>
-                    Reply
-                  </CTALink>
-                </ULink>
-                <ULink
-                  hu
-                  to="#"
-                  authrequired={true}
-                  onClick={e => {
-                    e.preventDefault();
-                    this.copyToClipboard();
-                  }}
-                  onPress={e => {
-                    e.preventDefault();
-                    this.copyToClipboard();
-                  }}
-                >
-                  <CTALink mr={3} c={colors.blue}>
-                    Share
-                  </CTALink>
-                </ULink>
-                {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
-              </View>
-            )}
           </View>
         </Spacer>
 
@@ -318,17 +356,18 @@ class Comment extends Component {
           <CommentForm
             isReply
             nestingLevel={nestingLevel}
-            additionalNesting={hidePostButtons ? 0 : 1.5}
-            p={4}
-            // mt={4}
+            p={[4, 2]}
             text={'Comment'}
             {...this.props}
+            additionalNesting={
+              additionalNesting +
+              (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)
+            }
             parentComment={comment}
             cancel={this.cancel}
             autoFocus
           />
         )}
-        {!hideBorder && <Divider m={'0 4'} />}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}

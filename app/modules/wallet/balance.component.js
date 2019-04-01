@@ -21,7 +21,7 @@ export default class Balance extends Component {
     contract: PropTypes.object,
     actions: PropTypes.object,
     wallet: PropTypes.object,
-    mobile: PropTypes.bool
+    screenSize: PropTypes.number
   };
 
   cashOut = async () => {
@@ -50,7 +50,7 @@ export default class Balance extends Component {
   };
 
   render() {
-    const { user, wallet, mobile } = this.props;
+    const { user, wallet, screenSize } = this.props;
     if (!user) return null;
     const metaMaskTokens = wallet.connectedBalance || user.tokenBalance;
     const { airdropTokens, lockedTokens } = user;
@@ -62,8 +62,8 @@ export default class Balance extends Component {
     //   text={'You can cash out your earnings once you earn 100 tokens'}
     // >
     return (
-      <View m={mobile ? '2 2 0 2' : '4 4 2 4'}>
-        {!mobile ? (
+      <View m={['4 4 2 4', '2 2 0 2']}>
+        {!screenSize ? (
           <View>
             <Header>Relevant Tokens</Header>
             <BodyText mt={2}>
@@ -98,7 +98,7 @@ export default class Balance extends Component {
             {stakingPower ? `   Staking Power: ${stakingPower}%` : ''}
           </SecondaryText>
         </View>
-        {!mobile ? (
+        {!screenSize ? (
           <View fdirection="row" mt={2} align="center">
             <Touchable onClick={this.cashOut} disabled>
               <LinkFont mr={0.5} c={colors.grey} td={'underline'}>
@@ -122,8 +122,8 @@ export default class Balance extends Component {
             />
           </View>
         ) : null}
-        <Header mt={mobile ? 4 : 9}>Recent Activity</Header>
-        {!mobile ? (
+        <Header mt={[9, 4]}>Recent Activity</Header>
+        {!screenSize ? (
           <BodyText mt={2}>
             Your rewards for upvoting links and discussion threads that are relevant to
             the community.

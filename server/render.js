@@ -10,6 +10,7 @@ import configureStore from 'core/web/configureStore';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 import path from 'path';
 import { AppRegistry } from 'react-native-web';
+import useragent from 'express-useragent';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -45,24 +46,31 @@ export const initStore = compose(
 
 export default async function handleRender(req, res) {
   const store = initStore(req);
+  global.userAgent = useragent.parse(req.headers['user-agent']);
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
   store.dispatch(setCommunity(store.getState().auth.community));
+  const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {
     await handleRouteData({ req, store });
     const { app, rnWebStyles } = renderApp({ url: req.url, store });
 
-    const html = renderFullPage({ app, rnWebStyles, initialState: store.getState() });
+    const html = renderFullPage({
+      app,
+      fullUrl,
+      rnWebStyles,
+      initialState: store.getState()
+    });
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage('', store.getState()));
+    res.send(renderFullPage({ initialState: store.getState(), fullUrl }));
   }
 }
 
-export function renderFullPage({ app, rnWebStyles, initialState }) {
+export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
   let cssStyleTags = '';
   let styledComponentsTags = '';
 
@@ -96,8 +104,14 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
         <meta name="twitter:description" content="${meta.description}" />
         ${meta.image ? `<meta name="twitter:image" content="${meta.image}" />` : ''}
 
-        ${cssStyleTags}
+        <meta name="apple-itunes-app" content="app-id=1173025051 app-argument=${fullUrl}">
+
+        <meta name="google-play-app" content="app-id=com.relevantnative">
+        <link rel="apple-touch-icon" href="/img/RoundedIcon.png">
+        <link rel="android-touch-icon" href="/img/RoundedIcon.png">
+
         ${rnWebStyles}
+        ${cssStyleTags}
         ${styledComponentsTags}
 
         <!-- Facebook Pixel Code -->

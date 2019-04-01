@@ -15,6 +15,8 @@ const PostDataSchema = new Schema(
     relevance: { type: Number, default: 0 },
     pagerank: { type: Number, default: 0 },
     pagerankRaw: { type: Number, default: 0 },
+    pagerankRawNeg: { type: Number, default: 0 },
+
     relevanceNeg: { type: Number, default: 0 },
 
     // should we track community comments separately?

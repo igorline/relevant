@@ -1,43 +1,87 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, View, BodyText } from 'modules/styled/uni';
-import { browserAlerts } from 'app/utils/alert';
+import { View, BodyText, SecondaryText } from 'modules/styled/uni';
+// import { required } from 'modules/form/validators';
+// import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import { Field, reduxForm } from 'redux-form';
+import { Form, Button } from 'modules/styled/web';
 
-export default class EmailConfirm extends Component {
+class EmailConfirm extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    initialize: PropTypes.func,
+    handleSubmit: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      sending: false
+      sending: false,
+      email: null
     };
   }
 
-  sendConfirmation() {
-    this.setState({ sending: true });
-    this.props.actions.sendConfirmation().then(success => {
-      this.setState({ sending: false });
-      if (success) {
-        browserAlerts.alert('Confirmation email sent');
-      }
-    });
+  static getDerivedStateFromProps(props) {
+    const email = props.auth.user ? props.auth.user.email : null;
+    const confirmed = props.auth.user ? props.auth.user.confirmed : null;
+    return { email, confirmed };
   }
 
+  componentDidUpdate() {
+    this.props.initialize(this.state);
+  }
+
+  sendConfirmation = () => {
+    this.setState({ sending: true });
+    this.props.actions.sendConfirmation().then(() => {
+      this.setState({ sending: false });
+    });
+  };
+
   render() {
+    const { handleSubmit } = this.props;
     let text = 'Your email has been confirmed';
     let resend;
-    if (!this.props.auth.confirmed) {
-      text = 'Oops... something went wrong';
-      if (this.props.auth.user && !this.state.sending) {
+    const FORM_FIELDS = [];
+
+    // const FORM_FIELDS = [
+    //   {
+    //     name: 'email',
+    //     component: ReduxFormField,
+    //     type: 'email',
+    //     label: 'Email',
+    //     validate: [required],
+    //   },
+    // ];
+
+    if (!this.props.auth.user.confirmed) {
+      text = 'Your email is not confirmed';
+      if (this.props.auth.user) {
         resend = (
-          <View mt={2.5} justify="flex-end" fdirection="row">
-            <Button onClick={() => this.sendConfirmation()}>
+          <Form
+            // initialValues={{ email: this.state.email }}
+            mt={2.5}
+            justify={['flex-end', 'stretch']}
+            fdirection="column"
+            onSubmit={handleSubmit(this.sendConfirmation)}
+          >
+            {FORM_FIELDS.map((field, index) => (
+              <Field {...field} key={index} />
+            ))}
+            <Button
+              mr={['auto', 0]}
+              mt={4}
+              type="submit"
+              p={0}
+              disabled={this.state.sending}
+            >
               Resend email confirmation code
             </Button>
-          </View>
+            <SecondaryText mt={2}>
+              If you don't see an email in your inbox, please check your spam folder
+            </SecondaryText>
+          </Form>
         );
       }
     }
@@ -50,3 +94,8 @@ export default class EmailConfirm extends Component {
     );
   }
 }
+
+export default reduxForm({
+  form: 'emailConfirm',
+  enableReinitialize: true
+})(EmailConfirm);

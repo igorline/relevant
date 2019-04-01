@@ -116,6 +116,7 @@ export const BodyText = styled(Text)`
 
 export const Button = styled.button`
   ${layout.button}
+  ${layout.buttonFont}
   ${p =>
     p.disabled
       ? `
@@ -125,6 +126,7 @@ export const Button = styled.button`
       : ''};
   ${mixins.background}
   ${mixins.padding}
+  ${mixins.width}
   ${mixins.margin}
   ${mixins.color}
 `;

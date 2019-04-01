@@ -15,8 +15,16 @@ export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);
 
-export const mediumScreenWidth = '714px';
-export const smallScreenWidth = '414px';
+export const mediumScreenWidth = 714;
+export const smallScreenWidth = 414;
+
+export const NESTING_UNIT = 8;
+export const POST_BUTTONS_NESTING_UNITS = 1.5;
+export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * NESTING_UNIT;
+
+export const NESTING_UNIT_RESONSIVE = 4;
+export const POST_BUTTONS_WIDTH_RESPONSIVE =
+  POST_BUTTONS_NESTING_UNITS * NESTING_UNIT_RESONSIVE;
 
 // this is handled by mixins now — deprecated
 export const universalBorder = (side, color, width) => `
@@ -31,17 +39,20 @@ export const textRow = {
   alignItems: 'center'
 };
 
+export const buttonFont = {
+  fontSize: sizing(1.5),
+  color: colors.white,
+  fontFamily: 'HelveticaNeue-Medium'
+};
+
 export const button = {
   background: colors.blue,
-  color: 'white',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   height: sizing(6),
   minWidth: sizing(18),
   padding: `0 ${sizing(2)}`,
-  fontSize: sizing(1.5),
-  fontFamily: 'HelveticaNeue-Medium',
   margin: 0
 };
 
@@ -49,9 +60,11 @@ export const tag = {
   ...button,
   cursor: 'pointer',
   background: colors.blue,
+  color: colors.white,
   minWidth: 0,
   height: sizing(4),
-  padding: sizing(1.5)
+  padding: sizing(1.5),
+  fontSize: sizing(1.5)
 };
 
 export const animatedElement = {

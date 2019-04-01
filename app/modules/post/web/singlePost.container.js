@@ -15,7 +15,8 @@ class SinglePostContainer extends Component {
     posts: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
-    comments: PropTypes.object
+    comments: PropTypes.object,
+    auth: PropTypes.object
   };
 
   static fetchData(dispatch, params) {
@@ -24,11 +25,21 @@ class SinglePostContainer extends Component {
   }
 
   componentDidMount() {
+    this.getPost();
+  }
+
+  getPost = () => {
     const { params } = this.props.match;
     const post = this.props.posts.posts[params.id];
     if (!post) {
       this.props.actions.getSelectedPost(params.id);
     }
+  };
+
+  componentDidUpdate(prevProps) {
+    // TODO this is not needed if we don't wipe post reducer
+    // when switching communities
+    if (prevProps.auth.community !== this.props.auth.community) this.getPost();
   }
 
   render() {

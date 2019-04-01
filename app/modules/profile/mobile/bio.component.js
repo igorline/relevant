@@ -10,7 +10,7 @@ let styles;
 
 class Bio extends Component {
   static propTypes = {
-    myProfile: PropTypes.bool,
+    isOwner: PropTypes.bool,
     user: PropTypes.object,
     actions: PropTypes.object,
     scrollTo: PropTypes.func
@@ -65,7 +65,7 @@ class Bio extends Component {
       />
     );
 
-    if (this.props.myProfile && !this.state.editing) {
+    if (this.props.isOwner && !this.state.editing) {
       editButton = (
         <Text
           onPress={() => {
@@ -102,7 +102,7 @@ class Bio extends Component {
       </View>
     );
 
-    if (this.props.myProfile && (!user.bio || user.bio.trim() === '')) {
+    if (this.props.isOwner && (!user.bio || user.bio.trim() === '')) {
       bio = (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {CTA}
@@ -118,7 +118,7 @@ class Bio extends Component {
         }}
       >
         <View style={[styles.break, { marginHorizontal: 0 }]} />
-        <View style={[(user && user.bio) || this.props.myProfile ? styles.bio : null]}>
+        <View style={[(user && user.bio) || this.props.isOwner ? styles.bio : null]}>
           {this.state.editing ? bioEdit : bio}
         </View>
       </View>

@@ -41,4 +41,3 @@ exports.sign = (req, res) => {
   res.write(JSON.stringify(returnData));
   res.end();
 };
-

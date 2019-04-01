@@ -14,8 +14,14 @@ const twitterIcon = require('app/public/img/icons/twitter_white.png');
 const redditIcon = require('app/public/img/icons/reddit.png');
 
 const TwitterButton = () => (
-  <ULink to="/auth/twitter" external mr="auto" mt={3}>
-    <ViewButton w={22} bg={colors.twitterBlue} m={0} c={colors.white} fdirection="row">
+  <ULink to="/auth/twitter" external mr={['auto', 0]} mt={3}>
+    <ViewButton
+      w={[22, 'auto']}
+      bg={colors.twitterBlue}
+      m={0}
+      c={colors.white}
+      fdirection="row"
+    >
       <Image resizeMode="contain" source={twitterIcon} w={3} h={3} mr={1.5} />
       <LinkFont c={colors.white}>Connect Twitter</LinkFont>
     </ViewButton>
@@ -23,8 +29,14 @@ const TwitterButton = () => (
 );
 
 const RedditButton = () => (
-  <ULink to="/auth/reddit" external mr="auto" mt={3}>
-    <ViewButton w={22} bg={colors.redditColor} m={0} c={colors.white} fdirection="row">
+  <ULink to="/auth/reddit" external mr={['auto', 0]} mt={3}>
+    <ViewButton
+      w={[22, 'auto']}
+      bg={colors.redditColor}
+      m={0}
+      c={colors.white}
+      fdirection="row"
+    >
       <Image resizeMode="contain" source={redditIcon} w={3} h={3} mr={1.5} />
       <LinkFont c={colors.white}>Connect Reddit</LinkFont>
     </ViewButton>

@@ -9,11 +9,4 @@ if (process.env.WEB === 'true') {
   GlobalStyle = require('app/styles/baseStyles').GlobalStyle;
 }
 
-export {
-  sizing,
-  colors,
-  layout,
-  mixins,
-  fonts,
-  GlobalStyle,
-};
+export { sizing, colors, layout, mixins, fonts, GlobalStyle };

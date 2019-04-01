@@ -33,4 +33,25 @@ export const GlobalStyle = createGlobalStyle`
   a {
     color: ${colors.blue};
   }
+
+  .smartbanner-top.smartbanner-android {
+    top: -80px !important;
+  }
+  .smartbanner-top.smartbanner-ios {
+    top: -80px !important;
+  }
+
+  // Hamburger menu transition time
+  .bm-overlay,
+  .bm-menu-wrap {
+    top: 0;
+    transition-duration: .3s !important;
+  }
+
+  @media screen
+  and (max-device-width: 414px) {
+    html {
+      font-size: 68%;
+    }
+  }
 `;

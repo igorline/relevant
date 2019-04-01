@@ -263,7 +263,8 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     if (!post.data.postDate) post = await post.addPostData();
     const { postDate } = post.data;
 
-    let rank = postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
+    let rank =
+      pagerank < 0 ? 0 : postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
     rank = Math.round(rank * 1000) / 1000;
 
     // But if a comment ranks highly - update post rank
@@ -474,6 +475,16 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           if (mUser.role !== 'admin') return null;
           query = {}; // TODO should this this as community
           group = ['everyone'];
+          createMentionNotification({
+            post,
+            user: { _id: null },
+            mUser,
+            type,
+            Notification: this.model('Notification'),
+            group,
+            mention,
+            events: this.events
+          });
         }
 
         const users = await this.model('User').find(query, 'deviceTokens');
@@ -484,29 +495,19 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           const payload = { 'Mention from': textParent.embeddedUser.name };
           apnData.sendNotification(user, alert, payload);
 
-          const dbNotificationObj = {
-            post: post._id,
-            forUser: user._id,
+          if (mention === 'everyone') return;
+
+          createMentionNotification({
+            post,
+            user,
+            mUser,
+            type,
+            Notification: this.model('Notification'),
             group,
-            byUser: mUser._id || mUser,
-            amount: null,
-            type: type + 'Mention',
-            personal: true,
-            read: false
-          };
-
-          const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
-          const note = await newDbNotification.save();
-
-          const newNotifObj = {
-            _id: group ? null : mention,
-            type: 'ADD_ACTIVITY',
-            payload: note
-          };
-
-          this.events.emit('postEvent', newNotifObj);
+            mention,
+            events: this.events
+          });
         });
-
         return null;
       } catch (err) {
         throw err;
@@ -521,6 +522,39 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
     return console.log('sendOutMentions error', err); // eslint-disable-line
   }
 };
+
+async function createMentionNotification({
+  post,
+  user,
+  mUser,
+  type,
+  Notification,
+  group,
+  mention,
+  events
+}) {
+  const dbNotificationObj = {
+    post: post._id,
+    forUser: user._id,
+    group,
+    byUser: mUser._id || mUser,
+    amount: null,
+    type: type + 'Mention',
+    personal: true,
+    read: false
+  };
+
+  const newDbNotification = new Notification(dbNotificationObj);
+  const note = await newDbNotification.save();
+
+  const newNotifObj = {
+    _id: group ? null : mention,
+    type: 'ADD_ACTIVITY',
+    payload: note
+  };
+
+  events.emit('postEvent', newNotifObj);
+}
 
 // pruneFeed (only for link posts)
 PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {

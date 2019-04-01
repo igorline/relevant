@@ -103,33 +103,15 @@ class ProfileComponent extends Component {
 
   render() {
     const { user } = this.props;
-    let followers = 0;
     let userImage = null;
     let relevance = 0;
     let balance = null;
     let userImageEl = null;
-    let following = 0;
-    let topTags;
 
     if (user) {
-      ({ followers, following } = this.props.user);
       if (user.image) userImage = user.image;
       if (user.relevance) relevance = user.relevance.pagerank || 0;
       if (user) balance = (user.balance + user.tokenBalance).toFixed(0);
-
-      if (user.topTags) {
-        topTags = user.topTags.map((tag, i) => (
-          <Text style={[styles.font10, styles.active]} key={tag._id}>
-            <Text
-              onPress={() => this.goToTopic(tag.tag)}
-              style={[styles.font10, styles.active]}
-            >
-              #{tag.tag}
-            </Text>
-            {i !== user.topTags.length - 1 ? ', ' : ''}
-          </Text>
-        ));
-      }
     }
 
     if (userImage) {
@@ -204,21 +186,6 @@ class ProfileComponent extends Component {
       }
     ];
 
-    let bottomSection;
-
-    if (topTags) {
-      bottomSection = (
-        <View style={{ paddingHorizontal: 20, flex: 1 }}>
-          <Text style={{ textAlign: 'center' }}>
-            <Text style={[styles.font10, styles.darkGrey]}>
-              {user.topTags.length ? 'Expertise: ' : null}
-              {topTags}
-            </Text>
-          </Text>
-        </View>
-      );
-    }
-
     return (
       <View
         style={[
@@ -233,24 +200,6 @@ class ProfileComponent extends Component {
         {optionsEl}
 
         <StatRow elements={statEls} />
-
-        <View style={{ flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
-          <View style={{ marginBottom: 3 }}>
-            <Text style={[styles.font10, styles.darkGrey]}>
-              Subscribers:{' '}
-              <Text style={[styles.font10, { fontWeight: 'bold' }]}>
-                {numbers.abbreviateNumber(followers || 0)}
-              </Text>
-              {' • '}
-              Subscribed to:{' '}
-              <Text style={[styles.font10, { fontWeight: 'bold' }]}>
-                {numbers.abbreviateNumber(following || 0)}
-              </Text>
-            </Text>
-          </View>
-
-          {bottomSection}
-        </View>
 
         {user.bio !== '' || this.props.isOwner ? (
           <Bio

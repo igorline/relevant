@@ -284,9 +284,14 @@ class SignupForm extends Component {
             <FormField {...field} />
           ))}
           <View display="flex" fdirection="row" justify="flex-end" mt={6} align="center">
-            <LinkFont>
+            <LinkFont inline={1}>
               By signing up, you agree to our{' '}
-              <ULink to="//relevant.community/eula.html" external target="_blank">
+              <ULink
+                to="//relevant.community/eula.html"
+                external
+                target="_blank"
+                inline={1}
+              >
                 Terms of Use
               </ULink>
             </LinkFont>

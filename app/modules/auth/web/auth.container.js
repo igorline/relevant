@@ -131,7 +131,7 @@ class AuthContainer extends Component {
 
     let title = '';
 
-    if (path === 'confirm/:user/:code') {
+    if (path === 'confirm/:user/:code' || path === 'confirm') {
       confirm = true;
       auth = <ConfirmEmail authNav={this.authNav} {...this.props} />;
       title = 'Confirm Your Email';
@@ -154,6 +154,8 @@ class AuthContainer extends Component {
       auth = <ResetPassword authNav={this.authNav} {...this.props} />;
       title = 'Reset Password';
     }
+
+    if (!visible) return null;
 
     return (
       <Modal visible={visible} close={this.close.bind(this)} title={title}>

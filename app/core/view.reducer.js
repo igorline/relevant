@@ -24,7 +24,7 @@ export default function auth(state = initialState, action) {
         case 'discover':
           return {
             ...state,
-            discover: action.payload.params,
+            discover: action.payload.params
           };
         default:
           return state;
@@ -43,13 +43,12 @@ export default function auth(state = initialState, action) {
             ...state,
             discover: {
               // ...state.discover,
-              tab: action.payload.view,
-            },
+              tab: action.payload.view
+            }
             // discover: {
             //   tab: action.payload.view
             // }
           };
-
 
         // case 'post':
         //   return Object.assign({}, state, {

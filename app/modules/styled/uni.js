@@ -21,6 +21,7 @@ export const Text = styled.Text`
   ${mixins.background}
   ${mixins.border}
   ${mixins.color}
+  ${mixins.height}
 `;
 
 export const InlineText = styled.Text`
@@ -54,7 +55,20 @@ export const ImageWrapper = styled.View`
 export const Divider = styled.View`
   ${mixins.margin}
   ${mixins.padding}
-  ${layout.universalBorder('bottom')}
+  ${p => {
+    if (p.screenSize && p.screenSize > 0) {
+      return `
+        height: ${sizing(4)};
+        background-color: ${colors.dividerBg};
+      `;
+    }
+    return layout.universalBorder('bottom');
+  }}
+`;
+
+export const MobileDivider = styled(View)`
+  height: ${sizing(4)};
+  background-color: ${colors.dividerBg};
 `;
 
 export const Header = styled(Text)`
@@ -118,6 +132,7 @@ export const Touchable = styled.Touchable``;
 
 export const Button = styled(Text)`
   ${layout.button}
+  ${layout.buttonFont}
   ${p => (!p.mobile ? 'cursor: pointer;' : '')}
   ${p =>
     p.disabled
@@ -163,26 +178,26 @@ export const Tag = styled(Text)`
 
 export const NumericalValue = styled(Text)`
   ${fonts.numericalValue}
+  ${mixins.width}
   ${mixins.font}
   ${mixins.inheritfont}
   ${mixins.color}
 `;
 
-export const MobileDivider = styled(View)`
-  height: ${sizing(4)};
-  background-color: ${colors.dividerBg};
-`;
-
-const NESTING_UNIT = 8;
-
 export const Spacer = styled(View)`
   flex-direction: row;
   position: relative;
-  padding-left: ${p => {
-    if (p.nestingLevel !== undefined && p.nestingLevel !== null) {
-      return sizing(p.nestingLevel * NESTING_UNIT);
+  ${p => {
+    if (Number.isInteger(p.nestingLevel) || Number.isInteger(p.additionalNesting)) {
+      const total = (p.nestingLevel || 0) + (p.additionalNesting || 0);
+      const UNIT = p.screenSize > 0 ? layout.NESTING_UNIT_RESONSIVE : layout.NESTING_UNIT;
+      if (!total * UNIT) {
+        return '';
+      }
+      return `padding-left: ${sizing(total * UNIT)};`;
     }
-    return sizing(NESTING_UNIT);
+    return '';
   }}
   flex-grow: 1;
+  ${mixins.flex}
 `;

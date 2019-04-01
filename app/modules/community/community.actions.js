@@ -135,3 +135,18 @@ export function deleteCommunity(community) {
     }
   };
 }
+
+export function joinCommunity(community) {
+  const { slug, name } = community;
+  return async () => {
+    try {
+      await api.request({
+        method: 'PUT',
+        endpoint: `community/${slug}/join`
+      });
+      return Alert.alert(`Joined Community: ${name}`, 'success');
+    } catch (err) {
+      return Alert.alert(err.message);
+    }
+  };
+}
