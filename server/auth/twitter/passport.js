@@ -1,3 +1,5 @@
+import { handleAdminInvite } from 'server/api/invites/invite.controller';
+
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const config = require('../../config/config');
@@ -106,6 +108,14 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
   } else if (!user.twitterId) {
     user = await addTwitterProfile({ profile, user, twitterAuth });
     user = await user.addReward({ type: 'twitter' });
+  }
+
+  if (!isNewUser && invitecode && invitecode !== 'undefined') {
+    try {
+      user = await handleAdminInvite({ invitecode, user });
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
   }
 
   return user.save();

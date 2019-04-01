@@ -32,7 +32,8 @@ const StyledRIcon = styled(RIcon)`
   ${mixins.borderRadius}
 `;
 
-const twitterIcon = '/img/icons/twitter_white.png';
+const twitterIcon = require('app/public/img/icons/twitter_white.png');
+const redditIcon = require('app/public/img/icons/reddit.png');
 
 class SignupForm extends Component {
   static propTypes = {
@@ -154,7 +155,7 @@ class SignupForm extends Component {
     }
   }
 
-  renderTwitter() {
+  renderSocial() {
     const { location } = this.props;
     let { redirect } = queryString.parse(location.search);
     if (!redirect) redirect = location.pathname;
@@ -162,9 +163,7 @@ class SignupForm extends Component {
 
     return (
       <View display="flex" fdirection="column" align-items="flex-start">
-        <SecondaryText>
-          Sign up to Relevant with your Twitter account or your Email.
-        </SecondaryText>
+        <SecondaryText>Sign up for Relevant.</SecondaryText>
         <View display="flex" fdirection="row" align="center" mt={7}>
           <ULink
             to={`/auth/twitter?invitecode=${invitecode}&redirect=${redirect}`}
@@ -172,8 +171,18 @@ class SignupForm extends Component {
             mr={4}
           >
             <Button bg={colors.twitterBlue}>
-              <Image source={twitterIcon} w={2} h={2} mr={2} />
+              <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
               Sign up with Twitter
+            </Button>
+          </ULink>
+          <ULink
+            to={`/auth/reddit?invitecode=${invitecode}&redirect=${redirect}`}
+            external
+            mr={4}
+          >
+            <Button bg={colors.redditColor}>
+              <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
+              Sign up with Reddit
             </Button>
           </ULink>
           <Touchable
@@ -206,7 +215,7 @@ class SignupForm extends Component {
       );
     }
     if (provider === 'twitter') {
-      return this.renderTwitter();
+      return this.renderSocial();
     }
     if (provider === 'email') {
       const FORM_FIELDS = [
