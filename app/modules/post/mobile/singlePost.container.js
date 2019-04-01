@@ -36,18 +36,23 @@ class SinglePostContainer extends Component {
   };
 
   componentWillMount() {
+    this.setTitle(this.props);
+    InteractionManager.runAfterInteractions(this.getPost());
+  }
+
+  componentDidUpdate(prevProps) {
+    // TODO this is not needed if we don't wipe post reducer
+    // when switching communities
+    if (prevProps.auth.community !== this.props.auth.community) this.getPost();
+  }
+
+  getPost = () => {
     const { posts, navigation } = this.props;
     const { id } = navigation.state.params;
     const post = posts.posts[id];
-    this.setTitle(this.props);
-
-    InteractionManager.runAfterInteractions(() => {
-      if (!post) {
-        this.props.actions.getSelectedPost(id);
-      }
-      this.props.actions.getComments(id);
-    });
-  }
+    if (!post) this.props.actions.getSelectedPost(id);
+    this.props.actions.getComments(id);
+  };
 
   setTitle(props) {
     const { posts, navigation } = props;

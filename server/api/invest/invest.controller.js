@@ -24,13 +24,13 @@ exports.postInvestments = async (req, res, next) => {
     const skip = parseInt(req.query.skip, 10);
     const { community } = req.query;
 
-    const investments = await Invest.find({ post: postId, ownPost: false })
+    const investments = await Invest.find({ post: postId, amount: { $gt: 0 } })
     .limit(limit)
     .skip(skip)
     .sort({ createdAt: -1 })
     .populate({
       path: 'investor',
-      select: 'relevance name image',
+      select: 'relevance name image handle',
       populate: {
         path: 'relevance',
         match: { global: true, community }

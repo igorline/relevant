@@ -12,14 +12,17 @@ const props = {
   auth: auth.auth,
   actions: {
     ...communityActions,
-    setCommunity,
-  },
+    setCommunity
+  }
 };
 
 test('Snapshot NavProfile', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <Community {...props} />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });

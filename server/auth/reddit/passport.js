@@ -7,7 +7,16 @@ const config = require('../../config/config');
 const User = require('../../api/user/user.model');
 const Invite = require('../../api/invites/invite.model');
 
-// User.find({ 'reddit.id': { $exists: true } }).remove();
+// User.find({ 'reddit.id': { $exists: true } })
+// .remove()
+// .exec();
+
+// User.findOne({ 'reddit.id': { $exists: true } }, '+reddit')
+// .then(async user => {
+//   user.redditId = null;
+//   user.reddit = null;
+//   await user.save();
+// });
 
 passport.use(
   new RedditStrategy(
@@ -50,9 +59,10 @@ export async function handleAuth({ req, redditAuth, profile, invitecode }) {
 
   const handle = profile._json.name;
   if (isNewUser) {
+    const extraRewards = Math.round(Math.log10(profile._json.comment_karma || 1) * 10);
     user = await addNewRedditUser({ handle });
     user = await addRedditProfile({ profile, user, redditAuth });
-    user = await user.initialCoins();
+    user = await user.addReward({ type: 'reddit', extraRewards });
     if (invitecode && invitecode !== 'undefined') {
       user = await Invite.processInvite({ invitecode, user });
     }

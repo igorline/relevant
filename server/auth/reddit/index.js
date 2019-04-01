@@ -12,7 +12,8 @@ router.get('/', auth.currentUser(), (req, res, next) => {
     duration: 'permanent',
     state: '?redirect=' + req.query.redirect + '&invitecode=' + req.query.invitecode,
     failureRedirect: '/user/login',
-    session: false
+    session: false,
+    scope: 'identity'
   })(req, res, next);
 });
 

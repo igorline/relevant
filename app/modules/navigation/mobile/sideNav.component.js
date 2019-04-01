@@ -41,13 +41,13 @@ const SideNav = props => (
         </ULink>
       </LogoContainer>
       <View flex={1}>
-        <NavProfileComponent {...props} mobile />
+        <NavProfileComponent {...props} />
       </View>
       <View flex={1}>
-        <CommunityNav {...props} mobile />
+        <CommunityNav {...props} />
       </View>
       <View mt={4} flex={1}>
-        <SideNavFooter mobile {...props} />
+        <SideNavFooter {...props} />
       </View>
     </ScrollView>
   </SafeAreaView>
@@ -55,11 +55,13 @@ const SideNav = props => (
 
 SideNav.propTypes = {
   className: PropTypes.string,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  screenSize: PropTypes.number
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  screenSize: state.navigation.screenSize
 });
 
 export default connect(

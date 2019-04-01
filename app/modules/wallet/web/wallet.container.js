@@ -7,16 +7,16 @@ import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 // import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import Earning from 'modules/wallet/earning.component';
-import { initDrizzle } from 'app/utils/eth';
+// import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
 import moment from 'moment';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
-import PostPreview from 'modules/post/web/post.component';
+import PostPreview from 'modules/post/postPreview.container';
 
-let drizzle;
+// let drizzle;
 
 const PAGE_SIZE = 50;
 
@@ -26,7 +26,8 @@ class WalletContainer extends Component {
     auth: PropTypes.object,
     contract: PropTypes.object,
     actions: PropTypes.object,
-    earnings: PropTypes.object
+    earnings: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   static contextTypes = {
@@ -44,13 +45,14 @@ class WalletContainer extends Component {
       // temporarily disabled
       // drizzle = initDrizzle(this.context.store);
     }
+    this.reload();
   }
 
-  componentDidUpdate(prevProps) {
-    const { isAuthenticated } = this.props.auth;
-    if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
-      drizzle = initDrizzle(this.context.store);
-    }
+  componentDidUpdate() {
+    // const { isAuthenticated } = this.props.auth;
+    // if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
+    //   drizzle = initDrizzle(this.context.store);
+    // }
   }
 
   hasMore = true;
@@ -77,6 +79,7 @@ class WalletContainer extends Component {
   );
 
   renderRow = ({ item }) => {
+    const { screenSize } = this.props;
     if (!item) return null;
     const earning = item;
 
@@ -94,6 +97,7 @@ class WalletContainer extends Component {
         payout={payout}
         month={showMonth ? month : null}
         PostPreview={PostPreview}
+        screenSize={screenSize}
       />
     );
   };
@@ -136,6 +140,7 @@ function mapStateToProps(state) {
     accounts: state.accounts,
     contracts: state.contracts,
     accountBalances: state.accountBalances,
+    screenSize: state.navigation.screenSize,
     drizzle: {
       transactions: state.transactions,
       web3: state.web3,

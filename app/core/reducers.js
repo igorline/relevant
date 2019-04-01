@@ -72,14 +72,15 @@ const rootReducer = (state, action) => {
 
     if (community === action.payload) return appReducer(state, action);
 
-    const { posts, user, stats } = state; // eslint-disable-line
+    const { posts, user, stats, earnings } = state; // eslint-disable-line
     if (community) {
       communityState = {
         ...communityState,
         [community]: {
           posts,
           user,
-          stats
+          stats,
+          earnings
         }
       };
     }
@@ -91,7 +92,6 @@ const rootReducer = (state, action) => {
         cachedCommunityState.user.users[state.auth.user._id] &&
         cachedCommunityState.user.users[state.auth.user._id]) ||
       state.auth.user;
-    // console.log('hmmmm...', authUser.relevance.community);
 
     const newState = {
       ...state,

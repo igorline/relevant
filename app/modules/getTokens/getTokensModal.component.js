@@ -54,7 +54,7 @@ class GetTokensModal extends Component {
           </View>
         )}
         {!user.confirmed ? (
-          <View fdirection="column">
+          <View fdirection="column" justify={'stretch'}>
             <View display="flex" fdirection="row" align="center" mt={4}>
               <BodyText c={colors.secondaryText} inline={1}>
                 Confirm your e-mail to earn{' '}
@@ -71,10 +71,10 @@ class GetTokensModal extends Component {
               onClick={sendConfirmation}
               onPress={sendConfirmation}
               external
-              mr="auto"
+              mr={['auto', 0]}
               mobile={mobile}
             >
-              <ViewButton w={22} mt={3} mobile={mobile}>
+              <ViewButton w={[22, 'auto']} mt={3} mobile={mobile}>
                 <LinkFont c={colors.white}>Confirm E-mail</LinkFont>
               </ViewButton>
             </ULink>
