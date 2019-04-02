@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { s3 } from 'app/utils';
 import { connect } from 'react-redux';
 import { updateUser } from 'modules/auth/auth.actions';
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';
 import SettingsModalComponent from 'modules/ui/web/settingsModal.component';
 import { browserAlerts } from 'app/utils/alert';
@@ -46,7 +47,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      updateUser
+      updateUser,
+      ...navigationActions
     },
     dispatch
   )

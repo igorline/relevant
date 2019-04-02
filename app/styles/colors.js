@@ -10,6 +10,7 @@ export const red = '#D0021B';
 export const twitterBlue = '#00aced';
 export const dividerBg = 'hsl(0, 0%, 97%)';
 export const lightBorder = '#D8D8D8';
+export const redditColor = '#ff4500';
 
 export const background = white;
 export const secondaryText = grey;
