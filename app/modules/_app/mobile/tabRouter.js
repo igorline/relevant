@@ -24,6 +24,7 @@ import Wallet from 'modules/wallet/mobile/wallet.container';
 import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
 import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
+import CommunityMembers from 'modules/community/mobile/communityMembers.component';
 
 export const DefaultStack = {
   profile: {
@@ -102,6 +103,12 @@ export const DefaultStack = {
     screen: VoterList,
     params: {
       title: 'Votes'
+    }
+  },
+  communityMembers: {
+    screen: CommunityMembers,
+    params: {
+      title: 'Community Members'
     }
   },
   peopleView: {

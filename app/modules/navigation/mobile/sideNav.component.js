@@ -44,7 +44,10 @@ const SideNav = props => (
         <NavProfileComponent {...props} />
       </View>
       <View flex={1}>
-        <CommunityNav {...props} />
+        <CommunityNav
+          viewCommunityMembers={() => props.navigation.navigate('communityMembers')}
+          {...props}
+        />
       </View>
       <View mt={4} flex={1}>
         <SideNavFooter {...props} />
@@ -56,7 +59,8 @@ const SideNav = props => (
 SideNav.propTypes = {
   className: PropTypes.string,
   actions: PropTypes.object,
-  screenSize: PropTypes.number
+  screenSize: PropTypes.number,
+  navigation: PropTypes.object
 };
 
 const mapStateToProps = state => ({
