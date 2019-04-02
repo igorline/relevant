@@ -530,6 +530,7 @@ exports.updateHandle = async (req, res, next) => {
       handle: user.handle,
       _id: user._id
     };
+
     await CommunityMember.update(
       { user: user._id },
       { embeddedUser: newUser },

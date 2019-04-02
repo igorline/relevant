@@ -304,6 +304,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // pagerank('crypto');
+// pagerank('relevant');
 
 // setTimeout(TwitterWorker.updateTwitterPosts, 5000);
 
