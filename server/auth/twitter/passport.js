@@ -8,7 +8,10 @@ const User = require('../../api/user/user.model');
 const Invite = require('../../api/invites/invite.model');
 const auth = require('../auth.service');
 
+// const devEnv = process.env.NODE_ENV !== 'production';
+
 // User.remove({ handle: 'relevantfeed' }).exec();
+
 // async function removeTwitterProfile() {
 //   try {
 //     const user = await User.findOne({ twitterHandle: 'relevantfeed' });

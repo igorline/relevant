@@ -125,6 +125,7 @@ const routes = [
               { path: '/user/forgot', component: Auth, exact: true },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!
               { path: '/user/resetPassword/:token', component: Auth, exact: true },
+              { path: '/user/resetPassword', component: Auth, exact: true },
               { path: '/user/confirm/:user/:code', component: Auth, exact: true },
               { path: '/user/confirmEmail', component: Auth, exact: true },
               { path: '/user/invite/:code', component: Invite, exact: true },

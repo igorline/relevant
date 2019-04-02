@@ -150,8 +150,14 @@ class AuthContainer extends Component {
         <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
       );
       title = 'Join the Community';
-    } else if (path === 'resetPassword/:token') {
-      auth = <ResetPassword authNav={this.authNav} {...this.props} />;
+    } else if (path === 'resetPassword/:token' || path === 'resetPassword') {
+      auth = (
+        <ResetPassword
+          authNav={this.authNav}
+          {...this.props}
+          close={this.close.bind(this)}
+        />
+      );
       title = 'Reset Password';
     }
 
