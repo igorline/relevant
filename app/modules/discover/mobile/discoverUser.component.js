@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, mainPadding } from 'app/styles/global';
 import Stats from 'modules/stats/mobile/stats.component';
-import UserName from 'modules/user/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 
 let styles;
@@ -66,13 +66,14 @@ class DiscoverUser extends Component {
       >
         <View style={styles.discoverUserContainer}>
           <View style={[styles.discoverUser]}>
-            <UserName
+            <AvatarBox
               bio
               big
               type={this.props.type}
               relevance={this.props.topic ? false : this.props.relevance}
-              user={{ ...user, relevance }}
+              user={{ ...user, relevance: { pagerank: relevance } }}
               setSelected={this.setSelected}
+              showRelevance
               // topic={{ topic: this.props.topic, relevance }}
             />
             <View

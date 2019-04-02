@@ -137,7 +137,6 @@ class CommunityMembers extends Component {
     );
   }
 }
-
 const mapStateToProps = state => ({
   routing: state.routing,
   community: state.community

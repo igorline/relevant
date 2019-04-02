@@ -15,7 +15,8 @@ class CommunityActive extends Component {
     actions: PropTypes.object,
     view: PropTypes.object,
     auth: PropTypes.object,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    viewCommunityMembers: PropTypes.func
   };
 
   componentDidMount() {
@@ -40,7 +41,16 @@ class CommunityActive extends Component {
   }
 
   render() {
-    const { community, children, members, actions, view, screenSize, auth } = this.props;
+    const {
+      community,
+      children,
+      members,
+      actions,
+      view,
+      screenSize,
+      auth,
+      viewCommunityMembers
+    } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
     const userId = get(auth, 'user._id', null);
@@ -84,11 +94,7 @@ class CommunityActive extends Component {
           <SecondaryText mt={[3, 2]}>{community.description}</SecondaryText>
           <View mt={3} mb={2} fdirection="row" justify="space-between">
             <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
-            <ULink
-              to="#"
-              onPress={() => this.props.actions.showModal('communityMembers')}
-              onClick={() => this.props.actions.showModal('communityMembers')}
-            >
+            <ULink to="#" onPress={viewCommunityMembers} onClick={viewCommunityMembers}>
               <CommunityLink c={colors.blue}>See All</CommunityLink>
             </ULink>
           </View>
