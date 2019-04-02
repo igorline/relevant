@@ -19,9 +19,9 @@ const OnboardingModal = props => (
       <Title>Build Trust</Title>
     </ImageWrapper>
     <Text fs={1.75} mt={1}>
-      Boost your Reputation by posting quality comments. As your Reputation ® grows so
-      does your voting impact, and your earnings. The most reputable users become
-      community leaders.
+      Boost your Reputation by posting quality comments. As your Reputation grows so does
+      your voting impact, and your earnings. The most reputable users become community
+      leaders.
     </Text>
 
     <ImageWrapper mt={6}>
@@ -38,8 +38,8 @@ const OnboardingModal = props => (
     </ImageWrapper>
 
     <Text fs={1.75} mt={1}>
-      Earn coins for posting and upvoting quality links. Coins can be traded in for
-      Relevant Tokens that represent ownership in the platform.
+      Earn coins for upvoting quality links. Coins can be traded in for Relevant Tokens
+      that represent ownership in the platform.
     </Text>
     <View align={'flex-start'} mt={3}>
       <Button onPress={() => props.close()}>Got It</Button>

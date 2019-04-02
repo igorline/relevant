@@ -35,7 +35,7 @@ router.put('/updateCommunity', auth.isAuthenticated(), controller.updateComunity
 router.put('/ethAddress', auth.isAuthenticated(), controller.ethAddress);
 router.put('/confirm', controller.confirm);
 router.put('/forgot', controller.forgot);
-router.put('/resetPassword', controller.resetPassword);
+router.put('/resetPassword', auth.currentUser(), controller.resetPassword);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.put('/', auth.isAuthenticated(), controller.update);
 router.put('/block', auth.isAuthenticated(), controller.block);

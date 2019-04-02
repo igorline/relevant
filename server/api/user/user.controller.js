@@ -176,13 +176,17 @@ exports.onboarding = (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   try {
     const { token, password } = req.body;
-    if (!token) throw new Error('token missing');
-    let user = await User.findOne({ resetPasswordToken: token });
+    let { user } = req;
+    if (!token && !user) throw new Error('token missing');
+    if (!user) {
+      user = await User.findOne({ resetPasswordToken: token });
+      if (user && user.resetPasswordExpires > Date.now()) {
+        throw new Error('Password reset time has expired');
+      }
+    }
     if (!user) throw new Error('No user found');
     if (!user.onboarding) user.onboarding = 0;
-    if (user.resetPasswordExpires > Date.now()) {
-      throw new Error('Password reset time has expired');
-    }
+
     user.password = password;
     user = await user.save();
     res.status(200).json({ success: true });
@@ -413,11 +417,10 @@ exports.show = async function show(req, res, next) {
   try {
     let { user } = req;
     let handle = req.params.id;
-    let me = null;
     if (!handle && user) {
       handle = user.handle;
-      me = true;
     }
+    const me = user && user.handle === handle;
 
     const community = req.query.community || 'relevant';
 
@@ -503,7 +506,7 @@ exports.updateHandle = async (req, res, next) => {
 
     if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
-    const { handle } = req.body.user;
+    const { handle, email } = req.body.user;
     if (!handle) throw new Error('missing handle');
 
     // make sure its not used
@@ -512,11 +515,26 @@ exports.updateHandle = async (req, res, next) => {
       if (used) throw new Error('This handle is already taken');
     }
 
+    if (email && email !== user.email) {
+      const usedEmail = await User.findOne({ _id: { $ne: user._id }, email });
+      if (usedEmail) throw new Error('This email is already in use');
+      user.email = email;
+    }
+
     user.handle = handle;
     user.role = 'user';
 
-    // TODO - do we still want to do this?
-    // await TwitterWorker.updateTwitterPosts(user._id);
+    const newUser = {
+      name: user.name,
+      image: user.image,
+      handle: user.handle,
+      _id: user._id
+    };
+    await CommunityMember.update(
+      { user: user._id },
+      { embeddedUser: newUser },
+      { multi: true }
+    );
 
     user = await user.save();
 
