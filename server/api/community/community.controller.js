@@ -46,7 +46,8 @@ export async function members(req, res, next) {
       blocked = [...user.blocked, ...user.blockedBy];
     }
     // const userId = user ? user._id : null;
-    const limit = req.params.limit || 20;
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
+    const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
     const community = req.params.slug;
     // const isMember = await CommunityMember.findOne({ community, user: userId });
     const users = await CommunityMember.find({
@@ -56,7 +57,8 @@ export async function members(req, res, next) {
       }
     })
     .sort({ role: 1, reputation: -1 })
-    .limit(limit);
+    .limit(limit)
+    .skip(skip);
     res.status(200).json(users || []);
   } catch (err) {
     next(err);

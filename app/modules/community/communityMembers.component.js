@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
-import { joinCommunity, searchMembers } from 'community/community.actions';
+import {
+  joinCommunity,
+  searchMembers,
+  getCommunityMembers
+} from 'community/community.actions';
 import AvatarBox from 'modules/user/avatarbox.component';
 import { connect } from 'react-redux';
 import { Input } from 'modules/styled/web';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
+import InfScroll from 'modules/listview/web/infScroll.component';
 
 import { View, BodyText, SecondaryText } from 'modules/styled/uni';
 
@@ -26,10 +31,23 @@ class CommunityMembers extends Component {
     actions: PropTypes.object
   };
 
+  constructor(props, context) {
+    super(props, context);
+    // TODO should set it here and not on server
+    this.pageSize = 2;
+    this.hasMore = true;
+    this.ready = false;
+    this.role = null;
+  }
+
   state = {
     searchResults: [],
     searchValue: ''
   };
+
+  componentDidMount() {
+    this.load(0, 0);
+  }
 
   searchMembers = async val => {
     const { community } = this.props;
@@ -48,6 +66,18 @@ class CommunityMembers extends Component {
     });
   };
 
+  load = (page, length) => {
+    this.hasMore = page * this.pageSize <= length;
+    if (this.hasMore) {
+      const { community } = this.props;
+      this.props.actions.getCommunityMembers({
+        slug: community.active,
+        skip: length,
+        limit: this.pageSize
+      });
+    }
+  };
+
   getTitle(role) {
     const TITLES = {
       admin: 'Adminstrators',
@@ -56,14 +86,31 @@ class CommunityMembers extends Component {
     return TITLES[role];
   }
 
+  renderRow = memberId => {
+    const { community } = this.props;
+    const { members } = community;
+    const user = members[memberId];
+    const title = this.role === user.role ? null : this.getTitle(user.role);
+    this.role = user.role;
+    return (
+      <React.Fragment key={user._id}>
+        {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
+        <CommunityMember
+          user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
+          key={user._id}
+        />
+      </React.Fragment>
+    );
+  };
+
   render() {
     const { community } = this.props;
     const { searchResults, searchValue } = this.state;
-    const { active, members, communityMembers } = community;
-    const activeCommunityMembers = communityMembers[active];
+    const { active, communityMembers } = community;
+    const activeCommunityMembers = communityMembers[active] || [];
+    const rows = activeCommunityMembers.map(a => this.renderRow(a));
     // const admins = activeCommunityMembers.filter(member => members[member].role === 'admin');
     // const others = activeCommunityMembers.filter(member => admins.indexOf(member) === -1);
-    let role;
     return (
       <View fdirection="column">
         <BodyText>Search bar</BodyText>
@@ -73,26 +120,20 @@ class CommunityMembers extends Component {
           value={searchValue}
           type="search"
         />
+        <InfScroll
+          className={'communityMembers'}
+          data={activeCommunityMembers}
+          loadMore={p => this.load(p, activeCommunityMembers.length)}
+          hasMore={this.hasMore}
+          useWindow
+        >
+          {rows}
+        </InfScroll>
         <View mt={2}>
-          {!searchValue &&
-            activeCommunityMembers.map(memberId => {
-              const user = members[memberId];
-              const title = role === user.role ? null : this.getTitle(user.role);
-              role = user.role;
-              return (
-                <React.Fragment key={user._id}>
-                  {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
-                  <CommunityMember
-                    user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
-                    key={user._id}
-                  />
-                </React.Fragment>
-              );
-            })}
           {!!searchValue && searchResults.length
             ? searchResults.map(user => {
-              const title = role === user.role ? null : this.getTitle(user.role);
-              role = user.role;
+              const title = this.role === user.role ? null : this.getTitle(user.role);
+              this.role = user.role;
               return (
                 <React.Fragment key={user._id}>
                   {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
@@ -110,6 +151,22 @@ class CommunityMembers extends Component {
   }
 }
 
+// {!searchValue &&
+//   activeCommunityMembers.map(memberId => {
+//     const user = members[memberId];
+//     const title = this.role === user.role ? null : this.getTitle(user.role);
+//     this.role = user.role;
+//     return (
+//       <React.Fragment key={user._id}>
+//         {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
+//         <CommunityMember
+//           user={{ ...user.embeddedUser, relevance: user.reputation + 0.1 }}
+//           key={user._id}
+//         />
+//       </React.Fragment>
+//     );
+//   })}
+
 const mapStateToProps = state => ({
   routing: state.routing,
   community: state.community
@@ -120,7 +177,8 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       joinCommunity,
-      searchMembers
+      searchMembers,
+      getCommunityMembers
     },
     dispatch
   )
