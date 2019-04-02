@@ -124,6 +124,7 @@ class App extends Component {
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
+    if (auth.user.role === 'temp') return;
     if (!auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
@@ -172,6 +173,14 @@ class App extends Component {
     if (!prevProps.auth.user && auth.user) {
       this.handleUserLogin();
     }
+    if (
+      prevProps.auth.user &&
+      auth.user &&
+      prevProps.auth.user.role === 'temp' &&
+      auth.user.role !== 'temp'
+    ) {
+      this.handleUserLogin();
+    }
   }
 
   toggleLogin(authType) {
@@ -198,6 +207,8 @@ class App extends Component {
     }
     if (!globalModal) return null;
     globalModal = modals[globalModal] || globalModal;
+
+    if (typeof globalModal === 'string') return null;
     const { Body } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
     return (

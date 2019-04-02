@@ -69,7 +69,7 @@ function getUser(select) {
 function blocked() {
   return compose()
   .use(validateTokenLenient)
-  .use(getUser('blocked blockedBy'));
+  .use(getUser('+blocked +blockedBy'));
 }
 
 function currentUser() {
