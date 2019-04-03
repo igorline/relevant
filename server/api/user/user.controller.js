@@ -1,6 +1,7 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import merge from 'lodash.merge';
 import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
@@ -683,6 +684,18 @@ exports.updateUserTokenBalance = async (req, res, next) => {
     }
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
     user.tokenBalance = userBalance;
+    await user.save();
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateUserNotifications = async (req, res, next) => {
+  try {
+    const { user, body } = req;
+    const newSettings = merge(user.notificationSettings.toObject(), body);
+    user.notificationSettings = newSettings;
     await user.save();
     res.status(200).json(user);
   } catch (err) {

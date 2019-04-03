@@ -192,6 +192,24 @@ export function updateUser(user, preventLocalUpdate) {
   };
 }
 
+export function updateNotificationSettings(notificationSettings) {
+  return async dispatch => {
+    try {
+      const res = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/notifications',
+        body: JSON.stringify(notificationSettings)
+      });
+      dispatch(updateAuthUser(res));
+      return true;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
+  };
+}
+
 export function setDeviceToken(token) {
   return {
     type: 'SET_DEVICE_TOKEN',
