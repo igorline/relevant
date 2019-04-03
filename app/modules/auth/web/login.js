@@ -7,7 +7,8 @@ import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import queryString from 'query-string';
 
-const twitterIcon = '/img/icons/twitter_white.png';
+const twitterIcon = require('app/public/img/icons/twitter_white.png');
+const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
@@ -95,32 +96,60 @@ class LoginForm extends Component {
           </a>
         </View>
 
-        <View display="flex" fdirection="row" align="center" mt={7} justify="flex-end">
-          {!local ? (
+        <View
+          display="flex"
+          fdirection={['row', 'column']}
+          align={['center', 'stretch']}
+          mt={4}
+        >
+          {!local && (
             <React.Fragment>
-              <View fdirection={['row', 'column']}>
-                <LinkFont shrink={1}>
-                  Not registered yet?{' '}
-                  <a onClick={() => this.props.authNav('signup')}>Sign up</a>
-                </LinkFont>
-              </View>
               <ULink
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
-                ml={2}
+                mr={[2, 0]}
               >
-                <Button bg={colors.twitterBlue}>
-                  <Image source={twitterIcon} w={2} h={2} mr={2} />
+                <Button mt={2} flex={1} bg={colors.twitterBlue}>
+                  <Image source={twitterIcon} w={2.5} h={2.5} mr={1.5} />
                   Sign In with Twitter
                 </Button>
               </ULink>
             </React.Fragment>
-          ) : (
-            <Button onClick={this.submit} m={0}>
+          )}
+          {!local ? (
+            <React.Fragment>
+              <ULink
+                flex={1}
+                to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
+                external
+                mr={[2, 0]}
+              >
+                <Button mt={2} flex={1} bg={colors.redditColor}>
+                  <Image
+                    resizeMode={'contain'}
+                    source={redditIcon}
+                    w={3}
+                    h={3}
+                    mr={1.5}
+                  />
+                  Sign In with Reddit
+                </Button>
+              </ULink>
+            </React.Fragment>
+          ) : null}
+          {local ? (
+            <Button mt={2} onClick={this.submit} mr={[2, 0]}>
               {' '}
               Sign In{' '}
             </Button>
-          )}
+          ) : null}
+
+          <View mt={[2, 4]}>
+            <LinkFont shrink={1}>
+              Not registered yet?{' '}
+              <a onClick={() => this.props.authNav('signup')}>Sign up</a>
+            </LinkFont>
+          </View>
         </View>
       </div>
     );

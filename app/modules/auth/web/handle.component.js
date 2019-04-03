@@ -15,7 +15,8 @@ class LoginForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.user.handle || ''
+      username: props.user.handle || '',
+      email: null
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
@@ -27,15 +28,18 @@ class LoginForm extends Component {
 
   submit() {
     const { user, actions } = this.props;
+    const updatedUser = { ...user };
     if (!this.state.username) {
       browserAlerts.alert('username requied');
       return;
     }
-    user.handle = this.state.username;
-    actions.updateHandle(user);
+    updatedUser.handle = this.state.username;
+    this.state.email ? (updatedUser.email = this.state.email) : null;
+    actions.updateHandle(updatedUser);
   }
 
   render() {
+    const { user } = this.props;
     return (
       <View>
         <FormField
@@ -55,6 +59,24 @@ class LoginForm extends Component {
           }}
           error={this.props.nameError}
         />
+
+        {user && !user.email ? (
+          <FormField
+            type="email"
+            placeholder="email (optional for email reset and notifications)"
+            label="Add your email:"
+            onChange={e => {
+              const email = e.target.value.trim();
+              this.handleChange('email', email);
+            }}
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                this.submit();
+              }
+            }}
+          />
+        ) : null}
+
         <View justify="flex-start">
           <Button onClick={this.submit} ml="auto" mt={4}>
             Finish

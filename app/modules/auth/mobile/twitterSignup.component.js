@@ -70,11 +70,10 @@ export default class TwitterSignup extends Component {
     if (!string) return null;
     const match = NAME_PATTERN.test(string);
     if (!match) {
-      return this.nameError =
-        'username can only contain letters, numbers, dashes and underscores';
+      return (this.nameError =
+        'username can only contain letters, numbers, dashes and underscores');
     }
-    this.props.actions.checkUser(string, 'name')
-    .then(results => {
+    this.props.actions.checkUser(string, 'name').then(results => {
       if (results && (!preUser && results._id !== preUser._id)) {
         this.usernameExists = true;
         this.nameError = 'This handle is already taken';
@@ -97,8 +96,7 @@ export default class TwitterSignup extends Component {
             clearTextOnFocus={false}
             placeholder="username"
             onChangeText={username => {
-              username = username.replace('@', '')
-              .trim();
+              username = username.replace('@', '').trim();
               this.setState({ username });
               this.checkUser(username.trim());
             }}
@@ -157,9 +155,9 @@ export default class TwitterSignup extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ?
-          StatusBar.currentHeight / 2 + 64 :
-          (IphoneX ? 88 : 64) }
+        keyboardVerticalOffset={
+          Platform.OS === 'android' ? StatusBar.currentHeight / 2 + 64 : IphoneX ? 88 : 64
+        }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}

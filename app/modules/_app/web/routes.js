@@ -112,7 +112,12 @@ const routes = [
               { path: '/user/signup', component: Auth, exact: true },
               {
                 path: '/user/confirm/:id/:code',
-                component: ProfileContainer,
+                component: Auth,
+                exact: true
+              },
+              {
+                path: '/user/confirm',
+                component: Auth,
                 exact: true
               },
               { path: '/user/profile/:id', component: ProfileContainer, exact: true },
@@ -120,6 +125,7 @@ const routes = [
               { path: '/user/forgot', component: Auth, exact: true },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!
               { path: '/user/resetPassword/:token', component: Auth, exact: true },
+              { path: '/user/resetPassword', component: Auth, exact: true },
               { path: '/user/confirm/:user/:code', component: Auth, exact: true },
               { path: '/user/confirmEmail', component: Auth, exact: true },
               { path: '/user/invite/:code', component: Invite, exact: true },

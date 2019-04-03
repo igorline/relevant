@@ -15,8 +15,12 @@ beforeAll(async () => {
 });
 
 describe('Pagerank', () => {
-  test('Log Current Pagerank', async () => {
-    const communityId = (await Community.findOne({ slug: community }))._id;
-    await computePageRank({ communityId, community, debug: true });
-  });
+  test(
+    'Log Current Pagerank',
+    async () => {
+      const communityId = (await Community.findOne({ slug: community }))._id;
+      await computePageRank({ communityId, community, debug: true });
+    },
+    60 * 1000
+  );
 });

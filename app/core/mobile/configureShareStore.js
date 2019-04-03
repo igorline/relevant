@@ -6,8 +6,8 @@ window.navigator.userAgent = 'react-native';
 
 export default function configureStore() {
   const store = applyMiddleware(thunk)(createStore)(
-    rootReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    rootReducer
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );
 
   if (module.hot) {

@@ -278,6 +278,7 @@ function startTwitterUpdate() {
 // startTwitterUpdate();
 // startBasicIncomeUpdate();
 // startRewards();
+// updateRewards();
 
 if (process.env.NODE_ENV !== 'production') {
   // startTwitterUpdate();
@@ -303,6 +304,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // pagerank('crypto');
+// pagerank('relevant');
 
 // setTimeout(TwitterWorker.updateTwitterPosts, 5000);
 

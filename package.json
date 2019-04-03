@@ -85,6 +85,7 @@
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.0",
     "passport-local": "^1.0.0",
+    "passport-reddit": "^0.2.4",
     "passport-twitter": "^1.0.4",
     "path": "^0.12.7",
     "pell": "^0.7.0",

@@ -10,6 +10,7 @@ import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import { required } from 'modules/form/validators';
 import UAvatar from 'modules/user/UAvatar.component';
+import ULink from 'modules/navigation/ULink.component';
 
 const StyledRIcon = styled(RIcon)`
   * {
@@ -31,12 +32,13 @@ const Form = styled.form`
 
 class SettingsModal extends Component {
   render() {
-    const { handleSubmit, initialValues } = this.props;
+    const { handleSubmit, initialValues, actions } = this.props;
 
     const imageProps = {
       p: 2,
       w: 9,
       h: 9,
+      m: '1 0 0 0',
       bg: colors.blue,
       bradius: '50%'
     };
@@ -76,6 +78,14 @@ class SettingsModal extends Component {
           {FORM_FIELDS.map((field, index) => (
             <Field {...field} key={index} />
           ))}
+          <ULink
+            mt={2}
+            to={'#'}
+            to={'/user/resetPassword'}
+            onClick={() => actions.hideModal()}
+          >
+            Reset Password
+          </ULink>
           <View justify="flex-end" mt={3} fdirection="row">
             <Button bg={colors.white} c={colors.black} onClick={() => this.props.close()}>
               Cancel
@@ -93,7 +103,8 @@ class SettingsModal extends Component {
 SettingsModal.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
-  initialValues: PropTypes.object
+  initialValues: PropTypes.object,
+  actions: PropTypes.actions
 };
 
 export default reduxForm({

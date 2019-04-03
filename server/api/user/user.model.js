@@ -11,7 +11,7 @@ import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
-const authTypes = ['github', 'twitter', 'facebook', 'google'];
+const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit'];
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -46,6 +46,9 @@ const UserSchema = new Schema(
     salt: { type: String, select: false },
     facebook: {},
     twitter: { type: Object, select: false },
+    reddit: { type: Object, select: false },
+    redditId: String,
+    redditAuth: { type: Object, select: false },
     google: {},
     github: {},
     relevanceRecord: [
@@ -376,9 +379,9 @@ UserSchema.methods.updateMeta = async function updateMeta() {
   }
 };
 
-UserSchema.methods.addReward = async function addReward({ type, user }) {
+UserSchema.methods.addReward = async function addReward({ type, user, extraRewards }) {
   try {
-    const amount = getRewardForType(type);
+    const amount = getRewardForType(type) + (extraRewards || 0);
     const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
 
     // TODO - update this and tie it to smart contract

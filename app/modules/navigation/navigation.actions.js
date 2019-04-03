@@ -73,7 +73,7 @@ export function push(route) {
     // check if we need this
     // console.log('c', route.community, route.community !== 'undefined');
     if (route.community && route.community !== '') {
-      dispatch(setCommunity(route.community));
+      requestAnimationFrame(() => dispatch(setCommunity(route.community)));
     }
   };
 }

@@ -28,6 +28,7 @@ export const REFERRAL_REWARD = 20; // amount of tokens awarded both the referrer
 export const TWITTER_REWARD = 20; // amount of tokens awarded for connecting twitter
 export const EMAIL_REWARD = 20; // amount of tokens awarded for connecting email
 export const CASHOUT_LIMIT = 100; // amount of tokens one needs to earn to cash out
+export const REDDIT_REWARD = 20;
 
 export const TOKEN_DECIMALS = 1e18;
 
@@ -47,6 +48,8 @@ export const MAX_AIRDROP = 300;
 
 export const getRewardForType = type => {
   switch (type) {
+    case 'reddit':
+      return REDDIT_REWARD;
     case 'email':
       return EMAIL_REWARD;
     case 'twitter':

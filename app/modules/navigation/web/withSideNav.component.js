@@ -36,7 +36,7 @@ class WithSideNav extends Component {
               isOpen={sideNavIsOpen}
               onStateChange={this.isMenuOpen}
             >
-              <View fdirection="column" display="flex">
+              <View fdirection="column" display="flex" style={{ top: 0 }}>
                 <SideNav {...this.props} />
               </View>
             </Menu>
