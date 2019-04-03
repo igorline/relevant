@@ -47,6 +47,34 @@ const UserSchema = new Schema(
     facebook: {},
     twitter: { type: Object, select: false },
     reddit: { type: Object, select: false },
+    notificationSettings: {
+      email: {
+        digest: {
+          type: Boolean,
+          default: true
+        },
+        replies: {
+          type: Boolean,
+          default: true
+        },
+        all: {
+          type: Boolean,
+          default: true
+        }
+      },
+      mobile: {
+        all: {
+          type: Boolean,
+          default: true
+        }
+      },
+      desktop: {
+        all: {
+          type: Boolean,
+          default: true
+        }
+      }
+    },
     redditId: String,
     redditAuth: { type: Object, select: false },
     google: {},

@@ -74,6 +74,7 @@
     "jsonwebtoken": "^5.7.0",
     "linkifyjs": "^2.1.8",
     "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.1",
     "mailgun-js": "^0.22.0",
     "moment": "^2.13.0",
     "mongoose": "^4.5.0",

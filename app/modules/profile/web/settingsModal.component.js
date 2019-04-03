@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { required } from 'modules/form/validators';
 import UAvatar from 'modules/user/UAvatar.component';
 import ULink from 'modules/navigation/ULink.component';
+import NotificationSettings from 'modules/profile/notificationSettings.component';
 
 const StyledRIcon = styled(RIcon)`
   * {
@@ -95,6 +96,7 @@ class SettingsModal extends Component {
             </Button>
           </View>
         </Form>
+        <NotificationSettings />
       </View>
     );
   }
@@ -104,7 +106,7 @@ SettingsModal.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
   initialValues: PropTypes.object,
-  actions: PropTypes.actions
+  actions: PropTypes.object
 };
 
 export default reduxForm({
