@@ -15,9 +15,12 @@ const props = {
 };
 
 test('Snapshot AvatarBox Web', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <AvatarBoxWeb {...props} />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });

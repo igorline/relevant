@@ -263,7 +263,8 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     if (!post.data.postDate) post = await post.addPostData();
     const { postDate } = post.data;
 
-    let rank = postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
+    let rank =
+      pagerank < 0 ? 0 : postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
     rank = Math.round(rank * 1000) / 1000;
 
     // But if a comment ranks highly - update post rank

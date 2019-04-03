@@ -102,6 +102,11 @@ class TopNav extends Component {
   };
 
   toggleLogin = () => {
+    const { location, history } = this.props;
+    history.push({
+      // pathname: '/dresses',
+      search: `?redirect=${location.pathname}`
+    });
     this.setState({ openLoginModal: !this.state.openLoginModal });
   };
 

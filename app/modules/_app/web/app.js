@@ -81,10 +81,7 @@ class App extends Component {
     actions.getUser();
     actions.getEarnings('pending');
 
-    if (auth.user && auth.user.webOnboard && !auth.user.webOnboard.onboarding) {
-      actions.showModal('onboarding');
-      actions.webOnboard('onboarding');
-    }
+    if (auth.user) this.handleUserLogin();
 
     const parsed = queryString.parse(location.search);
     if (parsed.invitecode) {
@@ -127,6 +124,7 @@ class App extends Component {
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
+    if (auth.user.role === 'temp') return;
     if (!auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
@@ -175,10 +173,14 @@ class App extends Component {
     if (!prevProps.auth.user && auth.user) {
       this.handleUserLogin();
     }
-    // const match = matchPath(history.location.pathname, {
-    //   // You can share this string as a constant if you want
-    //   path: "/articles/:id"
-    // });
+    if (
+      prevProps.auth.user &&
+      auth.user &&
+      prevProps.auth.user.role === 'temp' &&
+      auth.user.role !== 'temp'
+    ) {
+      this.handleUserLogin();
+    }
   }
 
   toggleLogin(authType) {
@@ -205,6 +207,8 @@ class App extends Component {
     }
     if (!globalModal) return null;
     globalModal = modals[globalModal] || globalModal;
+
+    if (typeof globalModal === 'string') return null;
     const { Body } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
     return (
@@ -236,10 +240,10 @@ class App extends Component {
       <div>
         <GlobalStyle />
         <SmartBanner
-          daysHidden={2}
+          daysHidden={0}
           daysReminder={0}
           title={'Relevant Communities'}
-          author={'Relevant Protocols'}
+          // author={''}
           position={'top'}
           // force={'ios'}
         />

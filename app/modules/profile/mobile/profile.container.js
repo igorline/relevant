@@ -68,22 +68,26 @@ class Profile extends Component {
     const user = usersState.users[userId];
     if (!user) return { handle };
     const isOwner = auth.user && user._id === auth.user._id;
-    const loaded = true;
-    return { user: isOwner ? auth.user : user, isOwner, handle, loaded };
+    // const loaded = true;
+    return { user: isOwner ? auth.user : user, isOwner, handle };
   }
 
   componentDidMount() {
-    const { handle, isOwner, loaded } = this.state;
+    const { handle, user } = this.state;
 
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
-      this.loadUser();
+      if (user) this.loadUser();
     });
 
-    if (!isOwner && !loaded) {
-      return requestAnimationFrame(() => {
-        this.setState({ loaded: true });
-      });
-    }
+    requestAnimationFrame(() => {
+      if (!user) this.loadUser();
+      this.setState({ loaded: true });
+    });
+    // if (!isOwner && !loaded) {
+    //   return requestAnimationFrame(() => {
+    //     this.setState({ loaded: true });
+    //   });
+    // }
     if (handle) return this.props.navigation.setParams({ title: handle });
     return null;
   }
@@ -98,7 +102,9 @@ class Profile extends Component {
   }
 
   shouldComponentUpdate(next) {
-    if (next.auth.community !== this.props.auth.community) return true;
+    if (next.auth.community !== this.props.auth.community) {
+      return true;
+    }
     return next.navigation.isFocused();
   }
 
@@ -270,7 +276,8 @@ function mapStateToProps(state) {
     investments: state.investments,
     refresh: state.navigation.myProfile.refresh,
     reload: state.navigation.myProfile.reload,
-    tabs: state.navigation.tabs
+    tabs: state.navigation.tabs,
+    navState: state.navigation
   };
 }
 

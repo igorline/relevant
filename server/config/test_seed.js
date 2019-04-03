@@ -159,20 +159,19 @@ export async function cleanupData() {
       }
     }) || [];
   const clearSub =
-    dummySubscriptions.map(sub => Subscription.findByIdAndRemove(sub._id)
-    .exec()) || [];
+    dummySubscriptions.map(sub => Subscription.findByIdAndRemove(sub._id).exec()) || [];
 
   const dummies = dummyUsers.map(user => user._id);
-  const clearNotifications = Notification.find({ forUser: { $in: dummies } })
-  .remove();
+  const clearNotifications = Notification.find({ forUser: { $in: dummies } }).remove();
 
   const clearUpvotes = Invest.find({
     $or: [{ investor: { $in: dummies } }, { author: { $in: dummies } }]
-  })
-  .remove();
+  }).remove();
 
   const posts = await Post.find({ body: 'Hotties' });
-  const clearPostData = await PostData.remove({ post: { $in: posts.map(p => p._id) } }).exec();
+  const clearPostData = await PostData.remove({
+    post: { $in: posts.map(p => p._id) }
+  }).exec();
 
   // Have to do this in order to trigger remove hooks;
   const clearPosts = posts.map(async post => post.remove());
@@ -201,7 +200,7 @@ export async function cleanupData() {
     clearEarnings,
     clearRelevance,
     ...clearCommunity,
-    clearPostData,
+    clearPostData
   ]);
 }
 

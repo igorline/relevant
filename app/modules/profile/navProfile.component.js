@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
 import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';

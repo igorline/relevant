@@ -107,8 +107,8 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
         <meta name="apple-itunes-app" content="app-id=1173025051 app-argument=${fullUrl}">
 
         <meta name="google-play-app" content="app-id=com.relevantnative">
-        <link rel="apple-touch-icon" href="/img/r-big.png">
-        <link rel="android-touch-icon" href="/img/r-big.png">
+        <link rel="apple-touch-icon" href="/img/RoundedIcon.png">
+        <link rel="android-touch-icon" href="/img/RoundedIcon.png">
 
         ${rnWebStyles}
         ${cssStyleTags}

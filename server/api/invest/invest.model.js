@@ -103,6 +103,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   const leeway = TEST_ENV ? 1000 * 60 : 0;
 
   if (
+    amount > 0 &&
     !post.parentPost &&
     user.lockedTokens + stakedTokens <= userBalance &&
     post.data.eligibleForReward &&
@@ -140,7 +141,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
     author: post.user,
     amount,
     relevantPoints: relevanceToAdd,
-    ownPost: post.user === user._id,
+    ownPost: user._id.equals(post.user),
     shares,
     stakedTokens,
     community,
@@ -152,15 +153,18 @@ InvestSchema.statics.createVote = async function createVote(props) {
     paidOut: post.data.paidOut
   });
   await investment.save();
+  post.data.needsRankUpdate = true;
 
-  if (!canInvest) return investment;
+  if (!canInvest) {
+    await post.data.save();
+    return investment;
+  }
 
   post.data.shares += shares;
   post.data.balance += stakedTokens;
   user.lockedTokens += stakedTokens;
   post.data.totalShares += stakedTokens;
   post.data.expectedPayout = computePostPayout(post.data, communityInstance);
-  post.data.needsRankUpdate = true;
   await user.save();
   await post.data.save();
 

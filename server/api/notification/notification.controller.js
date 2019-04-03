@@ -59,7 +59,7 @@ exports.show = (req, res, next) => {
   })
   .populate({
     path: 'post',
-    populate: [{ path: 'metaPost' }, { path: 'parentPost' }]
+    populate: [{ path: 'metaPost' }, { path: 'parentPost' }, { path: 'data' }]
   })
   .then(notifications => res.status(200).json(notifications))
   .catch(next);

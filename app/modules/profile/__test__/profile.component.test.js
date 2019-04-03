@@ -7,21 +7,27 @@ import { auth } from 'app/mockdata';
 
 const props = {
   user: auth.auth.user,
-  actions: {},
+  actions: {}
 };
 
 test('Snapshot own Profile', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <Profile {...props} isOwner />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 test('Snapshot other users Profile', () => {
-  const tree = renderer.create(
+  const tree = renderer
+  .create(
     <MemoryRouter>
       <Profile {...props} />
-    </MemoryRouter>).toJSON();
+    </MemoryRouter>
+  )
+  .toJSON();
   expect(tree).toMatchSnapshot();
 });

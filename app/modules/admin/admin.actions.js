@@ -243,9 +243,8 @@ export function signupForMailingList(user) {
       body: JSON.stringify(user)
     })
     .then(utils.api.handleErrors)
-    // .then(response => response.json())
     .then(() => {
-      Alert.alert('Your email has been added to the waitlist');
+      Alert.alert("You've been added to the waitlist.", 'success');
       return true;
     })
     .catch(err => {

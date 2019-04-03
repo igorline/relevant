@@ -4,7 +4,7 @@ export const userProps = PropTypes.shape({
   handle: PropTypes.string,
   balance: PropTypes.number,
   image: PropTypes.string,
-  name: PropTypes.string,
+  name: PropTypes.string
   // relevance: // TODO shape or null
 });
 
@@ -19,7 +19,7 @@ export const postProps = PropTypes.shape({
   data: PropTypes.object, // TODO shape or null
   link: PropTypes.object, // TODO shape or null
   parentPost: PropTypes.number,
-  type: PropTypes.string,
+  type: PropTypes.string
 });
 
 export const authProps = PropTypes.shape({

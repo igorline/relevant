@@ -26,9 +26,10 @@ class DiscoverUser extends Component {
   }
 
   setSelected() {
-    if (this.props.type === 'invite') return;
-    if (!this.props.user._id) return;
-    this.props.actions.goToProfile(this.props.user);
+    const { user, type, actions } = this.props;
+    if (type === 'invite') return;
+    if (!user._id) return;
+    actions.goToProfile(user);
   }
 
   render() {

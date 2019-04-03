@@ -87,8 +87,7 @@ class ArticleView extends Component {
       url: this.url,
       subject: 'Article from Relevant',
       message: this.url
-    })
-    .catch(err => {
+    }).catch(err => {
       Alert.alert(err);
     });
   }

@@ -60,9 +60,11 @@ export const tag = {
   ...button,
   cursor: 'pointer',
   background: colors.blue,
+  color: colors.white,
   minWidth: 0,
   height: sizing(4),
-  padding: sizing(1.5)
+  padding: sizing(1.5),
+  fontSize: sizing(1.5)
 };
 
 export const animatedElement = {

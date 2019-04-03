@@ -5,10 +5,6 @@ exports[`Snapshot Activity Web 1`] = `
   color: #0000ff;
 }
 
-.c1 {
-  color: #0000ff;
-}
-
 <div
   style={
     Object {
@@ -959,8 +955,13 @@ exports[`Snapshot Activity Web 1`] = `
       }
     }
   >
-    <span
-      className="ulink-mock c1"
+    <a
+      className="ulink-mock c0"
+      href="/undefined/post/000000000000000000000003"
+      hu={0}
+      inline={0}
+      onClick={[Function]}
+      styles=""
     >
       <div
         style={
@@ -1007,7 +1008,7 @@ exports[`Snapshot Activity Web 1`] = `
       >
         PostComponent
       </div>
-    </span>
+    </a>
   </div>
   <div
     style={

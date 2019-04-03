@@ -39,7 +39,10 @@ class Flagged extends Component {
     flaggedPosts = flaggedPosts.filter(p => p);
 
     const deleteEl = post => {
-      if (post.user._id === this.props.auth.user._id || this.props.auth.user.role === 'admin') {
+      if (
+        post.user._id === this.props.auth.user._id ||
+        this.props.auth.user.role === 'admin'
+      ) {
         return (
           <button style={{ margin: 'auto' }} onClick={() => this.deletePost(post)}>
             Delete

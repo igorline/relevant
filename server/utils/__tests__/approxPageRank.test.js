@@ -137,6 +137,7 @@ describe('ethRewards', () => {
       Math.round(authorSan.relevance.pagerankRaw * 1000) / 1000;
     postSan.data.pagerank = Math.round(postSan.data.pagerank * 100) / 100;
     postSan.data.pagerankRaw = Math.round(postSan.data.pagerankRaw * 1000) / 1000;
+    postSan.data.pagerankRawNeg = Math.round(postSan.data.pagerankRawNeg * 1000) / 1000;
 
     expect({ post: postSan, author: authorSan }).toMatchSnapshot();
 
