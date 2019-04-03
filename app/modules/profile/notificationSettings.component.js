@@ -1,20 +1,53 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Header, Title, Button, Text } from 'modules/styled/uni';
+import { View, Header, Button, Text, SecondaryText } from 'modules/styled/uni';
 import { connect } from 'react-redux';
 import { updateNotificationSettings } from 'modules/auth/auth.actions';
 import { bindActionCreators } from 'redux';
 import ToggleSwitch from 'modules/ui/toggleswitch.component';
 import { colors } from 'app/styles';
+import { capitalize } from 'utils/numbers';
+
+const NOTIFICATION_DETAILS = {
+  email: {
+    all: {
+      label: 'Email notifications',
+      description: 'If turned off, you will still receive administrative emails'
+    },
+    digest: {
+      label: 'Email digests',
+      description:
+        'Receive periodic emails with the top posts from your favorite communities'
+    },
+    replies: {
+      label: 'Reply and mentions',
+      description:
+        'Get notified when someone replies to your comments or mentions you in a comment'
+    }
+  },
+  mobile: {
+    all: {
+      label: 'Mobile notifications',
+      description: 'Receive mobile app notifications for any community activity'
+    }
+  },
+  desktop: {
+    all: {
+      label: 'Desktop notifications',
+      description: 'Receive notifications in a browser for any community activity'
+    }
+  }
+};
 
 const NotificationToggle = ({ parent, label, notification, onChange }) => (
-  <View fdirection="row">
+  <View fdirection="row" mt={3}>
     <Text m={0} p={0} lh={1}>
       <ToggleSwitch
         isOn={!!notification}
         onColor={colors.green}
-        offColor={colors.red}
-        label={label}
+        offColor={colors.grey}
+        label={NOTIFICATION_DETAILS[parent][label].label}
+        description={NOTIFICATION_DETAILS[parent][label].description}
         size="small"
         onToggle={isOn => {
           const body = {};
@@ -37,8 +70,8 @@ NotificationToggle.propTypes = {
 const NotificationSet = ({ label, notifications, onChange }) => {
   const sortedNotifications = Object.keys(notifications).sort();
   return (
-    <View>
-      <Title>{label}</Title>
+    <View mt={4}>
+      <SecondaryText>{capitalize(label)} Notifications</SecondaryText>
       {notifications &&
         sortedNotifications.map(k => (
           <NotificationToggle
@@ -77,6 +110,7 @@ class NotificationSettings extends Component {
           />
         ))}
         <Button
+          mt={4}
           onClick={() =>
             actions.updateNotificationSettings({
               email: {

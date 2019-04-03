@@ -1,4 +1,5 @@
 /**
+ * Taken from this:
  * toggle-switch-react-native
  * Toggle Switch component for react native, it works on iOS and Android
  * https://github.com/aminebenkeroum/toggle-switch-react-native
@@ -10,7 +11,7 @@
 import React from 'react';
 import { TouchableOpacity, Animated } from 'react-native';
 
-import { Text, View } from 'modules/styled/uni';
+import { BodyText, Title, View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 
 export default class ToggleSwitch extends React.Component {
@@ -18,10 +19,10 @@ export default class ToggleSwitch extends React.Component {
     switch (size) {
       case 'small':
         return {
-          width: 50,
+          width: 32,
           padding: 10,
-          circleWidth: 15,
-          circleHeight: 15,
+          circleWidth: 14,
+          circleHeight: 14,
           translateX: 22
         };
       case 'large':
@@ -51,7 +52,7 @@ export default class ToggleSwitch extends React.Component {
     size: PropTypes.string,
     labelStyle: PropTypes.object,
     onToggle: PropTypes.func.isRequired,
-    icon: PropTypes.object
+    description: PropTypes.string
   };
 
   static defaultProps = {
@@ -71,14 +72,15 @@ export default class ToggleSwitch extends React.Component {
     justifyContent: 'center',
     width: this.dimensions.width,
     borderRadius: 20,
-    padding: this.dimensions.padding,
+    paddingVertical: this.dimensions.padding,
     backgroundColor: this.props.isOn ? this.props.onColor : this.props.offColor
   });
 
   createInsideCircleStyle = () => ({
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 4,
+    marginLeft: 4,
+    marginRight: 4,
     position: 'absolute',
     backgroundColor: 'white',
     transform: [{ translateX: this.offsetX }],
@@ -97,24 +99,28 @@ export default class ToggleSwitch extends React.Component {
       duration: 300
     }).start();
 
+    const { isOn, label, description, onToggle, labelStyle } = this.props;
+
     return (
-      <View fdirection="row" align="center">
-        {this.props.label ? (
-          <Text margin={'0 1'} style={[this.props.labelStyle]}>
-            {this.props.label}:{' '}
-          </Text>
-        ) : null}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}
+      >
         <TouchableOpacity
           style={this.createToggleSwitchStyle()}
           activeOpacity={0.8}
           onPress={() => {
-            this.props.onToggle(!this.props.isOn);
+            onToggle(!isOn);
           }}
         >
-          <Animated.View style={this.createInsideCircleStyle()}>
-            {this.props.icon}
-          </Animated.View>
+          <Animated.View style={this.createInsideCircleStyle()} />
         </TouchableOpacity>
+        <View fdirection="column" ml={1.5}>
+          {label ? <Title style={[labelStyle]}>{label}</Title> : null}
+          {description ? <BodyText style={[labelStyle]}>{description}</BodyText> : null}
+        </View>
       </View>
     );
   }
