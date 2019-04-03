@@ -70,6 +70,7 @@ class CommunityMembers extends Component {
         }}
         relevance={user.reputation}
         renderRight={() => null}
+        showRelevance
         {...this.props}
       />
     );
