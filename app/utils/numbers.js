@@ -1,4 +1,8 @@
-import moment from 'moment';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import dayjs from 'dayjs';
+// import moment from 'moment';
+
+dayjs.extend(relativeTime);
 
 export function toNumber(num, dec) {
   if (num === undefined || dec === undefined) return null;
@@ -70,12 +74,18 @@ export function capitalize(string) {
 
 export function getTimestamp(date) {
   if (!date) return null;
-  return ' • ' + capitalize(moment(date).fromNow());
+  const fromNow = dayjs(date).fromNow();
+  return ' • ' + capitalize(fromNow);
+}
+
+export function getMonth(date) {
+  if (!date) return null;
+  return dayjs(date).format('MMMM');
 }
 
 export function getDayMonthYearTimestamp(date) {
   if (!date) return null;
-  return moment(date).format('MMM Do, YYYY');
+  return dayjs(date).format('MMM D, YYYY');
 }
 
 export function guid() {
