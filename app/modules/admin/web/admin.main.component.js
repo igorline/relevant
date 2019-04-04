@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { BondedTokenContainer } from 'bonded-token';
-import Wallet from 'modules/wallet/web/wallet.component';
-import Eth from 'modules/web_ethTools/eth.context';
-import AdminContract from './adminContract.component';
+// import { BondedTokenContainer } from 'bonded-token';
+// import Wallet from 'modules/wallet/web/wallet.component';
+// import Eth from 'modules/web_ethTools/eth.context';
+// import AdminContract from './adminContract.component';
 
 class AdminWallet extends Component {
   static propTypes = {
-    user: PropTypes.object
+    // user: PropTypes.object
   };
 
   render() {
     return (
       <div>
-        <BondedTokenContainer {...this.props}>
+        {/* <BondedTokenContainer {...this.props}>
           <div className={'row pageContainer column'}>
             <Eth.Consumer>
               {wallet => <AdminContract wallet={wallet} {...this.props} />}
             </Eth.Consumer>
             <Wallet user={this.props.user} />
           </div>
-        </BondedTokenContainer>
+        </BondedTokenContainer> */}
       </div>
     );
   }
