@@ -20,9 +20,10 @@ import * as authActions from 'modules/auth/auth.actions';
 
 // import AuthContainer from 'modules/auth/web/auth.container';
 // import AddEthAddress from 'modules/wallet/web/AddEthAddress';
-// import Modal from 'modules/ui/web/modal';
 // import EthTools from 'modules/web_ethTools/tools.container';
 // import Eth from 'modules/web_ethTools/eth.context';
+
+import Modal from 'modules/ui/web/modal';
 
 import { GlobalStyle } from 'app/styles';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
@@ -116,7 +117,7 @@ class App extends Component {
     window.addEventListener('focus', () => this.reloadTabs());
     history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
 
-    const ReactPixel = require('react-facebook-pixel');
+    const ReactPixel = require('react-facebook-pixel').default;
     ReactPixel.init('286620198458049');
   }
 
