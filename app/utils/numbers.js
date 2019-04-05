@@ -75,7 +75,7 @@ export function capitalize(string) {
 export function getTimestamp(date) {
   if (!date) return null;
   const fromNow = dayjs(date).fromNow();
-  return ' • ' + capitalize(fromNow);
+  return capitalize(fromNow);
 }
 
 export function getMonth(date) {
