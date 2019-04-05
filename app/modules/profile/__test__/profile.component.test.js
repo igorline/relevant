@@ -7,7 +7,10 @@ import { auth } from 'app/mockdata';
 
 const props = {
   user: auth.auth.user,
-  actions: {}
+  actions: {
+    hideModal: () => {},
+    showModal: () => {}
+  }
 };
 
 test('Snapshot own Profile', () => {
