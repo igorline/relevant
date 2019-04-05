@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Header, Button, Text, SecondaryText } from 'modules/styled/uni';
+import { View, Header, SecondaryText, Title, BodyText } from 'modules/styled/uni';
 import { connect } from 'react-redux';
 import { updateNotificationSettings } from 'modules/auth/auth.actions';
 import { bindActionCreators } from 'redux';
@@ -39,26 +39,36 @@ const NOTIFICATION_DETAILS = {
   }
 };
 
-const NotificationToggle = ({ parent, label, notification, onChange }) => (
-  <View fdirection="row" mt={3}>
-    <Text m={0} p={0} lh={1}>
-      <ToggleSwitch
-        isOn={!!notification}
-        onColor={colors.green}
-        offColor={colors.grey}
-        label={NOTIFICATION_DETAILS[parent][label].label}
-        description={NOTIFICATION_DETAILS[parent][label].description}
-        size="small"
-        onToggle={isOn => {
-          const body = {};
-          body[parent] = {};
-          body[parent][label] = isOn;
-          onChange(body);
+const NotificationToggle = ({ parent, label, notification, onChange }) => {
+  const details = NOTIFICATION_DETAILS[parent][label];
+  return (
+    <View fdirection="row" mt={3}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center'
         }}
-      />
-    </Text>
-  </View>
-);
+      >
+        <ToggleSwitch
+          isOn={!!notification}
+          onColor={colors.green}
+          offColor={colors.grey}
+          size="custom"
+          onToggle={isOn => {
+            const body = {};
+            body[parent] = {};
+            body[parent][label] = isOn;
+            onChange(body);
+          }}
+        />
+        <View fdirection="column" ml={1.5}>
+          {details.label ? <Title>{details.label}</Title> : null}
+          {details.description ? <BodyText>{details.description}</BodyText> : null}
+        </View>
+      </View>
+    </View>
+  );
+};
 
 NotificationToggle.propTypes = {
   parent: PropTypes.string,
@@ -109,26 +119,6 @@ class NotificationSettings extends Component {
             onChange={actions.updateNotificationSettings}
           />
         ))}
-        <Button
-          mt={4}
-          onClick={() =>
-            actions.updateNotificationSettings({
-              email: {
-                all: true,
-                digest: true,
-                replies: true
-              },
-              mobile: {
-                all: true
-              },
-              desktop: {
-                all: true
-              }
-            })
-          }
-        >
-          Reset Notifications
-        </Button>
       </View>
     );
   }
