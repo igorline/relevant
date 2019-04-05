@@ -80,7 +80,6 @@ export function getCommunities() {
         method: 'GET',
         endpoint: 'community'
       });
-      // let ids = responseJSON.map(c => c._id);
       return dispatch(setCommunities(res));
     } catch (error) {
       return false;
@@ -161,11 +160,9 @@ export function searchMembers(val, community) {
         path: `/${community}/members/search`,
         query: { limit, search: val }
       });
-      // dispatch(setUserSearch(res));
       return res;
     } catch (err) {
       return err;
-      // dispatch(errorActions.setError('activity', true, err.message));
     }
   };
 }
