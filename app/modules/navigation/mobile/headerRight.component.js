@@ -100,6 +100,7 @@ class HeaderRight extends Component {
         options: [
           'Change display name',
           'Add new photo',
+          'Notifications',
           'Invite Friends',
           'Blocked Users',
           'FAQ',
@@ -118,15 +119,18 @@ class HeaderRight extends Component {
             this.initImage();
             break;
           case 2:
-            this.props.actions.push('invites');
+            this.props.actions.push('notifications');
             break;
           case 3:
-            this.props.actions.viewBlocked();
+            this.props.actions.push('invites');
             break;
           case 4:
-            this.props.actions.goToUrl('https://relevant.community/faq');
+            this.props.actions.viewBlocked();
             break;
           case 5:
+            this.props.actions.goToUrl('https://relevant.community/faq');
+            break;
+          case 6:
             this.logoutRedirect();
             break;
           default:

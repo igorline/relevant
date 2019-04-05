@@ -43,12 +43,7 @@ const NotificationToggle = ({ parent, label, notification, onChange }) => {
   const details = NOTIFICATION_DETAILS[parent][label];
   return (
     <View fdirection="row" mt={3}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}
-      >
+      <View fdirection="row" align="center" flex={1}>
         <ToggleSwitch
           isOn={!!notification}
           onColor={colors.green}
@@ -61,7 +56,7 @@ const NotificationToggle = ({ parent, label, notification, onChange }) => {
             onChange(body);
           }}
         />
-        <View fdirection="column" ml={1.5}>
+        <View fdirection="column" ml={1.5} shrink={1} wrap>
           {details.label ? <Title>{details.label}</Title> : null}
           {details.description ? <BodyText>{details.description}</BodyText> : null}
         </View>
