@@ -22,7 +22,8 @@ const ScrollContainer = styled(View)`
 class CommunityMembers extends Component {
   static propTypes = {
     community: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    close: PropTypes.func
   };
 
   constructor(props, context) {
@@ -82,10 +83,11 @@ class CommunityMembers extends Component {
   renderRow = user => {
     const title = this.role === user.role ? null : this.getTitle(user.role);
     this.role = user.role;
+    const { close } = this.props;
     return (
       <React.Fragment key={user._id}>
         {title ? <SecondaryText m={'2 0'}>{title}</SecondaryText> : null}
-        <View fdirection="row" m={['1 0']}>
+        <View fdirection="row" m={['2 0']}>
           <AvatarBox
             user={{
               ...user.embeddedUser,
@@ -93,6 +95,7 @@ class CommunityMembers extends Component {
                 pagerank: user.reputation
               }
             }}
+            navigationCallback={close}
             showRelevance
             condensedView={false}
           />
