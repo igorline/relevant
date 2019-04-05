@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import loadable from '@loadable/component';
 
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
-
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
 import get from 'lodash.get';
@@ -202,7 +201,13 @@ class App extends Component {
   }
 
   closeModal() {
-    this.props.history.push(this.props.location.pathname);
+    const { history, location } = this.props;
+    const queryParams = queryString.parse(location.search);
+    if (queryParams.redirect) {
+      history.push(queryParams.redirect);
+    } else {
+      history.push(location.pathname);
+    }
   }
 
   renderModal() {
