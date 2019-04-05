@@ -28,6 +28,10 @@ import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import CommunityMembers from 'modules/community/mobile/communityMembers.component';
 
 export const DefaultStack = {
+  notifications: {
+    screen: Notifications,
+    path: 'user/profile/:id/settings'
+  },
   profile: {
     screen: Profile,
     path: 'user/profile/:id'
@@ -93,9 +97,6 @@ export const DefaultStack = {
     params: {
       title: 'Invites'
     }
-  },
-  notifications: {
-    screen: Notifications
   },
   getTokens: {
     screen: GetTokens,
