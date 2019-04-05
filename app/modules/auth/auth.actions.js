@@ -13,6 +13,7 @@ let Analytics;
 let ReactGA;
 let Platform;
 let okToRequestPermissions = true;
+let ReactPixel;
 
 if (process.env.WEB !== 'true') {
   ReactNative = require('react-native');
@@ -22,6 +23,7 @@ if (process.env.WEB !== 'true') {
   PushNotification = require('react-native-push-notification');
 } else {
   ReactGA = require('react-ga').default;
+  ReactPixel = require('react-facebook-pixel').default;
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -436,6 +438,7 @@ export function createUser(user, invitecode) {
                 category: 'User',
                 action: 'Created an Account'
               });
+          ReactPixel && ReactPixel.track('CompleteRegistration');
           Analytics && Analytics.logEvent('Created an Account');
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());

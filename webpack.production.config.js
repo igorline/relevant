@@ -7,6 +7,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const prodConfig = {};
 const isAnalyze = typeof process.env.BUNDLE_ANALYZE !== 'undefined';
+const CompressionPlugin = require('compression-webpack-plugin');
 
 Object.keys(devConfig).forEach(key => {
   prodConfig[key] = devConfig[key];
@@ -35,7 +36,8 @@ prodConfig.plugins = [
     }
   }),
   new webpack.NamedModulesPlugin(),
-  new LoadablePlugin()
+  new LoadablePlugin(),
+  new CompressionPlugin()
 ];
 
 prodConfig.mode = 'production';
