@@ -27,6 +27,19 @@ Object {
     "lockedTokens": 0,
     "messages": 0,
     "name": "Bob",
+    "notificationSettings": Object {
+      "desktop": Object {
+        "all": true,
+      },
+      "email": Object {
+        "all": true,
+        "digest": true,
+        "replies": true,
+      },
+      "mobile": Object {
+        "all": true,
+      },
+    },
     "onboarding": 0,
     "online": false,
     "password": "test",
@@ -182,6 +195,19 @@ Object {
     "lockedTokens": 0,
     "messages": 0,
     "name": "Bob",
+    "notificationSettings": Object {
+      "desktop": Object {
+        "all": true,
+      },
+      "email": Object {
+        "all": true,
+        "digest": true,
+        "replies": true,
+      },
+      "mobile": Object {
+        "all": true,
+      },
+    },
     "onboarding": 0,
     "online": false,
     "password": "test",
