@@ -100,6 +100,9 @@ NotificationSet.propTypes = {
 class NotificationSettings extends Component {
   render() {
     const { user, actions } = this.props;
+    if (!user) {
+      return null;
+    }
     const { notificationSettings } = user;
     if (!notificationSettings) return null;
     const sortedSettings = Object.keys(notificationSettings).sort();
