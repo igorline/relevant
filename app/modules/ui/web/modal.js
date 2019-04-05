@@ -102,7 +102,7 @@ export default class ModalComponent extends Component {
             p={[6, 3]}
             justify={['space-between', 'center']}
             fdirection="column"
-            margin={['6 0', '3 0']}
+            m={['6 0', '0']}
             minHeight={['auto', '100vh']}
             onClick={e => e.stopPropagation()}
           >
