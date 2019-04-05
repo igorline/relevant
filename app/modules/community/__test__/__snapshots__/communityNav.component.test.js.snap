@@ -22,6 +22,10 @@ exports[`Snapshot NavProfile 1`] = `
   background: white;
 }
 
+.c2 {
+  color: #0000ff;
+}
+
 .c1 {
   color: #0000ff;
   color: #999999;
@@ -863,49 +867,147 @@ exports[`Snapshot NavProfile 1`] = `
           A community for curating and discussing links related to critical analysis of #technology, #society and #culture.
         </div>
         <div
-          c="#000000"
-          dir="auto"
-          mb={2}
-          mt={3}
           style={
             Object {
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "horizontal",
+              "WebkitBoxPack": "justify",
               "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "row",
               "WebkitFlexShrink": 0,
-              "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+              "WebkitJustifyContent": "space-between",
+              "alignItems": "stretch",
+              "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "flexBasis": "auto",
+              "flexDirection": "row",
               "flexShrink": 0,
-              "fontFamily": "HelveticaNeue",
-              "fontSize": "1.26rem",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "1.6799999999999997rem",
+              "justifyContent": "space-between",
               "marginBottom": "1.44rem",
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "2.16rem",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "row",
               "msFlexNegative": 0,
+              "msFlexPack": "justify",
               "msFlexPreferredSize": "auto",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "textDecoration": "none",
-              "textDecorationColor": "rgba(0,0,0,1.00)",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
+              "zIndex": 0,
             }
           }
         >
-          60 Members
+          <div
+            c="#000000"
+            dir="auto"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(0,0,0,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "1.26rem",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "1.6799999999999997rem",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "textDecorationColor": "rgba(0,0,0,1.00)",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            60 Members
+          </div>
+          <a
+            className="ulink-mock c2"
+            href="/"
+            hu={0}
+            inline={0}
+            onClick={[Function]}
+            styles=""
+          >
+            <div
+              c="#0000ff"
+              dir="auto"
+              style={
+                Object {
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexShrink": 0,
+                  "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+                  "borderBottomWidth": "0px",
+                  "borderLeftWidth": "0px",
+                  "borderRightWidth": "0px",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "color": "rgba(0,0,255,1.00)",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexShrink": 0,
+                  "fontFamily": "HelveticaNeue",
+                  "fontSize": "1.26rem",
+                  "fontStyle": "inherit",
+                  "fontVariant": "inherit",
+                  "fontWeight": "inherit",
+                  "lineHeight": "1.6799999999999997rem",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "textDecoration": "none",
+                  "textDecorationColor": "rgba(0,0,255,1.00)",
+                  "whiteSpace": "pre-wrap",
+                  "wordWrap": "break-word",
+                }
+              }
+            >
+              See All
+            </div>
+          </a>
         </div>
         <div
           style={

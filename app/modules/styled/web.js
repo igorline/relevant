@@ -134,6 +134,7 @@ export const Button = styled.button`
 export const Input = styled.input`
   ${fonts.bodyStyle}
   ${mixins.padding}
+  ${mixins.margin}
   ${mixins.border}
   ${layout.universalBorder()}
   padding: ${sizing(2)} ${sizing(2)};
