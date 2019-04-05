@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import InfScroll from 'modules/listview/web/infScroll.component';
+import { getDayMonthYearTimestamp } from 'app/utils/numbers';
 
 const PAGE_SIZE = 40;
 
@@ -26,12 +26,10 @@ class Downvotes extends Component {
       <div className={'downvoteList'} key={downvote._id}>
         <div className={'dUser'}>{downvote.investor}</div>
         <div>- {downvote.author}</div>
-        <div>{moment(downvote.createdAt)
-        .format('MMMM Do, h:mm a')}</div>
+        <div>{getDayMonthYearTimestamp(downvote.createdAt)}</div>
         <div>
           {downvote.post
-            ? moment(downvote.post.createdAt)
-            .format('MMMM Do, h:mm a')
+            ? getDayMonthYearTimestamp(downvote.post.createdAt)
             : '[deleted]'}
         </div>
       </div>
