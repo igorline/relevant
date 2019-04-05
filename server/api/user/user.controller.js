@@ -7,11 +7,11 @@ import Invite from 'server/api/invites/invite.model';
 import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
+import CommunityMember from '../community/community.member.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
-import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
@@ -417,11 +417,16 @@ exports.show = async function show(req, res, next) {
   try {
     let { user } = req;
     let handle = req.params.id;
+
+    let me = null;
+    let memberships;
     if (!handle && user) {
       handle = user.handle;
     }
-    const me = user && user.handle === handle;
-
+    if (user && user._id) {
+      memberships = await CommunityMember.find({ user: user._id });
+    }
+    me = user && user.handle === handle;
     const community = req.query.community || 'relevant';
 
     // don't show blocked user;
@@ -450,7 +455,7 @@ exports.show = async function show(req, res, next) {
     const userObj = user.toObject();
     userObj.topTags = relevance || [];
 
-    res.status(200).json(userObj);
+    res.status(200).json({ ...userObj, memberships });
 
     // update token balance based on ETH account
     if (me) {

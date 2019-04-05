@@ -80,7 +80,6 @@ export function getCommunities() {
         method: 'GET',
         endpoint: 'community'
       });
-      // let ids = responseJSON.map(c => c._id);
       return dispatch(setCommunities(res));
     } catch (error) {
       return false;
@@ -147,6 +146,23 @@ export function joinCommunity(community) {
       return Alert.alert(`Joined Community: ${name}`, 'success');
     } catch (err) {
       return Alert.alert(err.message);
+    }
+  };
+}
+
+export function searchMembers(val, community) {
+  const limit = 50;
+  return async () => {
+    try {
+      const res = await api.request({
+        method: 'GET',
+        endpoint: 'community',
+        path: `/${community}/members/search`,
+        query: { limit, search: val }
+      });
+      return res;
+    } catch (err) {
+      return err;
     }
   };
 }

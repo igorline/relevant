@@ -56,7 +56,7 @@ class SideNav extends Component {
   }
 
   render() {
-    const { community, className } = this.props;
+    const { community, className, actions } = this.props;
     const logoLink = `/${community || 'relevant'}/new`;
     return (
       <Container>
@@ -85,7 +85,12 @@ class SideNav extends Component {
               <NavProfileComponent />
             </View>
             <View flex={1}>
-              <CommunityNav {...this.props} />
+              <CommunityNav
+                {...this.props}
+                viewCommunityMembers={() => {
+                  actions.showModal('communityMembers');
+                }}
+              />
             </View>
             <SideNavFooter />
           </SideNavScroll>
