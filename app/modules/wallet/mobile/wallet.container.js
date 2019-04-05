@@ -12,10 +12,10 @@ import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
 import CustomListView from 'modules/listview/mobile/customList.component';
-import moment from 'moment';
 import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
 import { withNavigation } from 'react-navigation';
+import { getMonth } from 'app/utils/numbers';
 
 // let drizzle;
 
@@ -113,7 +113,7 @@ class WalletContainer extends Component {
     const payout = computeUserPayout(earning);
     if (!payout || !earning) return null;
 
-    const month = moment(earning.createdAt).format('MMMM');
+    const month = getMonth(earning.createdAt);
     const showMonth = month !== this.previousMonth;
     this.previousMonth = month;
 

@@ -1,0 +1,293 @@
+Searching 1000 files for "moment"
+
+/Users/slavab/local/relevant/package-lock.json:
+ 22135        "dev": true
+ 22136      },
+ 22137:     "moment": {
+ 22138        "version": "2.22.2",
+ 22139:       "resolved": "https://registry.npmjs.org/moment/-/moment-2.22.2.tgz",
+ 22140        "integrity": "sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y="
+ 22141      },
+
+/Users/slavab/local/relevant/package.json:
+   78      "lodash.get": "^4.4.2",
+   79      "mailgun-js": "^0.22.0",
+   80:     "moment": "^2.13.0",
+   81      "mongoose": "^4.5.0",
+   82      "morgan": "^1.6.1",
+
+/Users/slavab/local/relevant/app/modules/auth/mobile/auth.component.js:
+  239            renderRow={this.renderRow}
+  240            dataSource={this.state.dataSource}
+  241:           onMomentumScrollEnd={this.onScrollEnd}
+  242            pagingEnabled
+  243          />
+
+/Users/slavab/local/relevant/app/modules/listview/mobile/ScrollView.js:
+  279      minimumZoomScale: PropTypes.number,
+  280      /**
+  281:      * Called when the momentum scroll starts (scroll which occurs as the ScrollView glides to a stop).
+  282       */
+  283:     onMomentumScrollBegin: PropTypes.func,
+  284      /**
+  285:      * Called when the momentum scroll ends (scroll which occurs as the ScrollView glides to a stop).
+  286       */
+  287:     onMomentumScrollEnd: PropTypes.func,
+  288      /**
+  289       * Fires at most once per frame during scrolling. The frequency of the
+  ...
+  444      /**
+  445       * Tag used to log scroll performance on this scroll view. Will force
+  446:      * momentum events to be turned on (see sendMomentumEvents). This doesn't do
+  447       * anything out of the box and you need to implement a custom native
+  448       * FpsListener for it to be useful.
+  ...
+  608  
+  609    /**
+  610:    * Displays the scroll indicators momentarily.
+  611     *
+  612     * @platform ios
+  ...
+  829        onContentSizeChange: null,
+  830        onLayout: this._handleLayout,
+  831:       onMomentumScrollBegin: this.scrollResponderHandleMomentumScrollBegin,
+  832:       onMomentumScrollEnd: this.scrollResponderHandleMomentumScrollEnd,
+  833        onResponderGrant: this.scrollResponderHandleResponderGrant,
+  834        onResponderReject: this.scrollResponderHandleResponderReject,
+  ...
+  854        scrollBarThumbImage: resolveAssetSource(this.props.scrollBarThumbImage),
+  855        scrollEventThrottle: hasStickyHeaders ? 1 : this.props.scrollEventThrottle,
+  856:       sendMomentumEvents: !!((this.props.onMomentumScrollBegin || this.props.onMomentumScrollEnd)),
+  857        DEPRECATED_sendUpdatedChildFrames,
+  858      };
+  ...
+  926    nativeOnlyProps = {
+  927      nativeOnly: {
+  928:       sendMomentumEvents: true,
+  929      }
+  930    };
+  ...
+  945    nativeOnlyProps = {
+  946      nativeOnly: {
+  947:       onMomentumScrollBegin: true,
+  948:       onMomentumScrollEnd: true,
+  949        onScrollBeginDrag: true,
+  950        onScrollEndDrag: true,
+
+/Users/slavab/local/relevant/app/modules/post/mobile/commentary.component.js:
+  243            contentContainerStyle={[!preview ? styles.postScroll : null]}
+  244            showsHorizontalScrollIndicator={false}
+  245:           onMomentumScrollEnd={this.onScrollEnd}
+  246          />
+  247          {commentary.length > 1 ? pills : null}
+
+/Users/slavab/local/relevant/app/modules/stats/mobile/chart.component.js:
+    3  import PropTypes from 'prop-types';
+    4  import { Bar, StockLine } from 'react-native-pathjs-charts';
+    5: import moment from 'moment';
+    6  import chartOptions from './chartOptions';
+    7  
+    .
+   82          this.data.push({
+   83            v: value,
+   84:           name: moment(current)
+   85            .utcOffset(0)
+   86            .format('M/D', 'utc')
+   ..
+  118          ...chartOptions.axisX,
+  119          labelFunction: val =>
+  120:           moment(new Date(val))
+  121            .utcOffset(0)
+  122            .format('M/D', 'utc')
+
+/Users/slavab/local/relevant/app/modules/stats/mobile/stats.container.js:
+    2  import { StyleSheet, Text, View, RefreshControl, FlatList, Platform } from 'react-native';
+    3  import PropTypes from 'prop-types';
+    4: import moment from 'moment';
+    5  import { connect } from 'react-redux';
+    6  import { bindActionCreators } from 'redux';
+    .
+   72    renderHeader() {
+   73      if (this.filler) return this.filler;
+   74:     const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+   75      const relChart = (
+   76        <Chart
+   ..
+  143  
+  144      if (!this.props.auth.user.level) {
+  145:       const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+  146        this.filler = (
+  147          <EmptyList visible style={styles.emptyList}>
+
+/Users/slavab/local/relevant/app/modules/ui/mobile/DrawerLayout.js:
+    5  // It perhaps deserves to be put in a separate repo, but since it relies
+    6  // on react-native-gesture-handler library which isn't very popular at the
+    7: // moment I decided to keep it here for the time being. It will allow us
+    8  // to move faster and fix issues that may arise in gesture handler library
+    9  // that could be found when using the drawer component
+
+/Users/slavab/local/relevant/app/modules/wallet/web/wallet.container.js:
+   12  import { View } from 'modules/styled/uni';
+   13  import get from 'lodash/get';
+   14: import moment from 'moment';
+   15  import InfScroll from 'modules/listview/web/infScroll.component';
+   16  import { computeUserPayout } from 'app/utils/rewards';
+   ..
+   87      if (!payout) return null;
+   88  
+   89:     const month = moment(earning.createdAt).format('MMMM');
+   90      const showMonth = this.previousMonth !== month;
+   91      this.previousMonth = month;
+
+/Users/slavab/local/relevant/app/utils/numbers.js:
+    1  import relativeTime from 'dayjs/plugin/relativeTime';
+    2  import dayjs from 'dayjs';
+    3: // import moment from 'moment';
+    4  
+    5  dayjs.extend(relativeTime);
+
+/Users/slavab/local/relevant/server/api/user/user.controller.js:
+  730  
+  731      if (distributedRewards < amount) {
+  732:       throw new Error('There are not enough funds in contract at the moment');
+  733      }
+  734  
+
+/Users/slavab/local/relevant/server/api/user/user.controller.js:
+  730  
+  731      if (distributedRewards < amount) {
+  732:       throw new Error('There are not enough funds in contract at the moment');
+  733      }
+  734  
+
+/Users/slavab/local/relevant/app/modules/auth/mobile/auth.component.js:
+  239            renderRow={this.renderRow}
+  240            dataSource={this.state.dataSource}
+  241:           onMomentumScrollEnd={this.onScrollEnd}
+  242            pagingEnabled
+  243          />
+
+/Users/slavab/local/relevant/app/modules/listview/mobile/ScrollView.js:
+  279      minimumZoomScale: PropTypes.number,
+  280      /**
+  281:      * Called when the momentum scroll starts (scroll which occurs as the ScrollView glides to a stop).
+  282       */
+  283:     onMomentumScrollBegin: PropTypes.func,
+  284      /**
+  285:      * Called when the momentum scroll ends (scroll which occurs as the ScrollView glides to a stop).
+  286       */
+  287:     onMomentumScrollEnd: PropTypes.func,
+  288      /**
+  289       * Fires at most once per frame during scrolling. The frequency of the
+  ...
+  444      /**
+  445       * Tag used to log scroll performance on this scroll view. Will force
+  446:      * momentum events to be turned on (see sendMomentumEvents). This doesn't do
+  447       * anything out of the box and you need to implement a custom native
+  448       * FpsListener for it to be useful.
+  ...
+  608  
+  609    /**
+  610:    * Displays the scroll indicators momentarily.
+  611     *
+  612     * @platform ios
+  ...
+  829        onContentSizeChange: null,
+  830        onLayout: this._handleLayout,
+  831:       onMomentumScrollBegin: this.scrollResponderHandleMomentumScrollBegin,
+  832:       onMomentumScrollEnd: this.scrollResponderHandleMomentumScrollEnd,
+  833        onResponderGrant: this.scrollResponderHandleResponderGrant,
+  834        onResponderReject: this.scrollResponderHandleResponderReject,
+  ...
+  854        scrollBarThumbImage: resolveAssetSource(this.props.scrollBarThumbImage),
+  855        scrollEventThrottle: hasStickyHeaders ? 1 : this.props.scrollEventThrottle,
+  856:       sendMomentumEvents: !!((this.props.onMomentumScrollBegin || this.props.onMomentumScrollEnd)),
+  857        DEPRECATED_sendUpdatedChildFrames,
+  858      };
+  ...
+  926    nativeOnlyProps = {
+  927      nativeOnly: {
+  928:       sendMomentumEvents: true,
+  929      }
+  930    };
+  ...
+  945    nativeOnlyProps = {
+  946      nativeOnly: {
+  947:       onMomentumScrollBegin: true,
+  948:       onMomentumScrollEnd: true,
+  949        onScrollBeginDrag: true,
+  950        onScrollEndDrag: true,
+
+/Users/slavab/local/relevant/app/modules/post/mobile/commentary.component.js:
+  243            contentContainerStyle={[!preview ? styles.postScroll : null]}
+  244            showsHorizontalScrollIndicator={false}
+  245:           onMomentumScrollEnd={this.onScrollEnd}
+  246          />
+  247          {commentary.length > 1 ? pills : null}
+
+/Users/slavab/local/relevant/app/modules/stats/mobile/chart.component.js:
+    3  import PropTypes from 'prop-types';
+    4  import { Bar, StockLine } from 'react-native-pathjs-charts';
+    5: import moment from 'moment';
+    6  import chartOptions from './chartOptions';
+    7  
+    .
+   82          this.data.push({
+   83            v: value,
+   84:           name: moment(current)
+   85            .utcOffset(0)
+   86            .format('M/D', 'utc')
+   ..
+  118          ...chartOptions.axisX,
+  119          labelFunction: val =>
+  120:           moment(new Date(val))
+  121            .utcOffset(0)
+  122            .format('M/D', 'utc')
+
+/Users/slavab/local/relevant/app/modules/stats/mobile/stats.container.js:
+    2  import { StyleSheet, Text, View, RefreshControl, FlatList, Platform } from 'react-native';
+    3  import PropTypes from 'prop-types';
+    4: import moment from 'moment';
+    5  import { connect } from 'react-redux';
+    6  import { bindActionCreators } from 'redux';
+    .
+   72    renderHeader() {
+   73      if (this.filler) return this.filler;
+   74:     const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+   75      const relChart = (
+   76        <Chart
+   ..
+  143  
+  144      if (!this.props.auth.user.level) {
+  145:       const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+  146        this.filler = (
+  147          <EmptyList visible style={styles.emptyList}>
+
+/Users/slavab/local/relevant/app/modules/ui/mobile/DrawerLayout.js:
+    5  // It perhaps deserves to be put in a separate repo, but since it relies
+    6  // on react-native-gesture-handler library which isn't very popular at the
+    7: // moment I decided to keep it here for the time being. It will allow us
+    8  // to move faster and fix issues that may arise in gesture handler library
+    9  // that could be found when using the drawer component
+
+/Users/slavab/local/relevant/app/modules/wallet/web/wallet.container.js:
+   12  import { View } from 'modules/styled/uni';
+   13  import get from 'lodash/get';
+   14: import moment from 'moment';
+   15  import InfScroll from 'modules/listview/web/infScroll.component';
+   16  import { computeUserPayout } from 'app/utils/rewards';
+   ..
+   87      if (!payout) return null;
+   88  
+   89:     const month = moment(earning.createdAt).format('MMMM');
+   90      const showMonth = this.previousMonth !== month;
+   91      this.previousMonth = month;
+
+/Users/slavab/local/relevant/app/utils/numbers.js:
+    1  import relativeTime from 'dayjs/plugin/relativeTime';
+    2  import dayjs from 'dayjs';
+    3: // import moment from 'moment';
+    4  
+    5  dayjs.extend(relativeTime);
+
+72 matches across 20 files

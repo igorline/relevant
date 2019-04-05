@@ -32,7 +32,7 @@ export default function UserName(props) {
 
   let timestamp;
   if (postTime) {
-    timestamp = getTimestamp(postTime);
+    timestamp = ' • ' + getTimestamp(postTime);
   }
 
   const handleEl = handle && (
