@@ -326,6 +326,16 @@ async function updateItemRank(props) {
 
   if (u.type === 'user') {
     if (Number.isNaN(rank)) return null;
+
+    await CommunityMember.findOneAndUpdate(
+      { user: u.id, communityId },
+      { reputation: rank },
+      {
+        // new: true,
+        upsert: true
+      }
+    );
+
     return Relevance.findOneAndUpdate(
       { user: u.id, communityId, global: true },
       { pagerank: rank, pagerankRaw: u.rank, community },
