@@ -10,19 +10,33 @@
 
 import React from 'react';
 import { TouchableOpacity, Animated } from 'react-native';
-
-import { BodyText, Title, View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 
 export default class ToggleSwitch extends React.Component {
   static calculateDimensions(size) {
     switch (size) {
-      case 'small':
+      case 'custom':
         return {
           width: 32,
           padding: 10,
           circleWidth: 14,
           circleHeight: 14,
+          translateX: 22
+        };
+      case 'custom2':
+        return {
+          width: 32,
+          padding: 10,
+          circleWidth: 14,
+          circleHeight: 14,
+          translateX: 18
+        };
+      case 'small':
+        return {
+          width: 50,
+          padding: 10,
+          circleWidth: 15,
+          circleHeight: 15,
           translateX: 22
         };
       case 'large':
@@ -46,13 +60,10 @@ export default class ToggleSwitch extends React.Component {
 
   static propTypes = {
     isOn: PropTypes.bool.isRequired,
-    label: PropTypes.string,
     onColor: PropTypes.string.isRequired,
     offColor: PropTypes.string.isRequired,
     size: PropTypes.string,
-    labelStyle: PropTypes.object,
-    onToggle: PropTypes.func.isRequired,
-    description: PropTypes.string
+    onToggle: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -68,19 +79,19 @@ export default class ToggleSwitch extends React.Component {
   dimensions = ToggleSwitch.calculateDimensions(this.props.size);
 
   createToggleSwitchStyle = () => ({
-    display: 'flex',
     justifyContent: 'center',
     width: this.dimensions.width,
     borderRadius: 20,
-    paddingVertical: this.dimensions.padding,
+    padding: this.dimensions.padding,
     backgroundColor: this.props.isOn ? this.props.onColor : this.props.offColor
   });
 
   createInsideCircleStyle = () => ({
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 4,
     marginRight: 4,
+    marginLeft: 4,
+    left: 0,
     position: 'absolute',
     backgroundColor: 'white',
     transform: [{ translateX: this.offsetX }],
@@ -99,29 +110,17 @@ export default class ToggleSwitch extends React.Component {
       duration: 300
     }).start();
 
-    const { isOn, label, description, onToggle, labelStyle } = this.props;
-
+    const { isOn, onToggle } = this.props;
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center'
+      <TouchableOpacity
+        style={this.createToggleSwitchStyle()}
+        activeOpacity={0.8}
+        onPress={() => {
+          onToggle(!isOn);
         }}
       >
-        <TouchableOpacity
-          style={this.createToggleSwitchStyle()}
-          activeOpacity={0.8}
-          onPress={() => {
-            onToggle(!isOn);
-          }}
-        >
-          <Animated.View style={this.createInsideCircleStyle()} />
-        </TouchableOpacity>
-        <View fdirection="column" ml={1.5}>
-          {label ? <Title style={[labelStyle]}>{label}</Title> : null}
-          {description ? <BodyText style={[labelStyle]}>{description}</BodyText> : null}
-        </View>
-      </View>
+        <Animated.View style={this.createInsideCircleStyle()} />
+      </TouchableOpacity>
     );
   }
 }
