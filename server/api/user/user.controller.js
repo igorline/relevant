@@ -15,7 +15,10 @@ import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
-// User.findOne({ handle: 'future' }).then(u => console.log(u.toObject()))
+// User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
+// .then(u => u);
+//
+// sendConfirmation({ handle: 'feed', email: 'relevant.feed@gmail.com', confirmCode: 'xxx' });
 
 async function sendConfirmation(user, newUser) {
   let text = '';
