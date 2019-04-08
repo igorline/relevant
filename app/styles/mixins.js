@@ -101,6 +101,7 @@ export const border = css`
 export const flex = css`
   position: relative;
   ${p => (p.flex ? `flex: ${responsiveHandler(p.flex)}` : '')};
+  ${p => (p.position ? `position: ${responsiveHandler(p.position)}` : '')};
   ${p => (p.fdirection ? `flex-direction: ${responsiveHandler(p.fdirection)}` : '')};
   ${p => (p.justify ? `justify-content: ${responsiveHandler(p.justify)}` : '')};
   ${p => (p.align ? `align-items: ${responsiveHandler(p.align)}` : '')};
