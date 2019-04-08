@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash.get';
 import { View, Header, SecondaryText, Title, BodyText } from 'modules/styled/uni';
 import { connect } from 'react-redux';
 import { updateNotificationSettings } from 'modules/auth/auth.actions';
@@ -98,6 +99,34 @@ NotificationSet.propTypes = {
 };
 
 class NotificationSettings extends Component {
+  componentDidMount() {
+    this.requestDesktopPermission();
+  }
+
+  componentDidUpdate() {
+    this.requestDesktopPermission();
+    const {
+      user: { notificationSettings },
+      actions
+    } = this.props;
+    // If they allowed desktop notifications elsewhere we should update the DB
+    if (
+      Notification &&
+      Notification.permission === 'granted' &&
+      !get(notificationSettings, 'desktop.all')
+    ) {
+      actions.updateNotificationSettings({ desktop: { all: true } });
+    }
+  }
+
+  requestDesktopPermission() {
+    const {
+      user: { notificationSettings }
+    } = this.props;
+    if (Notification && get(notificationSettings, 'desktop.all')) {
+      Notification.requestPermission();
+    }
+  }
   render() {
     const { user, actions } = this.props;
     if (!user) {
