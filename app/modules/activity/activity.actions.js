@@ -1,6 +1,6 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
-import { api, token, localStorage } from 'app/utils';
+import { api, storage } from 'app/utils';
 // import { Alert } from 'app/utils/alert';
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
@@ -67,8 +67,8 @@ export function getActivity(skip) {
 
 export function markRead() {
   return dispatch =>
-    token
-    .get()
+    storage
+    .getToken()
     .then(tk =>
       fetch(`${apiServer}/markread`, {
         ...reqOptions(tk),
@@ -83,8 +83,8 @@ export function markRead() {
 
 export function createNotification(obj) {
   return () =>
-    token
-    .get()
+    storage
+    .getToken()
     .then(tk =>
       fetch(`${apiServer}`, {
         ...reqOptions(tk),
@@ -126,24 +126,22 @@ export function hideBannerPrompt(notification) {
   };
 }
 
-export function showPushNotificationPrompt(promptProps = {}) {
-  return dispatch => {
-    if (process.env.BROWSER === true) {
-      if (
-        Notification &&
+export const showPushNotificationPrompt = (promptProps = {}) => async dispatch => {
+  if (process.env.BROWSER === true) {
+    if (
+      Notification &&
         (Notification.permission === 'granted' || Notification.permission === 'denied')
-      ) {
-        return false;
-      }
-      const isDismissed = localStorage.isDismissed('pushDismissed', 7);
-      if (!isDismissed) {
-        dispatch(showBannerPrompt('desktop', promptProps));
-      }
-    } else {
-      // handle mobile push notifications
-      // Check for mobile permissions / last dismissed
-      // Alert('');
+    ) {
+      return false;
     }
-    return false;
-  };
-}
+    const isDismissed = await storage.isDismissed('pushDismissed', 7);
+    if (!isDismissed) {
+      dispatch(showBannerPrompt('desktop', promptProps));
+    }
+  } else {
+    // handle mobile push notifications
+    // Check for mobile permissions / last dismissed
+    // Alert('');
+  }
+  return false;
+};

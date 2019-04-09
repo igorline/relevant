@@ -29,7 +29,7 @@ if (process.env.WEB !== 'true') {
 const APP_GROUP_ID = 'group.com.4real.relevant';
 
 const reqOptions = async () => {
-  const token = await utils.token.get();
+  const token = await utils.storage.getToken();
   return {
     credentials: 'include',
     headers: {
@@ -156,7 +156,7 @@ export function cacheCommunity(community) {
 
 export function logoutAction(user) {
   return dispatch => {
-    utils.token.remove().then(() => {
+    utils.storage.removeToken().then(() => {
       // websocket message
       if (user && user._id) {
         dispatch({
@@ -313,7 +313,7 @@ function setupUser(user, dispatch) {
 export function getUser(callback) {
   return async dispatch => {
     try {
-      const token = await utils.token.get();
+      const token = await utils.storage.getToken();
       if (!token) return null;
       dispatch(loginUserSuccess(token));
       const user = await utils.api.request({
@@ -386,7 +386,7 @@ export function loginUser(user) {
         body: JSON.stringify(user)
       });
       if (responseJSON.token) {
-        await utils.token.set(responseJSON.token);
+        await utils.storage.setToken(responseJSON.token);
         dispatch(loginUserSuccess(responseJSON.token));
         dispatch(getUser());
         return true;
@@ -456,7 +456,7 @@ export function createUser(user, invitecode) {
     .then(response => response.json())
     .then(responseJSON => {
       if (responseJSON.token) {
-        return utils.token.set(responseJSON.token).then(() => {
+        return utils.storage.setToken(responseJSON.token).then(() => {
           ReactGA &&
               ReactGA.event({
                 category: 'User',
@@ -680,14 +680,14 @@ export function twitterAuth(profile, invite) {
       }
       dispatch(setLoading(false));
       if (result.user && result.user.role === 'temp') {
-        await utils.token.set(result.token);
+        await utils.storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
 
         dispatch(setPreUser(result.user));
         dispatch(setTwitter({ ...profile, token: result.token }));
         return false;
       } else if (result.token && result.user) {
-        await utils.token.set(result.token);
+        await utils.storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);
       }

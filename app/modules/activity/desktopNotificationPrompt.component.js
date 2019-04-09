@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
 import { View, BodyText, CTALink } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
+import { storage } from 'utils';
 
 class DesktopNotification extends Component {
   handleClick = () => {
@@ -16,7 +17,7 @@ class DesktopNotification extends Component {
     const { actions } = this.props;
     actions.hideBannerPrompt();
     const now = new Date().getTime();
-    localStorage.setItem('pushDismissed', now);
+    storage.set('pushDismissed', now);
   };
 
   render() {
