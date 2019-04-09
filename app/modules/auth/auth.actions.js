@@ -246,8 +246,14 @@ export function addDeviceToken(user) {
         // other params: foreground, message
         const { userInteraction, data } = notification;
         if (!userInteraction) return;
-        if (data && data.type === 'postLink') {
-          dispatch(navigationActions.goToPost({ _id: data._id, title: data.title }));
+        if (data && data.post) {
+          const parentId = data.post.parentId
+            ? data.post.parentId._id || data.post.parentId
+            : data.post._id;
+          const comment = parentId !== data.post._id ? { _id: data.post._id } : null;
+          dispatch(
+            navigationActions.goToPost({ _id: parentId, title: data.post.title, comment })
+          );
         }
       },
 

@@ -1,5 +1,5 @@
 import List from 'server/api/emailList/list.model';
-import mail from '../../mail';
+import mail from 'server/config/mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';

@@ -3,6 +3,7 @@ import request from 'request';
 import { EventEmitter } from 'events';
 import { get } from 'lodash';
 import Community from 'server/api/community/community.model';
+import mail from 'server/config/mail';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -11,7 +12,6 @@ import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
-import mail from '../../mail';
 import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
@@ -95,15 +95,17 @@ exports.sendPostNotification = async (req, res, next) => {
     const alert = `In case you missed this top-ranked post from @${post.user}: ${
       post.title
     }`;
-    const payload = {
-      type: 'postLink',
-      _id: post._id,
-      title: post.title
-    };
 
     // TODO - optimize this or put in queue so we don't create a bottle neck;
     const finished = users.map(async user => {
       try {
+        const payload = {
+          fromUser: null,
+          toUser: user,
+          post,
+          action: alert,
+          noteType: 'general'
+        };
         await apnData.sendNotification(user, alert, payload);
       } catch (err) {
         // eslint-disable-next-line
@@ -493,13 +495,15 @@ exports.update = async (req, res, next) => {
   }
 };
 
-async function processSubscriptions(newPost) {
+async function processSubscriptions(newPost, communityId) {
   try {
     const author = newPost.embeddedUser;
     const subscribers = await Subscriptiton.find({
       following: newPost.user
       // category: newPostObj.category
     }).populate('follower', '_id handle name deviceTokens badge lastFeedNotification');
+
+    const cObj = await Community.findOne({ _id: communityId }, 'name');
 
     const promises = subscribers.map(async subscription => {
       if (!subscription.follower) return null;
@@ -536,8 +540,10 @@ async function processSubscriptions(newPost) {
         const now = new Date();
 
         const { follower } = subscription;
+
         // TODO put it on a queue, only certain hours of the day
         if (now - 12 * 60 * 60 * 1000 > new Date(follower.lastFeedNotification)) {
+          // if (true) {
           const unread = await Feed.find({
             userId: follower._id,
             read: false,
@@ -549,25 +555,20 @@ async function processSubscriptions(newPost) {
             { read: true },
             { multi: true }
           );
-          let alert;
-          if (n === 1) {
-            alert = 'There is a new post from ' + author.name + ' in your feed!';
-          } else {
-            let from = unread.map(el => el.from);
-            from = [...new Set(from)];
-            if (from.length === 1) {
-              alert = 'There are new posts from ' + author.name + ' in your feed!';
-            } else {
-              alert =
-                'There are new posts from ' + author.name + ' and others in your feed!';
-            }
-          }
+          const alert = `There is a new post from ${author.name} in the ${
+            cObj.name
+          } community`;
+
           const payload = {
-            type: 'newFeedpost',
-            id: newPost._id,
-            author: author.name,
-            number: n
+            fromUser: author,
+            toUser: subscription.follower,
+            post: newPost,
+            action: alert,
+            noteType: 'newPost',
+            number: n,
+            community: cObj.name
           };
+
           // console.log('New post in feed alert', alert);
           apnData.sendNotification(follower, alert, payload);
           follower.lastFeedNotification = now;
@@ -713,7 +714,7 @@ exports.create = async (req, res, next) => {
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);
 
-    processSubscriptions(newPost);
+    processSubscriptions(newPost, communityId);
     return Post.sendOutMentions(mentions, newPost, author);
   } catch (err) {
     return next(err);

@@ -56,7 +56,7 @@ export default class UserSuggestion extends Component {
         selected={selected === i ? 'selected' : ''}
         onClick={() => this.props.onChange(user)}
       >
-        <Avatar user={user} nolink />
+        <Avatar user={user} noLink />
       </UserSelect>
     ));
     return (

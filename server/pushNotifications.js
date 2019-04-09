@@ -1,4 +1,5 @@
 import apn from 'apn';
+import { handleEmail } from 'server/utils/email';
 import Notification from './api/notification/notification.model';
 import User from './api/user/user.model';
 
@@ -68,6 +69,8 @@ service.on('socketError', console.error);
 
 async function sendNotification(user, alert, payload) {
   try {
+    handleEmail(payload);
+
     if (user && user.deviceTokens && user.deviceTokens.length) {
       const badge = await Notification.count({
         forUser: user._id,

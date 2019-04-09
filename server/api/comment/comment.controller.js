@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import Community from 'server/api/community/community.model';
+import { getMentions, getWords } from 'app/utils/text';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
@@ -67,21 +68,16 @@ exports.get = async (req, res, next) => {
   }
 };
 
-// for testing
 exports.create = async (req, res, next) => {
   let user = req.user._id;
   const { community, communityId } = req.communityMember;
-  const {
-    linkParent,
-    text: body,
-    tags,
-    mentions = [],
-    repost = false,
-    metaPost
-  } = req.body;
-  let { parentPost, parentComment } = req.body;
+  const { linkParent, text: body, tags, repost = false, metaPost } = req.body;
+  let { parentPost, parentComment, mentions = [] } = req.body;
 
   const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
+  const mentionsFromBody = getMentions(getWords(body));
+
+  mentions = [...new Set([...mentions, ...mentionsFromBody])];
 
   const commentObj = {
     body,
@@ -131,15 +127,18 @@ exports.create = async (req, res, next) => {
 
     const postAuthor = await User.findOne(
       { _id: parentPost.user },
-      'name _id deviceTokens'
+      'name _id deviceTokens handle email notificationSettings'
     );
     const commentAuthor =
       parentComment &&
-      (await User.findOne({ _id: parentComment.user }, 'name _id deviceTokens'));
+      (await User.findOne(
+        { _id: parentComment.user },
+        'name _id deviceTokens handle email notificationSettings'
+      ));
 
     let otherCommentors = await Post.find({ parentPost: parentPost._id }).populate(
       'user',
-      'name _id deviceTokens'
+      'name _id deviceTokens handle email notificationSettings'
     );
 
     otherCommentors = otherCommentors.map(comm => comm.user).filter(u => u);
@@ -148,14 +147,14 @@ exports.create = async (req, res, next) => {
 
     let voters = await Invest.find({ post: parentPost._id }).populate(
       'investor',
-      'name _id deviceTokens'
+      'name _id deviceTokens handle email notificationSettings'
     );
 
     let commentVoters =
       parentComment &&
       (await Invest.find({ post: parentComment._id }).populate(
         'investor',
-        'name _id deviceTokens'
+        'name _id deviceTokens handle email notificationSettings'
       ));
 
     commentVoters = commentVoters ? commentVoters.map(v => v.investor) : [];
@@ -209,7 +208,7 @@ async function sendNotifications({
 
     if (repost && ownPost) type = 'repost';
 
-    const dbNotificationObj = {
+    let note = {
       post: comment._id,
       forUser: commentor._id,
       byUser: user._id,
@@ -220,21 +219,32 @@ async function sendNotifications({
       read: false
     };
 
-    const newDbNotification = new Notification(dbNotificationObj);
-    const note = await newDbNotification.save();
+    note = new Notification(note);
+    note = await note.save();
 
-    const newNotifsObj = {
+    const noteAction = {
       _id: commentor._id,
       type: 'ADD_ACTIVITY',
       payload: note
     };
-    CommentEvents.emit('comment', newNotifsObj);
+    CommentEvents.emit('comment', noteAction);
 
-    let action = ` commented on ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
-    if (comment.repost && ownPost) action = ` reposted your ${type}`;
+    let action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
+    if (type === 'repost' && ownPost) action = ` reposted your ${type}`;
+
+    // if (ownComment || ownPost) {
+    //   sendCommentEmail({ commentor: user, comment, user: commentor, action });
+    // }
+    // const noteType = ownComment || ownPost ? 'personal' : 'general';
 
     const alert = user.name + action;
-    const payload = { commentFrom: user.name };
+    const payload = {
+      fromUser: user,
+      toUser: commentor,
+      post: comment,
+      action,
+      noteType: ownPost || ownComment ? 'reply' : 'general'
+    };
     apnData.sendNotification(commentor, alert, payload);
   } catch (err) {
     throw err;

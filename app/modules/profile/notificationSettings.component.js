@@ -10,31 +10,32 @@ import { capitalize } from 'utils/numbers';
 
 const NOTIFICATION_DETAILS = {
   email: {
-    all: {
+    personal: {
+      label: 'Replies, mentions and earnings',
+      description:
+        'Get notified when you earn rewards, someone replies to your comments or mentions you in a post.'
+    },
+    general: {
       label: 'Email notifications',
-      description: 'If turned off, you will still receive administrative emails'
+      description:
+        'General email notifications like new posts and comments on posts you have interacted with.'
     },
     digest: {
       label: 'Email digests',
       description:
-        'Receive periodic emails with the top posts from your favorite communities'
-    },
-    replies: {
-      label: 'Reply and mentions',
-      description:
-        'Get notified when someone replies to your comments or mentions you in a comment'
+        'Receive periodic emails with the top posts from your favorite communities.'
     }
   },
   mobile: {
     all: {
       label: 'Mobile notifications',
-      description: 'Receive mobile app notifications for any community activity'
+      description: 'Receive mobile app notifications for any community activity.'
     }
   },
   desktop: {
     all: {
       label: 'Desktop notifications',
-      description: 'Receive notifications in a browser for any community activity'
+      description: 'Receive notifications in a browser for any community activity.'
     }
   }
 };
