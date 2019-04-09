@@ -6,10 +6,9 @@ import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { colors, layout, sizing } from 'app/styles';
 import { View } from 'modules/styled/uni';
-import TopBarNotification from 'modules/navigation/topBarNotification.component';
+import TopBarNotification from 'modules/activity/topBarNotification.component';
 import SplashComponent from 'modules/web_splash/splash.component';
 import { slide as Menu } from 'react-burger-menu';
-import { showDesktopNotificationPrompt } from 'modules/activity/activity.actions';
 import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';
 
@@ -88,8 +87,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       openWebSideNav,
-      closeWebSideNav,
-      showDesktopNotificationPrompt
+      closeWebSideNav
     },
     dispatch
   )

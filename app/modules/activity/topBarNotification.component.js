@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { showNotification, hideNotification } from 'modules/activity/activity.actions';
 import { colors } from 'app/styles';
 import { View } from 'modules/styled/uni';
-import DesktopNotification from 'modules/navigation/desktopNotificationPrompt.component';
+import DesktopNotification from 'modules/activity/desktopNotificationPrompt.component';
 
 const NOTIFICATION_TYPES = {
   desktop: DesktopNotification
