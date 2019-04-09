@@ -8,13 +8,13 @@ class DesktopNotification extends Component {
   handleClick = () => {
     const { actions } = this.props;
     Notification.requestPermission().then(() => {
-      actions.hideNotification();
+      actions.hideBannerPrompt();
     });
   };
 
   handleDismiss = () => {
     const { actions } = this.props;
-    actions.hideNotification();
+    actions.hideBannerPrompt();
     const now = new Date().getTime();
     localStorage.setItem('desktopDismissed', now);
   };

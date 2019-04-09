@@ -1,6 +1,6 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
-import { api, token, notifications } from 'app/utils';
+import { api, token, localStorage } from 'app/utils';
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
@@ -108,24 +108,24 @@ export function getNotificationCount() {
   };
 }
 
-export function showNotification(notification, notificationProps) {
+export function showBannerPrompt(promptType, promptProps) {
   return {
-    type: types.SHOW_NOTIFICATION,
+    type: types.SHOW_BANNER_PROMPT,
     payload: {
-      notification,
-      notificationProps
+      promptType,
+      promptProps
     }
   };
 }
 
-export function hideNotification(notification) {
+export function hideBannerPrompt(notification) {
   return {
-    type: types.HIDE_NOTIFICATION,
+    type: types.HIDE_BANNER_PROMPT,
     payload: notification
   };
 }
 
-export function showDesktopNotificationPrompt(notificationProps = {}) {
+export function showDesktopNotificationPrompt(promptProps = {}) {
   return dispatch => {
     if (
       Notification &&
@@ -133,9 +133,9 @@ export function showDesktopNotificationPrompt(notificationProps = {}) {
     ) {
       return false;
     }
-    const isDismissed = notifications.isDismissed('desktopDismissed', 7);
+    const isDismissed = localStorage.isDismissed('desktopDismissed', 7);
     if (!isDismissed) {
-      dispatch(showNotification('desktop', notificationProps));
+      dispatch(showBannerPrompt('desktop', promptProps));
     }
     return false;
   };
