@@ -312,7 +312,14 @@ async function sendNotification(props) {
     communityId
   });
 
-  apnData.sendNotification(user, alertText, {});
+  const payload = {
+    toUser: user,
+    post,
+    action: alertText,
+    noteType: 'reward'
+  };
+
+  apnData.sendNotification(user, alertText, payload);
   return user;
 }
 
