@@ -1,6 +1,6 @@
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
-import { showDesktopNotificationPrompt } from 'modules/activity/activity.actions';
+import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -34,7 +34,7 @@ export function submitPost(post) {
         body: JSON.stringify(post)
       });
       dispatch(
-        showDesktopNotificationPrompt({
+        showPushNotificationPrompt({
           // actionText: 'Click Here baby!',
           // messageText: 'Enable desktop notifications, you know you want to',
           // dismissText: 'Dismiss me, bye!',

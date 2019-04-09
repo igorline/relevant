@@ -16,7 +16,7 @@ class DesktopNotification extends Component {
     const { actions } = this.props;
     actions.hideBannerPrompt();
     const now = new Date().getTime();
-    localStorage.setItem('desktopDismissed', now);
+    localStorage.setItem('pushDismissed', now);
   };
 
   render() {
