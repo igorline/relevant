@@ -2,7 +2,7 @@ import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
 import { setPostsSimple } from 'modules/post/post.actions';
-import { showDesktopNotificationPrompt } from 'modules/activity/activity.actions';
+import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -94,7 +94,7 @@ export function vote(amount, post, user, undo) {
       else dispatch(updatePostVote({ post: post._id, amount }));
       if (amount > 0) {
         dispatch(
-          showDesktopNotificationPrompt({
+          showPushNotificationPrompt({
             // actionText: 'Click Here baby!',
             // messageText: 'Enable desktop notifications, you know you want to',
             // dismissText: 'Dismiss me, bye!',

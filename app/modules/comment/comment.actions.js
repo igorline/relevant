@@ -3,7 +3,7 @@ import { api, alert } from 'app/utils';
 import * as types from 'core/actionTypes';
 import { setError } from 'modules/ui/error.actions';
 import { removePost, updatePost } from 'modules/post/post.actions';
-import { showDesktopNotificationPrompt } from 'modules/activity/activity.actions';
+import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -59,7 +59,7 @@ export function createComment(commentObj) {
       const parentId = parentComment || parentPost;
       dispatch(addComment(parentId, comment));
       dispatch(
-        showDesktopNotificationPrompt({
+        showPushNotificationPrompt({
           // actionText: 'Click Here baby!',
           // messageText: 'Enable desktop notifications, you know you want to',
           // dismissText: 'Dismiss me, bye!',
