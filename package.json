@@ -175,6 +175,7 @@
     "universal-cookie-express": "^2.1.2",
     "uuid": "^3.3.2",
     "voucher-code-generator": "^1.1.1",
+    "web-push": "^3.3.3",
     "web3": "^1.0.0-beta.37",
     "whatwg-fetch": "^2.0.1"
   },

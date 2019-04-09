@@ -51,6 +51,8 @@ if (process.env.BROWSER === true) {
   require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
+
+  require('app/utils/notifications');
 }
 
 class App extends Component {

@@ -1,5 +1,6 @@
 import apn from 'apn';
-import { handleEmail } from 'server/utils/email';
+import { handleEmail } from 'server/notifications/email';
+import { handleWebNotifications } from 'server/notifications/web'; // eslint-disable-line
 import Notification from './api/notification/notification.model';
 import User from './api/user/user.model';
 
