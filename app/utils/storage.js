@@ -12,7 +12,55 @@ const APP_GROUP_ID = 'group.com.4real.relevant';
 
 let token;
 
-export function get() {
+export function get(key) {
+  return new Promise((resolve, reject) => {
+    if (userDefaults) {
+      return userDefaults
+      .get(key, APP_GROUP_ID)
+      .then(val => {
+        if (val) {
+          return resolve(val);
+        }
+        return resolve(null);
+      })
+      .catch(err => reject(err));
+    }
+    // WEB
+    const val = cookie.get(key, { path: '/' });
+    if (val) {
+      return resolve(val);
+    }
+    return resolve(null);
+  });
+}
+
+export function remove(key) {
+  if (userDefaults) {
+    return new Promise(resolve => {
+      userDefaults.remove(key, APP_GROUP_ID);
+      resolve();
+    });
+  }
+  return new Promise(resolve => {
+    cookie.remove(key, { path: '/' });
+    resolve();
+  });
+}
+
+export function set(key, val) {
+  if (userDefaults) {
+    return new Promise(resolve => {
+      userDefaults.set(key, val, APP_GROUP_ID);
+      resolve();
+    });
+  }
+  return new Promise(resolve => {
+    cookie.set(key, val, { path: '/' });
+    resolve();
+  });
+}
+
+export function getToken() {
   return new Promise((resolve, reject) => {
     if (token) return resolve(token);
 
@@ -39,31 +87,37 @@ export function get() {
   });
 }
 
-export function remove() {
+export const setToken = async newToken => {
+  token = newToken;
+  set('token', newToken);
+};
+export const removeToken = async () => {
   token = null;
   console.log('REMOVING TOKEN!'); // eslint-disable-line
-  if (userDefaults) {
-    return new Promise(resolve => {
-      userDefaults.remove('token', APP_GROUP_ID);
-      resolve();
-    });
-  }
-  return new Promise(resolve => {
-    cookie.remove('token', { path: '/' });
-    resolve();
-  });
-}
+  remove('token');
+};
 
-export function set(newToken) {
-  token = newToken;
-  if (userDefaults) {
-    return new Promise(resolve => {
-      userDefaults.set('token', newToken, APP_GROUP_ID);
-      resolve();
-    });
+// Expects unix timecode
+const isTimecodeExpired = (date, days) => {
+  const now = new Date().getTime();
+  const diff = Math.abs(now - Number(date));
+  const ONE_DAY = 1000 * 60 * 60 * 24;
+  return diff > days * ONE_DAY;
+};
+
+export const isDismissed = async (key, days) => {
+  let dismissed;
+  try {
+    dismissed = await get(key);
+  } catch (err) {
+    return false;
   }
-  return new Promise(resolve => {
-    cookie.set('token', token, { path: '/' });
-    resolve();
-  });
-}
+  if (!dismissed) {
+    return false;
+  }
+  if (isTimecodeExpired(Number(dismissed), days)) {
+    remove(key);
+    return false;
+  }
+  return true;
+};
