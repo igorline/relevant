@@ -32,9 +32,9 @@ Object {
         "all": true,
       },
       "email": Object {
-        "all": true,
         "digest": true,
-        "replies": true,
+        "general": true,
+        "personal": true,
       },
       "mobile": Object {
         "all": true,
@@ -200,9 +200,9 @@ Object {
         "all": true,
       },
       "email": Object {
-        "all": true,
         "digest": true,
-        "replies": true,
+        "general": true,
+        "personal": true,
       },
       "mobile": Object {
         "all": true,
