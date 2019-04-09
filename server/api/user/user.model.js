@@ -53,11 +53,11 @@ const UserSchema = new Schema(
           type: Boolean,
           default: true
         },
-        replies: {
+        general: {
           type: Boolean,
           default: true
         },
-        all: {
+        personal: {
           type: Boolean,
           default: true
         }

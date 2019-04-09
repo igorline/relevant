@@ -226,15 +226,18 @@ async function updateAuthor(params) {
       type
     });
 
-    let alert = user.name + ' thinks your comment is relevant';
-    const payload = { 'Relevance from': user.name };
+    const action = ' thinks your comment is relevant';
+
+    const payload = {
+      fromUser: user,
+      toUser: author,
+      post,
+      action,
+      noteType: 'upvote'
+    };
+    const alert = user.name + action;
+
     try {
-      // TEST - don't send notification after upvote
-      apnData.sendNotification(author, alert, payload);
-      const now = new Date();
-      if (post.createdAt > now.getTime() - 7 * 24 * 60 * 60 * 1000) {
-        alert = null;
-      }
       apnData.sendNotification(author, alert, payload);
     } catch (err) {
       console.log(err); // eslint-disable-line

@@ -487,12 +487,25 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           });
         }
 
-        const users = await this.model('User').find(query, 'deviceTokens');
+        const users = await this.model('User').find(
+          query,
+          'deviceTokens email name notificationSettings'
+        );
 
         users.forEach(async user => {
-          let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
+          const action = ' mentioned you in a ' + type;
+          let alert = (mUser.name || mUser) + action;
           if (mention === 'everyone' && post.body) alert = post.body;
-          const payload = { 'Mention from': textParent.embeddedUser.name };
+          // TODO batch notifications & emails
+
+          const payload = {
+            fromUser: mUser,
+            toUser: user,
+            post,
+            action,
+            noteType: 'mention'
+          };
+
           apnData.sendNotification(user, alert, payload);
 
           if (mention === 'everyone') return;
