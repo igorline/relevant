@@ -6,7 +6,7 @@ import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { colors, layout, sizing } from 'app/styles';
 import { View } from 'modules/styled/uni';
-import TopBarNotification from 'modules/activity/topBarNotification.component';
+import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import SplashComponent from 'modules/web_splash/splash.component';
 import { slide as Menu } from 'react-burger-menu';
 import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
@@ -25,13 +25,13 @@ class WithSideNav extends Component {
     const { isAuthenticated, navigation, notif } = this.props;
     const smallWidth = navigation.width <= layout.mediumScreenWidth;
     const { sideNavIsOpen } = navigation;
-    const { notification } = notif;
+    const { promptType } = notif;
     return (
       <View bg={colors.white} display="flex" flex={1}>
         {!isAuthenticated && !smallWidth ? (
           <SplashComponent type={'app'} cta="SIGN_UP" />
         ) : null}
-        {notification ? (
+        {promptType ? (
           <View
             position="fixed"
             zIndex="200"
@@ -41,7 +41,7 @@ class WithSideNav extends Component {
               minHeight: sizing(5)
             }}
           >
-            <TopBarNotification />
+            <BannerPrompt />
           </View>
         ) : null}
         <View fdirection="row" display="flex">

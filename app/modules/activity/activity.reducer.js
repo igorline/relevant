@@ -5,8 +5,8 @@ const initialState = {
   count: false,
   loaded: false,
   general: [],
-  notification: null,
-  notificationProps: {}
+  promptType: null,
+  promptProps: {}
 };
 
 export default function notifications(state = initialState, action) {
@@ -45,19 +45,19 @@ export default function notifications(state = initialState, action) {
       return { ...initialState };
     }
 
-    case types.SHOW_NOTIFICATION: {
+    case types.SHOW_BANNER_PROMPT: {
       return {
         ...state,
-        notification: action.payload.notification,
-        notificationProps: action.payload.notificationProps
+        promptType: action.payload.promptType,
+        promptProps: action.payload.promptProps
       };
     }
 
-    case types.HIDE_NOTIFICATION: {
+    case types.HIDE_BANNER_PROMPT: {
       return {
         ...state,
-        notification: null,
-        notifcationProps: {}
+        promptType: null,
+        promptProps: {}
       };
     }
 

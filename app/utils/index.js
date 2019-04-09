@@ -8,7 +8,7 @@ import * as img from './img';
 import * as alert from './alert';
 import * as list from './list';
 import * as routing from './routing';
-import * as notifications from './notifications';
+import * as localStorage from './localStorage';
 
 let nav = {}; // eslint-disable-line
 
@@ -24,7 +24,7 @@ export {
   list,
   token,
   numbers,
-  notifications,
+  localStorage,
   text,
   nav,
   img,
