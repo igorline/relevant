@@ -89,7 +89,7 @@ function authMiddleware() {
 function isAuthenticated() {
   return compose()
   .use(validateTokenStrict)
-  .use(getUser());
+  .use(getUser('+email'));
 }
 
 function communityMember() {
