@@ -6,6 +6,7 @@ import { colors, fonts, sizing } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import InviteCta from 'modules/web_splash/inviteCta.component';
 import { withRouter } from 'react-router-dom';
+import { notifications } from 'utils';
 
 const SignUpCta = ({ location }) => (
   <View display="flex" fdirection="row">
@@ -80,25 +81,9 @@ class Splash extends Component {
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll);
-    this.setState({ isDismissed: this.checkIfDismissedExpired() });
-  }
-
-  checkIfDismissedExpired() {
-    if (!window || !window.localStorage || !localStorage) {
-      return false;
-    }
-    const dismissed = localStorage.getItem('splashDismissed');
-    if (!dismissed) {
-      return false;
-    }
-    const now = new Date().getTime();
-    const diff = Math.abs(now - Number(dismissed));
-    const ONE_DAY = 1000 * 60 * 60 * 24;
-    if (diff > 5 * ONE_DAY) {
-      localStorage.removeItem('splashDismissed');
-      return false;
-    }
-    return true;
+    this.setState({
+      isDismissed: notifications.isDismissed('splashDismissed', 5)
+    });
   }
 
   onScroll() {
