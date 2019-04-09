@@ -4,7 +4,9 @@ const initialState = {
   personal: [],
   count: false,
   loaded: false,
-  general: []
+  general: [],
+  notification: null,
+  notificationProps: {}
 };
 
 export default function notifications(state = initialState, action) {
@@ -41,6 +43,22 @@ export default function notifications(state = initialState, action) {
 
     case types.LOGOUT_USER: {
       return { ...initialState };
+    }
+
+    case types.SHOW_NOTIFICATION: {
+      return {
+        ...state,
+        notification: action.payload.notification,
+        notificationProps: action.payload.notificationProps
+      };
+    }
+
+    case types.HIDE_NOTIFICATION: {
+      return {
+        ...state,
+        notification: null,
+        notifcationProps: {}
+      };
     }
 
     default:

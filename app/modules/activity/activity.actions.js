@@ -1,6 +1,6 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
-import { api, token } from 'app/utils';
+import { api, token, notifications } from 'app/utils';
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
@@ -105,5 +105,38 @@ export function getNotificationCount() {
       });
       dispatch(setCount(res.unread));
     } catch (err) {} // eslint-disable-line
+  };
+}
+
+export function showNotification(notification, notificationProps) {
+  return {
+    type: types.SHOW_NOTIFICATION,
+    payload: {
+      notification,
+      notificationProps
+    }
+  };
+}
+
+export function hideNotification(notification) {
+  return {
+    type: types.HIDE_NOTIFICATION,
+    payload: notification
+  };
+}
+
+export function showDesktopNotificationPrompt(notificationProps = {}) {
+  return dispatch => {
+    if (
+      Notification &&
+      (Notification.permission === 'granted' || Notification.permission === 'denied')
+    ) {
+      return false;
+    }
+    const isDismissed = notifications.isDismissed('desktopDismissed', 7);
+    if (!isDismissed) {
+      dispatch(showNotification('desktop', notificationProps));
+    }
+    return false;
   };
 }
