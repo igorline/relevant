@@ -1,6 +1,7 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
-import { api, token } from 'app/utils';
+import { api, token, localStorage } from 'app/utils';
+// import { Alert } from 'app/utils/alert';
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
@@ -105,5 +106,44 @@ export function getNotificationCount() {
       });
       dispatch(setCount(res.unread));
     } catch (err) {} // eslint-disable-line
+  };
+}
+
+export function showBannerPrompt(promptType, promptProps) {
+  return {
+    type: types.SHOW_BANNER_PROMPT,
+    payload: {
+      promptType,
+      promptProps
+    }
+  };
+}
+
+export function hideBannerPrompt(notification) {
+  return {
+    type: types.HIDE_BANNER_PROMPT,
+    payload: notification
+  };
+}
+
+export function showPushNotificationPrompt(promptProps = {}) {
+  return dispatch => {
+    if (process.env.BROWSER === true) {
+      if (
+        Notification &&
+        (Notification.permission === 'granted' || Notification.permission === 'denied')
+      ) {
+        return false;
+      }
+      const isDismissed = localStorage.isDismissed('pushDismissed', 7);
+      if (!isDismissed) {
+        dispatch(showBannerPrompt('desktop', promptProps));
+      }
+    } else {
+      // handle mobile push notifications
+      // Check for mobile permissions / last dismissed
+      // Alert('');
+    }
+    return false;
   };
 }
