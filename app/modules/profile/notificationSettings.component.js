@@ -16,12 +16,12 @@ const NOTIFICATION_DETAILS = {
         'Get notified when you earn rewards, someone replies to your comments or mentions you in a post.'
     },
     general: {
-      label: 'Email notifications',
+      label: 'General notifications',
       description:
-        'General email notifications like new posts and comments on posts you have interacted with.'
+        'Get notified about new posts and comments on posts you have interacted with.'
     },
     digest: {
-      label: 'Email digests',
+      label: 'Email digest',
       description:
         'Receive periodic emails with the top posts from your favorite communities.'
     }
@@ -42,6 +42,7 @@ const NOTIFICATION_DETAILS = {
 
 const NotificationToggle = ({ parent, label, notification, onChange }) => {
   const details = NOTIFICATION_DETAILS[parent][label];
+  if (!details) return null;
   return (
     <View fdirection="row" mt={3}>
       <View fdirection="row" align="center" flex={1}>
