@@ -92,12 +92,11 @@ export function vote(amount, post, user, undo) {
       });
       if (res.undoInvest) dispatch(undoPostVote(post._id));
       else dispatch(updatePostVote({ post: post._id, amount }));
+      const isComment = !!post.parentPost;
       if (amount > 0) {
         dispatch(
           showPushNotificationPrompt({
-            // actionText: 'Click Here baby!',
-            // messageText: 'Enable desktop notifications, you know you want to',
-            // dismissText: 'Dismiss me, bye!',
+            type: isComment ? 'upvoteComment' : 'upvotePost'
           })
         );
       }

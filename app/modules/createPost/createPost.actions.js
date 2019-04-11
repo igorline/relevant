@@ -35,9 +35,7 @@ export function submitPost(post) {
       });
       dispatch(
         showPushNotificationPrompt({
-          // actionText: 'Click Here baby!',
-          // messageText: 'Enable desktop notifications, you know you want to',
-          // dismissText: 'Dismiss me, bye!',
+          type: 'createPost'
         })
       );
       return true;

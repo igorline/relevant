@@ -303,9 +303,6 @@ export function addDeviceToken(user) {
 function setupUser(user, dispatch) {
   dispatch(setUser(user));
   dispatch(setSelectedUserData(user));
-  if (process.env.WEB !== 'true') {
-    dispatch(addDeviceToken(user));
-  }
   dispatch(errorActions.setError('universal', false));
   return user;
 }

@@ -50,7 +50,7 @@ export function remove(key) {
 export function set(key, val) {
   if (userDefaults) {
     return new Promise(resolve => {
-      userDefaults.set(key, val, APP_GROUP_ID);
+      userDefaults.set(key, String(val), APP_GROUP_ID);
       resolve();
     });
   }

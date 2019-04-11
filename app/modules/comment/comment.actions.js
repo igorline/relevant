@@ -60,9 +60,7 @@ export function createComment(commentObj) {
       dispatch(addComment(parentId, comment));
       dispatch(
         showPushNotificationPrompt({
-          // actionText: 'Click Here baby!',
-          // messageText: 'Enable desktop notifications, you know you want to',
-          // dismissText: 'Dismiss me, bye!',
+          type: 'createComment'
         })
       );
       return comment;
