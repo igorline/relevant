@@ -5,13 +5,18 @@ import { View, BodyText, CTALink } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 import { storage } from 'utils';
 
-class DesktopNotification extends Component {
+class PushNotification extends Component {
   handleClick = () => {
     const { actions } = this.props;
     Notification.requestPermission().then(() => {
       actions.hideBannerPrompt();
     });
   };
+
+  // handleClickMobile = () => {
+  //   const { actions, user } = this.props;
+  //   // actions.addDeviceToken(user);
+  // };
 
   handleDismiss = () => {
     const { actions } = this.props;
@@ -21,7 +26,12 @@ class DesktopNotification extends Component {
   };
 
   render() {
-    const { messageText, actionText, dismissText } = this.props;
+    const { messageText, actionText, dismissText, isMobile } = this.props;
+    // console.log('props in push', this.props);
+    if (isMobile) {
+      // console.log('IS MOBILE');
+      return null;
+    }
     return (
       <View fdirection="row" justify="space-between">
         <BodyText c={colors.white} inline={1}>
@@ -41,11 +51,13 @@ class DesktopNotification extends Component {
   }
 }
 
-DesktopNotification.propTypes = {
+PushNotification.propTypes = {
   actions: PropTypes.object,
   messageText: PropTypes.string,
   actionText: PropTypes.string,
-  dismissText: PropTypes.string
+  dismissText: PropTypes.string,
+  isMobile: PropTypes.bool
+  // user: PropTypes.object
 };
 
-export default DesktopNotification;
+export default PushNotification;
