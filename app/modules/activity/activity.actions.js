@@ -1,7 +1,11 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
 import { api, storage } from 'app/utils';
-// import { Alert } from 'app/utils/alert';
+
+let PushNotification;
+if (process.env.WEB !== 'true') {
+  PushNotification = require('react-native-push-notification');
+}
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
@@ -140,9 +144,23 @@ export const showPushNotificationPrompt = (promptProps = {}) => async dispatch =
     }
     dispatch(showBannerPrompt('push', promptProps));
   } else {
-    // handle mobile push notifications
-    // Check for mobile permissions / last dismissed
-    // Alert('');
+    if (PushNotification) {
+      const permissions = await new Promise((resolve, reject) => {
+        PushNotification.checkPermissions(resp => {
+          if (!resp) return reject();
+          return resolve(resp);
+        });
+      });
+      if (permissions.alert) {
+        return false;
+      }
+    }
+
+    const isDismissed = await storage.isDismissed('pushDismissed', 7);
+    if (isDismissed) {
+      return false;
+    }
+    dispatch(showBannerPrompt('push', { ...promptProps, isMobile: true }));
   }
   return false;
 };
