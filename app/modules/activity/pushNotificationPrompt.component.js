@@ -66,7 +66,7 @@ class PushNotification extends Component {
       return null;
     }
     return (
-      <View fdirection="row" justify="space-between">
+      <View fdirection="row" justify="space-between" align="center">
         <BodyText c={colors.white} inline={1}>
           {messageText || MESSAGE_TEXT_DEFAULTS[type] || TEXT_DEFAULTS.messageText}
           {'  '}
