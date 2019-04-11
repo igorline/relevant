@@ -51,7 +51,11 @@ class WithSideNav extends Component {
               isOpen={sideNavIsOpen}
               onStateChange={this.isMenuOpen}
             >
-              <View fdirection="column" display="flex" style={{ top: 0 }}>
+              <View
+                fdirection="column"
+                display="flex"
+                style={{ top: promptType ? layout.BANNER_PROMPT_HEIGHT : 0 }}
+              >
                 <SideNav {...this.props} />
               </View>
             </Menu>
