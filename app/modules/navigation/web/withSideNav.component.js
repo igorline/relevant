@@ -4,7 +4,7 @@ import { renderRoutes } from 'react-router-config';
 import { connect } from 'react-redux';
 import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
-import { colors, layout, sizing } from 'app/styles';
+import { colors, layout } from 'app/styles';
 import { View } from 'modules/styled/uni';
 import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import SplashComponent from 'modules/web_splash/splash.component';
@@ -38,7 +38,7 @@ class WithSideNav extends Component {
             style={{
               right: 0,
               left: 0,
-              minHeight: sizing(5)
+              minHeight: layout.BANNER_PROMPT_HEIGHT
             }}
           >
             <BannerPrompt />

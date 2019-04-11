@@ -26,7 +26,7 @@ const SideNavContent = styled.div`
   ${layout.universalBorder('right')}
   display: flex;
   z-index: 100;
-  height: 100vh;
+  height: calc(100vh - ${p => (p.top ? p.top : '0px')});
   top: 0;
 `;
 
@@ -60,7 +60,11 @@ class SideNav extends Component {
     const logoLink = `/${community || 'relevant'}/new`;
     return (
       <Container top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}>
-        <SideNavContent flex={1} className={className}>
+        <SideNavContent
+          flex={1}
+          className={className}
+          top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}
+        >
           <SideNavScroll flex={1}>
             <LogoContainer
               bb
