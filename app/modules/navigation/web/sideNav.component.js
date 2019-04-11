@@ -16,7 +16,7 @@ import MenuIcon from 'modules/ui/web/menuIcon.component';
 const Container = styled.div`
   position: sticky;
   z-index: 100;
-  top: 0;
+  top: ${p => (p.top ? p.top : 0)};
 `;
 
 const SideNavContent = styled.div`
@@ -56,10 +56,10 @@ class SideNav extends Component {
   }
 
   render() {
-    const { community, className, actions } = this.props;
+    const { community, className, actions, notif } = this.props;
     const logoLink = `/${community || 'relevant'}/new`;
     return (
-      <Container>
+      <Container top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}>
         <SideNavContent flex={1} className={className}>
           <SideNavScroll flex={1}>
             <LogoContainer
@@ -105,13 +105,15 @@ SideNav.propTypes = {
   actions: PropTypes.object,
   community: PropTypes.string,
   navigation: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  notif: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   community: state.auth.community,
   isAuthenticated: state.auth.isAuthenticated,
-  navigation: state.navigation
+  navigation: state.navigation,
+  notif: state.notif
 });
 
 export default withRouter(
