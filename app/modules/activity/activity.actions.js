@@ -130,14 +130,15 @@ export const showPushNotificationPrompt = (promptProps = {}) => async dispatch =
   if (process.env.BROWSER === true) {
     if (
       Notification &&
-        (Notification.permission === 'granted' || Notification.permission === 'denied')
+      (Notification.permission === 'granted' || Notification.permission === 'denied')
     ) {
       return false;
     }
     const isDismissed = await storage.isDismissed('pushDismissed', 7);
-    if (!isDismissed) {
-      dispatch(showBannerPrompt('desktop', promptProps));
+    if (isDismissed) {
+      return false;
     }
+    dispatch(showBannerPrompt('push', promptProps));
   } else {
     // handle mobile push notifications
     // Check for mobile permissions / last dismissed
