@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { showBannerPrompt, hideBannerPrompt } from 'modules/activity/activity.actions';
 import { colors } from 'app/styles';
+import { addDeviceToken } from 'modules/auth/auth.actions';
 import { View } from 'modules/styled/uni';
-import DesktopNotification from 'modules/activity/desktopNotificationPrompt.component';
+import PushNotification from 'modules/activity/pushNotificationPrompt.component';
 
 const PROMPT_TYPES = {
-  desktop: DesktopNotification
+  push: PushNotification
 };
 
 class BannerPrompt extends Component {
@@ -38,14 +39,16 @@ BannerPrompt.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  notif: state.notif
+  notif: state.notif,
+  user: state.auth.user
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       showBannerPrompt,
-      hideBannerPrompt
+      hideBannerPrompt,
+      addDeviceToken
     },
     dispatch
   )
