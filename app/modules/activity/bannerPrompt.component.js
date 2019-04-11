@@ -23,11 +23,19 @@ class BannerPrompt extends Component {
       return null;
     }
     const { promptProps } = notif;
+    let viewProps = {};
+    if (process.env.WEB === 'true') {
+      viewProps = {
+        fdirection: 'column',
+        justify: 'center',
+        flex: 1,
+        bg: colors.green,
+        p: ['0 4', '0 2']
+      };
+    }
     return (
-      <View fdirection="column" justify="center" flex={1} bg={colors.green}>
-        <View m={['0 4', '0 2']}>
-          <Notification {...this.props} {...promptProps} />
-        </View>
+      <View {...viewProps}>
+        <Notification {...this.props} {...promptProps} />
       </View>
     );
   }
