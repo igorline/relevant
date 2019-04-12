@@ -121,6 +121,8 @@ const UserSchema = new Schema(
     },
     airdropTokens: { type: Number, default: 0 },
     referralTokens: { type: Number, default: 0 },
+    legacyTokens: { type: Number, default: 0 },
+    legacyAirdrop: { type: Number, default: 0 },
 
     version: String,
     community: String
@@ -227,12 +229,12 @@ UserSchema.pre('save', async function preSave(next) {
       !validatePresenceOf(this.hashedPassword) &&
       authTypes.indexOf(this.provider) === -1
     ) {
-      next(new Error('Invalid password'));
-    } else next();
+      return next(new Error('Invalid password'));
+    }
+    return next();
   } catch (err) {
-    next(err);
+    return next(err);
   }
-  return null;
 });
 
 UserSchema.pre('remove', async function preRemove(next) {
