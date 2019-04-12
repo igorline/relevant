@@ -30,6 +30,7 @@ let DEFAULT_COMMINITY_ID;
 
 /* eslint no-unused-vars: 0 */
 /* eslint no-console: 0 */
+/* eslint max-len: 0 */
 
 async function populateCommunityEmbeddedUsuer() {
   let members = await CommunityMember.find({
@@ -605,19 +606,24 @@ async function cleanUpCommunityFunds() {
   );
 }
 
-// async function restoreRewards() {
-//   const launchDate = new Date('March 5, 2019 12:00:00');
-//   let rewards = await Earnings.find({ status: 'paidout', createdAt: { $gt: launchDate } })
-//   .populate('user')
-//   .populate('post')
-//   .sort('createdAt');
-//   rewards.forEach(async r => {
-//     r.user.balance += r.earned;
-//     await r.user.save();
-//     console.log(r.user.handle, r.user.balance);
-//     console.log('rewards', r.user.handle, r.post.title, r.earned, r.payoutTime);
-//   });
-// }
+async function restoreRewards() {
+  const fixDate = new Date('March 11, 2019 19:00:00');
+
+  const launchDate = new Date('March 5, 2019 12:00:00');
+  const rewards = await Earnings.find({
+    status: 'paidout',
+    createdAt: { $gt: launchDate }
+  })
+  .populate('user')
+  .populate('post')
+  .sort('createdAt');
+  rewards.forEach(async r => {
+    // r.user.balance += r.earned;
+    // await r.user.save();
+    console.log(r.user.handle, r.user.balance);
+    console.log('rewards', r.user.handle, r.post.title, r.earned, r.payoutTime);
+  });
+}
 
 // async function notificationCheck() {
 //   const launchDate = new Date('March 5, 2019 12:00:00');
@@ -708,6 +714,118 @@ async function unlockTokens() {
   });
 }
 
+async function checkDiscreptancies() {
+  const posts = [
+    '5c96af25d22d6400173051e3',
+    '5c9d027c7142ae0017fc6e7f',
+    '5ca0c055a103f700171ba63e'
+  ];
+  let earnings = [
+    '5c96b4c3c7a4c49170bbff19',
+    '5c9e290ac7a4c49170bc10b5',
+    '5ca0d293c7a4c49170bc18c6'
+  ];
+
+  earnings = await Earnings.find({ _id: { $in: earnings } });
+  earnings.forEach(e => console.log(e.toObject()));
+
+  const invest = await Invest.find({ post: '5c96af25d22d6400173051e3' });
+  invest.forEach(inv => console.log(inv.toObject()));
+}
+
+async function auditUserEarnings() {
+  const users = await User.find({ balance: { $gt: 0 } });
+  users.forEach(userEarnings);
+}
+
+async function userEarnings(user) {
+  // fixes:
+  // JTremback 411.83630209978696 newRewards: 402.75574879734654 legacyRewards: 0 spent 0
+  // diff -30.91944669755958
+  // georgerobescu 3835.70433694349 newRewards: 4074.802808079461 legacyRewards: 0 spent 0
+  // diff -279.09847113597107
+  // colin_ 4425.404513377224 newRewards: 4787.5690062576095 legacyRewards: 0 spent 0
+  // diff -402.1644928803853
+  // crookedycrook 2047.235391487282 newRewards: 2050.400805880663 legacyRewards: 0 spent 0
+  // diff -43.16541439338107
+  // villecallio 55213.50792373421 newRewards: 58264.18821834823 legacyRewards: 0 spent 0
+  // diff -3090.6802946140233
+  // springbreak1944 1865.2674163439851 newRewards: 2685.252134268827 legacyRewards: 0 spent 0
+  // diff -899.9847179248418
+  // clayt0nk 394.8603272404622 newRewards: 389.3497144288439 legacyRewards: 0 spent 0
+  // diff -34.48938718838173
+
+  // mabodxbs 52.096513729057946 newRewards: 3.148890852758136 legacyRewards: 68.17836358911259 spent 0
+  // diff -19.230740712812782
+  // adjust 0
+  // billy 3865.8852669757484 newRewards: 3823.2718166646623 legacyRewards: 1663.345263693809 spent 30
+  // diff -1590.731813382723
+  // adjust 0
+  // tarrence 897.5184240352796 newRewards: 72.23239763241934 legacyRewards: 896.0726527636831 spent 20
+  // diff -50.786626360822765
+  // adjust 0
+  // chablasco 17334.268517287957 newRewards: 26314.95970548867 legacyRewards: 3073.35779673077 spent 1139
+  // diff -10915.048984931482
+  // adjust 10653.311945209545
+  // taylore 118996.50968547608 newRewards: 129411.91132599983 legacyRewards: 5447.708494227554 spent 2958
+  // diff -12905.110134751303
+  // adjust 25788.457108452014
+  // Analisa 32438.840429087475 newRewards: 24543.494367419247 legacyRewards: 17283.721651399803 spent 8720
+  // diff -688.375589731575
+  // adjust 5367.287941299241
+  // JonasWendelin 4988.978088377439 newRewards: 3794.3548798420047 legacyRewards: 3207.0419701062783 spent 2010
+  // diff -2.418761570843799
+  // adjust 257.45458810645675
+  // jonomilo 4370.413483762431 newRewards: 282.0657247447491 legacyRewards: 10290.658636368484 spent 4837
+  // diff -1365.310877350802
+  // adjust 0
+  // slava 62210.237061590844 newRewards: 58077.85648162087 legacyRewards: 18131.02582865553 spent 9466
+  // diff -4657.645248685552
+  // adjust 1347.8734770611138
+  // mrcni 14929.65441736284 newRewards: 10348.289513708638 legacyRewards: 11127.827020153503 spent 5833
+  // diff -713.4621164993005
+  // adjust 0
+
+  const posts = [
+    '5c96af25d22d6400173051e3', // spb, george, ville
+    '5c9d027c7142ae0017fc6e7f', // jehan, spb, george
+    '5ca0c055a103f700171ba63e', // spb
+    '5c9a45a2263807001718357e', // clayton
+    '5c9a68962638070017183619', // crook
+    '5c8558fded171e0017070088' // ville
+  ];
+
+  const earnigns = await Earnings.find({ user: user._id, status: 'paidout' });
+  let total = 0;
+
+  earnigns.forEach(e => {
+    total += e.earned;
+  });
+  // user.legacyTokens = legacy - spent;
+  // await user.save();
+  const diff =
+    user.balance +
+    user.tokenBalance -
+    user.airdropTokens -
+    total -
+    user.legacyTokens -
+    user.legacyAirdrop;
+  if (Math.abs(diff) > 0.000001) {
+    console.log('error! earnings mismatch');
+    console.log(
+      user.handle,
+      user.balance,
+      'newRewards:',
+      total,
+      'legacyRewards:',
+      user.legacyTokens
+    );
+    console.log('diff', diff);
+    // user.balance -= diff;
+    // await user.save();
+  }
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -742,10 +860,13 @@ async function runUpdates() {
 
     // await unlockTokens();
 
+    // await checkDiscreptancies();
+    await auditUserEarnings();
+
     console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
 }
 
-// runUpdates();
+runUpdates();
