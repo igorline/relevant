@@ -194,14 +194,14 @@ export function updateUser(user, preventLocalUpdate) {
   };
 }
 
-export function updateNotificationSettings(notificationSettings) {
+export function updateNotificationSettings(notificationSettings, subscription) {
   return async dispatch => {
     try {
       const res = await utils.api.request({
         method: 'PUT',
         endpoint: 'user',
         path: '/notifications',
-        body: JSON.stringify(notificationSettings)
+        body: JSON.stringify({ notificationSettings, subscription })
       });
       dispatch(updateAuthUser(res));
       return true;

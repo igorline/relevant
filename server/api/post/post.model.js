@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const PostSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
-const apnData = require('../../pushNotifications');
+const { sendNotification } = require('server/notifications');
 
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
@@ -506,7 +506,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
             noteType: 'mention'
           };
 
-          apnData.sendNotification(user, alert, payload);
+          sendNotification(user, alert, payload);
 
           if (mention === 'everyone') return;
 

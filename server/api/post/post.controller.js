@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 import { get } from 'lodash';
 import Community from 'server/api/community/community.model';
 import mail from 'server/config/mail';
+import { sendNotification } from 'server/notifications';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -11,7 +12,6 @@ import User from '../user/user.model';
 import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
-import apnData from '../../pushNotifications';
 import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
@@ -106,7 +106,7 @@ exports.sendPostNotification = async (req, res, next) => {
           action: alert,
           noteType: 'general'
         };
-        await apnData.sendNotification(user, alert, payload);
+        await sendNotification(user, alert, payload);
       } catch (err) {
         // eslint-disable-next-line
         console.log('sending notifications error ', err);
@@ -570,7 +570,7 @@ async function processSubscriptions(newPost, communityId) {
           };
 
           // console.log('New post in feed alert', alert);
-          apnData.sendNotification(follower, alert, payload);
+          sendNotification(follower, alert, payload);
           follower.lastFeedNotification = now;
           follower.save();
         }

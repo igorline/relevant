@@ -51,9 +51,25 @@ if (process.env.BROWSER === true) {
   require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
-
-  require('app/utils/notifications');
+  // require('app/utils/notifications');
 }
+
+// function displayNotification() {
+//   if (Notification.permission === 'granted') {
+//     navigator.serviceWorker.getRegistration().then(function(reg) {
+//       const options = {
+//         body: 'Here is a notification body!',
+//         icon: 'images/example.png',
+//         vibrate: [100, 50, 100],
+//         data: {
+//           dateOfArrival: Date.now(),
+//           primaryKey: 1
+//         }
+//       };
+//       reg.showNotification('Hello world!', options);
+//     });
+//   }
+// }
 
 class App extends Component {
   static propTypes = {
@@ -81,6 +97,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // displayNotification();
     const { actions, auth, location, history } = this.props;
     const { community } = auth;
 

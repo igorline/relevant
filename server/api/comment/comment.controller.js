@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
 import Community from 'server/api/community/community.model';
 import { getMentions, getWords } from 'app/utils/text';
+import { sendNotification as sendPushNotification } from 'server/notifications';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
 const Notification = require('../notification/notification.model');
-const apnData = require('../../pushNotifications');
 const Subscriptiton = require('../subscription/subscription.model');
 const Feed = require('../feed/feed.model');
 const Invest = require('../invest/invest.model');
@@ -245,7 +245,7 @@ async function sendNotifications({
       action,
       noteType: ownPost || ownComment ? 'reply' : 'general'
     };
-    apnData.sendNotification(commentor, alert, payload);
+    sendPushNotification(commentor, alert, payload);
   } catch (err) {
     throw err;
   }
