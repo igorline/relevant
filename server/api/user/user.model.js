@@ -65,16 +65,17 @@ const UserSchema = new Schema(
       mobile: {
         all: {
           type: Boolean,
-          default: true
+          default: false
         }
       },
       desktop: {
         all: {
           type: Boolean,
-          default: true
+          default: false
         }
       }
     },
+    desktopSubscriptions: [],
     redditId: String,
     redditAuth: { type: Object, select: false },
     google: {},

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import Earnings from 'server/api/earnings/earnings.model';
-import apnData from 'server/pushNotifications';
+import { sendNotification as sendPushNotification } from 'server/notifications';
 import { computeApproxPageRank } from 'server/utils/pagerankCompute';
 import { computePostPayout } from 'app/utils/rewards';
 import Community from 'server/api/community/community.model';
@@ -238,7 +238,7 @@ async function updateAuthor(params) {
     const alert = user.name + action;
 
     try {
-      apnData.sendNotification(author, alert, payload);
+      sendPushNotification(author, alert, payload);
     } catch (err) {
       console.log(err); // eslint-disable-line
     }

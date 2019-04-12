@@ -1,4 +1,6 @@
-navigator.serviceWorker.register('/service-worker.js');
+if (process.env.BROWSER === true) {
+  navigator.serviceWorker.register('/service-worker.js');
+}
 
 export async function initPushNotifications() {
   try {
@@ -17,8 +19,6 @@ export async function initPushNotifications() {
     return null;
   }
 }
-
-// initPushNotifications().then(s => console.log(s.toJSON()));
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);

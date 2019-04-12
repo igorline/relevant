@@ -6,10 +6,7 @@ import ULink from 'modules/navigation/ULink.component';
 
 class DesktopNotification extends Component {
   handleClick = () => {
-    const { actions } = this.props;
-    Notification.requestPermission().then(() => {
-      actions.hideBannerPrompt();
-    });
+    this.props.actions.enableDesktopNotifications();
   };
 
   handleDismiss = () => {

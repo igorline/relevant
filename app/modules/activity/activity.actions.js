@@ -1,6 +1,8 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
 import { api, token, localStorage } from 'app/utils';
+import { initPushNotifications } from 'utils/notifications';
+import { updateNotificationSettings } from 'modules/auth/auth.actions';
 // import { Alert } from 'app/utils/alert';
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
@@ -123,6 +125,29 @@ export function hideBannerPrompt(notification) {
   return {
     type: types.HIDE_BANNER_PROMPT,
     payload: notification
+  };
+}
+
+export function enableDesktopNotifications() {
+  return async dispatch => {
+    try {
+      const subscription = await initPushNotifications();
+      dispatch(
+        updateNotificationSettings(
+          {
+            desktop: {
+              all: {
+                type: true
+              }
+            }
+          },
+          subscription.toJSON()
+        )
+      );
+      dispatch(hideBannerPrompt());
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
   };
 }
 

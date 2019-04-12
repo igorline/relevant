@@ -1,8 +1,7 @@
 /* eslint no-console: 0 */
+import { sendNotification as sendPushNotification } from 'server/notifications';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
-import apnData from '../pushNotifications';
-import Notification from '../api/notification/notification.model';
 import Earnings from '../api/earnings/earnings.model';
 import Community from '../api/community/community.model';
 import * as Eth from './ethereum';
@@ -319,7 +318,7 @@ async function sendNotification(props) {
     noteType: 'reward'
   };
 
-  apnData.sendNotification(user, alertText, payload);
+  sendPushNotification(user, alertText, payload);
   return user;
 }
 

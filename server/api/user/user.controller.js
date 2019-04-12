@@ -700,8 +700,21 @@ exports.updateUserTokenBalance = async (req, res, next) => {
 exports.updateUserNotifications = async (req, res, next) => {
   try {
     const { user, body } = req;
-    const newSettings = merge(user.notificationSettings.toObject(), body);
+    const { notificationSettings, subscription } = body;
+    const newSettings = merge(user.notificationSettings.toObject(), notificationSettings);
     user.notificationSettings = newSettings;
+    if (subscription) {
+      const findIndex = user.desktopSubscriptions.findIndex(
+        s =>
+          s.endpoint === subscription.endpoint &&
+          s.keys &&
+          s.keys.auth === subscription.keys.auth &&
+          s.keys.p256dh === subscription.keys.p256dh
+      );
+      if (findIndex === -1) {
+        user.desktopSubscriptions = [...user.desktopSubscriptions, subscription];
+      }
+    }
     await user.save();
     res.status(200).json(user);
   } catch (err) {
