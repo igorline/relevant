@@ -17,7 +17,7 @@ const { Schema } = mongoose;
 const UserSchema = new Schema(
   {
     // Comment out to automatically generate _id
-    // _id: { type: Schema.Types.Mixed, required: true },
+    _id: { type: Schema.Types.Object, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
