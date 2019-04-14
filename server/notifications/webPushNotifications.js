@@ -2,33 +2,13 @@ const User = require('server/api/user/user.model');
 const webPush = require('web-push');
 const { getUrls } = require('./notificationHelper');
 
-// if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
-//   // eslint-disable-next-line
-//   console.log(
-//     'You must set the VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY ' +
-//       'environment variables. You can use the following ones:'
-//   );
-//   // eslint-disable-next-line
-//   console.log(webPush.generateVAPIDKeys());
-// }
-
-webPush.setVapidDetails(
-  'https://relevant.community/',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
-
-/* eslint no-console: 0 */
-
-// User.findOne({ handle: 'test' }).then(u => {
-//   const payload = {
-//     title: 'hello!',
-//     body: 'testing notification!',
-//     url: 'https://relevant.community',
-//     icon: '/img/default_community.png'
-//   };
-//   exports.handleWebNotifications({ subscription: u.desktopSubscriptions, payload });
-// });
+if (process.env.NODE_ENV !== 'test') {
+  webPush.setVapidDetails(
+    'https://relevant.community/',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+}
 
 exports.handleWebNotifications = async params => {
   try {
