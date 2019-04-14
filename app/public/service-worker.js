@@ -1,5 +1,4 @@
 self.addEventListener('push', function(event) {
-  // console.log(event)
   const payload = event.data ? event.data.json() : {};
   event.waitUntil(
     self.registration.showNotification(payload.title, { ...payload, data: payload })
