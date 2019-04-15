@@ -16,7 +16,6 @@ class ResetPassword extends Component {
     actions: PropTypes.object,
     history: PropTypes.object,
     handleSubmit: PropTypes.func,
-    authNav: PropTypes.func,
     auth: PropTypes.object,
     close: PropTypes.func,
     showModal: PropTypes.func

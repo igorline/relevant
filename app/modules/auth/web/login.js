@@ -17,7 +17,6 @@ const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
-    authNav: PropTypes.func,
     location: PropTypes.object,
     auth: PropTypes.object,
     actions: PropTypes.object,
@@ -174,7 +173,6 @@ class LoginForm extends Component {
               Not registered yet?{' '}
               <a
                 onClick={() => {
-                  // this.props.authNav('signup')
                   this.props.actions.showModal('signup');
                 }}
               >
