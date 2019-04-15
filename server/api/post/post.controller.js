@@ -1,7 +1,7 @@
 import url from 'url';
 import request from 'request';
-import { EventEmitter } from 'events';
-import { get } from 'lodash';
+import get from 'lodash/get';
+import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
 import mail from 'server/config/mail';
 import { sendNotification } from 'server/notifications';
@@ -20,8 +20,6 @@ const { promisify } = require('util');
 
 const requestAsync = promisify(request);
 request.defaults({ maxRedirects: 22, jar: true });
-
-const PostEvents = new EventEmitter();
 
 async function findRelatedPosts(metaId) {
   try {
@@ -579,7 +577,7 @@ async function processSubscriptions(newPost, communityId) {
           _id: subscription.follower._id,
           type: 'INC_FEED_COUNT'
         };
-        PostEvents.emit('post', newFeedPost);
+        socketEvent.emit('socketEvent', newFeedPost);
         return null;
       } catch (err) {
         // eslint-disable-next-line
@@ -742,12 +740,10 @@ exports.remove = async (req, res, next) => {
       payload: post
     };
 
-    PostEvents.emit('post', newPostEvent);
+    socketEvent.emit('socketEvent', newPostEvent);
     await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {
     next(err);
   }
 };
-
-exports.PostEvents = PostEvents;

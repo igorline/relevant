@@ -1,14 +1,10 @@
 /* eslint no-console: 0 */
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
 import { VOTE_COST_RATIO, SLOPE, EXPONENT } from 'server/config/globalConstants';
-// import Community from 'server/api/community/community.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import { computePostPayout } from 'app/utils/rewards';
 
-const InvestSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
-
 const TEST_ENV = process.env.NODE_ENV === 'test';
 
 const InvestSchema = new Schema(
@@ -58,8 +54,6 @@ InvestSchema.index({ communityId: 1, investor: 1 });
 InvestSchema.index({ communityId: 1, investor: 1, createdAt: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
 InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
-
-InvestSchema.statics.events = InvestSchemaEvents;
 
 async function undoInvest({ post, investment, user }) {
   post.data.shares -= investment.shares;

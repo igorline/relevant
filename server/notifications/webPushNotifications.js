@@ -33,7 +33,7 @@ exports.handleWebNotifications = async params => {
       title: params.alert,
       url: postUrl,
       icon: '/img/default_community.png',
-      body: params.post ? params.post.body : null
+      body: params.post ? params.post.body || params.post.title : null
     };
 
     const options = {};

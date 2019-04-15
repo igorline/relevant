@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events';
 import Community from 'server/api/community/community.model';
 import { getMentions, getWords } from 'app/utils/text';
 import { sendNotification as sendPushNotification } from 'server/notifications';
+import socketEvent from 'server/socket/socketEvent';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
@@ -10,12 +10,9 @@ const Subscriptiton = require('../subscription/subscription.model');
 const Feed = require('../feed/feed.model');
 const Invest = require('../invest/invest.model');
 
-const PostEvents = new EventEmitter();
-const CommentEvents = new EventEmitter();
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 // COMMENTS ARE USING POST SCHEMA
-
 exports.get = async (req, res, next) => {
   try {
     // TODO - pagination
@@ -227,7 +224,7 @@ async function sendNotifications({
       type: 'ADD_ACTIVITY',
       payload: note
     };
-    CommentEvents.emit('comment', noteAction);
+    socketEvent.emit('socketEvent', noteAction);
 
     let action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
     if (type === 'repost' && ownPost) action = ` reposted your ${type}`;
@@ -308,7 +305,7 @@ async function createRepost(comment, post, user) {
             _id: subscription.follower,
             type: 'INC_FEED_COUNT'
           };
-          PostEvents.emit('post', newFeedPost);
+          socketEvent.emit('socketEvent', newFeedPost);
         }
       });
     }
@@ -370,5 +367,3 @@ exports.delete = async (req, res, next) => {
     return next(err);
   }
 };
-
-exports.CommentEvents = CommentEvents;

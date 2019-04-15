@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { showBannerPrompt, hideBannerPrompt } from 'modules/activity/activity.actions';
+import {
+  showBannerPrompt,
+  hideBannerPrompt,
+  enableDesktopNotifications
+} from 'modules/activity/activity.actions';
 import { colors } from 'app/styles';
 import { View } from 'modules/styled/uni';
 import DesktopNotification from 'modules/activity/desktopNotificationPrompt.component';
@@ -45,7 +49,8 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       showBannerPrompt,
-      hideBannerPrompt
+      hideBannerPrompt,
+      enableDesktopNotifications
     },
     dispatch
   )
