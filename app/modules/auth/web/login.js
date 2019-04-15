@@ -2,20 +2,26 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, LinkFont, View, Image } from 'modules/styled/uni';
 import FormField from 'modules/styled/form/field.component';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { browserAlerts } from 'app/utils/alert';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import queryString from 'query-string';
+import { loginUser } from 'modules/auth/auth.actions';
+import { withRouter } from 'react-router-dom';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
 const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
-    parentFunction: PropTypes.func,
     authNav: PropTypes.func,
     location: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    actions: PropTypes.object,
+    close: PropTypes.func
   };
 
   constructor(props) {
@@ -33,6 +39,21 @@ class LoginForm extends Component {
     this.setState({ [field]: data });
   }
 
+  async login(data) {
+    try {
+      const user = {
+        name: data.username,
+        password: data.password
+      };
+      const loggedIn = await this.props.actions.loginUser(user);
+      if (loggedIn) {
+        this.props.close();
+      }
+    } catch (err) {
+      // TODO error handling
+    }
+  }
+
   submit() {
     if (!this.state.username) {
       browserAlerts.alert('username requied');
@@ -42,7 +63,7 @@ class LoginForm extends Component {
       browserAlerts.alert('password required');
       return;
     }
-    this.props.parentFunction(this.state);
+    this.login(this.state);
   }
 
   render() {
@@ -89,7 +110,11 @@ class LoginForm extends Component {
           <FormField {...field} />
         ))}
         <View display="flex" fdirection="row" align="center" justify="flex-start">
-          <a onClick={() => this.props.authNav('forgot')}>
+          <a
+            onClick={() => {
+              this.props.actions.showModal('forgot');
+            }}
+          >
             <LinkFont c={colors.blue} mt={2}>
               Forgot Your Password?
             </LinkFont>
@@ -147,7 +172,14 @@ class LoginForm extends Component {
           <View mt={[2, 4]}>
             <LinkFont shrink={1}>
               Not registered yet?{' '}
-              <a onClick={() => this.props.authNav('signup')}>Sign up</a>
+              <a
+                onClick={() => {
+                  // this.props.authNav('signup')
+                  this.props.actions.showModal('signup');
+                }}
+              >
+                Sign up
+              </a>
             </LinkFont>
           </View>
         </View>
@@ -156,4 +188,24 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      loginUser,
+      showModal
+    },
+    dispatch
+  )
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LoginForm)
+);

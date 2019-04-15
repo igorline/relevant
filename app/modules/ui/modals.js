@@ -9,6 +9,9 @@ import CreatePost from 'modules/createPost/createPost.container';
 import CommunityMembers from 'modules/community/web/communityMembers.component';
 import CommunityMembersTitle from 'modules/community/communityMembersTitle.component';
 import ResetPassword from 'modules/auth/web/resetPassword.component';
+import LoginForm from 'modules/auth/web/login';
+import Forgot from 'modules/auth/web/forgot.component';
+import SignupForm from 'modules/auth/web/signup';
 
 export const onboarding = {
   title: 'Welcome To Relevant',
@@ -55,8 +58,20 @@ export const resetPassword = {
   footer: () => {}
 };
 
-// export const auth = {
-//   title: 'Sign In',
-//   Body: AuthContainer,
-//   footer: () => {}
-// };
+export const login = {
+  title: 'Sign In',
+  Body: LoginForm,
+  footer: () => {}
+};
+
+export const forgot = {
+  title: 'Recover Password',
+  Body: Forgot,
+  footer: () => {}
+};
+
+export const signup = {
+  title: 'Join the Community',
+  Body: SignupForm,
+  footer: () => {}
+};
