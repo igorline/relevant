@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, BodyText, SecondaryText } from 'modules/styled/uni';
-// import { required } from 'modules/form/validators';
-// import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { Field, reduxForm } from 'redux-form';
 import { Form, Button } from 'modules/styled/web';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { sendConfirmation } from 'modules/auth/auth.actions';
 
 class EmailConfirm extends Component {
   static propTypes = {
@@ -61,7 +62,6 @@ class EmailConfirm extends Component {
         resend = (
           <Form
             // initialValues={{ email: this.state.email }}
-            mt={2.5}
             justify={['flex-end', 'stretch']}
             fdirection="column"
             onSubmit={handleSubmit(this.sendConfirmation)}
@@ -95,7 +95,25 @@ class EmailConfirm extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      sendConfirmation
+    },
+    dispatch
+  )
+});
+
 export default reduxForm({
   form: 'emailConfirm',
   enableReinitialize: true
-})(EmailConfirm);
+})(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EmailConfirm)
+);
