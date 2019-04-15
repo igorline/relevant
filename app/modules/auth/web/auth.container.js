@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { hideModal } from 'modules/navigation/navigation.actions';
+import { hideModal, showModal } from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import queryString from 'query-string';
-import Modal from 'modules/ui/web/modal';
-import LoginForm from './login';
-import SignupForm from './signup';
-import ConfirmEmail from './confirmEmail.component';
-import Forgot from './forgot.component';
-import ResetPassword from './resetPassword.component';
+// import Modal from 'modules/ui/web/modal';
+// import LoginForm from './login';
+// import SignupForm from './signup';
+// import ConfirmEmail from './confirmEmail.component';
+// import Forgot from './forgot.component';
+// import ResetPassword from './resetPassword.component';
 
 class AuthContainer extends Component {
   static propTypes = {
@@ -52,6 +52,10 @@ class AuthContainer extends Component {
     this.props.actions.hideModal();
   }
 
+  componentDidMount() {
+    this.openModal();
+  }
+
   componentWillReceiveProps(next) {
     if (!this.state.type) this.setState({ type: next.type || 'login' });
     if (this.props.modal) return;
@@ -60,6 +64,62 @@ class AuthContainer extends Component {
     if (!this.props.auth.user && next.auth.user && redirectTo) {
       this.props.history.push(redirectTo);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.modal !== this.props.modal) {
+      // console.log('modal changed');
+      this.openModal();
+    }
+  }
+
+  openModal() {
+    // console.log('open modal');
+    const { user, match, modal } = this.props;
+    let path = modal ? this.state.type : match.path.replace('/user/', '');
+
+    if (user && user.role === 'temp') {
+      path = 'signup';
+    }
+    if (modal) {
+      // visible = open;
+    }
+
+    // let title = '';
+
+    if (path === 'confirm/:user/:code' || path === 'confirm') {
+      // confirm = true;
+      // auth = <ConfirmEmail authNav={this.authNav} {...this.props} />;
+      // title = 'Confirm Your Email';
+    } else if (path === 'forgot') {
+      // auth = <Forgot authNav={this.authNav} {...this.props} />;
+      // title = 'Recover Password';
+      // } else if (isAuthenticated) {
+      //   auth = <button onClick={() => this.logout()}>logout</button>;
+    } else if (path === 'login') {
+      // auth = (
+      //   <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />
+      // );
+      // title = 'Sign In';
+    } else if (path === 'signup') {
+      // auth = (
+      //   <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
+      // );
+      // title = 'Join the Community';
+    } else if (path === 'resetPassword/:token' || path === 'resetPassword') {
+      // console.log('calling show modal');
+      this.props.actions.showModal('resetPassword');
+      // return null;
+      // auth = (
+      //   <ResetPassword
+      //     authNav={this.authNav}
+      //     {...this.props}
+      //     close={this.close.bind(this)}
+      //   />
+      // );
+      // title = 'Reset Password';
+    }
+    // if (!visible) return null;
   }
 
   async login(data) {
@@ -117,66 +177,69 @@ class AuthContainer extends Component {
 
   render() {
     const { user, match, modal, open } = this.props;
-    let confirm;
-    let auth;
+    // let confirm;
+    // let auth;
     let visible = true;
 
     let path = modal ? this.state.type : match.path.replace('/user/', '');
 
     if (user && user.role === 'temp') {
       path = 'signup';
-      confirm = true;
+      // confirm = true;
     }
     if (modal) {
       visible = open;
     }
 
-    let title = '';
+    // let title = '';
 
     if (path === 'confirm/:user/:code' || path === 'confirm') {
-      confirm = true;
-      auth = <ConfirmEmail authNav={this.authNav} {...this.props} />;
-      title = 'Confirm Your Email';
+      // confirm = true;
+      // auth = <ConfirmEmail authNav={this.authNav} {...this.props} />;
+      // title = 'Confirm Your Email';
     } else if (path === 'forgot') {
-      auth = <Forgot authNav={this.authNav} {...this.props} />;
-      title = 'Recover Password';
+      // auth = <Forgot authNav={this.authNav} {...this.props} />;
+      // title = 'Recover Password';
       // } else if (isAuthenticated) {
       //   auth = <button onClick={() => this.logout()}>logout</button>;
     } else if (path === 'login') {
-      auth = (
-        <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />
-      );
-      title = 'Sign In';
+      // auth = (
+      //   <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />
+      // );
+      // title = 'Sign In';
     } else if (path === 'signup') {
-      auth = (
-        <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
-      );
-      title = 'Join the Community';
+      // auth = (
+      //   <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
+      // );
+      // title = 'Join the Community';
     } else if (path === 'resetPassword/:token' || path === 'resetPassword') {
-      auth = (
-        <ResetPassword
-          authNav={this.authNav}
-          {...this.props}
-          close={this.close.bind(this)}
-        />
-      );
-      title = 'Reset Password';
+      // this.props.actions.showModal('resetPassword');
+      return null;
+      // auth = (
+      //   <ResetPassword
+      //     authNav={this.authNav}
+      //     {...this.props}
+      //     close={this.close.bind(this)}
+      //   />
+      // );
+      // title = 'Reset Password';
     }
 
     if (!visible) return null;
 
-    return (
-      <Modal visible={visible} close={this.close.bind(this)} title={title}>
-        <div>
-          {user && !confirm ? (
-            <div className="authStatus">You are logged in as @{user.handle}</div>
-          ) : (
-            ''
-          )}
-          {auth}
-        </div>
-      </Modal>
-    );
+    return <div />;
+    // return (
+    //   <Modal visible={visible} close={this.close.bind(this)} title={title}>
+    //     <div>
+    //       {user && !confirm ? (
+    //         <div className="authStatus">You are logged in as @{user.handle}</div>
+    //       ) : (
+    //         ''
+    //       )}
+    //       {auth}
+    //     </div>
+    //   </Modal>
+    // );
   }
 }
 
@@ -193,7 +256,8 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...authActions,
-      hideModal
+      hideModal,
+      showModal
     },
     dispatch
   )

@@ -249,6 +249,10 @@ class App extends Component {
     if (typeof globalModal === 'string') return null;
     const { Body } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    const close = () => {
+      this.props.actions.hideModal();
+      this.closeModal();
+    };
     return (
       <Modal
         {...globalModal}
@@ -258,13 +262,7 @@ class App extends Component {
         }}
         visible
       >
-        <Body
-          {...bodyProps}
-          close={() => {
-            this.props.actions.hideModal();
-            this.closeModal();
-          }}
-        />
+        <Body {...bodyProps} close={close} />
       </Modal>
     );
   }
