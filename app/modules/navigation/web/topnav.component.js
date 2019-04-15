@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
-import AuthContainer from 'modules/auth/web/auth.container';
 import Breadcrumbs from 'modules/navigation/web/breadcrumbs.component';
 import { View, Text, LinkFont } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
@@ -60,8 +59,6 @@ class TopNav extends Component {
     className: PropTypes.string,
     actions: PropTypes.object,
     notif: PropTypes.object,
-    community: PropTypes.object,
-    view: PropTypes.object,
     screenSize: PropTypes.number
   };
 
@@ -97,17 +94,13 @@ class TopNav extends Component {
     window.removeEventListener('focus', getNotificationCount);
   }
 
-  state = {
-    openLoginModal: false
-  };
-
   toggleLogin = () => {
     const { location, history } = this.props;
     history.push({
       // pathname: '/dresses',
       search: `?redirect=${location.pathname}`
     });
-    this.setState({ openLoginModal: !this.state.openLoginModal });
+    this.props.actions.showModal('login');
   };
 
   closeModal() {
@@ -116,8 +109,6 @@ class TopNav extends Component {
 
   render() {
     const { auth, className, actions, notif, screenSize } = this.props;
-    const { user } = auth;
-    const temp = user && user.role === 'temp';
     return (
       <Nav
         className={className}
@@ -198,14 +189,6 @@ class TopNav extends Component {
                 </ActionButton>
               )}
             </View>
-          </View>
-          <View>
-            <AuthContainer
-              toggleLogin={this.toggleLogin.bind(this)}
-              open={this.state.openLoginModal || temp}
-              modal
-              {...this.props}
-            />
           </View>
         </View>
         <View fdirection={'row'} mt={[0, 1]} ml={[0, 5.5]}>

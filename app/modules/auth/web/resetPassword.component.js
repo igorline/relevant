@@ -35,9 +35,7 @@ class ResetPassword extends Component {
     const { user } = this.props.auth;
     this.props.actions.resetPassword(vals.password, this.token).then(success => {
       if (success && !user) {
-        this.props.showModal('login');
-        // this.props.authNav('login');
-        // OPEN LOGIN MODAL
+        this.props.actions.showModal('login');
       } else {
         this.props.close();
       }

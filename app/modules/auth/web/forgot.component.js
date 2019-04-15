@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { Button, LinkFont, View } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import FormField from 'modules/styled/form/field.component';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
+import { showModal } from 'modules/navigation/navigation.actions';
+import { forgotPassword } from 'modules/auth/auth.actions';
 
-// import ShadowButton from 'modules/ui/web/ShadowButton';
-
-export default class Forgot extends Component {
+class Forgot extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    authNav: PropTypes.func,
     location: PropTypes.object
   };
 
@@ -63,7 +65,7 @@ export default class Forgot extends Component {
           />
           <View display="flex" fdirection="row" align="center" mt={7} justify="flex-end">
             <LinkFont shrink={1}>
-              Back to <a onClick={() => this.props.authNav('login')}>Sign in</a>
+              Back to <a onClick={() => this.props.actions.showModal('login')}>Sign in</a>
             </LinkFont>
             <Button onClick={() => this.sendEmail()} m={0} ml={2}>
               Send Recovery Email
@@ -76,3 +78,25 @@ export default class Forgot extends Component {
     return content;
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      showModal,
+      forgotPassword
+    },
+    dispatch
+  )
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Forgot)
+);

@@ -19,7 +19,7 @@ class AuthContainer extends Component {
     location: PropTypes.object,
     modal: PropTypes.bool,
     actions: PropTypes.object,
-    dispatch: PropTypes.func,
+    // dispatch: PropTypes.func,
     toggleLogin: PropTypes.func,
     user: PropTypes.object,
     open: PropTypes.bool,
@@ -30,10 +30,10 @@ class AuthContainer extends Component {
 
   constructor(props) {
     super(props);
-    this.login = this.login.bind(this);
-    this.signup = this.signup.bind(this);
+    // this.login = this.login.bind(this);
+    // this.signup = this.signup.bind(this);
     this.logout = this.logout.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
+    // this.sendMessage = this.sendMessage.bind(this);
     this.authNav = this.authNav.bind(this);
     this.close = this.close.bind(this);
 
@@ -88,20 +88,24 @@ class AuthContainer extends Component {
     // let title = '';
 
     if (path === 'confirm/:user/:code' || path === 'confirm') {
+      // this.props.actions.showModal('confirm');
       // confirm = true;
       // auth = <ConfirmEmail authNav={this.authNav} {...this.props} />;
       // title = 'Confirm Your Email';
     } else if (path === 'forgot') {
+      this.props.actions.showModal('forgot');
       // auth = <Forgot authNav={this.authNav} {...this.props} />;
       // title = 'Recover Password';
       // } else if (isAuthenticated) {
       //   auth = <button onClick={() => this.logout()}>logout</button>;
     } else if (path === 'login') {
+      this.props.actions.showModal('login');
       // auth = (
       //   <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />
       // );
       // title = 'Sign In';
     } else if (path === 'signup') {
+      this.props.actions.showModal('signup');
       // auth = (
       //   <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
       // );
@@ -141,30 +145,30 @@ class AuthContainer extends Component {
     else history.push(`/user/${type}` + location.search);
   }
 
-  async signup(data) {
-    const { invitecode } = this.props.auth;
-    const { createUser } = this.props.actions;
-    try {
-      const user = {
-        name: data.username,
-        email: data.email,
-        password: data.password,
-        image: data.image
-      };
-      const signedUp = await createUser(user, invitecode);
-      if (signedUp) this.close();
-    } catch (err) {
-      // TODO error handling
-    }
-  }
+  // async signup(data) {
+  //   const { invitecode } = this.props.auth;
+  //   const { createUser } = this.props.actions;
+  //   try {
+  //     const user = {
+  //       name: data.username,
+  //       email: data.email,
+  //       password: data.password,
+  //       image: data.image
+  //     };
+  //     const signedUp = await createUser(user, invitecode);
+  //     if (signedUp) this.close();
+  //   } catch (err) {
+  //     // TODO error handling
+  //   }
+  // }
 
   logout() {
     this.props.actions.logoutAction();
   }
 
-  sendMessage() {
-    this.props.dispatch(this.props.actions.hello);
-  }
+  // sendMessage() {
+  //   this.props.dispatch(this.props.actions.hello);
+  // }
 
   close() {
     this.authNav('login');

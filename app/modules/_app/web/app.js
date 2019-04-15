@@ -86,7 +86,6 @@ class App extends Component {
   };
 
   state = {
-    openLoginModal: false,
     authType: null
   };
 
@@ -215,10 +214,6 @@ class App extends Component {
     }
   }
 
-  toggleLogin(authType) {
-    this.setState({ openLoginModal: !this.state.openLoginModal, authType });
-  }
-
   closeModal() {
     const { history, location } = this.props;
     const queryParams = queryString.parse(location.search);
@@ -302,14 +297,6 @@ class App extends Component {
         >
           <UpvoteAnimation />
         </div>
-
-        {/* <AuthContainer
-          toggleLogin={this.toggleLogin.bind(this)}
-          open={this.state.openLoginModal || temp}
-          modal
-          type={this.state.authType}
-          {...this.props}
-        /> */}
 
         {/* TODO - separate modal
         <EthTools>

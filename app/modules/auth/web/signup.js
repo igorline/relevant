@@ -18,6 +18,11 @@ import ImageUpload from 'modules/ui/web/imageUpload.component';
 import RIcon from 'app/public/img/r.svg';
 import styled from 'styled-components';
 import queryString from 'query-string';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { loginUser, checkUser, createUser } from 'modules/auth/auth.actions';
+import { withRouter } from 'react-router-dom';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 const StyledRIcon = styled(RIcon)`
   * {
@@ -39,9 +44,7 @@ class SignupForm extends Component {
   static propTypes = {
     location: PropTypes.object,
     actions: PropTypes.object,
-    parentFunction: PropTypes.func,
     user: PropTypes.object,
-    authNav: PropTypes.func,
     auth: PropTypes.object
   };
 
@@ -66,6 +69,7 @@ class SignupForm extends Component {
     this.checkUser = this.checkUser.bind(this);
     this.submit = this.submit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.signup = this.signup.bind(this);
   }
 
   checkEmail() {
@@ -105,6 +109,23 @@ class SignupForm extends Component {
     }
   }
 
+  async signup(data) {
+    const { invitecode } = this.props.auth;
+    const { actions } = this.props;
+    try {
+      const user = {
+        name: data.username,
+        email: data.email,
+        password: data.password,
+        image: data.image
+      };
+      const signedUp = await actions.createUser(user, invitecode);
+      if (signedUp) this.close();
+    } catch (err) {
+      // TODO error handling
+    }
+  }
+
   handleChange(field, data) {
     this.setState({ [field]: data });
   }
@@ -137,7 +158,7 @@ class SignupForm extends Component {
       return;
     }
     if (!this.imageUploader.state.preview) {
-      this.props.parentFunction(this.state);
+      this.signup(this.state);
       return;
     }
     try {
@@ -148,7 +169,7 @@ class SignupForm extends Component {
       // }
       if (image && image.url) {
         const params = { ...this.state, image: image.url };
-        this.props.parentFunction(params);
+        this.signup(params);
       }
     } catch (err) {
       // TODO error handling
@@ -195,7 +216,8 @@ class SignupForm extends Component {
           </Touchable>
         </View>
         <LinkFont mt={4}>
-          Already registered? <a onClick={() => this.props.authNav('login')}>Sign In</a>
+          Already registered?{' '}
+          <a onClick={() => this.props.actions.showModal('login')}>Sign In</a>
         </LinkFont>
       </View>
     );
@@ -306,4 +328,26 @@ class SignupForm extends Component {
   }
 }
 
-export default SignupForm;
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      loginUser,
+      showModal,
+      checkUser,
+      createUser
+    },
+    dispatch
+  )
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SignupForm)
+);
