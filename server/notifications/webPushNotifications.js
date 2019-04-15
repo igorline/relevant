@@ -3,11 +3,19 @@ const webPush = require('web-push');
 const { getUrls } = require('./notificationHelper');
 
 if (process.env.NODE_ENV !== 'test') {
-  webPush.setVapidDetails(
-    'https://relevant.community/',
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+  initWebPush();
+}
+
+function initWebPush() {
+  try {
+    webPush.setVapidDetails(
+      'https://relevant.community/',
+      process.env.VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+  } catch (err) {
+    // console.log(err); // eslint-disable-line
+  }
 }
 
 exports.handleWebNotifications = async params => {
