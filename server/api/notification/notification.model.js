@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
+import socketEvent from 'server/socket/socketEvent';
 
 const { Schema } = mongoose;
 
@@ -29,8 +29,6 @@ const NotificationSchema = new Schema(
   }
 );
 
-NotificationSchema.statics.events = new EventEmitter();
-
 NotificationSchema.index({ forUser: 1 });
 NotificationSchema.index({ forUser: 1, _id: 1 });
 NotificationSchema.index({ forUser: 1, _id: 1, createdAt: 1 });
@@ -48,7 +46,7 @@ NotificationSchema.statics.createNotification = async function createNotificatio
       payload: notification
     };
 
-    this.events.emit('notificationEvent', earningNotificationEvent);
+    socketEvent.emit('socketEvent', earningNotificationEvent);
     return notification;
   } catch (err) {
     throw err;

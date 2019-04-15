@@ -1,21 +1,28 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import merge from 'lodash.merge';
 import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
+import mail from 'server/config/mail';
 import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import CommunityMember from '../community/community.member.model';
 import Relevance from '../relevance/relevance.model';
-import mail from '../../mail';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ handle: 'future' }).then(u => console.log(u.toObject()))
+
+// sendConfirmation({
+//   email: 'slava@relevant.community',
+//   handle: 'test',
+//   confirmCode: 'xxx',
+// });
 
 async function sendConfirmation(user, newUser) {
   let text = '';
@@ -683,6 +690,34 @@ exports.updateUserTokenBalance = async (req, res, next) => {
     }
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
     user.tokenBalance = userBalance;
+    await user.save();
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateUserNotifications = async (req, res, next) => {
+  try {
+    const { user, body } = req;
+    const { notificationSettings, subscription, deviceTokens } = body;
+    const newSettings = merge(user.notificationSettings.toObject(), notificationSettings);
+    user.notificationSettings = newSettings;
+    if (subscription) {
+      const findIndex = user.desktopSubscriptions.findIndex(
+        s =>
+          s.endpoint === subscription.endpoint &&
+          s.keys &&
+          s.keys.auth === subscription.keys.auth &&
+          s.keys.p256dh === subscription.keys.p256dh
+      );
+      if (findIndex === -1) {
+        user.desktopSubscriptions = [...user.desktopSubscriptions, subscription];
+      }
+    }
+    if (deviceTokens) {
+      user.deviceTokens = deviceTokens;
+    }
     await user.save();
     res.status(200).json(user);
   } catch (err) {

@@ -1,10 +1,10 @@
 import * as types from 'core/actionTypes';
-import { token, api, alert } from 'app/utils';
+import { storage, api, alert } from 'app/utils';
 
 const Alert = alert.Alert();
 
 const reqOptions = async () => {
-  const tk = await token.get();
+  const tk = await storage.getToken();
   return {
     credentials: 'include',
     headers: {

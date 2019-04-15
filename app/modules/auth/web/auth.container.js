@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { hideModal } from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import queryString from 'query-string';
 import Modal from 'modules/ui/web/modal';
@@ -48,6 +49,7 @@ class AuthContainer extends Component {
       redirectTo: redirectRoute,
       type: props.type
     };
+    this.props.actions.hideModal();
   }
 
   componentWillReceiveProps(next) {
@@ -190,7 +192,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions
+      ...authActions,
+      hideModal
     },
     dispatch
   )

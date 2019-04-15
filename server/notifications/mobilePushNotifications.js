@@ -1,6 +1,6 @@
 import apn from 'apn';
-import Notification from './api/notification/notification.model';
-import User from './api/user/user.model';
+import Notification from 'server/api/notification/notification.model';
+import User from 'server/api/user/user.model';
 
 /* eslint no-console: 0 */
 
@@ -66,7 +66,7 @@ service.on('disconnected', () => {
 
 service.on('socketError', console.error);
 
-async function sendNotification(user, alert, payload) {
+async function handleMobileNotifications(user, alert, payload) {
   try {
     if (user && user.deviceTokens && user.deviceTokens.length) {
       const badge = await Notification.count({
@@ -122,5 +122,5 @@ async function sendNotification(user, alert, payload) {
 
 module.exports = {
   apnConnection: service,
-  sendNotification
+  handleMobileNotifications
 };

@@ -16,7 +16,7 @@ import MenuIcon from 'modules/ui/web/menuIcon.component';
 const Container = styled.div`
   position: sticky;
   z-index: 100;
-  top: 0;
+  top: ${p => (p.top ? p.top : 0)};
 `;
 
 const SideNavContent = styled.div`
@@ -26,7 +26,7 @@ const SideNavContent = styled.div`
   ${layout.universalBorder('right')}
   display: flex;
   z-index: 100;
-  height: 100vh;
+  height: calc(100vh - ${p => (p.top ? p.top : '0px')});
   top: 0;
 `;
 
@@ -40,6 +40,7 @@ const SideNavScroll = styled.div`
 `;
 
 const LogoContainer = styled(View)`
+  position: ${p => (p.screenSize ? 'relative' : 'sticky')};
   background: ${colors.secondaryBG};
   height: ${layout.headerHeight};
   top: 0;
@@ -56,11 +57,15 @@ class SideNav extends Component {
   }
 
   render() {
-    const { community, className, actions } = this.props;
+    const { community, className, actions, notif, navigation } = this.props;
     const logoLink = `/${community || 'relevant'}/new`;
     return (
-      <Container>
-        <SideNavContent flex={1} className={className}>
+      <Container top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}>
+        <SideNavContent
+          flex={1}
+          className={className}
+          top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}
+        >
           <SideNavScroll flex={1}>
             <LogoContainer
               bb
@@ -69,6 +74,7 @@ class SideNav extends Component {
               fdirection="row"
               justify="space-between"
               p={['0 4', '0 2']}
+              screenSize={navigation.screenSize}
             >
               <ULink align={'flex-start'} to={logoLink}>
                 <Image
@@ -105,13 +111,15 @@ SideNav.propTypes = {
   actions: PropTypes.object,
   community: PropTypes.string,
   navigation: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  notif: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   community: state.auth.community,
   isAuthenticated: state.auth.isAuthenticated,
-  navigation: state.navigation
+  navigation: state.navigation,
+  notif: state.notif
 });
 
 export default withRouter(

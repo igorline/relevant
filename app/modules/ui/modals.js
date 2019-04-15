@@ -1,6 +1,6 @@
 import React from 'react';
 import OnboardingModal from 'modules/ui/web/onboardingModal';
-import SettingsModal from 'modules/ui/web/settingsModal.container';
+import SettingsModal from 'modules/profile/web/settingsModal.container';
 import InviteModal from 'modules/invites/web/inviteModal.container';
 import InviteModalTitle from 'modules/invites/inviteModalTitle.component';
 import GetTokensModal from 'modules/getTokens/web/getTokensModal.container';
