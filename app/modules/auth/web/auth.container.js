@@ -6,12 +6,6 @@ import { withRouter } from 'react-router-dom';
 import { hideModal, showModal } from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import queryString from 'query-string';
-// import Modal from 'modules/ui/web/modal';
-// import LoginForm from './login';
-// import SignupForm from './signup';
-// import ConfirmEmail from './confirmEmail.component';
-// import Forgot from './forgot.component';
-// import ResetPassword from './resetPassword.component';
 
 class AuthContainer extends Component {
   static propTypes = {
@@ -19,8 +13,6 @@ class AuthContainer extends Component {
     location: PropTypes.object,
     modal: PropTypes.bool,
     actions: PropTypes.object,
-    // dispatch: PropTypes.func,
-    toggleLogin: PropTypes.func,
     user: PropTypes.object,
     open: PropTypes.bool,
     match: PropTypes.object,
@@ -34,8 +26,8 @@ class AuthContainer extends Component {
     // this.signup = this.signup.bind(this);
     this.logout = this.logout.bind(this);
     // this.sendMessage = this.sendMessage.bind(this);
-    this.authNav = this.authNav.bind(this);
-    this.close = this.close.bind(this);
+    // this.authNav = this.authNav.bind(this);
+    // this.close = this.close.bind(this);
 
     const { community } = this.props.auth;
 
@@ -126,24 +118,24 @@ class AuthContainer extends Component {
     // if (!visible) return null;
   }
 
-  async login(data) {
-    try {
-      const user = {
-        name: data.username,
-        password: data.password
-      };
-      const loggedIn = await this.props.actions.loginUser(user);
-      if (loggedIn) this.close();
-    } catch (err) {
-      // TODO error handling
-    }
-  }
+  // async login(data) {
+  //   try {
+  //     const user = {
+  //       name: data.username,
+  //       password: data.password
+  //     };
+  //     const loggedIn = await this.props.actions.loginUser(user);
+  //     if (loggedIn) this.close();
+  //   } catch (err) {
+  //     // TODO error handling
+  //   }
+  // }
 
-  authNav(type) {
-    const { location, modal, history } = this.props;
-    if (modal) this.setState({ type });
-    else history.push(`/user/${type}` + location.search);
-  }
+  // authNav(type) {
+  //   const { location, modal, history } = this.props;
+  //   if (modal) this.setState({ type });
+  //   else history.push(`/user/${type}` + location.search);
+  // }
 
   // async signup(data) {
   //   const { invitecode } = this.props.auth;
@@ -170,14 +162,14 @@ class AuthContainer extends Component {
   //   this.props.dispatch(this.props.actions.hello);
   // }
 
-  close() {
-    this.authNav('login');
-    if (this.props.toggleLogin) {
-      this.props.toggleLogin();
-    } else {
-      this.props.history.push(this.state.redirectTo);
-    }
-  }
+  // close() {
+  //   this.authNav('login');
+  //   if (this.props.toggleLogin) {
+  //     this.props.toggleLogin();
+  //   } else {
+  //     this.props.history.push(this.state.redirectTo);
+  //   }
+  // }
 
   render() {
     const { user, match, modal, open } = this.props;
