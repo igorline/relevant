@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
+import socketEvent from 'server/socket/socketEvent';
 
 const { Schema } = mongoose;
-const EarningsSchemaEvents = new EventEmitter();
 
 const EarningsSchema = new Schema(
   {
@@ -34,8 +33,6 @@ EarningsSchema.index({ status: 1 });
 EarningsSchema.index({ user: 1, status: 1 });
 EarningsSchema.index({ user: 1, post: 1 });
 
-EarningsSchema.statics.events = EarningsSchemaEvents;
-
 EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(earning) {
   try {
     const updatedEarning = await this.findOneAndUpdate(
@@ -56,7 +53,7 @@ EarningsSchema.methods.updateClient = function updateClient({ actionType }) {
     type: actionType,
     payload: this
   };
-  this.model('Earnings').events.emit('earningsEvent', earningsAction);
+  socketEvent.emit('socketEvent', earningsAction);
 };
 
 EarningsSchema.pre('remove', async function preRemove(next) {

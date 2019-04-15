@@ -1,7 +1,7 @@
 import * as s3 from './s3';
 import * as post from './post';
 import * as api from './api';
-import * as token from './token';
+import * as storage from './storage';
 import * as numbers from './numbers';
 import * as text from './text';
 import * as img from './img';
@@ -15,4 +15,4 @@ if (process.env.WEB !== 'true') {
   nav = require('./nav').default;
 }
 
-export { s3, post, api, alert, list, token, numbers, text, nav, img, routing };
+export { s3, post, api, alert, list, storage, numbers, text, nav, img, routing };

@@ -1,5 +1,5 @@
 import List from 'server/api/emailList/list.model';
-import mail from '../../mail';
+import mail from 'server/config/mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
@@ -91,7 +91,9 @@ async function generateList(type) {
           type === 'notregistered' || type === 'waitlist' ? user.name : '@' + user.handle,
         vars
       };
-      u.address = u.address.trim();
+      if (u.address) {
+        u.address = u.address.trim();
+      }
 
       console.log('handle', user.handle, u.name, u.address);
       list.members().create(u, err => {
