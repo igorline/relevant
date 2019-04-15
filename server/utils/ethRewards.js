@@ -238,7 +238,7 @@ async function distributeUserRewards(posts, _community) {
       // don't count downvotes
       if (vote.amount < 0) return null;
 
-      const user = await User.findOne(
+      let user = await User.findOne(
         { _id: vote.investor },
         'name balance deviceTokens badge lockedTokens'
       );
@@ -253,8 +253,7 @@ async function distributeUserRewards(posts, _community) {
         : curationPayout;
 
       // TODO diff decimal?
-      const reward = curationPayout / 10 ** 18;
-      user.balance += Math.max(reward, 0);
+      const reward = Math.max(curationPayout, 0) / 10 ** 18;
 
       const earning = await Earnings.updateRewardsRecord({
         user: user._id,
@@ -265,8 +264,13 @@ async function distributeUserRewards(posts, _community) {
         communityId
       });
 
-      user.lockedTokens = Math.max(user.lockedTokens - earning.stakedTokens, 0);
-      await user.save();
+      const unlockTokens = Math.min(user.lockedTokens, earning.stakedTokens);
+
+      user = await User.findOneAndUpdate(
+        { _id: user._id },
+        { $inc: { balance: reward, lockedTokens: -unlockTokens } },
+        { new: true }
+      );
 
       if (curationPayout === 0) return null;
 

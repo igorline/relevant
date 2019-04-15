@@ -29,7 +29,7 @@ export const getInstance = () => instance;
 
 export async function init() {
   try {
-    let rpcUrl = `https://${process.env.INFURA_NETWORK}.infura.io/${
+    let rpcUrl = `https://${process.env.INFURA_NETWORK}.infura.io/v3/${
       process.env.INFURA_API_KEY
     }`;
 

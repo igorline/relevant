@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+import loadable from '@loadable/component';
+
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
 import get from 'lodash.get';
-
-import * as navigationActions from 'modules/navigation/navigation.actions';
-import * as authActions from 'modules/auth/auth.actions';
-import * as modals from 'modules/ui/modals';
 
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { getCommunities } from 'modules/community/community.actions';
@@ -16,22 +15,34 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { getEarnings } from 'modules/wallet/earnings.actions';
+import * as navigationActions from 'modules/navigation/navigation.actions';
+import * as authActions from 'modules/auth/auth.actions';
 
-import AuthContainer from 'modules/auth/web/auth.container';
-import AddEthAddress from 'modules/wallet/web/AddEthAddress';
+// import AuthContainer from 'modules/auth/web/auth.container';
+// import AddEthAddress from 'modules/wallet/web/AddEthAddress';
+// import EthTools from 'modules/web_ethTools/tools.container';
+// import Eth from 'modules/web_ethTools/eth.context';
+
 import Modal from 'modules/ui/web/modal';
-import EthTools from 'modules/web_ethTools/tools.container';
-import Eth from 'modules/web_ethTools/eth.context';
-import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
 
-import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
-import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 import SmartBanner from 'react-smartbanner';
-
 import ReactGA from 'react-ga';
+
+import * as modals from 'modules/ui/modals';
+
+import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
+import { ToastContainer } from 'react-toastify';
+
+// const { ToastContainer } = loadable(() => import('react-toastify'));
+// const { TextTooltip, CustomTooltip } = loadable(
+//  () => import('modules/tooltip/web/tooltip.component'));
+
+const UpvoteAnimation = loadable(() =>
+  import('modules/animation/mobile/upvoteAnimation.component')
+);
 
 ReactGA.initialize('UA-51795165-6');
 
@@ -105,6 +116,9 @@ class App extends Component {
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
     history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
+
+    const ReactPixel = require('react-facebook-pixel').default;
+    ReactPixel.init('286620198458049');
   }
 
   setWidth = () => {
@@ -232,9 +246,9 @@ class App extends Component {
   }
 
   render() {
-    const { location, user, children } = this.props;
-    const temp = user && user.role === 'temp';
-    const connectAccount = location.hash === '#connectAccount';
+    // const { location, user } = this.props;
+    // const temp = user && user.role === 'temp';
+    // const connectAccount = location.hash === '#connectAccount';
 
     return (
       <div>
@@ -266,15 +280,18 @@ class App extends Component {
         >
           <UpvoteAnimation />
         </div>
+
+        {/* <AuthContainer
+          toggleLogin={this.toggleLogin.bind(this)}
+          open={this.state.openLoginModal || temp}
+          modal
+          type={this.state.authType}
+          {...this.props}
+        /> */}
+
+        {/* TODO - separate modal
         <EthTools>
           <div style={{ display: 'flex', width: '100%' }}>{children}</div>
-          <AuthContainer
-            toggleLogin={this.toggleLogin.bind(this)}
-            open={this.state.openLoginModal || temp}
-            modal
-            type={this.state.authType}
-            {...this.props}
-          />
           <Eth.Consumer>
             {wallet => (
               <AddEthAddress
@@ -285,7 +302,7 @@ class App extends Component {
               />
             )}
           </Eth.Consumer>
-        </EthTools>
+        </EthTools> */}
         {this.renderModal()}
         <ToastContainer />
         {renderRoutes(this.props.route.routes)}

@@ -16,8 +16,6 @@ import {
 } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 
-const moment = require('moment');
-
 export default class SingleActivity extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -156,7 +154,7 @@ export default class SingleActivity extends Component {
   }
 
   renderDate(activity) {
-    const fromNow = moment(activity.createdAt).fromNow();
+    const fromNow = numbers.getTimestamp(activity.createdAt);
     if (activity.type) {
       return <SecondaryText lh={2}>{fromNow}</SecondaryText>;
     }

@@ -10,7 +10,8 @@ const EarningsSchema = new Schema(
     source: { type: String, default: 'post' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     // amount: { type: Number, default: 0 },
-    // spent: { type: Number, default: 0 },
+    // spent is legacy code keep in case we need to recompute legacy tokens
+    spent: { type: Number, default: 0 },
     // pending: { type: Number, default: 0 },
     stakedTokens: { type: Number, default: 0 },
     totalPostShares: { type: Number, default: 0 },
