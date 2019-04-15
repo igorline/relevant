@@ -70,13 +70,14 @@ async function handleMobileNotifications(user, alert, payload) {
   try {
     if (!user) return;
 
-    if (!user.notificationSettings || !user.deviceTokens) {
-      user = await User.findOne({ _id: user._id }, 'notificationSettings deviceTokens');
+    const userObj = user.toObject();
+    if (!userObj.notificationSettings || !userObj.deviceTokens) {
+      user = await User.findOne({ _id: user._id });
     }
 
     if (
       !user.notificationSettings.mobile.all ||
-      !user.desktopSubscriptions ||
+      !user.deviceTokens ||
       !user.deviceTokens.length
     ) {
       return;
