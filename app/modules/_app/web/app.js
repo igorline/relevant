@@ -7,7 +7,6 @@ import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
 import get from 'lodash.get';
-
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';
@@ -16,28 +15,14 @@ import { withRouter } from 'react-router-dom';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
-
-// import AuthContainer from 'modules/auth/web/auth.container';
-// import AddEthAddress from 'modules/wallet/web/AddEthAddress';
-// import EthTools from 'modules/web_ethTools/tools.container';
-// import Eth from 'modules/web_ethTools/eth.context';
-
 import Modal from 'modules/ui/web/modal';
-
 import { GlobalStyle } from 'app/styles';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
-
 import SmartBanner from 'react-smartbanner';
 import ReactGA from 'react-ga';
-
 import * as modals from 'modules/ui/modals';
-
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
-
-// const { ToastContainer } = loadable(() => import('react-toastify'));
-// const { TextTooltip, CustomTooltip } = loadable(
-//  () => import('modules/tooltip/web/tooltip.component'));
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/mobile/upvoteAnimation.component')
@@ -51,25 +36,7 @@ if (process.env.BROWSER === true) {
   require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
-  // require('app/utils/notifications');
 }
-
-// function displayNotification() {
-//   if (Notification.permission === 'granted') {
-//     navigator.serviceWorker.getRegistration().then(function(reg) {
-//       const options = {
-//         body: 'Here is a notification body!',
-//         icon: 'images/example.png',
-//         vibrate: [100, 50, 100],
-//         data: {
-//           dateOfArrival: Date.now(),
-//           primaryKey: 1
-//         }
-//       };
-//       reg.showNotification('Hello world!', options);
-//     });
-//   }
-// }
 
 class App extends Component {
   static propTypes = {
