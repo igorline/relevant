@@ -4,6 +4,8 @@ import User from '../user/user.model';
 
 // Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
 
+CommunityMember.remove({ 'embeddedUser.handle': 'a' }).exec();
+
 const RESERVED = [
   'user',
   'admin',

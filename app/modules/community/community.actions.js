@@ -51,6 +51,13 @@ export function setCommunityMembers(slug, members) {
 
 export function getCommunityAdmins() {}
 
+export function setUserMemberships(memberships) {
+  return {
+    type: types.SET_USER_MEMBERSHIPS,
+    payload: memberships
+  };
+}
+
 export function getCommunityMembers({ slug, skip, limit }) {
   return async dispatch => {
     try {

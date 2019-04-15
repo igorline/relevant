@@ -38,6 +38,9 @@ const ActivityText = ({ activity, amount }) => {
       );
     }
 
+    case 'upvoteParent':
+      return <BodyText inline={1}>upvoted a link you shared</BodyText>;
+
     // downvote, partialUpvote, partialDownvote basicIncome are deprecated
     case 'downvote':
       return (

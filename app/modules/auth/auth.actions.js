@@ -3,6 +3,7 @@ import * as utils from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
+import { setUserMemberships } from 'modules/community/community.actions';
 
 const Alert = utils.alert.Alert();
 let ReactNative = {};
@@ -322,6 +323,9 @@ export function getUser(callback) {
         path: '/me'
       });
       setupUser(user, dispatch);
+      if (user.memberships) {
+        dispatch(setUserMemberships(user.memberships));
+      }
       if (callback) callback(user);
       return user;
     } catch (error) {

@@ -16,27 +16,14 @@ class CommunityActive extends Component {
     view: PropTypes.object,
     auth: PropTypes.object,
     screenSize: PropTypes.number,
-    viewCommunityMembers: PropTypes.func
+    viewCommunityMembers: PropTypes.func,
+    userCommunities: PropTypes.array
   };
 
   componentDidMount() {
     const { members, community, getCommunityMembers } = this.props;
     if (!members.length) {
       getCommunityMembers({ slug: community.slug });
-    }
-  }
-
-  componentDidUpdate(lastProps) {
-    const { auth } = this.props;
-    // Nasty code to get user to show up in members after first
-    // action in an new community
-    if (
-      auth.user &&
-      lastProps.auth.user &&
-      auth.user.relevance &&
-      !lastProps.auth.user.relevance
-    ) {
-      this.props.getCommunityMembers({ slug: this.props.community.slug });
     }
   }
 
@@ -49,7 +36,8 @@ class CommunityActive extends Component {
       view,
       screenSize,
       auth,
-      viewCommunityMembers
+      viewCommunityMembers,
+      userCommunities
     } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
@@ -57,12 +45,7 @@ class CommunityActive extends Component {
     const allMembers = members.filter(member => member.embeddedUser._id !== userId);
     let isMember;
     if (auth.user) {
-      isMember = !!(
-        auth.user.memberships &&
-        auth.user.memberships.filter(
-          membership => membership.community === community.slug
-        )
-      );
+      isMember = !!userCommunities.find(_id => _id === community._id);
       if (isMember) {
         allMembers.unshift({ _id: userId, embeddedUser: auth.user });
       }

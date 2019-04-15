@@ -105,7 +105,7 @@ async function getDefaultEmailHtml({ urls, fromUser, post, toUser, action, noteT
     <div class="post" />
       ${isReplyOrMention ? '<div class="head">' + noteHtml + '</div>' : ''}
       <a class="body" href="${postUrl}">
-        ${post.body}
+        ${post.body || post.title}
       </a>
     </div>
     <br />

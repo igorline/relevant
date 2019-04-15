@@ -1,19 +1,15 @@
-import { EventEmitter } from 'events';
 import Earnings from 'server/api/earnings/earnings.model';
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import { computeApproxPageRank } from 'server/utils/pagerankCompute';
 import { computePostPayout } from 'app/utils/rewards';
 import Community from 'server/api/community/community.model';
 import { userVotePower } from 'server/config/globalConstants';
-
-const Post = require('../post/post.model');
-const User = require('../user/user.model');
-const Subscription = require('../subscription/subscription.model');
-const Notification = require('../notification/notification.model');
-const Invest = require('./invest.model');
-const Relevance = require('../relevance/relevance.model');
-
-const InvestEvents = new EventEmitter();
+import Post from 'server/api/post/post.model';
+import User from 'server/api/user/user.model';
+import Subscription from 'server/api/subscription/subscription.model';
+import Notification from 'server/api/notification/notification.model';
+import Invest from 'server/api/invest/invest.model';
+import Relevance from 'server/api/relevance/relevance.model';
 
 const { NODE_ENV } = process.env;
 
@@ -196,16 +192,42 @@ async function updateAuthor(params) {
   const { post, user, amount, authorPagerank, undoInvest } = params;
   let { author } = params;
 
-  if (!author) return null;
+  if (!author) {
+    if (amount < 0) return null;
+    const children = await Post.find({
+      parentPost: post._id,
+      parentComment: { $exists: false }
+    }).populate('user');
 
-  const pageRankChange = author.relevance.pagerank - authorPagerank;
+    const authors = children.map(child => child.user);
+    authors.map(u =>
+      sendAuthorNotification({ author: u, user, post, undoInvest, type: 'upvoteParent' })
+    );
+    return null;
+  }
 
-  let type = 'upvote';
-  if (amount < 0) type = 'downvote';
+  const pageRankChange = author.relevance
+    ? author.relevance.pagerank - authorPagerank
+    : 0;
+  const type = 'upvote';
 
   author = await author.save();
   author.updateClient(user);
 
+  if (amount < 0) return null;
+
+  await sendAuthorNotification({
+    author,
+    user,
+    post,
+    undoInvest,
+    amount: pageRankChange,
+    type
+  });
+  return author;
+}
+
+async function sendAuthorNotification({ author, user, post, type, undoInvest, amount }) {
   // Remove notification if undo;
   if (undoInvest) {
     await Notification.remove({
@@ -214,49 +236,47 @@ async function updateAuthor(params) {
       forUser: author._id,
       byUser: user._id
     }).exec();
-    return author;
+    return null;
   }
 
-  if (amount > 0) {
-    Notification.createNotification({
-      post: post._id,
-      forUser: author._id,
-      byUser: user._id,
-      amount: pageRankChange,
-      type
-    });
+  Notification.createNotification({
+    post: post._id,
+    forUser: author._id,
+    byUser: user._id,
+    amount,
+    type
+  });
 
-    const action = ' thinks your comment is relevant';
+  const action =
+    type === 'upvote' ? ' thinks your comment is relevant' : ' upvoted a link you shared';
 
-    const payload = {
-      fromUser: user,
-      toUser: author,
-      post,
-      action,
-      noteType: 'upvote'
-    };
-    const alert = user.name + action;
+  const payload = {
+    fromUser: user,
+    toUser: author,
+    post,
+    action,
+    noteType: type
+  };
+  const alert = user.name + action;
 
-    try {
-      sendPushNotification(author, alert, payload);
-    } catch (err) {
-      console.log(err); // eslint-disable-line
-    }
+  try {
+    sendPushNotification(author, alert, payload);
+  } catch (err) {
+    console.log(err); // eslint-disable-line
   }
-  return author;
+  return null;
 }
 
 // General problem: a user with some reputation who hasn't upvoted anyone
 // adds much more weight to the first few posts he/she upvotes
 // TODO: Solution — only start counting weights after N upvotes?
 
-// Problem: Vote Power rate-limiting can be avoided by creating a chain of Sybil nodes
-// Should we not rate-limit reputation voting?
+// Rate-limit vote weights?
 
+// Weight allocation attack:
 // Above also solves this possible attack...
 // 1. Build up some degree of relevance (takes time)
-// 2. Create N sibyls ahead of time and upvote each while on max vote power
-// (takes time but can be automated)
+// 2. Create N sibyls ahead of time and upvote each one
 // 3. Wait until right before the a given post's payout time
 // 4. Each sybil upvotes the post and effectively transferring all of the rep weight to the post
 // 5. After, delete the sybils, and to restore original weights
@@ -445,5 +465,3 @@ exports.create = async (req, res, next) => {
     next(err);
   }
 };
-
-exports.InvestEvents = InvestEvents;
