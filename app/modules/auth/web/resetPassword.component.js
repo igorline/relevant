@@ -5,6 +5,10 @@ import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { Field, reduxForm } from 'redux-form';
 import { Button, Form, View } from 'modules/styled/web';
 import { required } from 'modules/form/validators';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { resetPassword } from 'modules/auth/auth.actions';
+import { hideModal, showModal } from 'modules/navigation/navigation.actions';
 
 class ResetPassword extends Component {
   static propTypes = {
@@ -14,7 +18,8 @@ class ResetPassword extends Component {
     handleSubmit: PropTypes.func,
     authNav: PropTypes.func,
     auth: PropTypes.object,
-    close: PropTypes.close
+    close: PropTypes.func,
+    showModal: PropTypes.func
   };
 
   constructor(props) {
@@ -29,8 +34,13 @@ class ResetPassword extends Component {
   submit(vals) {
     const { user } = this.props.auth;
     this.props.actions.resetPassword(vals.password, this.token).then(success => {
-      if (success && !user) this.props.authNav('login');
-      else this.props.close();
+      if (success && !user) {
+        this.props.showModal('login');
+        // this.props.authNav('login');
+        // OPEN LOGIN MODAL
+      } else {
+        this.props.close();
+      }
     });
   }
 
@@ -69,6 +79,22 @@ class ResetPassword extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      resetPassword,
+      hideModal,
+      showModal
+    },
+    dispatch
+  )
+});
+
 export default withRouter(
   reduxForm({
     form: 'settings',
@@ -81,5 +107,10 @@ export default withRouter(
       }
       return errors;
     }
-  })(ResetPassword)
+  })(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(ResetPassword)
+  )
 );

@@ -8,6 +8,7 @@ import GetTokensModal from 'modules/getTokens/web/getTokensModal.container';
 import CreatePost from 'modules/createPost/createPost.container';
 import CommunityMembers from 'modules/community/web/communityMembers.component';
 import CommunityMembersTitle from 'modules/community/communityMembersTitle.component';
+import ResetPassword from 'modules/auth/web/resetPassword.component';
 
 export const onboarding = {
   title: 'Welcome To Relevant',
@@ -45,6 +46,12 @@ export const newpost = {
 export const communityMembers = {
   title: <CommunityMembersTitle />,
   Body: CommunityMembers,
+  footer: () => {}
+};
+
+export const resetPassword = {
+  title: 'Reset Password',
+  Body: ResetPassword,
   footer: () => {}
 };
 
