@@ -21,7 +21,9 @@ function initWebPush() {
 exports.handleWebNotifications = async params => {
   try {
     let { toUser: user } = params;
-    if (!user || !user.notificationSettings || !user.desktopSubscriptions) {
+
+    const userObj = user.toObject();
+    if (!userObj.notificationSettings || !userObj.desktopSubscriptions) {
       user = await User.findOne(
         { _id: user._id },
         'notificationSettings desktopSubscriptions'

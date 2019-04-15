@@ -887,7 +887,7 @@ async function runUpdates() {
 
     // await mobileNotificationSettings();
 
-    await checkFollows();
+    // await checkFollows();
 
     console.log('finished db updates');
   } catch (err) {
@@ -895,4 +895,4 @@ async function runUpdates() {
   }
 }
 
-runUpdates();
+// runUpdates();
