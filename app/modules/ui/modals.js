@@ -12,6 +12,7 @@ import ResetPassword from 'modules/auth/web/resetPassword.component';
 import LoginForm from 'modules/auth/web/login';
 import Forgot from 'modules/auth/web/forgot.component';
 import SignupForm from 'modules/auth/web/signup';
+import ConfirmEmail from 'modules/auth/web/confirmEmail.component';
 
 export const onboarding = {
   title: 'Welcome To Relevant',
@@ -73,5 +74,11 @@ export const forgot = {
 export const signup = {
   title: 'Join the Community',
   Body: SignupForm,
+  footer: () => {}
+};
+
+export const confirm = {
+  title: 'Confirm Your Email',
+  Body: ConfirmEmail,
   footer: () => {}
 };
