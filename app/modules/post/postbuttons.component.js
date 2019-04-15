@@ -6,7 +6,14 @@ import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import get from 'lodash.get';
 import ReactTooltip from 'react-tooltip';
-import ReactGA from 'react-ga';
+
+let Analytics;
+let ReactGA;
+if (process.env.WEB !== 'true') {
+  Analytics = require('react-native-firebase-analytics');
+} else {
+  ReactGA = require('react-ga').default;
+}
 
 class PostButtons extends Component {
   static propTypes = {
@@ -86,10 +93,12 @@ class PostButtons extends Component {
         actions.triggerAnimation('upvote', { parent, amount: upvoteAmount });
       });
 
-      ReactGA.event({
-        category: 'User',
-        action: 'Upvoted a Post'
-      });
+      Analytics && Analytics.logEvent('upvote');
+      ReactGA &&
+        ReactGA.event({
+          category: 'User',
+          action: 'Upvoted a Post'
+        });
       return true;
     } catch (err) {
       return browserAlerts.alert(err.message);

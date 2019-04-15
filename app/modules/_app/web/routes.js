@@ -121,6 +121,11 @@ const routes = [
                 exact: true
               },
               { path: '/user/profile/:id', component: ProfileContainer, exact: true },
+              {
+                path: '/user/profile/:id/settings',
+                component: ProfileContainer,
+                exact: true
+              },
               { path: '/user/activity', component: ActivityContainer, exact: true },
               { path: '/user/forgot', component: Auth, exact: true },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!

@@ -17,6 +17,7 @@ import DiscoverComponent from 'modules/discover/mobile/discover.container';
 import SinglePost from 'modules/post/mobile/singlePost.container';
 import Blocked from 'modules/profile/mobile/blocked.container';
 import Invites from 'modules/invites/mobile/invites.container';
+import Notifications from 'modules/profile/mobile/notifications.container';
 import GetTokens from 'modules/getTokens/mobile/getTokens.container';
 import VoterList from 'modules/post/mobile/voterList.container';
 import Wallet from 'modules/wallet/mobile/wallet.container';
@@ -24,8 +25,13 @@ import Wallet from 'modules/wallet/mobile/wallet.container';
 import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
 import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
+import CommunityMembers from 'modules/community/mobile/communityMembers.component';
 
 export const DefaultStack = {
+  notifications: {
+    screen: Notifications,
+    path: 'user/profile/:id/settings'
+  },
   profile: {
     screen: Profile,
     path: 'user/profile/:id'
@@ -102,6 +108,12 @@ export const DefaultStack = {
     screen: VoterList,
     params: {
       title: 'Votes'
+    }
+  },
+  communityMembers: {
+    screen: CommunityMembers,
+    params: {
+      title: 'Community Members'
     }
   },
   peopleView: {

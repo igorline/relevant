@@ -1,8 +1,6 @@
-import { EventEmitter } from 'events';
+import socketEvent from 'server/socket/socketEvent';
 
 const Notification = require('./notification.model');
-
-const NotificationEvents = new EventEmitter();
 
 exports.create = (req, res, next) => {
   const dbNotificationObj = {
@@ -25,7 +23,7 @@ exports.create = (req, res, next) => {
       type: 'ADD_ACTIVITY'
     };
     if (newNotification.personal) {
-      NotificationEvents.emit('notification', newNotifObj);
+      socketEvent.emit('socketEvent', newNotifObj);
     }
     res.send(200).send();
   })
@@ -100,5 +98,3 @@ exports.markRead = (req, res, next) => {
   .then(() => res.status(200).send())
   .catch(next);
 };
-
-exports.NotificationEvents = NotificationEvents;

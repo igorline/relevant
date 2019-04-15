@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import loadable from '@loadable/component';
 
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
-
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
 import get from 'lodash.get';
@@ -52,7 +51,25 @@ if (process.env.BROWSER === true) {
   require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
+  // require('app/utils/notifications');
 }
+
+// function displayNotification() {
+//   if (Notification.permission === 'granted') {
+//     navigator.serviceWorker.getRegistration().then(function(reg) {
+//       const options = {
+//         body: 'Here is a notification body!',
+//         icon: 'images/example.png',
+//         vibrate: [100, 50, 100],
+//         data: {
+//           dateOfArrival: Date.now(),
+//           primaryKey: 1
+//         }
+//       };
+//       reg.showNotification('Hello world!', options);
+//     });
+//   }
+// }
 
 class App extends Component {
   static propTypes = {
@@ -80,6 +97,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // displayNotification();
     const { actions, auth, location, history } = this.props;
     const { community } = auth;
 
@@ -202,7 +220,13 @@ class App extends Component {
   }
 
   closeModal() {
-    this.props.history.push(this.props.location.pathname);
+    const { history, location } = this.props;
+    const queryParams = queryString.parse(location.search);
+    if (queryParams.redirect) {
+      history.push(queryParams.redirect);
+    } else {
+      history.push(location.pathname);
+    }
   }
 
   renderModal() {

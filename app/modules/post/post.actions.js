@@ -1,6 +1,6 @@
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
-import { token, api, alert } from 'app/utils';
+import { storage, api, alert } from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 
@@ -421,8 +421,8 @@ export function setSubscriptions(data) {
 
 export function getSubscriptions() {
   return dispatch =>
-    token
-    .get()
+    storage
+    .getToken()
     .then(tk =>
       fetch(`${apiServer}subscription/user`, {
         ...reqOptions(tk),
@@ -436,8 +436,8 @@ export function getSubscriptions() {
 
 export function flag(post) {
   return dispatch =>
-    token
-    .get()
+    storage
+    .getToken()
     .then(tk =>
       fetch(`${apiServer}post/flag`, {
         ...reqOptions(tk),
