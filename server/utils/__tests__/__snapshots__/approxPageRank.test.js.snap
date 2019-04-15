@@ -12,6 +12,7 @@ Object {
     "blockedBy": Array [],
     "confirmed": false,
     "createdAt": "[SANITIZED]",
+    "desktopSubscriptions": Array [],
     "deviceTokens": Array [],
     "email": "bob@bob.com",
     "ethAddress": Array [
@@ -29,7 +30,7 @@ Object {
     "name": "Bob",
     "notificationSettings": Object {
       "desktop": Object {
-        "all": true,
+        "all": false,
       },
       "email": Object {
         "digest": true,
@@ -37,7 +38,7 @@ Object {
         "personal": true,
       },
       "mobile": Object {
-        "all": true,
+        "all": false,
       },
     },
     "onboarding": 0,
@@ -180,6 +181,7 @@ Object {
     "blockedBy": Array [],
     "confirmed": false,
     "createdAt": "[SANITIZED]",
+    "desktopSubscriptions": Array [],
     "deviceTokens": Array [],
     "email": "bob@bob.com",
     "ethAddress": Array [
@@ -197,7 +199,7 @@ Object {
     "name": "Bob",
     "notificationSettings": Object {
       "desktop": Object {
-        "all": true,
+        "all": false,
       },
       "email": Object {
         "digest": true,
@@ -205,7 +207,7 @@ Object {
         "personal": true,
       },
       "mobile": Object {
-        "all": true,
+        "all": false,
       },
     },
     "onboarding": 0,

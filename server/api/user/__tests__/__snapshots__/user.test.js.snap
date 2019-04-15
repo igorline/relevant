@@ -12,6 +12,7 @@ Object {
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",
+  "desktopSubscriptions": Array [],
   "deviceTokens": Array [],
   "email": "alice@alice.com",
   "ethAddress": Array [],
@@ -26,7 +27,7 @@ Object {
   "name": "Alice",
   "notificationSettings": Object {
     "desktop": Object {
-      "all": true,
+      "all": false,
     },
     "email": Object {
       "digest": true,
@@ -34,7 +35,7 @@ Object {
       "personal": true,
     },
     "mobile": Object {
-      "all": true,
+      "all": false,
     },
   },
   "onboarding": 0,
