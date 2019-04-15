@@ -11,6 +11,8 @@ export const modalShadow = {
   boxShadow: '0 2px 6px hsl(0,0%,70%)'
 };
 
+export const BANNER_PROMPT_HEIGHT = sizing(5);
+
 export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);

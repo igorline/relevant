@@ -22,7 +22,7 @@ import CreatePostHeaderRight from 'modules/createPost/mobile/createPostHeaderRig
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import { setTopLevelNavigator, withProps } from 'app/utils/nav';
 
-import { text, token, post } from 'app/utils';
+import { text, storage, post } from 'app/utils';
 import { fullWidth, fullHeight, darkGrey, IphoneX } from 'app/styles/global';
 
 const KBView = KeyboardAvoidingView;
@@ -108,8 +108,8 @@ class ShareContainer extends Component {
   componentWillMount() {
     const community = 'relevant';
     this.props.actions.setCommunity(community);
-    token
-    .get()
+    storage
+    .getToken()
     .then(tk => {
       this.setState({ token: tk });
       if (!tk) this.props.actions.replace('shareAuth');
@@ -157,7 +157,7 @@ class ShareContainer extends Component {
 
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'extension' && !this.state.token) {
-      token.get().then(tk => {
+      storage.getToken().then(tk => {
         this.setState({ token: tk });
         if (tk) this.props.actions.replace('createPostUrl');
       });

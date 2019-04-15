@@ -4,6 +4,8 @@ import User from '../user/user.model';
 
 // Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
 
+CommunityMember.remove({ 'embeddedUser.handle': 'a' }).exec();
+
 const RESERVED = [
   'user',
   'admin',
@@ -41,15 +43,55 @@ export async function index(req, res, next) {
 export async function members(req, res, next) {
   try {
     const { user } = req;
-    const userId = user ? user._id : null;
-    const limit = req.params.limit || 20;
+    let blocked = [];
+    if (user) {
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
+    // const userId = user ? user._id : null;
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
+    const skip = req.query.skip ? parseInt(req.query.skip, 10) : 0;
     const community = req.params.slug;
-    let users = CommunityMember.find({ community, user: { $ne: userId } })
+    // const isMember = await CommunityMember.findOne({ community, user: userId });
+    const users = await CommunityMember.find({
+      community,
+      'user.embeddedUser._id': {
+        $nin: blocked
+      }
+    })
     .sort({ role: 1, reputation: -1 })
-    .limit(limit);
-    let me = userId ? CommunityMember.find({ user: userId, community }) : [];
-    [me, users] = await Promise.all([me, users]);
-    res.status(200).json([...me, ...(users || [])]);
+    .limit(limit)
+    .skip(skip);
+    res.status(200).json(users || []);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function memberSearch(req, res, next) {
+  try {
+    let blocked = [];
+    const { user } = req;
+    if (user) {
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
+
+    const { search, limit } = req.query;
+    const name = new RegExp(search, 'i');
+    const query = {
+      $and: [
+        { $or: [{ 'embeddedUser.name': name }, { 'embeddedUser.handle': name }] },
+        { 'embeddedUser._id': { $nin: blocked } }
+      ]
+    };
+    const community = req.params.slug;
+    CommunityMember.find({ community, ...query })
+    .sort({ role: 1, reputation: -1 })
+    .limit(parseInt(limit, 10))
+    .then(users => {
+      res.status(200).json(users || []);
+    });
+    // res.status(200).json(users);
+    // .catch(next);
   } catch (err) {
     next(err);
   }

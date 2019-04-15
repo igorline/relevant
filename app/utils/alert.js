@@ -5,15 +5,18 @@ export const browserAlerts = {
     toast(message, {
       position: toast.POSITION.BOTTOM_RIGHT,
       type: alertType || 'error',
-      hideProgressBar: true,
+      hideProgressBar: true
     });
   }
 };
 
-export function Alert() {
+export function Alert(noInput = false) {
   if (process.env.WEB !== 'true') {
     const ReactNative = require('react-native');
     const { Platform } = ReactNative;
+    if (noInput) {
+      return ReactNative.Alert;
+    }
     if (Platform.OS === 'ios') {
       return ReactNative.AlertIOS;
     }

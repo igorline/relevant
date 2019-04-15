@@ -1,11 +1,13 @@
 import React from 'react';
 import OnboardingModal from 'modules/ui/web/onboardingModal';
-import SettingsModal from 'modules/ui/web/settingsModal.container';
+import SettingsModal from 'modules/profile/web/settingsModal.container';
 import InviteModal from 'modules/invites/web/inviteModal.container';
 import InviteModalTitle from 'modules/invites/inviteModalTitle.component';
 import GetTokensModal from 'modules/getTokens/web/getTokensModal.container';
 // import AuthContainer from 'modules/auth/web/auth.container';
 import CreatePost from 'modules/createPost/createPost.container';
+import CommunityMembers from 'modules/community/web/communityMembers.component';
+import CommunityMembersTitle from 'modules/community/communityMembersTitle.component';
 
 export const onboarding = {
   title: 'Welcome To Relevant',
@@ -37,6 +39,12 @@ export const newpost = {
   bodyProps: {
     modal: true
   },
+  footer: () => {}
+};
+
+export const communityMembers = {
+  title: <CommunityMembersTitle />,
+  Body: CommunityMembers,
   footer: () => {}
 };
 

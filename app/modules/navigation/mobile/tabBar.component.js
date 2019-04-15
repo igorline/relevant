@@ -34,6 +34,7 @@ export default class TabBar extends Component {
     PushNotification.setApplicationIconBadgeNumber(this.totalBadge);
 
     if (!count) return null;
+
     return (
       <View pointerEvents={'none'} style={styles.notifCount}>
         <Text style={styles.notifText}>{count}</Text>
@@ -50,7 +51,7 @@ export default class TabBar extends Component {
     let badge;
     const active = tab.key === currentTab.key;
     let activeText;
-    if (tab.params.key === 'activity' && notif.count) badge = notif.count;
+    if (tab.params.title === 'Activity' && notif.count) badge = notif.count;
 
     let fontAdjust;
     if (tab.params.title === 'Wallet' && Platform.OS === 'ios') {

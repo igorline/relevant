@@ -2239,7 +2239,7 @@ exports[`Snapshot own Profile 1`] = `
           c="#000000"
           className="ulink-mock c2"
           hc="#999999"
-          href="/settings"
+          href="//settings?redirect=/"
           hu={0}
           inline={0}
           onClick={[Function]}

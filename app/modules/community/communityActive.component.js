@@ -15,7 +15,9 @@ class CommunityActive extends Component {
     actions: PropTypes.object,
     view: PropTypes.object,
     auth: PropTypes.object,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    viewCommunityMembers: PropTypes.func,
+    userCommunities: PropTypes.array
   };
 
   componentDidMount() {
@@ -25,25 +27,30 @@ class CommunityActive extends Component {
     }
   }
 
-  componentDidUpdate(lastProps) {
-    const { auth } = this.props;
-    // Nasty code to get user to show up in members after first
-    // action in an new community
-    if (
-      auth.user &&
-      lastProps.auth.user &&
-      auth.user.relevance &&
-      !lastProps.auth.user.relevance
-    ) {
-      this.props.getCommunityMembers({ slug: this.props.community.slug });
-    }
-  }
-
   render() {
-    const { community, children, members, actions, view, screenSize } = this.props;
+    const {
+      community,
+      children,
+      members,
+      actions,
+      view,
+      screenSize,
+      auth,
+      viewCommunityMembers,
+      userCommunities
+    } = this.props;
     const topics = get(community, 'topics', []);
     const totalMembers = get(community, 'memberCount', 0);
-    const limitedMembers = members.slice(0, screenSize ? 14 : 12);
+    const userId = get(auth, 'user._id', null);
+    const allMembers = members.filter(member => member.embeddedUser._id !== userId);
+    let isMember;
+    if (auth.user) {
+      isMember = !!userCommunities.find(_id => _id === community._id);
+      if (isMember) {
+        allMembers.unshift({ _id: userId, embeddedUser: auth.user });
+      }
+    }
+    const limitedMembers = allMembers.slice(0, screenSize ? 14 : 12);
     const sort = get(view, 'discover.sort') || 'new';
     return (
       <View bg={colors.white} mr={'1px'}>
@@ -68,9 +75,12 @@ class CommunityActive extends Component {
             ))}
           </View>
           <SecondaryText mt={[3, 2]}>{community.description}</SecondaryText>
-          <CommunityLink mt={3} mb={2} c={colors.black}>
-            {`${totalMembers} Members`}
-          </CommunityLink>
+          <View mt={3} mb={2} fdirection="row" justify="space-between">
+            <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
+            <ULink to="#" onPress={viewCommunityMembers} onClick={viewCommunityMembers}>
+              <CommunityLink c={colors.blue}>See All</CommunityLink>
+            </ULink>
+          </View>
           <View fdirection={'row'} wrap>
             {limitedMembers.map(member => (
               <UAvatar

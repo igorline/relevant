@@ -1,5 +1,6 @@
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
+import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -25,13 +26,18 @@ export function clearCreatePost() {
 }
 
 export function submitPost(post) {
-  return async () => {
+  return async dispatch => {
     try {
       await api.request({
         method: 'POST',
         endpoint: 'post',
         body: JSON.stringify(post)
       });
+      dispatch(
+        showPushNotificationPrompt({
+          type: 'createPost'
+        })
+      );
       return true;
     } catch (err) {
       Alert.alert('Error creating post', err.message);
