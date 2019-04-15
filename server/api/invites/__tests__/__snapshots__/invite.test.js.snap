@@ -12,6 +12,7 @@ Object {
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",
+  "desktopSubscriptions": Array [],
   "deviceTokens": Array [],
   "email": "bob@bob.com",
   "ethAddress": Array [],
@@ -26,6 +27,19 @@ Object {
   "lockedTokens": 0,
   "messages": 0,
   "name": "Bob",
+  "notificationSettings": Object {
+    "desktop": Object {
+      "all": false,
+    },
+    "email": Object {
+      "digest": true,
+      "general": true,
+      "personal": true,
+    },
+    "mobile": Object {
+      "all": false,
+    },
+  },
   "onboarding": 0,
   "online": false,
   "postCount": 0,

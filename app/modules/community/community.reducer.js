@@ -10,7 +10,9 @@ const initialState = {
   list: [],
   active: null,
   members: {},
-  communityMembers: {}
+  communityMembers: {},
+  userMemberships: [],
+  userCommunities: []
 };
 
 export default function community(state = initialState, action) {
@@ -24,6 +26,22 @@ export default function community(state = initialState, action) {
           ...normalized.entities.communities
         },
         list: [...new Set([...state.list, ...normalized.result])]
+      };
+    }
+
+    case types.SET_USER_MEMBERSHIPS: {
+      return {
+        ...state,
+        userMemberships: action.payload,
+        userCommunities: action.payload.map(m => m.communityId)
+      };
+    }
+
+    case types.ADD_USER_MEMBERSHIP: {
+      return {
+        ...state,
+        userMemberships: [...state.userMemberships, action.payload],
+        userCommunities: [...state.userCommunities, action.payload.communityId]
       };
     }
 

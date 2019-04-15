@@ -3,6 +3,7 @@ import { api, alert } from 'app/utils';
 import * as types from 'core/actionTypes';
 import { setError } from 'modules/ui/error.actions';
 import { removePost, updatePost } from 'modules/post/post.actions';
+import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -57,6 +58,11 @@ export function createComment(commentObj) {
       const { parentComment, parentPost } = comment;
       const parentId = parentComment || parentPost;
       dispatch(addComment(parentId, comment));
+      dispatch(
+        showPushNotificationPrompt({
+          type: 'createComment'
+        })
+      );
       return comment;
     } catch (err) {
       return false;

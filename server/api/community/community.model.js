@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { NAME_PATTERN } from 'app/utils/text';
 import * as ethUtils from 'server/utils/ethereum';
+import socketEvent from 'server/socket/socketEvent';
 
 const { Schema } = mongoose;
 
@@ -212,6 +213,14 @@ CommunitySchema.methods.join = async function join(userId, role) {
     // console.log('totalBalance should be ', userBalance, ' ', totalBalance);
 
     await this.updateMemeberCount();
+
+    const memberEvent = {
+      _id: user._id,
+      type: 'ADD_USER_MEMBERSHIP',
+      payload: member
+    };
+    socketEvent.emit('socketEvent', memberEvent);
+
     return member;
   } catch (err) {
     throw err;

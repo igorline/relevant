@@ -6,6 +6,7 @@ import { colors, fonts, sizing } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import InviteCta from 'modules/web_splash/inviteCta.component';
 import { withRouter } from 'react-router-dom';
+import { storage } from 'utils';
 
 const SignUpCta = ({ location }) => (
   <View display="flex" fdirection="row">
@@ -78,28 +79,13 @@ class Splash extends Component {
     isDismissed: false
   };
 
-  componentDidMount() {
+  componentDidMount = async () => {
     window.addEventListener('scroll', this.onScroll);
-    this.setState({ isDismissed: this.checkIfDismissedExpired() });
-  }
-
-  checkIfDismissedExpired() {
-    if (!window || !window.localStorage || !localStorage) {
-      return false;
-    }
-    const dismissed = localStorage.getItem('splashDismissed');
-    if (!dismissed) {
-      return false;
-    }
-    const now = new Date().getTime();
-    const diff = Math.abs(now - Number(dismissed));
-    const ONE_DAY = 1000 * 60 * 60 * 24;
-    if (diff > 5 * ONE_DAY) {
-      localStorage.removeItem('splashDismissed');
-      return false;
-    }
-    return true;
-  }
+    const isDismissed = await storage.isDismissed('splashDismissed', 5);
+    this.setState({
+      isDismissed
+    });
+  };
 
   onScroll() {
     if (!this.phone) return;
@@ -111,7 +97,7 @@ class Splash extends Component {
 
   dismiss = () => {
     const now = new Date().getTime();
-    localStorage.setItem('splashDismissed', now);
+    storage.set('splashDismissed', now);
     this.setState({ isDismissed: true });
   };
 
@@ -122,7 +108,7 @@ class Splash extends Component {
     const { cta, hideCloseButton, location } = this.props;
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
-      'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
+      'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
     const CtaComponent = CTA[cta];
     return (
       <Wrapper

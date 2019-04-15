@@ -826,6 +826,18 @@ async function userEarnings(user) {
   }
 }
 
+async function mobileNotificationSettings() {
+  const users = await User.find(
+    { deviceTokens: { $exists: true, $ne: [] } },
+    'deviceTokens handle notificationSettings'
+  );
+  users.forEach(u => {
+    u.notificationSettings.mobile = { all: true };
+    u.save();
+    console.log(u.toObject());
+  });
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -861,12 +873,13 @@ async function runUpdates() {
     // await unlockTokens();
 
     // await checkDiscreptancies();
-    await auditUserEarnings();
+    // await auditUserEarnings();
 
+    // await mobileNotificationSettings();
     console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
 }
 
-runUpdates();
+// runUpdates();

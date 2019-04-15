@@ -6,6 +6,7 @@ import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { colors, layout } from 'app/styles';
 import { View } from 'modules/styled/uni';
+import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import SplashComponent from 'modules/web_splash/splash.component';
 import { slide as Menu } from 'react-burger-menu';
 import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
@@ -21,13 +22,27 @@ class WithSideNav extends Component {
     return state.isOpen;
   };
   render() {
-    const { isAuthenticated, navigation } = this.props;
+    const { isAuthenticated, navigation, notif } = this.props;
     const smallWidth = navigation.width <= layout.mediumScreenWidth;
     const { sideNavIsOpen } = navigation;
+    const { promptType } = notif;
     return (
       <View bg={colors.white} display="flex" flex={1}>
         {!isAuthenticated && !smallWidth ? (
           <SplashComponent type={'app'} cta="SIGN_UP" />
+        ) : null}
+        {promptType ? (
+          <View
+            position="fixed"
+            zIndex="200"
+            style={{
+              right: 0,
+              left: 0,
+              minHeight: layout.BANNER_PROMPT_HEIGHT
+            }}
+          >
+            <BannerPrompt />
+          </View>
         ) : null}
         <View fdirection="row" display="flex">
           {smallWidth ? (
@@ -36,7 +51,11 @@ class WithSideNav extends Component {
               isOpen={sideNavIsOpen}
               onStateChange={this.isMenuOpen}
             >
-              <View fdirection="column" display="flex" style={{ top: 0 }}>
+              <View
+                fdirection="column"
+                display="flex"
+                style={{ top: promptType ? layout.BANNER_PROMPT_HEIGHT : 0 }}
+              >
                 <SideNav {...this.props} />
               </View>
             </Menu>
@@ -58,12 +77,14 @@ WithSideNav.propTypes = {
   route: PropTypes.object,
   isAuthenticated: PropTypes.bool,
   navigation: PropTypes.object,
+  notif: PropTypes.object,
   actions: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
-  navigation: state.navigation
+  navigation: state.navigation,
+  notif: state.notif
 });
 
 const mapDispatchToProps = dispatch => ({
