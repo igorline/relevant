@@ -1,5 +1,6 @@
 /* eslint no-console: 0 */
 import { sendNotification as sendPushNotification } from 'server/notifications';
+import Notification from 'server/api/notification/notification.model';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';
