@@ -78,7 +78,7 @@ async function referralRewards({ invite, user, Invite }) {
     await communityInstance.join(user._id, role);
 
     if (role === 'admin') {
-      const relevance = await this.model('Relevance').findOne({
+      const relevance = await Invite.model('Relevance').findOne({
         user: user._id,
         communityId,
         global: true

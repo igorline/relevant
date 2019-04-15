@@ -4,7 +4,9 @@ const initialState = {
   personal: [],
   count: false,
   loaded: false,
-  general: []
+  general: [],
+  promptType: null,
+  promptProps: {}
 };
 
 export default function notifications(state = initialState, action) {
@@ -41,6 +43,22 @@ export default function notifications(state = initialState, action) {
 
     case types.LOGOUT_USER: {
       return { ...initialState };
+    }
+
+    case types.SHOW_BANNER_PROMPT: {
+      return {
+        ...state,
+        promptType: action.payload.promptType,
+        promptProps: action.payload.promptProps
+      };
+    }
+
+    case types.HIDE_BANNER_PROMPT: {
+      return {
+        ...state,
+        promptType: null,
+        promptProps: {}
+      };
     }
 
     default:

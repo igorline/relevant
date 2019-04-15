@@ -9,6 +9,7 @@ import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import * as authActions from 'modules/auth/auth.actions';
 import * as postActions from 'modules/post/post.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
+import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as statsActions from 'modules/stats/stats.actions';
@@ -295,7 +296,8 @@ function mapDispatchToProps(dispatch) {
         ...userActions,
         ...investActions,
         ...createPostActions,
-        ...navigationActions
+        ...navigationActions,
+        ...tooltipActions
       },
       dispatch
     )

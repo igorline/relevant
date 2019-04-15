@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 
+const notificationUtil = require('server/notifications');
 const Message = require('./message.model');
 const User = require('../user/user.model');
 
 const MessageEvents = new EventEmitter();
 const Notification = require('../notification/notification.model');
 const apn = require('apn');
-const apnData = require('../../pushNotifications');
 
 exports.get = (req, res, next) => {
   const { query } = req;
@@ -81,7 +81,7 @@ exports.create = (req, res) => {
           note.alert = req.user.name + ' is thirsty';
           note.payload = { messageFrom: req.user.name };
 
-          apnData.apnConnection.pushNotification(note, devices);
+          notificationUtil.sendNotification(note, devices);
         }
       }
     }

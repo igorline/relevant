@@ -9,7 +9,7 @@ import { authProps } from 'app/utils/propValidation';
 import Profile from 'modules/profile/profile.component';
 import UserPosts from 'modules/profile/web/userPosts.component';
 import { Divider } from 'modules/styled/uni';
-import { showModal } from 'modules/navigation/navigation.actions';
+import { showModal, hideModal } from 'modules/navigation/navigation.actions';
 
 const pageSize = 10;
 
@@ -100,6 +100,7 @@ const mapDispatchToProps = dispatch =>
           {
             ...UserActions,
             ...PostActions,
+            hideModal,
             logoutAction,
             showModal
           }

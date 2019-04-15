@@ -1,4 +1,4 @@
-import * as tokenUtil from './token';
+import * as storage from './storage';
 
 const routes = {};
 let community;
@@ -43,7 +43,7 @@ export function setCommunity(_community) {
 
 export async function reqOptions() {
   try {
-    const token = await tokenUtil.get();
+    const token = await storage.getToken();
     return {
       credentials: 'include',
       headers: {

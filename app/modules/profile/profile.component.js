@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import UAvatar from 'modules/user/UAvatar.component';
 import { colors, sizing, mixins, fonts } from 'app/styles';
@@ -18,15 +19,36 @@ const linkStyle = css`
   ${mixins.color}
 `;
 
-export default class Profile extends Component {
+class Profile extends Component {
   static propTypes = {
     actions: PropTypes.object,
     isOwner: PropTypes.bool,
-    user: PropTypes.object
+    user: PropTypes.object,
+    location: PropTypes.object,
+    history: PropTypes.object
   };
 
+  componentDidMount() {
+    this.checkRouteForModal(true);
+  }
+
+  checkRouteForModal(firstRun) {
+    const { user, actions, location, history } = this.props;
+    const settingsUrl = `/user/profile/${user.handle}/settings`;
+    const profileUrl = `/user/profile/${user.handle}`;
+    if (settingsUrl === location.pathname) {
+      const searchString = `?redirect=${profileUrl}`;
+      if (firstRun && location.search !== searchString) {
+        history.push({ search: searchString });
+      }
+      actions.showModal('settings');
+    } else {
+      actions.hideModal();
+    }
+  }
+
   render() {
-    const { user, isOwner, actions } = this.props;
+    const { user, isOwner, actions, location } = this.props;
     if (!user) {
       return <div className="profileContainer">User not found!</div>;
     }
@@ -87,17 +109,9 @@ export default class Profile extends Component {
               <AltLink mr={sizing(0.5)}>
                 <ULink
                   c={colors.black}
-                  to="/settings"
+                  to={`${location.pathname}/settings?redirect=${location.pathname}`}
                   hc={colors.secondaryText}
                   styles={linkStyle}
-                  onPress={e => {
-                    e.preventDefault();
-                    actions.showModal('settings');
-                  }}
-                  onClick={e => {
-                    e.preventDefault();
-                    actions.showModal('settings');
-                  }}
                 >
                   <Text fdirection="row" align="center">
                     <View mr={sizing(0.5)}>
@@ -138,3 +152,5 @@ export default class Profile extends Component {
     );
   }
 }
+
+export default withRouter(Profile);

@@ -1,4 +1,29 @@
-exports.emailStyle = `
+export const notificationStyle = `
+<style>
+  .post {
+    border: 1px solid lightgrey;
+    padding: 4px 16px 4px 16px;
+    max-width: 600px;
+  }
+  .post a {
+    text-decoration: none;
+  }
+  .post .head {
+    padding-top: 12px;
+  }
+  .post .body {
+    display: block;
+    padding: 12px 0;
+    text-decoration: none;
+    color: black;
+  }
+  .footer {
+    font-size: 10px;
+    color: grey;
+  }
+</style>`;
+
+export const emailStyle = `
 <style>
   p, ul {
     font-size: 14px;

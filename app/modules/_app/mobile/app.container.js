@@ -30,6 +30,7 @@ import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
+import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
@@ -235,6 +236,7 @@ class Application extends Component {
     return (
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <AppContainer navigation={this.props.navigation} />
+        <BannerPrompt />
         <Tooltip />
         <InvestAnimation />
         <HeartAnimation />

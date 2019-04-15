@@ -2,9 +2,9 @@ import uuid from 'uuid/v4';
 import Relevance from 'server/api/relevance/relevance.model';
 import { totalAllowedInvites } from 'server/config/globalConstants';
 import Community from 'server/api/community/community.model';
+import mail from 'server/config/mail';
 // import User from 'server/api/user/user.model';
 import Invite from './invite.model';
-import mail from '../../mail';
 
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');

@@ -2,6 +2,7 @@ import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
 import { setPostsSimple } from 'modules/post/post.actions';
+import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -91,6 +92,14 @@ export function vote(amount, post, user, undo) {
       });
       if (res.undoInvest) dispatch(undoPostVote(post._id));
       else dispatch(updatePostVote({ post: post._id, amount }));
+      const isComment = !!post.parentPost;
+      if (amount > 0) {
+        dispatch(
+          showPushNotificationPrompt({
+            type: isComment ? 'upvoteComment' : 'upvotePost'
+          })
+        );
+      }
       return res;
     } catch (error) {
       if (undo) dispatch(updatePostVote({ post: post._id, amount }));
