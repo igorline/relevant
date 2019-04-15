@@ -516,7 +516,7 @@ export const layout = {
   },
   notifCount: {
     position: 'absolute',
-    top: -3,
+    top: 2,
     backgroundColor: 'red',
     right: 10,
     justifyContent: 'center',

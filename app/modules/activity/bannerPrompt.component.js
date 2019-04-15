@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { showBannerPrompt, hideBannerPrompt } from 'modules/activity/activity.actions';
+import {
+  showBannerPrompt,
+  hideBannerPrompt,
+  enableDesktopNotifications
+} from 'modules/activity/activity.actions';
 import { colors } from 'app/styles';
-import { addDeviceToken } from 'modules/auth/auth.actions';
+import { enableMobileNotifications } from 'modules/auth/auth.actions';
 import { View } from 'modules/styled/uni';
 import PushNotification from 'modules/activity/pushNotificationPrompt.component';
 
@@ -56,7 +60,8 @@ const mapDispatchToProps = dispatch => ({
     {
       showBannerPrompt,
       hideBannerPrompt,
-      addDeviceToken
+      enableMobileNotifications,
+      enableDesktopNotifications
     },
     dispatch
   )

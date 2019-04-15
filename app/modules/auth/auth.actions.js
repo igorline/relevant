@@ -3,6 +3,7 @@ import * as utils from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
+import { setUserMemberships } from 'modules/community/community.actions';
 
 const Alert = utils.alert.Alert();
 let ReactNative = {};
@@ -194,14 +195,18 @@ export function updateUser(user, preventLocalUpdate) {
   };
 }
 
-export function updateNotificationSettings(notificationSettings) {
+export function updateNotificationSettings(
+  notificationSettings,
+  subscription,
+  deviceTokens
+) {
   return async dispatch => {
     try {
       const res = await utils.api.request({
         method: 'PUT',
         endpoint: 'user',
         path: '/notifications',
-        body: JSON.stringify(notificationSettings)
+        body: JSON.stringify({ notificationSettings, subscription, deviceTokens })
       });
       dispatch(updateAuthUser(res));
       return true;
@@ -233,14 +238,9 @@ export function removeDeviceToken(auth) {
   };
 }
 
-export function addDeviceToken(user) {
+export function enableMobileNotifications(user) {
   return dispatch => {
     PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      // onRegister: token => {
-      //   console.log('TOKEN:', token);
-      // },
-
       // (required) Called when a remote or local notification is opened or received
       onNotification: notification => {
         // other params: foreground, message
@@ -277,25 +277,27 @@ export function addDeviceToken(user) {
         okToRequestPermissions = false;
         PushNotification.requestPermissions().then(() => {
           okToRequestPermissions = true;
-          dispatch(tooltipActions.tooltipReady(true));
         });
       }
-    } else {
-      dispatch(tooltipActions.tooltipReady(true));
     }
 
     PushNotification.onRegister = deviceToken => {
       const { token } = deviceToken;
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
-      const newUser = user;
+      const newUser = { ...user };
       if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens.push(token);
-        dispatch(updateUser(newUser));
       } else if (user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens = [token];
-        dispatch(updateUser(newUser));
       }
+      const notificationSettings = {
+        ...newUser.notificationSettings,
+        mobile: { all: true }
+      };
+      dispatch(
+        updateNotificationSettings(notificationSettings, null, newUser.deviceTokens)
+      );
     };
   };
 }
@@ -304,6 +306,7 @@ function setupUser(user, dispatch) {
   dispatch(setUser(user));
   dispatch(setSelectedUserData(user));
   dispatch(errorActions.setError('universal', false));
+  dispatch(tooltipActions.tooltipReady(true));
   return user;
 }
 
@@ -319,6 +322,9 @@ export function getUser(callback) {
         path: '/me'
       });
       setupUser(user, dispatch);
+      if (user.memberships) {
+        dispatch(setUserMemberships(user.memberships));
+      }
       if (callback) callback(user);
       return user;
     } catch (error) {
@@ -326,16 +332,6 @@ export function getUser(callback) {
       dispatch(errorActions.setError('universal', true, message));
       dispatch(loginUserFailure('Server error'));
       if (callback) callback({ ok: false });
-      // need this in case user is logged in but there is an error getting account
-      // if (
-      //   error.message !== 'Network request failed' &&
-      //   error.message !== 'Failed to fetch'
-      // ) {
-      // window.alert('REMOVING TOKEN!' + error.message); // eslint-disable-line
-      // console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
-      // dispatch(logoutAction());
-      // }
-      // throw error;
       return null;
     }
   };

@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { View, Header, SecondaryText, Title, BodyText } from 'modules/styled/uni';
 import { connect } from 'react-redux';
-import { updateNotificationSettings } from 'modules/auth/auth.actions';
+import {
+  updateNotificationSettings,
+  enableMobileNotifications
+} from 'modules/auth/auth.actions';
+import { enableDesktopNotifications } from 'modules/activity/activity.actions';
 import { bindActionCreators } from 'redux';
 import ToggleSwitch from 'modules/ui/toggleswitch.component';
 import { colors } from 'app/styles';
@@ -101,34 +105,27 @@ NotificationSet.propTypes = {
 };
 
 class NotificationSettings extends Component {
-  componentDidMount() {
-    this.requestDesktopPermission();
-  }
-
-  componentDidUpdate() {
-    this.requestDesktopPermission();
-    const {
-      user: { notificationSettings },
-      actions
-    } = this.props;
-    // If they allowed desktop notifications elsewhere we should update the DB
+  async componentDidUpdate(prevProps) {
+    const { actions, user } = this.props;
+    const { notificationSettings } = user;
     if (
-      Notification &&
-      Notification.permission === 'granted' &&
-      !get(notificationSettings, 'desktop.all')
+      !get(prevProps, 'user.notificationSettings.desktop.all') &&
+      get(notificationSettings, 'desktop.all')
     ) {
-      actions.updateNotificationSettings({ desktop: { all: true } });
+      // TODO fallback for when notifications were previously disabled
+      actions.enableDesktopNotifications();
     }
+
+    if (
+      !get(prevProps, 'user.notificationSettings.mobile.all') &&
+      get(notificationSettings, 'mobile.all')
+    ) {
+      // TODO fallback for when notifications were previously disabled
+      actions.enableMobileNotifications(user);
+    }
+    return null;
   }
 
-  requestDesktopPermission() {
-    const {
-      user: { notificationSettings }
-    } = this.props;
-    if (Notification && get(notificationSettings, 'desktop.all')) {
-      Notification.requestPermission();
-    }
-  }
   render() {
     const { user, actions } = this.props;
     if (!user) {
@@ -166,7 +163,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      updateNotificationSettings
+      updateNotificationSettings,
+      enableDesktopNotifications,
+      enableMobileNotifications
     },
     dispatch
   )

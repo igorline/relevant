@@ -108,7 +108,7 @@ class Splash extends Component {
     const { cta, hideCloseButton, location } = this.props;
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
-      'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
+      'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
     const CtaComponent = CTA[cta];
     return (
       <Wrapper

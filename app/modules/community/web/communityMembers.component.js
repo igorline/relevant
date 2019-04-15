@@ -74,8 +74,8 @@ class CommunityMembers extends Component {
 
   getTitle(role) {
     const TITLES = {
-      admin: 'Adminstrators',
-      user: 'Trusted Users'
+      admin: 'Admins',
+      user: 'Members'
     };
     return TITLES[role];
   }

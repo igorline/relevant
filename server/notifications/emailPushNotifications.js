@@ -2,6 +2,7 @@ const mail = require('server/config/mail');
 const inlineCss = require('inline-css');
 const { notificationStyle } = require('server/utils/emailStyle');
 const User = require('server/api/user/user.model');
+const { getUrls } = require('./notificationHelper');
 
 // sendNotificationEmail({
 //   commentor: { handle: 'commenter', name: 'Commentor' },
@@ -24,7 +25,7 @@ const User = require('server/api/user/user.model');
 //   }
 // });
 
-export async function handleEmail(params) {
+export async function handleEmailNotifications(params) {
   try {
     params.toUser = await ensureUserEamil(params.toUser);
     if (!params.toUser) return null;
@@ -75,16 +76,16 @@ function emailNotificationIsEnabled({ noteType, toUser }) {
   return false;
 }
 
-function getUrls({ post, fromUser, toUser }) {
-  const postId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
-  const replyIdSting = post.parentPost ? `/${post._id}` : '';
-  const userUrl = `${process.env.API_SERVER}/user/profile/${fromUser.handle}`;
-  const postUrl = `${process.env.API_SERVER}/${
-    post.data.community
-  }/post/${postId}${replyIdSting}`;
-  const settingsUrl = `${process.env.API_SERVER}/user/profile/${toUser.handle}/settings`;
-  return { userUrl, postUrl, settingsUrl };
-}
+// function getUrls({ post, fromUser, toUser }) {
+//   const postId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
+//   const replyIdSting = post.parentPost ? `/${post._id}` : '';
+//   const userUrl = `${process.env.API_SERVER}/user/profile/${fromUser.handle}`;
+//   const postUrl = `${process.env.API_SERVER}/${
+//     post.data.community
+//   }/post/${postId}${replyIdSting}`;
+//   const settingsUrl = `${process.env.API_SERVER}/user/profile/${toUser.handle}/settings`;
+//   return { userUrl, postUrl, settingsUrl };
+// }
 
 async function getDefaultEmailHtml({ urls, fromUser, post, toUser, action, noteType }) {
   const { userUrl, postUrl, settingsUrl } = urls;
@@ -104,7 +105,7 @@ async function getDefaultEmailHtml({ urls, fromUser, post, toUser, action, noteT
     <div class="post" />
       ${isReplyOrMention ? '<div class="head">' + noteHtml + '</div>' : ''}
       <a class="body" href="${postUrl}">
-        ${post.body}
+        ${post.body || post.title}
       </a>
     </div>
     <br />

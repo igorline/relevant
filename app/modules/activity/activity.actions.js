@@ -1,11 +1,16 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
 import { api, storage } from 'app/utils';
+import { initPushNotifications } from 'utils/notifications';
+import { updateNotificationSettings } from 'modules/auth/auth.actions';
 
 let PushNotification;
 if (process.env.WEB !== 'true') {
   PushNotification = require('react-native-push-notification');
 }
+
+const SHOW_DESKTOP_PROMPT_AFTER_DAYS = 14;
+const SHOW_MOBILE_PROMPT_AFTER_DAYS = 14;
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
@@ -130,37 +135,60 @@ export function hideBannerPrompt(notification) {
   };
 }
 
+export function enableDesktopNotifications() {
+  return async dispatch => {
+    try {
+      const subscription = await initPushNotifications();
+      dispatch(
+        updateNotificationSettings({ desktop: { all: true } }, subscription.toJSON())
+      );
+      dispatch(hideBannerPrompt());
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
+  };
+}
+
 export const showPushNotificationPrompt = (promptProps = {}) => async dispatch => {
   if (process.env.BROWSER === true) {
-    if (
-      Notification &&
-      (Notification.permission === 'granted' || Notification.permission === 'denied')
-    ) {
-      return false;
-    }
-    const isDismissed = await storage.isDismissed('pushDismissed', 7);
-    if (isDismissed) {
-      return false;
-    }
-    dispatch(showBannerPrompt('push', promptProps));
-  } else {
-    if (PushNotification) {
-      const permissions = await new Promise((resolve, reject) => {
-        PushNotification.checkPermissions(resp => {
-          if (!resp) return reject();
-          return resolve(resp);
-        });
-      });
-      if (permissions.alert) {
-        return false;
-      }
-    }
-
-    const isDismissed = await storage.isDismissed('pushDismissed', 7);
-    if (isDismissed) {
-      return false;
-    }
-    dispatch(showBannerPrompt('push', { ...promptProps, isMobile: true }));
+    return handleDesktopPrompt({ dispatch, promptProps });
   }
-  return false;
+  return handleMobilePrompt({ dispatch, promptProps });
 };
+
+async function handleDesktopPrompt({ dispatch, promptProps }) {
+  if (
+    Notification &&
+    (Notification.permission === 'granted' || Notification.permission === 'denied')
+  ) {
+    return false;
+  }
+  const isDismissed = await storage.isDismissed(
+    'pushDismissed',
+    SHOW_DESKTOP_PROMPT_AFTER_DAYS
+  );
+  if (isDismissed) return false;
+
+  return dispatch(showBannerPrompt('push', promptProps));
+}
+
+async function handleMobilePrompt({ dispatch, promptProps }) {
+  if (!PushNotification) return false;
+
+  const permissions = await new Promise((resolve, reject) => {
+    PushNotification.checkPermissions(resp => {
+      if (!resp) return reject();
+      return resolve(resp);
+    });
+  });
+
+  if (permissions.alert) return false;
+
+  const isDismissed = await storage.isDismissed(
+    'pushDismissed',
+    SHOW_MOBILE_PROMPT_AFTER_DAYS
+  );
+  if (isDismissed) return false;
+
+  return dispatch(showBannerPrompt('push', { ...promptProps, isMobile: true }));
+}

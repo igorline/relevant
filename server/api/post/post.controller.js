@@ -1,9 +1,10 @@
 import url from 'url';
 import request from 'request';
-import { EventEmitter } from 'events';
-import { get } from 'lodash';
+import get from 'lodash/get';
+import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
 import mail from 'server/config/mail';
+import { sendNotification } from 'server/notifications';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -11,7 +12,6 @@ import User from '../user/user.model';
 import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
-import apnData from '../../pushNotifications';
 import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
@@ -20,8 +20,6 @@ const { promisify } = require('util');
 
 const requestAsync = promisify(request);
 request.defaults({ maxRedirects: 22, jar: true });
-
-const PostEvents = new EventEmitter();
 
 async function findRelatedPosts(metaId) {
   try {
@@ -106,7 +104,7 @@ exports.sendPostNotification = async (req, res, next) => {
           action: alert,
           noteType: 'general'
         };
-        await apnData.sendNotification(user, alert, payload);
+        await sendNotification(user, alert, payload);
       } catch (err) {
         // eslint-disable-next-line
         console.log('sending notifications error ', err);
@@ -570,7 +568,7 @@ async function processSubscriptions(newPost, communityId) {
           };
 
           // console.log('New post in feed alert', alert);
-          apnData.sendNotification(follower, alert, payload);
+          sendNotification(follower, alert, payload);
           follower.lastFeedNotification = now;
           follower.save();
         }
@@ -579,7 +577,7 @@ async function processSubscriptions(newPost, communityId) {
           _id: subscription.follower._id,
           type: 'INC_FEED_COUNT'
         };
-        PostEvents.emit('post', newFeedPost);
+        socketEvent.emit('socketEvent', newFeedPost);
         return null;
       } catch (err) {
         // eslint-disable-next-line
@@ -742,12 +740,10 @@ exports.remove = async (req, res, next) => {
       payload: post
     };
 
-    PostEvents.emit('post', newPostEvent);
+    socketEvent.emit('socketEvent', newPostEvent);
     await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {
     next(err);
   }
 };
-
-exports.PostEvents = PostEvents;

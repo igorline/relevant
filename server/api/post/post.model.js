@@ -1,10 +1,8 @@
-import { EventEmitter } from 'events';
-
 const mongoose = require('mongoose');
+const socketEvent = require('server/socket/socketEvent').default;
 
-const PostSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
-const apnData = require('../../pushNotifications');
+const { sendNotification } = require('server/notifications');
 
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
@@ -193,8 +191,6 @@ PostSchema.methods.addPostData = async function addPostData(postObject) {
   return this;
 };
 
-PostSchema.statics.events = PostSchemaEvents;
-
 PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
   const post = this.toObject();
@@ -208,7 +204,7 @@ PostSchema.methods.updateClient = function updateClient(user) {
     type: 'UPDATE_POST',
     payload: post
   };
-  this.model('Post').events.emit('postEvent', postNote);
+  socketEvent.emit('socketEvent', postNote);
 };
 
 PostSchema.methods.addUserInfo = async function addUserInfo(user) {
@@ -398,7 +394,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(
       type: 'SET_NEW_POSTS_STATUS',
       payload: { communityId, community }
     };
-    this.model('Post').events.emit('postEvent', newPostEvent);
+    socketEvent.emit('socketEvent', newPostEvent);
     return post;
   } catch (err) {
     return console.log('insertIntoFeed error', err); // eslint-disable-line
@@ -439,7 +435,7 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
       type: 'UPDATE_POST_INVESTMENTS',
       payload: investments
     };
-    this.events.emit('postEvent', updatePosts);
+    socketEvent.emit('socketEvent', updatePosts);
   } catch (err) {
     console.log('sendOutInvestInfo error', err); // eslint-disable-line
   }
@@ -482,8 +478,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
             type,
             Notification: this.model('Notification'),
             group,
-            mention,
-            events: this.events
+            mention
           });
         }
 
@@ -506,7 +501,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
             noteType: 'mention'
           };
 
-          apnData.sendNotification(user, alert, payload);
+          sendNotification(user, alert, payload);
 
           if (mention === 'everyone') return;
 
@@ -517,8 +512,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
             type,
             Notification: this.model('Notification'),
             group,
-            mention,
-            events: this.events
+            mention
           });
         });
         return null;
@@ -543,8 +537,7 @@ async function createMentionNotification({
   type,
   Notification,
   group,
-  mention,
-  events
+  mention
 }) {
   const dbNotificationObj = {
     post: post._id,
@@ -566,7 +559,7 @@ async function createMentionNotification({
     payload: note
   };
 
-  events.emit('postEvent', newNotifObj);
+  socketEvent.emit('socketEvent', newNotifObj);
 }
 
 // pruneFeed (only for link posts)

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
+import socketEvent from 'server/socket/socketEvent';
 import {
   newUserCoins,
   POWER_REGEN_INTERVAL,
@@ -17,7 +17,7 @@ const { Schema } = mongoose;
 const UserSchema = new Schema(
   {
     // Comment out to automatically generate _id
-    // _id: { type: Schema.Types.Mixed, required: true },
+    // _id: { type: Schema.Types.Object, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
@@ -65,16 +65,17 @@ const UserSchema = new Schema(
       mobile: {
         all: {
           type: Boolean,
-          default: true
+          default: false
         }
       },
       desktop: {
         all: {
           type: Boolean,
-          default: true
+          default: false
         }
       }
     },
+    desktopSubscriptions: [],
     redditId: String,
     redditAuth: { type: Object, select: false },
     google: {},
@@ -162,7 +163,6 @@ const UserSchema = new Schema(
 
 // UserSchema.index({ name: 'text' });
 UserSchema.index({ handle: 1 });
-UserSchema.statics.events = new EventEmitter();
 
 /**
  * Virtuals
@@ -375,10 +375,10 @@ UserSchema.methods.updateClient = function updateClient(actor) {
     type: 'UPDATE_USER',
     payload: this
   };
-  this.model('User').events.emit('userEvent', userData);
+  socketEvent.emit('socketEvent', userData);
   if (actor) {
     userData._id = actor._id;
-    this.model('User').events.emit('userEvent', userData);
+    socketEvent.emit('socketEvent', userData);
   }
 };
 
