@@ -91,7 +91,9 @@ async function generateList(type) {
           type === 'notregistered' || type === 'waitlist' ? user.name : '@' + user.handle,
         vars
       };
-      u.address = u.address.trim();
+      if (u.address) {
+        u.address = u.address.trim();
+      }
 
       console.log('handle', user.handle, u.name, u.address);
       list.members().create(u, err => {

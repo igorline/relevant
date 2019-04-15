@@ -40,6 +40,7 @@ const SideNavScroll = styled.div`
 `;
 
 const LogoContainer = styled(View)`
+  position: ${p => (p.screenSize ? 'relative' : 'sticky')};
   background: ${colors.secondaryBG};
   height: ${layout.headerHeight};
   top: 0;
@@ -56,7 +57,7 @@ class SideNav extends Component {
   }
 
   render() {
-    const { community, className, actions, notif } = this.props;
+    const { community, className, actions, notif, navigation } = this.props;
     const logoLink = `/${community || 'relevant'}/new`;
     return (
       <Container top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}>
@@ -73,6 +74,7 @@ class SideNav extends Component {
               fdirection="row"
               justify="space-between"
               p={['0 4', '0 2']}
+              screenSize={navigation.screenSize}
             >
               <ULink align={'flex-start'} to={logoLink}>
                 <Image

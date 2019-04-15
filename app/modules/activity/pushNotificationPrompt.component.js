@@ -2,34 +2,31 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
 import { Alert } from 'app/utils/alert';
-import { View, BodyText, CTALink } from 'modules/styled/uni';
+import { View, BodyText, Text } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { storage } from 'utils';
 
 const TEXT_DEFAULTS = {
   messageText: 'Enable notifications and get alerted when people respond',
-  actionText: 'Click here',
+  actionText: 'enable desktop notifications',
   dismissText: 'Dismiss'
 };
 
 const MESSAGE_TEXT_DEFAULTS = {
-  upvoteComment: 'Get notified when someone comments on this thread.',
-  upvotePost: 'Get notified when you earn rewards for upvoting posts.',
-  createComment: 'Get notified when someone replies to your comment.',
-  createPost: 'Get notified when someone replies to your post.'
+  upvoteComment: 'Get notified when someone comments on this thread',
+  upvotePost: 'Get notified when you earn rewards for upvoting posts',
+  createComment: 'Get notified when someone replies to your comment',
+  createPost: 'Get notified when someone replies to your post'
 };
 
 class PushNotification extends Component {
   handleClick = () => {
-    const { actions } = this.props;
-    Notification.requestPermission().then(() => {
-      actions.hideBannerPrompt();
-    });
+    this.props.actions.enableDesktopNotifications();
   };
 
   handleClickMobile = () => {
     const { actions, user } = this.props;
-    actions.addDeviceToken(user);
+    actions.enableMobileNotifications(user);
   };
 
   handleDismiss = () => {
@@ -67,16 +64,16 @@ class PushNotification extends Component {
     }
     return (
       <View fdirection="row" justify="space-between" align="center">
-        <BodyText c={colors.white} inline={1}>
+        <BodyText c={colors.black} inline={1}>
           {messageText || MESSAGE_TEXT_DEFAULTS[type] || TEXT_DEFAULTS.messageText}
-          {'  '}
+          {': '}
           <ULink to="#">
-            <CTALink inline={1} onClick={this.handleClick}>
+            <Text inline={1} onClick={this.handleClick}>
               {actionText || TEXT_DEFAULTS.actionText}
-            </CTALink>
+            </Text>
           </ULink>
         </BodyText>
-        <ULink onClick={this.handleDismiss} to="#" c={colors.white}>
+        <ULink onClick={this.handleDismiss} to="#" c={colors.black}>
           {dismissText || TEXT_DEFAULTS.dismissText}
         </ULink>
       </View>

@@ -1,98 +1,10 @@
 /* eslint no-console: 0 */
 import socketIo from 'socket.io';
-import { InvestEvents } from '../api/invest/invest.controller';
-import { PostEvents } from '../api/post/post.controller';
-import { CommentEvents } from '../api/comment/comment.controller';
-import { NotificationEvents } from '../api/notification/notification.controller';
-import { MessageEvents } from '../api/message/message.controller';
-import User from '../api/user/user.model';
-import Post from '../api/post/post.model';
-import Earnings from '../api/earnings/earnings.model';
-import Invest from '../api/invest/invest.model';
-import Notification from '../api/notification/notification.model';
+import User from 'server/api/user/user.model';
+import socketEvent from './socketEvent';
 
 // TODO store list of clients in Mongo;
 const clients = {};
-
-const events = {
-  comment: CommentEvents,
-  invest: InvestEvents,
-  post: PostEvents,
-  notification: NotificationEvents,
-  message: MessageEvents,
-  postEvent: Post.events,
-  earningsEvent: Earnings.events,
-  investEvents: Invest.events,
-  notificationEvent: Notification.events,
-  userEvent: User.events
-};
-
-function removeClient(socket, currentUser) {
-  if (!currentUser || !clients[currentUser]) return;
-
-  const userSockets = clients[currentUser];
-  delete userSockets[socket.id];
-
-  if (Object.keys(userSockets).length === 0) {
-    delete clients[currentUser];
-
-    User.findOneAndUpdate({ _id: currentUser }, { online: false })
-    .exec()
-    .catch(err => console.log(err));
-  }
-  console.log('socket disconnected');
-}
-
-function addClient(socket, currentUser) {
-  console.log('user connected ', currentUser);
-  clients[currentUser] = clients[currentUser] || {};
-  clients[currentUser][socket.id] = socket;
-
-  const userSockets = clients[currentUser];
-
-  // update online status and send socket
-  if (Object.keys(userSockets).length === 1) {
-    User.findOneAndUpdate({ _id: currentUser }, { online: true })
-    .exec()
-    .catch(err => console.log(err));
-  }
-}
-
-function createListener(io) {
-  return data => {
-    if (data._id) {
-      const sockets = clients[data._id];
-      if (!sockets) {
-        console.log('couldn\'t find any web socket clients');
-        return;
-      }
-      Object.keys(sockets).forEach(id => {
-        const socket = sockets[id];
-        console.log('emit to ', data._id, ' ', data.type);
-        socket.emit('action', data);
-      });
-    } else {
-      console.log('emit to all ', data.type);
-      io.emit('action', data);
-    }
-  };
-}
-
-function registerEvents(io) {
-  Object.keys(events).forEach(event => {
-    const eventListener = events[event];
-    const listener = createListener(io);
-    eventListener.on(event, listener);
-  });
-}
-
-// When the user connects.. perform this
-function onConnect(socket) {
-  // When the client emits 'info', this listens and executes
-  socket.on('info', data => {
-    socket.log(JSON.stringify(data, null, 2));
-  });
-}
 
 export default function(server) {
   const io = socketIo();
@@ -141,5 +53,70 @@ export default function(server) {
     socket.on('disconnect', () => {
       removeClient(socket, currentUser);
     });
+  });
+}
+
+function removeClient(socket, currentUser) {
+  if (!currentUser || !clients[currentUser]) return;
+
+  const userSockets = clients[currentUser];
+  delete userSockets[socket.id];
+
+  if (Object.keys(userSockets).length === 0) {
+    delete clients[currentUser];
+
+    User.findOneAndUpdate({ _id: currentUser }, { online: false })
+    .exec()
+    .catch(err => console.log(err));
+  }
+  console.log('socket disconnected');
+}
+
+function addClient(socket, currentUser) {
+  console.log('user connected ', currentUser);
+  clients[currentUser] = clients[currentUser] || {};
+  clients[currentUser][socket.id] = socket;
+
+  const userSockets = clients[currentUser];
+
+  // update online status and send socket
+  if (Object.keys(userSockets).length === 1) {
+    User.findOneAndUpdate({ _id: currentUser }, { online: true })
+    .exec()
+    .catch(err => console.log(err));
+  }
+}
+
+function createListener(io) {
+  return data => {
+    if (data._id) {
+      const sockets = clients[data._id];
+      if (!sockets) {
+        console.log("couldn't find any web socket clients");
+        return;
+      }
+      Object.keys(sockets).forEach(id => {
+        const socket = sockets[id];
+        console.log('emit to ', data._id, ' ', data.type);
+        socket.emit('action', data);
+      });
+    } else {
+      console.log('emit to all ', data.type);
+      io.emit('action', data);
+    }
+  };
+}
+
+function registerEvents(io) {
+  const eventListener = socketEvent;
+  const listener = createListener(io);
+  eventListener.on('socketEvent', listener);
+}
+
+// When the user connects.. perform this
+function onConnect(socket) {
+  // When the client emits 'info', this listens and executes
+  socket.on('info', data => {
+    socket.log(JSON.stringify(data, null, 2));
   });
 }

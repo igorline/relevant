@@ -83,7 +83,7 @@ export class Community extends Component {
       screenSize,
       viewCommunityMembers
     } = this.props;
-    const { communityMembers, members, communities } = community;
+    const { communityMembers, members, communities, userCommunities } = community;
     const activeCommunity = communities[community.active];
     const activeMembers = get(communityMembers, community.active, []).map(
       id => members[id]
@@ -95,6 +95,7 @@ export class Community extends Component {
             <CommunityActive
               key={activeCommunity._id}
               community={activeCommunity}
+              userCommunities={userCommunities}
               members={activeMembers}
               actions={actions}
               screenSize={screenSize}

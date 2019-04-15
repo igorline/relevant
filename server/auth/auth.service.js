@@ -108,8 +108,11 @@ function communityMember() {
         // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
         const com = await Community.findOne({ slug: community });
-        await com.join(user);
-        member = await CommunityMember.findOne({ user, community });
+        member = await com.join(user);
+        if (!member.community) {
+          member.community = com.slug;
+          member = await member.save();
+        }
       }
 
       if (!member) throw new Error('you are not a member of this community');
