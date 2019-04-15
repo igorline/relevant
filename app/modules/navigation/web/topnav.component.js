@@ -68,7 +68,7 @@ class TopNav extends Component {
   state = {};
 
   componentDidMount() {
-    this.props.actions.getNotificationCount();
+    this.getNotificationCount();
     window.addEventListener('focus', getNotificationCount);
   }
 

@@ -75,7 +75,6 @@ class App extends Component {
     if (community) actions.setCommunity(community);
     actions.getCommunities();
     actions.getUser();
-    actions.getEarnings('pending');
 
     if (auth.user) this.handleUserLogin();
 
@@ -136,6 +135,7 @@ class App extends Component {
       });
     }
     ReactGA.set({ userId: auth.user._id });
+    actions.getEarnings('pending');
   };
 
   componentDidUpdate(prevProps) {
