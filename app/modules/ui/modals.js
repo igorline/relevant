@@ -55,29 +55,34 @@ export const communityMembers = {
 export const resetPassword = {
   title: 'Reset Password',
   Body: ResetPassword,
-  footer: () => {}
+  footer: () => {},
+  redirect: '/user/login'
 };
 
 export const login = {
   title: 'Sign In',
   Body: LoginForm,
-  footer: () => {}
+  footer: () => {},
+  redirect: '/'
 };
 
 export const forgot = {
   title: 'Recover Password',
   Body: Forgot,
-  footer: () => {}
+  footer: () => {},
+  redirect: '/user/login'
 };
 
 export const signup = {
   title: 'Join the Community',
   Body: SignupForm,
-  footer: () => {}
+  footer: () => {},
+  redirect: '/'
 };
 
 export const confirm = {
   title: 'Confirm Your Email',
   Body: ConfirmEmail,
-  footer: () => {}
+  footer: () => {},
+  redirect: '/'
 };

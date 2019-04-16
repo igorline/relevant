@@ -214,11 +214,13 @@ class App extends Component {
     }
   }
 
-  closeModal() {
+  closeModal(redirect) {
     const { history, location } = this.props;
     const queryParams = queryString.parse(location.search);
     if (queryParams.redirect) {
       history.push(queryParams.redirect);
+    } else if (redirect) {
+      history.push(redirect);
     } else {
       history.push(location.pathname);
     }
@@ -242,21 +244,14 @@ class App extends Component {
     globalModal = modals[globalModal] || globalModal;
 
     if (typeof globalModal === 'string') return null;
-    const { Body } = globalModal;
+    const { Body, redirect } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
     const close = () => {
       this.props.actions.hideModal();
-      this.closeModal();
+      this.closeModal(redirect);
     };
     return (
-      <Modal
-        {...globalModal}
-        close={() => {
-          this.props.actions.hideModal();
-          this.closeModal();
-        }}
-        visible
-      >
+      <Modal {...globalModal} close={close} visible>
         <Body {...bodyProps} close={close} />
       </Modal>
     );

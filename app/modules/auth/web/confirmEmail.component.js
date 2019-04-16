@@ -56,6 +56,9 @@ class EmailConfirm extends Component {
     //   },
     // ];
 
+    if (!this.props.auth.user) {
+      return <SecondaryText>You must be logged in to confirm your email.</SecondaryText>;
+    }
     if (!this.props.auth.user.confirmed) {
       text = 'Your email is not confirmed';
       if (this.props.auth.user) {
