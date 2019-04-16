@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import App from './app';
 import NotFound from './404';
 import withAuth from './withAuth';
+import CommunityRedirect from './communityRedirect';
 
 const DiscoverContainer = loadable(() =>
   import('modules/discover/web/discover.container')
@@ -40,6 +41,7 @@ const PostContainer = loadable(() => import('modules/post/web/singlePost.contain
 const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
 const AdminWallet = loadable(() => import('modules/admin/web/admin.main.component'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
+
 const CreatePostContainer = loadable(() =>
   import('modules/createPost/createPost.container')
 );
@@ -68,6 +70,11 @@ const routes = [
       //   component: SplashContainer,
       //   exact: true
       // },
+      {
+        path: '/',
+        component: CommunityRedirect,
+        exact: true
+      },
       {
         path: '/',
         component: WithSideNav,
