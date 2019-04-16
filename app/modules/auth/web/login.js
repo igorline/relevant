@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, LinkFont, View, Image } from 'modules/styled/uni';
-import FormField from 'modules/styled/form/field.component';
+import get from 'lodash.get';
+import { LinkFont, Image } from 'modules/styled/uni';
+import { Form, View, Button } from 'modules/styled/web';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { browserAlerts } from 'app/utils/alert';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import queryString from 'query-string';
 import { loginUser } from 'modules/auth/auth.actions';
 import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
+import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import { Field, reduxForm } from 'redux-form';
+import { required } from 'modules/form/validators';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
 const redditIcon = require('app/public/img/icons/reddit.png');
@@ -20,25 +23,13 @@ class LoginForm extends Component {
     location: PropTypes.object,
     auth: PropTypes.object,
     actions: PropTypes.object,
-    close: PropTypes.func
+    close: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    username: PropTypes.string,
+    password: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
-    // this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      username: '',
-      password: ''
-    };
-    this.submit = this.submit.bind(this);
-  }
-
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  async login(data) {
+  login = async data => {
     try {
       const user = {
         name: data.username,
@@ -51,62 +42,38 @@ class LoginForm extends Component {
     } catch (err) {
       // TODO error handling
     }
-  }
-
-  submit() {
-    if (!this.state.username) {
-      browserAlerts.alert('username requied');
-      return;
-    }
-    if (!this.state.password) {
-      browserAlerts.alert('password required');
-      return;
-    }
-    this.login(this.state);
-  }
+  };
 
   render() {
-    const { location } = this.props;
+    const { location, handleSubmit, username, password } = this.props;
     const { invitecode } = this.props.auth;
-    const { username, password } = this.state;
-    const local = username.length && password.length;
+    const local = username && username.length && password && password.length;
     let { redirect } = queryString.parse(location.search);
     if (!redirect) redirect = location.pathname;
 
     const FORM_FIELDS = [
       {
-        placeholder: 'Username or email',
         label: 'Username or email',
-        value: this.state.username,
-        key: 'Username',
-        name: 'Username',
-        onChange: e => {
-          this.setState({ username: e.target.value });
-        },
-        type: 'text'
+        component: ReduxFormField,
+        name: 'username',
+        autocomplete: 'username',
+        type: 'text',
+        validate: [required]
       },
       {
-        key: 'Password',
         type: 'password',
-        placeholder: 'Password',
+        component: ReduxFormField,
         label: 'Password',
-        value: this.state.password,
-        // name: 'Password',
-        onChange: Password => {
-          this.handleChange('password', Password.target.value);
-        },
-        onKeyDown: e => {
-          if (e.keyCode === 13) {
-            this.submit();
-          }
-        }
+        name: 'password',
+        autocomplete: 'current-password',
+        validate: [required]
       }
     ];
 
     return (
-      <div>
+      <Form fdirection="column" onSubmit={handleSubmit(this.login)}>
         {FORM_FIELDS.map(field => (
-          <FormField {...field} />
+          <Field {...field} key={field.name} />
         ))}
         <View display="flex" fdirection="row" align="center" justify="flex-start">
           <a
@@ -181,14 +148,20 @@ class LoginForm extends Component {
             </LinkFont>
           </View>
         </View>
-      </div>
+      </Form>
     );
   }
 }
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  auth: state.auth
+  auth: state.auth,
+  // TODO:
+  // See if there's a better way to do this, perhaps using formValueSelector?
+  password: get(state.form, 'login.values.password'),
+  username: get(state.form, 'login.values.username'),
+  initialValues: {},
+  enableReinitialize: true
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -205,5 +178,9 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(LoginForm)
+  )(
+    reduxForm({
+      form: 'login'
+    })(LoginForm)
+  )
 );
