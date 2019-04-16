@@ -20,7 +20,8 @@ if (!process.env.BROWSER) {
 }
 
 export const responsiveHandler = val => {
-  if (!Array.isArray(val) || val.length === 1) return val[0];
+  if (!Array.isArray(val)) return val;
+  if (val.length === 1) return val[0];
 
   const WIDTH = getWidth();
   if (!WIDTH) return val[0];
