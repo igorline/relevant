@@ -105,7 +105,6 @@ class App extends Component {
     ReactPixel = require('react-facebook-pixel').default;
     history.listen(loc => {
       TwitterCT.pageView();
-      TwitterCT.signUp();
       ReactGA.pageview(loc.pathname + loc.search);
       ReactPixel.pageView();
     });
