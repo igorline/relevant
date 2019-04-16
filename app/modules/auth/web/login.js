@@ -99,8 +99,9 @@ class LoginForm extends Component {
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
                 mr={[2, 0]}
+                mt={2}
               >
-                <Button mt={2} flex={1} bg={colors.twitterBlue}>
+                <Button flex={1} bg={colors.twitterBlue}>
                   <Image source={twitterIcon} w={2.5} h={2.5} mr={1.5} />
                   Sign In with Twitter
                 </Button>
@@ -114,8 +115,9 @@ class LoginForm extends Component {
                 to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
                 external
                 mr={[2, 0]}
+                mt={2}
               >
-                <Button mt={2} flex={1} bg={colors.redditColor}>
+                <Button flex={1} bg={colors.redditColor}>
                   <Image
                     resizeMode={'contain'}
                     source={redditIcon}
