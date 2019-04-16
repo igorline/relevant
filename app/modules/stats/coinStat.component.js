@@ -23,7 +23,6 @@ function CoinStat(props) {
     amount,
     mr,
     align,
-
     noNumber,
     secondary,
     fs,
@@ -68,7 +67,7 @@ function CoinStat(props) {
         inline={inline ? 1 : 0}
         source={coinImage}
         h={iconSize * 1}
-        w={iconSize * 1.05}
+        w={iconSize * 1.07}
         style={{ bottom: imageMargin }}
         resizeMode="contain"
       />
