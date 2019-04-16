@@ -15,7 +15,7 @@ const ReduxFormField = props => {
       ) : null}
       <Input
         {...input}
-        placeholder={label || placeholder}
+        placeholder={placeholder || label}
         name={name}
         type={type}
         border={1}

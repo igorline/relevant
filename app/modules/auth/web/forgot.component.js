@@ -1,87 +1,87 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, LinkFont, View } from 'modules/styled/uni';
+import { BodyText, LinkFont } from 'modules/styled/uni';
 import { colors } from 'app/styles';
-import FormField from 'modules/styled/form/field.component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { forgotPassword } from 'modules/auth/auth.actions';
+import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import { required } from 'modules/form/validators';
+import { Field, reduxForm } from 'redux-form';
+import { Form, View, Button } from 'modules/styled/web';
 
 class Forgot extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    handleSubmit: PropTypes.func,
+    initialValues: PropTypes.object
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       sentEmailTo: null
     };
+
+    this.FORM_FIELDS = [
+      {
+        name: 'username',
+        component: ReduxFormField,
+        type: 'text',
+        placeholder: 'Username or Email',
+        validate: [required]
+      }
+    ];
   }
 
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  async sendEmail() {
-    const redirect = this.props.location.search;
-    const res = await this.props.actions.forgotPassword(this.state.username, redirect);
+  sendEmail = async data => {
+    const queryParams = this.props.location.search;
+    const res = await this.props.actions.forgotPassword(data.username, queryParams);
     if (res && res.email) {
       this.setState({ sentEmailTo: res.email });
     }
-  }
+  };
 
   render() {
-    let content;
-
+    const { handleSubmit } = this.props;
     if (this.state.sentEmailTo) {
-      content = (
-        <LinkFont c={colors.black}>
+      return (
+        <BodyText c={colors.black}>
           We have set an email to {this.state.sentEmailTo} with a link to reset your
           password.{'\n'}
           If you don't see a password reset email in your inbox, please check your spam
           folder.
-        </LinkFont>
+        </BodyText>
       );
-    } else {
-      content = (
-        <View>
-          <FormField
-            type="text"
-            value={this.state.username}
-            onChange={username => {
-              this.handleChange('username', username.target.value);
-            }}
-            placeholder="Username or Email"
-            onKeyDown={e => {
-              if (e.keyCode === 13) {
-                this.sendEmail();
-              }
-            }}
-          />
+    }
+    return (
+      <View fdirection="column">
+        <Form fdirection="column" onSubmit={handleSubmit(this.sendEmail)}>
+          {this.FORM_FIELDS.map((field, index) => (
+            <Field {...field} key={index} />
+          ))}
           <View display="flex" fdirection="row" align="center" mt={7} justify="flex-end">
             <LinkFont shrink={1}>
               Back to <a onClick={() => this.props.actions.showModal('login')}>Sign in</a>
             </LinkFont>
-            <Button onClick={() => this.sendEmail()} m={0} ml={2}>
+            <Button type="submit" m={0} ml={2}>
               Send Recovery Email
             </Button>
           </View>
-        </View>
-      );
-    }
-
-    return content;
+        </Form>
+      </View>
+    );
   }
 }
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  auth: state.auth
+  auth: state.auth,
+  initialValues: {},
+  enableReinitialize: true
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -98,5 +98,9 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Forgot)
+  )(
+    reduxForm({
+      form: 'forgotPassword'
+    })(Forgot)
+  )
 );
