@@ -20,6 +20,7 @@ import { GlobalStyle } from 'app/styles';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import SmartBanner from 'react-smartbanner';
 import ReactGA from 'react-ga';
+import { TwitterCT } from 'app/utils/social';
 import * as modals from 'modules/ui/modals';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
@@ -28,6 +29,7 @@ const UpvoteAnimation = loadable(() =>
   import('modules/animation/mobile/upvoteAnimation.component')
 );
 
+let ReactPixel;
 ReactGA.initialize('UA-51795165-6');
 
 if (process.env.BROWSER === true) {
@@ -99,10 +101,21 @@ class App extends Component {
 
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
-    history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
 
-    const ReactPixel = require('react-facebook-pixel').default;
+    ReactPixel = require('react-facebook-pixel').default;
+    history.listen(loc => {
+      TwitterCT.pageView();
+      TwitterCT.signUp();
+      ReactGA.pageview(loc.pathname + loc.search);
+      ReactPixel.pageView();
+    });
+
     ReactPixel.init('286620198458049');
+    TwitterCT.init('o1p7u');
+
+    ReactPixel.pageView();
+    TwitterCT.pageView();
+    ReactGA.pageview(location.pathname + location.search);
   }
 
   setWidth = () => {
