@@ -30,7 +30,6 @@ const UpvoteAnimation = loadable(() =>
 );
 
 let ReactPixel;
-ReactGA.initialize('UA-51795165-6');
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -102,20 +101,28 @@ class App extends Component {
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
 
+    if (process.env.NODE_ENV !== 'development') {
+      this.initAnalytics({ location, history });
+    }
+  }
+
+  initAnalytics = ({ location, history }) => {
     ReactPixel = require('react-facebook-pixel').default;
+
+    ReactPixel.init('286620198458049');
+    TwitterCT.init('o1p7u');
+    ReactGA.initialize('UA-51795165-6');
+
+    ReactPixel.pageView();
+    TwitterCT.pageView();
+    ReactGA.pageview(location.pathname + location.search);
+
     history.listen(loc => {
       TwitterCT.pageView();
       ReactGA.pageview(loc.pathname + loc.search);
       ReactPixel.pageView();
     });
-
-    ReactPixel.init('286620198458049');
-    TwitterCT.init('o1p7u');
-
-    ReactPixel.pageView();
-    TwitterCT.pageView();
-    ReactGA.pageview(location.pathname + location.search);
-  }
+  };
 
   setWidth = () => {
     this.props.actions.setWidth(window.innerWidth);
