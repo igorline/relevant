@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { View } from 'modules/styled/web';
 import styled from 'styled-components';
 import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
-import { colors, layout, sizing } from 'app/styles';
+import { colors, sizing } from 'app/styles';
 
 const Menu = styled(View)`
   display: flex;
@@ -40,11 +40,10 @@ class MenuIcon extends Component {
     const {
       mr,
       ml,
-      navigation: { width }
+      navigation: { screenSize }
     } = this.props;
-    if (width > layout.mediumScreenWidth) {
-      return null;
-    }
+    if (!screenSize) return null;
+
     return (
       <View mr={mr} ml={ml}>
         <Menu onClick={this.toggleMenu} fdirection="column" justify="space-between">
