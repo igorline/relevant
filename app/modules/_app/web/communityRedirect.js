@@ -6,9 +6,16 @@ import { bindActionCreators } from 'redux';
 
 const CommunityRedirect = withRouter(props => {
   const { community } = props;
-  let activeCommunity = 'relevant';
+  let activeCommunity;
   if (community.active && community.active !== 'undefined') {
     activeCommunity = community.active;
+  }
+  if (
+    !activeCommunity ||
+    activeCommunity === 'undefined' ||
+    activeCommunity === undefined
+  ) {
+    activeCommunity = 'relevant';
   }
   return <Redirect {...props} to={`/${activeCommunity}/new`} />;
 });
