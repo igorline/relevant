@@ -33,6 +33,7 @@ prodConfig.plugins = [
       NODE_ENV: JSON.stringify('production'),
       WEB: JSON.stringify('true'),
       API_SERVER: JSON.stringify(''),
+      BABEL_ENV: JSON.stringify('development_web'),
       VAPID_PUBLIC_KEY: JSON.stringify(
         'BJp16DSJF-SdwZ3yxE2cK502FKKI7hxTON6YDoCaTctcq9sr3scJS1iTsa3YSlvOV-p2_P51cNWF5-os4Gc0rq4'
       )
