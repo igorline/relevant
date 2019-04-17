@@ -282,8 +282,11 @@ if (process.env.NODE_ENV === 'production') {
   const minutesTillHour = 60 - new Date().getMinutes();
   setTimeout(() => {
     startStatsUpdate();
-    startRewards();
   }, minutesTillHour * 60 * 1000);
+
+  setTimeout(() => {
+    startRewards();
+  }, (15 + minutesTillHour) * 60 * 1000);
 
   // setTimeout(() => {
   //   startTwitterUpdate();
