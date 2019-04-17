@@ -76,7 +76,11 @@ async function getCommunityUserRank(community) {
     .sort('-pagerank')
     .limit(1);
     const topR = topUser.pagerank;
-    const users = await Relevance.find({ global: true, communityId });
+    const users = await Relevance.find({
+      global: true,
+      communityId,
+      user: { $exists: true }
+    });
 
     return users.forEach(user => {
       q.push(async cb => {
@@ -157,14 +161,6 @@ async function getCommunityUserRank(community) {
 async function updateReputation() {
   try {
     const communities = await Community.find({});
-
-    // WE DO THIS IN REWARDS
-    // let computed = communities.map(community => {
-    //   console.log('community ', community.slug)
-    //   return computePageRank({ communityId: community._id, community: community.slug });
-    // });
-    // await Promise.all(computed);
-
     const communityRank = communities.map(getCommunityUserRank);
     await Promise.all(communityRank);
     console.log('finished computing reputation');
@@ -181,10 +177,7 @@ async function basicIncome(done) {
     return topic => {
       q.push(async cb => {
         try {
-          // const r = topic.relevance * (1 / 2) ** (DAYS / RELEVANCE_DECAY);
-          // const diff = r - topic.relevance;
-          // topic.relevance += diff;
-          if (topic.global === true && topic.user) {
+          if (topic.user) {
             // updates % stats
             await topic.updateRelevanceRecord();
             await topic.save();
@@ -246,7 +239,7 @@ getNextUpdateTime();
 
 function startBasicIncomeUpdate() {
   // basic income is DEPRECATED
-  basicIncome(updateReputation);
+  basicIncome();
   setTimeout(() => {
     startBasicIncomeUpdate();
   }, getNextUpdateTime());
@@ -265,7 +258,7 @@ async function updateRewards() {
 function startRewards() {
   // taking too long - should move to diff thread?
   setInterval(updateRewards, PAYOUT_FREQUENCY);
-  updateRewards();
+  updateRewards(updateReputation);
 }
 
 // eslint-disable-next-line
