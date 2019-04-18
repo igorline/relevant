@@ -5,7 +5,7 @@ import { colors } from 'app/styles';
 
 const ReduxFormField = props => {
   const { label, input, type, meta, name, placeholder, autocomplete } = props;
-  const { touched, error, warning } = meta;
+  const { dirty, touched, error, warning } = meta;
   return (
     <View display="flex" fdirection="column" mt={3}>
       {label ? (
@@ -23,7 +23,7 @@ const ReduxFormField = props => {
         p="2 2"
         mt={1}
       />
-      {touched &&
+      {(dirty || touched) &&
         ((error && (
           <SecondaryText c={colors.red} mt={1}>
             {error}

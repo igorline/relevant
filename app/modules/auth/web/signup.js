@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { NAME_PATTERN } from 'app/utils/text';
-import { browserAlerts } from 'app/utils/alert';
-import FormField from 'modules/styled/form/field.component';
 import SetHandle from 'modules/auth/web/handle.component';
-import {
-  SecondaryText,
-  Button,
-  Image,
-  View,
-  LinkFont,
-  Touchable
-} from 'modules/styled/uni';
+import { SecondaryText, Image, LinkFont, Touchable } from 'modules/styled/uni';
 import { colors, mixins } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import ImageUpload from 'modules/ui/web/imageUpload.component';
@@ -23,6 +13,15 @@ import { connect } from 'react-redux';
 import { loginUser, checkUser, createUser } from 'modules/auth/auth.actions';
 import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
+import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import { Field, reduxForm } from 'redux-form';
+import { Form, View, Button } from 'modules/styled/web';
+import {
+  required,
+  email,
+  validCharacters,
+  signupAsyncValidation
+} from 'modules/form/validators';
 
 const StyledRIcon = styled(RIcon)`
   * {
@@ -51,62 +50,13 @@ class SignupForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      email: '',
-      password: '',
-      cPassword: '',
-      errors: {},
       provider: 'twitter'
-    };
-
-    this.errors = {
-      username: null,
-      email: null,
-      cPassword: null,
-      password: null
     };
 
     this.checkUser = this.checkUser.bind(this);
     this.submit = this.submit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
     this.signup = this.signup.bind(this);
-  }
-
-  checkEmail() {
-    const string = this.state.email;
-    if (!string.length) return null;
-    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
-    if (!valid) return this.setState({ errors: { email: 'invalid email' } });
-
-    return this.props.actions.checkUser(string, 'email').then(results => {
-      if (results) {
-        return this.setState({ errors: { email: 'This email has already been used' } });
-      }
-      return null;
-    });
-  }
-
-  checkUser(name) {
-    this.nameError = null;
-    const { user } = this.props.auth;
-    const toCheck = name || this.state.name;
-    if (toCheck) {
-      const string = toCheck;
-      const match = NAME_PATTERN.test(string);
-      if (match) {
-        this.props.actions.checkUser(string, 'name').then(results => {
-          if (results && (!user || user._id !== results._id)) {
-            this.usernameExists = true;
-            this.nameError = 'This username is already taken';
-          } else this.usernameExists = false;
-          this.setState({});
-        });
-      } else {
-        this.nameError =
-          'username can only contain letters, \nnumbers, dashes and underscores';
-        this.setState({});
-      }
-    }
   }
 
   async signup(data) {
@@ -126,37 +76,7 @@ class SignupForm extends Component {
     }
   }
 
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  componentWillUpdate(newProps, newState) {
-    if (newState !== this.state) {
-      // this.validate(newState);
-    }
-  }
-
   async submit() {
-    if (!this.state.email) {
-      browserAlerts.alert('email required');
-      return;
-    }
-    if (!this.state.username) {
-      browserAlerts.alert('username requied');
-      return;
-    }
-    if (!this.state.password) {
-      browserAlerts.alert('password required');
-      return;
-    }
-    if (!this.state.cPassword) {
-      browserAlerts.alert('confirm password');
-      return;
-    }
-    if (this.state.password !== this.state.cPassword) {
-      browserAlerts.alert("passwords don't match");
-      return;
-    }
     if (!this.imageUploader.state.preview) {
       this.signup(this.state);
       return;
@@ -224,8 +144,7 @@ class SignupForm extends Component {
   }
 
   render() {
-    const { errors, provider } = this.state;
-
+    const { provider } = this.state;
     if (this.props.user && this.props.user.role === 'temp') {
       return (
         <SetHandle
@@ -242,68 +161,48 @@ class SignupForm extends Component {
     if (provider === 'email') {
       const FORM_FIELDS = [
         {
-          error: this.nameError,
-          placeholder: 'username',
+          name: 'username',
+          component: ReduxFormField,
+          type: 'text',
           label: 'Username',
-          value: this.state.username,
-          key: 'Username',
-          onChange: e => {
-            const username = e.target.value.trim();
-            this.checkUser(username.trim());
-            this.handleChange('username', username);
-          },
-          type: 'text'
+          autocomplete: 'username',
+          // TODO: TRIM USER VALUE?
+          validate: [required, validCharacters]
         },
         {
-          key: 'email',
+          name: 'email',
           type: 'email',
-          placeholder: 'Email',
           label: 'Email',
-          value: this.state.email,
-          onChange: email => {
-            this.handleChange('email', email.target.value);
-          },
-          onBlur: this.checkEmail.bind(this),
-          onFocus: () => this.setState({ errors: { email: null } }),
-          error: errors.email
+          component: ReduxFormField,
+          autocomplete: 'username',
+          validate: [required, email]
         },
         {
-          key: 'password',
+          name: 'password',
           type: 'password',
-          placeholder: 'Password',
           label: 'Password',
-          value: this.state.password,
-          onChange: password => {
-            this.handleChange('password', password.target.value);
-          },
-          error: errors.password
+          autocomplete: 'new-password',
+          component: ReduxFormField,
+          validate: [required]
         },
         {
-          key: 'confirmPassword',
+          name: 'confirmPassword',
           type: 'password',
-          placeholder: 'Confirm Password',
+          autocomplete: 'new-password',
           label: 'Confirm Password',
-          value: this.state.cPassword,
-          onChange: cPassword => {
-            this.handleChange('cPassword', cPassword.target.value);
-          },
-          onKeyDown: e => {
-            if (e.keyCode === 13) {
-              this.submit();
-            }
-          },
-          error: errors.Cpassword
+          component: ReduxFormField,
+          validate: [required]
         }
       ];
       return (
-        <div>
+        <Form fdirection="column">
           <ImageUpload
             ref={c => (this.imageUploader = c)}
             placeholder={<StyledRIcon bg={colors.blue} bradius="50%" p={2} w={9} h={9} />}
             imageComponent={<Image bg={colors.blue} bradius="50%" p={2} w={9} h={9} />}
           />
           {FORM_FIELDS.map(field => (
-            <FormField {...field} />
+            <Field {...field} key={field.name} />
           ))}
           <View display="flex" fdirection="row" justify="flex-end" mt={6} align="center">
             <LinkFont inline={1}>
@@ -321,7 +220,7 @@ class SignupForm extends Component {
               Sign Up
             </Button>
           </View>
-        </div>
+        </Form>
       );
     }
     return null;
@@ -345,9 +244,28 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
+const validate = values => {
+  // console.log('validate', values);
+  const errors = {};
+  if (!values.password || !values.confirmPassword) {
+    return null;
+  }
+  if (values.password !== values.confirmPassword) {
+    errors.confirmPassword = 'Passwords must match';
+  }
+  return errors;
+};
+
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SignupForm)
+  )(
+    reduxForm({
+      form: 'signup',
+      validate,
+      asyncValidate: signupAsyncValidation,
+      asyncChangeFields: ['username', 'email']
+    })(SignupForm)
+  )
 );

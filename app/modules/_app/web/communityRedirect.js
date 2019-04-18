@@ -29,13 +29,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(
-    {
-      // showModal,
-      // forgotPassword
-    },
-    dispatch
-  )
+  actions: bindActionCreators({}, dispatch)
 });
 
 export default connect(
