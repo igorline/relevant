@@ -10,7 +10,9 @@ import CommunityMembersTitle from 'modules/community/communityMembersTitle.compo
 import ResetPassword from 'modules/auth/web/resetPassword.component';
 import LoginForm from 'modules/auth/web/login';
 import Forgot from 'modules/auth/web/forgot.component';
-import SignupForm from 'modules/auth/web/signup';
+import SignupSocial from 'modules/auth/web/signupSocial';
+import SignupEmail from 'modules/auth/web/signupEmail';
+import SetHandle from 'modules/auth/web/handle.component';
 import ConfirmEmail from 'modules/auth/web/confirmEmail.component';
 
 export const onboarding = {
@@ -73,9 +75,23 @@ export const forgot = {
   redirect: '/user/login'
 };
 
-export const signup = {
+export const signupSocial = {
   title: 'Join the Community',
-  Body: SignupForm,
+  Body: SignupSocial,
+  footer: () => {},
+  redirect: '/'
+};
+
+export const signupEmail = {
+  title: 'Join the Community',
+  Body: SignupEmail,
+  footer: () => {},
+  redirect: '/'
+};
+
+export const setHandle = {
+  title: 'Set your Handle',
+  Body: SetHandle,
   footer: () => {},
   redirect: '/'
 };

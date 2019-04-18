@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { View, Button } from 'modules/styled/uni';
 import FormField from 'modules/styled/form/field.component';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { loginUser, checkUser, createUser } from 'modules/auth/auth.actions';
+// import { updateHandle } from 'modules/auth/user.actions';
+import { withRouter } from 'react-router-dom';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 class LoginForm extends Component {
   static propTypes = {
@@ -15,7 +21,7 @@ class LoginForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.user.handle || '',
+      username: '',
       email: null
     };
     this.handleChange = this.handleChange.bind(this);
@@ -87,4 +93,29 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+// export default LoginForm;
+
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      loginUser,
+      showModal,
+      checkUser,
+      createUser
+      // updateHandle,
+    },
+    dispatch
+  )
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LoginForm)
+);
