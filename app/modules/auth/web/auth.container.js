@@ -31,7 +31,7 @@ class AuthContainer extends Component {
       modal = match.params.modal;
     }
     if (user && user.role === 'temp') {
-      modal = 'signup';
+      modal = 'setHandle';
     }
     if (modal === 'confirm') {
       this.props.actions.showModal('confirm');
@@ -40,7 +40,9 @@ class AuthContainer extends Component {
     } else if (modal === 'login') {
       this.props.actions.showModal('login');
     } else if (modal === 'signup') {
-      this.props.actions.showModal('signup');
+      this.props.actions.showModal('signupSocial');
+    } else if (modal === 'setHandle') {
+      this.props.actions.showModal('setHandle');
     } else if (modal === 'resetPassword') {
       this.props.actions.showModal('resetPassword');
     }

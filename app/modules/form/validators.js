@@ -25,7 +25,7 @@ export const asyncEmail = async value => {
   if (results) {
     return 'This email has already been used';
   }
-  return null;
+  return undefined;
 };
 
 export const asyncUsername = async value => {
@@ -36,16 +36,24 @@ export const asyncUsername = async value => {
       return 'This username is already taken';
     }
   }
-  return null;
+  return undefined;
 };
 
 export const signupAsyncValidation = async values => {
   const errors = {};
   if (values.username) {
-    errors.username = await asyncUsername(values.username);
+    const error = await asyncUsername(values.username);
+    if (error) {
+      errors.username = error;
+    }
   }
   if (values.email) {
-    errors.email = await asyncEmail(values.email);
+    const error = await asyncEmail(values.email);
+    if (error) {
+      errors.email = error;
+    }
   }
-  throw errors;
+  if (Object.keys(errors).length) {
+    throw errors;
+  }
 };

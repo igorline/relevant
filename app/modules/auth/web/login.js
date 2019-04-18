@@ -142,7 +142,7 @@ class LoginForm extends Component {
               Not registered yet?{' '}
               <a
                 onClick={() => {
-                  this.props.actions.showModal('signup');
+                  this.props.actions.showModal('signupSocial');
                 }}
               >
                 Sign up
