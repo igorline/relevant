@@ -65,7 +65,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // displayNotification();
+    if (process.env.NODE_ENV !== 'development') {
+      this.initAnalytics({ location, history });
+    }
+
     const { actions, auth, location, history } = this.props;
     const { community } = auth;
 
@@ -100,10 +103,6 @@ class App extends Component {
 
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
-
-    if (process.env.NODE_ENV !== 'development') {
-      this.initAnalytics({ location, history });
-    }
   }
 
   initAnalytics = ({ location, history }) => {
