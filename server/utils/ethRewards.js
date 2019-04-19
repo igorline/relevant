@@ -1,6 +1,7 @@
 /* eslint no-console: 0 */
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import Notification from 'server/api/notification/notification.model';
+import Post from 'server/api/post/post.model';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';
@@ -281,7 +282,8 @@ async function distributeUserRewards(posts, _community) {
         post: post.post,
         type: 'vote',
         community,
-        communityId
+        communityId,
+        postData: post
       });
     });
     return Promise.all(updatedVotes);
@@ -297,7 +299,7 @@ async function distributeUserRewards(posts, _community) {
 }
 
 async function sendNotification(props) {
-  const { user, reward, post, community, communityId, type } = props;
+  const { user, reward, post, community, communityId, type, postData } = props;
   const s = reward === 1 ? '' : 's';
   const action = type === 'vote' ? 'upvoting ' : '';
 
@@ -316,9 +318,12 @@ async function sendNotification(props) {
     communityId
   });
 
+  const postObj = await Post.find({ _id: post });
+  postObj.data = postData;
+
   const payload = {
     toUser: user,
-    post,
+    post: postObj,
     action: alertText,
     noteType: 'reward'
   };
