@@ -65,12 +65,12 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const { actions, auth, location, history } = this.props;
+    const { community } = auth;
+
     if (process.env.NODE_ENV !== 'development') {
       this.initAnalytics({ location, history });
     }
-
-    const { actions, auth, location, history } = this.props;
-    const { community } = auth;
 
     if (community && location.pathname === '/') {
       history.replace(`/${community}/new`);
