@@ -282,6 +282,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 if (process.env.NODE_ENV === 'production') {
+  updateRewards();
   // start interval on the hour
   // const minutesTillHour = 60 - new Date().getMinutes();
   // setTimeout(() => {
@@ -304,8 +305,6 @@ if (process.env.NODE_ENV === 'production') {
 // pagerank('relevant');
 
 // setTimeout(TwitterWorker.updateTwitterPosts, 5000);
-
-updateRewards();
 
 module.exports = {
   updateUserStats,
