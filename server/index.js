@@ -6,13 +6,7 @@ process.env.WEB = 'true';
 
 require('@babel/register')({
   // Ignore everything in node_modules except node_modules/react-native-web-linear-gradient.
-  ignore: [
-    /node_modules\/(?!react-native)/
-    // function(path) {
-    //   console.log(path);
-    //   return false;
-    // }
-  ],
+  ignore: [/node_modules\/(?!react-native)/],
   plugins: [
     '@babel/plugin-proposal-class-properties',
     [

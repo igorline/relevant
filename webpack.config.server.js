@@ -8,14 +8,14 @@ module.exports = {
   devtool: 'source-map',
   target: 'node',
   entry: {
-    app: ['@babel/polyfill', './server/server.js']
+    app: ['@babel/polyfill', './server/auth/auth.service.js']
   },
   output: {
     path: path.join(__dirname, '/server/dist/'),
     filename: 'bundle.js',
     // chunkFilename: '[name].bundle.js',
-    publicPath: '/'
-    // libraryTarget: 'commonjs2'
+    publicPath: '/',
+    libraryTarget: 'commonjs2'
   },
   externals: [nodeExternals()],
   // mode: 'development',

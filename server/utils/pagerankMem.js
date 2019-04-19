@@ -70,7 +70,7 @@ export default function pagerank(inputs, params) {
   params.debug &&
     console.log('matrix setup time ', (new Date().getTime() - now) / 1000 + 's');
 
-  let tildeP = P.map(arr => arr.slice());
+  let tildeP = JSON.parse(JSON.stringify(P));
   let iter;
   let err;
 
@@ -89,8 +89,7 @@ export default function pagerank(inputs, params) {
         avoid,
         danglingWeights,
         danglingObj,
-        neg,
-        iter
+        neg
       },
       params
     ));
@@ -131,7 +130,8 @@ function runLoop(loopParams, params) {
   let xlast = [...x];
 
   x = new Array(N).fill(0);
-  const lastP = P.map(arr => arr.slice());
+  // let lastP = { ...P };
+  let lastP = JSON.parse(JSON.stringify(P));
 
   let danglesum = 0;
   danglingNodes.forEach(node => (danglesum += xlast[node]));
@@ -161,24 +161,44 @@ function runLoop(loopParams, params) {
 
     const denom = x[i] || 1;
 
-    x[i] *= (1 - tildeP[i][i]) ** params.beta;
+    const adjust = tildeP[i] && tildeP[i][i] ? tildeP[i][i] : 0;
+
+    x[i] *= (1 - adjust) ** params.beta;
 
     // UPDATE tildeP
     // TODO can use cacheTildeP but need to create one per community
     if (!params.fast) {
       avoid.forEach(j => {
-        tildeP[i][j] = 0;
+        if (tildeP[i] && tildeP[i][j]) {
+          tildeP[i][j] = 0;
+          // if (!Object.keys(tildeP[i]).length) delete tildeP[i];
+        }
 
         transitions.forEach(k => {
-          tildeP[i][j] += (Ti[k] / denom) * lastP[k][j];
+          const mul = lastP[k] && lastP[k][j] ? lastP[k][j] : 0;
+          const inc = (Ti[k] / denom) * mul;
+          if (inc) {
+            tildeP[i] = tildeP[i] || {};
+            tildeP[i][j] = (tildeP[i][j] || 0) + inc;
+          }
         });
 
         // UPDATE P
-        if (neg[i] && neg[i][j]) P[i][j] = neg[i][j];
-        else if (i === j) P[i][j] = 0;
-        else P[i][j] = tildeP[i][j];
+        if (neg[i] && neg[i][j]) {
+          P[i][j] = neg[i][j];
+        } else if (i === j) {
+          if (P[i] && P[i][j]) P[i][j] = 0;
+          // if (!Object.keys(P[i]).length) delete P[i];
+        } else if (tildeP[i] && tildeP[i][j]) {
+          P[i] = P[i] || {};
+          P[i][j] = tildeP[i][j];
+        } else if (P[i] && P[i][j]) {
+          P[i][j] = 0;
+          // P[i][j] && delete P[i][j];
+          // if (!Object.keys(P[i]).length) delete P[i];
+        }
 
-        if (P[i][j] > 0.0 && !danglingObj[i] && avoid.indexOf(i) < 0) {
+        if (P[i] && P[i][j] && P[i][j] > 0.0 && !danglingObj[i] && avoid.indexOf(i) < 0) {
           avoid = [...new Set([...avoid, i])];
         }
       });
@@ -214,7 +234,7 @@ function runLoop(loopParams, params) {
   danglingWeights = null;
   danglingObj = null;
   neg = null;
-  // lastP = null;
+  lastP = null;
   // tildeP = null;
   // P = null;
 
@@ -222,8 +242,9 @@ function runLoop(loopParams, params) {
     const { heapUsed } = process.memoryUsage();
     const mb = Math.round((100 * heapUsed) / 1048576) / 100;
     console.log('Iter - program is using', mb, 'MB of Heap.');
-    // console.log('avoid length', avoid.length, N, err);
+    // console.log('avoid length', avoid.length, N);
     // console.log('tildeP', tildeP);
+    // console.log('P', P);
   }
   N = null;
   // avoid = null;
@@ -236,16 +257,13 @@ function objectToMatrix(_inputs, params) {
   const dictionary = {};
   inputs.forEach((key, i) => (dictionary[key] = i));
   const N = inputs.length;
-  // const G = [];
   const g = {};
   const neg = {};
-  const P = [];
   let avoid = [];
   const danglingNodes = [];
   const danglingObj = {};
 
   inputs.forEach((el, i) => {
-    const upvotes = new Array(N).fill(0);
     const downvotes = new Array(N).fill(0);
 
     let degree = 0;
@@ -271,7 +289,6 @@ function objectToMatrix(_inputs, params) {
     Object.keys(_inputs[el]).forEach(vote => {
       const { w } = _inputs[el][vote];
       let n = _inputs[el][vote][params.negative] || 0;
-      upvotes[dictionary[vote]] = w / degree;
       const j = dictionary[vote];
 
       g[j] = g[j] || {};
@@ -290,9 +307,9 @@ function objectToMatrix(_inputs, params) {
         g[j].inputsN[id_i] = n;
       }
     });
-    // G[i] = upvotes;
-    P[i] = downvotes;
   });
+
+  const P = JSON.parse(JSON.stringify(neg));
 
   if (params.debug) {
     const { heapUsed } = process.memoryUsage();
