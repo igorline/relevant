@@ -177,6 +177,7 @@
     "voucher-code-generator": "^1.1.1",
     "web-push": "^3.3.3",
     "web3": "^1.0.0-beta.37",
+    "web3-provider-engine": "^15.0.0",
     "whatwg-fetch": "^2.0.1"
   },
   "react-native": {

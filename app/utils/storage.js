@@ -1,6 +1,7 @@
 let userDefaults;
 let cookie;
 
+const isBrowser = process.env.BROWSER === true;
 if (process.env.WEB !== 'true') {
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
@@ -11,6 +12,10 @@ if (process.env.WEB !== 'true') {
 const APP_GROUP_ID = 'group.com.4real.relevant';
 
 let token;
+
+export function localStorage() {
+  return isBrowser ? window.localStorage : null;
+}
 
 export function get(key) {
   return new Promise((resolve, reject) => {
