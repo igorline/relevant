@@ -318,7 +318,7 @@ async function sendNotification(props) {
     communityId
   });
 
-  const postObj = await Post.find({ _id: post });
+  const postObj = await Post.findOne({ _id: post });
   postObj.data = postData;
 
   const payload = {
