@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormImage, LinkFont } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
+import { s3 } from 'app/utils';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { loginUser, checkUser, createUser } from 'modules/auth/auth.actions';
+import { browserAlerts } from 'app/utils/alert';
 import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
@@ -39,6 +41,7 @@ class SignupEmail extends Component {
     const { invitecode } = this.props.auth;
     const { actions } = this.props;
     try {
+      // TODO: Just use data object? This caused an error
       const user = {
         name: data.username,
         email: data.email,
@@ -54,34 +57,30 @@ class SignupEmail extends Component {
     }
   };
 
-  submit = async values => {
-    if (!this.imageUploader.state.preview) {
-      this.signup(values);
-      return;
-    }
+  submit = async vals => {
     try {
-      const image = await this.imageUploader.uploadImage();
-      // TODO:
-      // if (!image) {
-      // Handle Error
-      // }
-      if (image && image.url) {
-        const params = { ...values, image: image.url };
-        this.signup(params);
+      const allVals = Object.assign({}, vals);
+      if (allVals.image && allVals.image.preview && allVals.image.fileName) {
+        const image = await s3.toS3Advanced(
+          allVals.image.preview,
+          allVals.image.fileName
+        );
+        allVals.image = image.url;
       }
+      this.signup(allVals);
     } catch (err) {
-      // TODO error handling
+      browserAlerts.alert(err);
     }
   };
 
   render() {
-    const { handleSubmit, initialValues } = this.props;
+    const { handleSubmit } = this.props;
     const FORM_FIELDS = [
       // Please note, this only works if the field is called 'image'
       {
         name: 'image',
         component: ReduxFormImageUpload,
-        placeholder: <AvatarFieldPlaceholder user={initialValues} />,
+        placeholder: <AvatarFieldPlaceholder user={{}} />,
         imageComponent: <FormImage />,
         type: 'file-upload',
         label: 'User Image',

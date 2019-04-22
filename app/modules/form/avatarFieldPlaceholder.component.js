@@ -20,7 +20,7 @@ const StyledRIcon = styled(RIcon)`
 
 const AvatarFieldPlaceholder = props => {
   const { user } = props;
-  if (user.image) {
+  if (user && user.image) {
     return <UAvatar user={user} size={9} {...layout.formImageProps} />;
   }
   return <StyledRIcon {...layout.formImageProps} />;
