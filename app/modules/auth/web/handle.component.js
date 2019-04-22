@@ -105,10 +105,10 @@ class SetHandle extends Component {
 const mapStateToProps = state => {
   const initialValues = {};
   const { user } = state.auth;
-  if (user.handle) {
+  if (user && user.handle) {
     initialValues.username = user.handle;
   }
-  if (user.email) {
+  if (user && user.email) {
     initialValues.email = user.email;
   }
   return {
