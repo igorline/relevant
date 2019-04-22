@@ -102,10 +102,21 @@ class SetHandle extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.auth.user,
-  auth: state.auth
-});
+const mapStateToProps = state => {
+  const initialValues = {};
+  const { user } = state.auth;
+  if (user.handle) {
+    initialValues.username = user.handle;
+  }
+  if (user.email) {
+    initialValues.email = user.email;
+  }
+  return {
+    user,
+    auth: state.auth,
+    initialValues
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
