@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, LinkFont } from 'modules/styled/uni';
-import { colors, mixins } from 'app/styles';
+import { FormImage, LinkFont } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
-import ImageUpload from 'modules/ui/web/imageUpload.component';
-import RIcon from 'app/public/img/r.svg';
-import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { loginUser, checkUser, createUser } from 'modules/auth/auth.actions';
 import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
+import AvatarFieldPlaceholder from 'modules/form/avatarFieldPlaceholder.component';
 import { Field, reduxForm } from 'redux-form';
 import { Form, View, Button } from 'modules/styled/web';
 import {
@@ -21,26 +19,14 @@ import {
   signupAsyncValidation
 } from 'modules/form/validators';
 
-const StyledRIcon = styled(RIcon)`
-  * {
-    fill: white;
-  }
-  ${mixins.padding}
-  ${mixins.margin}
-  ${mixins.image}
-  ${mixins.width}
-  ${mixins.height}
-  ${mixins.background}
-  ${mixins.borderRadius}
-`;
-
 class SignupEmail extends Component {
   static propTypes = {
     location: PropTypes.object,
     actions: PropTypes.object,
     user: PropTypes.object,
     auth: PropTypes.object,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
+    initialValues: PropTypes.object
   };
 
   constructor(props) {
@@ -89,8 +75,18 @@ class SignupEmail extends Component {
   };
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, initialValues } = this.props;
     const FORM_FIELDS = [
+      // Please note, this only works if the field is called 'image'
+      {
+        name: 'image',
+        component: ReduxFormImageUpload,
+        placeholder: <AvatarFieldPlaceholder user={initialValues} />,
+        imageComponent: <FormImage />,
+        type: 'file-upload',
+        label: 'User Image',
+        validate: []
+      },
       {
         name: 'username',
         component: ReduxFormField,
@@ -127,11 +123,6 @@ class SignupEmail extends Component {
     ];
     return (
       <Form fdirection="column" onSubmit={handleSubmit(this.submit)}>
-        <ImageUpload
-          ref={c => (this.imageUploader = c)}
-          placeholder={<StyledRIcon bg={colors.blue} bradius="50%" p={2} w={9} h={9} />}
-          imageComponent={<Image bg={colors.blue} bradius="50%" p={2} w={9} h={9} />}
-        />
         {FORM_FIELDS.map(field => (
           <Field {...field} key={field.name} />
         ))}
