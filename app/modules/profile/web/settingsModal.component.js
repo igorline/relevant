@@ -1,31 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
-import RIcon from 'app/public/img/r.svg';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { View, Button } from 'modules/styled/web';
-import { Image } from 'modules/styled/uni';
-import { colors, mixins } from 'app/styles';
+import { FormImage } from 'modules/styled/uni';
+import { colors } from 'app/styles';
 import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import { required } from 'modules/form/validators';
-import UAvatar from 'modules/user/UAvatar.component';
 import ULink from 'modules/navigation/ULink.component';
 import NotificationSettings from 'modules/profile/notificationSettings.component';
+import AvatarFieldPlaceholder from 'modules/form/avatarFieldPlaceholder.component';
 import { withRouter } from 'react-router-dom';
-
-const StyledRIcon = styled(RIcon)`
-  * {
-    fill: white;
-  }
-  ${mixins.padding}
-  ${mixins.margin}
-  ${mixins.image}
-  ${mixins.width}
-  ${mixins.height}
-  ${mixins.background}
-  ${mixins.borderRadius}
-`;
 
 const Form = styled.form`
   display: flex;
@@ -35,27 +21,12 @@ const Form = styled.form`
 class SettingsModal extends Component {
   render() {
     const { handleSubmit, initialValues, location } = this.props;
-
-    const imageProps = {
-      p: 2,
-      w: 9,
-      h: 9,
-      m: '1 0 0 0',
-      bg: colors.blue,
-      bradius: '50%'
-    };
-    const imagePlaceholder = initialValues.image ? (
-      <UAvatar user={initialValues} size={9} {...imageProps} />
-    ) : (
-      <StyledRIcon {...imageProps} />
-    );
-
     const FORM_FIELDS = [
       {
         name: 'image',
         component: ReduxFormImageUpload,
-        placeholder: imagePlaceholder,
-        imageComponent: <Image bg={colors.blue} {...imageProps} />,
+        placeholder: <AvatarFieldPlaceholder user={initialValues} />,
+        imageComponent: <FormImage />,
         type: 'file-upload',
         label: 'User Image',
         validate: []
