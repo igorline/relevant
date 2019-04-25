@@ -33,7 +33,7 @@ class AuthContainer extends Component {
     if (user && user.role === 'temp') {
       modal = 'setHandle';
     }
-    if (modal === 'confirm') {
+    if (modal === 'confirm' || modal === 'confirmEmail') {
       this.props.actions.showModal('confirm');
     } else if (modal === 'forgot') {
       this.props.actions.showModal('forgot');
