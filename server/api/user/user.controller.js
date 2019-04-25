@@ -126,7 +126,7 @@ exports.confirm = async (req, res, next) => {
     user.confirmed = true;
     user = await user.addReward({ type: 'email' });
     user = await user.save();
-    req.user = user;
+    req.confirmed = true;
     return middleware ? next() : res.status(200).json(user);
   } catch (err) {
     return next(err);

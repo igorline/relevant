@@ -40,11 +40,12 @@ class EmailConfirm extends Component {
   };
 
   render() {
+    const { auth } = this.props;
     let text = 'Your email has been confirmed';
     let resend;
-    if (!this.props.auth || !this.props.auth.user || !this.props.auth.user.confirmed) {
+    if (!auth.confirmed) {
       text = 'Your email is not confirmed';
-      if (this.props.auth.user) {
+      if (auth.user) {
         resend = (
           <View justify={['flex-end', 'stretch']} fdirection="column">
             <Button
