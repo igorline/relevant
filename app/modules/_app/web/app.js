@@ -155,7 +155,9 @@ class App extends Component {
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
-    if (auth.user.role === 'temp') return;
+    if (auth.user.role === 'temp') {
+      return actions.showModal('setHandle');
+    }
     if (!auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
@@ -167,7 +169,7 @@ class App extends Component {
         action: 'Redeemed Invite'
       });
     }
-    ReactGA.set({ userId: auth.user._id });
+    return ReactGA.set({ userId: auth.user._id });
   };
 
   componentDidUpdate(prevProps) {

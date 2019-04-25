@@ -5,7 +5,10 @@ export const required = value =>
   value || typeof value === 'number' ? undefined : 'Required';
 
 export const email = value => {
-  const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
+  if (!value) {
+    return undefined;
+  }
+  const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,15}$/i.test(value);
   if (valid) {
     return undefined;
   }
@@ -52,6 +55,12 @@ export const signupAsyncValidation = async values => {
     const error = await asyncEmail(values.email);
     if (error) {
       errors.email = error;
+    }
+  }
+  if (values.handle) {
+    const error = await asyncUsername(values.handle);
+    if (error) {
+      errors.handle = error;
     }
   }
   if (Object.keys(errors).length) {

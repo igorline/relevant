@@ -123,13 +123,10 @@ exports.confirm = async (req, res, next) => {
     user = await User.findOne({ handle, confirmCode });
     if (!user) throw new Error('Wrong confirmation code');
 
-    if (!user.confirmed) {
-      user.confirmed = true;
-      user = await user.addReward({ type: 'email' });
-      user = await user.save();
-    } else {
-      req.unconfirmed = true; // ?
-    }
+    user.confirmed = true;
+    user = await user.addReward({ type: 'email' });
+    user = await user.save();
+    req.user = user;
     return middleware ? next() : res.status(200).json(user);
   } catch (err) {
     return next(err);

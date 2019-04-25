@@ -18,12 +18,7 @@ import {
   signupAsyncValidation
 } from 'modules/form/validators';
 import { Field, reduxForm } from 'redux-form';
-import {
-  Form,
-  // BodyText,
-  Button,
-  View
-} from 'modules/styled/web';
+import { Form, BodyText, Button, View } from 'modules/styled/web';
 
 class SetHandle extends Component {
   static propTypes = {
@@ -49,10 +44,10 @@ class SetHandle extends Component {
     const { user } = this.props;
     this.FORM_FIELDS = [
       {
-        name: 'username',
+        name: 'handle',
         component: ReduxFormField,
         type: 'text',
-        label: 'Username',
+        label: 'Handle',
         placeholder: 'Choose your handle:',
         validate: [required, validCharacters]
       },
@@ -62,31 +57,26 @@ class SetHandle extends Component {
         type: 'email',
         label: 'Email',
         placeholder: 'Email (optional for email reset and notifications)',
-        validate: [required, email],
+        validate: [email],
         isHidden: user && user.email
       }
     ];
   };
 
   submit = values => {
-    const { user, actions } = this.props;
-    // console.log('submit', values, updatedUser);
-    const updatedUser = { ...user, values };
-    actions.updateHandle(updatedUser);
+    const { actions } = this.props;
+    actions.updateHandle(values);
   };
 
   render() {
-    const {
-      handleSubmit
-      // user
-    } = this.props;
-    // if (!user) {
-    //   return (
-    //     <View>
-    //       <BodyText> You must be logged in to change your handle.</BodyText>
-    //     </View>
-    //   );
-    // }
+    const { handleSubmit, user } = this.props;
+    if (!user) {
+      return (
+        <View>
+          <BodyText> You must be logged in to change your handle.</BodyText>
+        </View>
+      );
+    }
     return (
       <Form fdirection="column" onSubmit={handleSubmit(this.submit)}>
         {this.FORM_FIELDS.map(field =>
@@ -106,7 +96,7 @@ const mapStateToProps = state => {
   const initialValues = {};
   const { user } = state.auth;
   if (user && user.handle) {
-    initialValues.username = user.handle;
+    initialValues.handle = user.handle;
   }
   return {
     user,
@@ -139,7 +129,7 @@ export default withRouter(
       form: 'setHandle',
       validate,
       asyncValidate: signupAsyncValidation,
-      asyncChangeFields: ['username', 'email']
+      asyncChangeFields: ['handle', 'email']
     })(SetHandle)
   )
 );

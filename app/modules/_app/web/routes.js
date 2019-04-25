@@ -116,13 +116,13 @@ const routes = [
               { path: '/user/wallet', component: Wallet, exact: true },
               // USER
               {
-                path:
-                  '/user/:modal(login|confirmEmail|confirm|signup|resetPassword|forgot)',
+                path: '/user/:modal(resetPassword)/:token',
                 component: Auth,
                 exact: true
               },
               {
-                path: '/user/:modal(resetPassword)/:token',
+                path:
+                  '/user/:modal(login|confirmEmail|confirm|signup|resetPassword|forgot|setHandle)',
                 component: Auth,
                 exact: true
               },

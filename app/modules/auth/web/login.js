@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
-import { LinkFont, Image } from 'modules/styled/uni';
+import { LinkFont, Image, ViewButton } from 'modules/styled/uni';
 import { Form, View, Button } from 'modules/styled/web';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -70,12 +70,25 @@ class LoginForm extends Component {
       }
     ];
 
+    const socialSignup = (
+      <LinkFont shrink={1}>
+        Not registered yet?{' '}
+        <a
+          onClick={() => {
+            this.props.actions.showModal('signupSocial');
+          }}
+        >
+          Sign up
+        </a>
+      </LinkFont>
+    );
+
     return (
       <Form fdirection="column" onSubmit={handleSubmit(this.login)}>
         {FORM_FIELDS.map(field => (
           <Field {...field} key={field.name} />
         ))}
-        <View display="flex" fdirection="row" align="center" justify="flex-start">
+        <View display="flex" fdirection="column" align="flex-start" justify="flex-start">
           <a
             onClick={() => {
               this.props.actions.showModal('forgot');
@@ -85,6 +98,15 @@ class LoginForm extends Component {
               Forgot Your Password?
             </LinkFont>
           </a>
+          {local ? (
+            <View fdirection="row" mt={[4, 2]} align="center">
+              <Button onClick={this.submit} type="submit" mr={[2, 0]} fdirection="row">
+                {' '}
+                Sign In{' '}
+              </Button>
+              {socialSignup}
+            </View>
+          ) : null}
         </View>
 
         <View
@@ -93,23 +115,19 @@ class LoginForm extends Component {
           align={['center', 'stretch']}
           mt={4}
         >
-          {!local && (
-            <React.Fragment>
+          {!local ? (
+            <View fdirection="row" align="center">
               <ULink
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
                 mr={[2, 0]}
                 mt={2}
               >
-                <Button flex={1} bg={colors.twitterBlue}>
+                <ViewButton flex={1} bg={colors.twitterBlue} fdirection="row">
                   <Image source={twitterIcon} w={2.5} h={2.5} mr={1.5} />
-                  Sign In with Twitter
-                </Button>
+                  <LinkFont c={colors.white}>Sign In with Twitter</LinkFont>
+                </ViewButton>
               </ULink>
-            </React.Fragment>
-          )}
-          {!local ? (
-            <React.Fragment>
               <ULink
                 flex={1}
                 to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
@@ -117,7 +135,7 @@ class LoginForm extends Component {
                 mr={[2, 0]}
                 mt={2}
               >
-                <Button flex={1} bg={colors.redditColor}>
+                <ViewButton flex={1} bg={colors.redditColor} fdirection="row">
                   <Image
                     resizeMode={'contain'}
                     source={redditIcon}
@@ -125,30 +143,12 @@ class LoginForm extends Component {
                     h={3}
                     mr={1.5}
                   />
-                  Sign In with Reddit
-                </Button>
+                  <LinkFont c={colors.white}>Sign In with Reddit </LinkFont>
+                </ViewButton>
               </ULink>
-            </React.Fragment>
+              {socialSignup}
+            </View>
           ) : null}
-          {local ? (
-            <Button mt={2} onClick={this.submit} mr={[2, 0]}>
-              {' '}
-              Sign In{' '}
-            </Button>
-          ) : null}
-
-          <View mt={[2, 4]}>
-            <LinkFont shrink={1}>
-              Not registered yet?{' '}
-              <a
-                onClick={() => {
-                  this.props.actions.showModal('signupSocial');
-                }}
-              >
-                Sign up
-              </a>
-            </LinkFont>
-          </View>
         </View>
       </Form>
     );
