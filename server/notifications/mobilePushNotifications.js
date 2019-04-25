@@ -68,52 +68,75 @@ service.on('socketError', console.error);
 
 async function handleMobileNotifications(user, alert, payload) {
   try {
-    if (user && user.deviceTokens && user.deviceTokens.length) {
-      const badge = await Notification.count({
-        forUser: user._id,
-        read: false
-      });
-      // badge += await Feed.count({ userId: user._id, read: false });
+    if (!user) return;
 
-      const registrationIds = [];
-      user.deviceTokens.forEach(deviceToken => {
-        registrationIds.push(deviceToken);
-        console.log('pushing to device tokens ', deviceToken);
-      });
+    if (!user.notificationSettings || !user.deviceTokens) {
+      user = await User.findOne({ _id: user._id }, 'notificationSettings deviceTokens');
+    }
 
-      const data = {
-        body: alert,
-        expiry: Math.floor(Date.now() / 1000) + 3600,
-        custom: { ...payload, toUser: user._id },
-        // this has the effect of playing the sound if we have an alert
-        // and silence when there is no alert
-        // 0 causes the default sound to be played
-        sound: alert ? 0 : 1,
-        badge,
-        topic: 'org.reactjs.native.Relevant',
-        contentAvailable: 1
-      };
+    if (
+      !user.notificationSettings.mobile.all ||
+      !user.desktopSubscriptions ||
+      !user.deviceTokens.length
+    ) {
+      return;
+    }
 
-      const results = await push.send(registrationIds, data);
+    const { post } = payload;
+    const badge = await Notification.count({
+      forUser: user._id,
+      read: false
+    });
+    // badge += await Feed.count({ userId: user._id, read: false });
 
-      if (!results) {
-        console.log('notification error');
+    const registrationIds = [];
+    user.deviceTokens.forEach(deviceToken => {
+      registrationIds.push(deviceToken);
+      console.log('pushing to device tokens ', deviceToken);
+    });
+
+    const notePayload = payload.post
+      ? {
+        _id: post._id,
+        parentPost: post.parentPost ? post.parentPost._id || post.parentPost : null,
+        parentComment: post.parentComment
+          ? post.parentComment._id || post.parentComment
+          : null
       }
-      const updatedTokens = user.deviceTokens;
-      results.forEach(result => {
-        result.message.forEach(message => {
-          if (message.error) {
-            // updatedTokens = updatedTokens.filter(token => token !== message.regId);
-            console.log('push notification error ', message.error);
-            console.log('removing device token', message.regId);
-          }
-        });
+      : {};
+
+    const data = {
+      body: alert,
+      expiry: Math.floor(Date.now() / 1000) + 3600,
+      custom: { ...notePayload, toUser: user._id },
+      // this has the effect of playing the sound if we have an alert
+      // and silence when there is no alert
+      // 0 causes the default sound to be played
+      sound: alert ? 0 : 1,
+      badge,
+      topic: 'org.reactjs.native.Relevant',
+      contentAvailable: 1
+    };
+
+    const results = await push.send(registrationIds, data);
+
+    if (!results) {
+      console.log('notification error');
+    }
+    const updatedTokens = user.deviceTokens;
+    results.forEach(result => {
+      result.message.forEach(message => {
+        if (message.error) {
+          // updatedTokens = updatedTokens.filter(token => token !== message.regId);
+          console.log('push notification error ', message.error);
+          console.log('removing device token', message.regId);
+        }
       });
-      if (updatedTokens.length !== user.deviceTokens.length) {
-        user.markModified('deviceTokens');
-        user.deviceTokens = updatedTokens;
-        await user.save();
-      }
+    });
+    if (updatedTokens.length !== user.deviceTokens.length) {
+      user.markModified('deviceTokens');
+      user.deviceTokens = updatedTokens;
+      await user.save();
     }
   } catch (err) {
     console.log('push notifications error', err);
