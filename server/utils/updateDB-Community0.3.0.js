@@ -838,6 +838,16 @@ async function mobileNotificationSettings() {
   });
 }
 
+async function checkFollows() {
+  const user = await User.find({ handle: 'slava' });
+  const subscribers = await Subscription.find({
+    following: user._id
+    // category: newPostObj.category
+  }).populate('follower', '_id handle name deviceTokens badge lastFeedNotification');
+
+  subscribers.forEach(s => console.log(s.toObject()));
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -876,10 +886,13 @@ async function runUpdates() {
     // await auditUserEarnings();
 
     // await mobileNotificationSettings();
+
+    await checkFollows();
+
     console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
 }
 
-// runUpdates();
+runUpdates();
