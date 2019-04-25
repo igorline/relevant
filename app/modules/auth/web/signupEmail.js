@@ -164,7 +164,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const validate = values => {
-  // console.log('validate', values);
   const errors = {};
   if (!values.password || !values.confirmPassword) {
     return null;
