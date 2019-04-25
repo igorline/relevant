@@ -268,21 +268,36 @@ exports.index = (req, res, next) => {
 
 exports.checkUser = async (req, res, next) => {
   try {
-    const { name, email } = req.query;
+    const { name, email, omitSelf } = req.query;
+    const { user } = req;
     let query = {};
     let type;
 
     if (name === 'everyone') {
       return res.status(200).json({ type });
     }
+    let formatted;
+    let omit;
+    if (user && omitSelf) {
+      omit = user.handle;
+    }
 
     if (name) {
       type = 'user';
-      const formatted = '^' + name + '$';
-      query = { ...query, handle: { $regex: formatted, $options: 'i' } };
+      formatted = '^' + name + '$';
+      query = {
+        ...query,
+        $and: [
+          { handle: { $regex: formatted, $options: 'i' } },
+          { handle: { $ne: omit } }
+        ]
+      };
     } else if (email) {
+      formatted = '^' + email + '$';
       type = 'email';
-      query = { email };
+      query = {
+        $and: [{ email: { $regex: formatted, $options: 'i' } }, { handle: { $ne: omit } }]
+      };
     }
 
     const userExists = await User.findOne(query, 'handle', '_id handle');

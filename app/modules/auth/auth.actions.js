@@ -417,16 +417,21 @@ export function userOnline(user, token) {
     });
 }
 
-export function checkUser(string, type) {
+export function checkUser(string, type, omitSelf = false) {
   return () =>
-    fetch(`${process.env.API_SERVER}/api/user/check/user/?${type}=${string}`, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+    fetch(
+      `${
+        process.env.API_SERVER
+      }/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
+      {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then(response => response.json())
     .then(responseJSON => responseJSON)
     .catch(error => {
