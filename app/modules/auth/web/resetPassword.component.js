@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { Field, reduxForm } from 'redux-form';
 import { Button, Form, View } from 'modules/styled/web';
@@ -18,7 +18,8 @@ class ResetPassword extends Component {
     handleSubmit: PropTypes.func,
     auth: PropTypes.object,
     close: PropTypes.func,
-    showModal: PropTypes.func
+    showModal: PropTypes.func,
+    location: PropTypes.object
   };
 
   constructor(props) {
@@ -27,10 +28,16 @@ class ResetPassword extends Component {
   }
 
   componentWillMount() {
-    this.token = this.props.match.params.token;
+    const { location } = this.props;
+    const route = {
+      path: '/user/resetPassword/:token',
+      exact: true
+    };
+    const match = matchPath(location.pathname, route);
+    this.token = match.params.token;
   }
 
-  submit(vals) {
+  submit = vals => {
     const { user } = this.props.auth;
     this.props.actions.resetPassword(vals.password, this.token).then(success => {
       if (success && !user) {
@@ -39,7 +46,7 @@ class ResetPassword extends Component {
         this.props.close();
       }
     });
-  }
+  };
 
   render() {
     const { handleSubmit } = this.props;
@@ -92,22 +99,20 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default withRouter(
-  reduxForm({
-    form: 'settings',
-    validate: vals => {
-      const errors = {};
-      if (vals.password !== vals.confirmPassword) {
-        const message = 'Passwords must be identical';
-        errors.password = message;
-        errors.confirmPassword = message;
-      }
-      return errors;
+export default reduxForm({
+  form: 'settings',
+  validate: vals => {
+    const errors = {};
+    if (vals.password !== vals.confirmPassword) {
+      const message = 'Passwords must be identical';
+      errors.password = message;
+      errors.confirmPassword = message;
     }
-  })(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(ResetPassword)
-  )
+    return errors;
+  }
+})(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withRouter(ResetPassword))
 );
