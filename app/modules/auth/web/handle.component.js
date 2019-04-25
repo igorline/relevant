@@ -108,9 +108,6 @@ const mapStateToProps = state => {
   if (user && user.handle) {
     initialValues.username = user.handle;
   }
-  if (user && user.email) {
-    initialValues.email = user.email;
-  }
   return {
     user,
     auth: state.auth,

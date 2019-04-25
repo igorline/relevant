@@ -21,7 +21,7 @@ export const validCharacters = value => {
 };
 
 export const asyncEmail = async value => {
-  const results = await checkUser(value, 'email')();
+  const results = await checkUser(value, 'email', true)();
   if (results) {
     return 'This email has already been used';
   }
@@ -30,7 +30,7 @@ export const asyncEmail = async value => {
 
 export const asyncUsername = async value => {
   if (value) {
-    const results = await checkUser(value, 'name')();
+    const results = await checkUser(value, 'name', true)();
     // TODO: no error if username is own username
     if (results) {
       return 'This username is already taken';
