@@ -40,6 +40,7 @@ export const asyncUsername = async value => {
 };
 
 export const signupAsyncValidation = async values => {
+  // console.log('props  ', props  );
   const errors = {};
   if (values.username) {
     const error = await asyncUsername(values.username);
