@@ -1,4 +1,38 @@
 # Relevant
+
+## Running the Web Version:
+
+install npm dependencies
+```
+npm install
+```
+
+run dev version (offers hot reloading):
+```
+npm run dev
+```
+
+build production bundle:
+```
+npm run build
+```
+
+run a production-like envirnoment (client uses built file, offers faster server reloads)
+```
+npm run native
+```
+
+run tests (runs both client and server tests)
+```
+npm run test
+```
+
+run tests in watch mode (runs both client and server tests)
+```
+npm run test:watch
+```
+
+## Running Native Code:
 Xcode 7.0 or higher is required. It can be installed from the App Store.
 
 
