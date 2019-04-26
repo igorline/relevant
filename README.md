@@ -11,7 +11,7 @@ run dev version (offers hot reloading):
 ```
 npm run dev
 ```
-navigate to 'localhost:3000'
+navigate to `localhost:3000`
 
 build production bundle:
 ```
