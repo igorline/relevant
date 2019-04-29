@@ -20,6 +20,7 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
+const Contract = loadable(() => import('modules/admin/web/adminContract.component'));
 const CommunityAdminForm = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
 );
@@ -38,7 +39,6 @@ const WithTopNav = loadable(() => import('modules/navigation/web/withTopNav.comp
 
 const PostContainer = loadable(() => import('modules/post/web/singlePost.container'));
 const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
-const AdminWallet = loadable(() => import('modules/admin/web/admin.main.component'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
 const CreatePostContainer = loadable(() =>
   import('modules/createPost/createPost.container')
@@ -75,8 +75,9 @@ const routes = [
           {
             path: '/admin',
             component: withAuth(AdminHeader, 'admin'),
-            indexRoute: { component: AdminWallet },
+            indexRoute: { component: Contract },
             routes: [
+              { path: '/admin/contract', component: Contract },
               { path: '/admin/flagged', component: Flagged },
               { path: '/admin/waitlist', component: Waitlist },
               { path: '/admin/downvotes', component: Downvotes },
