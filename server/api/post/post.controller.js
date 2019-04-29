@@ -601,9 +601,10 @@ exports.create = async (req, res, next) => {
     const { user } = req;
     const { community, communityId } = req.communityMember;
 
+    const { channel, body } = req.body;
     // TODO rate limiting?
     // current rate limiting is 5s via invest
-    const hasChildComment = req.body.body && req.body.body.length;
+    const hasChildComment = body && body.length;
     const mentions = req.body.mentions || [];
     let tags = [];
     const keywords = req.body.keywords || [];
@@ -644,8 +645,8 @@ exports.create = async (req, res, next) => {
     const postObject = {
       url: postUrl,
       image: req.body.image ? req.body.image : null,
-      title: req.body.title ? req.body.title : '',
-      body: hasChildComment ? req.body.body : null,
+      title: req.body.title ? req.body.title : null,
+      body: hasChildComment ? body : null,
       tags,
       community,
       communityId,
@@ -654,7 +655,9 @@ exports.create = async (req, res, next) => {
       user: user._id,
       mentions: req.body.mentions,
       postDate: now,
-      payoutTime
+      payoutTime,
+      description: channel && hasChildComment ? body : null,
+      channel: (!postUrl && channel) || false
     };
 
     // TODO Work on better length limits
@@ -708,7 +711,7 @@ exports.create = async (req, res, next) => {
     //   communityId
     // });
 
-    if (!postUrl) await newPost.insertIntoFeed(communityId, community);
+    if (!postUrl && !channel) await newPost.insertIntoFeed(communityId, community);
 
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);
