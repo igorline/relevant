@@ -34,7 +34,6 @@ let ReactPixel;
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
   require('app/styles/fonts.css');
-  // require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
 }
@@ -113,7 +112,6 @@ class App extends Component {
 
     ReactPixel.pageView();
     TwitterCT.pageView();
-    TwitterCT.signUp();
     ReactGA.pageview(location.pathname + location.search);
 
     history.listen(loc => {
