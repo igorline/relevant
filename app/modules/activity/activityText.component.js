@@ -13,7 +13,8 @@ const ActivityText = ({ activity, amount }) => {
     also = '';
     triangleDirection = 'DOWN';
   }
-  const postType = activity.post ? activity.post.type : 'post';
+  // const postType = activity.post ? activity.post.type : 'comment';
+  const postType = 'comment';
   const { coin } = activity;
 
   let text = null;

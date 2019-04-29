@@ -1,26 +1,27 @@
-/**
- * @jest-environment node
- */
-import request from 'supertest';
-import computePageRank from './pagerankCompute';
-import Community from '../api/community/community.model';
+require('@babel/register');
+require('@babel/polyfill');
+require('dotenv').config({ silent: true });
 
-const community = 'crypto';
+process.env.NODE_ENV = 'test';
 
-const { app, db } = require('../server.js');
+const computePageRank = require('./pagerankCompute').default;
+const Community = require('../api/community/community.model').default;
 
-beforeAll(async () => {
-  await db;
-  request(app);
-});
+const community = 'relevant';
 
-describe('Pagerank', () => {
-  test(
-    'Log Current Pagerank',
-    async () => {
-      const communityId = (await Community.findOne({ slug: community }))._id;
-      await computePageRank({ communityId, community, debug: true });
-    },
-    60 * 1000
-  );
-});
+const { db } = require('../config/db.connect');
+
+async function runTest() {
+  try {
+    await db;
+    // request(app);
+
+    const communityId = (await Community.findOne({ slug: community }))._id;
+    await computePageRank({ communityId, community, debug: true });
+  } catch (err) {
+    console.log(err); // eslint-disable-line
+  }
+}
+
+setTimeout(runTest, 3000);
+// runTest();

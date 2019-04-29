@@ -71,7 +71,7 @@ class LoginForm extends Component {
     ];
 
     const socialSignup = (
-      <LinkFont shrink={1}>
+      <LinkFont shrink={1} mt={[0, 4]}>
         Not registered yet?{' '}
         <a
           onClick={() => {
@@ -109,19 +109,19 @@ class LoginForm extends Component {
           ) : null}
         </View>
 
-        <View
-          display="flex"
-          fdirection={['row', 'column']}
-          align={['center', 'stretch']}
-          mt={4}
-        >
+        <View>
           {!local ? (
-            <View fdirection="row" align="center">
+            <View
+              fdirection={['row', 'column']}
+              align={['center', 'stretch']}
+              mt={[4, 2]}
+              flex={1}
+            >
               <ULink
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
                 mr={[2, 0]}
-                mt={2}
+                mt={[0, 2]}
               >
                 <ViewButton flex={1} bg={colors.twitterBlue} fdirection="row">
                   <Image source={twitterIcon} w={2.5} h={2.5} mr={1.5} />
@@ -133,7 +133,7 @@ class LoginForm extends Component {
                 to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
                 external
                 mr={[2, 0]}
-                mt={2}
+                mt={[0, 2]}
               >
                 <ViewButton flex={1} bg={colors.redditColor} fdirection="row">
                   <Image

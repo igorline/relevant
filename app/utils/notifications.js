@@ -1,5 +1,13 @@
 if (process.env.BROWSER === true) {
-  navigator.serviceWorker.register('/service-worker.js');
+  registerServiceWorker();
+}
+
+function registerServiceWorker() {
+  try {
+    navigator.serviceWorker.register('/service-worker.js');
+  } catch (err) {
+    console.log(err); // eslint-disable-line
+  }
 }
 
 export async function initPushNotifications() {

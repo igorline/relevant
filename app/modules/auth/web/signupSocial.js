@@ -28,11 +28,17 @@ class SignupSocial extends Component {
     return (
       <View display="flex" fdirection="column" align-items="flex-start">
         <SecondaryText>Sign up for Relevant.</SecondaryText>
-        <View display="flex" fdirection="row" align="center" mt={7}>
+        <View
+          display="flex"
+          fdirection={['row', 'column']}
+          align={['center', 'stretch']}
+          justify={'flex-start'}
+          mt={[7, 4]}
+        >
           <ULink
             to={`/auth/twitter?invitecode=${invitecode}&redirect=${redirect}`}
             external
-            mr={4}
+            mr={[4, 0]}
           >
             <Button bg={colors.twitterBlue}>
               <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
@@ -42,14 +48,17 @@ class SignupSocial extends Component {
           <ULink
             to={`/auth/reddit?invitecode=${invitecode}&redirect=${redirect}`}
             external
-            mr={4}
+            mr={[4, 0]}
+            mt={[0, 3]}
           >
             <Button bg={colors.redditColor}>
               <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
               Sign up with Reddit
             </Button>
           </ULink>
-          <a
+          <ULink
+            to={'#'}
+            mt={[0, 3]}
             onClick={e => {
               e.preventDefault();
               // this.setState({ provider: 'email' });
@@ -57,7 +66,7 @@ class SignupSocial extends Component {
             }}
           >
             <LinkFont c={colors.blue}>Sign up with Email</LinkFont>
-          </a>
+          </ULink>
         </View>
         <LinkFont mt={4}>
           Already registered?{' '}

@@ -66,7 +66,8 @@ async function ensureUserEamil(user) {
 }
 
 function emailNotificationIsEnabled({ noteType, toUser }) {
-  const isPersonal = noteType === 'reply' || noteType === 'mention';
+  const isPersonal =
+    noteType === 'reward' || noteType === 'reply' || noteType === 'mention';
   if (isPersonal && toUser.notificationSettings.email.personal) {
     return true;
   }

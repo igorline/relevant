@@ -497,4 +497,5 @@ UserSchema.methods.updatePower = function updatePower() {
   return this;
 };
 
+// export default mongoose.model('User', UserSchema);
 module.exports = mongoose.model('User', UserSchema);

@@ -23,7 +23,6 @@ function CoinStat(props) {
     amount,
     mr,
     align,
-
     noNumber,
     secondary,
     fs,
