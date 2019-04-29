@@ -20,7 +20,7 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
-const Contract = loadable(() => import('modules/admin/web/adminContract.component'));
+const Contract = loadable(() => import('modules/admin/web/contract.component'));
 const CommunityAdminForm = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
 );
