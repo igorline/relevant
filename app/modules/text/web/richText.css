@@ -1,7 +1,7 @@
 @import 'styles/global.css';
 
 #editor {
-  min-height: 300px;
+  min-height: 200px;
   @extend %input;
   font-size: 14px;
   white-space: pre-wrap;
