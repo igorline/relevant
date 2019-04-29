@@ -31,7 +31,7 @@ exports.TwitterCT = {
       console.error('TwitterConvTrkr init must be called first.');
       return;
     }
-    twq('track', 'Signup');
+    twq('track', 'Purchase', { value: 1 });
   },
 
   pageView: function() {

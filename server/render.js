@@ -41,7 +41,7 @@ export function createInitialState(req) {
 
   return {
     auth: {
-      confirmed: !req.unconfirmed,
+      confirmed: req.confirmed || (req.user && req.user.confirmed),
       // TODO - get this from req.user
       community: req.params.community || cachedCommunity
     },

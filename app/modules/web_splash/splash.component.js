@@ -66,10 +66,6 @@ const SubHeader = styled(Text)`
   display: inline;
 `;
 
-if (process.env.BROWSER === true) {
-  require('modules/navigation/web/header.css');
-}
-
 class Splash extends Component {
   static propTypes = {
     cta: PropTypes.oneOf(Object.keys(CTA)),
