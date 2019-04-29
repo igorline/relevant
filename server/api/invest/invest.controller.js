@@ -228,6 +228,7 @@ async function updateAuthor(params) {
 }
 
 async function sendAuthorNotification({ author, user, post, type, undoInvest, amount }) {
+  if (!author) return null;
   // Remove notification if undo;
   if (undoInvest) {
     await Notification.remove({

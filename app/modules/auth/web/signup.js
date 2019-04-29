@@ -164,11 +164,17 @@ class SignupForm extends Component {
     return (
       <View display="flex" fdirection="column" align-items="flex-start">
         <SecondaryText>Sign up for Relevant.</SecondaryText>
-        <View display="flex" fdirection="row" align="center" mt={7}>
+        <View
+          display="flex"
+          fdirection={['row', 'column']}
+          align={['center', 'stretch']}
+          justify={['center', 'stretch']}
+          mt={[7, 4]}
+        >
           <ULink
             to={`/auth/twitter?invitecode=${invitecode}&redirect=${redirect}`}
             external
-            mr={4}
+            mr={[4, 0]}
           >
             <Button bg={colors.twitterBlue}>
               <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
@@ -178,7 +184,8 @@ class SignupForm extends Component {
           <ULink
             to={`/auth/reddit?invitecode=${invitecode}&redirect=${redirect}`}
             external
-            mr={4}
+            mr={[4, 0]}
+            mt={[0, 3]}
           >
             <Button bg={colors.redditColor}>
               <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
@@ -186,6 +193,7 @@ class SignupForm extends Component {
             </Button>
           </ULink>
           <Touchable
+            mt={[0, 3]}
             onPress={e => {
               e.preventDefault();
               this.setState({ provider: 'email' });

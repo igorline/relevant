@@ -534,6 +534,10 @@ exports.updateHandle = async (req, res, next) => {
       const usedEmail = await User.findOne({ _id: { $ne: user._id }, email });
       if (usedEmail) throw new Error('This email is already in use');
       user.email = email;
+
+      user.confirmCode = uuid();
+      user = await user.save();
+      await sendConfirmation(user, true);
     }
 
     user.handle = handle;
