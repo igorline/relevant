@@ -13,6 +13,14 @@ npm run dev
 ```
 navigate to `localhost:3000`
 
+some user accounts you can use on the test db:
+username / password
+test / test 
+q / q 
+w / w 
+a / a 
+s / s
+
 build production bundle:
 ```
 npm run build
