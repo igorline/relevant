@@ -1,7 +1,6 @@
 import { css } from 'styled-components';
 import { lineColor } from './colors';
 import sizing from './sizing';
-// import { smallScreenWidth } from './layout';
 import { responsiveHandler } from './responsive';
 
 export const size = (value, screen) => {

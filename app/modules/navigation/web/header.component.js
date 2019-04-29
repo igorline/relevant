@@ -7,7 +7,7 @@ import Avatar from 'modules/user/web/avatar.component';
 import * as authActions from 'modules/auth/auth.actions';
 
 if (process.env.BROWSER === true) {
-  require('./header.css');
+  // require('./header.css');
 }
 
 class Header extends Component {

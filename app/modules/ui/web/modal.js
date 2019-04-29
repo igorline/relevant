@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
-import { View, Image, Header, Touchable } from 'modules/styled/uni';
-import { colors, mixins, layout } from 'app/styles';
+import { View, Header, Touchable, CloseX } from 'modules/styled/uni';
+import { colors, layout } from 'app/styles';
 // import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 const ModalParent = styled.View`
@@ -34,14 +34,6 @@ const Modal = styled(View)`
   z-index: 5;
   ${layout.modalShadow}
   max-width: 100vw;
-`;
-
-const CloseButton = styled(Image)`
-  position: absolute;
-  ${p => (p.top ? `top: ${mixins.size(p.top)};` : null)}
-  ${p => (p.right ? `right: ${mixins.size(p.right)};` : null)}
-  cursor: pointer;
-  z-index: 10;
 `;
 
 export default class ModalComponent extends Component {
@@ -108,7 +100,7 @@ export default class ModalComponent extends Component {
           >
             {hideX ? null : (
               <Touchable onPress={() => close()}>
-                <CloseButton
+                <CloseX
                   w={3}
                   h={3}
                   top={[6, 3]}

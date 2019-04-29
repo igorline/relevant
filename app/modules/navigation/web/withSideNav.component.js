@@ -28,8 +28,8 @@ class WithSideNav extends Component {
     const isDesktop = screenSize === 0;
     return (
       <View bg={colors.white} display="flex" flex={1}>
-        {!isAuthenticated && isDesktop ? (
-          <SplashComponent type={'app'} cta="SIGN_UP" />
+        {!isAuthenticated ? (
+          <SplashComponent screenSize={screenSize} type={'app'} cta="SIGN_UP" />
         ) : null}
         {promptType ? (
           <View
