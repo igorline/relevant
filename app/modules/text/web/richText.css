@@ -6,6 +6,20 @@
   font-size: 14px;
   white-space: pre-wrap;
   word-wrap: normal;
+  box-shadow: none;
+  border: 1px solid $borderColor;
+  outline: none;
+  /* ::placeholder: {
+    font-size: ${sizing(1.75)};
+    line-height: ${sizing(1.75)};
+  }; */
+  &:focus {
+    outline: none;
+    /* border: none; */
+    box-shadow: none;
+    border: 1px solid $blue;
+    /* ${layout.universalBorder('', colors.blue)} */
+  }
   p {
     margin: 0;
   }

@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import App from './app';
 import NotFound from './404';
 import withAuth from './withAuth';
+import CommunityRedirect from './communityRedirect';
 
 const DiscoverContainer = loadable(() =>
   import('modules/discover/web/discover.container')
@@ -40,6 +41,7 @@ const WithTopNav = loadable(() => import('modules/navigation/web/withTopNav.comp
 const PostContainer = loadable(() => import('modules/post/web/singlePost.container'));
 const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
+
 const CreatePostContainer = loadable(() =>
   import('modules/createPost/createPost.container')
 );
@@ -68,6 +70,11 @@ const routes = [
       //   component: SplashContainer,
       //   exact: true
       // },
+      {
+        path: '/',
+        component: CommunityRedirect,
+        exact: true
+      },
       {
         path: '/',
         component: WithSideNav,
@@ -109,18 +116,18 @@ const routes = [
               // WALLET
               { path: '/user/wallet', component: Wallet, exact: true },
               // USER
-              { path: '/user/login', component: Auth, exact: true },
-              { path: '/user/signup', component: Auth, exact: true },
               {
-                path: '/user/confirm/:id/:code',
+                path: '/user/:modal(resetPassword)/:token',
                 component: Auth,
                 exact: true
               },
               {
-                path: '/user/confirm',
+                path:
+                  '/user/:modal(login|confirmEmail|confirm|signup|resetPassword|forgot|setHandle)',
                 component: Auth,
                 exact: true
               },
+              { path: '/user/:modal(confirm)/:user/:code', component: Auth, exact: true },
               { path: '/user/profile/:id', component: ProfileContainer, exact: true },
               {
                 path: '/user/profile/:id/settings',
@@ -128,12 +135,13 @@ const routes = [
                 exact: true
               },
               { path: '/user/activity', component: ActivityContainer, exact: true },
-              { path: '/user/forgot', component: Auth, exact: true },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!
-              { path: '/user/resetPassword/:token', component: Auth, exact: true },
-              { path: '/user/resetPassword', component: Auth, exact: true },
-              { path: '/user/confirm/:user/:code', component: Auth, exact: true },
-              { path: '/user/confirmEmail', component: Auth, exact: true },
+              // '/user/resetPassword/:token'
+              // '/user/resetPassword'
+              // '/user/confirm/:user/:code'
+
+              // TODO: use this route
+              // { path: '/user/confirmEmail', component: Auth, exact: true },
               { path: '/user/invite/:code', component: Invite, exact: true },
               { path: '/community/all', component: CommunityList, exact: true },
               { path: '/:community/post/:id', component: PostContainer, exact: true },

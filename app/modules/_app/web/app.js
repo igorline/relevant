@@ -34,7 +34,6 @@ let ReactPixel;
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
   require('app/styles/fonts.css');
-  // require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
 }
@@ -54,7 +53,6 @@ class App extends Component {
   };
 
   state = {
-    openLoginModal: false,
     authType: null
   };
 
@@ -140,7 +138,9 @@ class App extends Component {
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
-    if (auth.user.role === 'temp') return;
+    if (auth.user.role === 'temp') {
+      return actions.showModal('setHandle');
+    }
     if (!auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
@@ -154,6 +154,7 @@ class App extends Component {
     }
     ReactGA.set({ userId: auth.user._id });
     actions.getEarnings('pending');
+    return null;
   };
 
   componentDidUpdate(prevProps) {
@@ -200,15 +201,13 @@ class App extends Component {
     }
   }
 
-  toggleLogin(authType) {
-    this.setState({ openLoginModal: !this.state.openLoginModal, authType });
-  }
-
-  closeModal() {
+  closeModal(redirect) {
     const { history, location } = this.props;
     const queryParams = queryString.parse(location.search);
     if (queryParams.redirect) {
       history.push(queryParams.redirect);
+    } else if (redirect) {
+      history.push(redirect);
     } else {
       history.push(location.pathname);
     }
@@ -232,24 +231,15 @@ class App extends Component {
     globalModal = modals[globalModal] || globalModal;
 
     if (typeof globalModal === 'string') return null;
-    const { Body } = globalModal;
+    const { Body, redirect } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    const close = () => {
+      this.props.actions.hideModal();
+      this.closeModal(redirect);
+    };
     return (
-      <Modal
-        {...globalModal}
-        close={() => {
-          this.props.actions.hideModal();
-          this.closeModal();
-        }}
-        visible
-      >
-        <Body
-          {...bodyProps}
-          close={() => {
-            this.props.actions.hideModal();
-            this.closeModal();
-          }}
-        />
+      <Modal {...globalModal} close={close} visible>
+        <Body {...bodyProps} close={close} />
       </Modal>
     );
   }
@@ -289,14 +279,6 @@ class App extends Component {
         >
           <UpvoteAnimation />
         </div>
-
-        {/* <AuthContainer
-          toggleLogin={this.toggleLogin.bind(this)}
-          open={this.state.openLoginModal || temp}
-          modal
-          type={this.state.authType}
-          {...this.props}
-        /> */}
 
         {/* TODO - separate modal
         <EthTools>
