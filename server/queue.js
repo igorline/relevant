@@ -5,9 +5,8 @@ const Relevance = require('./api/relevance/relevance.model');
 const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
-const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
-
-const TwitterWorker = require('./utils/twitterWorker');
+// const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
+// const TwitterWorker = require('./utils/twitterWorker');
 
 /* eslint no-console: 0 */
 
@@ -76,7 +75,11 @@ async function getCommunityUserRank(community) {
     .sort('-pagerank')
     .limit(1);
     const topR = topUser.pagerank;
-    const users = await Relevance.find({ global: true, communityId });
+    const users = await Relevance.find({
+      global: true,
+      communityId,
+      user: { $exists: true }
+    });
 
     return users.forEach(user => {
       q.push(async cb => {
@@ -157,14 +160,6 @@ async function getCommunityUserRank(community) {
 async function updateReputation() {
   try {
     const communities = await Community.find({});
-
-    // WE DO THIS IN REWARDS
-    // let computed = communities.map(community => {
-    //   console.log('community ', community.slug)
-    //   return computePageRank({ communityId: community._id, community: community.slug });
-    // });
-    // await Promise.all(computed);
-
     const communityRank = communities.map(getCommunityUserRank);
     await Promise.all(communityRank);
     console.log('finished computing reputation');
@@ -181,10 +176,7 @@ async function basicIncome(done) {
     return topic => {
       q.push(async cb => {
         try {
-          // const r = topic.relevance * (1 / 2) ** (DAYS / RELEVANCE_DECAY);
-          // const diff = r - topic.relevance;
-          // topic.relevance += diff;
-          if (topic.global === true && topic.user) {
+          if (topic.user) {
             // updates % stats
             await topic.updateRelevanceRecord();
             await topic.save();
@@ -244,35 +236,40 @@ function getNextUpdateTime() {
 
 getNextUpdateTime();
 
-function startBasicIncomeUpdate() {
-  // basic income is DEPRECATED
-  basicIncome(updateReputation);
-  setTimeout(() => {
-    startBasicIncomeUpdate();
-  }, getNextUpdateTime());
-}
+// function startBasicIncomeUpdate() {
+//   // basic income is DEPRECATED
+//   basicIncome();
+//   setTimeout(() => {
+//     startBasicIncomeUpdate();
+//   }, getNextUpdateTime());
+// }
 
-function startStatsUpdate() {
-  // taking too long - should move to diff thread?
-  setInterval(updateUserStats, 60 * 60 * 1000);
-  updateUserStats();
-}
+// function startStatsUpdate() {
+//   // taking too long - should move to diff thread?
+//   setInterval(updateUserStats, 60 * 60 * 1000);
+//   updateUserStats();
+// }
 
 async function updateRewards() {
   await ethRewards.rewards();
+  updateUserStats();
+  const now = new Date();
+  if (now.getUTCHours() === 14) {
+    basicIncome();
+  }
 }
 
-function startRewards() {
-  // taking too long - should move to diff thread?
-  setInterval(updateRewards, PAYOUT_FREQUENCY);
-  updateRewards();
-}
+// function startRewards() {
+//   // taking too long - should move to diff thread?
+//   setInterval(updateRewards, PAYOUT_FREQUENCY);
+//   updateRewards(updateReputation);
+// }
 
 // eslint-disable-next-line
-function startTwitterUpdate() {
-  setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
-  TwitterWorker.updateTwitterPosts();
-}
+// function startTwitterUpdate() {
+//   setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
+//   TwitterWorker.updateTwitterPosts();
+// }
 
 // updateUserStats(/);
 // startTwitterUpdate();
@@ -285,22 +282,23 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 if (process.env.NODE_ENV === 'production') {
+  updateRewards();
   // start interval on the hour
-  const minutesTillHour = 60 - new Date().getMinutes();
-  setTimeout(() => {
-    startStatsUpdate();
-    startRewards();
-  }, minutesTillHour * 60 * 1000);
-
+  // const minutesTillHour = 60 - new Date().getMinutes();
+  // setTimeout(() => {
+  //   startStatsUpdate();
+  // }, minutesTillHour * 60 * 1000);
+  // setTimeout(() => {
+  //   startRewards();
+  // }, (15 + minutesTillHour) * 60 * 1000);
   // setTimeout(() => {
   //   startTwitterUpdate();
   // }, ((10 + minutesTillHour) % 60) * 60 * 1000);
   // TwitterWorker.updateTwitterPosts();
-
   // DEPRECATED
-  setTimeout(() => {
-    startBasicIncomeUpdate();
-  }, getNextUpdateTime());
+  // setTimeout(() => {
+  //   startBasicIncomeUpdate();
+  // }, getNextUpdateTime());
 }
 
 // pagerank('crypto');

@@ -1,5 +1,6 @@
 import * as colors from './colors';
 import sizing from './sizing';
+import { size } from './mixins';
 
 // TODO should we keep things consistent? Doesn't seem useful anymore
 export const linkStyle = `
@@ -52,8 +53,8 @@ export const button = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: sizing(6),
-  minWidth: sizing(18),
+  height: size(6),
+  minWidth: size([18, 15]),
   padding: `0 ${sizing(2)}`,
   margin: 0
 };

@@ -23,13 +23,13 @@ class WithSideNav extends Component {
   };
   render() {
     const { isAuthenticated, navigation, notif } = this.props;
-    const smallWidth = navigation.width <= layout.mediumScreenWidth;
-    const { sideNavIsOpen } = navigation;
+    const { sideNavIsOpen, screenSize } = navigation;
     const { promptType } = notif;
+    const isDesktop = screenSize === 0;
     return (
       <View bg={colors.white} display="flex" flex={1}>
-        {!isAuthenticated && !smallWidth ? (
-          <SplashComponent type={'app'} cta="SIGN_UP" />
+        {!isAuthenticated ? (
+          <SplashComponent screenSize={screenSize} type={'app'} cta="SIGN_UP" />
         ) : null}
         {promptType ? (
           <View
@@ -45,7 +45,7 @@ class WithSideNav extends Component {
           </View>
         ) : null}
         <View fdirection="row" display="flex">
-          {smallWidth ? (
+          {!isDesktop ? (
             <Menu
               width={layout.sideNavWidth}
               isOpen={sideNavIsOpen}

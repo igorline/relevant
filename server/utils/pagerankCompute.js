@@ -21,7 +21,7 @@ export default async function computePageRank(params) {
 
     let { heapUsed } = process.memoryUsage();
     let mb = Math.round((100 * heapUsed) / 1048576) / 100;
-    debug && console.log('Program is using ' + mb + 'MB of Heap.');
+    debug && console.log('Init PR is using ' + mb + 'MB of Heap.');
     // let users = await User.find({})
     // .populate({ path: 'relevance', match: { communityId, global: true } });
 
@@ -52,7 +52,6 @@ export default async function computePageRank(params) {
       communityId,
       createdAt: { $gt: timeLimit },
       ownPost: { $ne: true },
-      // author: { $exists: true },
       investor: { $exists: true }
     })
     .populate({
@@ -148,9 +147,9 @@ export default async function computePageRank(params) {
       });
     });
 
-    heapUsed = process.memoryUsage();
+    heapUsed = process.memoryUsage().heapUsed;
     mb = Math.round((100 * heapUsed) / 1048576) / 100;
-    debug && console.log('Program is using ' + mb + 'MB of Heap.');
+    debug && console.log('Before PR - using ' + mb + 'MB of Heap.');
 
     debug && console.log('user query time ', (new Date().getTime() - now) / 1000 + 's');
 
@@ -166,7 +165,7 @@ export default async function computePageRank(params) {
 
     heapUsed = process.memoryUsage().heapUsed;
     mb = Math.round((100 * heapUsed) / 1048576) / 100;
-    debug && console.log('Program is using ' + mb + 'MB of Heap.');
+    debug && console.log('After PR is using ' + mb + 'MB of Heap.');
 
     let max = 0;
     const min = 0;

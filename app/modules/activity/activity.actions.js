@@ -1,7 +1,7 @@
 import * as types from 'core/actionTypes';
 import * as errorActions from 'modules/ui/error.actions';
 import { api, storage } from 'app/utils';
-import { initPushNotifications } from 'utils/notifications';
+import { initPushNotifications } from 'app/utils/notifications';
 import { updateNotificationSettings } from 'modules/auth/auth.actions';
 
 let PushNotification;

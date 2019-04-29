@@ -5,10 +5,10 @@ import { renderRoutes } from 'react-router-config';
 
 function AdminHeader(props) {
   return (
-    <container>
+    <div>
       <div style={{ alignSelf: 'flex-start', margin: 20 }}>
-        <Link className={'link'} to="/admin">
-          Admin
+        <Link className={'link'} to="/admin/contract">
+          Contract
         </Link>
         <Link className={'link'} to="/admin/topics">
           Topics
@@ -36,7 +36,7 @@ function AdminHeader(props) {
         </Link>
       </div>
       {renderRoutes(props.route.routes)}
-    </container>
+    </div>
   );
 }
 
