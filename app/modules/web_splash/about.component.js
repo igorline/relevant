@@ -1,32 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { InlineText, Text, View, Touchable, Button, CloseX } from 'modules/styled/uni';
-import styled from 'styled-components/primitives';
+import { Text, View } from 'modules/styled/web';
+import styled from 'styled-components';
 import { colors, fonts } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
-import InviteCta from 'modules/web_splash/inviteCta.component';
-import { withRouter } from 'react-router-dom';
-import { storage } from 'utils';
-
-const SignUpCta = ({ location }) => (
-  <View display="flex" fdirection="row" justify={['flex-start']}>
-    <ULink to={`/user/login?redirect=${location.pathname}`}>
-      <Button mr={4}>Login</Button>
-    </ULink>
-    <ULink to={`/user/signup?redirect=${location.pathname}`}>
-      <Button mr={0}>Sign Up</Button>
-    </ULink>
-  </View>
-);
-
-SignUpCta.propTypes = {
-  location: PropTypes.object
-};
-
-const CTA = {
-  INVITE: InviteCta,
-  SIGN_UP: SignUpCta
-};
 
 const mobilePhone = `
   position: absolute;
@@ -41,6 +18,7 @@ const Phone = styled(View)`
   align-self: flex-end;
   transform-origin: bottom;
   z-index: -1;
+  display: block;
   ${p => (p.screenSize ? mobilePhone : '')}
 `;
 
@@ -50,7 +28,7 @@ const Wrapper = styled(View)`
   max-height: 550px;
 `;
 
-const SplashText = styled(InlineText)`
+const SplashText = styled(Text)`
   font-family: ${fonts.HELVETICA_NEUE_MEDIUM};
   color: ${colors.black};
 `;
@@ -66,11 +44,8 @@ const SubHeader = styled(Text)`
   display: inline;
 `;
 
-class Splash extends Component {
+export default class Splash extends Component {
   static propTypes = {
-    cta: PropTypes.oneOf(Object.keys(CTA)),
-    hideCloseButton: PropTypes.bool,
-    location: PropTypes.object,
     screenSize: PropTypes.number
   };
 
@@ -78,17 +53,6 @@ class Splash extends Component {
     super(props, context);
     this.onScroll = this.onScroll.bind(this);
   }
-  state = {
-    isDismissed: false
-  };
-
-  componentDidMount = async () => {
-    window.addEventListener('scroll', this.onScroll);
-    const isDismissed = await storage.isDismissed('splashDismissed', 5);
-    this.setState({
-      isDismissed
-    });
-  };
 
   onScroll() {
     if (!this.phone) return;
@@ -98,21 +62,12 @@ class Splash extends Component {
     this.phone.style.transform = `translateX(0) translateY(${y}px)`;
   }
 
-  dismiss = () => {
-    const now = new Date().getTime();
-    storage.set('splashDismissed', now);
-    this.setState({ isDismissed: true });
-  };
-
   render() {
-    if (this.state.isDismissed) {
-      return null;
-    }
-    const { cta, hideCloseButton, location, screenSize } = this.props;
+    const { screenSize } = this.props;
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
-    const CtaComponent = CTA[cta];
+
     return (
       <Wrapper
         ref={c => (this.container = c)}
@@ -124,18 +79,6 @@ class Splash extends Component {
         of="hidden"
         bb
       >
-        {hideCloseButton ? null : (
-          <Touchable onPress={this.dismiss}>
-            <CloseX
-              w={3}
-              h={3}
-              top={[6, 3]}
-              right={[6, 3]}
-              resizeMode={'contain'}
-              source={require('app/public/img/x.png')}
-            />
-          </Touchable>
-        )}
         <View
           className="mainSection"
           m={['12 12 0 12', '4 2 0 2']}
@@ -144,8 +87,8 @@ class Splash extends Component {
           align={['flex-start', 'stretch']}
           fdirection="column"
         >
-          <View>
-            <SplashText fs={[6, 3]} lh={[9, 4.2]}>
+          <View fdirection="column">
+            <SplashText fdirection="column" fs={[6, 3]} lh={[9, 4.2]}>
               <OutlineText inheritfont={1} m={0} p={0}>
                 Relevant.
               </OutlineText>{' '}
@@ -167,11 +110,6 @@ class Splash extends Component {
               </SubHeader>
             </View>
           </View>
-          {CtaComponent ? (
-            <View pb={[8, 4]}>
-              <CtaComponent location={location} />
-            </View>
-          ) : null}
         </View>
         <Phone screenSize={screenSize} className="phone" flexshrink={[1, 0]}>
           <img
@@ -185,5 +123,3 @@ class Splash extends Component {
     );
   }
 }
-
-export default withRouter(Splash);
