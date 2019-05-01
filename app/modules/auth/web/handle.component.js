@@ -1,90 +1,135 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { browserAlerts } from 'app/utils/alert';
-import { View, Button } from 'modules/styled/uni';
-import FormField from 'modules/styled/form/field.component';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {
+  loginUser,
+  checkUser,
+  createUser,
+  updateHandle
+} from 'modules/auth/auth.actions';
+import { withRouter } from 'react-router-dom';
+import { showModal } from 'modules/navigation/navigation.actions';
+import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import {
+  required,
+  email,
+  validCharacters,
+  signupAsyncValidation
+} from 'modules/form/validators';
+import { Field, reduxForm } from 'redux-form';
+import { Form, BodyText, Button, View } from 'modules/styled/web';
 
-class LoginForm extends Component {
+class SetHandle extends Component {
   static propTypes = {
     user: PropTypes.object,
     actions: PropTypes.object,
     checkUser: PropTypes.func,
-    nameError: PropTypes.string
+    nameError: PropTypes.string,
+    handleSubmit: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      username: props.user.handle || '',
-      email: null
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.submit = this.submit.bind(this);
+    this.updateFormFields();
   }
 
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  submit() {
-    const { user, actions } = this.props;
-    const updatedUser = { ...user };
-    if (!this.state.username) {
-      browserAlerts.alert('username requied');
-      return;
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      this.updateFormFields();
     }
-    updatedUser.handle = this.state.username;
-    this.state.email ? (updatedUser.email = this.state.email) : null;
-    actions.updateHandle(updatedUser);
   }
+
+  updateFormFields = () => {
+    const { user } = this.props;
+    this.FORM_FIELDS = [
+      {
+        name: 'handle',
+        component: ReduxFormField,
+        type: 'text',
+        label: 'Handle',
+        placeholder: 'Choose your handle:',
+        validate: [required, validCharacters]
+      },
+      {
+        name: 'email',
+        component: ReduxFormField,
+        type: 'email',
+        label: 'Email',
+        placeholder: 'Email (optional for email reset and notifications)',
+        validate: [email],
+        isHidden: user && user.email
+      }
+    ];
+  };
+
+  submit = values => {
+    const { actions } = this.props;
+    actions.updateHandle(values);
+  };
 
   render() {
-    const { user } = this.props;
+    const { handleSubmit, user } = this.props;
+    if (!user) {
+      return (
+        <View>
+          <BodyText> You must be logged in to change your handle.</BodyText>
+        </View>
+      );
+    }
     return (
-      <View>
-        <FormField
-          type="text"
-          placeholder="Username"
-          label="Choose your handle:"
-          value={'@' + this.state.username}
-          onChange={e => {
-            const username = e.target.value.trim().replace('@', '');
-            this.props.checkUser(username.trim());
-            this.handleChange('username', username);
-          }}
-          onKeyDown={e => {
-            if (e.keyCode === 13) {
-              this.submit();
-            }
-          }}
-          error={this.props.nameError}
-        />
-
-        {user && !user.email ? (
-          <FormField
-            type="email"
-            placeholder="email (optional for email reset and notifications)"
-            label="Add your email:"
-            onChange={e => {
-              const email = e.target.value.trim();
-              this.handleChange('email', email);
-            }}
-            onKeyDown={e => {
-              if (e.keyCode === 13) {
-                this.submit();
-              }
-            }}
-          />
-        ) : null}
-
+      <Form fdirection="column" onSubmit={handleSubmit(this.submit)}>
+        {this.FORM_FIELDS.map(field =>
+          field.isHidden ? null : <Field {...field} key={field.name} />
+        )}
         <View justify="flex-start">
-          <Button onClick={this.submit} ml="auto" mt={4}>
+          <Button type="submit" ml="auto" mt={4}>
             Finish
           </Button>
         </View>
-      </View>
+      </Form>
     );
   }
 }
 
-export default LoginForm;
+const mapStateToProps = state => {
+  const initialValues = {};
+  const { user } = state.auth;
+  if (user && user.handle) {
+    initialValues.handle = user.handle;
+  }
+  return {
+    user,
+    auth: state.auth,
+    initialValues
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      loginUser,
+      showModal,
+      checkUser,
+      createUser,
+      updateHandle
+    },
+    dispatch
+  )
+});
+
+const validate = () => {};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(
+    reduxForm({
+      form: 'setHandle',
+      validate,
+      asyncValidate: signupAsyncValidation,
+      asyncChangeFields: ['handle', 'email']
+    })(SetHandle)
+  )
+);

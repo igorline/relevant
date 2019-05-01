@@ -6,6 +6,7 @@ Object {
   "_id": "[SANITIZED]",
   "body": "awesome post #1!",
   "category": null,
+  "channel": false,
   "children": null,
   "commentCount": 0,
   "commentary": null,
@@ -32,6 +33,7 @@ Object {
     "parentPost": Object {
       "__v": 0,
       "_id": "[SANITIZED]",
+      "channel": false,
       "children": null,
       "commentCount": 1,
       "commentary": null,
@@ -148,6 +150,7 @@ Object {
     "upVotes": 0,
     "updatedAt": "[SANITIZED]",
   },
+  "description": null,
   "downVotes": 0,
   "embeddedUser": Object {
     "_id": "[SANITIZED]",
@@ -164,6 +167,7 @@ Object {
   "linkParent": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
+    "channel": false,
     "children": null,
     "commentCount": 1,
     "commentary": null,
@@ -294,6 +298,7 @@ Object {
   "parentPost": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
+    "channel": false,
     "children": null,
     "commentCount": 1,
     "commentary": null,
@@ -419,6 +424,7 @@ Object {
   "_id": "[SANITIZED]",
   "body": "awesome post #1!",
   "category": null,
+  "channel": false,
   "children": null,
   "commentCount": 0,
   "commentary": null,
@@ -461,6 +467,7 @@ Object {
     "upVotes": 0,
     "updatedAt": "[SANITIZED]",
   },
+  "description": null,
   "downVotes": 0,
   "embeddedUser": Object {
     "_id": "[SANITIZED]",

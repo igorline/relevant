@@ -52,6 +52,10 @@ export const ImageWrapper = styled.View`
   ${mixins.flex}
 `;
 
+export const FormImage = props => (
+  <Image {...props} bg={colors.blue} {...layout.formImageProps} />
+);
+
 export const Divider = styled.View`
   ${mixins.margin}
   ${mixins.padding}

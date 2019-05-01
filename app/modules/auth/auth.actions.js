@@ -248,13 +248,14 @@ export function enableMobileNotifications(user) {
         // other params: foreground, message
         const { userInteraction, data } = notification;
         if (!userInteraction) return;
-        if (data && data.post) {
-          const parentId = data.post.parentId
-            ? data.post.parentId._id || data.post.parentId
-            : data.post._id;
-          const comment = parentId !== data.post._id ? { _id: data.post._id } : null;
+        if (data && data.postId) {
+          const comment = data.comment ? { _id: data.comment } : null;
           dispatch(
-            navigationActions.goToPost({ _id: parentId, title: data.post.title, comment })
+            navigationActions.goToPost({
+              _id: data.postId,
+              title: data.post.title,
+              comment
+            })
           );
         }
       },
@@ -419,16 +420,21 @@ export function userOnline(user, token) {
     });
 }
 
-export function checkUser(string, type) {
+export function checkUser(string, type, omitSelf = false) {
   return () =>
-    fetch(`${process.env.API_SERVER}/api/user/check/user/?${type}=${string}`, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+    fetch(
+      `${
+        process.env.API_SERVER
+      }/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
+      {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then(response => response.json())
     .then(responseJSON => responseJSON)
     .catch(error => {

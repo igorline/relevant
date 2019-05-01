@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { Field, reduxForm } from 'redux-form';
 import { Button, Form, View } from 'modules/styled/web';
 import { required } from 'modules/form/validators';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { resetPassword } from 'modules/auth/auth.actions';
+import { hideModal, showModal } from 'modules/navigation/navigation.actions';
 
 class ResetPassword extends Component {
   static propTypes = {
@@ -12,9 +16,10 @@ class ResetPassword extends Component {
     actions: PropTypes.object,
     history: PropTypes.object,
     handleSubmit: PropTypes.func,
-    authNav: PropTypes.func,
     auth: PropTypes.object,
-    close: PropTypes.close
+    close: PropTypes.func,
+    showModal: PropTypes.func,
+    location: PropTypes.object
   };
 
   constructor(props) {
@@ -23,16 +28,25 @@ class ResetPassword extends Component {
   }
 
   componentWillMount() {
-    this.token = this.props.match.params.token;
+    const { location } = this.props;
+    const route = {
+      path: '/user/resetPassword/:token',
+      exact: true
+    };
+    const match = matchPath(location.pathname, route);
+    this.token = match.params.token;
   }
 
-  submit(vals) {
+  submit = vals => {
     const { user } = this.props.auth;
     this.props.actions.resetPassword(vals.password, this.token).then(success => {
-      if (success && !user) this.props.authNav('login');
-      else this.props.close();
+      if (success && !user) {
+        this.props.actions.showModal('login');
+      } else {
+        this.props.close();
+      }
     });
-  }
+  };
 
   render() {
     const { handleSubmit } = this.props;
@@ -69,17 +83,36 @@ class ResetPassword extends Component {
   }
 }
 
-export default withRouter(
-  reduxForm({
-    form: 'settings',
-    validate: vals => {
-      const errors = {};
-      if (vals.password !== vals.confirmPassword) {
-        const message = 'Passwords must be identical';
-        errors.password = message;
-        errors.confirmPassword = message;
-      }
-      return errors;
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      resetPassword,
+      hideModal,
+      showModal
+    },
+    dispatch
+  )
+});
+
+export default reduxForm({
+  form: 'settings',
+  validate: vals => {
+    const errors = {};
+    if (vals.password !== vals.confirmPassword) {
+      const message = 'Passwords must be identical';
+      errors.password = message;
+      errors.confirmPassword = message;
     }
-  })(ResetPassword)
+    return errors;
+  }
+})(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withRouter(ResetPassword))
 );

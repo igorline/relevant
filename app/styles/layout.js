@@ -77,3 +77,12 @@ export const animatedElement = {
   zIndex: 10000,
   backgroundColor: 'transparent'
 };
+
+export const formImageProps = {
+  p: 2,
+  w: 9,
+  h: 9,
+  m: '1 0 0 0',
+  bg: colors.blue,
+  bradius: '50%'
+};
