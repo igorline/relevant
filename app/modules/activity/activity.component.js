@@ -16,8 +16,6 @@ import {
 } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 
-const moment = require('moment');
-
 export default class SingleActivity extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -97,22 +95,22 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, screenSize, auth, navigation } = this.props;
+    const { PostComponent, actions, auth, navigation } = this.props;
     const { post } = activity;
 
     const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
-    const linkToPost = `/${post.community}/post/${parentId}`;
 
     const link = post.metaPost || post.parentPost;
     // TODO hack should normalize in reducer
     // if (post.parentPost) post.parentPost = post.parentPost._id;
+    const community = post.community || post.data ? post.data.community : null;
+    const linkToPost = `/${community}/post/${parentId}`;
 
-    const newCommunity = post.community !== auth.community ? post.community : null;
-
+    const newCommunity = community !== auth.community ? community : null;
     const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
 
     return (
-      <ULink to={linkToPost} noLink={!screenSize} onPress={onPress}>
+      <ULink to={linkToPost} onPress={onPress}>
         <View m={['0 4', '0 2']}>
           <PostComponent
             post={post}
@@ -120,7 +118,8 @@ export default class SingleActivity extends Component {
             hideDivider
             hidePostButtons
             preview
-            noLink={!!screenSize}
+            // community={newCommunity}
+            noLink
             navigation={navigation}
           />
         </View>
@@ -155,7 +154,7 @@ export default class SingleActivity extends Component {
   }
 
   renderDate(activity) {
-    const fromNow = moment(activity.createdAt).fromNow();
+    const fromNow = numbers.getTimestamp(activity.createdAt);
     if (activity.type) {
       return <SecondaryText lh={2}>{fromNow}</SecondaryText>;
     }

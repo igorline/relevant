@@ -1,21 +1,31 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
+import merge from 'lodash.merge';
 import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
+import mail from 'server/config/mail';
 import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
+import CommunityMember from '../community/community.member.model';
 import Relevance from '../relevance/relevance.model';
-import mail from '../../mail';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
-import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 // const TwitterWorker = require('../../utils/twitterWorker');
-// User.findOne({ handle: 'future' }).then(u => console.log(u.toObject()))
+// User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
+// .then(u => u);
+//
+// sendConfirmation({ handle: 'feed', email: 'relevant.feed@gmail.com', confirmCode: 'xxx' });
+
+// sendConfirmation({
+//   email: 'slava@relevant.community',
+//   handle: 'test',
+//   confirmCode: 'xxx',
+// });
 
 async function sendConfirmation(user, newUser) {
   let text = '';
@@ -176,13 +186,17 @@ exports.onboarding = (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   try {
     const { token, password } = req.body;
-    if (!token) throw new Error('token missing');
-    let user = await User.findOne({ resetPasswordToken: token });
+    let { user } = req;
+    if (!token && !user) throw new Error('token missing');
+    if (!user) {
+      user = await User.findOne({ resetPasswordToken: token });
+      if (user && user.resetPasswordExpires > Date.now()) {
+        throw new Error('Password reset time has expired');
+      }
+    }
     if (!user) throw new Error('No user found');
     if (!user.onboarding) user.onboarding = 0;
-    if (user.resetPasswordExpires > Date.now()) {
-      throw new Error('Password reset time has expired');
-    }
+
     user.password = password;
     user = await user.save();
     res.status(200).json({ success: true });
@@ -413,12 +427,16 @@ exports.show = async function show(req, res, next) {
   try {
     let { user } = req;
     let handle = req.params.id;
+
     let me = null;
+    let memberships;
     if (!handle && user) {
       handle = user.handle;
-      me = true;
     }
-
+    if (user && user._id) {
+      memberships = await CommunityMember.find({ user: user._id });
+    }
+    me = user && user.handle === handle;
     const community = req.query.community || 'relevant';
 
     // don't show blocked user;
@@ -430,7 +448,8 @@ exports.show = async function show(req, res, next) {
       }
     }
 
-    user = await User.findOne({ handle }).populate({
+    const select = me ? '+email' : null;
+    user = await User.findOne({ handle }, select).populate({
       path: 'relevance',
       match: { community, global: true },
       select: 'pagerank relevanceRecord community'
@@ -446,7 +465,7 @@ exports.show = async function show(req, res, next) {
     const userObj = user.toObject();
     userObj.topTags = relevance || [];
 
-    res.status(200).json(userObj);
+    res.status(200).json({ ...userObj, memberships });
 
     // update token balance based on ETH account
     if (me) {
@@ -502,7 +521,7 @@ exports.updateHandle = async (req, res, next) => {
 
     if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
-    const { handle } = req.body.user;
+    const { handle, email } = req.body.user;
     if (!handle) throw new Error('missing handle');
 
     // make sure its not used
@@ -511,11 +530,31 @@ exports.updateHandle = async (req, res, next) => {
       if (used) throw new Error('This handle is already taken');
     }
 
+    if (email && email !== user.email) {
+      const usedEmail = await User.findOne({ _id: { $ne: user._id }, email });
+      if (usedEmail) throw new Error('This email is already in use');
+      user.email = email;
+
+      user.confirmCode = uuid();
+      user = await user.save();
+      await sendConfirmation(user, true);
+    }
+
     user.handle = handle;
     user.role = 'user';
 
-    // TODO - do we still want to do this?
-    // await TwitterWorker.updateTwitterPosts(user._id);
+    const newUser = {
+      name: user.name,
+      image: user.image,
+      handle: user.handle,
+      _id: user._id
+    };
+
+    await CommunityMember.update(
+      { user: user._id },
+      { embeddedUser: newUser },
+      { multi: true }
+    );
 
     user = await user.save();
 
@@ -658,6 +697,34 @@ exports.updateUserTokenBalance = async (req, res, next) => {
     }
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
     user.tokenBalance = userBalance;
+    await user.save();
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateUserNotifications = async (req, res, next) => {
+  try {
+    const { user, body } = req;
+    const { notificationSettings, subscription, deviceTokens } = body;
+    const newSettings = merge(user.notificationSettings.toObject(), notificationSettings);
+    user.notificationSettings = newSettings;
+    if (subscription) {
+      const findIndex = user.desktopSubscriptions.findIndex(
+        s =>
+          s.endpoint === subscription.endpoint &&
+          s.keys &&
+          s.keys.auth === subscription.keys.auth &&
+          s.keys.p256dh === subscription.keys.p256dh
+      );
+      if (findIndex === -1) {
+        user.desktopSubscriptions = [...user.desktopSubscriptions, subscription];
+      }
+    }
+    if (deviceTokens) {
+      user.deviceTokens = deviceTokens;
+    }
     await user.save();
     res.status(200).json(user);
   } catch (err) {

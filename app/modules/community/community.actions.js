@@ -51,6 +51,13 @@ export function setCommunityMembers(slug, members) {
 
 export function getCommunityAdmins() {}
 
+export function setUserMemberships(memberships) {
+  return {
+    type: types.SET_USER_MEMBERSHIPS,
+    payload: memberships
+  };
+}
+
 export function getCommunityMembers({ slug, skip, limit }) {
   return async dispatch => {
     try {
@@ -80,7 +87,6 @@ export function getCommunities() {
         method: 'GET',
         endpoint: 'community'
       });
-      // let ids = responseJSON.map(c => c._id);
       return dispatch(setCommunities(res));
     } catch (error) {
       return false;
@@ -132,6 +138,38 @@ export function deleteCommunity(community) {
       return Alert.alert('Community Removed', 'success');
     } catch (err) {
       return Alert.alert(err.message);
+    }
+  };
+}
+
+export function joinCommunity(community) {
+  const { slug, name } = community;
+  return async () => {
+    try {
+      await api.request({
+        method: 'PUT',
+        endpoint: `community/${slug}/join`
+      });
+      return Alert.alert(`Joined Community: ${name}`, 'success');
+    } catch (err) {
+      return Alert.alert(err.message);
+    }
+  };
+}
+
+export function searchMembers(val, community) {
+  const limit = 50;
+  return async () => {
+    try {
+      const res = await api.request({
+        method: 'GET',
+        endpoint: 'community',
+        path: `/${community}/members/search`,
+        query: { limit, search: val }
+      });
+      return res;
+    } catch (err) {
+      return err;
     }
   };
 }

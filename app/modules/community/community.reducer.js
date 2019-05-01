@@ -1,5 +1,6 @@
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
+import { unique } from 'utils/list';
 
 const CommunitySchema = new schema.Entity('communities', {}, { idAttribute: 'slug' });
 const MemberSchema = new schema.Entity('members', {}, { idAttribute: '_id' });
@@ -9,7 +10,9 @@ const initialState = {
   list: [],
   active: null,
   members: {},
-  communityMembers: {}
+  communityMembers: {},
+  userMemberships: [],
+  userCommunities: []
 };
 
 export default function community(state = initialState, action) {
@@ -23,6 +26,22 @@ export default function community(state = initialState, action) {
           ...normalized.entities.communities
         },
         list: [...new Set([...state.list, ...normalized.result])]
+      };
+    }
+
+    case types.SET_USER_MEMBERSHIPS: {
+      return {
+        ...state,
+        userMemberships: action.payload,
+        userCommunities: action.payload.map(m => m.communityId)
+      };
+    }
+
+    case types.ADD_USER_MEMBERSHIP: {
+      return {
+        ...state,
+        userMemberships: [...state.userMemberships, action.payload],
+        userCommunities: [...state.userCommunities, action.payload.communityId]
       };
     }
 
@@ -47,11 +66,12 @@ export default function community(state = initialState, action) {
     case types.SET_COMMUNITY_MEMBERS: {
       const { members, slug } = action.payload;
       const data = normalize(members, [MemberSchema]);
+      const existingCommunityMembers = state.communityMembers[slug] || [];
       return {
         ...state,
         communityMembers: {
           ...state.communityMembers,
-          [slug]: data.result
+          [slug]: unique([...existingCommunityMembers, ...data.result])
         },
         members: {
           ...state.members,

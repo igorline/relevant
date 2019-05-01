@@ -6,11 +6,11 @@ import ULink from 'modules/navigation/ULink.component';
 import Avatar from 'modules/user/UAvatar.component';
 import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
-import { Text, View, SecondaryText, Image } from 'modules/styled/uni';
+import { Text, View, SecondaryText, Image, BodyText } from 'modules/styled/uni';
 
-export const Name = styled(Text)``;
+export const Name = styled(BodyText)``;
 
-export default function UserName(props) {
+export default function AvatarBox(props) {
   const {
     user,
     showRelevance,
@@ -22,7 +22,8 @@ export default function UserName(props) {
     condensedView,
     twitter,
     avatarText,
-    noLink
+    noLink,
+    navigationCallback
   } = props;
 
   if (!user) return null;
@@ -32,7 +33,7 @@ export default function UserName(props) {
 
   let timestamp;
   if (postTime) {
-    timestamp = getTimestamp(postTime);
+    timestamp = ' • ' + getTimestamp(postTime);
   }
 
   const handleEl = handle && (
@@ -68,7 +69,17 @@ export default function UserName(props) {
     <ULink
       noLink={noLink}
       to={`/user/profile/${user.handle}`}
-      onPress={() => setSelected(user)}
+      onPress={() => {
+        setSelected(user);
+        if (navigationCallback) {
+          navigationCallback();
+        }
+      }}
+      onClick={() => {
+        if (navigationCallback) {
+          navigationCallback();
+        }
+      }}
     >
       <View flex={1} fdirection={'row'}>
         <Avatar size={size} user={user} noLink />
@@ -104,7 +115,7 @@ export default function UserName(props) {
   );
 }
 
-UserName.propTypes = {
+AvatarBox.propTypes = {
   noLink: PropTypes.bool,
   avatarText: PropTypes.func,
   twitter: PropTypes.bool,
@@ -115,5 +126,6 @@ UserName.propTypes = {
   showRelevance: PropTypes.bool,
   repost: PropTypes.bool,
   postTime: PropTypes.string,
-  setSelected: PropTypes.func
+  setSelected: PropTypes.func,
+  navigationCallback: PropTypes.func
 };

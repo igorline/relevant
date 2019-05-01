@@ -1,5 +1,5 @@
 import List from 'server/api/emailList/list.model';
-import mail from '../../mail';
+import mail from 'server/config/mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
@@ -55,6 +55,12 @@ async function generateList(type) {
       // now.setDate(now.getDate() - 5);
       query = { status: { $exists: false } };
       users = await List.find(query);
+    } else if (type === 'nodigest') {
+      // const now = new Date();
+      // now.setDate(now.getDate() - 5);
+      query = { 'notificationSettings.email.digest': false };
+      users = await List.find(query);
+      console.log('nodigest', users.length);
     }
 
     const list = mailgun.lists(type + '@mail.relevant.community');
@@ -91,13 +97,16 @@ async function generateList(type) {
           type === 'notregistered' || type === 'waitlist' ? user.name : '@' + user.handle,
         vars
       };
-      u.address = u.address.trim();
+      if (u.address) {
+        u.address = u.address.trim();
+      }
 
       console.log('handle', user.handle, u.name, u.address);
+      if (!u.address) return;
       list.members().create(u, err => {
         if (err) {
           try {
-            list.members(u.address).update(u, console.log);
+            // list.members(u.address).update(u, console.log);
           } catch (error) {
             console.log('err updating', u);
           }
@@ -111,6 +120,7 @@ async function generateList(type) {
   }
 }
 
+// generateList('nodigest');
 // generateList('currentUsers');
 // generateList('notregistered');
 // generateList('waitlist');

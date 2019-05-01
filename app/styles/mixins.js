@@ -3,8 +3,8 @@ import { lineColor } from './colors';
 import sizing from './sizing';
 import { responsiveHandler } from './responsive';
 
-export const size = value => {
-  const units = responsiveHandler(value);
+export const size = (value, screen) => {
+  const units = responsiveHandler(value, screen);
 
   if (typeof units === 'number') return sizing(units);
   if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
@@ -100,6 +100,7 @@ export const border = css`
 export const flex = css`
   position: relative;
   ${p => (p.flex ? `flex: ${responsiveHandler(p.flex)}` : '')};
+  ${p => (p.position ? `position: ${responsiveHandler(p.position)}` : '')};
   ${p => (p.fdirection ? `flex-direction: ${responsiveHandler(p.fdirection)}` : '')};
   ${p => (p.justify ? `justify-content: ${responsiveHandler(p.justify)}` : '')};
   ${p => (p.align ? `align-items: ${responsiveHandler(p.align)}` : '')};

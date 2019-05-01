@@ -1,14 +1,10 @@
 /* eslint no-console: 0 */
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
 import { VOTE_COST_RATIO, SLOPE, EXPONENT } from 'server/config/globalConstants';
-// import Community from 'server/api/community/community.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import { computePostPayout } from 'app/utils/rewards';
 
-const InvestSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
-
 const TEST_ENV = process.env.NODE_ENV === 'test';
 
 const InvestSchema = new Schema(
@@ -59,8 +55,6 @@ InvestSchema.index({ communityId: 1, investor: 1, createdAt: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
 InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
 
-InvestSchema.statics.events = InvestSchemaEvents;
-
 async function undoInvest({ post, investment, user }) {
   post.data.shares -= investment.shares;
   post.data.balance = Math.max(post.data.balance - investment.stakedTokens, 0);
@@ -103,6 +97,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   const leeway = TEST_ENV ? 1000 * 60 : 0;
 
   if (
+    amount > 0 &&
     !post.parentPost &&
     user.lockedTokens + stakedTokens <= userBalance &&
     post.data.eligibleForReward &&
@@ -140,7 +135,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
     author: post.user,
     amount,
     relevantPoints: relevanceToAdd,
-    ownPost: post.user === user._id,
+    ownPost: user._id.equals(post.user),
     shares,
     stakedTokens,
     community,
@@ -152,15 +147,18 @@ InvestSchema.statics.createVote = async function createVote(props) {
     paidOut: post.data.paidOut
   });
   await investment.save();
+  post.data.needsRankUpdate = true;
 
-  if (!canInvest) return investment;
+  if (!canInvest) {
+    await post.data.save();
+    return investment;
+  }
 
   post.data.shares += shares;
   post.data.balance += stakedTokens;
   user.lockedTokens += stakedTokens;
   post.data.totalShares += stakedTokens;
   post.data.expectedPayout = computePostPayout(post.data, communityInstance);
-  post.data.needsRankUpdate = true;
   await user.save();
   await post.data.save();
 

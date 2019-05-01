@@ -1,5 +1,6 @@
 import * as colors from './colors';
 import sizing from './sizing';
+import { size } from './mixins';
 
 // TODO should we keep things consistent? Doesn't seem useful anymore
 export const linkStyle = `
@@ -10,6 +11,8 @@ export const linkStyle = `
 export const modalShadow = {
   boxShadow: '0 2px 6px hsl(0,0%,70%)'
 };
+
+export const BANNER_PROMPT_HEIGHT = sizing(5);
 
 export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
@@ -50,8 +53,8 @@ export const button = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: sizing(6),
-  minWidth: sizing(18),
+  height: size(6),
+  minWidth: size([18, 15]),
   padding: `0 ${sizing(2)}`,
   margin: 0
 };
@@ -60,9 +63,11 @@ export const tag = {
   ...button,
   cursor: 'pointer',
   background: colors.blue,
+  color: colors.white,
   minWidth: 0,
   height: sizing(4),
-  padding: sizing(1.5)
+  padding: sizing(1.5),
+  fontSize: sizing(1.5)
 };
 
 export const animatedElement = {

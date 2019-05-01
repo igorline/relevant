@@ -10,6 +10,9 @@ import configureStore from 'core/web/configureStore';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 import path from 'path';
 import { AppRegistry } from 'react-native-web';
+import useragent from 'express-useragent';
+import { Dimensions } from 'react-native';
+import { getScreenSize } from 'app/utils/nav';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -29,11 +32,21 @@ let extractor =
 
 export function createInitialState(req) {
   const cachedCommunity = req.user ? req.user.community : null;
+
+  const userAgent = req.headers['user-agent']
+    ? useragent.parse(req.headers['user-agent'])
+    : {};
+  const width = userAgent.isMobile ? 320 : 1000;
+  Dimensions.set({ window: { width } });
+
   return {
     auth: {
       confirmed: !req.unconfirmed,
       // TODO - get this from req.user
       community: req.params.community || cachedCommunity
+    },
+    navigation: {
+      screenSize: getScreenSize(width)
     }
   };
 }
@@ -45,6 +58,7 @@ export const initStore = compose(
 
 export default async function handleRender(req, res) {
   const store = initStore(req);
+
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
@@ -105,30 +119,12 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
         <meta name="apple-itunes-app" content="app-id=1173025051 app-argument=${fullUrl}">
 
         <meta name="google-play-app" content="app-id=com.relevantnative">
-        <link rel="apple-touch-icon" href="/img/r-big.png">
-        <link rel="android-touch-icon" href="/img/r-big.png">
+        <link rel="apple-touch-icon" href="/img/RoundedIcon.png">
+        <link rel="android-touch-icon" href="/img/RoundedIcon.png">
 
-        ${cssStyleTags}
         ${rnWebStyles}
+        ${cssStyleTags}
         ${styledComponentsTags}
-
-        <!-- Facebook Pixel Code -->
-        <script>
-        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-        document,'script','https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '286620198458049', {
-        em: 'insert_email_variable'
-        });
-        fbq('track', 'PageView');
-        </script>
-        <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=286620198458049&ev=PageView&noscript=1"
-        /></noscript>
-        <!-- DO NOT MODIFY -->
-        <!-- End Facebook Pixel Code -->
       </head>
       <body>
         <div id="app">${app}</div>

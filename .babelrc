@@ -27,6 +27,7 @@
     "test": {
       "plugins": [
         ["styled-components"],
+        ["@babel/plugin-transform-runtime"],
         ["module-resolver", {
           "root": ["./app", "./app/modules"],
           "alias": {
@@ -34,7 +35,8 @@
             "modules": "./app/modules",
             "core": "./app/core",
             "app": "./app",
-            "react-native-linear-gradient": "react-native-web-linear-gradient"
+            "^react-native$": "react-native-web",
+            "react-native-linear-gradient$": "react-native-web-linear-gradient"
           },
         }]
       ],
@@ -53,8 +55,8 @@
             "modules": "./app/modules",
             "core": "./app/core",
             "app": "./app",
-            "react-native-linear-gradient": "react-native-web-linear-gradient"
-
+            "^react-native$": "react-native-web",
+            "react-native-linear-gradient$": "react-native-web-linear-gradient"
           },
           "cwd": "babelrc",
         }]

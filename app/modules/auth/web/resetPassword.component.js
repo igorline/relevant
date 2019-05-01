@@ -12,7 +12,9 @@ class ResetPassword extends Component {
     actions: PropTypes.object,
     history: PropTypes.object,
     handleSubmit: PropTypes.func,
-    authNav: PropTypes.func
+    authNav: PropTypes.func,
+    auth: PropTypes.object,
+    close: PropTypes.close
   };
 
   constructor(props) {
@@ -25,8 +27,10 @@ class ResetPassword extends Component {
   }
 
   submit(vals) {
+    const { user } = this.props.auth;
     this.props.actions.resetPassword(vals.password, this.token).then(success => {
-      if (success) this.props.authNav('login');
+      if (success && !user) this.props.authNav('login');
+      else this.props.close();
     });
   }
 
@@ -49,7 +53,7 @@ class ResetPassword extends Component {
       }
     ];
     return (
-      <View display="flex" fdirection="column" m={4}>
+      <View display="flex" fdirection="column" m={'4 0'}>
         <Form fdirection="column" onSubmit={handleSubmit(this.submit.bind(this))}>
           {FORM_FIELDS.map((field, index) => (
             <Field {...field} key={index} />

@@ -68,6 +68,8 @@ export const community = {
     relevant,
     crypto
   },
+  userMemberships: [],
+  userCommunities: [],
   list: ['relevant', 'crypto'],
   active: 'relevant'
 };

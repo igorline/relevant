@@ -11,6 +11,7 @@ const favicon = require('serve-favicon');
 const MongoStore = require('connect-mongo')(session);
 const cookiesMiddleware = require('universal-cookie-express');
 const path = require('path');
+const expressStaticGzip = require('express-static-gzip');
 
 const app = new Express();
 mongoose.Promise = global.Promise;
@@ -92,7 +93,8 @@ if (process.env.NO_SSL !== 'true') {
 }
 
 // public folder
-app.use(Express.static(path.join(__dirname, '/../app/public')));
+app.use('/', expressStaticGzip(path.join(__dirname, '/../app/public'), { index: false }));
+// app.use(Express.static(path.join(__dirname, '/../app/public')));
 app.use(cookiesMiddleware());
 
 const port = process.env.PORT || 3000;

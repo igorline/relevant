@@ -1,4 +1,7 @@
+import { handleAdminInvite } from 'server/api/invites/invite.controller';
+
 const passport = require('passport');
+// const CommunityMember = require('server/api/community/community.member.model').default;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const config = require('../../config/config');
 const { promisify } = require('util');
@@ -7,6 +10,8 @@ const Invite = require('../../api/invites/invite.model');
 const auth = require('../auth.service');
 
 // User.remove({ handle: 'relevantfeed' }).exec();
+// CommunityMember.remove({ 'embeddedUser.handle': 'relevantfeed' }).exec();
+
 // async function removeTwitterProfile() {
 //   try {
 //     const user = await User.findOne({ twitterHandle: 'relevantfeed' });
@@ -106,6 +111,14 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
   } else if (!user.twitterId) {
     user = await addTwitterProfile({ profile, user, twitterAuth });
     user = await user.addReward({ type: 'twitter' });
+  }
+
+  if (!isNewUser && invitecode && invitecode !== 'undefined') {
+    try {
+      user = await handleAdminInvite({ invitecode, user });
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
   }
 
   return user.save();

@@ -22,6 +22,7 @@ import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
 let drizzleReducers = {};
+
 if (process.env.WEB !== 'true') {
   // might need this form for conditional require
 } else {
@@ -32,31 +33,44 @@ if (process.env.WEB !== 'true') {
 
 let communityState = {};
 
-const appReducer = combineReducers({
-  auth,
-  posts,
-  user,
-  socket,
-  form: formReducer,
-  notif,
-  error,
-  animation,
-  view,
-  // TODO update
-  investments: invest,
-  stats,
-  // TODO update
-  comments: comment,
-  navigation,
-  createPost,
-  tags,
-  tooltip,
-  subscriptions,
-  admin,
-  community,
-  earnings,
-  ...drizzleReducers
-});
+const createReducer = (asyncReducers = {}) =>
+  combineReducers({
+    auth,
+    posts,
+    user,
+    socket,
+    form: formReducer,
+    notif,
+    error,
+    animation,
+    view,
+    // TODO update
+    investments: invest,
+    stats,
+    // TODO update
+    comments: comment,
+    navigation,
+    createPost,
+    tags,
+    tooltip,
+    subscriptions,
+    admin,
+    community,
+    earnings,
+    ...drizzleReducers,
+    ...asyncReducers
+  });
+
+let appReducer = createReducer();
+
+export function injectAsyncReducer(store, name, asyncReducer) {
+  if (store.asyncReducers[name]) {
+    return;
+  }
+  store.asyncReducers[name] = asyncReducer;
+  appReducer = createReducer();
+  store.replaceReducer(createReducer(appReducer));
+}
 
 const initialState = {
   posts: appReducer.posts,
@@ -72,14 +86,15 @@ const rootReducer = (state, action) => {
 
     if (community === action.payload) return appReducer(state, action);
 
-    const { posts, user, stats } = state; // eslint-disable-line
+    const { posts, user, stats, earnings } = state; // eslint-disable-line
     if (community) {
       communityState = {
         ...communityState,
         [community]: {
           posts,
           user,
-          stats
+          stats,
+          earnings
         }
       };
     }
@@ -91,7 +106,6 @@ const rootReducer = (state, action) => {
         cachedCommunityState.user.users[state.auth.user._id] &&
         cachedCommunityState.user.users[state.auth.user._id]) ||
       state.auth.user;
-    // console.log('hmmmm...', authUser.relevance.community);
 
     const newState = {
       ...state,

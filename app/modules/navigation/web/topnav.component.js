@@ -21,7 +21,7 @@ const Nav = styled(View)`
   background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
   z-index: 100;
   height: ${layout.headerHeight};
-  top: 0;
+  top: ${p => (p.top ? p.top : 0)};
   left: ${layout.sideNavWidth};
 `;
 
@@ -68,7 +68,7 @@ class TopNav extends Component {
   state = {};
 
   componentDidMount() {
-    this.props.actions.getNotificationCount();
+    this.getNotificationCount();
     window.addEventListener('focus', getNotificationCount);
   }
 
@@ -102,6 +102,11 @@ class TopNav extends Component {
   };
 
   toggleLogin = () => {
+    const { location, history } = this.props;
+    history.push({
+      // pathname: '/dresses',
+      search: `?redirect=${location.pathname}`
+    });
     this.setState({ openLoginModal: !this.state.openLoginModal });
   };
 
@@ -114,7 +119,13 @@ class TopNav extends Component {
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <Nav className={className} fdirection="column" justify="center" p={['0 4', '0 2']}>
+      <Nav
+        className={className}
+        fdirection="column"
+        justify="center"
+        p={['0 4', '0 2']}
+        top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}
+      >
         <View
           zIndex={1}
           justify="space-between"
@@ -197,7 +208,7 @@ class TopNav extends Component {
             />
           </View>
         </View>
-        <View fdirection="row" mt={[0, 1]} ml={[0, 5.75]}>
+        <View fdirection={'row'} mt={[0, 1]} ml={[0, 5.5]}>
           <Breadcrumbs />
         </View>
       </Nav>

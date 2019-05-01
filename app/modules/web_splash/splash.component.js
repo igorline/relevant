@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { InlineText, Text, View, Touchable, Button } from 'modules/styled/uni';
+import { InlineText, Text, View, Touchable, Button, CloseX } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
-import { colors, fonts, sizing } from 'app/styles';
+import { colors, fonts } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import InviteCta from 'modules/web_splash/inviteCta.component';
 import { withRouter } from 'react-router-dom';
+import { storage } from 'utils';
 
 const SignUpCta = ({ location }) => (
-  <View display="flex" fdirection="row">
+  <View display="flex" fdirection="row" justify={['flex-start']}>
     <ULink to={`/user/login?redirect=${location.pathname}`}>
       <Button mr={4}>Login</Button>
     </ULink>
     <ULink to={`/user/signup?redirect=${location.pathname}`}>
-      <Button>Sign Up</Button>
+      <Button mr={0}>Sign Up</Button>
     </ULink>
   </View>
 );
@@ -27,9 +28,26 @@ const CTA = {
   SIGN_UP: SignUpCta
 };
 
+const mobilePhone = `
+  position: absolute;
+  bottom: 0;
+  width: 80vw;
+  right: -40px;
+  opacity: .3;
+`;
+
+const Phone = styled(View)`
+  flex: 0.65;
+  align-self: flex-end;
+  transform-origin: bottom;
+  z-index: -1;
+  ${p => (p.screenSize ? mobilePhone : '')}
+`;
+
 const Wrapper = styled(View)`
   position: relative;
   overflow: hidden;
+  max-height: 550px;
 `;
 
 const SplashText = styled(InlineText)`
@@ -48,17 +66,6 @@ const SubHeader = styled(Text)`
   display: inline;
 `;
 
-const Close = styled(View)`
-  border-radius: 50;
-  width: ${sizing(11)};
-  height: ${sizing(11)};
-  position: absolute;
-  right: ${sizing(3)};
-  top: ${sizing(3)};
-  z-index: 100;
-  cursor: pointer;
-`;
-
 if (process.env.BROWSER === true) {
   require('modules/navigation/web/header.css');
 }
@@ -67,7 +74,8 @@ class Splash extends Component {
   static propTypes = {
     cta: PropTypes.oneOf(Object.keys(CTA)),
     hideCloseButton: PropTypes.bool,
-    location: PropTypes.object
+    location: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   constructor(props, context) {
@@ -78,28 +86,13 @@ class Splash extends Component {
     isDismissed: false
   };
 
-  componentDidMount() {
+  componentDidMount = async () => {
     window.addEventListener('scroll', this.onScroll);
-    this.setState({ isDismissed: this.checkIfDismissedExpired() });
-  }
-
-  checkIfDismissedExpired() {
-    if (!window || !window.localStorage || !localStorage) {
-      return false;
-    }
-    const dismissed = localStorage.getItem('splashDismissed');
-    if (!dismissed) {
-      return false;
-    }
-    const now = new Date().getTime();
-    const diff = Math.abs(now - Number(dismissed));
-    const ONE_DAY = 1000 * 60 * 60 * 24;
-    if (diff > 5 * ONE_DAY) {
-      localStorage.removeItem('splashDismissed');
-      return false;
-    }
-    return true;
-  }
+    const isDismissed = await storage.isDismissed('splashDismissed', 5);
+    this.setState({
+      isDismissed
+    });
+  };
 
   onScroll() {
     if (!this.phone) return;
@@ -111,7 +104,7 @@ class Splash extends Component {
 
   dismiss = () => {
     const now = new Date().getTime();
-    localStorage.setItem('splashDismissed', now);
+    storage.set('splashDismissed', now);
     this.setState({ isDismissed: true });
   };
 
@@ -119,10 +112,10 @@ class Splash extends Component {
     if (this.state.isDismissed) {
       return null;
     }
-    const { cta, hideCloseButton, location } = this.props;
+    const { cta, hideCloseButton, location, screenSize } = this.props;
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
-      'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
+      'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
     const CtaComponent = CTA[cta];
     return (
       <Wrapper
@@ -137,30 +130,34 @@ class Splash extends Component {
       >
         {hideCloseButton ? null : (
           <Touchable onPress={this.dismiss}>
-            <Close bg={colors.blue} display="flex" align="center" justify="center">
-              <Text c={colors.white}>CLOSE</Text>
-            </Close>
+            <CloseX
+              w={3}
+              h={3}
+              top={[6, 3]}
+              right={[6, 3]}
+              resizeMode={'contain'}
+              source={require('app/public/img/x.png')}
+            />
           </Touchable>
         )}
         <View
           className="mainSection"
-          m="12 12 0 12"
+          m={['12 12 0 12', '4 2 0 2']}
           flex={1}
-          display="flex"
           justify="center"
-          align="flex-start"
-          direction="column"
+          align={['flex-start', 'stretch']}
+          fdirection="column"
         >
-          <section className="body">
-            <SplashText fs={7} lh={9}>
+          <View>
+            <SplashText fs={[6, 3]} lh={[9, 4.2]}>
               <OutlineText inheritfont={1} m={0} p={0}>
                 Relevant.
               </OutlineText>{' '}
               <Text>Curated by communities.</Text>
               <Text>Not clicks.</Text>
             </SplashText>
-            <View mt={5} mb={8}>
-              <SubHeader fs={2.5} lh={4}>
+            <View mt={[5, 2]} mb={[8, 4]}>
+              <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
                 Join the thought leaders, build trust and earn rewards.{' '}
                 <ULink
                   to={learnMoreUrl}
@@ -173,16 +170,21 @@ class Splash extends Component {
                 </ULink>
               </SubHeader>
             </View>
-          </section>
+          </View>
           {CtaComponent ? (
-            <View pb={8}>
+            <View pb={[8, 4]}>
               <CtaComponent location={location} />
             </View>
           ) : null}
         </View>
-        <View className="phone" flexshrink={1}>
-          <img ref={c => (this.phone = c)} src={img} alt="phone" />
-        </View>
+        <Phone screenSize={screenSize} className="phone" flexshrink={[1, 0]}>
+          <img
+            style={{ width: '100%' }}
+            ref={c => (this.phone = c)}
+            src={img}
+            alt="phone"
+          />
+        </Phone>
       </Wrapper>
     );
   }

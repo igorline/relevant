@@ -29,7 +29,7 @@ export const getInstance = () => instance;
 
 export async function init() {
   try {
-    let rpcUrl = `https://${process.env.INFURA_NETWORK}.infura.io/${
+    let rpcUrl = `https://${process.env.INFURA_NETWORK}.infura.io/v3/${
       process.env.INFURA_API_KEY
     }`;
 
@@ -84,7 +84,7 @@ export async function sendTx(params) {
     const txParams = {
       jsonrpc: '2.0',
       nonce: web3.utils.numberToHex(nonce),
-      gasPrice: web3.utils.numberToHex(21 * 1e9), // '0x14f46b0400',
+      gasPrice: web3.utils.numberToHex(3.1 * 1e9), // '0x14f46b0400',
       gasLimit: web3.utils.numberToHex(6e6),
       to: instance.address,
       value: web3.utils.numberToHex(value),
@@ -96,6 +96,14 @@ export async function sendTx(params) {
     const tx = new EthereumTx(txParams);
     tx.sign(pk);
     const serializedTx = tx.serialize();
+
+    // const estimate = await web3.eth.estimateGas({
+    //   from: acc,
+    //   nonce: web3.utils.numberToHex(nonce),
+    //   to: instance.address,
+    //   data
+    // });
+    // console.log(estimate);
 
     const transactionHash = await web3.eth
     .sendSignedTransaction('0x' + serializedTx.toString('hex'))
@@ -121,6 +129,7 @@ export async function sendTx(params) {
 export async function mintRewardTokens() {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast.call();
+  // console.log('lastMint', lastMint.toNumber());
   if (lastMint.toNumber() === 0) return null;
   const { data } = instance.releaseTokens.request().params[0];
   return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'releaseTokens' });

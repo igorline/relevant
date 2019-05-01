@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { hideModal } from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import queryString from 'query-string';
 import Modal from 'modules/ui/web/modal';
@@ -48,6 +49,7 @@ class AuthContainer extends Component {
       redirectTo: redirectRoute,
       type: props.type
     };
+    this.props.actions.hideModal();
   }
 
   componentWillReceiveProps(next) {
@@ -131,7 +133,7 @@ class AuthContainer extends Component {
 
     let title = '';
 
-    if (path === 'confirm/:user/:code') {
+    if (path === 'confirm/:user/:code' || path === 'confirm') {
       confirm = true;
       auth = <ConfirmEmail authNav={this.authNav} {...this.props} />;
       title = 'Confirm Your Email';
@@ -150,10 +152,18 @@ class AuthContainer extends Component {
         <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
       );
       title = 'Join the Community';
-    } else if (path === 'resetPassword/:token') {
-      auth = <ResetPassword authNav={this.authNav} {...this.props} />;
+    } else if (path === 'resetPassword/:token' || path === 'resetPassword') {
+      auth = (
+        <ResetPassword
+          authNav={this.authNav}
+          {...this.props}
+          close={this.close.bind(this)}
+        />
+      );
       title = 'Reset Password';
     }
+
+    if (!visible) return null;
 
     return (
       <Modal visible={visible} close={this.close.bind(this)} title={title}>
@@ -182,7 +192,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions
+      ...authActions,
+      hideModal
     },
     dispatch
   )

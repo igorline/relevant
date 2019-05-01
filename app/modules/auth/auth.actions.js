@@ -3,6 +3,7 @@ import * as utils from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
+import { setUserMemberships } from 'modules/community/community.actions';
 
 const Alert = utils.alert.Alert();
 let ReactNative = {};
@@ -13,6 +14,8 @@ let Analytics;
 let ReactGA;
 let Platform;
 let okToRequestPermissions = true;
+let ReactPixel;
+let TwitterCT;
 
 if (process.env.WEB !== 'true') {
   ReactNative = require('react-native');
@@ -22,12 +25,14 @@ if (process.env.WEB !== 'true') {
   PushNotification = require('react-native-push-notification');
 } else {
   ReactGA = require('react-ga').default;
+  ReactPixel = require('react-facebook-pixel').default;
+  TwitterCT = require('app/utils/social').TwitterCT;
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 
 const reqOptions = async () => {
-  const token = await utils.token.get();
+  const token = await utils.storage.getToken();
   return {
     credentials: 'include',
     headers: {
@@ -154,7 +159,7 @@ export function cacheCommunity(community) {
 
 export function logoutAction(user) {
   return dispatch => {
-    utils.token.remove().then(() => {
+    utils.storage.removeToken().then(() => {
       // websocket message
       if (user && user._id) {
         dispatch({
@@ -192,6 +197,28 @@ export function updateUser(user, preventLocalUpdate) {
   };
 }
 
+export function updateNotificationSettings(
+  notificationSettings,
+  subscription,
+  deviceTokens
+) {
+  return async dispatch => {
+    try {
+      const res = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/notifications',
+        body: JSON.stringify({ notificationSettings, subscription, deviceTokens })
+      });
+      dispatch(updateAuthUser(res));
+      return true;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
+  };
+}
+
 export function setDeviceToken(token) {
   return {
     type: 'SET_DEVICE_TOKEN',
@@ -213,21 +240,22 @@ export function removeDeviceToken(auth) {
   };
 }
 
-export function addDeviceToken(user) {
+export function enableMobileNotifications(user) {
   return dispatch => {
     PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      // onRegister: token => {
-      //   console.log('TOKEN:', token);
-      // },
-
       // (required) Called when a remote or local notification is opened or received
       onNotification: notification => {
         // other params: foreground, message
         const { userInteraction, data } = notification;
         if (!userInteraction) return;
-        if (data && data.type === 'postLink') {
-          dispatch(navigationActions.goToPost({ _id: data._id, title: data.title }));
+        if (data && data.post) {
+          const parentId = data.post.parentId
+            ? data.post.parentId._id || data.post.parentId
+            : data.post._id;
+          const comment = parentId !== data.post._id ? { _id: data.post._id } : null;
+          dispatch(
+            navigationActions.goToPost({ _id: parentId, title: data.post.title, comment })
+          );
         }
       },
 
@@ -251,25 +279,27 @@ export function addDeviceToken(user) {
         okToRequestPermissions = false;
         PushNotification.requestPermissions().then(() => {
           okToRequestPermissions = true;
-          dispatch(tooltipActions.tooltipReady(true));
         });
       }
-    } else {
-      dispatch(tooltipActions.tooltipReady(true));
     }
 
     PushNotification.onRegister = deviceToken => {
       const { token } = deviceToken;
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
-      const newUser = user;
+      const newUser = { ...user };
       if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens.push(token);
-        dispatch(updateUser(newUser));
       } else if (user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens = [token];
-        dispatch(updateUser(newUser));
       }
+      const notificationSettings = {
+        ...newUser.notificationSettings,
+        mobile: { all: true }
+      };
+      dispatch(
+        updateNotificationSettings(notificationSettings, null, newUser.deviceTokens)
+      );
     };
   };
 }
@@ -277,17 +307,15 @@ export function addDeviceToken(user) {
 function setupUser(user, dispatch) {
   dispatch(setUser(user));
   dispatch(setSelectedUserData(user));
-  if (process.env.WEB !== 'true') {
-    dispatch(addDeviceToken(user));
-  }
   dispatch(errorActions.setError('universal', false));
+  dispatch(tooltipActions.tooltipReady(true));
   return user;
 }
 
 export function getUser(callback) {
   return async dispatch => {
     try {
-      const token = await utils.token.get();
+      const token = await utils.storage.getToken();
       if (!token) return null;
       dispatch(loginUserSuccess(token));
       const user = await utils.api.request({
@@ -296,6 +324,9 @@ export function getUser(callback) {
         path: '/me'
       });
       setupUser(user, dispatch);
+      if (user.memberships) {
+        dispatch(setUserMemberships(user.memberships));
+      }
       if (callback) callback(user);
       return user;
     } catch (error) {
@@ -303,16 +334,6 @@ export function getUser(callback) {
       dispatch(errorActions.setError('universal', true, message));
       dispatch(loginUserFailure('Server error'));
       if (callback) callback({ ok: false });
-      // need this in case user is logged in but there is an error getting account
-      // if (
-      //   error.message !== 'Network request failed' &&
-      //   error.message !== 'Failed to fetch'
-      // ) {
-      // window.alert('REMOVING TOKEN!' + error.message); // eslint-disable-line
-      // console.log('REMOVING TOKEN!', error.message); // eslint-disable-line
-      // dispatch(logoutAction());
-      // }
-      // throw error;
       return null;
     }
   };
@@ -360,7 +381,7 @@ export function loginUser(user) {
         body: JSON.stringify(user)
       });
       if (responseJSON.token) {
-        await utils.token.set(responseJSON.token);
+        await utils.storage.setToken(responseJSON.token);
         dispatch(loginUserSuccess(responseJSON.token));
         dispatch(getUser());
         return true;
@@ -430,12 +451,14 @@ export function createUser(user, invitecode) {
     .then(response => response.json())
     .then(responseJSON => {
       if (responseJSON.token) {
-        return utils.token.set(responseJSON.token).then(() => {
+        return utils.storage.setToken(responseJSON.token).then(() => {
           ReactGA &&
               ReactGA.event({
                 category: 'User',
                 action: 'Created an Account'
               });
+          TwitterCT && TwitterCT.signUp();
+          ReactPixel && ReactPixel.track('CompleteRegistration');
           Analytics && Analytics.logEvent('Created an Account');
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());
@@ -653,14 +676,14 @@ export function twitterAuth(profile, invite) {
       }
       dispatch(setLoading(false));
       if (result.user && result.user.role === 'temp') {
-        await utils.token.set(result.token);
+        await utils.storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
 
         dispatch(setPreUser(result.user));
         dispatch(setTwitter({ ...profile, token: result.token }));
         return false;
       } else if (result.token && result.user) {
-        await utils.token.set(result.token);
+        await utils.storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);
       }

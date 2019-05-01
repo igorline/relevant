@@ -11,9 +11,9 @@ import PostTitle from './postTitle.component';
 
 export default function PostInfo(props) {
   const { post, link, firstPost, noLink, screenSize } = props;
-  const { community, ...rest } = props;
+  // const { community, ...rest } = props;
   if (screenSize) {
-    return <PostInfoMobile {...rest} />;
+    return <PostInfoMobile {...props} />;
   }
   if (post.loading) {
     return (

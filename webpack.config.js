@@ -1,6 +1,7 @@
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
@@ -64,9 +65,13 @@ module.exports = {
         NODE_ENV: JSON.stringify('development'),
         WEB: JSON.stringify('true'),
         API_SERVER: JSON.stringify(''),
-        BABEL_ENV: JSON.stringify('development_web')
+        BABEL_ENV: JSON.stringify('development_web'),
+        VAPID_PUBLIC_KEY: JSON.stringify(
+          'BJp16DSJF-SdwZ3yxE2cK502FKKI7hxTON6YDoCaTctcq9sr3scJS1iTsa3YSlvOV-p2_P51cNWF5-os4Gc0rq4'
+        )
       }
     }),
+    new CompressionPlugin(),
     new LoadablePlugin({
       filename: 'loadable-stats-dev.json',
       writeToDisk: true
@@ -78,7 +83,9 @@ module.exports = {
       react: path.resolve('./node_modules/react'),
       'react-dom': path.resolve('./node_modules/react-dom'),
       'react-native$': 'react-native-web',
-      'react-native-linear-gradient$': 'react-native-web-linear-gradient'
+      'react-native-linear-gradient$': 'react-native-web-linear-gradient',
+      lodash: path.resolve(__dirname, 'node_modules/lodash'),
+      'bn.js': path.resolve(__dirname, 'node_modules/bn.js')
     }
   },
 

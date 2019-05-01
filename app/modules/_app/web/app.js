@@ -1,44 +1,40 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
+import loadable from '@loadable/component';
+
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import routes from 'modules/_app/web/routes';
 import queryString from 'query-string';
 import get from 'lodash.get';
-
-import * as navigationActions from 'modules/navigation/navigation.actions';
-import * as authActions from 'modules/auth/auth.actions';
-import * as modals from 'modules/ui/modals';
-
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { getEarnings } from 'modules/wallet/earnings.actions';
-
-import AuthContainer from 'modules/auth/web/auth.container';
-import AddEthAddress from 'modules/wallet/web/AddEthAddress';
+import * as navigationActions from 'modules/navigation/navigation.actions';
+import * as authActions from 'modules/auth/auth.actions';
 import Modal from 'modules/ui/web/modal';
-import EthTools from 'modules/web_ethTools/tools.container';
-import Eth from 'modules/web_ethTools/eth.context';
-import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
-
-import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
-import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
-
 import SmartBanner from 'react-smartbanner';
-
 import ReactGA from 'react-ga';
+import { TwitterCT } from 'app/utils/social';
+import * as modals from 'modules/ui/modals';
+import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
+import { ToastContainer } from 'react-toastify';
 
-ReactGA.initialize('UA-51795165-6');
+const UpvoteAnimation = loadable(() =>
+  import('modules/animation/mobile/upvoteAnimation.component')
+);
+
+let ReactPixel;
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
   require('app/styles/fonts.css');
-  require('modules/web_splash/splash.css');
+  // require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
 }
@@ -72,6 +68,10 @@ class App extends Component {
     const { actions, auth, location, history } = this.props;
     const { community } = auth;
 
+    if (process.env.NODE_ENV !== 'development') {
+      this.initAnalytics({ location, history });
+    }
+
     if (community && location.pathname === '/') {
       history.replace(`/${community}/new`);
     }
@@ -79,12 +79,8 @@ class App extends Component {
     if (community) actions.setCommunity(community);
     actions.getCommunities();
     actions.getUser();
-    actions.getEarnings('pending');
 
-    if (auth.user && auth.user.webOnboard && !auth.user.webOnboard.onboarding) {
-      actions.showModal('onboarding');
-      actions.webOnboard('onboarding');
-    }
+    if (auth.user) this.handleUserLogin();
 
     const parsed = queryString.parse(location.search);
     if (parsed.invitecode) {
@@ -107,8 +103,25 @@ class App extends Component {
 
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
-    history.listen(loc => ReactGA.pageview(loc.pathname + loc.search));
   }
+
+  initAnalytics = ({ location, history }) => {
+    ReactPixel = require('react-facebook-pixel').default;
+
+    ReactPixel.init('286620198458049');
+    TwitterCT.init('o1p7u');
+    ReactGA.initialize('UA-51795165-6');
+
+    ReactPixel.pageView();
+    TwitterCT.pageView();
+    ReactGA.pageview(location.pathname + location.search);
+
+    history.listen(loc => {
+      TwitterCT.pageView();
+      ReactGA.pageview(loc.pathname + loc.search);
+      ReactPixel.pageView();
+    });
+  };
 
   setWidth = () => {
     this.props.actions.setWidth(window.innerWidth);
@@ -127,6 +140,7 @@ class App extends Component {
 
   handleUserLogin = () => {
     const { auth, actions } = this.props;
+    if (auth.user.role === 'temp') return;
     if (!auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
@@ -139,6 +153,7 @@ class App extends Component {
       });
     }
     ReactGA.set({ userId: auth.user._id });
+    actions.getEarnings('pending');
   };
 
   componentDidUpdate(prevProps) {
@@ -175,10 +190,14 @@ class App extends Component {
     if (!prevProps.auth.user && auth.user) {
       this.handleUserLogin();
     }
-    // const match = matchPath(history.location.pathname, {
-    //   // You can share this string as a constant if you want
-    //   path: "/articles/:id"
-    // });
+    if (
+      prevProps.auth.user &&
+      auth.user &&
+      prevProps.auth.user.role === 'temp' &&
+      auth.user.role !== 'temp'
+    ) {
+      this.handleUserLogin();
+    }
   }
 
   toggleLogin(authType) {
@@ -186,7 +205,13 @@ class App extends Component {
   }
 
   closeModal() {
-    this.props.history.push(this.props.location.pathname);
+    const { history, location } = this.props;
+    const queryParams = queryString.parse(location.search);
+    if (queryParams.redirect) {
+      history.push(queryParams.redirect);
+    } else {
+      history.push(location.pathname);
+    }
   }
 
   renderModal() {
@@ -205,6 +230,8 @@ class App extends Component {
     }
     if (!globalModal) return null;
     globalModal = modals[globalModal] || globalModal;
+
+    if (typeof globalModal === 'string') return null;
     const { Body } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
     return (
@@ -228,18 +255,18 @@ class App extends Component {
   }
 
   render() {
-    const { location, user, children } = this.props;
-    const temp = user && user.role === 'temp';
-    const connectAccount = location.hash === '#connectAccount';
+    // const { location, user } = this.props;
+    // const temp = user && user.role === 'temp';
+    // const connectAccount = location.hash === '#connectAccount';
 
     return (
       <div>
         <GlobalStyle />
         <SmartBanner
-          daysHidden={2}
+          daysHidden={0}
           daysReminder={0}
           title={'Relevant Communities'}
-          author={'Relevant Protocols'}
+          // author={''}
           position={'top'}
           // force={'ios'}
         />
@@ -262,15 +289,18 @@ class App extends Component {
         >
           <UpvoteAnimation />
         </div>
+
+        {/* <AuthContainer
+          toggleLogin={this.toggleLogin.bind(this)}
+          open={this.state.openLoginModal || temp}
+          modal
+          type={this.state.authType}
+          {...this.props}
+        /> */}
+
+        {/* TODO - separate modal
         <EthTools>
           <div style={{ display: 'flex', width: '100%' }}>{children}</div>
-          <AuthContainer
-            toggleLogin={this.toggleLogin.bind(this)}
-            open={this.state.openLoginModal || temp}
-            modal
-            type={this.state.authType}
-            {...this.props}
-          />
           <Eth.Consumer>
             {wallet => (
               <AddEthAddress
@@ -281,7 +311,7 @@ class App extends Component {
               />
             )}
           </Eth.Consumer>
-        </EthTools>
+        </EthTools> */}
         {this.renderModal()}
         <ToastContainer />
         {renderRoutes(this.props.route.routes)}

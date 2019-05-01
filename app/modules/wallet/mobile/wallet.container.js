@@ -7,17 +7,17 @@ import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 // import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import Earning from 'modules/wallet/earning.component';
-import { initDrizzle } from 'app/utils/eth';
+// import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
 import CustomListView from 'modules/listview/mobile/customList.component';
-import moment from 'moment';
 import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
 import { withNavigation } from 'react-navigation';
+import { getMonth } from 'app/utils/numbers';
 
-let drizzle;
+// let drizzle;
 
 const PAGE_SIZE = 30;
 
@@ -29,7 +29,8 @@ class WalletContainer extends Component {
     actions: PropTypes.object,
     earnings: PropTypes.object,
     reload: PropTypes.number,
-    refresh: PropTypes.number
+    refresh: PropTypes.number,
+    screenSize: PropTypes.number
   };
 
   static contextTypes = {
@@ -50,7 +51,7 @@ class WalletContainer extends Component {
     const { isAuthenticated } = this.props.auth;
     if (isAuthenticated) {
       // eslint-disable-next-line
-      drizzle = initDrizzle(this.context.store);
+      // drizzle = initDrizzle(this.context.store);
     }
     if (!this.props.earnings.list.length) {
       this.load(0, 0);
@@ -58,10 +59,10 @@ class WalletContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isAuthenticated } = this.props.auth;
-    if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
-      drizzle = initDrizzle(this.context.store);
-    }
+    // const { isAuthenticated } = this.props.auth;
+    // if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
+    //   drizzle = initDrizzle(this.context.store);
+    // }
 
     if (this.props.refresh !== prevProps.refresh) {
       this.scrollToTop();
@@ -70,6 +71,8 @@ class WalletContainer extends Component {
     if (this.props.reload !== prevProps.reload) {
       this.needsReload = new Date().getTime();
     }
+
+    if (!this.props.earnings.list.length) this.reload();
   }
 
   scrollToTop = () => {
@@ -79,8 +82,12 @@ class WalletContainer extends Component {
     }
   };
 
-  load = (view, length) => {
-    this.props.actions.getEarnings(null, PAGE_SIZE, length);
+  load = async (view, length) => {
+    if (this.loading) return null;
+    this.loading = true;
+    await this.props.actions.getEarnings(null, PAGE_SIZE, length);
+    this.loading = false;
+    return null;
   };
 
   reload = () => this.load(0, 0);
@@ -93,26 +100,26 @@ class WalletContainer extends Component {
     // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
 
     <View>
-      <Eth.Consumer>
-        {wallet => <Balance wallet={wallet} mobile {...this.props} />}
-      </Eth.Consumer>
+      <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
     </View>
   );
 
-  renderRow = item => {
+  renderRow = (item, view, i) => {
+    const { screenSize } = this.props;
+    if (parseInt(i, 10) === 0) this.previousMonth = null;
     if (!item) return null;
     const earning = item;
 
     const payout = computeUserPayout(earning);
     if (!payout || !earning) return null;
 
-    const month = moment(earning.createdAt).format('MMMM');
-    const showMonth = this.previousMonth !== month;
+    const month = getMonth(earning.createdAt);
+    const showMonth = month !== this.previousMonth;
     this.previousMonth = month;
 
     return (
       <Earning
-        mobile
+        screenSize={screenSize}
         earning={earning}
         payout={payout}
         month={showMonth ? month : null}
@@ -127,7 +134,6 @@ class WalletContainer extends Component {
 
     const { list } = earnings;
     const entities = list.map(id => earnings.entities[id]);
-    this.previousMonth = null;
 
     return (
       <View flex={1}>
@@ -169,7 +175,8 @@ function mapStateToProps(state) {
       transactionStack: state.transactionStack
     },
     refresh: state.navigation.wallet.refresh,
-    reload: state.navigation.wallet.reload
+    reload: state.navigation.wallet.reload,
+    screenSize: state.navigation.screenSize
   };
 }
 

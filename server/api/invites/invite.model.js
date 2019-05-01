@@ -32,16 +32,21 @@ InviteSchema.statics.checkInvite = async function checkInvite(invite) {
   return invite;
 };
 
-InviteSchema.statics.processInvite = async function processInvite({ invitecode, user }) {
+InviteSchema.statics.processInvite = async function processInvite({
+  invitecode,
+  user,
+  isNotNew
+}) {
   const invite = await this.model('Invite').findOne({
     code: invitecode,
     redeemed: { $ne: true }
   });
+  if (isNotNew && (user.balance > 0 && invite !== 'admin')) return user;
   if (invite) return referralRewards({ invite, user, Invite: this });
 
   const publicInvite = await this.model('User').findOne({ handle: invitecode });
   if (publicInvite) return publicReward({ inviter: publicInvite, user, Invite: this });
-  return null;
+  return user;
 };
 
 async function publicReward({ user, inviter }) {
@@ -57,6 +62,7 @@ async function referralRewards({ invite, user, Invite }) {
     invite.number -= 1;
     if (invite.number === 0) invite.redeemed = true;
     invite.registeredAs = user._id;
+    await invite.save();
 
     let inviter = await Invite.model('User')
     .findOne({ _id: invite.invitedBy })
@@ -71,8 +77,23 @@ async function referralRewards({ invite, user, Invite }) {
     const role = invite.type === 'admin' ? 'admin' : null;
     await communityInstance.join(user._id, role);
 
+    if (role === 'admin') {
+      const relevance = await Invite.model('Relevance').findOne({
+        user: user._id,
+        communityId,
+        global: true
+      });
+      relevance.pagerank = 70;
+      await relevance.save();
+      user.relevance = relevance;
+      return user;
+    }
+
     user = await user.addReward({ type: 'referredBy', user: inviter });
     inviter = await inviter.addReward({ type: 'referral', user });
+
+    // console.log('updated relevance', updatedUser);
+    if (user.email === invite.email) user.confirmed = true;
 
     const vote = new (Invite.model('Invest'))({
       investor: inviter._id,
@@ -90,10 +111,7 @@ async function referralRewards({ invite, user, Invite }) {
       investment: vote,
       user: inviter
     });
-    // console.log('updated relevance', updatedUser);
-    if (user.email === invite.email) user.confirmed = true;
 
-    await invite.save();
     return updatedUser;
   } catch (err) {
     throw err;

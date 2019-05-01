@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
-import { View, Image, Header, Touchable } from 'modules/styled/uni';
-import { colors, mixins, layout } from 'app/styles';
+import { View, Header, Touchable, CloseX } from 'modules/styled/uni';
+import { colors, layout } from 'app/styles';
+// import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 const ModalParent = styled.View`
   position: fixed;
@@ -16,7 +17,9 @@ const ModalParent = styled.View`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const ModalScroll = styled.View`
@@ -31,14 +34,6 @@ const Modal = styled(View)`
   z-index: 5;
   ${layout.modalShadow}
   max-width: 100vw;
-`;
-
-const CloseButton = styled(Image)`
-  position: absolute;
-  ${p => (p.top ? `top: ${mixins.size(p.top)};` : null)}
-  ${p => (p.right ? `right: ${mixins.size(p.right)};` : null)}
-  cursor: pointer;
-  z-index: 10;
 `;
 
 export default class ModalComponent extends Component {
@@ -64,9 +59,24 @@ export default class ModalComponent extends Component {
   }
   componentDidMount() {
     document.addEventListener('keydown', this.escFunction, false);
+    // disableBodyScroll(this.targetElement, {
+    //   allowTouchMove: el => {
+    //     while (el && el !== document.body) {
+    //       if (el.getAttribute('body-scroll-lock-ignore') !== null) {
+    //         return true;
+    //       }
+    //       el = el.parentNode;
+    //     }
+    //   },
+    // allowTouchMove: el => {
+    //   console.log(el, el.getAttribute('ignoreScrollLock'));
+    //   return el.getAttribute('ignoreScrollLock') !== null;
+    // }
+    // });
   }
   componentWillUnmount() {
     document.removeEventListener('keydown', this.escFunction, false);
+    // clearAllBodyScrollLocks();
   }
 
   render() {
@@ -75,21 +85,22 @@ export default class ModalComponent extends Component {
     if (!this.props.visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
     return (
-      <ModalParent onClick={close}>
-        <ModalScroll>
+      <ModalParent onClick={close} ref={c => (this.targetElement = c)}>
+        <ModalScroll ignoreScrollLock>
           <Modal
+            ignoreScrollLock
             bg={colors.white}
             w={[95, '100vw']}
             p={[6, 3]}
             justify={['space-between', 'center']}
             fdirection="column"
-            margin={['6 0', '3 0']}
+            m={['6 0', '0']}
             minHeight={['auto', '100vh']}
             onClick={e => e.stopPropagation()}
           >
             {hideX ? null : (
               <Touchable onPress={() => close()}>
-                <CloseButton
+                <CloseX
                   w={3}
                   h={3}
                   top={[6, 3]}

@@ -8,7 +8,7 @@ const initialState = {
   user: null,
   deviceToken: null,
   preUser: null,
-  confirmed: true,
+  confirmed: false,
   stats: null,
   nextUpdate: new Date(),
   chart: [],

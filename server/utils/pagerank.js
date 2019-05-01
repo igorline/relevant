@@ -7,88 +7,115 @@
 /* eslint camelcase: 0 */
 /* eslint no-console: 0 */
 
-function objectToMatrix(_inputs, params) {
-  const inputs = Object.keys(_inputs);
-  const dictionary = {};
-  inputs.forEach((key, i) => (dictionary[key] = i));
-  const N = inputs.length;
-  const G = [];
-  const g = {};
-  const neg = {};
-  const P = [];
-  let avoid = [];
-  const danglingNodes = [];
-  const danglingObj = {};
+export default function pagerank(inputs, params) {
+  if (!params) params = {};
+  if (!params.alpha) params.alpha = 0.85;
+  if (!params.personalization) params.personalization = null;
+  if (!params.max_iter) params.max_iter = 500;
+  if (!params.tol) params.tol = 1.0e-6;
+  if (!params.weight) params.weight = 'weight';
+  if (!params.negative) params.negative = 'negative';
+  if (!params.beta) params.beta = 2;
+  if (!params.M) params.M = 1;
+  if (!params.fast) params.fast = false;
+  if (!params.debug) params.debug = false;
 
-  inputs.forEach((el, i) => {
-    const upvotes = new Array(N).fill(0);
-    const downvotes = new Array(N).fill(0);
+  const now = new Date();
 
-    let degree = 0;
-    Object.keys(_inputs[el]).forEach(vote => {
-      let w = _inputs[el][vote][params.weight];
-      const n = _inputs[el][vote][params.negative] || 0;
-      // eigentrust++ weights
-      // w = Math.max((w - n) / (w + n), 0);
-      // eigentrust weights
-      w = Math.max(w - n, 0);
-      _inputs[el][vote].w = w;
-      // TODO - count only positive in degree and normalize?
-      if (w > 0) degree += w;
-    });
+  const pgParams = objectToMatrix(inputs, params);
 
-    if (degree === 0) {
-      danglingNodes.push(i);
-      danglingObj[i] = true;
-      degree = 1;
-    }
-    const id_i = dictionary[el];
+  const { neg, g, N, dictionary, danglingNodes, danglingObj } = pgParams;
+  let { P, avoid } = pgParams;
 
-    Object.keys(_inputs[el]).forEach(vote => {
-      const { w } = _inputs[el][vote];
-      let n = _inputs[el][vote][params.negative] || 0;
-      upvotes[dictionary[vote]] = w / degree;
-      const j = dictionary[vote];
-
-      g[j] = g[j] || {};
-      g[j].inputs = g[j].inputs || {};
-      g[j].inputsN = g[j].inputsN || {};
-      g[j].inputs[id_i] = w / degree;
-
-      if (n) {
-        n /= _inputs[el][vote].total;
-        neg[i] = neg[i] || {};
-        neg[i][dictionary[vote]] = n;
-
-        avoid = [...new Set([...avoid, i])];
-
-        downvotes[dictionary[vote]] = n;
-        g[j].inputsN[id_i] = n;
+  let p = new Array(N).fill(0);
+  if (!params.personalization) {
+    p = new Array(N).fill(1.0 / N);
+  } else {
+    const keys = Object.keys(params.personalization);
+    const degree = keys.reduce((prev, key) => prev + params.personalization[key], 0);
+    keys.forEach(key => {
+      p[dictionary[key]] = params.personalization[key] / degree;
+      for (let j = 0; j < N; j++) {
+        if (!g[dictionary[key]]) g[dictionary[key]] = { inputs: {} };
+        if (!g[dictionary[key]].inputs[j]) g[dictionary[key]].inputs[j] = 0;
       }
     });
-    G[i] = upvotes;
-    P[i] = downvotes;
-  });
+  }
 
-  const { heapUsed } = process.memoryUsage();
-  const mb = Math.round((100 * heapUsed) / 1048576) / 100;
-  params.debug && console.log('Matrix - program is using', mb, 'MB of Heap.');
+  let danglingWeights = [];
+  if (!params.dangling) {
+    // Use personalization vector if dangling vector not specified
+    danglingWeights = p;
+  } else {
+    danglingWeights = new Array(N).fill(1 / N);
+  }
 
-  return { neg, g, G, N, P, dictionary, danglingNodes, avoid, danglingObj };
-}
+  let x;
+  if (!params.nstart) {
+    x = [...p];
+  } else {
+    x = new Array(N).fill(0);
+    const keys = Object.keys(params.nstart);
+    const degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
+    let sum = 0;
+    keys.forEach(key => {
+      if (!degree) return;
+      const i = dictionary[key];
+      x[i] = params.nstart[key];
+      sum += x[i];
+    });
+    params.debug && console.log('start sum ', sum);
+  }
 
-function formatOutput(x, dictionary, inputs) {
-  const result = {};
-  Object.keys(inputs).forEach((node, i) => (result[node] = x[i]));
-  return result;
+  params.debug &&
+    console.log('matrix setup time ', (new Date().getTime() - now) / 1000 + 's');
+
+  let tildeP = P.map(arr => arr.slice());
+  let iter;
+  let err;
+
+  for (iter = 0; iter < params.max_iter; iter++) {
+    // this enables garbage collector to free up memory
+    // between iterations
+    ({ x, err, P, tildeP, avoid } = runLoop(
+      {
+        x,
+        p,
+        tildeP,
+        P,
+        g,
+        N,
+        danglingNodes,
+        avoid,
+        danglingWeights,
+        danglingObj,
+        neg,
+        iter
+      },
+      params
+    ));
+
+    if (err < N * params.tol && iter > 1) {
+      params.debug && console.log('iterations ', iter);
+      params.debug && console.log(err);
+      const elapsed = new Date().getTime() - now.getTime();
+      params.debug && console.log('elapsed time: ', elapsed / 1000, 's');
+      return formatOutput(x, dictionary, inputs, params);
+    }
+  }
+
+  console.warn(
+    'pagerank: power iteration failed to converge in ' + params.iter_max + ' iterations.'
+  );
+  return formatOutput(x, dictionary, inputs, params);
 }
 
 function runLoop(loopParams, params) {
-  let { x, avoid } = loopParams;
-  const {
+  const { tildeP, P } = loopParams;
+  let {
+    x,
+    avoid,
     p,
-    tildeP,
-    P,
     g,
     N,
     danglingNodes,
@@ -101,7 +128,7 @@ function runLoop(loopParams, params) {
   let transitions;
   let Ti;
 
-  const xlast = [...x];
+  let xlast = [...x];
 
   x = new Array(N).fill(0);
   const lastP = P.map(arr => arr.slice());
@@ -158,15 +185,18 @@ function runLoop(loopParams, params) {
     }
     upvotes = null;
     Ti = null;
+    transitions = null;
+
+    // if (params.debug) {
+    //   const { heapUsed } = process.memoryUsage();
+    //   const mb = Math.round((100 * heapUsed) / 1048576) / 100;
+    //   console.log('step - program is using', mb, 'MB of Heap.');
+    //   console.log('avoid length', avoid.length, N);
+    // }
   }
 
-  const { heapUsed } = process.memoryUsage();
-  const mb = Math.round((100 * heapUsed) / 1048576) / 100;
-  params.debug && console.log('Iter - program is using', mb, 'MB of Heap.');
-  params.debug && console.log('avoid length', avoid.length, N);
-
   // normalize
-  const sum = x.reduce((prev, next) => prev + next, 0);
+  let sum = x.reduce((prev, next) => prev + next, 0);
 
   let err = 0.0;
   x = x.map((el, i) => {
@@ -175,108 +205,106 @@ function runLoop(loopParams, params) {
     return el;
   });
 
-  return { x, err };
+  xlast = null;
+  sum = null;
+  p = null;
+
+  g = null;
+  danglingNodes = null;
+  danglingWeights = null;
+  danglingObj = null;
+  neg = null;
+  // lastP = null;
+  // tildeP = null;
+  // P = null;
+
+  if (params.debug) {
+    const { heapUsed } = process.memoryUsage();
+    const mb = Math.round((100 * heapUsed) / 1048576) / 100;
+    console.log('Iter - program is using', mb, 'MB of Heap.');
+    // console.log('avoid length', avoid.length, N, err);
+    // console.log('tildeP', tildeP);
+  }
+  N = null;
+  // avoid = null;
+
+  return { x, err, P, tildeP, avoid, lastP };
 }
 
-export default function pagerank(inputs, params) {
-  if (!params) params = {};
-  if (!params.alpha) params.alpha = 0.85;
-  if (!params.personalization) params.personalization = null;
-  if (!params.max_iter) params.max_iter = 500;
-  if (!params.tol) params.tol = 1.0e-6;
-  if (!params.weight) params.weight = 'weight';
-  if (!params.negative) params.negative = 'negative';
-  if (!params.beta) params.beta = 2;
-  if (!params.M) params.M = 1;
-  if (!params.fast) params.fast = false;
-  if (!params.debug) params.debug = false;
+function objectToMatrix(_inputs, params) {
+  const inputs = Object.keys(_inputs);
+  const dictionary = {};
+  inputs.forEach((key, i) => (dictionary[key] = i));
+  const N = inputs.length;
+  // const G = [];
+  const g = {};
+  const neg = {};
+  const P = [];
+  let avoid = [];
+  const danglingNodes = [];
+  const danglingObj = {};
 
-  const now = new Date();
+  inputs.forEach((el, i) => {
+    const upvotes = new Array(N).fill(0);
+    const downvotes = new Array(N).fill(0);
 
-  const { neg, g, P, N, dictionary, danglingNodes, avoid, danglingObj } = objectToMatrix(
-    inputs,
-    params
-  );
+    let degree = 0;
+    Object.keys(_inputs[el]).forEach(vote => {
+      let w = _inputs[el][vote][params.weight];
+      const n = _inputs[el][vote][params.negative] || 0;
+      // eigentrust++ weights
+      // w = Math.max((w - n) / (w + n), 0);
+      // eigentrust weights
+      w = Math.max(w - n, 0);
+      _inputs[el][vote].w = w;
+      // TODO - count only positive in degree and normalize?
+      if (w > 0) degree += w;
+    });
 
-  let p = new Array(N).fill(0);
-  if (!params.personalization) {
-    p = new Array(N).fill(1.0 / N);
-  } else {
-    const keys = Object.keys(params.personalization);
-    const degree = keys.reduce((prev, key) => prev + params.personalization[key], 0);
-    keys.forEach(key => {
-      p[dictionary[key]] = params.personalization[key] / degree;
-      for (let j = 0; j < N; j++) {
-        if (!g[dictionary[key]]) g[dictionary[key]] = { inputs: {} };
-        if (!g[dictionary[key]].inputs[j]) g[dictionary[key]].inputs[j] = 0;
+    if (degree === 0) {
+      danglingNodes.push(i);
+      danglingObj[i] = true;
+      degree = 1;
+    }
+    const id_i = dictionary[el];
+
+    Object.keys(_inputs[el]).forEach(vote => {
+      const { w } = _inputs[el][vote];
+      let n = _inputs[el][vote][params.negative] || 0;
+      upvotes[dictionary[vote]] = w / degree;
+      const j = dictionary[vote];
+
+      g[j] = g[j] || {};
+      g[j].inputs = g[j].inputs || {};
+      g[j].inputsN = g[j].inputsN || {};
+      g[j].inputs[id_i] = w / degree;
+
+      if (n) {
+        n /= _inputs[el][vote].total;
+        neg[i] = neg[i] || {};
+        neg[i][dictionary[vote]] = n;
+
+        avoid = [...new Set([...avoid, i])];
+
+        downvotes[dictionary[vote]] = n;
+        g[j].inputsN[id_i] = n;
       }
     });
+    // G[i] = upvotes;
+    P[i] = downvotes;
+  });
+
+  if (params.debug) {
+    const { heapUsed } = process.memoryUsage();
+    const mb = Math.round((100 * heapUsed) / 1048576) / 100;
+    console.log('Matrix - program is using', mb, 'MB of Heap.');
   }
 
-  let danglingWeights = [];
-  if (!params.dangling) {
-    // Use personalization vector if dangling vector not specified
-    danglingWeights = p;
-  } else {
-    danglingWeights = new Array(N).fill(1 / N);
-  }
+  return { neg, g, N, P, dictionary, danglingNodes, avoid, danglingObj };
+}
 
-  let x;
-  if (!params.nstart) {
-    x = [...p];
-  } else {
-    x = new Array(N).fill(0);
-    const keys = Object.keys(params.nstart);
-    const degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
-    let sum = 0;
-    keys.forEach(key => {
-      if (!degree) return;
-      const i = dictionary[key];
-      x[i] = params.nstart[key];
-      sum += x[i];
-    });
-    params.debug && console.log('start sum ', sum);
-  }
-
-  params.debug &&
-    console.log('matrix setup time ', (new Date().getTime() - now) / 1000 + 's');
-
-  const tildeP = P.map(arr => arr.slice());
-  let iter;
-  let err;
-
-  for (iter = 0; iter < params.max_iter; iter++) {
-    // this enables garbage collector to free up memory
-    // between iterations
-    ({ x, err } = runLoop(
-      {
-        x,
-        p,
-        tildeP,
-        P,
-        g,
-        N,
-        danglingNodes,
-        avoid,
-        danglingWeights,
-        danglingObj,
-        neg,
-        iter
-      },
-      params
-    ));
-
-    if (err < N * params.tol && iter > 1) {
-      params.debug && console.log('iterations ', iter);
-      params.debug && console.log(err);
-      const elapsed = new Date().getTime() - now.getTime();
-      params.debug && console.log('elapsed time: ', elapsed / 1000, 's');
-      return formatOutput(x, dictionary, inputs, params);
-    }
-  }
-
-  console.warn(
-    'pagerank: power iteration failed to converge in ' + params.iter_max + ' iterations.'
-  );
-  return formatOutput(x, dictionary, inputs, params);
+function formatOutput(x, dictionary, inputs) {
+  const result = {};
+  Object.keys(inputs).forEach((node, i) => (result[node] = x[i]));
+  return result;
 }

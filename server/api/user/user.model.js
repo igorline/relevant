@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
+import socketEvent from 'server/socket/socketEvent';
 import {
   newUserCoins,
   POWER_REGEN_INTERVAL,
@@ -11,13 +11,13 @@ import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
-const authTypes = ['github', 'twitter', 'facebook', 'google'];
+const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit'];
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
     // Comment out to automatically generate _id
-    // _id: { type: Schema.Types.Mixed, required: true },
+    // _id: { type: Schema.Types.Object, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
@@ -46,6 +46,38 @@ const UserSchema = new Schema(
     salt: { type: String, select: false },
     facebook: {},
     twitter: { type: Object, select: false },
+    reddit: { type: Object, select: false },
+    notificationSettings: {
+      email: {
+        digest: {
+          type: Boolean,
+          default: true
+        },
+        general: {
+          type: Boolean,
+          default: true
+        },
+        personal: {
+          type: Boolean,
+          default: true
+        }
+      },
+      mobile: {
+        all: {
+          type: Boolean,
+          default: false
+        }
+      },
+      desktop: {
+        all: {
+          type: Boolean,
+          default: false
+        }
+      }
+    },
+    desktopSubscriptions: [],
+    redditId: String,
+    redditAuth: { type: Object, select: false },
     google: {},
     github: {},
     relevanceRecord: [
@@ -118,6 +150,8 @@ const UserSchema = new Schema(
     },
     airdropTokens: { type: Number, default: 0 },
     referralTokens: { type: Number, default: 0 },
+    legacyTokens: { type: Number, default: 0 },
+    legacyAirdrop: { type: Number, default: 0 },
 
     version: String,
     community: String
@@ -131,7 +165,6 @@ const UserSchema = new Schema(
 
 // UserSchema.index({ name: 'text' });
 UserSchema.index({ handle: 1 });
-UserSchema.statics.events = new EventEmitter();
 
 /**
  * Virtuals
@@ -224,12 +257,12 @@ UserSchema.pre('save', async function preSave(next) {
       !validatePresenceOf(this.hashedPassword) &&
       authTypes.indexOf(this.provider) === -1
     ) {
-      next(new Error('Invalid password'));
-    } else next();
+      return next(new Error('Invalid password'));
+    }
+    return next();
   } catch (err) {
-    next(err);
+    return next(err);
   }
-  return null;
 });
 
 UserSchema.pre('remove', async function preRemove(next) {
@@ -344,10 +377,10 @@ UserSchema.methods.updateClient = function updateClient(actor) {
     type: 'UPDATE_USER',
     payload: this
   };
-  this.model('User').events.emit('userEvent', userData);
+  socketEvent.emit('socketEvent', userData);
   if (actor) {
     userData._id = actor._id;
-    this.model('User').events.emit('userEvent', userData);
+    socketEvent.emit('socketEvent', userData);
   }
 };
 
@@ -376,9 +409,9 @@ UserSchema.methods.updateMeta = async function updateMeta() {
   }
 };
 
-UserSchema.methods.addReward = async function addReward({ type, user }) {
+UserSchema.methods.addReward = async function addReward({ type, user, extraRewards }) {
   try {
-    const amount = getRewardForType(type);
+    const amount = getRewardForType(type) + (extraRewards || 0);
     const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
 
     // TODO - update this and tie it to smart contract
@@ -464,4 +497,5 @@ UserSchema.methods.updatePower = function updatePower() {
   return this;
 };
 
+// export default mongoose.model('User', UserSchema);
 module.exports = mongoose.model('User', UserSchema);

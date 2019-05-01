@@ -1,8 +1,9 @@
 /* eslint no-console: 0 */
+import { sendNotification as sendPushNotification } from 'server/notifications';
+import Notification from 'server/api/notification/notification.model';
+import Post from 'server/api/post/post.model';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
-import apnData from '../pushNotifications';
-import Notification from '../api/notification/notification.model';
 import Earnings from '../api/earnings/earnings.model';
 import Community from '../api/community/community.model';
 import * as Eth from './ethereum';
@@ -238,7 +239,7 @@ async function distributeUserRewards(posts, _community) {
       // don't count downvotes
       if (vote.amount < 0) return null;
 
-      const user = await User.findOne(
+      let user = await User.findOne(
         { _id: vote.investor },
         'name balance deviceTokens badge lockedTokens'
       );
@@ -253,8 +254,7 @@ async function distributeUserRewards(posts, _community) {
         : curationPayout;
 
       // TODO diff decimal?
-      const reward = curationPayout / 10 ** 18;
-      user.balance += Math.max(reward, 0);
+      const reward = Math.max(curationPayout, 0) / 10 ** 18;
 
       const earning = await Earnings.updateRewardsRecord({
         user: user._id,
@@ -265,8 +265,13 @@ async function distributeUserRewards(posts, _community) {
         communityId
       });
 
-      user.lockedTokens = Math.max(user.lockedTokens - earning.stakedTokens, 0);
-      await user.save();
+      const unlockTokens = Math.min(user.lockedTokens, earning.stakedTokens);
+
+      user = await User.findOneAndUpdate(
+        { _id: user._id },
+        { $inc: { balance: reward, lockedTokens: -unlockTokens } },
+        { new: true }
+      );
 
       if (curationPayout === 0) return null;
 
@@ -277,7 +282,8 @@ async function distributeUserRewards(posts, _community) {
         post: post.post,
         type: 'vote',
         community,
-        communityId
+        communityId,
+        postData: post
       });
     });
     return Promise.all(updatedVotes);
@@ -293,7 +299,7 @@ async function distributeUserRewards(posts, _community) {
 }
 
 async function sendNotification(props) {
-  const { user, reward, post, community, communityId, type } = props;
+  const { user, reward, post, community, communityId, type, postData } = props;
   const s = reward === 1 ? '' : 's';
   const action = type === 'vote' ? 'upvoting ' : '';
 
@@ -312,7 +318,17 @@ async function sendNotification(props) {
     communityId
   });
 
-  apnData.sendNotification(user, alertText, {});
+  const postObj = await Post.findOne({ _id: post });
+  postObj.data = postData;
+
+  const payload = {
+    toUser: user,
+    post: postObj,
+    action: alertText,
+    noteType: 'reward'
+  };
+
+  sendPushNotification(user, alertText, payload);
   return user;
 }
 

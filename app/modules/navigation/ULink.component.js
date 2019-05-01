@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { Alert } from 'app/utils/alert';
+// import TouchableOpacity from 'react-native';
 
 let styled;
 let StyledLink;
@@ -179,7 +180,7 @@ export class ULinkComponent extends Component {
       <StyledLink
         // {...rest}
         to={to || '#'}
-        onPress={onPress}
+        onPress={() => requestAnimationFrame(() => onPress())}
         // onPress={this.checkAuth(onPress)}
         // styles={styles || ''}
       >
@@ -190,7 +191,7 @@ export class ULinkComponent extends Component {
 }
 
 ULinkComponent.propTypes = {
-  inline: PropTypes.bool,
+  inline: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   hu: PropTypes.bool,
   type: PropTypes.string,
   navLink: PropTypes.bool,

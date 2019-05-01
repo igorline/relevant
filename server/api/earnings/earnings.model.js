@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
-import { EventEmitter } from 'events';
+import socketEvent from 'server/socket/socketEvent';
 
 const { Schema } = mongoose;
-const EarningsSchemaEvents = new EventEmitter();
 
 const EarningsSchema = new Schema(
   {
@@ -10,7 +9,8 @@ const EarningsSchema = new Schema(
     source: { type: String, default: 'post' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     // amount: { type: Number, default: 0 },
-    // spent: { type: Number, default: 0 },
+    // spent is legacy code keep in case we need to recompute legacy tokens
+    spent: { type: Number, default: 0 },
     // pending: { type: Number, default: 0 },
     stakedTokens: { type: Number, default: 0 },
     totalPostShares: { type: Number, default: 0 },
@@ -33,8 +33,6 @@ EarningsSchema.index({ status: 1 });
 EarningsSchema.index({ user: 1, status: 1 });
 EarningsSchema.index({ user: 1, post: 1 });
 
-EarningsSchema.statics.events = EarningsSchemaEvents;
-
 EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(earning) {
   try {
     const updatedEarning = await this.findOneAndUpdate(
@@ -55,7 +53,7 @@ EarningsSchema.methods.updateClient = function updateClient({ actionType }) {
     type: actionType,
     payload: this
   };
-  this.model('Earnings').events.emit('earningsEvent', earningsAction);
+  socketEvent.emit('socketEvent', earningsAction);
 };
 
 EarningsSchema.pre('remove', async function preRemove(next) {

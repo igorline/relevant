@@ -7,16 +7,17 @@ import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 // import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import Earning from 'modules/wallet/earning.component';
-import { initDrizzle } from 'app/utils/eth';
+// import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
-import moment from 'moment';
+// import moment from 'moment';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
+import { getMonth } from 'app/utils/numbers';
 
-let drizzle;
+// let drizzle;
 
 const PAGE_SIZE = 50;
 
@@ -45,13 +46,14 @@ class WalletContainer extends Component {
       // temporarily disabled
       // drizzle = initDrizzle(this.context.store);
     }
+    this.reload();
   }
 
-  componentDidUpdate(prevProps) {
-    const { isAuthenticated } = this.props.auth;
-    if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
-      drizzle = initDrizzle(this.context.store);
-    }
+  componentDidUpdate() {
+    // const { isAuthenticated } = this.props.auth;
+    // if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
+    //   drizzle = initDrizzle(this.context.store);
+    // }
   }
 
   hasMore = true;
@@ -85,7 +87,7 @@ class WalletContainer extends Component {
     const payout = computeUserPayout(earning);
     if (!payout) return null;
 
-    const month = moment(earning.createdAt).format('MMMM');
+    const month = getMonth(earning.createdAt);
     const showMonth = this.previousMonth !== month;
     this.previousMonth = month;
 

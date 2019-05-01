@@ -5,13 +5,12 @@ import { bindActionCreators } from 'redux';
 import { View } from 'modules/styled/web';
 import styled from 'styled-components';
 import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
-import { colors, layout } from 'app/styles';
+import { colors, sizing } from 'app/styles';
 
 const Menu = styled(View)`
   display: flex;
   cursor: pointer;
-  width: 25px;
-  height: 25px;
+  width: ${sizing(3)};
   :hover * {
     background-color: ${colors.black};
   }
@@ -19,9 +18,9 @@ const Menu = styled(View)`
 
 const MenuBar = styled(View)`
   width: 100%;
-  height: 4px;
+  height: 3px;
   background-color: ${colors.grey};
-  margin: 1.5px 0;
+  margin: 0.2rem 0;
 `;
 
 class MenuIcon extends Component {
@@ -41,11 +40,10 @@ class MenuIcon extends Component {
     const {
       mr,
       ml,
-      navigation: { width }
+      navigation: { screenSize }
     } = this.props;
-    if (width > layout.mediumScreenWidth) {
-      return null;
-    }
+    if (!screenSize) return null;
+
     return (
       <View mr={mr} ml={ml}>
         <Menu onClick={this.toggleMenu} fdirection="column" justify="space-between">

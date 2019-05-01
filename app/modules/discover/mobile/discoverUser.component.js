@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, mainPadding } from 'app/styles/global';
 import Stats from 'modules/stats/mobile/stats.component';
-import UserName from 'modules/user/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 
 let styles;
@@ -16,7 +16,8 @@ class DiscoverUser extends Component {
     topic: PropTypes.string,
     renderRight: PropTypes.func,
     bio: PropTypes.bool,
-    relevance: PropTypes.number
+    relevance: PropTypes.number,
+    showRelevance: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -25,13 +26,14 @@ class DiscoverUser extends Component {
   }
 
   setSelected() {
-    if (this.props.type === 'invite') return;
-    if (!this.props.user._id) return;
-    this.props.actions.goToProfile(this.props.user);
+    const { user, type, actions } = this.props;
+    if (type === 'invite') return;
+    if (!user._id) return;
+    actions.goToProfile(user);
   }
 
   render() {
-    const { user } = this.props;
+    const { user, showRelevance } = this.props;
     if (!user) return null;
     const relevance = this.props.topic
       ? user[this.props.topic + '_relevance']
@@ -58,7 +60,6 @@ class DiscoverUser extends Component {
         </TextBody>
       </View>
     );
-
     return (
       <TouchableHighlight
         underlayColor={'transparent'}
@@ -66,13 +67,14 @@ class DiscoverUser extends Component {
       >
         <View style={styles.discoverUserContainer}>
           <View style={[styles.discoverUser]}>
-            <UserName
+            <AvatarBox
               bio
               big
               type={this.props.type}
               relevance={this.props.topic ? false : this.props.relevance}
               user={{ ...user, relevance }}
               setSelected={this.setSelected}
+              showRelevance={showRelevance}
               // topic={{ topic: this.props.topic, relevance }}
             />
             <View

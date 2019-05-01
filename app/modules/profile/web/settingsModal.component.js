@@ -10,6 +10,9 @@ import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import { required } from 'modules/form/validators';
 import UAvatar from 'modules/user/UAvatar.component';
+import ULink from 'modules/navigation/ULink.component';
+import NotificationSettings from 'modules/profile/notificationSettings.component';
+import { withRouter } from 'react-router-dom';
 
 const StyledRIcon = styled(RIcon)`
   * {
@@ -31,12 +34,13 @@ const Form = styled.form`
 
 class SettingsModal extends Component {
   render() {
-    const { handleSubmit, initialValues } = this.props;
+    const { handleSubmit, initialValues, location } = this.props;
 
     const imageProps = {
       p: 2,
       w: 9,
       h: 9,
+      m: '1 0 0 0',
       bg: colors.blue,
       bradius: '50%'
     };
@@ -76,6 +80,9 @@ class SettingsModal extends Component {
           {FORM_FIELDS.map((field, index) => (
             <Field {...field} key={index} />
           ))}
+          <ULink mt={2} to={`/user/resetPassword${location.search}`}>
+            Reset Password
+          </ULink>
           <View justify="flex-end" mt={3} fdirection="row">
             <Button bg={colors.white} c={colors.black} onClick={() => this.props.close()}>
               Cancel
@@ -85,6 +92,7 @@ class SettingsModal extends Component {
             </Button>
           </View>
         </Form>
+        <NotificationSettings />
       </View>
     );
   }
@@ -93,9 +101,14 @@ class SettingsModal extends Component {
 SettingsModal.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
-  initialValues: PropTypes.object
+  initialValues: PropTypes.object,
+  actions: PropTypes.object,
+  history: PropTypes.object,
+  location: PropTypes.object
 };
 
-export default reduxForm({
-  form: 'settings'
-})(SettingsModal);
+export default withRouter(
+  reduxForm({
+    form: 'settings'
+  })(SettingsModal)
+);

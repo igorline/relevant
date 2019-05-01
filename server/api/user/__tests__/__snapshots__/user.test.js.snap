@@ -12,6 +12,7 @@ Object {
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",
+  "desktopSubscriptions": Array [],
   "deviceTokens": Array [],
   "email": "alice@alice.com",
   "ethAddress": Array [],
@@ -21,9 +22,24 @@ Object {
   "investmentCount": 0,
   "lastFeedNotification": 1970-01-01T00:00:00.000Z,
   "lastVote": "[SANITIZED]",
+  "legacyAirdrop": 0,
+  "legacyTokens": 0,
   "lockedTokens": 0,
   "messages": 0,
   "name": "Alice",
+  "notificationSettings": Object {
+    "desktop": Object {
+      "all": false,
+    },
+    "email": Object {
+      "digest": true,
+      "general": true,
+      "personal": true,
+    },
+    "mobile": Object {
+      "all": false,
+    },
+  },
   "onboarding": 0,
   "online": false,
   "postCount": 0,

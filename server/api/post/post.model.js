@@ -1,10 +1,8 @@
-import { EventEmitter } from 'events';
-
 const mongoose = require('mongoose');
+const socketEvent = require('server/socket/socketEvent').default;
 
-const PostSchemaEvents = new EventEmitter();
 const { Schema } = mongoose;
-const apnData = require('../../pushNotifications');
+const { sendNotification } = require('server/notifications');
 
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
@@ -193,8 +191,6 @@ PostSchema.methods.addPostData = async function addPostData(postObject) {
   return this;
 };
 
-PostSchema.statics.events = PostSchemaEvents;
-
 PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
   const post = this.toObject();
@@ -208,7 +204,7 @@ PostSchema.methods.updateClient = function updateClient(user) {
     type: 'UPDATE_POST',
     payload: post
   };
-  this.model('Post').events.emit('postEvent', postNote);
+  socketEvent.emit('socketEvent', postNote);
 };
 
 PostSchema.methods.addUserInfo = async function addUserInfo(user) {
@@ -263,7 +259,8 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     if (!post.data.postDate) post = await post.addPostData();
     const { postDate } = post.data;
 
-    let rank = postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
+    let rank =
+      pagerank < 0 ? 0 : postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
     rank = Math.round(rank * 1000) / 1000;
 
     // But if a comment ranks highly - update post rank
@@ -397,7 +394,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(
       type: 'SET_NEW_POSTS_STATUS',
       payload: { communityId, community }
     };
-    this.model('Post').events.emit('postEvent', newPostEvent);
+    socketEvent.emit('socketEvent', newPostEvent);
     return post;
   } catch (err) {
     return console.log('insertIntoFeed error', err); // eslint-disable-line
@@ -438,7 +435,7 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
       type: 'UPDATE_POST_INVESTMENTS',
       payload: investments
     };
-    this.events.emit('postEvent', updatePosts);
+    socketEvent.emit('socketEvent', updatePosts);
   } catch (err) {
     console.log('sendOutInvestInfo error', err); // eslint-disable-line
   }
@@ -474,39 +471,50 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           if (mUser.role !== 'admin') return null;
           query = {}; // TODO should this this as community
           group = ['everyone'];
+          createMentionNotification({
+            post,
+            user: { _id: null },
+            mUser,
+            type,
+            Notification: this.model('Notification'),
+            group,
+            mention
+          });
         }
 
-        const users = await this.model('User').find(query, 'deviceTokens');
+        const users = await this.model('User').find(
+          query,
+          'deviceTokens email name notificationSettings'
+        );
 
         users.forEach(async user => {
-          let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
+          const action = ' mentioned you in a ' + type;
+          let alert = (mUser.name || mUser) + action;
           if (mention === 'everyone' && post.body) alert = post.body;
-          const payload = { 'Mention from': textParent.embeddedUser.name };
-          apnData.sendNotification(user, alert, payload);
+          // TODO batch notifications & emails
 
-          const dbNotificationObj = {
-            post: post._id,
-            forUser: user._id,
+          const payload = {
+            fromUser: mUser,
+            toUser: user,
+            post,
+            action,
+            noteType: 'mention'
+          };
+
+          sendNotification(user, alert, payload);
+
+          if (mention === 'everyone') return;
+
+          createMentionNotification({
+            post,
+            user,
+            mUser,
+            type,
+            Notification: this.model('Notification'),
             group,
-            byUser: mUser._id || mUser,
-            amount: null,
-            type: type + 'Mention',
-            personal: true,
-            read: false
-          };
-
-          const newDbNotification = new (this.model('Notification'))(dbNotificationObj);
-          const note = await newDbNotification.save();
-
-          const newNotifObj = {
-            _id: group ? null : mention,
-            type: 'ADD_ACTIVITY',
-            payload: note
-          };
-
-          this.events.emit('postEvent', newNotifObj);
+            mention
+          });
         });
-
         return null;
       } catch (err) {
         throw err;
@@ -521,6 +529,38 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
     return console.log('sendOutMentions error', err); // eslint-disable-line
   }
 };
+
+async function createMentionNotification({
+  post,
+  user,
+  mUser,
+  type,
+  Notification,
+  group,
+  mention
+}) {
+  const dbNotificationObj = {
+    post: post._id,
+    forUser: user._id,
+    group,
+    byUser: mUser._id || mUser,
+    amount: null,
+    type: type + 'Mention',
+    personal: true,
+    read: false
+  };
+
+  const newDbNotification = new Notification(dbNotificationObj);
+  const note = await newDbNotification.save();
+
+  const newNotifObj = {
+    _id: group ? null : mention,
+    type: 'ADD_ACTIVITY',
+    payload: note
+  };
+
+  socketEvent.emit('socketEvent', newNotifObj);
+}
 
 // pruneFeed (only for link posts)
 PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
