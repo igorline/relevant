@@ -79,11 +79,12 @@ class Splash extends Component {
     this.onScroll = this.onScroll.bind(this);
   }
   state = {
-    isDismissed: false
+    isDismissed: true
   };
 
   componentDidMount = async () => {
     window.addEventListener('scroll', this.onScroll);
+    this.onScroll;
     const isDismissed = await storage.isDismissed('splashDismissed', 5);
     this.setState({
       isDismissed
