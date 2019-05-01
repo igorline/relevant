@@ -12,7 +12,7 @@ test('Snapshot SplashComponent', () => {
   const tree = renderer
   .create(
     <MemoryRouter>
-      <SplashComponent {...props} />
+      <SplashComponent {...props} overRideDismiss />
     </MemoryRouter>
   )
   .toJSON();
