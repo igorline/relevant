@@ -149,12 +149,11 @@ class Splash extends Component {
               <OutlineText inheritfont={1} m={0} p={0}>
                 Relevant.
               </OutlineText>{' '}
-              <Text>Curated by communities.</Text>
-              <Text>Not clicks.</Text>
+              <Text>A new kind of social network built on trust.</Text>
             </SplashText>
             <View mt={[5, 2]} mb={[8, 4]}>
               <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
-                Join the thought leaders, build trust and earn rewards.{' '}
+                Join a community, curate content and earn rewards.{' '}
                 <ULink
                   to={learnMoreUrl}
                   external
