@@ -71,7 +71,8 @@ class Splash extends Component {
     cta: PropTypes.oneOf(Object.keys(CTA)),
     hideCloseButton: PropTypes.bool,
     location: PropTypes.object,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    overRideDismiss: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -106,10 +107,12 @@ class Splash extends Component {
   };
 
   render() {
-    if (this.state.isDismissed) {
+    const { cta, hideCloseButton, location, screenSize, overRideDismiss } = this.props;
+
+    if (this.state.isDismissed && !overRideDismiss) {
       return null;
     }
-    const { cta, hideCloseButton, location, screenSize } = this.props;
+
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
