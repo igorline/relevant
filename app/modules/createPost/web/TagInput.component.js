@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { LinkFont, Tag, View } from 'modules/styled/uni';
+import { Input } from 'modules/styled/web';
 import { colors } from 'app/styles';
 
 if (process.env.BROWSER === true) {
   require('./selectTags.css');
-}
-
-if (process.env.BROWSER === true) {
-  // require('./divider.css');
 }
 
 export default class TagInput extends Component {
@@ -39,7 +36,6 @@ export default class TagInput extends Component {
         #{tag}
       </Tag>
     ));
-    const input = this.state.input || '';
 
     return (
       <div>
@@ -49,8 +45,8 @@ export default class TagInput extends Component {
             {tagEls}
           </View>
         </View>
-        <div className="tagInput">
-          <input
+        <View flex={1}>
+          <Input
             placeholder={this.props.placeholderText}
             value={this.state.input}
             onKeyDown={e => {
@@ -80,7 +76,7 @@ export default class TagInput extends Component {
               return this.setState({ input: tags });
             }}
           />
-        </div>
+        </View>
       </div>
     );
   }

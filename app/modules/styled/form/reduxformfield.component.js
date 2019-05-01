@@ -4,8 +4,8 @@ import { View, LinkFont, SecondaryText, Input } from 'modules/styled/web';
 import { colors } from 'app/styles';
 
 const ReduxFormField = props => {
-  const { label, input, type, meta, name, placeholder } = props;
-  const { touched, error, warning } = meta;
+  const { label, input, type, meta, name, placeholder, autocomplete } = props;
+  const { dirty, touched, error, warning } = meta;
   return (
     <View display="flex" fdirection="column" mt={3}>
       {label ? (
@@ -15,14 +15,15 @@ const ReduxFormField = props => {
       ) : null}
       <Input
         {...input}
-        placeholder={label || placeholder}
+        placeholder={placeholder || label}
+        autoComplete={autocomplete}
         name={name}
         type={type}
         border={1}
         p="2 2"
         mt={1}
       />
-      {touched &&
+      {(dirty || touched) &&
         ((error && (
           <SecondaryText c={colors.red} mt={1}>
             {error}
@@ -40,7 +41,12 @@ ReduxFormField.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
   meta: PropTypes.object,
-  input: PropTypes.object
+  input: PropTypes.object,
+  autocomplete: PropTypes.string
+};
+
+ReduxFormField.defaultProps = {
+  autocomplete: null
 };
 
 export default ReduxFormField;

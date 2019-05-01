@@ -411,47 +411,7 @@ exports[`Snapshot SplashComponent 1`] = `
             }
           }
         >
-          Curated by communities.
-        </span>
-        <span
-          dir="auto"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "inherit",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "inherit",
-              "fontSize": "inherit",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "inherit",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "inherit",
-              "wordWrap": "break-word",
-            }
-          }
-        >
-          Not clicks.
+          A new kind of social network built on trust.
         </span>
       </div>
       <div
@@ -541,7 +501,7 @@ exports[`Snapshot SplashComponent 1`] = `
             }
           }
         >
-          Join the thought leaders, build trust and earn rewards.
+          Join a community, curate content and earn rewards.
            
           <a
             className="ulink-mock c0"

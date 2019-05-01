@@ -132,13 +132,12 @@ export const Button = styled.button`
 `;
 
 export const Input = styled.input`
-  ${fonts.bodyStyle}
-  ${mixins.padding}
-  ${mixins.margin}
+  padding: ${sizing(2)} ${sizing(2)};
+  margin-top: ${sizing(1)};  ${fonts.bodyStyle}
   ${mixins.border}
   ${layout.universalBorder()}
-  padding: ${sizing(2)} ${sizing(2)};
-  margin-top: ${sizing(1)};
+  ${mixins.padding}
+  ${mixins.margin}
   ::placeholder: {
     font-size: ${sizing(1.75)};
     line-height: ${sizing(1.75)};
