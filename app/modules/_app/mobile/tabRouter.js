@@ -43,6 +43,13 @@ export const DefaultStack = {
       title: 'Read'
     }
   },
+  singlePostComment: {
+    screen: SinglePost,
+    path: ':community/post/:id/:comment',
+    navigationOptions: {
+      title: 'Read'
+    }
+  },
   discoverView: {
     screen: Discover,
     path: ':community/:sort',
