@@ -1,6 +1,7 @@
 import Community from './community.model';
 import CommunityMember from './community.member.model';
 import User from '../user/user.model';
+// import Post from './post.model';
 
 // Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
 
@@ -30,9 +31,14 @@ export async function findOne(req, res, next) {
 
 export async function index(req, res, next) {
   try {
-    const communties = await Community.find({ inactive: { $ne: true } }).populate({
+    const communties = await Community.find({ inactive: { $ne: true } })
+    .populate({
       path: 'members',
       match: { role: 'admin' }
+    })
+    .populate({
+      path: 'channels',
+      match: { channel: true }
     });
     res.status(200).json(communties);
   } catch (err) {
@@ -173,6 +179,12 @@ export async function create(req, res, next) {
     next(err);
   }
 }
+
+// export async function createDefaultChannels(req, res, next) {
+//   new Post({
+
+//   })
+// }
 
 export async function update(req, res, next) {
   try {

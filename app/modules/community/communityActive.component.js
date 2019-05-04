@@ -40,6 +40,7 @@ class CommunityActive extends Component {
       userCommunities
     } = this.props;
     const topics = get(community, 'topics', []);
+    const channels = get(community, 'channels', []);
     const totalMembers = get(community, 'memberCount', 0);
     const userId = get(auth, 'user._id', null);
     const allMembers = members.filter(member => member.embeddedUser._id !== userId);
@@ -58,6 +59,21 @@ class CommunityActive extends Component {
         {children}
         <View bb p={['0 4 4 4', '0 2 4 2']}>
           <View m={'0.5 0 0 5.5'}>
+            {channels.map(channel => (
+              <ULink
+                key={channel.title}
+                color={colors.grey}
+                hc={colors.black}
+                ac={colors.black}
+                navLink
+                /* onPress={() => actions.goToTopic(channel)} */
+                to={`/${community.slug}/channel/${channel._id}`}
+              >
+                <CommunityLink key={channel.title} p={'0.5 0'}>
+                  {channel.title}
+                </CommunityLink>
+              </ULink>
+            ))}
             {topics.map(topic => (
               <ULink
                 key={topic}

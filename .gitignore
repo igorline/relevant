@@ -66,3 +66,6 @@ android/app/libs
 *.jsbundle
 
 gradle.properties
+
+app/process.env.js
+

@@ -10,7 +10,6 @@ const CommunitySchema = new Schema(
     name: String,
     slug: { type: String, unique: true, required: true },
     description: String,
-    channels: [{ type: String }],
     topics: [{ type: String, ref: 'Tags' }],
     image: String,
     currentPosts: { type: Number, default: 0 },
@@ -43,6 +42,12 @@ CommunitySchema.virtual('members', {
   ref: 'CommunityMember',
   localField: 'slug',
   foreignField: 'community'
+});
+
+CommunitySchema.virtual('channels', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'communityId'
 });
 
 CommunitySchema.index({ slug: 1 });
