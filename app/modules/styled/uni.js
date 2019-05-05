@@ -52,6 +52,10 @@ export const ImageWrapper = styled.View`
   ${mixins.flex}
 `;
 
+export const FormImage = props => (
+  <Image {...props} bg={colors.blue} {...layout.formImageProps} />
+);
+
 export const Divider = styled.View`
   ${mixins.margin}
   ${mixins.padding}
@@ -200,4 +204,12 @@ export const Spacer = styled(View)`
   }}
   flex-grow: 1;
   ${mixins.flex}
+`;
+
+export const CloseX = styled(Image)`
+  position: absolute;
+  ${p => (p.top ? `top: ${mixins.size(p.top)};` : null)}
+  ${p => (p.right ? `right: ${mixins.size(p.right)};` : null)}
+  cursor: pointer;
+  z-index: 10;
 `;

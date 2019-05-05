@@ -104,6 +104,7 @@ module.exports = {
       {
         test: /\.(js|svg)$/,
         include: [
+          path.resolve(__dirname, 'node_modules/dai-card'),
           path.resolve(__dirname, 'index.web.js'),
           path.resolve(__dirname, 'app')
         ],

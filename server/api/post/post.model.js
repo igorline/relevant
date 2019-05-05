@@ -11,6 +11,7 @@ const PostSchema = new Schema(
     body: String,
     title: String,
     description: String,
+    channel: { type: Boolean, default: false },
     community: String,
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     tags: [{ type: String, ref: 'Tag' }],
@@ -594,7 +595,7 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
 
     await this.model('PostData').findOneAndUpdate(
       { post: post._id, communityId },
-      { isInFeed: false }
+      { f: false }
     );
     return post;
   } catch (err) {
