@@ -140,7 +140,6 @@ export class Post extends Component {
             singlePost={singlePost}
             community={community}
           />
-          {this.props.children}
         </View>
       </View>
     ) : (
@@ -203,6 +202,7 @@ export class Post extends Component {
         {previewEl}
         {isLink && previewEl ? <View mt={2} /> : postEl}
         {commentEl}
+        {this.props.children}
         {hideDivider ? null : <Divider m={['0 4', 0]} screenSize={screenSize} />}
       </View>
     );
