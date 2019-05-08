@@ -41,7 +41,7 @@ const WithSideNav = loadable(() =>
 const WithTopNav = loadable(() => import('modules/navigation/web/withTopNav.component'));
 
 const PostContainer = loadable(() => import('modules/post/web/singlePost.container'));
-const ChatContainer = loadable(() => import('modules/chat/chat.container'));
+const ChatContainer = loadable(() => import('modules/chat/web/chat.container'));
 const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
 
@@ -114,6 +114,12 @@ const routes = [
           { path: '/info/faq', component: Faq, exact: true },
 
           {
+            path: '/:community/channel/:id',
+            component: ChatContainer,
+            exact: true
+          },
+
+          {
             path: '/',
             component: WithTopNav,
             routes: [
@@ -149,7 +155,6 @@ const routes = [
               { path: '/user/invite/:code', component: Invite, exact: true },
               { path: '/community/all', component: CommunityList, exact: true },
               { path: '/:community/post/:id', component: PostContainer, exact: true },
-              { path: '/:community/channel/:id', component: ChatContainer, exact: true },
               {
                 path: '/:community/post/:id/:commentId',
                 component: PostContainer,

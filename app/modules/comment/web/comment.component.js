@@ -41,6 +41,8 @@ class Comment extends Component {
     posts: PropTypes.object,
     nestingLevel: PropTypes.number,
     hidePostButtons: PropTypes.bool,
+    hideReplyButtons: PropTypes.bool,
+    chatView: PropTypes.bool,
     condensedView: PropTypes.bool,
     postUrl: PropTypes.string,
     hideBorder: PropTypes.bool,
@@ -140,7 +142,9 @@ class Comment extends Component {
       posts,
       nestingLevel,
       hidePostButtons,
+      hideReplyButtons,
       postUrl,
+      chatView,
       condensedView,
       hideBorder,
       hideAvatar,
@@ -263,20 +267,27 @@ class Comment extends Component {
               />
             ) : null}
             <View fdirection="column" grow={1} shrink={1}>
-              <View fdirection={'row'} justify={'space-between'} zIndex={2}>
-                {!hideAvatar && (
-                  <AvatarBox
-                    twitter={comment.twitter}
-                    user={{ ...user, _id: comment.user }}
-                    postTime={comment.createdAt}
-                    showRelevance
-                    condensedView={condensedView}
-                    avatarText={avatarText}
-                    noLink={noLink}
-                  />
-                )}
-                {popup}
-              </View>
+              {chatView && (
+                <View style={{ position: 'absolute', right: 0 }} zIndex={2}>
+                  {popup}
+                </View>
+              )}
+              {!chatView && (
+                <View fdirection={'row'} justify={'space-between'} zIndex={2}>
+                  {!hideAvatar && (
+                    <AvatarBox
+                      twitter={comment.twitter}
+                      user={{ ...user, _id: comment.user }}
+                      postTime={comment.createdAt}
+                      showRelevance
+                      condensedView={condensedView}
+                      avatarText={avatarText}
+                      noLink={noLink}
+                    />
+                  )}
+                  {popup}
+                </View>
+              )}
               {editing ? (
                 <View mt={2}>
                   <CommentForm
@@ -294,7 +305,7 @@ class Comment extends Component {
               ) : (
                 body
               )}
-              {editing || (hidePostButtons && preview) ? null : (
+              {editing || hideReplyButtons || (hidePostButtons && preview) ? null : (
                 <View
                   ml={condensedView ? 5 : 0}
                   mb={[4, 2]}

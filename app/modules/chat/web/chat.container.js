@@ -4,11 +4,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as chatActions from 'modules/chat/chat.actions';
+import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 // import Comments from 'modules/comment/web/comment.container';
 // import get from 'lodash.get';
 import { View } from 'modules/styled/uni';
-// import PostComponent from './post.component';
+import ChatForm from './chatForm.component';
+import ChatLog from './chatLog.component';
 
 class ChatContainer extends Component {
   static propTypes = {
@@ -45,38 +47,26 @@ class ChatContainer extends Component {
 
   render() {
     const { params } = this.props.match;
-    const { posts } = this.props;
+    const { posts, actions } = this.props;
     const post = posts.posts[params.id];
     if (!post) return null;
     const hasPost = post && post !== 'notFound';
 
-    // console.log(comments);
-
-    // const firstPostId = get(comments.childComments, `${post._id}.0`);
-    // const firstPost = posts.posts[firstPostId];
-    // const link = posts.links[post.metaPost];
-
     return (
-      <View mb={20}>
+      <div
+        style={{
+          overflow: 'scroll',
+          height: '100vh',
+          position: 'relative'
+        }}
+      >
         {hasPost && (
-          <div>
-            {/*
-            <View>
-              <PostComponent
-                noComments
-                link={link}
-                post={post}
-                firstPost={firstPost}
-                {...this.props}
-                hideDivider
-                singlePost
-              />
-            </View>
-            <Comments post={post} {...this.props} />
-            */}
-          </div>
+          <View>
+            <ChatLog post={post} actions={actions} {...this.props} />
+          </View>
         )}
-      </View>
+        <ChatForm post={post} parentPost={post} {...this.props} />
+      </div>
     );
   }
 }
@@ -95,6 +85,7 @@ export default connect(
     actions: bindActionCreators(
       {
         ...chatActions,
+        ...commentActions,
         ...postActions,
         ...investActions
       },
