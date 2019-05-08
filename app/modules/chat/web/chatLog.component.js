@@ -34,6 +34,10 @@ class ChatLog extends Component {
     this.props.actions.getComments(params.id);
   }
 
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
   setActiveComment = commentId => {
     const activeComment = this.state.activeComment === commentId ? null : commentId;
     this.setState({ activeComment });
@@ -41,11 +45,11 @@ class ChatLog extends Component {
 
   scrollTo = (x, y) => {
     const paddingY = window.outerHeight / 4;
-    window.scrollTo(x, y - paddingY);
+    this.el.scrollTo(x, y - paddingY);
   };
 
   scrollToBottom() {
-    window.scrollTo(0, document.body.scrollHeight);
+    this.el.scrollTo(0, this.el.scrollHeight);
   }
 
   render() {
@@ -63,17 +67,30 @@ class ChatLog extends Component {
     const children = comments.childComments[post._id] || [];
     const focusedComment = get(match, 'params.commentId', null);
     let lastUser;
+    let lastDate = new Date(0);
     return (
-      <div>
+      <div
+        style={{
+          height: 'calc(100vh - 50px)',
+          position: 'relative',
+          overflow: 'scroll'
+        }}
+        ref={el => (this.el = el)}
+      >
         {children.length !== 0 ? (
           <div>
             {children.map(id => {
               const comment = posts.posts[id];
               if (!comment) return null;
               let hideAvatar = true;
-              if (comment.user !== lastUser) {
+              const commentDate = new Date(comment.createdAt);
+              if (
+                comment.user !== lastUser ||
+                lastDate.getTime() + 120000 < commentDate.getTime()
+              ) {
                 hideAvatar = false;
                 lastUser = comment.user;
+                lastDate = commentDate;
               }
               return (
                 <View key={id} p={'2 2'}>
@@ -97,7 +114,6 @@ class ChatLog extends Component {
                     hidePostButtons
                     hideReplyButtons
                     hideAvatar={hideAvatar}
-                    chatView
                   />
                 </View>
               );

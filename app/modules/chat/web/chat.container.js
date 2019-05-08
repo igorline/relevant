@@ -8,7 +8,6 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 // import Comments from 'modules/comment/web/comment.container';
 // import get from 'lodash.get';
-import { View } from 'modules/styled/uni';
 import ChatForm from './chatForm.component';
 import ChatLog from './chatLog.component';
 
@@ -55,16 +54,12 @@ class ChatContainer extends Component {
     return (
       <div
         style={{
-          overflow: 'scroll',
           height: '100vh',
+          maxHeight: '100vh',
           position: 'relative'
         }}
       >
-        {hasPost && (
-          <View>
-            <ChatLog post={post} actions={actions} {...this.props} />
-          </View>
-        )}
+        {hasPost && <ChatLog post={post} actions={actions} {...this.props} />}
         <ChatForm post={post} parentPost={post} {...this.props} />
       </div>
     );

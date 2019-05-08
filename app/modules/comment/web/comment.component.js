@@ -42,7 +42,6 @@ class Comment extends Component {
     nestingLevel: PropTypes.number,
     hidePostButtons: PropTypes.bool,
     hideReplyButtons: PropTypes.bool,
-    chatView: PropTypes.bool,
     condensedView: PropTypes.bool,
     postUrl: PropTypes.string,
     hideBorder: PropTypes.bool,
@@ -144,7 +143,6 @@ class Comment extends Component {
       hidePostButtons,
       hideReplyButtons,
       postUrl,
-      chatView,
       condensedView,
       hideBorder,
       hideAvatar,
@@ -267,24 +265,21 @@ class Comment extends Component {
               />
             ) : null}
             <View fdirection="column" grow={1} shrink={1}>
-              {chatView && (
-                <View style={{ position: 'absolute', right: 0 }} zIndex={2}>
+              {!hideAvatar ? (
+                <View fdirection={'row'} justify={'space-between'} zIndex={2}>
+                  <AvatarBox
+                    twitter={comment.twitter}
+                    user={{ ...user, _id: comment.user }}
+                    postTime={comment.createdAt}
+                    showRelevance
+                    condensedView={condensedView}
+                    avatarText={avatarText}
+                    noLink={noLink}
+                  />
                   {popup}
                 </View>
-              )}
-              {!chatView && (
-                <View fdirection={'row'} justify={'space-between'} zIndex={2}>
-                  {!hideAvatar && (
-                    <AvatarBox
-                      twitter={comment.twitter}
-                      user={{ ...user, _id: comment.user }}
-                      postTime={comment.createdAt}
-                      showRelevance
-                      condensedView={condensedView}
-                      avatarText={avatarText}
-                      noLink={noLink}
-                    />
-                  )}
+              ) : (
+                <View style={{ position: 'absolute', right: 0 }} zIndex={2}>
                   {popup}
                 </View>
               )}
