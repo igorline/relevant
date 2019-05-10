@@ -15,6 +15,7 @@ import tooltip from 'modules/tooltip/tooltip.reducer';
 import error from 'modules/ui/error.reducer';
 import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
+import card from 'modules/daicard/card.reducer';
 import { reducer as formReducer } from 'redux-form';
 
 import socket from './socket.reducer';
@@ -57,6 +58,7 @@ const createReducer = (asyncReducers = {}) =>
     admin,
     community,
     earnings,
+    card,
     ...drizzleReducers,
     ...asyncReducers
   });

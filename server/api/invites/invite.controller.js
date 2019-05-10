@@ -9,6 +9,40 @@ import Invite from './invite.model';
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
+// eslint-disable-next-line
+async function showInvites() {
+  try {
+    const now = new Date();
+    now.setDate(now.getDate() - 60);
+    const invites = await Invite.find({ redeemed: true, createdAt: { $gt: now } })
+    .populate('invitedBy')
+    .populate('registeredAs')
+    .sort('invitedBy -createdAt');
+
+    let invitedBy;
+    let personal;
+    let admin;
+    let list = '';
+    invites.forEach((inv, i) => {
+      if (inv.invitedBy.handle !== invitedBy || i === invites.length) {
+        console.log('User:', invitedBy); // eslint-disable-line
+        console.log('personal:', personal, 'admin:', admin, 'invited:', list); // eslint-disable-line
+        personal = 0;
+        admin = 0;
+        list = '';
+        invitedBy = inv.invitedBy.handle;
+      }
+      if (inv.type === 'referral') personal += 1;
+      if (inv.type === 'admin') admin += 1;
+      list += inv.registeredAs ? inv.registeredAs.handle + ', ' : '';
+    });
+  } catch (err) {
+    console.log(err); // eslint-disable-line
+  }
+}
+
+// showInvites();
+
 // Invite.count({ status: 'email sent' }).then(c => console.log('email sent', c));
 // Invite.count({ status: 'registered' }).then(c => console.log('registered', c));
 // User.count({}).then(u => console.log('Users', u));

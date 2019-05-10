@@ -13,9 +13,7 @@ const APP_GROUP_ID = 'group.com.4real.relevant';
 
 let token;
 
-export function localStorage() {
-  return isBrowser ? window.localStorage : null;
-}
+export const localStorage = isBrowser ? window.localStorage : null;
 
 export function get(key) {
   return new Promise((resolve, reject) => {

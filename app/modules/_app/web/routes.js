@@ -23,7 +23,7 @@ const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
 const Contract = loadable(() => import('modules/admin/web/contract.component'));
 const About = loadable(() => import('modules/web_splash/about.component'));
-const CardContainer = loadable(() => import('modules/wallet/web/card.container'));
+const CardContainer = loadable(() => import('modules/daicard/card.container'));
 
 const CommunityAdminForm = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
