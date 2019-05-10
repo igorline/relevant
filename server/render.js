@@ -198,10 +198,11 @@ export function renderApp({ url, store }) {
   const { getStyleElement } = AppRegistry.getApplication('App', store.getState());
   const rnWebStyles = renderToStaticMarkup(getStyleElement());
 
-  const app = renderToString(
-    <StyleSheetManager sheet={sheet.instance}>
-      <ChunkExtractorManager extractor={extractor}>{App()}</ChunkExtractorManager>
-    </StyleSheetManager>
-  );
+  const app =
+    renderToString(
+      <StyleSheetManager sheet={sheet.instance}>
+        <ChunkExtractorManager extractor={extractor}>{App()}</ChunkExtractorManager>
+      </StyleSheetManager>
+    ) || '';
   return { app, rnWebStyles };
 }

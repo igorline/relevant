@@ -10,7 +10,8 @@ import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
 import { View } from 'modules/styled/uni';
-import Comment from 'modules/comment/web/comment.component';
+// import Comment from 'modules/comment/web/comment.component';
+import ChatMessage from 'modules/chat/web/chatMessage.component';
 
 class ChatLog extends Component {
   static propTypes = {
@@ -71,14 +72,14 @@ class ChatLog extends Component {
     return (
       <div
         style={{
-          height: 'calc(100vh - 50px)',
+          height: 'calc(100vh - 70px)',
           position: 'relative',
           overflow: 'scroll'
         }}
         ref={el => (this.el = el)}
       >
         {children.length !== 0 ? (
-          <div>
+          <div p={'0 0 1 0'}>
             {children.map(id => {
               const comment = posts.posts[id];
               if (!comment) return null;
@@ -93,8 +94,8 @@ class ChatLog extends Component {
                 lastDate = commentDate;
               }
               return (
-                <View key={id} p={'2 2'}>
-                  <Comment
+                <View key={id} p={'0.5 2'}>
+                  <ChatMessage
                     auth={auth}
                     comment={comment}
                     actions={actions}
@@ -114,6 +115,7 @@ class ChatLog extends Component {
                     hidePostButtons
                     hideReplyButtons
                     hideAvatar={hideAvatar}
+                    condensedView
                   />
                 </View>
               );
