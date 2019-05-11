@@ -1,8 +1,10 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View } from 'modules/styled/web';
 import styled from 'styled-components';
-import { colors, fonts } from 'app/styles';
+import { colors, fonts, sizing } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 
 const mobilePhone = `
@@ -23,9 +25,8 @@ const Phone = styled(View)`
 `;
 
 const Wrapper = styled(View)`
-  position: relative;
-  overflow: hidden;
-  max-height: 550px;
+  margin: auto;
+  max-width: ${sizing(100)};
 `;
 
 const SplashText = styled(Text)`
@@ -42,6 +43,11 @@ const OutlineText = styled(SplashText)`
 const SubHeader = styled(Text)`
   font-family: ${fonts.GEORGIA};
   display: inline;
+`;
+
+const sectionText = styled(Text)`
+  font-family: ${fonts.GEORGIA};
+  flex-direction: column;
 `;
 
 export default class Splash extends Component {
@@ -92,8 +98,8 @@ export default class Splash extends Component {
               <OutlineText inheritfont={1} m={0} p={0}>
                 Relevant.
               </OutlineText>{' '}
-              <Text>Curated by communities.</Text>
-              <Text>Not clicks.</Text>
+              <Text>The only social network built on trust.</Text>
+              <Text>Join a community, build reputation,and earn rewards.</Text>
             </SplashText>
             <View mt={[5, 2]} mb={[8, 4]}>
               <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
@@ -110,15 +116,45 @@ export default class Splash extends Component {
               </SubHeader>
             </View>
           </View>
+
+          <View fdirection="column">
+            <SplashText fdirection="column" fs={[6, 3]} lh={[9, 4.2]}>
+              <Text>A new kind of social network</Text>
+            </SplashText>
+            <View fdirection={'column'} mt={[5, 2]} mb={[8, 4]}>
+              <Text fs={[2.5, 1.5]} lh={[4, 3]} mt={'4'}>
+                At Relevant, we’re building a network that replaces popularity-centric
+                feeds in favor of reputation-based community forums.
+              </Text>
+              <Text fs={[2.5, 1.5]} lh={[4, 3]} mt={'4'}>
+                Instead of sorting content by clicks and likes, we’ve created a trust
+                metric that incentivizes users to rank information according to its value.
+              </Text>
+              <Text fs={[2.5, 1.5]} lh={[4, 3]} mt={'4'}>
+                The result is a network of high-quality, community-specific feeds that
+                make finding relevant information easy.
+              </Text>
+            </View>
+          </View>
+
+          <View fdirection="column">
+            <SplashText fdirection="column" fs={[6, 3]} lh={[9, 4.2]}>
+              <Text>How it works —</Text>
+            </SplashText>
+            <SplashText fdirection="column" fs={[6, 3]} lh={[9, 4.2]}>
+              <Text>Reputation</Text>
+            </SplashText>
+            <View mt={[5, 2]} mb={[8, 4]}>
+              <sectionText fs={[2.5, 1.5]} lh={[4, 3]}>
+                Each user has a Reputation score. Users earn reputation when reputable
+                community members upvote their comments. Content and links are also ranked
+                according to user Reputation. The higher your score, the more say you have
+                over what shows up in the community feed. Reputation scores are
+                community-specific and cannot be transferred between networks.
+              </sectionText>
+            </View>
+          </View>
         </View>
-        <Phone screenSize={screenSize} className="phone" flexshrink={[1, 0]}>
-          <img
-            style={{ width: '100%' }}
-            ref={c => (this.phone = c)}
-            src={img}
-            alt="phone"
-          />
-        </Phone>
       </Wrapper>
     );
   }
