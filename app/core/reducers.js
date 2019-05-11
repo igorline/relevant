@@ -9,6 +9,7 @@ import posts from 'modules/post/post.reducer';
 import user from 'modules/user/user.reducer';
 import invest from 'modules/post/invest.reducer';
 import comment from 'modules/comment/comment.reducer';
+import chat from 'modules/chat/chat.reducer';
 import tags from 'modules/tag/tag.reducer';
 import stats from 'modules/stats/stats.reducer';
 import tooltip from 'modules/tooltip/tooltip.reducer';
@@ -49,6 +50,7 @@ const createReducer = (asyncReducers = {}) =>
     stats,
     // TODO update
     comments: comment,
+    chat,
     navigation,
     createPost,
     tags,

@@ -16,11 +16,8 @@ const AvatarContainer = styled(View)`
 
 class ChatForm extends Component {
   static propTypes = {
-    edit: PropTypes.bool,
-    comment: PropTypes.object,
     auth: PropTypes.object,
     actions: PropTypes.object,
-    cancel: PropTypes.func,
     updatePosition: PropTypes.func,
     isReply: PropTypes.bool,
     parentPost: PropTypes.object,
@@ -44,13 +41,6 @@ class ChatForm extends Component {
     };
   }
 
-  componentDidMount() {
-    if (this.props.edit && this.props.comment) {
-      this.setState({ comment: this.props.comment.body });
-      if (this.textArea) this.textArea.focus();
-    }
-  }
-
   handleChange(e) {
     this.setState({ comment: e.target.value });
   }
@@ -67,7 +57,7 @@ class ChatForm extends Component {
   }
 
   async createComment() {
-    const { isReply, parentComment, parentPost, auth } = this.props;
+    const { isReply, parentComment, parentPost, auth, actions } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -87,37 +77,10 @@ class ChatForm extends Component {
       metaPost: parentPost.metaPost
     };
     this.setState({ comment: '', inputHeight: 50 });
-    return this.props.actions.createComment(commentObj).then(newComment => {
-      if (!newComment) {
-        this.setState({ newComment, inputHeight: 50 });
-        if (this.textInput) this.textInput.focus();
-      } else {
-        // history.push(
-        //   `/${newComment.community}/channel/${newComment.parentPost}/${newComment._id}`
-        // );
-      }
-    });
-  }
-
-  async updateComment() {
-    const { comment } = this.props;
-    const body = this.state.comment;
-    if (comment.body === body) {
-      return this.props.cancel();
-    }
-    const words = text.getWords(body);
-    const mentions = text.getMentions(words);
-    const originalText = comment.body;
-    comment.body = body;
-    comment.mentions = mentions;
-
-    return this.props.actions.updateComment(comment).then(results => {
-      if (results) {
-        this.props.cancel();
-      } else {
-        comment.body = originalText;
-        alert.browserAlerts.alert('Error updating comment');
-      }
+    actions.addPendingComment(commentObj, parentPost);
+    return actions.createComment(commentObj).then(() => {
+      actions.removePendingComment(commentObj, parentPost);
+      if (this.textInput) this.textInput.focus();
     });
   }
 
@@ -140,16 +103,11 @@ class ChatForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    if (this.props.edit) return this.updateComment();
     return this.createComment();
   }
 
   render() {
-    const {
-      auth,
-      // nestingLevel,
-      autoFocus
-    } = this.props;
+    const { auth, autoFocus } = this.props;
     if (!auth.isAuthenticated) return null;
     return (
       <View

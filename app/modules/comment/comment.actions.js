@@ -70,11 +70,12 @@ export function createComment(commentObj) {
   };
 }
 
-export function getComments(post, skip, limit) {
+export function getComments(post, skip, limit, channel) {
   return async dispatch => {
     try {
       if (!skip) skip = 0;
       if (!limit) limit = 0;
+      if (!channel) channel = false;
 
       const responseJSON = await api.request({
         method: 'GET',
@@ -83,9 +84,15 @@ export function getComments(post, skip, limit) {
       });
 
       dispatch(setError('comments', false));
-      const childComments = filterComments(responseJSON.data);
-      const { comments } = normalize(responseJSON.data, [commentSchema]).entities;
-      dispatch(setComments({ comments, childComments }));
+      if (channel) {
+        const childComments = { [post]: responseJSON.data.map(c => c._id) };
+        const { comments } = normalize(responseJSON.data, [commentSchema]).entities;
+        dispatch(setComments({ comments, childComments }));
+      } else {
+        const childComments = filterComments(responseJSON.data);
+        const { comments } = normalize(responseJSON.data, [commentSchema]).entities;
+        dispatch(setComments({ comments, childComments }));
+      }
     } catch (err) {
       dispatch(setError('comments', true, err.message));
     }

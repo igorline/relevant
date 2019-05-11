@@ -23,7 +23,8 @@ class ChatLog extends Component {
     post: PropTypes.object,
     myPostInv: PropTypes.object,
     user: PropTypes.object,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    pendingComments: PropTypes.object
   };
 
   state = {
@@ -63,9 +64,13 @@ class ChatLog extends Component {
       myPostInv,
       user,
       match,
-      screenSize
+      screenSize,
+      pendingComments
     } = this.props;
-    const children = comments.childComments[post._id] || [];
+    const children = [
+      ...(comments.childComments[post._id] || []).map(id => posts.posts[id]),
+      ...(pendingComments[post._id] || [])
+    ];
     const focusedComment = get(match, 'params.commentId', null);
     let lastUser;
     let lastDate = new Date(0);
@@ -80,8 +85,7 @@ class ChatLog extends Component {
       >
         {children.length !== 0 ? (
           <div p={'0 0 1 0'}>
-            {children.map(id => {
-              const comment = posts.posts[id];
+            {children.map((comment, i) => {
               if (!comment) return null;
               let hideAvatar = true;
               const commentDate = new Date(comment.createdAt);
@@ -94,7 +98,7 @@ class ChatLog extends Component {
                 lastDate = commentDate;
               }
               return (
-                <View key={id} p={'0.5 2'}>
+                <View key={comment._id || i} p={'0.5 2'}>
                   <ChatMessage
                     auth={auth}
                     comment={comment}
@@ -134,7 +138,8 @@ export default withRouter(
       comments: state.comments,
       myPostInv: state.investments.myPostInv,
       user: state.user,
-      screenSize: state.navigation.screenSize
+      screenSize: state.navigation.screenSize,
+      pendingComments: state.chat.pendingComments
     }),
     dispatch => ({
       actions: bindActionCreators(
