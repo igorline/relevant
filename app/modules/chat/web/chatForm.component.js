@@ -87,7 +87,6 @@ class ChatForm extends Component {
       metaPost: parentPost.metaPost
     };
     this.setState({ comment: '', inputHeight: 50 });
-
     return this.props.actions.createComment(commentObj).then(newComment => {
       if (!newComment) {
         this.setState({ newComment, inputHeight: 50 });
@@ -177,7 +176,7 @@ class ChatForm extends Component {
           <StyledTextarea
             inputRef={c => (this.textArea = c)}
             rows={2}
-            placeholder="Enter comment..."
+            placeholder="Write a message"
             value={this.state.comment}
             onKeyDown={this.handleKeydown}
             onChange={this.handleChange}

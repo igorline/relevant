@@ -41,7 +41,7 @@ class ChatContainer extends Component {
   componentDidUpdate(prevProps) {
     // TODO this is not needed if we don't wipe post reducer
     // when switching communities
-    if (prevProps.auth.community !== this.props.auth.community) this.getPost();
+    if (prevProps.match !== this.props.match) this.getPost();
   }
 
   render() {

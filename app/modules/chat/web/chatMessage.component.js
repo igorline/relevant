@@ -236,6 +236,11 @@ class ChatMessage extends Component {
       );
     }
 
+    let inReplyTo;
+    if (comment.parentComment && !editing) {
+      inReplyTo = <SecondaryText>In reply to @...</SecondaryText>;
+    }
+
     // const commentChildren = get(childComments, comment.id) || [];
     return (
       <View
@@ -291,6 +296,7 @@ class ChatMessage extends Component {
                   {popup}
                 </View>
               )}
+              {inReplyTo}
               {editing ? (
                 <View mt={2}>
                   <CommentForm
