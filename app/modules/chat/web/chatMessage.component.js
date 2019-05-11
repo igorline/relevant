@@ -157,21 +157,24 @@ class ChatMessage extends Component {
     } = this.props;
     if (!comment) return null;
     const { editing, copied, hovering, user } = this.state;
-    let popup;
     const isActive = activeComment === comment.id;
 
+    let popupOptions;
     if (auth.user && auth.user._id === comment.user) {
-      popup = (
-        <Popup
-          options={[
-            { text: 'Edit Post', action: this.editPost.bind(this) },
-            { text: 'Delete Post', action: this.deletePost.bind(this) }
-          ]}
-        >
-          {hovering && <span className={'optionDots'}>...</span>}
-        </Popup>
-      );
+      popupOptions = [
+        { text: 'Edit Post', action: this.editPost.bind(this) },
+        { text: 'Delete Post', action: this.deletePost.bind(this) }
+      ];
+    } else {
+      popupOptions = [
+        { text: 'Reply to Post', action: () => setActiveComment(comment.id) }
+      ];
     }
+    const popup = (
+      <Popup options={popupOptions}>
+        {hovering && <span className={'optionDots'}>...</span>}
+      </Popup>
+    );
 
     const bodyMargin = condensedView ? '1 0 0 5' : '3 0';
 
@@ -276,7 +279,7 @@ class ChatMessage extends Component {
                     twitter={comment.twitter}
                     user={{ ...user, _id: comment.user }}
                     postTime={comment.createdAt}
-                    showRelevance
+                    showRelevance={false}
                     condensedView={true}
                     avatarText={avatarText}
                     noLink={noLink}

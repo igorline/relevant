@@ -59,8 +59,12 @@ class ChatContainer extends Component {
           position: 'relative'
         }}
       >
-        {hasPost && <ChatLog post={post} actions={actions} {...this.props} />}
-        <ChatForm post={post} parentPost={post} {...this.props} />
+        {hasPost ? (
+          <ChatLog post={post} actions={actions} {...this.props} />
+        ) : (
+          <div>{'This is the beginning of the conversation'}</div>
+        )}
+        <ChatForm post={post} parentPost={post} autoFocus {...this.props} />
       </div>
     );
   }
