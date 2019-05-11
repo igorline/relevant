@@ -9,7 +9,7 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import { View } from 'modules/styled/uni';
+import { View, Spacer } from 'modules/styled/uni';
 // import Comment from 'modules/comment/web/comment.component';
 import ChatMessage from 'modules/chat/web/chatMessage.component';
 
@@ -84,7 +84,8 @@ class ChatLog extends Component {
         ref={el => (this.el = el)}
       >
         {children.length !== 0 ? (
-          <div p={'0 0 1 0'}>
+          <div p={'0 0 2 0'}>
+            <Spacer style={{ height: 50 }} />
             {children.map((comment, i) => {
               if (!comment) return null;
               let hideAvatar = true;
@@ -98,7 +99,7 @@ class ChatLog extends Component {
                 lastDate = commentDate;
               }
               return (
-                <View key={comment._id || i} p={'0.5 2'}>
+                <View key={comment._id || i} p={'0 2 1 2'}>
                   <ChatMessage
                     auth={auth}
                     comment={comment}

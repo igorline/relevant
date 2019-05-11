@@ -8,6 +8,8 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 // import Comments from 'modules/comment/web/comment.container';
 // import get from 'lodash.get';
+
+import ChatHeader from './chatHeader.component';
 import ChatForm from './chatForm.component';
 import ChatLog from './chatLog.component';
 
@@ -59,6 +61,7 @@ class ChatContainer extends Component {
           position: 'relative'
         }}
       >
+        <ChatHeader post={post} actions={actions} {...this.props} />
         {hasPost ? (
           <ChatLog post={post} actions={actions} {...this.props} />
         ) : (
