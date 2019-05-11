@@ -188,9 +188,9 @@ class ChatForm extends Component {
             onFocus={() => this.setState({ focused: true })}
             onBlur={() => setTimeout(() => this.setState({ focused: false }), 100)}
             style={{
-              'min-height': sizing(7),
+              minHeight: sizing(7),
               '&: focus': {
-                'min-height': sizing(7)
+                minHeight: sizing(7)
               }
             }}
           />

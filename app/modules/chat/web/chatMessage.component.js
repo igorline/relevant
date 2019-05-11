@@ -9,7 +9,7 @@ import {
   Touchable,
   Image
 } from 'modules/styled/uni';
-import get from 'lodash.get';
+// import get from 'lodash.get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
@@ -37,8 +37,8 @@ class ChatMessage extends Component {
     activeComment: PropTypes.string,
     setActiveComment: PropTypes.func,
     parentPost: PropTypes.object,
-    childComments: PropTypes.object,
-    posts: PropTypes.object,
+    // childComments: PropTypes.object,
+    // posts: PropTypes.object,
     nestingLevel: PropTypes.number,
     hidePostButtons: PropTypes.bool,
     hideReplyButtons: PropTypes.bool,
@@ -138,8 +138,8 @@ class ChatMessage extends Component {
       comment,
       activeComment,
       setActiveComment,
-      childComments,
-      posts,
+      // childComments,
+      // posts,
       nestingLevel,
       hidePostButtons,
       hideReplyButtons,
@@ -236,7 +236,7 @@ class ChatMessage extends Component {
       );
     }
 
-    const commentChildren = get(childComments, comment.id) || [];
+    // const commentChildren = get(childComments, comment.id) || [];
     return (
       <View
         ref={this.el}
@@ -382,14 +382,14 @@ class ChatMessage extends Component {
             autoFocus
           />
         )}
-        {commentChildren.map(childId => (
-          <Comment
+        {/* commentChildren.map(childId => (
+          <ChatMessage
             {...this.props}
             comment={posts.posts[childId]}
             key={childId}
             nestingLevel={nestingLevel + 1}
           />
-        ))}
+        )) */}
       </View>
     );
   }

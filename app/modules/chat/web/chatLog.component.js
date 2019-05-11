@@ -32,7 +32,7 @@ class ChatLog extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    this.props.actions.getComments(params.id);
+    this.props.actions.getComments(params.id, 0, 0, true);
   }
 
   componentDidUpdate() {
