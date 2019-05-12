@@ -1,9 +1,6 @@
 import * as types from 'core/actionTypes';
 
 export function addPendingComment(comment, post) {
-  // kludge so we can display this comment immediately :-/
-  comment.body = comment.text;
-  comment.createdAt = new Date();
   return dispatch =>
     dispatch({
       type: types.ADD_PENDING_COMMENT,

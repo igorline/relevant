@@ -13,6 +13,8 @@ import { View, Spacer } from 'modules/styled/uni';
 // import Comment from 'modules/comment/web/comment.component';
 import ChatMessage from 'modules/chat/web/chatMessage.component';
 
+// import InfScroll from 'modules/listview/web/infScroll.component';
+
 class ChatLog extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -68,12 +70,53 @@ class ChatLog extends Component {
       pendingComments
     } = this.props;
     const children = [
-      ...(comments.childComments[post._id] || []).map(id => posts.posts[id]),
-      ...(pendingComments[post._id] || [])
+      ...(comments.childComments[post._id] || []).sort().map(id => posts.posts[id])
     ];
+    const pending = [...(pendingComments[post._id] || [])];
     const focusedComment = get(match, 'params.commentId', null);
     let lastUser;
     let lastDate = new Date(0);
+
+    function renderComment(comment) {
+      if (!comment) return null;
+      let hideAvatar = true;
+      const commentDate = new Date(comment.createdAt);
+      if (
+        comment.user !== lastUser ||
+        lastDate.getTime() + 120000 < commentDate.getTime()
+      ) {
+        hideAvatar = false;
+        lastUser = comment.user;
+        lastDate = commentDate;
+      }
+      return (
+        <View key={comment._id} p={'0 2 1 2'}>
+          <ChatMessage
+            auth={auth}
+            comment={comment}
+            actions={actions}
+            myPostInv={myPostInv}
+            user={user}
+            activeComment={this.state.activeComment}
+            setActiveComment={this.setActiveComment}
+            parentPost={post._id}
+            childComments={comments.childComments}
+            posts={posts}
+            parentPost={post}
+            nestingLevel={0}
+            actions={actions}
+            focusedComment={focusedComment}
+            scrollTo={this.scrollTo}
+            screenSize={screenSize}
+            hidePostButtons
+            hideReplyButtons
+            hideAvatar={hideAvatar}
+            condensedView
+          />
+        </View>
+      );
+    }
+
     return (
       <div
         style={{
@@ -86,45 +129,8 @@ class ChatLog extends Component {
         {children.length !== 0 ? (
           <div p={'0 0 2 0'}>
             <Spacer style={{ height: 50 }} />
-            {children.map((comment, i) => {
-              if (!comment) return null;
-              let hideAvatar = true;
-              const commentDate = new Date(comment.createdAt);
-              if (
-                comment.user !== lastUser ||
-                lastDate.getTime() + 120000 < commentDate.getTime()
-              ) {
-                hideAvatar = false;
-                lastUser = comment.user;
-                lastDate = commentDate;
-              }
-              return (
-                <View key={comment._id || i} p={'0 2 1 2'}>
-                  <ChatMessage
-                    auth={auth}
-                    comment={comment}
-                    actions={actions}
-                    myPostInv={myPostInv}
-                    user={user}
-                    activeComment={this.state.activeComment}
-                    setActiveComment={this.setActiveComment}
-                    parentPost={post._id}
-                    childComments={comments.childComments}
-                    posts={posts}
-                    parentPost={post}
-                    nestingLevel={0}
-                    actions={actions}
-                    focusedComment={focusedComment}
-                    scrollTo={this.scrollTo}
-                    screenSize={screenSize}
-                    hidePostButtons
-                    hideReplyButtons
-                    hideAvatar={hideAvatar}
-                    condensedView
-                  />
-                </View>
-              );
-            })}
+            {children.map(renderComment.bind(this))}
+            {pending.map(renderComment.bind(this))}
           </div>
         ) : null}
       </div>

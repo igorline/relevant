@@ -92,6 +92,19 @@ class ChatMessage extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.state.editing ||
+      nextState.editing ||
+      this.state.copied !== nextState.copied ||
+      this.state.hovering !== nextState.hovering ||
+      this.state.user !== nextState.user
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   deletePost() {
     // TODO custom confirm
     // eslint-disable-next-line
@@ -158,7 +171,6 @@ class ChatMessage extends Component {
     if (!comment) return null;
     const { editing, copied, hovering, user } = this.state;
     const isActive = activeComment === comment.id;
-
     let popupOptions;
     if (auth.user && auth.user._id === comment.user) {
       popupOptions = [
@@ -192,7 +204,12 @@ class ChatMessage extends Component {
       readMore = text.length < comment.body.length;
     }
     let body = (
-      <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
+      <CommentText
+        style={{ zIndex: 0 }}
+        m={bodyMargin}
+        pl={avatarText ? 5 : 0}
+        c={comment.pending ? colors.grey : colors.black}
+      >
         <Linkify
           style={{ width: '100%' }}
           options={{
@@ -240,7 +257,6 @@ class ChatMessage extends Component {
     if (comment.parentComment && !editing) {
       inReplyTo = <SecondaryText>In reply to @...</SecondaryText>;
     }
-
     // const commentChildren = get(childComments, comment.id) || [];
     return (
       <View

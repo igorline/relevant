@@ -77,9 +77,19 @@ class ChatForm extends Component {
       metaPost: parentPost.metaPost
     };
     this.setState({ comment: '', inputHeight: 50 });
-    actions.addPendingComment(commentObj, parentPost);
+
+    // so we can display this comment immediately :-/
+    const pendingComment = {
+      ...commentObj,
+      _id: Math.random(),
+      body: commentObj.text,
+      createdAt: new Date().toString(),
+      embeddedUser: auth.user,
+      pending: true
+    };
+    actions.addPendingComment(pendingComment, parentPost);
     return actions.createComment(commentObj).then(() => {
-      actions.removePendingComment(commentObj, parentPost);
+      actions.removePendingComment(pendingComment, parentPost);
       if (this.textInput) this.textInput.focus();
     });
   }
