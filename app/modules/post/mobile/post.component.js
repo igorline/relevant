@@ -10,6 +10,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as investActions from 'modules/post/invest.actions';
 import PostInfo from 'modules/post/postinfo.mobile.component';
+import PostButtons from 'modules/post/mobile/postButtons.component';
 import { getTitle } from 'app/utils/post';
 import { routing } from 'app/utils';
 import { View } from 'modules/styled/uni';
@@ -67,8 +68,9 @@ class Post extends PureComponent {
 
     const commentaryEl = renderComment ? (
       <Commentary
-        isReply={!isLinkPost}
+        isReply
         isLinkPost={isLinkPost}
+        preview={preview}
         {...this.props}
         commentary={commentary || [post]}
       />
@@ -98,6 +100,17 @@ class Post extends PureComponent {
           preview={preview}
           noLink={noLink}
         />
+        {!preview && (
+          <View m={2}>
+            <PostButtons
+              post={post}
+              actions={actions}
+              auth={auth}
+              link={link}
+              myPostInv={myPostInv[post._id]}
+            />
+          </View>
+        )}
       </View>
     ) : (
       <Commentary {...this.props} commentary={[post]} />

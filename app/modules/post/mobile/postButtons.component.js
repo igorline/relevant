@@ -12,9 +12,11 @@ import {
 import PropTypes from 'prop-types';
 import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
-import IconI from 'react-native-vector-icons/Ionicons';
+// import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles, greyText, fullHeight } from 'app/styles/global';
+import { globalStyles, fullHeight } from 'app/styles/global';
+import { CTALink } from 'modules/styled/uni';
+import { colors } from 'app/styles';
 import get from 'lodash/get';
 
 let ActionSheet = ActionSheetIOS;
@@ -44,7 +46,6 @@ class PostButtons extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.onShare = this.onShare.bind(this);
     this.goToPost = this.goToPost.bind(this);
     this.invest = this.invest.bind(this);
     this.flag = this.flag.bind(this);
@@ -55,12 +56,12 @@ class PostButtons extends Component {
     };
 
     this.linkMenu = {
-      buttons: ['Repost with Comment', 'Cancel'],
+      buttons: ['Repost Article', 'Share Via...', 'Cancel'],
       cancelIndex: 3
     };
 
     this.menu = {
-      buttons: ['Repost', 'Cancel'],
+      buttons: ['Share Via...', 'Cancel'],
       cancelIndex: 2
     };
 
@@ -82,24 +83,25 @@ class PostButtons extends Component {
   }
 
   componentDidMount() {
-    if (this.props.post.link) this.menu = this.linkMenu;
+    if (this.props.link) this.menu = this.linkMenu;
     if (this.props.tooltip) {
       this.initTooltips();
     }
   }
 
-  onShare() {
+  onShare = () => {
+    const { parentPost, post } = this.props;
+    const postId = parentPost ? parentPost || parentPost._id : post._id;
+    const commentId = parentPost ? '/' + post._id : '';
     Share.open({
-      title: 'Relevant',
-      url: this.props.post.link
-        ? this.props.post.link
-        : 'http://relevant-community.herokuapp.com/',
-      subject: 'Share Link',
-      message: this.props.post.title
-        ? 'Relevant post: ' + this.props.post.title
-        : 'Relevant post:'
-    });
-  }
+      title: this.props.post.title ? 'Relevant post: ' + this.props.post.title : '',
+      url: `https://relevant.community/post/${postId}${commentId}`,
+      subject: 'Share Link'
+      // message: this.props.post.title
+      //   ? 'Relevant post: ' + this.props.post.title
+      //   : ''
+    }).catch(err => console.log(err)); // eslint-disable-line
+  };
 
   initTooltips() {
     ['vote'].forEach(name => {
@@ -224,22 +226,19 @@ class PostButtons extends Component {
         destructiveButtonIndex: this.menu.destructiveIndex
       },
       buttonIndex => {
-        if (this.props.post.link) {
+        if (this.props.link) {
           switch (buttonIndex) {
             case 0:
-              if (this.props.post.link) this.repostUrl();
+              this.repostUrl();
               break;
             case 1:
-              this.repostCommentary();
+              this.onShare();
               break;
             default:
           }
         } else {
           switch (buttonIndex) {
             case 0:
-              this.repostCommentary();
-              break;
-            case 1:
               this.onShare();
               break;
             default:
@@ -319,8 +318,9 @@ class PostButtons extends Component {
     const { post, auth, myPostInv, link } = this.props;
     let investButtonEl = null;
     let investible = false;
-    let commentString = '';
     let myVote;
+
+    const isLink = !post.parentPost && post.url;
 
     if (post && auth.user) {
       if (!post.user || post.user !== auth.user._id) {
@@ -332,12 +332,6 @@ class PostButtons extends Component {
       }
     }
 
-    if (post && post.commentCount) {
-      if (post.commentCount === 1) commentString = '1';
-      else {
-        commentString = post.commentCount;
-      }
-    }
     const space = 8;
 
     const opacity = 1;
@@ -367,7 +361,6 @@ class PostButtons extends Component {
 
     if (!r) {
       r = 'Vote';
-      // rIcon = null;
     }
 
     const postRank = post.data
@@ -416,36 +409,30 @@ class PostButtons extends Component {
 
     const comments = (
       <TouchableOpacity
-        onPress={() => this.goToPost(true)}
+        onPress={() => (isLink ? this.repostUrl() : this.goToPost(true))}
         style={{ paddingHorizontal: 12 }}
       >
         <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
-          <IconI
-            style={{ transform: [{ scaleX: -1 }] }}
-            name="ios-redo-outline"
-            size={28}
-            color={greyText}
-          />
-          <Text style={styles.smallInfo}> {commentString}</Text>
+          <CTALink c={colors.blue}>{isLink ? 'Comment' : 'Reply'}</CTALink>
+          {post.commentCount ? (
+            <CTALink style={styles.smallInfo}> ({post.commentCount})</CTALink>
+          ) : null}
         </View>
       </TouchableOpacity>
     );
 
-    const newCommentary = (
-      <TouchableOpacity style={{ paddingRight: 8 }} onPress={() => this.repostUrl()}>
-        {/* <Icon name="pencil" size={18} color={greyText} /> */}
+    const shareButton = (
+      <TouchableOpacity
+        style={{ paddingRight: 8 }}
+        onPress={() => this.showActionSheet()}
+      >
         <View style={[{ flexDirection: 'column', alignItems: 'center' }]}>
-          <Image
-            resizeMode={'contain'}
-            style={styles.vote}
-            source={require('app/public/img/icons/comment.png')}
-          />
+          <CTALink c={colors.blue}>Share</CTALink>
         </View>
       </TouchableOpacity>
     );
 
     const twitter = link && link.twitter === true;
-    const isComment = post.type === 'comment';
 
     return (
       <View style={styles.postButtonsContainer}>
@@ -457,15 +444,9 @@ class PostButtons extends Component {
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {link && link.url && !isComment ? newCommentary : null}
             {twitter ? null : comments}
+            {shareButton}
           </View>
-
-          {/*          <InvestModal
-            toggleFunction={this.toggleModal}
-            post={this.props.post}
-            visible={this.state.modalVisible}
-          /> */}
         </View>
       </View>
     );
