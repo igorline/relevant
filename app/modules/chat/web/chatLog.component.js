@@ -11,6 +11,7 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
 import { View, Spacer } from 'modules/styled/uni';
 // import Comment from 'modules/comment/web/comment.component';
+import Loading from 'modules/ui/web/loading.component';
 import ChatMessage from 'modules/chat/web/chatMessage.component';
 
 // import InfScroll from 'modules/listview/web/infScroll.component';
@@ -77,6 +78,15 @@ class ChatLog extends Component {
     let lastUser;
     let lastDate = new Date(0);
 
+    let loading;
+    if (!children.length) {
+      loading = (
+        <div>
+          <Loading />
+        </div>
+      );
+    }
+
     function renderComment(comment) {
       if (!comment) return null;
       let hideAvatar = true;
@@ -126,13 +136,12 @@ class ChatLog extends Component {
         }}
         ref={el => (this.el = el)}
       >
-        {children.length !== 0 ? (
-          <div p={'0 0 2 0'}>
-            <Spacer style={{ height: 50 }} />
-            {children.map(renderComment.bind(this))}
-            {pending.map(renderComment.bind(this))}
-          </div>
-        ) : null}
+        <div p={'0 0 2 0'}>
+          <Spacer style={{ height: 55 }} />
+          {loading}
+          {children.map(renderComment.bind(this))}
+          {pending.map(renderComment.bind(this))}
+        </div>
       </div>
     );
   }

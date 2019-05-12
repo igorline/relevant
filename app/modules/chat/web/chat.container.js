@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { colors } from 'app/styles';
 import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as chatActions from 'modules/chat/chat.actions';
@@ -65,7 +66,7 @@ class ChatContainer extends Component {
         {hasPost ? (
           <ChatLog post={post} actions={actions} {...this.props} />
         ) : (
-          <div>{'This is the beginning of the conversation'}</div>
+          <div c={colors.grey}>{'This is the beginning of the conversation'}</div>
         )}
         <ChatForm post={post} parentPost={post} autoFocus {...this.props} />
       </div>
