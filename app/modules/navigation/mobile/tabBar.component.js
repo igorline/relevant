@@ -14,6 +14,11 @@ import Percent from 'modules/stats/mobile/percent.component';
 
 let styles;
 
+let Emoji = Text;
+if (Platform.OS === 'android') {
+  Emoji = require('react-native-emoji-compat-text').default;
+}
+
 export default class TabBar extends Component {
   static propTypes = {
     auth: PropTypes.object,
@@ -59,7 +64,7 @@ export default class TabBar extends Component {
     }
 
     let icon = (
-      <Text
+      <Emoji
         style={[
           styles.icon,
           styles.textCenter,
@@ -68,7 +73,7 @@ export default class TabBar extends Component {
         ]}
       >
         {tab.params.icon}
-      </Text>
+      </Emoji>
     );
     let title = (
       <Text
@@ -153,8 +158,9 @@ const localStyles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
-    color: greyText,
-    fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia'
+    opacity: 1,
+    color: 'black',
+    width: 25
   },
   activeIcon: {},
   activityRow: {

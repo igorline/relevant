@@ -6,6 +6,8 @@ import {
   StatusBar,
   FlatList,
   Keyboard
+  // TouchableOpacity,
+  // Text
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { IphoneX } from 'app/styles/global';
@@ -15,6 +17,7 @@ import UserSearchComponent from 'modules/createPost/mobile/userSearch.component'
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import { View, MobileDivider, Divider } from 'modules/styled/uni';
 import PostButtons from 'modules/post/mobile/postButtons.component';
+// import Avatar from 'modules/user/UAvatar.component';
 import Post from './post.component';
 
 const inputOffset = IphoneX ? 59 + 33 : 59;
@@ -60,7 +63,6 @@ class SinglePostComponent extends Component {
     this.reload = this.reload.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
-    this.loaded = false;
     this.renderUserSuggestions = this.renderUserSuggestions.bind(this);
     this.renderRelated = this.renderRelated.bind(this);
   }
@@ -69,31 +71,25 @@ class SinglePostComponent extends Component {
   nestingLevel = {};
 
   componentDidMount() {
-    requestAnimationFrame(() => {
-      this.setState({ loaded: true });
-    });
-  }
-
-  componentWillMount() {
+    const { params } = this.props.navigation.state;
     this.id = this.props.postId;
     this.getChildren(this.id);
 
     // InteractionManager.runAfterInteractions(() => {
     requestAnimationFrame(() => {
-      this.loaded = true;
-      this.setState({});
+      this.setState({ loaded: true });
     });
 
+    if (params.comment) {
+      this.setState({ activeComment: params.comment });
+    }
+
     setTimeout(() => {
-      const { params } = this.props.navigation.state;
       if (params && params.openComment) {
         if (params.commentCount && this.comments) {
-          this.scrollToBottom(true);
+          // this.scrollToBottom(true);
         } else if (!params.commentCount) {
           this.input.textInput.focus();
-        }
-        if (params.comment) {
-          this.setState({ activeComment: params.comment });
         }
       }
       this.forceUpdate();
@@ -152,6 +148,10 @@ class SinglePostComponent extends Component {
     this.setState({ activeComment: this.comments[index], activeIndex: index });
   }
 
+  scrollToTop() {
+    this.scrollView.scrollToOffset({ offset: 0 });
+  }
+
   scrollToBottom() {
     this.scrollTimeout = setTimeout(() => {
       if (!this.scrollView) return;
@@ -161,7 +161,7 @@ class SinglePostComponent extends Component {
         const offset = Math.max(0, this.headerHeight - this.scrollHeight);
         this.scrollView.scrollToOffset({ offset });
       }
-    }, 200);
+    }, 0);
   }
 
   reloadComments() {
@@ -192,7 +192,32 @@ class SinglePostComponent extends Component {
     return relatedEl;
   }
 
+  repostUrl = () => {
+    const { link = {}, actions } = this.props;
+    actions.setCreatePostState({
+      postBody: '',
+      component: 'createPost',
+      nativeImage: true,
+      postUrl: link.url,
+      postImage: link.image,
+      urlPreview: {
+        image: link.image,
+        title: link.title ? link.title : 'Untitled',
+        description: link.description
+      }
+    });
+    actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Add Commentary',
+      next: 'Next',
+      direction: 'vertical',
+      left: 'Cancel'
+    });
+  };
+
   renderHeader() {
+    const { post, link, actions, navigation } = this.props;
     return (
       <View
         onLayout={e => {
@@ -202,13 +227,27 @@ class SinglePostComponent extends Component {
         <Post
           singlePost
           key={0}
-          navigation={this.props.navigation}
-          post={this.props.post}
-          link={this.props.link}
-          actions={this.props.actions}
-          focusInput={() => this.input.textInput.focus()}
+          navigation={navigation}
+          post={post}
+          link={link}
+          actions={actions}
+          focusInput={() => {
+            this.setState({ activeComment: post });
+            this.input.textInput.focus();
+          }}
         />
         {this.renderRelated()}
+
+        {/* link && <TouchableOpacity onPress={this.repostUrl} style={{
+          height: 54,
+          alignItems: 'center',
+          paddingHorizontal: 16,
+          flexDirection: 'row'
+        }}>
+          <Avatar user={auth.user} />
+          <Text style={{ color: greyText, marginLeft: 8 }}>Add your comment...</Text>
+        </TouchableOpacity>
+        */}
       </View>
     );
   }
@@ -299,10 +338,20 @@ class SinglePostComponent extends Component {
   render() {
     const { post } = this.props;
     if (!post) return null;
-    const { activeComment, activeIndex, editing } = this.state;
+    const { editing } = this.state;
+    let { activeComment } = this.state;
 
     // TODO this is hacky;
     this.getChildren();
+    let commentIndex =
+      activeComment && this.comments.findIndex(c => c._id === activeComment._id);
+
+    if (activeComment && activeComment._id === post._id) {
+      commentIndex = -1;
+    } else {
+      commentIndex = commentIndex > -1 ? commentIndex : this.comments.length - 1;
+      activeComment = this.comments[commentIndex];
+    }
 
     return (
       <KeyboardAvoidingView
@@ -343,10 +392,14 @@ class SinglePostComponent extends Component {
         {this.renderUserSuggestions()}
 
         <CommentInput
+          position="fixed"
           parentPost={post}
           parentComment={activeComment}
           ref={c => (this.input = c)}
           postId={this.id}
+          placeholder={
+            activeComment ? `Reply to @${activeComment.embeddedUser.handle}` : null
+          }
           editing={editing}
           {...this.props}
           scrollView={this.scrollView}
@@ -354,8 +407,8 @@ class SinglePostComponent extends Component {
           updatePosition={params => this.setState(params)}
           onBlur={() => this.setState({ comment: null, index: null })}
           onFocus={() => {
-            if (typeof activeIndex === 'number') this.scrollToComment(activeIndex);
-            else this.scrollToBottom();
+            if (commentIndex > -1) this.scrollToComment(commentIndex);
+            else this.scrollToTop();
           }}
         />
       </KeyboardAvoidingView>
