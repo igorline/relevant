@@ -144,8 +144,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 2,
-    opacity: 1
+    paddingTop: 2
   },
   footerItemInner: {
     height: 27,
@@ -162,7 +161,6 @@ const localStyles = StyleSheet.create({
     opacity: 1,
     color: 'black',
     width: 25
-    // fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia'
   },
   activeIcon: {},
   activityRow: {
