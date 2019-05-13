@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Divider,
-  CTALink,
-  CommentText,
-  SecondaryText,
-  Spacer,
-  Touchable,
-  Image
-} from 'modules/styled/uni';
+import { View, Divider, CommentText, Spacer, Touchable, Image } from 'modules/styled/uni';
 import get from 'lodash.get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
@@ -16,11 +7,11 @@ import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { colors, layout } from 'app/styles';
-import ULink from 'modules/navigation/ULink.component';
 import Linkify from 'linkifyjs/react';
 import * as linkify from 'linkifyjs';
 import mentionPlugin from 'linkifyjs/plugins/mention';
 import hashTagPlugin from 'linkifyjs/plugins/hashtag';
+import ButtonRow from 'modules/post/web/buttonRow.component';
 
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -110,21 +101,6 @@ class Comment extends Component {
     this.setState({ editing: true });
   }
 
-  // TODO utils & link copied via tooltip
-  copyToClipboard = () => {
-    const { parentPost, auth } = this.props;
-    const el = document.createElement('textarea');
-    el.value = `${window.location.host}/${auth.community}/post/${parentPost._id}`;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    this.setState({ copied: true });
-  };
-
   cancel = () => {
     this.props.setActiveComment(null);
     this.setState({ editing: false });
@@ -135,7 +111,6 @@ class Comment extends Component {
       auth,
       comment,
       activeComment,
-      setActiveComment,
       childComments,
       posts,
       nestingLevel,
@@ -240,7 +215,7 @@ class Comment extends Component {
           m={['0 4 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
           fdirection="column"
         >
-          {nestingLevel > 0 && !hideBorder && (
+          {!hideBorder && nestingLevel > 0 && (
             <Divider
               className="divider"
               ml={hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_WIDTH / 3}
@@ -252,11 +227,11 @@ class Comment extends Component {
                 <PostButtons {...this.props} post={comment} />
               </View>
             ) : null}
-            {screenSize > 0 && nestingLevel > 0 ? (
+            {nestingLevel > 0 ? (
               <Image
                 h={3}
                 w={2}
-                ml={-3}
+                ml={0}
                 mr={1}
                 resizeMode={'contain'}
                 source={require('app/public/img/reply.png')}
@@ -295,57 +270,8 @@ class Comment extends Component {
                 body
               )}
               {editing || (hidePostButtons && preview) ? null : (
-                <View
-                  ml={condensedView ? 5 : 0}
-                  mb={[4, 2]}
-                  fdirection="row"
-                  justify="space-between"
-                  align="center"
-                  wrap={1}
-                  // stop-gap to avoid the page dimenisons breaking on deeply nested comments
-                >
-                  {!hidePostButtons && screenSize ? (
-                    <View w={12}>
-                      <PostButtons {...this.props} post={comment} horizontal />
-                    </View>
-                  ) : null}
-                  <View fdirection="row">
-                    <ULink
-                      hu
-                      to="#"
-                      inline
-                      authrequired={true}
-                      onClick={e => {
-                        e.preventDefault();
-                        setActiveComment(comment.id);
-                      }}
-                      onPress={e => {
-                        e.preventDefault();
-                        setActiveComment(comment.id);
-                      }}
-                    >
-                      <CTALink mr={3} c={colors.blue}>
-                        Reply
-                      </CTALink>
-                    </ULink>
-                    <ULink
-                      hu
-                      to="#"
-                      authrequired={true}
-                      inline
-                      onClick={e => {
-                        e.preventDefault();
-                        this.copyToClipboard();
-                      }}
-                      onPress={e => {
-                        e.preventDefault();
-                        this.copyToClipboard();
-                      }}
-                    >
-                      <CTALink c={colors.blue}>Share</CTALink>
-                    </ULink>
-                    {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
-                  </View>
+                <View mb={[4, 2]}>
+                  <ButtonRow {...this.props} copied={copied} post={comment} />
                 </View>
               )}
             </View>
