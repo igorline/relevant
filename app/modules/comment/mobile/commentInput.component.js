@@ -6,7 +6,8 @@ import {
   TextInput,
   Image,
   Alert,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, greyText, mainPadding } from 'app/styles/global';
@@ -125,10 +126,7 @@ class CommentInput extends Component {
               top: this.top
             });
           }}
-          style={[
-            styles.commentInputParent
-            // { height: Math.min(inputHeight, 120) }
-          ]}
+          style={styles.commentInputParent}
         >
           {inputImage}
           <TextInput
@@ -141,10 +139,9 @@ class CommentInput extends Component {
               styles.commentInput,
               styles.font15,
               {
-                flex: 1,
+                flex: 5,
                 lineHeight: 18,
                 maxHeight: 200,
-                // minHeight: DEFAULT_INPUT_HEIGHT,
                 flexDirection: 'row',
                 alignItems: 'center'
               }
@@ -206,9 +203,14 @@ export default CommentInput;
 const localStyles = StyleSheet.create({
   commentInput: {
     flex: 1,
-    padding: 4,
+    paddingBottom: 4,
+    justifyContent: 'center',
+    // backgroundColor: 'pink',
+    minHeight: 25,
     paddingLeft: 10,
-    marginVertical: 16
+    marginTop: 12.5,
+    marginBottom: Platform.OS === 'android' ? 4 : 12.5
+    // marginVertical: 12.5
   },
   commentInputParent: {
     flexDirection: 'row',
@@ -231,7 +233,6 @@ const localStyles = StyleSheet.create({
     height: 25,
     paddingHorizontal: 4,
     borderRadius: 12.5,
-    // width: 50,
     justifyContent: 'center',
     alignItems: 'center'
   }
