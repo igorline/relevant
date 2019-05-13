@@ -36,10 +36,10 @@ allprojects {
     subprojects {
         afterEvaluate {
             project ->
-                if (project.hasProperty("android")) {
+                if (project.hasProperty("android") || subproject.plugins.hasPlugin('android-library')) {
                     android {
-                        compileSdkVersion compileSdkVersion
-                        buildToolsVersion "$buildToolsVersion"
+                        compileSdkVersion rootProject.ext.compileSdkVersion
+                        buildToolsVersion rootProject.ext.buildToolsVersion
                     }
                 }
         }
