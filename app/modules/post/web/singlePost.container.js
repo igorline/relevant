@@ -8,6 +8,7 @@ import Comments from 'modules/comment/web/comment.container';
 import get from 'lodash.get';
 import { View } from 'modules/styled/uni';
 import PostComponent from './post.component';
+// import ButtonRow from 'modules/post/web/buttonRow.component';
 
 class SinglePostContainer extends Component {
   static propTypes = {
@@ -56,20 +57,18 @@ class SinglePostContainer extends Component {
     return (
       <View mb={20}>
         {hasPost && (
-          <div>
-            <View>
-              <PostComponent
-                noComments
-                link={link}
-                post={post}
-                firstPost={firstPost}
-                {...this.props}
-                hideDivider
-                singlePost
-              />
-            </View>
+          <View>
+            <PostComponent
+              noComments
+              link={link}
+              post={post}
+              firstPost={firstPost}
+              {...this.props}
+              hideDivider
+              singlePost
+            />
             <Comments post={post} {...this.props} />
-          </div>
+          </View>
         )}
       </View>
     );

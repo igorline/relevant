@@ -1,40 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { colors } from 'app/styles';
 import { connect } from 'react-redux';
-import {
-  View,
-  Header,
-  SecondaryText,
-  Image,
-  Touchable,
-  BodyText,
-  LinkFont,
-  Text,
-  Button
-} from 'modules/styled/uni';
-import * as cardActions from './card.actions';
+import * as Connext from 'connext';
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import { getChannelBalanceInUSD } from './connext/currencyFormatting';
+import Withdraw from './withdraw.component';
+import Deposit from './deposit.component';
+import CardBalance from './cardBalance.component';
+import * as cardActions from './card.actions';
+
+const { hasPendingOps } = new Connext.Utils();
 
 let daicard;
+let CHANNEL_DEPOSIT_MAX;
 if (process.env.BROWSER === true) {
   daicard = require('./connext');
+  CHANNEL_DEPOSIT_MAX = daicard.CHANNEL_DEPOSIT_MAX;
 }
 
-const RPC = 'MAINNET';
+const RPC = 'RINKEBY';
+// const RPC = 'MAINNET';
 
-class CardContainer extends Component {
+class DaiCard extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    screenSize: PropTypes.number,
-    address: PropTypes.string,
     connextState: PropTypes.object,
-    channelState: PropTypes.object
+    channelState: PropTypes.object,
+    modal: PropTypes.string
   };
 
   state = {
-    showCard: false
+    initialized: false
   };
 
   async componentDidMount() {
@@ -45,7 +42,7 @@ class CardContainer extends Component {
 
     // start polling
     if (this.connext) this.connext.start();
-    this.setState({ showCard: true });
+    this.setState({ initialized: true });
   }
 
   componentWillUnmount() {
@@ -54,86 +51,47 @@ class CardContainer extends Component {
   }
 
   render() {
-    if (!this.state.showCard) return null;
-    const { screenSize, address, connextState, channelState } = this.props;
-    const balance = getChannelBalanceInUSD(channelState, connextState);
+    const { initialized } = this.state;
+    const { connextState, channelState, modal } = this.props;
+    const balance = initialized
+      ? getChannelBalanceInUSD(channelState, connextState)
+      : '$0.00';
+
     return (
-      <View m={['4 4 2 4', '2 2 0 2']}>
-        {!screenSize ? (
-          <View>
-            <Header>USD Balance</Header>
-            <BodyText mt={2}>This is your USD wallet</BodyText>
-          </View>
-        ) : null}
-        <View br bl bt p="2" mt={2}>
-          <View fdirection="row" justify="space-between" wrap>
-            <BodyText mb={0.5}>Account Balance</BodyText>
-            <SecondaryText mb={0.5}>{address}</SecondaryText>
-          </View>
-          <View fdirection="row" align="center" display="flex" mt={2}>
-            <Text fs={4.5} lh={5} size={5}>
-              {balance}
-            </Text>
-          </View>
-        </View>
-        <View border={1} p="2">
-          <SecondaryText>Test</SecondaryText>
-        </View>
-        {!screenSize ? (
-          <View fdirection="row" mt={2} align="center">
-            <Button mr={3} onClick={this.deposit}>
-              Deposit
-            </Button>
-            <Touchable onClick={this.cashOut} disabled>
-              <LinkFont mr={0.5} c={colors.grey} td={'underline'}>
-                Cash Out
-              </LinkFont>
-            </Touchable>
-            <Image
-              source={require('app/public/img/info.png')}
-              s={1.5}
-              h={1.5}
-              w={1.5}
-              ml={0.5}
-              // data-for="mainTooltip"
-              // data-tip={JSON.stringify({
-              //   type: 'TEXT',
-              //   props: {
-              //     text: `Once you earn more than ${CASHOUT_LIMIT}
-              //     tokens you\ncan transfer them to your Metamask wallet\n(temporarily disabled)`
-              //   }
-              // })}
-              // onPress={() => this.tooltip.show()}
-            />
-          </View>
-        ) : null}
-        <Header mt={[9, 4]}>Recent Activity</Header>
-        {!screenSize ? (
-          <BodyText mt={2}>This is a record of all your payments and rewards.</BodyText>
-        ) : null}
-      </View>
+      <React.Fragment>
+        <CardBalance {...this.props} balance={balance} />
+        {initialized && modal === 'withdrawModal' && (
+          <Withdraw
+            {...this.props}
+            balance={balance}
+            hasPendingOps={hasPendingOps}
+            connext={this.connext}
+          />
+        )}
+        {initialized && modal === 'depositModal' && (
+          <Deposit {...this.props} maxTokenDeposit={CHANNEL_DEPOSIT_MAX.toString()} />
+        )}
+      </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  modal: state.navigation.modal,
   connextState: state.card.connextState,
   address: state.card.address,
   screenSize: state.navigation.screenSize,
-  channelState: state.card.connextState.persistent
-    ? state.card.connextState.persistent.channel
-    : null
-
-  // need these?
-  // runtime: state.card.connextState.runtime,
-  // exchangeRate: state.card.connextState.runtime.exchangeRate ?
-  //  state.card.connextState.runtime.exchangeRate.rates.USD : 0
+  runtime: state.card.runtime,
+  channelState: state.card.channelState,
+  exchangeRate: state.card.exchangeRate,
+  browserMinimumBalance: state.card.browserMinimumBalance
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...cardActions
+      ...cardActions,
+      ...navigationActions
     },
     dispatch
   )
@@ -142,4 +100,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CardContainer);
+)(DaiCard);

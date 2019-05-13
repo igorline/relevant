@@ -75,7 +75,7 @@ class ArticleView extends Component {
   //   ActionSheetIOS.showShareActionSheetWithOptions({
   //     url: this.url,
   //   },
-  //   (error) => AlertIOS.alert(error),
+  //   (error) => Alert.alert(error),
   //   (completed, method) => {
 
   //   });

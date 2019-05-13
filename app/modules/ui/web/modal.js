@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components/primitives';
 import { View, Header, Touchable, CloseX } from 'modules/styled/uni';
 import { colors, layout } from 'app/styles';
@@ -36,7 +37,7 @@ const Modal = styled(View)`
   max-width: 100vw;
 `;
 
-export default class ModalComponent extends Component {
+class ModalComponent extends Component {
   static propTypes = {
     header: PropTypes.object,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
@@ -123,3 +124,6 @@ export default class ModalComponent extends Component {
     );
   }
 }
+
+export default props =>
+  ReactDOM.createPortal(<ModalComponent {...props} />, document.body);

@@ -13,10 +13,10 @@ const hubUrlRinkeby = 'https://rinkeby.hub.connext.network/api/hub';
 const hubUrlMainnet = 'https://hub.connext.network/api/hub';
 
 // Constants for channel max/min - this is also enforced on the hub
-const DEPOSIT_ESTIMATED_GAS = Big('700000'); // 700k gas
-const HUB_EXCHANGE_CEILING = eth.constants.WeiPerEther.mul(Big(69)); // 69 TST
-// const CHANNEL_DEPOSIT_MAX = eth.constants.WeiPerEther.mul(Big(30)); // 30 TST
-const MAX_GAS_PRICE = Big('20000000000'); // 20 gWei
+export const DEPOSIT_ESTIMATED_GAS = Big('700000'); // 700k gas
+export const HUB_EXCHANGE_CEILING = eth.constants.WeiPerEther.mul(Big(69)); // 69 TST
+export const CHANNEL_DEPOSIT_MAX = eth.constants.WeiPerEther.mul(Big(30)); // 30 TST
+export const MAX_GAS_PRICE = Big('20000000000'); // 20 gWei
 
 let state = {
   isInitialized: null,
@@ -32,8 +32,8 @@ let updateReduxState;
 
 export async function initConnext({ rpc, updateState }) {
   try {
-    updateReduxState = updateState;
     if (state.isInitialized) return state.connext;
+    updateReduxState = updateState;
 
     let mnemonic = localStorage.getItem('mnemonic');
     if (!mnemonic) {
