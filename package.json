@@ -119,7 +119,7 @@
     "react-native-emoji-compat-text": "^0.1.1",
     "react-native-file-upload": "^1.0.4",
     "react-native-firebase-analytics": "^4.0.3",
-    "react-native-gesture-handler": "^1.0.12",
+    "react-native-gesture-handler": "^1.2.1",
     "react-native-global-props": "^1.1.1",
     "react-native-image-picker": "^0.26.7",
     "react-native-linear-gradient": "^2.0.0",
