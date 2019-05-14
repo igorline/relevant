@@ -17,7 +17,7 @@
         <item name="android:windowExitAnimation">@null</item>
     </style>
 
-    <style name="Theme.Share.Transparent" parent="android:Theme">
+    <style name="Theme.AppCompat.Transparent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

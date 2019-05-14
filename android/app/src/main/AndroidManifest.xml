@@ -89,7 +89,7 @@
         android:name=".share.ShareActivity"
         android:label="@string/title_activity_share"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.Share.Transparent"
+        android:theme="@style/Theme.AppCompat.Transparent"
         android:windowSoftInputMode="adjustResize"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
       >

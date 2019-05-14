@@ -90,12 +90,12 @@ class PostButtons extends Component {
   }
 
   onShare = () => {
-    const { parentPost, post } = this.props;
+    const { parentPost, post, auth } = this.props;
     const postId = parentPost ? parentPost || parentPost._id : post._id;
     const commentId = parentPost ? '/' + post._id : '';
     Share.open({
       title: this.props.post.title ? 'Relevant post: ' + this.props.post.title : '',
-      url: `https://relevant.community/post/${postId}${commentId}`,
+      url: `https://relevant.community/${auth.community}/post/${postId}${commentId}`,
       subject: 'Share Link'
       // message: this.props.post.title
       //   ? 'Relevant post: ' + this.props.post.title
