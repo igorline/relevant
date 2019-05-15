@@ -160,7 +160,8 @@ class CommunityAdminForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const slug = get(ownProps, 'match.params.slug') || state.auth.community;
+  let slug = get(ownProps, 'match.params.slug') || state.auth.community;
+  if (get(ownProps, 'match.path') === '/admin/community/new') slug = null;
   const community = get(state.community, `communities.${slug}`) || {};
   const isUpdate = !!Object.keys(community).length;
   const adminMembers = get(community, 'admins', []);
