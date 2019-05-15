@@ -10,6 +10,7 @@ import {
   createCommunity,
   deleteCommunity
 } from 'modules/community/community.actions';
+import SelectField from 'modules/form/selectField.component';
 import CreatableMulti from 'modules/form/createSelectField.component';
 import AsyncAdminField from 'modules/form/asyncAdminField.component';
 import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
@@ -112,10 +113,18 @@ class CommunityAdminForm extends Component {
         validate: []
       },
       {
+        name: 'superAdmins',
+        component: SelectField,
+        options: initialValues.admins,
+        type: 'text',
+        label: 'Admins',
+        validate: []
+      },
+      {
         name: 'admins',
         component: AsyncAdminField,
         type: 'text',
-        label: 'Admins',
+        label: 'Moderators',
         validate: []
       }
     ];
@@ -151,11 +160,16 @@ class CommunityAdminForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const slug = get(ownProps, 'match.params.slug');
+  const slug = get(ownProps, 'match.params.slug') || state.auth.community;
   const community = get(state.community, `communities.${slug}`) || {};
   const isUpdate = !!Object.keys(community).length;
-  const admins = (get(community, 'members', []) || []).map(m => m.embeddedUser.handle);
-  const initialValues = Object.assign({}, community, { admins });
+  const adminMembers = get(community, 'admins', []);
+  const admins = adminMembers.map(m => (m.embeddedUser ? m.embeddedUser.handle : m._id));
+  const superAdmins = adminMembers
+  .filter(m => m.superAdmin)
+  .map(m => m.embeddedUser.handle);
+
+  const initialValues = { ...community, admins, superAdmins };
   return {
     routing: state.routing,
     community: state.community,

@@ -9,8 +9,14 @@ import { View } from 'modules/styled/uni';
 import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import SplashComponent from 'modules/web_splash/splash.component';
 import { slide as Menu } from 'react-burger-menu';
-import { openWebSideNav, closeWebSideNav } from 'modules/navigation/navigation.actions';
+import {
+  openWebSideNav,
+  closeWebSideNav,
+  hideModal
+} from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';
+import Modal from 'modules/ui/web/modal';
+import SettingsComponent from 'modules/admin/web/communityAdminForm.component';
 
 class WithSideNav extends Component {
   isMenuOpen = state => {
@@ -22,7 +28,7 @@ class WithSideNav extends Component {
     return state.isOpen;
   };
   render() {
-    const { isAuthenticated, navigation, notif } = this.props;
+    const { isAuthenticated, navigation, notif, actions } = this.props;
     const { sideNavIsOpen, screenSize } = navigation;
     const { promptType } = notif;
     const isDesktop = screenSize === 0;
@@ -67,6 +73,13 @@ class WithSideNav extends Component {
           <View display="flex" flex={1}>
             {renderRoutes(this.props.route.routes)}
           </View>
+          <Modal
+            visible={navigation.modal === 'communitySettings'}
+            title="Community Settings"
+            close={actions.hideModal}
+          >
+            <SettingsComponent />
+          </Modal>
         </View>
       </View>
     );
@@ -91,7 +104,8 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       openWebSideNav,
-      closeWebSideNav
+      closeWebSideNav,
+      hideModal
     },
     dispatch
   )
