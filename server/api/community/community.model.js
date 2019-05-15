@@ -39,6 +39,12 @@ const CommunitySchema = new Schema(
   }
 );
 
+CommunitySchema.virtual('admins', {
+  ref: 'CommunityMember',
+  localField: 'slug',
+  foreignField: 'community'
+});
+
 CommunitySchema.virtual('members', {
   ref: 'CommunityMember',
   localField: 'slug',
@@ -152,8 +158,9 @@ CommunitySchema.methods.join = async function join(userId, role) {
       communityId: this._id
     });
 
-    if (member && role === 'admin') {
-      member.role = role;
+    if ((member && role === 'admin') || role === 'superAdmin') {
+      member.role = 'admin';
+      member.superAdmin = role === 'superAdmin';
       return member.save();
     }
 
