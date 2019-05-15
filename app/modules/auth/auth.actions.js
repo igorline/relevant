@@ -238,6 +238,7 @@ export function removeDeviceToken(auth) {
 export function enableMobileNotifications(user) {
   return dispatch => {
     if (!user.notificationSettings.mobile.all) return;
+    if (!PushNotification) return;
     configurePushNotifications(dispatch);
     registerPushNotification({ dispatch, user });
   };
