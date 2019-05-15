@@ -769,6 +769,7 @@ exports[`Snapshot Balance Web 1`] = `
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
           "color": "rgba(153,153,153,1.00)",
+          "cursor": "pointer",
           "display": "flex",
           "flexBasis": "auto",
           "flexShrink": 0,
