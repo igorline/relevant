@@ -102,7 +102,7 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-        <title>Relevant: Curated by Communities, Not Clicks</title>
+        <title>Relevant: The Only Social Network Built On Trust</title>
         <link rel="icon" href="https://relevant.community/favicon.ico?v=2" />
         <meta name="description" content="${meta.description}" />
         <meta property="og:description" content="${meta.description}" />
@@ -166,7 +166,7 @@ export function fetchMeta(initialState) {
     ? post.image || 'https://relevant.community/img/r-big.png'
     : 'https://relevant.community/img/fbImage.png';
   url = url || 'https://relevant.community/';
-  description = description || 'Join the discussion.';
+  description = description || 'Find your community and join the discussion.';
   return { title, description, image, url, type };
 }
 
