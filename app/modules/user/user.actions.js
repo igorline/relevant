@@ -76,8 +76,10 @@ export function searchUser(userName) {
         query: { limit, search: userName }
       });
       dispatch(setUserSearch(res));
+      return res;
     } catch (err) {
       dispatch(errorActions.setError('activity', true, err.message));
+      return false;
     }
   };
 }
