@@ -41,6 +41,47 @@ async function findRelatedPosts(metaId) {
   }
 }
 
+exports.flagged = async (req, res, next) => {
+  try {
+    const { community, limit, skip } = req.query;
+
+    const posts = await Post.find({ flagged: true })
+    .populate([
+      {
+        path: 'metaPost'
+      },
+      {
+        path: 'parentPost',
+        populate: 'metaPost'
+      },
+      {
+        path: 'post',
+        populate: [
+          {
+            path: 'commentary',
+            match: {
+              repost: { $exists: false },
+              $or: [{ hidden: { $ne: true } }]
+            }
+          },
+          {
+            path: 'embeddedUser.relevance',
+            match: { community, global: true },
+            select: 'pagerank'
+          }
+        ]
+      }
+    ])
+    .skip(parseInt(skip, 10))
+    .limit(parseInt(limit, 10))
+    .sort('-createdAt');
+
+    res.status(200).json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.topPosts = async (req, res, next) => {
   try {
     const { community } = req.query;
@@ -601,9 +642,10 @@ exports.create = async (req, res, next) => {
     const { user } = req;
     const { community, communityId } = req.communityMember;
 
+    const { channel, body } = req.body;
     // TODO rate limiting?
     // current rate limiting is 5s via invest
-    const hasChildComment = req.body.body && req.body.body.length;
+    const hasChildComment = body && body.length;
     const mentions = req.body.mentions || [];
     let tags = [];
     const keywords = req.body.keywords || [];
@@ -645,7 +687,7 @@ exports.create = async (req, res, next) => {
       url: postUrl,
       image: req.body.image ? req.body.image : null,
       title: req.body.title ? req.body.title : '',
-      body: hasChildComment ? req.body.body : null,
+      body: hasChildComment ? body : null,
       tags,
       community,
       communityId,
@@ -654,7 +696,9 @@ exports.create = async (req, res, next) => {
       user: user._id,
       mentions: req.body.mentions,
       postDate: now,
-      payoutTime
+      payoutTime,
+      description: channel && hasChildComment ? body : null,
+      channel: (!postUrl && channel) || false
     };
 
     // TODO Work on better length limits
@@ -708,7 +752,7 @@ exports.create = async (req, res, next) => {
     //   communityId
     // });
 
-    if (!postUrl) await newPost.insertIntoFeed(communityId, community);
+    if (!postUrl && !channel) await newPost.insertIntoFeed(communityId, community);
 
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);

@@ -66,16 +66,13 @@ const SubHeader = styled(Text)`
   display: inline;
 `;
 
-if (process.env.BROWSER === true) {
-  require('modules/navigation/web/header.css');
-}
-
 class Splash extends Component {
   static propTypes = {
     cta: PropTypes.oneOf(Object.keys(CTA)),
     hideCloseButton: PropTypes.bool,
     location: PropTypes.object,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    overRideDismiss: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -83,11 +80,12 @@ class Splash extends Component {
     this.onScroll = this.onScroll.bind(this);
   }
   state = {
-    isDismissed: false
+    isDismissed: true
   };
 
   componentDidMount = async () => {
     window.addEventListener('scroll', this.onScroll);
+    this.onScroll;
     const isDismissed = await storage.isDismissed('splashDismissed', 5);
     this.setState({
       isDismissed
@@ -109,10 +107,12 @@ class Splash extends Component {
   };
 
   render() {
-    if (this.state.isDismissed) {
+    const { cta, hideCloseButton, location, screenSize, overRideDismiss } = this.props;
+
+    if (this.state.isDismissed && !overRideDismiss) {
       return null;
     }
-    const { cta, hideCloseButton, location, screenSize } = this.props;
+
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
@@ -153,12 +153,11 @@ class Splash extends Component {
               <OutlineText inheritfont={1} m={0} p={0}>
                 Relevant.
               </OutlineText>{' '}
-              <Text>Curated by communities.</Text>
-              <Text>Not clicks.</Text>
+              <Text>A new kind of social network built on trust.</Text>
             </SplashText>
             <View mt={[5, 2]} mb={[8, 4]}>
               <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
-                Join the thought leaders, build trust and earn rewards.{' '}
+                Join a community, curate content and earn rewards.{' '}
                 <ULink
                   to={learnMoreUrl}
                   external

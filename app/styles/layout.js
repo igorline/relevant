@@ -25,7 +25,7 @@ export const NESTING_UNIT = 8;
 export const POST_BUTTONS_NESTING_UNITS = 1.5;
 export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * NESTING_UNIT;
 
-export const NESTING_UNIT_RESONSIVE = 4;
+export const NESTING_UNIT_RESONSIVE = 2;
 export const POST_BUTTONS_WIDTH_RESPONSIVE =
   POST_BUTTONS_NESTING_UNITS * NESTING_UNIT_RESONSIVE;
 
@@ -76,4 +76,13 @@ export const animatedElement = {
   left: 0,
   zIndex: 10000,
   backgroundColor: 'transparent'
+};
+
+export const formImageProps = {
+  p: 2,
+  w: 9,
+  h: 9,
+  m: '1 0 0 0',
+  bg: colors.blue,
+  bradius: '50%'
 };

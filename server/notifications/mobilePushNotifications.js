@@ -96,13 +96,14 @@ async function handleMobileNotifications(user, alert, payload) {
       console.log('pushing to device tokens ', deviceToken);
     });
 
+    const postId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
+
     const notePayload = payload.post
       ? {
-        _id: post._id,
-        parentPost: post.parentPost ? post.parentPost._id || post.parentPost : null,
-        parentComment: post.parentComment
-          ? post.parentComment._id || post.parentComment
-          : null
+        postId,
+        title: post.title,
+        community: post.data ? post.data.community : post.community,
+        comment: post.parentPost ? post._id : null
       }
       : {};
 
