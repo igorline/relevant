@@ -69,7 +69,8 @@ export const commentText = {
   fontSize: sizing(2),
   lineHeight: sizing(2 * lh),
   fontFamily: GEORGIA,
-  color: colors.black
+  color: colors.black,
+  overflowWrap: 'anywhere'
 };
 
 export const secondaryText = {
