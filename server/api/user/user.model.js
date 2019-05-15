@@ -141,6 +141,7 @@ const UserSchema = new Schema(
 
     tokenBalance: { type: Number, default: 0 },
     ethAddress: [String],
+    walletAddress: String,
 
     // eth cash out
     cashOut: {

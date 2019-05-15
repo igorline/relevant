@@ -745,6 +745,17 @@ exports.updateUserNotifications = async (req, res, next) => {
   }
 };
 
+exports.walletAddress = async (req, res, next) => {
+  try {
+    const { user } = req;
+    user.walletAddress = req.body.walletAddress;
+    await user.save();
+    res.status(200).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.ethAddress = async (req, res, next) => {
   try {
     let { user } = req;

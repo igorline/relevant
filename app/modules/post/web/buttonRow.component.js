@@ -7,7 +7,16 @@ import PostButtons from 'modules/post/postbuttons.component';
 import { copyToClipBoard } from 'app/utils/text';
 
 export default function PostButtonRow(props) {
-  const { post, hidePostButtons, screenSize, setActiveComment, parentPost, auth } = props;
+  const {
+    post,
+    hidePostButtons,
+    screenSize,
+    setActiveComment,
+    parentPost,
+    auth,
+    actions,
+    enableTips
+  } = props;
 
   const localUrl = `/${auth.community}/post/${parentPost ? parentPost._id : post._id}`;
   const url = `https://${window.location.host}${localUrl}`;
@@ -61,6 +70,24 @@ export default function PostButtonRow(props) {
         >
           <CTALink c={colors.blue}>Share</CTALink>
         </ULink>
+        {enableTips && (
+          <ULink
+            hu
+            to="#"
+            authrequired={true}
+            inline
+            onClick={e => {
+              e.preventDefault();
+              actions.showModal('tipModal');
+            }}
+            onPress={e => {
+              e.preventDefault();
+              actions.showModal('tipModal');
+            }}
+          >
+            <CTALink c={colors.blue}>Tip</CTALink>
+          </ULink>
+        )}
       </View>
     </View>
   );
@@ -72,5 +99,7 @@ PostButtonRow.propTypes = {
   screenSize: PropTypes.number,
   setActiveComment: PropTypes.func,
   parentPost: PropTypes.object,
-  auth: PropTypes.object
+  auth: PropTypes.object,
+  actions: PropTypes.object,
+  enableTips: PropTypes.bool
 };

@@ -23,7 +23,7 @@ const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
 const Contract = loadable(() => import('modules/admin/web/contract.component'));
 const About = loadable(() => import('modules/web_splash/about.component'));
-const CardContainer = loadable(() => import('modules/daicard/card.container'));
+const CardWallet = loadable(() => import('modules/daicard/cardWallet.component'));
 
 const CommunityAdminForm = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
@@ -119,7 +119,7 @@ const routes = [
             routes: [
               // WALLET
               { path: '/user/wallet', component: Wallet, exact: true },
-              { path: '/user/wallet/card', component: CardContainer, exact: true },
+              { path: '/user/wallet/card', component: CardWallet, exact: true },
 
               // USER
               {

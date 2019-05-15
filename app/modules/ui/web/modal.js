@@ -81,9 +81,9 @@ class ModalComponent extends Component {
   }
 
   render() {
-    const { close, footer, children, hideX } = this.props;
+    const { close, footer, children, hideX, visible } = this.props;
     const header = this.props.header || this.props.title;
-    if (!this.props.visible) return null;
+    if (!visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
     return (
       <ModalParent onClick={close} ref={c => (this.targetElement = c)}>
@@ -113,7 +113,7 @@ class ModalComponent extends Component {
             )}
             {header ? (
               <Header pr={5} shrink={1}>
-                {this.props.header || this.props.title}
+                {header}
               </Header>
             ) : null}
             {children && <View mt={3}>{children}</View>}
@@ -126,4 +126,6 @@ class ModalComponent extends Component {
 }
 
 export default props =>
-  ReactDOM.createPortal(<ModalComponent {...props} />, document.body);
+  props.visible && document
+    ? ReactDOM.createPortal(<ModalComponent {...props} />, document.body)
+    : null;

@@ -703,6 +703,24 @@ export function twitterAuth(profile, invite) {
   };
 }
 
+export function addWalletAddress(walletAddress) {
+  return async dispatch => {
+    try {
+      const result = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/walletAddress',
+        body: JSON.stringify({ walletAddress })
+      });
+      dispatch(updateAuthUser(result));
+      return true;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
+  };
+}
+
 export function addEthAddress(msg, sig, acc) {
   return async dispatch => {
     try {

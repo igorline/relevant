@@ -9,6 +9,7 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import { Divider, View } from 'modules/styled/uni';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
@@ -125,7 +126,8 @@ export default withRouter(
           ...commentActions,
           ...createPostActions,
           ...investActions,
-          ...animationActions
+          ...animationActions,
+          ...navigationActions
         },
         dispatch
       )

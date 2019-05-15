@@ -1,23 +1,16 @@
 import React, { Component } from 'react';
-import { View, Divider, CommentText, Spacer, Touchable, Image } from 'modules/styled/uni';
+import { View, Divider, Spacer, Touchable, Image } from 'modules/styled/uni';
 import get from 'lodash.get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { colors, layout } from 'app/styles';
-import Linkify from 'linkifyjs/react';
-import * as linkify from 'linkifyjs';
-import mentionPlugin from 'linkifyjs/plugins/mention';
-import hashTagPlugin from 'linkifyjs/plugins/hashtag';
+import CommentBody from 'modules/comment/web/commentBody.component';
+import { layout } from 'app/styles';
+
 import ButtonRow from 'modules/post/web/buttonRow.component';
-
-import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-
-mentionPlugin(linkify);
-hashTagPlugin(linkify);
 
 class Comment extends Component {
   static propTypes = {
@@ -145,56 +138,13 @@ class Comment extends Component {
       );
     }
 
-    const bodyMargin = condensedView ? '-0.5 0 2 5' : '3 0';
-
-    let text = comment.body;
-    let readMore;
-    if (inMainFeed && text && text.length) {
-      let lines = text.split(/\n/);
-      lines = lines.map(line =>
-        line
-        .split(/\s/)
-        .slice(0, 50)
-        .join(' ')
-      );
-      text = lines.slice(0, 3).join('\n');
-      readMore = text.length < comment.body.length;
-    }
     let body = (
-      <CommentText style={{ zIndex: 0 }} m={bodyMargin} pl={avatarText ? 5 : 0}>
-        <Linkify
-          style={{ width: '100%' }}
-          options={{
-            tagName: {
-              mention: () => Link,
-              hashtag: () => Link
-            },
-            attributes: (href, type) => {
-              if (type === 'mention') {
-                return {
-                  to: '/user/profile' + href
-                };
-              }
-              if (type === 'hashtag') {
-                return {
-                  to: `/${auth.community}/top/${href.replace('#', '')}`
-                };
-              }
-              return {
-                onClick: e => e.stopPropagation()
-              };
-            }
-          }}
-        >
-          {text}
-          {readMore ? (
-            <CommentText inline={1} c={colors.grey}>
-              {' '}
-              ...Read More
-            </CommentText>
-          ) : null}
-        </Linkify>
-      </CommentText>
+      <CommentBody
+        comment={comment}
+        inMainFeed={inMainFeed}
+        auth={auth}
+        avatarText={avatarText}
+      />
     );
 
     if (postUrl) {
@@ -271,7 +221,7 @@ class Comment extends Component {
               )}
               {editing || (hidePostButtons && preview) ? null : (
                 <View mb={[4, 2]}>
-                  <ButtonRow {...this.props} copied={copied} post={comment} />
+                  <ButtonRow {...this.props} copied={copied} post={comment} enableTips />
                 </View>
               )}
             </View>

@@ -2,6 +2,7 @@
 import * as Connext from 'connext';
 import interval from 'interval-promise';
 import * as eth from 'ethers';
+import { localStorage } from 'app/utils/storage';
 
 const tokenAbi = require('./../abi/humanToken.json');
 
@@ -18,6 +19,8 @@ export const HUB_EXCHANGE_CEILING = eth.constants.WeiPerEther.mul(Big(69)); // 6
 export const CHANNEL_DEPOSIT_MAX = eth.constants.WeiPerEther.mul(Big(30)); // 30 TST
 export const MAX_GAS_PRICE = Big('20000000000'); // 20 gWei
 
+const RPC = 'RINKEBY';
+
 let state = {
   isInitialized: null,
   connext: null,
@@ -30,10 +33,11 @@ let state = {
 
 let updateReduxState;
 
-export async function initConnext({ rpc, updateState }) {
+export async function initConnext({ updateState, reinit }) {
   try {
-    if (state.isInitialized) return state.connext;
+    if (state.isInitialized && !reinit) return state.connext;
     updateReduxState = updateState;
+    setState({ isInitialized: false });
 
     let mnemonic = localStorage.getItem('mnemonic');
     if (!mnemonic) {
@@ -41,8 +45,7 @@ export async function initConnext({ rpc, updateState }) {
       localStorage.setItem('mnemonic', mnemonic);
     }
 
-    // await setWeb3({ rpc });
-    await setConnext({ rpc, mnemonic });
+    await setConnext({ mnemonic });
     await setTokenContract();
     addConnextHandler();
     poller();
@@ -69,8 +72,7 @@ async function setConnext({ rpc, mnemonic }) {
   let ethprovider;
   let hubUrl;
 
-  // SET RPC
-  switch (rpc) {
+  switch (RPC) {
     // case 'LOCALHOST':
     //   ethprovider = localProvider;
     //   hubUrl = hubUrlLocal;
@@ -93,7 +95,6 @@ async function setConnext({ rpc, mnemonic }) {
   };
 
   // *** Instantiate the connext client ***
-  // const connext = await getConnextClient(opts);
   const connext = await Connext.getConnextClient(opts);
 
   const address = await connext.wallet.getAddress();
@@ -120,7 +121,7 @@ function addConnextHandler() {
   let { browserMinimumBalance } = state;
   connext.on('onStateChange', async connextState => {
     try {
-      console.log('Connext state changed:');
+      console.log('Connext state changed:', connextState);
       setState({
         connextState,
         channelState: connextState.persistent.channel,

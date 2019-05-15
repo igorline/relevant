@@ -2,47 +2,40 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Connext from 'connext';
 import * as navigationActions from 'modules/navigation/navigation.actions';
-import { getChannelBalanceInUSD } from './connext/currencyFormatting';
-import Withdraw from './withdraw.component';
-import Deposit from './deposit.component';
-import CardBalance from './cardBalance.component';
+import { addWalletAddress } from 'modules/auth/auth.actions';
+import { localStorage } from 'app/utils/storage';
+import { getChannelBalanceInUSD } from './utils/currencyFormatting';
 import * as cardActions from './card.actions';
-
-const { hasPendingOps } = new Connext.Utils();
 
 let daicard;
 let CHANNEL_DEPOSIT_MAX;
 if (process.env.BROWSER === true) {
-  daicard = require('./connext');
+  daicard = require('./utils/connext');
   CHANNEL_DEPOSIT_MAX = daicard.CHANNEL_DEPOSIT_MAX;
 }
 
-const RPC = 'RINKEBY';
-// const RPC = 'MAINNET';
-
-class DaiCard extends Component {
+class CardContainer extends Component {
   static propTypes = {
     actions: PropTypes.object,
+    address: PropTypes.string,
+    auth: PropTypes.object,
+    isInitialized: PropTypes.bool,
     connextState: PropTypes.object,
     channelState: PropTypes.object,
-    modal: PropTypes.string
+    component: PropTypes.func
   };
 
-  state = {
-    initialized: false
-  };
+  componentDidMount() {
+    const mnemonic = localStorage.getItem('mnemonic');
+    if (mnemonic) this.initConnext();
+  }
 
-  async componentDidMount() {
-    this.connext = await daicard.initConnext({
-      rpc: RPC,
-      updateState: this.props.actions.updateConnextState
-    });
-
-    // start polling
-    if (this.connext) this.connext.start();
-    this.setState({ initialized: true });
+  componentDidUpdate() {
+    const { auth, address, actions } = this.props;
+    if (address && auth.user && auth.user.walletAddress !== address) {
+      actions.addWalletAddress(address);
+    }
   }
 
   componentWillUnmount() {
@@ -50,28 +43,34 @@ class DaiCard extends Component {
     this.connext.stop();
   }
 
+  initConnext = async (reinit = false) => {
+    try {
+      if (this.connext) this.connext.stop();
+      this.connext = await daicard.initConnext({
+        updateState: this.props.actions.updateConnextState,
+        reinit
+      });
+      if (this.connext) this.connext.start();
+    } catch (err) {
+      // console.log(err);
+    }
+  };
+
   render() {
-    const { initialized } = this.state;
-    const { connextState, channelState, modal } = this.props;
-    const balance = initialized
+    const { isInitialized, channelState, connextState, component: Child } = this.props;
+    const maxTokenDeposit = CHANNEL_DEPOSIT_MAX ? CHANNEL_DEPOSIT_MAX.toString() : '';
+    const balance = isInitialized
       ? getChannelBalanceInUSD(channelState, connextState)
       : '$0.00';
 
     return (
-      <React.Fragment>
-        <CardBalance {...this.props} balance={balance} />
-        {initialized && modal === 'withdrawModal' && (
-          <Withdraw
-            {...this.props}
-            balance={balance}
-            hasPendingOps={hasPendingOps}
-            connext={this.connext}
-          />
-        )}
-        {initialized && modal === 'depositModal' && (
-          <Deposit {...this.props} maxTokenDeposit={CHANNEL_DEPOSIT_MAX.toString()} />
-        )}
-      </React.Fragment>
+      <Child
+        {...this.props}
+        connext={this.connext}
+        initConnext={this.initConnext}
+        maxTokenDeposit={maxTokenDeposit}
+        balance={balance}
+      />
     );
   }
 }
@@ -84,14 +83,17 @@ const mapStateToProps = state => ({
   runtime: state.card.runtime,
   channelState: state.card.channelState,
   exchangeRate: state.card.exchangeRate,
-  browserMinimumBalance: state.card.browserMinimumBalance
+  browserMinimumBalance: state.card.browserMinimumBalance,
+  auth: state.auth,
+  isInitialized: state.card.isInitialized
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...cardActions,
-      ...navigationActions
+      ...navigationActions,
+      addWalletAddress
     },
     dispatch
   )
@@ -100,4 +102,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DaiCard);
+)(CardContainer);

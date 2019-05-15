@@ -22,6 +22,7 @@ export const Text = styled.Text`
   ${mixins.border}
   ${mixins.color}
   ${mixins.height}
+  ${p => (p.onClick || p.onPress ? 'cursor: pointer;' : '')}
 `;
 
 export const InlineText = styled.Text`

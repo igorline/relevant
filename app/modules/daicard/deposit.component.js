@@ -14,13 +14,13 @@ export default class WithdrawModal extends Component {
     connextState: PropTypes.object,
     maxTokenDeposit: PropTypes.string,
     browserMinimumBalance: PropTypes.object,
-    address: PropTypes.string
+    address: PropTypes.string,
+    isInitialized: PropTypes.bool
   };
-
-  state = {};
 
   getMaxMinAmounts = () => {
     const { connextState, browserMinimumBalance, maxTokenDeposit } = this.props;
+
     let minEth;
     // minDai
     let maxDai;
@@ -47,15 +47,13 @@ export default class WithdrawModal extends Component {
   };
 
   render() {
-    const { modal, actions, address } = this.props;
+    const { modal, actions, address, isInitialized } = this.props;
+    if (!isInitialized || modal !== 'depositModal') return null;
+
     const { minEth, maxDai, maxEth } = this.getMaxMinAmounts();
 
     return (
-      <Modal
-        visible={modal === 'depositModal'}
-        close={actions.hideModal}
-        title={'Deposit ETH or DAI'}
-      >
+      <Modal visible close={actions.hideModal} title={'Deposit ETH or DAI'}>
         <CTALink>Send a minimum of: {minEth || ''} ETH to this address:</CTALink>
         <Title mt={2}>{address}</Title>
         <CTALink mt={1}>

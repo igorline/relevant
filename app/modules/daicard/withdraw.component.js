@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SecondaryText, CTALink, Button } from 'modules/styled/uni';
 import Web3 from 'web3';
+import * as Connext from 'connext';
 import { Input } from 'modules/styled/web';
 import Modal from 'modules/ui/web/modal';
+
+const { hasPendingOps } = new Connext.Utils();
 
 export default class WithdrawModal extends Component {
   static propTypes = {
@@ -14,8 +17,8 @@ export default class WithdrawModal extends Component {
     channelState: PropTypes.object,
     connext: PropTypes.object,
     runtime: PropTypes.object,
-    hasPendingOps: PropTypes.bool,
-    exchangeRate: PropTypes.object
+    exchangeRate: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    isInitialized: PropTypes.bool
   };
 
   state = {
@@ -110,17 +113,14 @@ export default class WithdrawModal extends Component {
       balance,
       channelState,
       connextState,
-      hasPendingOps
+      isInitialized
     } = this.props;
+    if (!isInitialized || modal !== 'withdrawModal') return null;
 
     const { addressError, balanceError, withdrawalVal } = this.state;
 
     return (
-      <Modal
-        visible={modal === 'withdrawModal'}
-        close={actions.hideModal}
-        title={'Withdraw ' + balance}
-      >
+      <Modal visible close={actions.hideModal} title={'Withdraw ' + balance}>
         <CTALink>Enter an Ethereum address you would like to send funds to</CTALink>
         <Input
           value={withdrawalVal.recipient}
