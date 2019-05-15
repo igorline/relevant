@@ -13,7 +13,12 @@ router.get('/:slug', auth.isAuthenticated(), controller.findOne);
 
 router.post('/', auth.isAuthenticated(), controller.create);
 
-router.put('/:slug', auth.isAuthenticated(), auth.communityMember(), controller.update);
+router.put(
+  '/:slug',
+  auth.isAuthenticated(),
+  auth.communityMember('superAdmin'),
+  controller.update
+);
 router.put('/:slug/join', auth.isAuthenticated(), controller.join);
 router.put('/:slug/leave', auth.isAuthenticated(), controller.leave);
 

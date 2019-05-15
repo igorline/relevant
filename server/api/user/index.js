@@ -13,7 +13,7 @@ router.get('/blocked', auth.isAuthenticated(), controller.blocked);
 router.get('/user/:id', auth.blocked(), controller.show);
 router.get('/general/list', auth.blocked(), controller.list);
 router.get('/testData', controller.testData);
-router.get('/check/user', controller.checkUser);
+router.get('/check/user', auth.currentUser(), controller.checkUser);
 
 router.post('/', controller.create);
 router.post('/cashOut', auth.isAuthenticated(), controller.cashOut);

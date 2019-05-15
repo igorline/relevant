@@ -15,6 +15,7 @@ router.post(
 router.put('/', auth.isAuthenticated(), auth.communityMember(), controller.update);
 router.put('/flag', auth.isAuthenticated(), controller.flag);
 
+router.get('/flagged', auth.hasRole('admin'), controller.flagged);
 router.get('/', auth.authMiddleware(), controller.index);
 router.get('/readable', controller.readable);
 router.get('/topPosts', controller.topPosts);

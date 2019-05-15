@@ -32,7 +32,8 @@ export class Community extends Component {
     view: PropTypes.object,
     auth: PropTypes.object,
     screenSize: PropTypes.number,
-    viewCommunityMembers: PropTypes.func
+    viewCommunityMembers: PropTypes.func,
+    showSettings: PropTypes.func
   };
 
   componentDidMount() {
@@ -81,9 +82,16 @@ export class Community extends Component {
       view,
       auth,
       screenSize,
-      viewCommunityMembers
+      viewCommunityMembers,
+      showSettings
     } = this.props;
-    const { communityMembers, members, communities, userCommunities } = community;
+    const {
+      communityMembers,
+      members,
+      communities,
+      userCommunities,
+      userMemberships
+    } = community;
     const activeCommunity = communities[community.active];
     const activeMembers = get(communityMembers, community.active, []).map(
       id => members[id]
@@ -96,11 +104,13 @@ export class Community extends Component {
               key={activeCommunity._id}
               community={activeCommunity}
               userCommunities={userCommunities}
+              userMemberships={userMemberships}
               members={activeMembers}
               actions={actions}
               screenSize={screenSize}
               getCommunityMembers={get(actions, 'getCommunityMembers', null)}
               viewCommunityMembers={viewCommunityMembers}
+              showSettings={showSettings}
               view={view}
               auth={auth}
             >
