@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import io.bankify.emojicompat.RNEmojiCompatTextPackage;
 import com.horcrux.svg.SvgPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.goldenowl.twittersignin.TwitterSigninPackage;
@@ -49,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNEmojiCompatTextPackage(MainApplication.this),
             new SvgPackage(),
             new RNGestureHandlerPackage(),
             new TwitterSigninPackage(),

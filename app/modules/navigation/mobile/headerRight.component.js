@@ -107,8 +107,8 @@ class HeaderRight extends Component {
           'Logout',
           'Cancel'
         ],
-        cancelButtonIndex: 6,
-        destructiveButtonIndex: 5
+        cancelButtonIndex: 7,
+        destructiveButtonIndex: 6
       },
       buttonIndex => {
         switch (buttonIndex) {
@@ -128,7 +128,7 @@ class HeaderRight extends Component {
             this.props.actions.viewBlocked();
             break;
           case 5:
-            this.props.actions.goToUrl('https://relevant.community/faq');
+            this.props.actions.goToUrl('https://relevant.community/info/faq');
             break;
           case 6:
             this.logoutRedirect();
@@ -140,9 +140,9 @@ class HeaderRight extends Component {
   };
 
   logoutRedirect() {
-    const { actions } = this.props;
+    const { actions, auth } = this.props;
     actions.removeDeviceToken(this.props.auth);
-    actions.logoutAction(this.props.auth.user, this.props.auth.token);
+    actions.logoutAction(auth.user);
     const resetAction = StackActions.reset({
       index: 0,
       key: null,
@@ -153,8 +153,6 @@ class HeaderRight extends Component {
       ]
     });
     this.props.navigation.dispatch(resetAction);
-
-    // navigation.replace('auth');
   }
 
   renderElement() {

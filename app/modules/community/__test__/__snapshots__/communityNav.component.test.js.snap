@@ -821,36 +821,37 @@ exports[`Snapshot NavProfile 1`] = `
           </a>
         </div>
         <div
-          dir="auto"
-          mt={
-            Array [
-              3,
-              2,
-            ]
-          }
           style={
             Object {
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "vertical",
               "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "column",
               "WebkitFlexShrink": 0,
+              "alignItems": "stretch",
+              "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
               "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
-              "color": "rgba(153,153,153,1.00)",
               "display": "flex",
               "flexBasis": "auto",
+              "flexDirection": "column",
               "flexShrink": 0,
-              "fontFamily": "HelveticaNeue",
-              "fontSize": "1.08rem",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "1.44rem",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "2.16rem",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "column",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
               "paddingBottom": "0px",
@@ -858,13 +859,50 @@ exports[`Snapshot NavProfile 1`] = `
               "paddingRight": "0px",
               "paddingTop": "0px",
               "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
+              "zIndex": 0,
             }
           }
         >
-          A community for curating and discussing links related to critical analysis of #technology, #society and #culture.
+          <div
+            dir="auto"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(153,153,153,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "1.08rem",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "1.44rem",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "pre-wrap",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            A community for curating and discussing links related to critical analysis of #technology, #society and #culture.
+          </div>
         </div>
         <div
           style={

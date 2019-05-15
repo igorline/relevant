@@ -41,6 +41,47 @@ async function findRelatedPosts(metaId) {
   }
 }
 
+exports.flagged = async (req, res, next) => {
+  try {
+    const { community, limit, skip } = req.query;
+
+    const posts = await Post.find({ flagged: true })
+    .populate([
+      {
+        path: 'metaPost'
+      },
+      {
+        path: 'parentPost',
+        populate: 'metaPost'
+      },
+      {
+        path: 'post',
+        populate: [
+          {
+            path: 'commentary',
+            match: {
+              repost: { $exists: false },
+              $or: [{ hidden: { $ne: true } }]
+            }
+          },
+          {
+            path: 'embeddedUser.relevance',
+            match: { community, global: true },
+            select: 'pagerank'
+          }
+        ]
+      }
+    ])
+    .skip(parseInt(skip, 10))
+    .limit(parseInt(limit, 10))
+    .sort('-createdAt');
+
+    res.status(200).json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.topPosts = async (req, res, next) => {
   try {
     const { community } = req.query;

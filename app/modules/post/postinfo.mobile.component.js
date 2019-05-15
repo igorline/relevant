@@ -5,11 +5,9 @@ import ULink from 'modules/navigation/ULink.component';
 import Gradient from 'modules/post/gradient.component';
 import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
-import { colors } from 'app/styles';
 import { getFavIcon, getTitle } from 'app/utils/post';
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import PostTitle from './postTitle.component';
-import PostButtons from './postbuttons.component';
 
 const GradientContainer = styled(View)`
   position: absolute;
@@ -26,7 +24,7 @@ const TitleContainer = styled(View)`
   right: 0;
 `;
 
-const IMAGE_HEIGHT = 40;
+const IMAGE_HEIGHT = 30;
 const PREVIEW_HEIGHT = 16;
 
 export default function ImagePost(props) {
@@ -68,13 +66,8 @@ export default function ImagePost(props) {
         </View>
       </ULink>
 
-      <TitleContainer fdirection={'row'} p={'0 2 2 0'} pl={preview ? 2 : 0}>
-        {!preview && (
-          <View w={8} pt={1}>
-            <PostButtons color={colors.white} post={post} {...props} />
-          </View>
-        )}
-        <PostTitle {...props} title={title} mobile />
+      <TitleContainer fdirection={'row'} p={'0 2 2 2'} pl={preview ? 2 : 0}>
+        <PostTitle ml={2} {...props} title={title} mobile />
       </TitleContainer>
     </View>
   );
