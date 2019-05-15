@@ -21,7 +21,7 @@ class TagSelection extends Component {
   static propTypes = {
     createPost: PropTypes.object,
     actions: PropTypes.object,
-    communityTags: PropTypes.object
+    communityTags: PropTypes.array
   };
 
   constructor(props, context) {
