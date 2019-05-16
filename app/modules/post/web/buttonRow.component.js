@@ -10,7 +10,7 @@ export default function PostButtonRow(props) {
   const { post, hidePostButtons, screenSize, setActiveComment, parentPost, auth } = props;
 
   const localUrl = `/${auth.community}/post/${parentPost ? parentPost._id : post._id}`;
-  const url = `https://${window.location.host}${localUrl}`;
+  const url = `https://relevant.community${localUrl}`;
 
   return (
     <View
