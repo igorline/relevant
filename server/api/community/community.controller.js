@@ -145,7 +145,7 @@ export async function create(req, res, next) {
   try {
     // for no only admins create communities
     // TODO relax this and community creator as admin
-    const { user } = req.user;
+    const { user } = req;
     if (!req.user || !req.user.role === 'admin') {
       throw new Error("You don't have permission to create a community");
     }
@@ -158,7 +158,7 @@ export async function create(req, res, next) {
     community = new Community(community);
     community = await community.save();
 
-    await community.join(user._id, 'superAdmin');
+    if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
 
     // TODO - this should create an invitation!
     admins = admins.map(async admin => {
