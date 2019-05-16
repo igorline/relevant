@@ -12,7 +12,7 @@ import AvatarBox from 'modules/user/avatarbox.component';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { Input } from 'modules/styled/web';
-import { View, SecondaryText, Text } from 'modules/styled/uni';
+import { View, SecondaryText } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 
 const ScrollContainer = styled(View)`
@@ -99,7 +99,6 @@ class CommunityMembers extends Component {
             showRelevance
             condensedView={false}
           />
-          <Text>{user.embeddedUser._id}</Text>
         </View>
       </React.Fragment>
     );
