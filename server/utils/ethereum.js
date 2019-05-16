@@ -76,8 +76,8 @@ export async function getParam(param, opt) {
 
 export async function getGasPrice() {
   const gasPrice = await request('https://ethgasstation.info/json/ethgasAPI.json');
-  console.log('gas price', JSON.parse(gasPrice).safeLow); // eslint-disable-line
-  return JSON.parse(gasPrice).safeLow;
+  console.log('gas price', JSON.parse(gasPrice)); // eslint-disable-line
+  return JSON.parse(gasPrice).average;
 }
 
 export async function sendTx(params) {
@@ -94,7 +94,7 @@ export async function sendTx(params) {
     const txParams = {
       jsonrpc: '2.0',
       nonce: web3.utils.numberToHex(nonce),
-      gasPrice: web3.utils.numberToHex(gasPrice * 1e8), // '0x14f46b0400',
+      gasPrice: web3.utils.numberToHex(gasPrice * 1e8),
       gasLimit: web3.utils.numberToHex(6e6),
       to: instance.address,
       value: web3.utils.numberToHex(value),
