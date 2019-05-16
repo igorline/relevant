@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import contract from 'truffle-contract';
 import EthereumTx from 'ethereumjs-tx';
+import request from 'request-promise-any';
 
 const contractData = require('../../app/contracts/RelevantToken.json');
 
@@ -22,6 +23,8 @@ let web3;
 let initialized = false;
 const chainId = process.env.INFURA_NETWORK === 'mainnet' ? 1 : 4;
 // const nextNonce = 0;
+
+getGasPrice();
 
 export const isInitialized = () => initialized;
 export const getWeb3 = () => web3;
@@ -71,6 +74,12 @@ export async function getParam(param, opt) {
   return value;
 }
 
+export async function getGasPrice() {
+  const gasPrice = await request('https://ethgasstation.info/json/ethgasAPI.json');
+  console.log('gas price', JSON.parse(gasPrice).safeLow); // eslint-disable-line
+  return JSON.parse(gasPrice).safeLow;
+}
+
 export async function sendTx(params) {
   try {
     const { acc, accKey, value, data, fn } = params;
@@ -80,11 +89,12 @@ export async function sendTx(params) {
     // nonce = Math.max(nonce, nextNonce);
     // nextNonce = nonce + 1;
     const pk = Buffer.from(accKey, 'hex');
+    const gasPrice = await getGasPrice();
 
     const txParams = {
       jsonrpc: '2.0',
       nonce: web3.utils.numberToHex(nonce),
-      gasPrice: web3.utils.numberToHex(3.1 * 1e9), // '0x14f46b0400',
+      gasPrice: web3.utils.numberToHex(gasPrice * 1e8), // '0x14f46b0400',
       gasLimit: web3.utils.numberToHex(6e6),
       to: instance.address,
       value: web3.utils.numberToHex(value),
