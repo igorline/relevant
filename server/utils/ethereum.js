@@ -24,8 +24,6 @@ let initialized = false;
 const chainId = process.env.INFURA_NETWORK === 'mainnet' ? 1 : 4;
 // const nextNonce = 0;
 
-getGasPrice();
-
 export const isInitialized = () => initialized;
 export const getWeb3 = () => web3;
 export const getInstance = () => instance;
