@@ -168,8 +168,7 @@ async function investCheck(params) {
   return investment;
 }
 
-async function updateSubscriptions(params) {
-  const { post, user, amount, undoInvest } = params;
+async function updateSubscriptions({ post, user, amount, undoInvest }) {
   if (amount < 0) return null;
   let subscription = await Subscription.findOne({
     follower: user._id,
@@ -184,7 +183,7 @@ async function updateSubscriptions(params) {
     });
   }
   const inc = undoInvest ? Math.max(-4, -subscription.amount) : 4;
-  subscription.amount = Math.max(subscription.amount + inc, 20);
+  subscription.amount = Math.min(subscription.amount + inc, 20);
   return subscription.save();
 }
 
