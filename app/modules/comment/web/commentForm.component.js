@@ -32,7 +32,8 @@ class CommentForm extends Component {
     additionalNesting: PropTypes.number,
     autoFocus: PropTypes.bool,
     history: PropTypes.object,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    chat: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -73,7 +74,7 @@ class CommentForm extends Component {
   }
 
   async createComment() {
-    const { isReply, parentComment, parentPost, auth, history } = this.props;
+    const { isReply, parentComment, parentPost, auth, history, chat } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -90,7 +91,8 @@ class CommentForm extends Component {
       tags: this.commentTags,
       mentions: this.commentMentions,
       user: auth.user._id,
-      metaPost: parentPost.metaPost
+      metaPost: parentPost.metaPost,
+      type: chat ? 'chat' : null
     };
     this.setState({ comment: '', inputHeight: 50 });
 

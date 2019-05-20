@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { View, Title } from 'modules/styled/uni';
+import { View, Title, BodyText } from 'modules/styled/uni';
 // import LinearGradient from 'react-native-linear-gradient';
 
 export default class ChatHeader extends Component {
@@ -11,7 +11,7 @@ export default class ChatHeader extends Component {
   };
 
   render() {
-    const { title } = this.props.post;
+    const { title, body } = this.props.post;
     return (
       <View
         style={{
@@ -28,6 +28,7 @@ export default class ChatHeader extends Component {
           <Title inline={1} flex={1} numberOfLines={2}>
             {title}
           </Title>
+          <BodyText>{body}</BodyText>
         </View>
       </View>
     );

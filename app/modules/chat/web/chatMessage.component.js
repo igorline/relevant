@@ -325,6 +325,7 @@ class ChatMessage extends Component {
                     nestingLevel={nestingLevel}
                     additionalNesting={additionalNesting}
                     autoFocus
+                    chat
                   />
                 </View>
               ) : (
@@ -402,6 +403,7 @@ class ChatMessage extends Component {
             parentComment={comment}
             cancel={this.cancel}
             autoFocus
+            chat
           />
         )}
         {/* commentChildren.map(childId => (

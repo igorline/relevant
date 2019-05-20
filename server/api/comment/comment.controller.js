@@ -6,11 +6,7 @@ import socketEvent from 'server/socket/socketEvent';
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
 const Notification = require('../notification/notification.model');
-const Subscriptiton = require('../subscription/subscription.model');
-const Feed = require('../feed/feed.model');
 const Invest = require('../invest/invest.model');
-
-const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 // COMMENTS ARE USING POST SCHEMA
 exports.get = async (req, res, next) => {
@@ -68,12 +64,16 @@ exports.get = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   let user = req.user._id;
   const { community, communityId } = req.communityMember;
-  const { linkParent, text: body, tags, repost = false, metaPost } = req.body;
-  let { parentPost, parentComment, mentions = [] } = req.body;
+  const { linkParent, text: body, tags, metaPost, parentComment } = req.body;
 
-  const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
+  let { parentPost, mentions = [], type } = req.body;
+
+  type =
+    type ||
+    // TODO this is ugly
+    (!parentComment || parentComment === parentPost ? 'post' : 'comment');
+
   const mentionsFromBody = getMentions(getWords(body));
-
   mentions = [...new Set([...mentions, ...mentionsFromBody])];
 
   const commentObj = {
@@ -95,102 +95,146 @@ exports.create = async (req, res, next) => {
   try {
     let comment = new Post(commentObj);
     user = await User.findOne({ _id: user });
-
-    parentPost = await Post.findOne({ _id: parentPost });
-    parentComment = await Post.findOne({ _id: parentComment });
-
-    if (repost) comment = await createRepost(comment, parentPost, user);
-
     comment = await comment.addUserInfo(user);
     comment = await comment.addPostData();
 
     // this will also save the new comment
     comment = await Post.sendOutMentions(mentions, comment, user, comment);
+    // if its a chat reply we need to process notificaitons
 
-    await Invest.createVote({
-      post: comment,
-      user,
-      amount: 0,
-      relevanceToAdd: 0,
-      community,
-      communityId
-    });
+    if (type === 'chat') {
+      comment = await comment.save();
+      return await processChat({ res, parentComment, comment, user, type });
+    }
 
-    // TODO increase the post's relevance? **but only if its user's first comment!
+    // if (type !== 'chat') {
+    // await Invest.createVote({
+    //   post: comment,
+    //   user,
+    //   amount: 0,
+    //   relevanceToAdd: 0,
+    //   community,
+    //   communityId
+    // });
+    // }
+    comment = await comment.addPostData();
+    parentPost = await Post.findOne({ _id: parentPost });
+
     const updateTime = type === 'post' || false;
     await parentPost.updateRank({ communityId, updateTime });
+
+    // updates parent comment count
     parentPost = await parentPost.save();
     parentPost.updateClient();
-
-    const postAuthor = await User.findOne(
-      { _id: parentPost.user },
-      'name _id deviceTokens handle email notificationSettings'
-    );
-    const commentAuthor =
-      parentComment &&
-      (await User.findOne(
-        { _id: parentComment.user },
-        'name _id deviceTokens handle email notificationSettings'
-      ));
-
-    let otherCommentors = await Post.find({ parentPost: parentPost._id }).populate(
-      'user',
-      'name _id deviceTokens handle email notificationSettings'
-    );
-
-    otherCommentors = otherCommentors.map(comm => comm.user).filter(u => u);
-    if (postAuthor) otherCommentors.push(postAuthor);
-    if (commentAuthor) otherCommentors.push(commentAuthor);
-
-    let voters = await Invest.find({ post: parentPost._id }).populate(
-      'investor',
-      'name _id deviceTokens handle email notificationSettings'
-    );
-
-    let commentVoters =
-      parentComment &&
-      (await Invest.find({ post: parentComment._id }).populate(
-        'investor',
-        'name _id deviceTokens handle email notificationSettings'
-      ));
-
-    commentVoters = commentVoters ? commentVoters.map(v => v.investor) : [];
-    voters = voters.map(v => v.investor);
-    otherCommentors = [...otherCommentors, ...voters, ...commentVoters];
-    otherCommentors = otherCommentors.filter(u => u);
-
-    // filter out duplicates
-    otherCommentors = otherCommentors.filter((u, i) => {
-      const index = otherCommentors.findIndex(c => (c ? c._id.equals(u._id) : false));
-      return index === i;
-    });
 
     await comment.save();
     res.status(200).json(comment);
 
-    otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u.handle));
-    otherCommentors.forEach(commentor =>
-      sendNotifications({
-        commentor,
-        postAuthor,
-        commentAuthor,
-        repost,
-        parentPost,
-        user,
-        comment,
-        type
-      })
-    );
+    return processNotifications({
+      parentPost,
+      parentComment,
+      comment,
+      type,
+      user,
+      mentions
+    });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
+
+async function processChat({ res, parentComment, comment, user, type }) {
+  if (!parentComment) return res.status(200).json(comment);
+
+  // when its a reply
+  // TODO nested replies? convo? will need parentThrea for this
+  parentComment = await Post.findOne({ _id: parentComment });
+  const commentAuthor = await User.findOne(
+    { _id: parentComment.user },
+    'name _id deviceTokens handle email notificationSettings'
+  );
+
+  await sendNotifications({
+    commentor: commentAuthor,
+    commentAuthor,
+    user,
+    comment,
+    type
+  });
+  return res.status(200).json(comment);
+}
+
+async function processNotifications({
+  parentPost,
+  parentComment,
+  comment,
+  type,
+  user,
+  mentions
+}) {
+  parentComment = await Post.findOne({ _id: parentComment });
+
+  const commentAuthor =
+    parentComment &&
+    (await User.findOne(
+      { _id: parentComment.user },
+      'name _id deviceTokens handle email notificationSettings'
+    ));
+
+  const postAuthor = await User.findOne(
+    { _id: parentPost.user },
+    'name _id deviceTokens handle email notificationSettings'
+  );
+
+  let otherCommentors = await Post.find({ parentPost: parentPost._id }).populate(
+    'user',
+    'name _id deviceTokens handle email notificationSettings'
+  );
+
+  otherCommentors = otherCommentors.map(comm => comm.user).filter(u => u);
+  if (postAuthor) otherCommentors.push(postAuthor);
+  if (commentAuthor) otherCommentors.push(commentAuthor);
+
+  let voters = await Invest.find({ post: parentPost._id }).populate(
+    'investor',
+    'name _id deviceTokens handle email notificationSettings'
+  );
+
+  let commentVoters =
+    parentComment &&
+    (await Invest.find({ post: parentComment._id }).populate(
+      'investor',
+      'name _id deviceTokens handle email notificationSettings'
+    ));
+
+  commentVoters = commentVoters ? commentVoters.map(v => v.investor) : [];
+  voters = voters.map(v => v.investor);
+  otherCommentors = [...otherCommentors, ...voters, ...commentVoters];
+  otherCommentors = otherCommentors.filter(u => u);
+
+  // filter out duplicates
+  otherCommentors = otherCommentors.filter((u, i) => {
+    const index = otherCommentors.findIndex(c => (c ? c._id.equals(u._id) : false));
+    return index === i;
+  });
+
+  otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u.handle));
+  return otherCommentors.forEach(commentor =>
+    sendNotifications({
+      commentor,
+      postAuthor,
+      commentAuthor,
+      user,
+      comment,
+      type
+    })
+  );
+}
 
 async function sendNotifications({
   commentor,
   postAuthor,
   commentAuthor,
-  repost,
   user,
   comment,
   type
@@ -202,8 +246,6 @@ async function sendNotifications({
     const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
 
     const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
-
-    if (repost && ownPost) type = 'repost';
 
     let note = {
       post: comment._id,
@@ -226,8 +268,7 @@ async function sendNotifications({
     };
     socketEvent.emit('socketEvent', noteAction);
 
-    let action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
-    if (type === 'repost' && ownPost) action = ` reposted your ${type}`;
+    const action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
 
     // if (ownComment || ownPost) {
     //   sendCommentEmail({ commentor: user, comment, user: commentor, action });
@@ -243,73 +284,6 @@ async function sendNotifications({
       noteType: ownPost || ownComment ? 'reply' : 'general'
     };
     sendPushNotification(commentor, alert, payload);
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function createRepost(comment, post, user) {
-  try {
-    const now = new Date().getTime();
-    const { rank } = post;
-
-    // keeps rank the same (may cause negative relevance);
-    const newRelevance = 10 ** (rank - now / TENTH_LIFE) - 1;
-    post.rankRelevance = newRelevance;
-    post.postDate = now;
-
-    const repostObj = {
-      user: user._id,
-      metaPost: post.metaPost,
-      postDate: new Date(),
-      relevance: 0,
-      parentPost: post._id,
-      body: comment.body,
-      type: 'repost',
-      eligibleForRewards: true,
-      repost: {
-        post: post._id,
-        commentBody: comment.body
-      }
-    };
-    let repost = new Post(repostObj);
-
-    repost = await repost.addUserInfo(user);
-    repost = await repost.save();
-
-    const subscribers = await Subscriptiton.find({
-      following: user._id
-      // category: newPostObj.category
-    });
-
-    // if its a repost, push the post to all subscribers
-    // TODO only push if subscriber doesn't have this post already
-    if (subscribers) {
-      // save post here
-      subscribers.forEach(async subscription => {
-        if (subscription.amount < 1) {
-          await subscription.remove();
-        } else {
-          subscription.amount -= 1;
-          await Feed.findOneAndUpdate(
-            {
-              userId: subscription.follower,
-              post: repost._id,
-              metaPost: post.metaPost
-            },
-            { tags: post.tags, createdAt: new Date() },
-            { upsert: true }
-          ).exec();
-
-          const newFeedPost = {
-            _id: subscription.follower,
-            type: 'INC_FEED_COUNT'
-          };
-          socketEvent.emit('socketEvent', newFeedPost);
-        }
-      });
-    }
-    return repost;
   } catch (err) {
     throw err;
   }

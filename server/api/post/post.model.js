@@ -211,7 +211,6 @@ PostSchema.methods.updateClient = function updateClient(user) {
 PostSchema.methods.addUserInfo = async function addUserInfo(user) {
   try {
     this.embeddedUser = {
-      id: user._id,
       _id: user._id,
       handle: user.handle,
       name: user.name,
@@ -450,6 +449,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 ) {
   try {
     let textParent = comment || post;
+    if (!mentions || !mentions.length) return textParent;
     const promises = mentions.map(async mention => {
       try {
         const type = comment ? 'comment' : 'post';
@@ -524,7 +524,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 
     await Promise.all(promises);
     textParent = await textParent.save();
-    textParent.updateClient();
+    // textParent.updateClient();
     return textParent;
   } catch (err) {
     return console.log('sendOutMentions error', err); // eslint-disable-line

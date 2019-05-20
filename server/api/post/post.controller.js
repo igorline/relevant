@@ -276,7 +276,7 @@ exports.userPosts = async (req, res, next) => {
     if (!author) throw new Error('Missing user');
 
     const sortQuery = { _id: -1 };
-    const query = { user: author._id, communityId };
+    const query = { user: author._id, communityId, type: { $ne: 'chat' } };
 
     if (blocked.find(u => author._id.equals(u))) {
       return res.status(200).json({});

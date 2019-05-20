@@ -26,37 +26,28 @@ class ChatForm extends Component {
     // history: PropTypes.object,
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.setMention = this.setMention.bind(this);
-    this.createComment = this.createComment.bind(this);
-    this.processInput = this.processInput.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleKeydown = this.handleKeydown.bind(this);
-    this.state = {
-      inputHeight: 50,
-      comment: '',
-      focused: false
-    };
-  }
+  state = {
+    inputHeight: 50,
+    comment: '',
+    focused: false
+  };
 
-  handleChange(e) {
+  handleChange = e => {
     this.setState({ comment: e.target.value });
-  }
+  };
 
-  handleKeydown(e) {
+  handleKeydown = e => {
     if (e.keyCode === 13 && e.shiftKey === false) {
       this.handleSubmit(e);
     }
-  }
+  };
 
-  setMention(user) {
+  setMention = user => {
     const comment = this.state.comment.replace(this.mention, '@' + user._id);
     this.setState({ comment });
-  }
+  };
 
-  async createComment() {
+  createComment = async () => {
     const { isReply, parentComment, parentPost, auth, actions } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
@@ -74,7 +65,8 @@ class ChatForm extends Component {
       tags: this.commentTags,
       mentions: this.commentMentions,
       user: auth.user._id,
-      metaPost: parentPost.metaPost
+      metaPost: parentPost.metaPost,
+      type: 'chat'
     };
     this.setState({ comment: '', inputHeight: 50 });
 
@@ -92,9 +84,9 @@ class ChatForm extends Component {
       actions.removePendingComment(pendingComment, parentPost);
       if (this.textInput) this.textInput.focus();
     });
-  }
+  };
 
-  processInput(comment) {
+  processInput = comment => {
     const words = text.getWords(comment);
 
     const lastWord = words[words.length - 1];
@@ -109,12 +101,12 @@ class ChatForm extends Component {
       inputHeight: this.state.inputHeight,
       top: this.top
     });
-  }
+  };
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
     return this.createComment();
-  }
+  };
 
   render() {
     const { auth, autoFocus } = this.props;
@@ -136,7 +128,7 @@ class ChatForm extends Component {
         <Form
           onSubmit={this.handleSubmit}
           fdirection="row"
-          justify-="space-between"
+          justify="space-between"
           align="flex-start"
           m="0 0 2.5 0"
           flex={1}
