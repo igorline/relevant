@@ -9,9 +9,9 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import { View, Spacer } from 'modules/styled/uni';
-// import Comment from 'modules/comment/web/comment.component';
+import { View } from 'modules/styled/uni';
 import Loading from 'modules/ui/web/loading.component';
+// import ChatMessage from 'modules/comment/web/comment.component';
 import ChatMessage from 'modules/chat/web/chatMessage.component';
 
 // import InfScroll from 'modules/listview/web/infScroll.component';
@@ -100,7 +100,7 @@ class ChatLog extends Component {
         lastDate = commentDate;
       }
       return (
-        <View key={comment._id} p={'0 2 1 2'}>
+        <View key={comment._id} p={['0 4 1 4', '0 2 1 2']}>
           <ChatMessage
             auth={auth}
             comment={comment}
@@ -130,18 +130,17 @@ class ChatLog extends Component {
     return (
       <div
         style={{
-          height: 'calc(100vh - 70px)',
-          position: 'relative',
-          overflow: 'scroll'
+          overflow: 'scroll',
+          display: 'flex',
+          flex: 1
         }}
         ref={el => (this.el = el)}
       >
-        <div p={'0 0 2 0'}>
-          <Spacer style={{ height: 55 }} />
+        <View flex={1} m={'auto'}>
           {loading}
           {children.map(renderComment.bind(this))}
           {pending.map(renderComment.bind(this))}
-        </div>
+        </View>
       </div>
     );
   }

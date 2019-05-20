@@ -70,9 +70,26 @@ class InviteModal extends Component {
     }
   };
 
+  generateInviteUrl = ({ invite }) => {
+    const origin =
+      window && window.location ? window.location.origin : 'https://relevant.community';
+    return `${origin}/${invite.community}?invitecode=${invite.code}`;
+  };
+
   render() {
     const { auth, community, count, inviteList, invites, onShare } = this.props;
     const { user } = auth;
+    const { userMemberships = [], communities } = community;
+
+    const currentId = Object.keys(communities).find(
+      key => communities[key].slug === community.active
+    );
+    const currentCommunity = communities[currentId] || {};
+
+    const membership = userMemberships.find(m => m.communityId === currentCommunity._id);
+    const showAdminInvite =
+      user.role === 'admin' || (membership && membership.superAdmin);
+
     const publicInviteUrl = `/${auth.community}?invitecode=${auth.user.handle}`;
     const origin =
       window && window.location ? window.location.origin : 'https://relevant.community';
@@ -82,7 +99,8 @@ class InviteModal extends Component {
 
     const invitesEl = communityInvites.map(_id => {
       const invite = invites[_id];
-      const url = `${origin}/${invite.community}?invitecode=${invite.code}`;
+      const url = this.generateInviteUrl({ invite });
+      // `${origin}/${invite.community}?invitecode=${invite.code}`;
       const now = new Date().getTime();
       const createdAt = Date.parse(invite.createdAt);
       const isNew = now - createdAt < 5000;
@@ -107,7 +125,8 @@ class InviteModal extends Component {
                     })
                   }
                   style={{
-                    color
+                    color,
+                    cursor: 'pointer'
                   }}
                 >
                   {url}
@@ -177,7 +196,7 @@ class InviteModal extends Component {
             Click here to generate a new private link
           </LinkFont>
         </ULink>
-        {user.role === 'admin' ? (
+        {showAdminInvite ? (
           <ULink
             to={'#'}
             onPress={() => this.generateInvite('admin')}

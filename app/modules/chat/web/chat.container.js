@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { colors } from 'app/styles';
 import PropTypes from 'prop-types';
+import { View, SecondaryText } from 'modules/styled/uni';
 import * as postActions from 'modules/post/post.actions';
 import * as chatActions from 'modules/chat/chat.actions';
 import * as commentActions from 'modules/comment/comment.actions';
@@ -55,21 +55,15 @@ class ChatContainer extends Component {
     const hasPost = post && post !== 'notFound';
 
     return (
-      <div
-        style={{
-          height: '100vh',
-          maxHeight: '100vh',
-          position: 'relative'
-        }}
-      >
+      <View h={'100vh'}>
         <ChatHeader post={post} actions={actions} {...this.props} />
         {hasPost ? (
-          <ChatLog post={post} actions={actions} {...this.props} />
+          <ChatLog header={ChatHeader} post={post} actions={actions} {...this.props} />
         ) : (
-          <div c={colors.grey}>{'This is the beginning of the conversation'}</div>
+          <SecondaryText>{'This is the beginning of the conversation'}</SecondaryText>
         )}
         <ChatForm post={post} parentPost={post} autoFocus {...this.props} />
-      </div>
+      </View>
     );
   }
 }

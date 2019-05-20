@@ -17,7 +17,9 @@ class CommunityActive extends Component {
     auth: PropTypes.object,
     screenSize: PropTypes.number,
     viewCommunityMembers: PropTypes.func,
-    userCommunities: PropTypes.array
+    showSettings: PropTypes.func,
+    userCommunities: PropTypes.array,
+    userMemberships: PropTypes.array
   };
 
   componentDidMount() {
@@ -37,7 +39,9 @@ class CommunityActive extends Component {
       screenSize,
       auth,
       viewCommunityMembers,
-      userCommunities
+      userCommunities,
+      showSettings,
+      userMemberships
     } = this.props;
     const topics = get(community, 'topics', []);
     const channels = get(community, 'channels', []);
@@ -46,11 +50,15 @@ class CommunityActive extends Component {
     const allMembers = members.filter(member => member.embeddedUser._id !== userId);
     let isMember;
     if (auth.user) {
-      isMember = !!userCommunities.find(_id => _id === community._id);
+      isMember = userCommunities.find(_id => _id === community._id);
       if (isMember) {
         allMembers.unshift({ _id: userId, embeddedUser: auth.user });
       }
     }
+    const memberShip = userMemberships.find(m => m.communityId === community._id);
+    const isSuperAdmin =
+      (memberShip && memberShip.superAdmin) || get(auth, 'user.role') === 'admin';
+
     const limitedMembers = allMembers.slice(0, screenSize ? 14 : 12);
     const sort = get(view, 'discover.sort') || 'new';
     return (
@@ -90,7 +98,21 @@ class CommunityActive extends Component {
               </ULink>
             ))}
           </View>
-          <SecondaryText mt={[3, 2]}>{community.description}</SecondaryText>
+
+          <View mt={[3, 2]}>
+            {isSuperAdmin && (
+              <SecondaryText
+                mb={1}
+                c={colors.blue}
+                onPress={showSettings}
+                key={'settings_'}
+                p={'0.5 0'}
+              >
+                Settings
+              </SecondaryText>
+            )}
+            <SecondaryText>{community.description}</SecondaryText>
+          </View>
           <View mt={3} mb={2} fdirection="row" justify="space-between">
             <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
             <ULink to="#" onPress={viewCommunityMembers} onClick={viewCommunityMembers}>

@@ -33,7 +33,7 @@ export async function index(req, res, next) {
   try {
     const communties = await Community.find({ inactive: { $ne: true } })
     .populate({
-      path: 'members',
+      path: 'admins',
       match: { role: 'admin' }
     })
     .populate({
@@ -151,6 +151,7 @@ export async function create(req, res, next) {
   try {
     // for no only admins create communities
     // TODO relax this and community creator as admin
+    const { user } = req;
     if (!req.user || !req.user.role === 'admin') {
       throw new Error("You don't have permission to create a community");
     }
@@ -162,6 +163,8 @@ export async function create(req, res, next) {
     if (!admins || !admins.length) throw new Error('Please set community admins');
     community = new Community(community);
     community = await community.save();
+
+    if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
 
     // TODO - this should create an invitation!
     admins = admins.map(async admin => {
@@ -190,14 +193,15 @@ export async function update(req, res, next) {
   try {
     // for no only admins create communities
     const updatedCommunity = req.body;
-    const { admins } = updatedCommunity;
+    const { admins, superAdmins } = updatedCommunity;
     const { user } = req;
 
     if (!updatedCommunity || !user) return;
     const member = await CommunityMember.findOne({
-      _id: updatedCommunity._id,
+      communityId: updatedCommunity._id,
       user: user._id
     });
+
     const currentAdmins = await CommunityMember.find({
       communityId: updatedCommunity._id,
       role: 'admin'
@@ -206,7 +210,7 @@ export async function update(req, res, next) {
     const currentAdminsList = currentAdmins.map(a => a.embeddedUser.handle);
     let newAdmins = admins.filter(a => !currentAdminsList.includes(a));
 
-    const canEdit = user.role === 'admin' || (member && member.role === 'admin');
+    const canEdit = user.role === 'admin' || (member && member.superAdmin);
 
     if (!canEdit) {
       throw new Error("You don't have permission to edit a community");
@@ -227,13 +231,14 @@ export async function update(req, res, next) {
     // TODO - this should create an invitation!
     newAdmins = newAdmins.map(async admin => {
       try {
-        return await community.join(admin._id, 'admin');
+        const role = superAdmins.includes(admin._id) ? 'superAdmin' : 'admin';
+        return await community.join(admin._id, role);
       } catch (err) {
         throw err;
       }
     });
 
-    newAdmins = await Promise.all(newAdmins);
+    await Promise.all(newAdmins);
 
     let removeAdmins;
     if (user.role === 'admin') {
@@ -242,14 +247,27 @@ export async function update(req, res, next) {
       removeAdmins = removeAdmins.map(u => u._id.toString());
       await CommunityMember.update(
         { user: { $in: removeAdmins } },
-        { role: 'user' },
+        { role: 'user', superAdmin: false },
         { multi: true }
       );
     }
 
-    community.members = [...newAdmins, ...currentAdmins].filter(u =>
-      removeAdmins.includes(u.user.toString())
+    await CommunityMember.update(
+      { 'embeddedUser.handle': { $in: admins } },
+      { superAdmin: false },
+      { multi: true }
     );
+
+    await CommunityMember.update(
+      { 'embeddedUser.handle': { $in: superAdmins }, role: 'admin' },
+      { superAdmin: true },
+      { multi: true }
+    );
+
+    community.admins = await CommunityMember.find({
+      communityId: community._id,
+      role: 'admin'
+    });
 
     res.status(200).json(community);
   } catch (err) {

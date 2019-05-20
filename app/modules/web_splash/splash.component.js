@@ -55,11 +55,11 @@ const SplashText = styled(InlineText)`
   color: ${colors.black};
 `;
 
-const OutlineText = styled(SplashText)`
-  font-family: 'Outline';
-  color: black;
-  line-height: 0.8;
-`;
+// const OutlineText = styled(SplashText)`
+//   font-family: 'Outline';
+//   color: black;
+//   line-height: 0.8;
+// `;
 
 const SubHeader = styled(Text)`
   font-family: ${fonts.GEORGIA};
@@ -85,12 +85,17 @@ class Splash extends Component {
 
   componentDidMount = async () => {
     window.addEventListener('scroll', this.onScroll);
-    this.onScroll;
     const isDismissed = await storage.isDismissed('splashDismissed', 5);
     this.setState({
       isDismissed
     });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.isDismissed !== this.state.isDismissed) {
+      this.onScroll();
+    }
+  }
 
   onScroll() {
     if (!this.phone) return;
@@ -133,7 +138,7 @@ class Splash extends Component {
             <CloseX
               w={3}
               h={3}
-              top={[6, 3]}
+              top={[6, 4]}
               right={[6, 3]}
               resizeMode={'contain'}
               source={require('app/public/img/x.png')}
@@ -142,7 +147,7 @@ class Splash extends Component {
         )}
         <View
           className="mainSection"
-          m={['12 12 0 12', '4 2 0 2']}
+          m={['12 12 0 12', '3 8 0 2']}
           flex={1}
           justify="center"
           align={['flex-start', 'stretch']}
@@ -150,12 +155,12 @@ class Splash extends Component {
         >
           <View>
             <SplashText fs={[6, 3]} lh={[9, 4.2]}>
-              <OutlineText inheritfont={1} m={0} p={0}>
+              {/* <OutlineText inheritfont={1} m={0} p={0}>
                 Relevant.
-              </OutlineText>{' '}
+              </OutlineText>{' '} */}
               <Text>A new kind of social network built on trust.</Text>
             </SplashText>
-            <View mt={[5, 2]} mb={[8, 4]}>
+            <View mt={[5, 2]} mb={[8, 2]}>
               <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
                 Join a community, curate content and earn rewards.{' '}
                 <ULink
@@ -171,7 +176,7 @@ class Splash extends Component {
             </View>
           </View>
           {CtaComponent ? (
-            <View pb={[8, 4]}>
+            <View pb={[8, 3]}>
               <CtaComponent location={location} />
             </View>
           ) : null}
@@ -180,6 +185,7 @@ class Splash extends Component {
           <img
             style={{ width: '100%' }}
             ref={c => (this.phone = c)}
+            onLoad={this.onScroll}
             src={img}
             alt="phone"
           />

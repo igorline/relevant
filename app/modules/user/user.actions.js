@@ -2,7 +2,7 @@ import { api, alert } from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
 import * as types from 'core/actionTypes';
 
-const AlertIOS = alert.Alert();
+const Alert = alert.Alert();
 
 const queryParams = params =>
   Object.keys(params)
@@ -76,8 +76,10 @@ export function searchUser(userName) {
         query: { limit, search: userName }
       });
       dispatch(setUserSearch(res));
+      return res;
     } catch (err) {
       dispatch(errorActions.setError('activity', true, err.message));
+      return false;
     }
   };
 }
@@ -159,7 +161,7 @@ export function updateBlock(block, unblock) {
     .then(responseJSON => {
       let action = 'blocked';
       if (unblock) action = 'unblocked';
-      AlertIOS.alert('user ' + block + ' has been ' + action);
+      Alert.alert('user ' + block + ' has been ' + action);
       // console.log('block result ', responseJSON);
       dispatch(updateLocalUser(responseJSON));
     })

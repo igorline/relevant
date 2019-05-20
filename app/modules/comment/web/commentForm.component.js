@@ -211,7 +211,7 @@ class CommentForm extends Component {
               autoFocus={autoFocus}
               pl={this.state.focused ? 2 : 6}
               onFocus={() => this.setState({ focused: true })}
-              onBlur={() => setTimeout(() => this.setState({ focused: false }), 100)}
+              onBlur={() => setTimeout(() => this.setState({ focused: false }), 1)}
             />
           </Form>
           {this.state.focused || this.state.comment ? (

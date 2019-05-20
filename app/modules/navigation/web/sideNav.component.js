@@ -96,6 +96,9 @@ class SideNav extends Component {
                 viewCommunityMembers={() => {
                   actions.showModal('communityMembers');
                 }}
+                showSettings={() => {
+                  actions.showModal('communitySettings');
+                }}
               />
             </View>
             <SideNavFooter />

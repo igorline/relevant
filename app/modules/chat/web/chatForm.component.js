@@ -112,16 +112,7 @@ class ChatForm extends Component {
     const { auth, autoFocus } = this.props;
     if (!auth.isAuthenticated) return null;
     return (
-      <View
-        fdirection="column"
-        flex={1}
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%'
-        }}
-      >
+      <View fdirection="column" m={2}>
         <AvatarContainer p={2}>
           <UAvatar user={auth.user} size={3} />
         </AvatarContainer>

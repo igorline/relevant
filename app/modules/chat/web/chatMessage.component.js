@@ -1,32 +1,14 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Divider,
-  CTALink,
-  CommentText,
-  SecondaryText,
-  Spacer,
-  Touchable,
-  Image
-} from 'modules/styled/uni';
-// import get from 'lodash.get';
+import { View, Divider, SecondaryText, Spacer, Image } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { colors, layout } from 'app/styles';
-import ULink from 'modules/navigation/ULink.component';
-import Linkify from 'linkifyjs/react';
-import * as linkify from 'linkifyjs';
-import mentionPlugin from 'linkifyjs/plugins/mention';
-import hashTagPlugin from 'linkifyjs/plugins/hashtag';
-
-import { Link } from 'react-router-dom';
+import { layout } from 'app/styles';
 import { withRouter } from 'react-router';
-
-mentionPlugin(linkify);
-hashTagPlugin(linkify);
+import CommentBody from 'modules/comment/web/commentBody.component';
+import ButtonRow from 'modules/post/web/buttonRow.component';
 
 class ChatMessage extends Component {
   static propTypes = {
@@ -125,21 +107,6 @@ class ChatMessage extends Component {
     this.setState({ editing: true });
   }
 
-  // TODO utils & link copied via tooltip
-  copyToClipboard = () => {
-    const { parentPost, auth } = this.props;
-    const el = document.createElement('textarea');
-    el.value = `${window.location.host}/${auth.community}/post/${parentPost._id}`;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    this.setState({ copied: true });
-  };
-
   cancel = () => {
     this.props.setActiveComment(null);
     this.setState({ editing: false });
@@ -188,70 +155,18 @@ class ChatMessage extends Component {
       </Popup>
     );
 
-    const bodyMargin = condensedView ? '1 0 0 5' : '3 0';
-
-    let text = comment.body;
-    let readMore;
-    if (inMainFeed && text && text.length) {
-      let lines = text.split(/\n/);
-      lines = lines.map(line =>
-        line
-        .split(/\s/)
-        .slice(0, 50)
-        .join(' ')
-      );
-      text = lines.slice(0, 3).join('\n');
-      readMore = text.length < comment.body.length;
-    }
-    let body = (
-      <CommentText
-        style={{ zIndex: 0 }}
-        m={bodyMargin}
-        pl={avatarText ? 5 : 0}
-        c={comment.pending ? colors.grey : colors.black}
-      >
-        <Linkify
-          style={{ width: '100%' }}
-          options={{
-            tagName: {
-              mention: () => Link,
-              hashtag: () => Link
-            },
-            attributes: (href, type) => {
-              if (type === 'mention') {
-                return {
-                  to: '/user/profile' + href
-                };
-              }
-              if (type === 'hashtag') {
-                return {
-                  to: `/${auth.community}/top/${href.replace('#', '')}`
-                };
-              }
-              return {
-                onClick: e => e.stopPropagation()
-              };
-            }
-          }}
-        >
-          {text}
-          {readMore ? (
-            <CommentText inline={1} c={colors.grey}>
-              {' '}
-              ...Read More
-            </CommentText>
-          ) : null}
-        </Linkify>
-      </CommentText>
+    const body = (
+      <CommentBody
+        comment={comment}
+        inMainFeed={inMainFeed}
+        auth={auth}
+        postUrl={postUrl}
+        avatarText={avatarText}
+        history={history}
+        noLink={noLink}
+        condensedView={condensedView}
+      />
     );
-
-    if (postUrl) {
-      body = (
-        <Touchable to={postUrl} onClick={() => (noLink ? null : history.push(postUrl))}>
-          {body}
-        </Touchable>
-      );
-    }
 
     let inReplyTo;
     if (comment.parentComment && !editing) {
@@ -301,7 +216,7 @@ class ChatMessage extends Component {
                     user={{ ...user, _id: comment.user }}
                     postTime={comment.createdAt}
                     showRelevance={false}
-                    condensedView={true}
+                    condensedView={condensedView}
                     avatarText={avatarText}
                     noLink={noLink}
                   />
@@ -332,57 +247,8 @@ class ChatMessage extends Component {
                 body
               )}
               {editing || hideReplyButtons || (hidePostButtons && preview) ? null : (
-                <View
-                  ml={condensedView ? 5 : 0}
-                  mb={[2, 2]}
-                  fdirection="row"
-                  justify="space-between"
-                  align="center"
-                  wrap={1}
-                  // stop-gap to avoid the page dimenisons breaking on deeply nested comments
-                >
-                  {!hidePostButtons && screenSize ? (
-                    <View w={12}>
-                      <PostButtons {...this.props} post={comment} horizontal />
-                    </View>
-                  ) : null}
-                  <View fdirection="row">
-                    <ULink
-                      hu
-                      to="#"
-                      inline
-                      authrequired={true}
-                      onClick={e => {
-                        e.preventDefault();
-                        setActiveComment(comment.id);
-                      }}
-                      onPress={e => {
-                        e.preventDefault();
-                        setActiveComment(comment.id);
-                      }}
-                    >
-                      <CTALink mr={3} c={colors.blue}>
-                        Reply
-                      </CTALink>
-                    </ULink>
-                    <ULink
-                      hu
-                      to="#"
-                      authrequired={true}
-                      inline
-                      onClick={e => {
-                        e.preventDefault();
-                        this.copyToClipboard();
-                      }}
-                      onPress={e => {
-                        e.preventDefault();
-                        this.copyToClipboard();
-                      }}
-                    >
-                      <CTALink c={colors.blue}>Share</CTALink>
-                    </ULink>
-                    {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
-                  </View>
+                <View mb={[4, 2]}>
+                  <ButtonRow {...this.props} copied={copied} post={comment} />
                 </View>
               )}
             </View>
