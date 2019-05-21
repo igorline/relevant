@@ -24,6 +24,7 @@ import { TwitterCT } from 'app/utils/social';
 import * as modals from 'modules/ui/modals';
 import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
+import CreatePostModal from 'modules/createPost/web/createPost.modal';
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/mobile/upvoteAnimation.component')
@@ -245,9 +246,7 @@ class App extends Component {
   }
 
   render() {
-    // const { location, user } = this.props;
-    // const temp = user && user.role === 'temp';
-    // const connectAccount = location.hash === '#connectAccount';
+    const { globalModal } = this.props;
 
     return (
       <div>
@@ -256,7 +255,6 @@ class App extends Component {
           daysHidden={0}
           daysReminder={0}
           title={'Relevant Communities'}
-          // author={''}
           position={'top'}
           // force={'ios'}
         />
@@ -295,6 +293,7 @@ class App extends Component {
           </Eth.Consumer>
         </EthTools> */}
         {this.renderModal()}
+        <CreatePostModal visible={globalModal === 'newpost'} />
         <ToastContainer />
         {renderRoutes(this.props.route.routes)}
       </div>
