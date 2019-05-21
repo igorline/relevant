@@ -593,10 +593,10 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
 
     if (communityChildren || shares) return post;
 
-    await this.model('PostData').findOneAndUpdate(
-      { post: post._id, communityId },
-      { f: false }
-    );
+    await this.model('PostData')
+    .remove({ post: post._id, communityId })
+    .exec();
+
     return post;
   } catch (err) {
     throw err;
