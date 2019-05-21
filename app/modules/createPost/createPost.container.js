@@ -18,10 +18,8 @@ import { View, Button, Divider, BodyText } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
 import { colors, sizing } from 'app/styles';
 
-import UAvatar from 'modules/user/UAvatar.component';
-import RStat from 'modules/stats/rStat.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
-import CreatePostTeaser from 'modules/createPost/web/createPostTeaser.component';
 import TagInput from 'modules/createPost/web/TagInput.component';
 import SelectTags from 'modules/createPost/web/selectTags.component';
 import styled from 'styled-components/primitives';
@@ -41,7 +39,7 @@ class CreatePostContainer extends Component {
     actions: PropTypes.object,
     userSearch: PropTypes.array,
     createPost: PropTypes.object,
-    modal: PropTypes.bool,
+    // modal: PropTypes.bool,
     auth: PropTypes.object,
     close: PropTypes.func,
     location: PropTypes.object,
@@ -357,21 +355,12 @@ class CreatePostContainer extends Component {
     const allTags = [].concat(articleTags, communityTags);
     const isAdmin = auth.user && auth.user.role === 'admin';
 
-    if (!this.state.active && !this.props.modal) {
-      return (
-        <CreatePostTeaser
-          user={this.props.auth.user}
-          onClick={() => this.setState({ active: true })}
-        />
-      );
-    }
     const submitDisabled =
       submitting || !this.state.selectedTags.length || !body || !body.trim().length;
     return (
       <View>
         <View display="flex" fdirection="row" align="center">
-          <UAvatar user={this.props.auth.user} size={4} />
-          <RStat user={this.props.auth.user} size={2} ml={1.5} />
+          <AvatarBox user={auth.user} size={4} />
         </View>
 
         {channel && (
@@ -458,7 +447,7 @@ class CreatePostContainer extends Component {
               <BodyText ml={0.5}>This is a chat channel</BodyText>
             </View>
           )}
-          <View fdirection="row" justify="flex-end">
+          <View fdirection="row" flex={1} justify="flex-end">
             <Button c={colors.black} bg={colors.white} onClick={this.clearPost}>
               Clear
             </Button>

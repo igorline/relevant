@@ -33,7 +33,7 @@ Object {
     },
     "email": Object {
       "digest": true,
-      "general": true,
+      "general": false,
       "personal": true,
     },
     "mobile": Object {
