@@ -91,7 +91,7 @@ exports.create = async (req, res, next) => {
     }
 
     // TODO consensus of existing admins
-    if (invite.type === 'admin' && user.role !== 'admin') {
+    if (invite.type === 'admin' && user.role !== 'admin' && !communityMember.superAdmin) {
       throw new Error("You don't have the privileges required to invite an admin");
     }
 

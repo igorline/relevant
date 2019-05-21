@@ -565,7 +565,7 @@ async function processSubscriptions(newPost, communityId) {
         subscription.amount -= 1;
         subscription.amount = Math.max(subscription.amount, 0);
 
-        await subscription.save();
+        subscription = await subscription.save();
 
         const feed = new Feed({
           userId: subscription.follower,
@@ -784,8 +784,8 @@ exports.remove = async (req, res, next) => {
       notMe: true,
       payload: post
     };
-
     socketEvent.emit('socketEvent', newPostEvent);
+
     await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {
