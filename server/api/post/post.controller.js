@@ -784,8 +784,8 @@ exports.remove = async (req, res, next) => {
       notMe: true,
       payload: post
     };
-
     socketEvent.emit('socketEvent', newPostEvent);
+
     await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {
