@@ -175,9 +175,6 @@ export default class ContentEditable extends React.Component {
     return (
       <div
         id="editor"
-        style={{
-          minHeight: '300px'
-        }}
         className={this.props.className}
         placeholder={this.props.placeholder}
         role="textbox"

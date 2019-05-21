@@ -120,7 +120,7 @@ async function generateList(type) {
   }
 }
 
-generateList('nodigest');
+// generateList('nodigest');
 // generateList('currentUsers');
 // generateList('notregistered');
 // generateList('waitlist');
