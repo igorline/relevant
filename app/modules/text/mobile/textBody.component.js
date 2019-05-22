@@ -26,6 +26,7 @@ class TextBody extends Component {
     this.goToPost = this.goToPost.bind(this);
     this.goToTopic = this.goToTopic.bind(this);
   }
+
   setTag(tag) {
     if (!this.props.actions) return;
     this.props.actions.selectTag({ _id: tag.replace('#', '') });
@@ -135,7 +136,8 @@ class TextBody extends Component {
             {word.text + space}
           </Text>
         );
-      } else if (word.type === 'mention') {
+      }
+      if (word.type === 'mention') {
         if (i >= maxTextLength) tagsOnEnd = true;
         return (
           <Text
@@ -146,7 +148,8 @@ class TextBody extends Component {
             {word.text + space}
           </Text>
         );
-      } else if (word.type === 'url') {
+      }
+      if (word.type === 'url') {
         return (
           <Text
             key={i}
@@ -169,7 +172,8 @@ class TextBody extends Component {
             {word.text}
           </Text>
         );
-      } else if (!breakText) {
+      }
+      if (!breakText) {
         breakText = i;
         return (
           <Text style={this.props.style} key={'break'}>

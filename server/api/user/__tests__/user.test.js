@@ -17,7 +17,7 @@ describe('User', () => {
   // const next = jest.fn(console.log); // eslint-disable-line
 
   beforeAll(async () => {
-    await User.ensureIndexes();
+    await User.createIndexeses();
   });
 
   beforeEach(() => {

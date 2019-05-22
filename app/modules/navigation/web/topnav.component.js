@@ -56,7 +56,7 @@ class TopNav extends Component {
     location: PropTypes.object,
     auth: PropTypes.object,
     history: PropTypes.object,
-    className: PropTypes.string,
+    // className: PropTypes.string,
     actions: PropTypes.object,
     notif: PropTypes.object,
     screenSize: PropTypes.number
@@ -108,10 +108,10 @@ class TopNav extends Component {
   }
 
   render() {
-    const { auth, className, actions, notif, screenSize } = this.props;
+    const { auth, actions, notif, screenSize } = this.props;
     return (
       <Nav
-        className={className}
+        // className={className}
         fdirection="column"
         justify="center"
         p={['0 4', '0 2']}

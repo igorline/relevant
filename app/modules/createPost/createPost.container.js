@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as navigationActions from 'modules/navigation/navigation.actions';
 import RichText from 'modules/text/web/richText.component';
 import get from 'lodash.get';
 import ReactGA from 'react-ga';
 
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as postActions from 'modules/post/post.actions';

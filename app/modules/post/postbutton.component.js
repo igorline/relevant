@@ -31,6 +31,7 @@ class PostButton extends Component {
     event.preventDefault();
     this.setState({ isHovering: false });
   };
+
   render() {
     const { alt, isActive, imageSet, onPress, color } = this.props;
     const images = BUTTON_IMAGES[imageSet];

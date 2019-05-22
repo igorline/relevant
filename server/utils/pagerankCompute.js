@@ -344,7 +344,8 @@ async function updateItemRank(props) {
         fields: 'pagerank pagerankRaw user rank relevance communityId community'
       }
     );
-  } else if (u.type === 'post') {
+  }
+  if (u.type === 'post') {
     if (Number.isNaN(rank)) {
       return null;
     }

@@ -1,6 +1,7 @@
 import * as types from 'core/actionTypes';
 import * as utils from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
+// eslint-disable-next-line
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import { setUserMemberships } from 'modules/community/community.actions';
@@ -461,7 +462,8 @@ export function createUser(user, invitecode) {
           dispatch(getUser());
           return true;
         });
-      } else if (responseJSON.errors) {
+      }
+      if (responseJSON.errors) {
         const { errors } = responseJSON;
         let message = '';
         Object.keys(errors).forEach(key => {
@@ -679,7 +681,8 @@ export function twitterAuth(profile, invite) {
         dispatch(setPreUser(result.user));
         dispatch(setTwitter({ ...profile, token: result.token }));
         return false;
-      } else if (result.token && result.user) {
+      }
+      if (result.token && result.user) {
         await utils.storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);

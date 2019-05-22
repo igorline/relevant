@@ -99,11 +99,17 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     Left: 'left',
     Right: 'right'
   };
+
   _openValue: ?Animated.Interpolation;
+
   _onGestureEvent: ?Animated.Event;
+
   _accessibilityIsModalView = React.createRef();
+
   _pointerEventsView = React.createRef();
+
   _panGestureHandler = React.createRef();
+
   _drawerShown = false;
 
   constructor(props: PropType, context: any) {

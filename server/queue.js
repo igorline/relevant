@@ -1,5 +1,5 @@
-const computePageRank = require('./utils/pagerankCompute').default;
 const queue = require('queue');
+const computePageRank = require('./utils/pagerankCompute').default;
 const Stats = require('./api/statistics/statistics.model');
 const Relevance = require('./api/relevance/relevance.model');
 const Community = require('./api/community/community.model').default;

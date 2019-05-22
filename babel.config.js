@@ -22,8 +22,8 @@ module.exports = {
           app: './app',
           'react-native-gesture-handler/DrawerLayout':
             './app/modules/ui/mobile/DrawerLayout'
-        },
-        cwd: 'babelrc'
+        }
+        // cwd: 'babelrc'
       }
     ]
   ],
@@ -63,8 +63,8 @@ module.exports = {
               app: './app',
               '^react-native$': 'react-native-web',
               'react-native-linear-gradient$': 'react-native-web-linear-gradient'
-            },
-            cwd: 'babelrc'
+            }
+            // cwd: 'babelrc'
           }
         ]
       ],

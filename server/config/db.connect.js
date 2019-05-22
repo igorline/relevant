@@ -7,16 +7,12 @@ const config = {
   socketTimeoutMS: 30000,
   keepAlive: 1,
   reconnectTries: 30,
-  useMongoClient: true
+  useNewUrlParser: true,
+  useFindAndModify: false
 };
 
 function connectWithRetry() {
-  return mongoose
-  .connect(
-    process.env.MONGO_URI,
-    config
-  )
-  .catch(err => {
+  return mongoose.connect(process.env.MONGO_URI, config).catch(err => {
     console.log('catch ', err);
     console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
     setTimeout(connectWithRetry, 5000);
