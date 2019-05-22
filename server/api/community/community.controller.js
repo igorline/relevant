@@ -2,10 +2,6 @@ import Community from './community.model';
 import CommunityMember from './community.member.model';
 import User from '../user/user.model';
 
-// Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
-
-CommunityMember.remove({ 'embeddedUser.handle': 'a' }).exec();
-
 const RESERVED = [
   'user',
   'admin',
@@ -233,20 +229,20 @@ export async function update(req, res, next) {
       removeAdmins = currentAdminsList.filter(a => !admins.includes(a));
       removeAdmins = await User.find({ handle: { $in: removeAdmins } }, '_id');
       removeAdmins = removeAdmins.map(u => u._id.toString());
-      await CommunityMember.update(
+      await CommunityMember.updateMany(
         { user: { $in: removeAdmins } },
         { role: 'user', superAdmin: false },
         { multi: true }
       );
     }
 
-    await CommunityMember.update(
+    await CommunityMember.updateMany(
       { 'embeddedUser.handle': { $in: admins } },
       { superAdmin: false },
       { multi: true }
     );
 
-    await CommunityMember.update(
+    await CommunityMember.updateMany(
       { 'embeddedUser.handle': { $in: superAdmins }, role: 'admin' },
       { superAdmin: true },
       { multi: true }

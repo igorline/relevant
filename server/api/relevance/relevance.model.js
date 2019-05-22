@@ -98,7 +98,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
         return false;
       });
       const topTopic = { topTopic: index > -1 };
-      return this.update(
+      return this.updateMany(
         { user, tag, communityId },
         { $inc: { relevance: relevanceToAdd }, topTopic },
         { upsert: true }
@@ -107,7 +107,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
 
     // update category reputation
     tagRelevance.push(
-      this.update(
+      this.updateMany(
         { user, category: post.category, communityId },
         { $inc: { relevance: relevanceToAdd } },
         { upsert: true }

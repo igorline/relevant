@@ -92,7 +92,7 @@ async function handleMobileNotifications(user, alert, payload) {
     }
 
     const { post } = payload;
-    const badge = await Notification.count({
+    const badge = await Notification.countDocuments({
       forUser: user._id,
       read: false
     });

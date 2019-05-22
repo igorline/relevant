@@ -67,7 +67,7 @@ exports.unread = (req, res) => {
   if (userId) {
     query = { userId, read: false };
   }
-  Feed.count(query).then(unread => {
+  Feed.countDocuments(query).then(unread => {
     res.status(200).json({ unread });
   });
 };
