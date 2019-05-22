@@ -298,7 +298,7 @@ exports.checkUser = async (req, res, next) => {
       };
     }
 
-    const userExists = await User.findOne(query, 'handle', '_id handle');
+    const userExists = await User.findOne(query, '_id handle');
     if (userExists) return res.status(200).json(userExists);
     return res.status(200).json(null);
   } catch (err) {
