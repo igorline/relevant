@@ -63,7 +63,7 @@ CommunitySchema.pre('remove', async function remove(next) {
   try {
     const members = await this.model('CommunityMember').find({ community: this.slug });
     await this.model('CommunityMember')
-    .remove({ community: this.slug })
+    .deleteMany({ community: this.slug })
     .exec();
     // THIS IS TRICKY BECAUSE OF LEAVE RACE CONDITIONS
     const leave = members.map(async m => this.leave(m.user));
@@ -76,7 +76,7 @@ CommunitySchema.pre('remove', async function remove(next) {
 
 CommunitySchema.methods.updateMemeberCount = async function updateMemeberCount() {
   try {
-    this.memberCount = await this.model('CommunityMember').count({
+    this.memberCount = await this.model('CommunityMember').countDocuments({
       communityId: this._id
     });
     return this.save();

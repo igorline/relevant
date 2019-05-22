@@ -32,7 +32,7 @@ exports.get = async (req, res, next) => {
       query = { parentPost, hidden: { $ne: true }, communityId };
     }
 
-    const total = await Post.count(query);
+    const total = await Post.countDocuments(query);
 
     const comments = await Post.find(query)
     .populate({

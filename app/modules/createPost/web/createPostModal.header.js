@@ -20,7 +20,15 @@ export default function ModalHeader({ community, history }) {
   return (
     <View style={{ zIndex: 1 }} fdirection="row" align={'baseline'}>
       <Title mr={1.5}>Post to:</Title>
-      <Image w={2} h={2} mr={1} mt={0.25} source={image} resizeMode={'cover'} />
+      <Image
+        w={2}
+        h={2}
+        mr={1}
+        mt={0.25}
+        style={{ bottom: '-1px' }}
+        source={image}
+        resizeMode={'cover'}
+      />
       <Select
         isSearchable={false}
         styles={customStyles}

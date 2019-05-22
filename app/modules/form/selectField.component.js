@@ -11,6 +11,7 @@ export default class SelectField extends Component {
     label: PropTypes.string,
     error: PropTypes.string
   };
+
   state = { inputValue: '' };
 
   handleChange = vals => {

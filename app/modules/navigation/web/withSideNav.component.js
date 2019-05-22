@@ -27,6 +27,7 @@ class WithSideNav extends Component {
     }
     return state.isOpen;
   };
+
   render() {
     const { isAuthenticated, navigation, notif, actions } = this.props;
     const { sideNavIsOpen, screenSize } = navigation;

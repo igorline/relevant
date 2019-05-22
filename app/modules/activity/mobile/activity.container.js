@@ -14,7 +14,7 @@ import CustomListView from 'modules/listview/mobile/customList.component';
 import { withNavigation } from 'react-navigation';
 import SingleActivity from 'modules/activity/activity.component';
 import PostComponent from 'modules/post/mobile/post.component';
-import * as notifActions from './../activity.actions';
+import * as notifActions from '../activity.actions';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };

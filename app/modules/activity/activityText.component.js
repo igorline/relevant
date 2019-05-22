@@ -100,8 +100,8 @@ const ActivityText = ({ activity, amount }) => {
       text = `mentioned you in a ${postType}`;
       break;
 
-    // text = 'mentioned you in a comment';
-    // break;
+      // text = 'mentioned you in a comment';
+      // break;
 
     case 'topPost':
       text = 'In case you missed this top-ranked post';

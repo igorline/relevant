@@ -1,5 +1,5 @@
-const computePageRank = require('./utils/pagerankCompute').default;
 const queue = require('queue');
+const computePageRank = require('./utils/pagerankCompute').default;
 const Stats = require('./api/statistics/statistics.model');
 const Relevance = require('./api/relevance/relevance.model');
 const Community = require('./api/community/community.model').default;
@@ -65,12 +65,12 @@ async function updateUserStats() {
 async function getCommunityUserRank(community) {
   try {
     const communityId = community._id;
-    const totalUsers = await Relevance.count({
+    const totalUsers = await Relevance.countDocuments({
       pagerank: { $gt: 0 },
       global: true,
       communityId
     });
-    // let grandTotal = await Relevance.count({ global: true, communityId });
+    // let grandTotal = await Relevance.countDocuments({ global: true, communityId });
     const topUser = await Relevance.findOne({})
     .sort('-pagerank')
     .limit(1);
@@ -84,7 +84,7 @@ async function getCommunityUserRank(community) {
     return users.forEach(user => {
       q.push(async cb => {
         try {
-          const rank = await Relevance.count({
+          const rank = await Relevance.countDocuments({
             pagerank: { $lt: user.pagerank, $gt: 0 },
             communityId
           });
@@ -114,8 +114,10 @@ async function getCommunityUserRank(community) {
             .limit(1);
             const topTopicR = topTopicUser.relevance;
 
-            const totalTopicUsers = await Relevance.find({ tag: tR.tag }).count();
-            const topicRank = await Relevance.count({
+            const totalTopicUsers = await Relevance.find({
+              tag: tR.tag
+            }).countDocuments();
+            const topicRank = await Relevance.countDocuments({
               tag: tR.tag,
               relevance: { $lt: tR.relevance }
             });

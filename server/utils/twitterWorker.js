@@ -19,8 +19,8 @@ let DEFAULT_COMMINITY_ID;
 const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
 
 const Twitter = require('twitter');
-const User = require('../api/user/user.model');
 const queue = require('queue');
+const User = require('../api/user/user.model');
 
 let allUsers;
 

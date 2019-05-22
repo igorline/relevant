@@ -82,7 +82,7 @@ EarningsSchema.statics.updateEarnings = async function updateEarnings({
   if (!post.data) {
     post.data = await this.model('PostData').find({ post: post._id, communityId });
   }
-  await this.model('Earnings').update(
+  await this.model('Earnings').updateMany(
     { post: post._id, communityId },
     {
       estimatedPostPayout: post.data.expectedPayout,

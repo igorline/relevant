@@ -230,7 +230,7 @@ async function sendAuthorNotification({ author, user, post, type, undoInvest, am
   if (!author) return null;
   // Remove notification if undo;
   if (undoInvest) {
-    await Notification.remove({
+    await Notification.deleteOne({
       type,
       post: post._id,
       forUser: author._id,
@@ -441,7 +441,10 @@ exports.create = async (req, res, next) => {
     Earnings.updateEarnings({ post, communityId });
 
     // updates user investments
-    user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
+    user.investmentCount = await Invest.countDocuments({
+      investor: user._id,
+      amount: { $gt: 0 }
+    });
 
     // update subscriptions
     user = await user.getSubscriptions();
