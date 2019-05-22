@@ -133,11 +133,11 @@ async function handleMobileNotifications(user, alert, payload) {
     if (!results) {
       console.log('notification error');
     }
-    const updatedTokens = user.deviceTokens;
+    let updatedTokens = user.deviceTokens;
     results.forEach(result => {
       result.message.forEach(message => {
         if (message.error) {
-          // updatedTokens = updatedTokens.filter(token => token !== message.regId);
+          updatedTokens = updatedTokens.filter(token => token !== message.regId);
           console.log('push notification error ', message.error);
           console.log('removing device token', message.regId);
         }
