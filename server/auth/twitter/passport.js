@@ -9,8 +9,8 @@ const User = require('../../api/user/user.model');
 const Invite = require('../../api/invites/invite.model');
 const auth = require('../auth.service');
 
-// User.remove({ handle: 'relevantfeed' }).exec();
-// CommunityMember.remove({ 'embeddedUser.handle': 'relevantfeed' }).exec();
+// User.deleteOne({ handle: 'relevantfeed' }).exec();
+// CommunityMember.deleteOne({ 'embeddedUser.handle': 'relevantfeed' }).exec();
 
 // async function removeTwitterProfile() {
 //   try {

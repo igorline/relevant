@@ -1,6 +1,6 @@
 import CommunityMember from 'server/api/community/community.member.model';
 import { sanitize, toObject } from 'server/test/utils';
-import Invest from 'server/api/invest/invest.model';
+// import Invest from 'server/api/invest/invest.model';
 import Post from 'server/api/post/post.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
 import computePageRank from 'server/utils/pagerankCompute';
@@ -23,7 +23,6 @@ describe('ethRewards', () => {
     ({ link1 } = getPosts());
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
-    await Invest.createIndexeses();
     req = {
       user: alice,
       body: { post: { _id: link1._id }, amount: 0.5 },

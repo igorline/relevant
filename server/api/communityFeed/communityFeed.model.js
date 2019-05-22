@@ -79,7 +79,7 @@ CommunityFeedSchema.statics.removeFromCommunityFeed = async function removeFromC
   community
 ) {
   try {
-    return await this.remove({ post: _id, community });
+    return await this.deleteMany({ post: _id, community }).exec();
   } catch (err) {
     throw err;
   }
@@ -87,7 +87,7 @@ CommunityFeedSchema.statics.removeFromCommunityFeed = async function removeFromC
 
 CommunityFeedSchema.statics.removeFromAllFeeds = async function removeFromFeed(_id) {
   try {
-    return await this.remove({ post: _id });
+    return await this.deleteMany({ post: _id }).exec();
   } catch (err) {
     throw err;
   }

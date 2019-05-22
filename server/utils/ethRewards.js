@@ -84,7 +84,7 @@ exports.rewards = async () => {
     // console.log('distributedRewards Pool', distPool);
     // console.log('Finished distributing rewards, remaining reward fund: ', remainingRewards);
     const now = new Date();
-    await Earnings.update(
+    await Earnings.updateMany(
       { payoutTime: { $lte: now }, status: 'pending' },
       { status: 'expired' },
       { multi: true }
@@ -334,7 +334,7 @@ async function sendNotification(props) {
 
 async function updatePendingEarnings(posts) {
   posts = await posts.map(post =>
-    Earnings.update(
+    Earnings.updateMany(
       { post: post.post },
       { estimatedPostPayout: post.payout / TOKEN_DECIMALS },
       { multi: true }

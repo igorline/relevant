@@ -8,7 +8,10 @@ const mongooseOpts = {
   // options for mongoose 4.11.3 and above
   autoReconnect: true,
   reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 1000
+  reconnectInterval: 1000,
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useFindAndModify: false
 };
 
 process.env.SESSION_SECRET = 'test-secret';

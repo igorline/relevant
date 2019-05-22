@@ -563,7 +563,7 @@ exports.updateHandle = async (req, res, next) => {
       _id: user._id
     };
 
-    await CommunityMember.update(
+    await CommunityMember.updateMany(
       { user: user._id },
       { embeddedUser: newUser },
       { multi: true }
@@ -620,9 +620,13 @@ exports.update = async (req, res, next) => {
       };
 
       // Do this on a separate thread?
-      await Post.update({ user: user._id }, { embeddedUser: newUser }, { multi: true });
+      await Post.updateMany(
+        { user: user._id },
+        { embeddedUser: newUser },
+        { multi: true }
+      );
 
-      await CommunityMember.update(
+      await CommunityMember.updateMany(
         { user: user._id },
         { embeddedUser: newUser },
         { multi: true }
@@ -653,10 +657,10 @@ exports.block = async (req, res, next) => {
     );
 
     // clear any existing subscriptions
-    const sub1 = Subscription.remove({ following: user._id, follower: block });
-    const sub2 = Subscription.remove({ following: block, follower: user._id });
-    const feed1 = Feed.remove({ userId: user._id, from: block });
-    const feed2 = Feed.remove({ userId: block, from: user._id });
+    const sub1 = Subscription.deleteMany({ following: user._id, follower: block }).exec();
+    const sub2 = Subscription.deleteMany({ following: block, follower: user._id }).exec();
+    const feed1 = Feed.deleteMany({ userId: user._id, from: block }).exec();
+    const feed2 = Feed.deleteMany({ userId: block, from: user._id }).exec();
 
     const results = await Promise.all([
       userPromise,

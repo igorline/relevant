@@ -8,6 +8,8 @@ import { post, community } from 'app/mockdata';
 import { sanitize } from 'server/test/utils';
 import { getUsers } from 'server/test/seedData';
 
+jest.mock('request-promise-native');
+
 let alice;
 const { createPost } = post;
 const { relevant } = community;
@@ -21,11 +23,6 @@ describe('CreatePost', () => {
   let res;
   let req;
   const next = console.log; // eslint-disable-line
-
-  beforeAll(async () => {
-    await PostData.createIndexeses();
-    await Post.createIndexeses();
-  });
 
   beforeEach(() => {
     res = response();

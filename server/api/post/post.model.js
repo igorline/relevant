@@ -157,7 +157,7 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 PostSchema.pre('save', async function save(next) {
   try {
     const countQuery = { parentPost: this._id, hidden: false };
-    this.commentCount = await this.model('Post').count(countQuery);
+    this.commentCount = await this.model('Post').countDocuments(countQuery);
     return next();
   } catch (err) {
     console.log('error updating post count', err); // eslint-disable-line
@@ -577,7 +577,7 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
     if (!communityId) throw new Error('missing community');
 
     // Thread has no children - remove everything
-    const children = await this.model('Post').count({ parentPost: post._id });
+    const children = await this.model('Post').countDocuments({ parentPost: post._id });
 
     // there is no way to remove post link
     // maybe we shouldn't 'invest in links automatically'?
@@ -586,7 +586,7 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
       return null;
     }
 
-    const communityChildren = await this.model('Post').count({
+    const communityChildren = await this.model('Post').countDocuments({
       communityId,
       parentPost: post._id
     });
@@ -594,7 +594,7 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
     if (communityChildren || shares) return post;
 
     await this.model('PostData')
-    .remove({ post: post._id, communityId })
+    .deleteOne({ post: post._id, communityId })
     .exec();
 
     return post;
@@ -646,22 +646,22 @@ PostSchema.post('remove', async function postRemove(post, next) {
 
     // await this.model('CommunityFeed').removeFromAllFeeds(doc);
     const note = this.model('Notification')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
     const feed = this.model('Feed')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
     const twitterFeed = this.model('TwitterFeed')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
     const data = this.model('PostData')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
 
     let metaPost;
     // if (post.type === 'link' && !post.parentParent) {
     //   metaPost = await this.model('MetaPost')
-    //   .remove({ post: post._id })
+    //   .deleteMany({ post: post._id })
     //   .exec();
     // }
 
@@ -669,7 +669,7 @@ PostSchema.post('remove', async function postRemove(post, next) {
     // remove notifications
     if (post.type === 'comment' || post.type === 'repost') {
       commentNote = this.model('Notification')
-      .remove({ comment: post._id })
+      .deleteMany({ comment: post._id })
       .exec();
     }
 
