@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import loadable from '@loadable/component';
 
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
-import routes from 'modules/_app/web/routes';
+import routes from 'modules/_app/web/routes'; // eslint-disable-line
 import queryString from 'query-string';
 import get from 'lodash.get';
 import { renderRoutes, matchRoutes } from 'react-router-config';
@@ -22,7 +22,7 @@ import SmartBanner from 'react-smartbanner';
 import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
 import * as modals from 'modules/ui/modals';
-import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
+import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
 import CreatePostModal from 'modules/createPost/web/createPost.modal';
 
@@ -127,9 +127,11 @@ class App extends Component {
   };
 
   debouncedSetWidth = AwesomeDebouncePromise(this.setWidth, 100);
+
   updateWidth = () => {
     this.debouncedSetWidth();
   };
+
   reloadTabs = () => {
     const now = new Date().getTime();
     if (now - this.backgroundTime > 10 * 60 * 1000) {
@@ -258,15 +260,9 @@ class App extends Component {
           position={'top'}
           // force={'ios'}
         />
-        <TextTooltip
-          type={'dark'}
-          scrollHide
-          id="mainTooltip"
-          multiline
-          ref={c => (this.tooltip = c)}
-        />
-        <CustomTooltip id="tooltip" multiline ref={c => (this.tooltip = c)} />
-
+        <TextTooltip type={'dark'} scrollHide id="mainTooltip" multiline />
+        {/*        <CustomTooltip id="tooltip" multiline />
+         */}
         <div
           pointerEvents={'none'}
           style={{

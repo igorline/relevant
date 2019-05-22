@@ -21,7 +21,8 @@ export function Alert(noInput = false) {
       return ReactNative.AlertIOS;
     }
     return ReactNative.Alert;
-  } else if (process.env.BROWSER) {
+  }
+  if (process.env.BROWSER) {
     return browserAlerts;
   }
   // eslint-disable-next-line

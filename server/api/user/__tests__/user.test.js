@@ -16,10 +16,6 @@ describe('User', () => {
   const next = jest.fn(); // eslint-disable-line
   // const next = jest.fn(console.log); // eslint-disable-line
 
-  beforeAll(async () => {
-    await User.ensureIndexes();
-  });
-
   beforeEach(() => {
     res = response();
     // req = { body: { user: user.user1 } };

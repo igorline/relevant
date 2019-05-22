@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 
+const apn = require('apn');
 const notificationUtil = require('server/notifications');
 const Message = require('./message.model');
 const User = require('../user/user.model');
 
 const MessageEvents = new EventEmitter();
 const Notification = require('../notification/notification.model');
-const apn = require('apn');
 
 exports.get = (req, res, next) => {
   const { query } = req;

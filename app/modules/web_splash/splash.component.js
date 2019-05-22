@@ -79,6 +79,7 @@ class Splash extends Component {
     super(props, context);
     this.onScroll = this.onScroll.bind(this);
   }
+
   state = {
     isDismissed: true
   };

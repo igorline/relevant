@@ -18,6 +18,7 @@ export default class SelectTags extends Component {
       this.props.selectedTags.length !== nextProps.selectedTags.length
     );
   }
+
   render() {
     const { tags, selectedTags, selectTag, deselectTag } = this.props;
     if (!tags || !tags.length) return null;

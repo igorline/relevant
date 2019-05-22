@@ -513,7 +513,7 @@ exports.update = async (req, res, next) => {
 
     // TODO redo tag processing stuff
     const pTags = newTags.map(tag =>
-      Tag.update(
+      Tag.updateOne(
         { _id: tag },
         {
           $addToSet: { parents: category },
@@ -590,7 +590,7 @@ async function processSubscriptions(newPost, communityId) {
             createdAt: { $gte: now - 24 * 60 * 60 * 1000 }
           });
           const n = unread.length;
-          await Feed.update(
+          await Feed.updateMany(
             { userId: follower._id, read: false },
             { read: true },
             { multi: true }

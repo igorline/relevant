@@ -50,17 +50,17 @@ export default function auth(state = initialState, action) {
             // }
           };
 
-        // case 'post':
-        //   return Object.assign({}, state, {
-        //     'post':  action.payload.view ? action.payload.view : state.post.view
-        //   })
-        //   break;
+          // case 'post':
+          //   return Object.assign({}, state, {
+          //     'post':  action.payload.view ? action.payload.view : state.post.view
+          //   })
+          //   break;
 
-        // case 'profile':
-        //   return Object.assign({}, state, {
-        //     'profile':  action.payload.view ? action.payload.view : state.profile.view
-        //   })
-        //   break;
+          // case 'profile':
+          //   return Object.assign({}, state, {
+          //     'profile':  action.payload.view ? action.payload.view : state.profile.view
+          //   })
+          //   break;
 
         case types.LOGOUT_USER: {
           return { ...initialState };

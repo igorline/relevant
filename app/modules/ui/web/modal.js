@@ -46,10 +46,12 @@ export default class ModalComponent extends Component {
     children: PropTypes.node,
     footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
+
   constructor(props) {
     super(props);
     this.escFunction = this.escFunction.bind(this);
   }
+
   escFunction(event) {
     if (event.keyCode === 27) {
       if (this.props.visible) {
@@ -57,6 +59,7 @@ export default class ModalComponent extends Component {
       }
     }
   }
+
   componentDidMount() {
     document.addEventListener('keydown', this.escFunction, false);
     // disableBodyScroll(this.targetElement, {
@@ -74,6 +77,7 @@ export default class ModalComponent extends Component {
     // }
     // });
   }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.escFunction, false);
     // clearAllBodyScrollLocks();
