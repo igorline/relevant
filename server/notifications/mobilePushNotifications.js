@@ -5,8 +5,8 @@ import User from 'server/api/user/user.model';
 /* eslint no-console: 0 */
 
 const options = {
-  cert: process.env.APN_CERT,
-  key: process.env.APN_KEY,
+  cert: process.env.APN_CERT || 'server/dev-cert.pem',
+  key: process.env.APN_KEY || 'server/dev-key.pem',
   production: process.env.NODE_ENV === 'production'
 };
 
@@ -17,8 +17,8 @@ const settings = {
     id: KEY
   },
   apn: {
-    cert: process.env.APN_CERT,
-    key: process.env.APN_KEY,
+    cert: process.env.APN_CERT || 'server/dev-cert.pem',
+    key: process.env.APN_KEY || 'server/dev-key.pem',
     production: process.env.NODE_ENV === 'production'
   }
 };
@@ -27,7 +27,15 @@ const PushNotifications = require('node-pushnotifications');
 
 const push = new PushNotifications(settings);
 
-const service = new apn.Connection(options);
+function initNotificationService() {
+  try {
+    return new apn.Provider(options);
+  } catch (err) {
+    // console.log(err)
+    return { on: () => null };
+  }
+}
+const service = initNotificationService();
 
 service.on('connected', () => {
   console.log('Connected');

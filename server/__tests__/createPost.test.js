@@ -23,8 +23,8 @@ describe('CreatePost', () => {
   const next = console.log; // eslint-disable-line
 
   beforeAll(async () => {
-    await PostData.ensureIndexes();
-    await Post.ensureIndexes();
+    await PostData.createIndexeses();
+    await Post.createIndexeses();
   });
 
   beforeEach(() => {

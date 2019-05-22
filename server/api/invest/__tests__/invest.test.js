@@ -23,7 +23,7 @@ describe('ethRewards', () => {
     ({ link1 } = getPosts());
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
-    await Invest.ensureIndexes();
+    await Invest.createIndexeses();
     req = {
       user: alice,
       body: { post: { _id: link1._id }, amount: 0.5 },

@@ -46,6 +46,7 @@ export function createInitialState(req) {
       community: req.params.community || cachedCommunity
     },
     navigation: {
+      width,
       screenSize: getScreenSize(width)
     }
   };
@@ -185,6 +186,7 @@ export async function handleRouteData({ req, store }) {
 
 export function renderApp({ url, store }) {
   const context = {};
+  const nonce = new Date().getTime();
 
   const App = () => (
     <Provider store={store}>
@@ -195,13 +197,15 @@ export function renderApp({ url, store }) {
   );
 
   AppRegistry.registerComponent('App', () => App);
-  const { getStyleElement } = AppRegistry.getApplication('App', store.getState());
-  const rnWebStyles = renderToStaticMarkup(getStyleElement());
 
   const app = renderToString(
     <StyleSheetManager sheet={sheet.instance}>
       <ChunkExtractorManager extractor={extractor}>{App()}</ChunkExtractorManager>
     </StyleSheetManager>
   );
+
+  const { getStyleElement } = AppRegistry.getApplication('App');
+  const rnWebStyles = renderToStaticMarkup(getStyleElement({ nonce }));
+
   return { app, rnWebStyles };
 }

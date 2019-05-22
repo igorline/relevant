@@ -62,6 +62,7 @@ class TagSelection extends Component {
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
   }
+
   componentDidUpdate(prevProps) {
     if (prevProps.communityTags !== this.props.communityTags) {
       this.setState({

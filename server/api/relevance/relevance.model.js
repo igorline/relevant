@@ -91,7 +91,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
       const index = cats.findIndex(cat => {
         if (cat._id === tag) return true;
         // Depricated - no more main
-        else if (cat.main.findIndex(main => tag === main._id) > -1) {
+        if (cat.main.findIndex(main => tag === main._id) > -1) {
           return true;
         }
 

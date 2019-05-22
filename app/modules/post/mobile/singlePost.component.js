@@ -68,6 +68,7 @@ class SinglePostComponent extends Component {
   }
 
   comments = [];
+
   nestingLevel = {};
 
   componentDidMount() {

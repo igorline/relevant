@@ -1,6 +1,6 @@
 import * as colors from './colors';
-import sizing from './sizing';
-import { size } from './mixins';
+import sizing, { size } from './sizing';
+// import { size } from './mixins';
 
 // TODO should we keep things consistent? Doesn't seem useful anymore
 export const linkStyle = `
@@ -17,9 +17,6 @@ export const BANNER_PROMPT_HEIGHT = sizing(5);
 export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);
-
-export const mediumScreenWidth = 714;
-export const smallScreenWidth = 414;
 
 export const NESTING_UNIT = 8;
 export const POST_BUTTONS_NESTING_UNITS = 1.5;
