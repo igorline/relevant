@@ -29,7 +29,7 @@ import Marquee from './post.marquee';
 const Wrapper = styled(View)`
   margin: auto;
   padding: ${sizing(2)};
-  max-width: ${sizing(140)};
+  max-width: ${sizing(120)};
 `;
 
 const Section = styled(View)`
