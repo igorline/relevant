@@ -1,6 +1,6 @@
 import React from 'react';
 import { Animated } from 'react-native';
-import { layout } from 'app/styles';
+import { mediumScreenWidth, smallScreenWidth } from 'app/styles/screens';
 
 let NativeAnimatedModule = null;
 if (process.env.WEB !== 'true') {
@@ -19,12 +19,11 @@ export function transtionConfig() {
 }
 
 export const getScreenSize = width => {
-  const breakpoints = [layout.mediumScreenWidth, layout.smallScreenWidth, 0];
+  const breakpoints = [mediumScreenWidth, smallScreenWidth];
   let screenSize = 0;
   for (let i = 0; i < breakpoints.length; i++) {
-    if (width <= breakpoints[i]) {
-      screenSize = i + 1;
-    }
+    screenSize = i;
+    if (width > breakpoints[i]) return screenSize;
   }
   return screenSize;
 };

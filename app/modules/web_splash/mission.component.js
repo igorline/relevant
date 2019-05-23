@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Footer from 'modules/navigation/web/footer.component';
+// import PropTypes from 'prop-types';
 
 export default class Mission extends Component {
   static propTypes = {
-    location: PropTypes.object
+    // location: PropTypes.object
   };
 
   constructor(props, context) {
@@ -78,7 +77,6 @@ Decentralized Relevant database fully integrated with Currency - Fall 2018
 
           </div>
         </panel> */}
-        <Footer location={this.props.location} />
       </div>
     );
   }

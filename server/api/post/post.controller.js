@@ -41,32 +41,73 @@ async function findRelatedPosts(metaId) {
   }
 }
 
+exports.flagged = async (req, res, next) => {
+  try {
+    const { community, limit, skip } = req.query;
+
+    const posts = await Post.find({ flagged: true })
+    .populate([
+      {
+        path: 'metaPost'
+      },
+      {
+        path: 'parentPost',
+        populate: 'metaPost'
+      },
+      {
+        path: 'post',
+        populate: [
+          {
+            path: 'commentary',
+            match: {
+              repost: { $exists: false },
+              $or: [{ hidden: { $ne: true } }]
+            }
+          },
+          {
+            path: 'embeddedUser.relevance',
+            match: { community, global: true },
+            select: 'pagerank'
+          }
+        ]
+      }
+    ])
+    .skip(parseInt(skip, 10))
+    .limit(parseInt(limit, 10))
+    .sort('-createdAt');
+
+    res.status(200).json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.topPosts = async (req, res, next) => {
   try {
-    const { community } = req.query;
+    // const { community } = req.query;
     let posts;
     const now = new Date();
     now.setDate(now.getDate() - 7);
-    posts = await PostData.find({ createdAt: { $gt: now }, community })
+    posts = await PostData.find({ createdAt: { $gt: now }, isInFeed: true })
     .populate({
       path: 'post',
       populate: [
-        {
-          path: 'commentary',
-          match: {
-            // TODO implement intra-community commentary
-            community,
-            // TODO - we should probably sort the non-community commentary
-            // with some randomness on client side
-            repost: { $exists: false },
-            $or: [{ hidden: { $ne: true } }]
-          }
-        },
-        {
-          path: 'embeddedUser.relevance',
-          match: { community, global: true },
-          select: 'pagerank'
-        },
+        // {
+        //   path: 'commentary',
+        //   match: {
+        //     // TODO implement intra-community commentary
+        //     // community,
+        //     // TODO - we should probably sort the non-community commentary
+        //     // with some randomness on client side
+        //     repost: { $exists: false },
+        //     $or: [{ hidden: { $ne: true } }]
+        //   }
+        // },
+        // {
+        //   path: 'embeddedUser.relevance',
+        //   match: { community, global: true },
+        //   select: 'pagerank'
+        // },
         { path: 'metaPost' }
       ]
     })
@@ -74,6 +115,7 @@ exports.topPosts = async (req, res, next) => {
     .limit(20);
 
     // TODO do this on frontend?
+    posts = posts.filter(d => d.post);
     posts = posts.map(d => ({
       ...d.post.toObject(),
       data: { ...d.toObject(), post: get(d, 'post._id') }
@@ -472,7 +514,7 @@ exports.update = async (req, res, next) => {
 
     // TODO redo tag processing stuff
     const pTags = newTags.map(tag =>
-      Tag.update(
+      Tag.updateOne(
         { _id: tag },
         {
           $addToSet: { parents: category },
@@ -524,7 +566,7 @@ async function processSubscriptions(newPost, communityId) {
         subscription.amount -= 1;
         subscription.amount = Math.max(subscription.amount, 0);
 
-        await subscription.save();
+        subscription = await subscription.save();
 
         const feed = new Feed({
           userId: subscription.follower,
@@ -549,7 +591,7 @@ async function processSubscriptions(newPost, communityId) {
             createdAt: { $gte: now - 24 * 60 * 60 * 1000 }
           });
           const n = unread.length;
-          await Feed.update(
+          await Feed.updateMany(
             { userId: follower._id, read: false },
             { read: true },
             { multi: true }
@@ -743,8 +785,8 @@ exports.remove = async (req, res, next) => {
       notMe: true,
       payload: post
     };
-
     socketEvent.emit('socketEvent', newPostEvent);
+
     await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {

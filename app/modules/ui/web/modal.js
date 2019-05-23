@@ -46,10 +46,12 @@ export default class ModalComponent extends Component {
     children: PropTypes.node,
     footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
+
   constructor(props) {
     super(props);
     this.escFunction = this.escFunction.bind(this);
   }
+
   escFunction(event) {
     if (event.keyCode === 27) {
       if (this.props.visible) {
@@ -57,6 +59,7 @@ export default class ModalComponent extends Component {
       }
     }
   }
+
   componentDidMount() {
     document.addEventListener('keydown', this.escFunction, false);
     // disableBodyScroll(this.targetElement, {
@@ -74,14 +77,14 @@ export default class ModalComponent extends Component {
     // }
     // });
   }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.escFunction, false);
     // clearAllBodyScrollLocks();
   }
 
   render() {
-    const { close, footer, children, hideX } = this.props;
-    const header = this.props.header || this.props.title;
+    const { close, footer, children, hideX, header, title } = this.props;
     if (!this.props.visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
     return (
@@ -111,10 +114,12 @@ export default class ModalComponent extends Component {
               </Touchable>
             )}
             {header ? (
+              this.props.header
+            ) : (
               <Header pr={5} shrink={1}>
-                {this.props.header || this.props.title}
+                {title}
               </Header>
-            ) : null}
+            )}
             {children && <View mt={3}>{children}</View>}
             {footerEl && <View mt={6}>{footerEl}</View>}
           </Modal>

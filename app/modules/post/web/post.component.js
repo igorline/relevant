@@ -14,6 +14,7 @@ import PostInfo from 'modules/post/postinfo.component';
 import { routing } from 'app/utils';
 import { View, Text, Divider } from 'modules/styled/uni';
 import get from 'lodash/get';
+import ButtonRow from 'modules/post/web/buttonRow.component';
 
 export class Post extends Component {
   static propTypes = {
@@ -140,7 +141,11 @@ export class Post extends Component {
             singlePost={singlePost}
             community={community}
           />
-          {this.props.children}
+          {screenSize > 0 ? (
+            <View m={2}>
+              <ButtonRow {...this.props} />
+            </View>
+          ) : null}
         </View>
       </View>
     ) : (
@@ -171,9 +176,9 @@ export class Post extends Component {
         postUrl={commentUrl}
         parentPost={post}
         hidePostButtons={screenSize === 0}
-        hideBorder
+        hideBorder={isLink && !screenSize}
         additionalNesting={additionalNesting}
-        nestingLevel={0}
+        nestingLevel={1}
         actions={actions}
         preview={preview}
         inMainFeed
@@ -203,6 +208,7 @@ export class Post extends Component {
         {previewEl}
         {isLink && previewEl ? <View mt={2} /> : postEl}
         {commentEl}
+        {this.props.children}
         {hideDivider ? null : <Divider m={['0 4', 0]} screenSize={screenSize} />}
       </View>
     );

@@ -29,6 +29,7 @@ class SettingsModalContainer extends Component {
       browserAlerts.alert(err);
     }
   };
+
   render() {
     return <SettingsModalComponent {...this.props} onSubmit={this.submit} />;
   }

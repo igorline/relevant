@@ -9,7 +9,9 @@ const mongooseOpts = {
   autoReconnect: true,
   reconnectTries: Number.MAX_VALUE,
   reconnectInterval: 1000,
-  useMongoClient: true // remove this line if you use mongoose 5 and above
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useFindAndModify: false
 };
 
 process.env.SESSION_SECRET = 'test-secret';
@@ -18,10 +20,7 @@ process.env.TWITTER_SECRET = 'test-twitter-secret';
 
 beforeAll(async () => {
   if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(
-      `${global.MONGO_URI}${process.env.TEST_SUITE}`,
-      mongooseOpts
-    );
+    await mongoose.connect(`${global.MONGO_URI}${process.env.TEST_SUITE}`, mongooseOpts);
   }
   await clearDB();
   return setupTestData();

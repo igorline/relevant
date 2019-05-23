@@ -13,6 +13,7 @@ const CommunityMemberSchema = new Schema(
     },
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     community: String,
+    superAdmin: { type: Boolean, default: false },
     role: { type: String, default: 'user' },
     reputation: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },

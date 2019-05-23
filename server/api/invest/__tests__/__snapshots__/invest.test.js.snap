@@ -17,8 +17,6 @@ Object {
     "partialUsers": 0,
     "post": Object {
       "_id": "[SANITIZED]",
-      "children": null,
-      "commentary": null,
       "data": Object {
         "_id": "[SANITIZED]",
         "pagerank": 0,
@@ -27,11 +25,7 @@ Object {
         "post": "000000000000000000000003",
         "relevance": 20,
       },
-      "embeddedUser": Object {
-        "relevance": null,
-      },
       "id": "[SANITIZED]",
-      "reposted": null,
     },
     "rankChange": "[SANITIZED]",
     "relevance": 0,
@@ -45,7 +39,7 @@ Object {
   "subscription": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
-    "amount": 20,
+    "amount": 4,
     "category": Array [],
     "createdAt": "[SANITIZED]",
     "follower": "a00000000000000000000000",

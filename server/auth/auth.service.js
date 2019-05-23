@@ -92,7 +92,7 @@ function isAuthenticated() {
   .use(getUser('+email'));
 }
 
-function communityMember() {
+function communityMember(role) {
   return async (req, res, next) => {
     try {
       if (!req.user || !req.user._id) {
@@ -113,6 +113,10 @@ function communityMember() {
           member.community = com.slug;
           member = await member.save();
         }
+      }
+
+      if (role === 'superAdmin' && !member.superAdmin && req.user.role !== 'admin') {
+        throw new Error("You don't have the priveleges required to do this");
       }
 
       if (!member) throw new Error('you are not a member of this community');

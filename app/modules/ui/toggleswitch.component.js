@@ -76,6 +76,7 @@ export default class ToggleSwitch extends React.Component {
   };
 
   offsetX = new Animated.Value(0);
+
   dimensions = ToggleSwitch.calculateDimensions(this.props.size);
 
   createToggleSwitchStyle = () => ({

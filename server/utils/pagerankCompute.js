@@ -344,7 +344,8 @@ async function updateItemRank(props) {
         fields: 'pagerank pagerankRaw user rank relevance communityId community'
       }
     );
-  } else if (u.type === 'post') {
+  }
+  if (u.type === 'post') {
     if (Number.isNaN(rank)) {
       return null;
     }
@@ -569,14 +570,14 @@ export async function computeApproxPageRank(params) {
     let postVotes = true;
     let userVotes = true;
     if (undoInvest) {
-      postVotes = await Invest.count({ post: post._id, ownPost: false });
+      postVotes = await Invest.countDocuments({ post: post._id, ownPost: false });
       if (!postVotes) {
         post.data.pagerank = 0;
         post.data.pagerankRaw = 0;
         post.data.pagerankRawNeg = 0;
         await post.data.save();
       }
-      userVotes = await Invest.count({ author: authorId, ownPost: false });
+      userVotes = await Invest.countDocuments({ author: authorId, ownPost: false });
       if (!userVotes) {
         author.relevance.pagerank = 0;
         author.relevance.pagerankRaw = 0;
