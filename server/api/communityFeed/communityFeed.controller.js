@@ -149,7 +149,7 @@ exports.getOld = async (req, res, next) => {
 
     let query = { community, post: { $exists: true } };
 
-    if (tag) query = { tags: tag, community };
+    if (tag) query = { tags: tag, community, post: { $exists: true } };
 
     const feed = await Feed.find(query)
     .sort(sortQuery)
