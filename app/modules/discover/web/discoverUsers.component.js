@@ -12,6 +12,7 @@ class DiscoverUsers extends Component {
     super(props);
     this.state = {};
   }
+
   render() {
     const users = this.props.user.list[this.props.tag || 'all'] || [];
     const userRows = users.map((user, i) => (

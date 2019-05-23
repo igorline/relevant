@@ -6,13 +6,13 @@ import User from '../user/user.model';
 
 const dummyKey = 'XXXXXXXXXXXXXXXXXXXXXXX';
 
-const inlineCss = require('inline-css');
-const { emailStyle } = require('../../utils/emailStyle');
-
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY || dummyKey,
   domain: process.env.MAILGUN_DOMAIN || dummyKey
 });
+
+const inlineCss = require('inline-css');
+const { emailStyle } = require('../../utils/emailStyle');
 
 // const unsub = [
 //   'jasonfeifer@gmail.com',

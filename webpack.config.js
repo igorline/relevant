@@ -81,11 +81,11 @@ module.exports = {
     symlinks: false,
     alias: {
       react: path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom'),
       'react-native$': 'react-native-web',
       'react-native-linear-gradient$': 'react-native-web-linear-gradient',
       lodash: path.resolve(__dirname, 'node_modules/lodash'),
-      'bn.js': path.resolve(__dirname, 'node_modules/bn.js')
+      'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
+      'react-dom': '@hot-loader/react-dom'
     }
   },
 

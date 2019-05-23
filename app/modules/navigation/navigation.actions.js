@@ -14,7 +14,7 @@ import {
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction, getScreenSize } from 'app/utils/nav';
-import { setCommunity } from 'modules/auth/auth.actions';
+import { setCommunity } from 'modules/auth/auth.actions'; // eslint-disable-line
 
 let dismissKeyboard;
 let safariView;

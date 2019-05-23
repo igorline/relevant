@@ -2,8 +2,8 @@ import createSocketIoMiddleware from 'redux-socket.io';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import { drizzleSagas } from 'drizzle';
-import { all, fork } from 'redux-saga/effects';
+// import { drizzleSagas } from 'drizzle';
+// import { all, fork } from 'redux-saga/effects';
 import rootReducer from '../reducers';
 
 let server = process.env.API_SERVER;
@@ -21,9 +21,9 @@ if (process.env.BROWSER) {
   });
 }
 
-function* rootSaga() {
-  yield all(drizzleSagas.map(saga => fork(saga)));
-}
+// function* rootSaga() {
+//   yield all(drizzleSagas.map(saga => fork(saga)));
+// }
 
 export default function configureStore(initialState = {}) {
   // Compose final middleware and use devtools in debug environment
@@ -65,6 +65,6 @@ export default function configureStore(initialState = {}) {
     });
   }
 
-  sagaMiddleware.run(rootSaga);
+  // sagaMiddleware.run(rootSaga);
   return store;
 }

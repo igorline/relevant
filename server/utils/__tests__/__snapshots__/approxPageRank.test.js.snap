@@ -36,7 +36,7 @@ Object {
       },
       "email": Object {
         "digest": true,
-        "general": true,
+        "general": false,
         "personal": true,
       },
       "mobile": Object {
@@ -88,9 +88,7 @@ Object {
     "_id": "[SANITIZED]",
     "body": "awesome post #1!",
     "channel": false,
-    "children": null,
     "commentCount": 0,
-    "commentary": null,
     "community": "relevant",
     "communityId": "c00000000000000000000001",
     "createdAt": "[SANITIZED]",
@@ -137,7 +135,6 @@ Object {
       "handle": "bob",
       "image": "bob-pic.jpg",
       "name": "Bob",
-      "relevance": null,
     },
     "flagged": false,
     "flaggedBy": Array [],
@@ -153,7 +150,6 @@ Object {
     "postDate": "[SANITIZED]",
     "rank": 0,
     "relevance": 0,
-    "reposted": null,
     "seenInFeedNumber": 0,
     "tags": Array [
       "tag11",
@@ -208,7 +204,7 @@ Object {
       },
       "email": Object {
         "digest": true,
-        "general": true,
+        "general": false,
         "personal": true,
       },
       "mobile": Object {
@@ -260,9 +256,7 @@ Object {
     "_id": "[SANITIZED]",
     "body": "awesome post #1!",
     "channel": false,
-    "children": null,
     "commentCount": 0,
-    "commentary": null,
     "community": "relevant",
     "communityId": "c00000000000000000000001",
     "createdAt": "[SANITIZED]",
@@ -309,7 +303,6 @@ Object {
       "handle": "bob",
       "image": "bob-pic.jpg",
       "name": "Bob",
-      "relevance": null,
     },
     "flagged": false,
     "flaggedBy": Array [],
@@ -325,7 +318,6 @@ Object {
     "postDate": "[SANITIZED]",
     "rank": 0,
     "relevance": 0,
-    "reposted": null,
     "seenInFeedNumber": 0,
     "tags": Array [
       "tag11",

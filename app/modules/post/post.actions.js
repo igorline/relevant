@@ -10,7 +10,6 @@ const apiServer = process.env.API_SERVER + '/api/';
 const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 const repostSchema = new schema.Entity('posts', { idAttribute: '_id' });
 
-let metaPostSchema;
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
 const parentPostSchema = new schema.Entity(
@@ -476,42 +475,33 @@ export function getFlaggedPosts(skip) {
   if (!skip) skip = 0;
   const type = 'flagged';
 
-  function getUrl() {
-    const url = `${apiServer}metaPost/flagged?skip=${skip}&limit=${DEFAULT_LIMIT}`;
-    return url;
-  }
-
   return async dispatch => {
-    // dispatch(getPostsAction(type));
-    fetch(getUrl(), {
-      method: 'GET',
-      ...(await api.reqOptions())
-    })
-    .then(response => response.json())
-    .then(responseJSON => {
-      const dataType = metaPostSchema;
-      const data = normalize({ [type]: responseJSON }, { [type]: [dataType] });
+    try {
+      const flagged = await api.request({
+        method: 'GET',
+        endpoint: 'post',
+        path: '/flagged',
+        query: { skip, limit: DEFAULT_LIMIT }
+      });
+      const data = normalize({ [type]: flagged }, { [type]: [postSchema] });
       dispatch(setPosts(data, type, skip));
-      // dispatch(errorActions.setError(type, false));
-    })
-    .catch(error => {
-      Alert('Feed error ', error);
-      if (!error.message.match('Get fail for key: token')) {
-        // dispatch(errorActions.setError(type, true, error.message));
-      }
-    });
+    } catch (err) {
+      Alert.alert(err.message, 'error');
+    }
   };
 }
 
 export function getTopPosts() {
   return async dispatch => {
     try {
-      const responseJSON = await api.request({
+      const topPosts = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '/topPosts'
       });
-      return dispatch(setTopPosts(responseJSON));
+      // const data = normalize({ topPosts }, { topPosts: [postSchema] });
+      // return dispatch(setPosts(data, 'topPosts', 0));
+      return dispatch(setTopPosts(topPosts));
     } catch (error) {
       return false;
     }

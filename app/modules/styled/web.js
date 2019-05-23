@@ -129,6 +129,16 @@ export const Button = styled.button`
   ${mixins.width}
   ${mixins.margin}
   ${mixins.color}
+  ${mixins.width}
+  ${mixins.height}
+`;
+
+export const NumericalValue = styled(Text)`
+  ${fonts.numericalValue}
+  ${mixins.width}
+  ${mixins.font}
+  ${mixins.inheritfont}
+  ${mixins.color}
 `;
 
 export const Input = styled.input`

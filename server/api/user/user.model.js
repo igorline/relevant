@@ -55,7 +55,7 @@ const UserSchema = new Schema(
         },
         general: {
           type: Boolean,
-          default: true
+          default: false
         },
         personal: {
           type: Boolean,
@@ -250,7 +250,7 @@ const validatePresenceOf = value => value && value.length;
  */
 UserSchema.pre('save', async function preSave(next) {
   try {
-    this.postCount = await this.model('Post').count({ user: this._id });
+    this.postCount = await this.model('Post').countDocuments({ user: this._id });
     if (!this.isNew) return next();
 
     if (
@@ -267,7 +267,9 @@ UserSchema.pre('save', async function preSave(next) {
 
 UserSchema.pre('remove', async function preRemove(next) {
   try {
-    await this.model('CommunityMember').remove({ user: this._id });
+    await this.model('CommunityMember')
+    .deleteMany({ user: this._id })
+    .exec();
     next();
   } catch (err) {
     next(err);
@@ -333,10 +335,10 @@ UserSchema.methods = {
   // get following and followers
   getSubscriptions: function getSubscriptions() {
     return this.model('Subscription')
-    .count({ follower: this._id })
+    .countDocuments({ follower: this._id })
     .then(following => {
       this.following = following;
-      return this.model('Subscription').count({ following: this._id });
+      return this.model('Subscription').countDocuments({ following: this._id });
     })
     .then(followers => {
       this.followers = followers;
@@ -362,7 +364,7 @@ UserSchema.methods.getRelevance = async function getRelevance(community) {
 
 UserSchema.methods.updatePostCount = async function updatePostCount() {
   try {
-    this.postCount = await this.model('Post').count({ user: this._id });
+    this.postCount = await this.model('Post').countDocuments({ user: this._id });
     await this.save();
     await this.updateClient();
     return this;
@@ -392,13 +394,13 @@ UserSchema.methods.updateMeta = async function updateMeta() {
     };
 
     // Do this on a separate thread?
-    await this.model('Post').update(
+    await this.model('Post').updateMany(
       { user: this._id },
       { embeddedUser: newUser },
       { multi: true }
     );
 
-    await this.model('CommunityMember').update(
+    await this.model('CommunityMember').updateMany(
       { user: this._id },
       { embeddedUser: newUser },
       { multi: true }

@@ -91,14 +91,14 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
       const index = cats.findIndex(cat => {
         if (cat._id === tag) return true;
         // Depricated - no more main
-        else if (cat.main.findIndex(main => tag === main._id) > -1) {
+        if (cat.main.findIndex(main => tag === main._id) > -1) {
           return true;
         }
 
         return false;
       });
       const topTopic = { topTopic: index > -1 };
-      return this.update(
+      return this.updateMany(
         { user, tag, communityId },
         { $inc: { relevance: relevanceToAdd }, topTopic },
         { upsert: true }
@@ -107,7 +107,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
 
     // update category reputation
     tagRelevance.push(
-      this.update(
+      this.updateMany(
         { user, category: post.category, communityId },
         { $inc: { relevance: relevanceToAdd } },
         { upsert: true }

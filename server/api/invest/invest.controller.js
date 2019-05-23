@@ -168,8 +168,7 @@ async function investCheck(params) {
   return investment;
 }
 
-async function updateSubscriptions(params) {
-  const { post, user, amount, undoInvest } = params;
+async function updateSubscriptions({ post, user, amount, undoInvest }) {
   if (amount < 0) return null;
   let subscription = await Subscription.findOne({
     follower: user._id,
@@ -184,7 +183,7 @@ async function updateSubscriptions(params) {
     });
   }
   const inc = undoInvest ? Math.max(-4, -subscription.amount) : 4;
-  subscription.amount = Math.max(subscription.amount + inc, 20);
+  subscription.amount = Math.min(subscription.amount + inc, 20);
   return subscription.save();
 }
 
@@ -231,7 +230,7 @@ async function sendAuthorNotification({ author, user, post, type, undoInvest, am
   if (!author) return null;
   // Remove notification if undo;
   if (undoInvest) {
-    await Notification.remove({
+    await Notification.deleteOne({
       type,
       post: post._id,
       forUser: author._id,
@@ -442,7 +441,10 @@ exports.create = async (req, res, next) => {
     Earnings.updateEarnings({ post, communityId });
 
     // updates user investments
-    user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
+    user.investmentCount = await Invest.countDocuments({
+      investor: user._id,
+      amount: { $gt: 0 }
+    });
 
     // update subscriptions
     user = await user.getSubscriptions();

@@ -21,7 +21,7 @@ class TagSelection extends Component {
   static propTypes = {
     createPost: PropTypes.object,
     actions: PropTypes.object,
-    communityTags: PropTypes.object
+    communityTags: PropTypes.array
   };
 
   constructor(props, context) {
@@ -62,6 +62,7 @@ class TagSelection extends Component {
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
   }
+
   componentDidUpdate(prevProps) {
     if (prevProps.communityTags !== this.props.communityTags) {
       this.setState({

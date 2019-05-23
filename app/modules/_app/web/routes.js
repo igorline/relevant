@@ -3,7 +3,7 @@ import loadable from '@loadable/component';
 import { Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
-import App from './app';
+import App from './app'; // eslint-disable-line
 import NotFound from './404';
 import withAuth from './withAuth';
 import CommunityRedirect from './communityRedirect';

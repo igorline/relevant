@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const devConfig = require('./webpack.config');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -8,6 +7,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const prodConfig = {};
 const isAnalyze = typeof process.env.BUNDLE_ANALYZE !== 'undefined';
 const CompressionPlugin = require('compression-webpack-plugin');
+const devConfig = require('./webpack.config');
 
 Object.keys(devConfig).forEach(key => {
   prodConfig[key] = devConfig[key];

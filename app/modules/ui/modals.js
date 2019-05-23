@@ -4,7 +4,6 @@ import SettingsModal from 'modules/profile/web/settingsModal.container';
 import InviteModal from 'modules/invites/web/inviteModal.container';
 import InviteModalTitle from 'modules/invites/inviteModalTitle.component';
 import GetTokensModal from 'modules/getTokens/web/getTokensModal.container';
-import CreatePost from 'modules/createPost/createPost.container';
 import CommunityMembers from 'modules/community/web/communityMembers.component';
 import CommunityMembersTitle from 'modules/community/communityMembersTitle.component';
 import ResetPassword from 'modules/auth/web/resetPassword.component';
@@ -36,15 +35,6 @@ export const invite = {
 export const getTokens = {
   title: 'Get Tokens',
   Body: GetTokensModal,
-  footer: () => {}
-};
-
-export const newpost = {
-  title: 'New Post',
-  Body: CreatePost,
-  bodyProps: {
-    modal: true
-  },
   footer: () => {}
 };
 

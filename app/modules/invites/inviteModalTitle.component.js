@@ -8,7 +8,9 @@ class InviteModalTitle extends Component {
   static propTypes = {
     community: PropTypes.object
   };
+
   submit = async () => {};
+
   render() {
     const { community } = this.props;
     const activeCommunity = get(community, `communities.${community.active}.name`);

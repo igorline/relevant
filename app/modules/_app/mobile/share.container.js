@@ -26,6 +26,7 @@ import { text, storage, post } from 'app/utils';
 import { fullWidth, fullHeight, darkGrey, IphoneX } from 'app/styles/global';
 
 const KBView = KeyboardAvoidingView;
+
 let style;
 
 export const ShareStack = createStackNavigator(
