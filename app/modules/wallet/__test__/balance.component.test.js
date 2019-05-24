@@ -9,7 +9,8 @@ const props = {
   user: user.user1,
   contract: {},
   actions: {},
-  wallet: {}
+  wallet: {},
+  isWeb: true
 };
 
 test('Snapshot Balance Web', () => {
