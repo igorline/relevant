@@ -16,6 +16,8 @@ const MarqueeContainer = styled(View)`
   width: 100vw;
   overflow: hidden;
   z-index: 1;
+  position: fixed;
+  top: 0;
 `;
 
 const BG_COLORS = [colors.black, colors.white];
