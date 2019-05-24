@@ -77,9 +77,9 @@ export default class Balance extends Component {
             </Touchable>
             <Image
               source={require('app/public/img/info.png')}
-              s={'1rem'}
-              h={'1rem'}
-              w={'1rem'}
+              s={1.5}
+              h={1.5}
+              w={1.5}
               ml={0.5}
               resizeMode={'contain'}
               data-for="mainTooltip"
