@@ -4,28 +4,19 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Text, View, Image, Button } from 'modules/styled/web';
 import styled from 'styled-components';
-import { colors, fonts, sizing, size } from 'app/styles';
+import { colors, fonts, sizing, size, responsive } from 'app/styles';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityList from 'modules/community/communityList.component';
+import SocialIcons from 'modules/navigation/social.icons';
 import Marquee from './post.marquee';
 
-// const mobilePhone = `
-//   position: absolute;
-//   bottom: 0;
-//   width: 80vw;
-//   right: -40px;
-//   opacity: .3;
-// `;
-
-// const Phone = styled(View)`
-//   flex: 0.65;
-//   align-self: flex-end;
-//   transform-origin: bottom;
-//   z-index: -1;
-//   display: block;
-//   ${p => (p.screenSize ? mobilePhone : '')}
-// `;
+const Phone = styled(Image)`
+  position: ${() => responsive(['relative', 'absolute'])};
+  bottom: ${() => responsive(['auto', '0'])};
+  right: ${() => responsive(['auto', '-20vw'])};
+  opacity: ${() => responsive([1, 0.5])};
+`;
 
 const Wrapper = styled(View)`
   margin: auto;
@@ -39,14 +30,14 @@ const Section = styled(View)`
   /* min-height: 90vh; */
   flex-direction: column;
   justify-content: center;
-  padding: ${sizing(16)} 0;
+  padding: ${sizing(10)} 0;
 `;
 
 const SplashText = styled(Text)`
   font-family: ${fonts.HELVETICA_NEUE};
   color: ${colors.black};
-  font-size: ${() => size(4.5)};
-  line-height: ${() => size(6)};
+  font-size: ${() => size([4.5, 3])};
+  line-height: ${() => size([6, 4.8])};
   margin: ${() => size(2)} 0;
 `;
 
@@ -79,7 +70,7 @@ class Splash extends Component {
     // 'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
 
     return (
-      <View flex={1} fdirection="column">
+      <View flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
         <Marquee />
 
         <Wrapper
@@ -90,17 +81,10 @@ class Splash extends Component {
         >
           <Section style={{ minHeight: '100vh' }}>
             <Image
-              h={8}
-              // m={[4, 2]}
+              h={[8, 7, 6]}
               mb={6}
               mr={'auto'}
-              style={
-                {
-                  // top: 20,
-                  // position: 'fixed'
-                }
-              }
-              src={'/img//logo-opt.png'}
+              src={'/img//logo.png'}
               alt={'Relevant'}
             />
             <SplashText>
@@ -158,16 +142,6 @@ class Splash extends Component {
 
           <Section>
             <SplashText>
-              Advertising markets reward popularity. Prediction markets reward expertise.
-            </SplashText>
-            <SplashText>
-              On Relevant users can bet on the relevance of content. Bets don’t impact
-              rankings but provide a way to reward expert curators.
-            </SplashText>
-          </Section>
-
-          <Section>
-            <SplashText>
               Relevant Communities decide what kind of information is valuable to them and
               define their own trust metrics.
             </SplashText>
@@ -180,12 +154,62 @@ class Splash extends Component {
           </Section>
 
           <Section>
-            <View>
-              <Image h={6} mr={2} src={'/img/appstore.png'} />
-              <Image h={6} src={'/img/googleplaystore.png'} />
-            </View>
+            <SplashText>
+              Advertising markets reward popularity. Prediction markets reward expertise.
+            </SplashText>
+            <SplashText>
+              On Relevant users can bet on the relevance of content. Bets don’t impact
+              rankings but provide a way to reward expert curators.
+            </SplashText>
           </Section>
+
+          <View
+            mt={4}
+            fdirection={['row', 'column']}
+            justify={['flex-start', 'center']}
+            align={'center'}
+            h={['auto', '100vh']}
+          >
+            <View
+              flex={1}
+              fdirection={'column'}
+              align={['flex-start', 'center']}
+              justify={'center'}
+              style={{ zIndex: 1 }}
+            >
+              <Image
+                h={[8, 7, 6]}
+                src={'/img/logo.png'}
+                alt={'Relevant'}
+                zIndex={1}
+                mt={'auto'}
+              />
+              <View mt={[8, 'auto']} mb={[0, 6]}>
+                <a
+                  href="https://itunes.apple.com/us/app/relevant-communities/id1173025051?mt=8"
+                  target="_blank"
+                >
+                  <Image h={[6, 6, 5]} mr={2} src={'/img/appstore.png'} />
+                </a>
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.relevantnative&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
+                  target="_blank"
+                >
+                  <Image h={[6, 6, 5]} src={'/img/googleplaystore.png'} />
+                </a>
+              </View>
+            </View>
+            <Phone
+              w={[50, 'auto']}
+              h={['auto', '100vh']}
+              src={'/img/phone-blank.png'}
+              alt={'Relevant Phone'}
+            />
+          </View>
         </Wrapper>
+        <View style={{ position: 'fixed', top: size(5), right: size(1) }}>
+          <SocialIcons />
+        </View>
       </View>
     );
   }
