@@ -4,9 +4,10 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Text, View, Image, Button } from 'modules/styled/web';
 import styled from 'styled-components';
-import { colors, fonts, sizing, size, responsive } from 'app/styles';
+import { colors, fonts, sizing, size } from 'app/styles';
 import * as navigationActions from 'modules/navigation/navigation.actions';
-// import ULink from 'modules/navigation/ULink.component';
+import ULink from 'modules/navigation/ULink.component';
+import CommunityList from 'modules/community/communityList.component';
 import Marquee from './post.marquee';
 
 // const mobilePhone = `
@@ -29,40 +30,31 @@ import Marquee from './post.marquee';
 const Wrapper = styled(View)`
   margin: auto;
   padding: ${sizing(2)};
-  max-width: ${sizing(120)};
+  max-width: ${sizing(75)};
+  top: 0;
 `;
 
 const Section = styled(View)`
   flex: 1;
-  min-height: 90vh;
+  /* min-height: 90vh; */
   flex-direction: column;
   justify-content: center;
-  border-bottom: 1px solid ${colors.black};
-  padding: ${sizing(4)} 0;
-`;
-
-const ColumnContainer = styled(View)`
-  flex-direction: ${() => responsive(['row', 'column'])};
-`;
-
-const Column = styled(View)`
-  flex: 1;
-  flex-direction: column;
+  padding: ${sizing(16)} 0;
 `;
 
 const SplashText = styled(Text)`
-  font-family: ${fonts.HELVETICA_NEUE_MEDIUM};
+  font-family: ${fonts.HELVETICA_NEUE};
   color: ${colors.black};
   font-size: ${() => size(4.5)};
   line-height: ${() => size(6)};
-  margin-bottom: ${() => size(4)};
+  margin: ${() => size(2)} 0;
 `;
 
 const SectionText = styled(Text)`
   font-family: ${fonts.HELVETICA_NEUE};
   flex-direction: column;
   font-size: ${() => size(3)};
-  line-height: ${() => size(4)};
+  line-height: ${() => size(3.8)};
   margin-bottom: ${() => size(2)};
 `;
 
@@ -89,118 +81,109 @@ class Splash extends Component {
     return (
       <View flex={1} fdirection="column">
         <Marquee />
+
         <Wrapper
           ref={c => (this.container = c)}
           justify="flex-start"
           align="center"
           fdirection="column"
         >
-          <Section bb={colors.black}>
-            <ColumnContainer>
-              <Column>
-                <Image
-                  h={6}
-                  w={34}
-                  mb={6}
-                  resizeMode={'contain'}
-                  src={'/img/logo-opt.png'}
-                  alt={'Relevant'}
-                />
-              </Column>
-              <Column>
-                <SplashText fdirection="column">
-                  <Text>The only social network built on trust.</Text>
-                  <Text mt={4}>
-                    Join a community, build reputation, and earn rewards.
-                  </Text>
-                </SplashText>
-                <Button
-                  h={8}
-                  p={'0 6'}
-                  mr={'auto'}
-                  mt={4}
-                  onClick={() => actions.showModal('signupSocial')}
-                >
-                  Join Relevant
-                </Button>
-                <SectionText mt={2} inline={1}>
-                  or,{' '}
-                  <Text
-                    style={{ textDecoration: 'underline' }}
-                    inline={1}
-                    onClick={() => actions.showModal('login')}
-                    c={colors.blue}
-                  >
-                    Log In
-                  </Text>
-                </SectionText>
-              </Column>
-            </ColumnContainer>
+          <Section style={{ minHeight: '100vh' }}>
+            <Image
+              h={8}
+              // m={[4, 2]}
+              mb={6}
+              mr={'auto'}
+              style={
+                {
+                  // top: 20,
+                  // position: 'fixed'
+                }
+              }
+              src={'/img//logo-opt.png'}
+              alt={'Relevant'}
+            />
+            <SplashText>
+              Tired of the social media
+              <br />
+              popularity game?
+            </SplashText>
+            <SplashText inline={1} mt={6}>
+              Join a <ULink to="/community/all">Relevant Community</ULink> and get
+              rewarded for your expertise.
+            </SplashText>
+
+            <Button
+              h={8}
+              p={'2 6'}
+              mr={'auto'}
+              mt={6}
+              onClick={() => actions.showModal('signupSocial')}
+            >
+              <SectionText>Join Relevant</SectionText>
+            </Button>
+            <SectionText mt={2} inline={1}>
+              or,{' '}
+              <Text
+                style={{ textDecoration: 'underline' }}
+                inline={1}
+                onClick={() => actions.showModal('login')}
+                c={colors.blue}
+              >
+                Log In
+              </Text>
+            </SectionText>
           </Section>
 
-          <Section bb>
-            <ColumnContainer>
-              <Column mr={[6, 0]}>
-                <SplashText>
-                  <Text>A new kind of social network</Text>
-                </SplashText>
-              </Column>
-              <Column>
-                <SectionText>
-                  At Relevant, we’re building a network that replaces popularity-centric
-                  feeds in favor of reputation-based community forums.
-                </SectionText>
-                <SectionText>
-                  Instead of sorting content by clicks and likes, we’ve created a trust
-                  metric that incentivizes users to rank information according to its
-                  value.
-                </SectionText>
-                <SectionText>
-                  The result is a network of high-quality, community-specific feeds that
-                  make finding relevant information easy.
-                </SectionText>
-              </Column>
-            </ColumnContainer>
+          <Section>
+            <SplashText>
+              Engagement metrics make it easy to find popular content, but they don’t help
+              us determine what’s important, or who we can trust.
+            </SplashText>
+            <View h={16} m={'2 0'} mr={6} bg={'#FF4621'} />
+          </Section>
+
+          <Section>
+            <SplashText>
+              This is why we’ve built a manipulation-resistant Reputation metric that
+              allows communities to identify experts and curate content according to its
+              value.
+            </SplashText>
+            <View h={16} m={'2 0'} mr={6} bg={colors.blue} />
+            <SplashText>
+              The Relevant Reputation System puts curation power in the hands of trusted
+              community members and experts instead of passive consumers.
+            </SplashText>
+          </Section>
+
+          <Section>
+            <SplashText>
+              Advertising markets reward popularity. Prediction markets reward expertise.
+            </SplashText>
+            <SplashText>
+              On Relevant users can bet on the relevance of content. Bets don’t impact
+              rankings but provide a way to reward expert curators.
+            </SplashText>
+          </Section>
+
+          <Section>
+            <SplashText>
+              Relevant Communities decide what kind of information is valuable to them and
+              define their own trust metrics.
+            </SplashText>
+            <SplashText>
+              No matter the context, community trust metrics will always represent what is
+              valuable to their members.
+            </SplashText>
+            <SplashText>Here are a few communities you can join right now:</SplashText>
+            <CommunityList />
           </Section>
 
           <Section>
             <View>
-              <SplashText>How it works —</SplashText>
+              <Image h={6} mr={2} src={'/img/appstore.png'} />
+              <Image h={6} src={'/img/googleplaystore.png'} />
             </View>
-            <ColumnContainer>
-              <View>
-                <Image mt={1.25} mr={1} w={4} h={4} src="img/r-big.png" />
-                <Column pr={[6, 0]}>
-                  <SplashText>Reputation</SplashText>
-                  <SectionText>
-                    Each user has a Reputation score. Users earn reputation when reputable
-                    community members upvote their comments. Content and links are also
-                    ranked according to user Reputation.
-                  </SectionText>
-                  <SectionText>
-                    The higher your score, the more say you have over what shows up in the
-                    community feed. Reputation scores are community-specific and cannot be
-                    transferred between networks.
-                  </SectionText>
-                </Column>
-              </View>
-              <View>
-                <Image mt={1.25} mr={1} w={4} h={4} src="img/relevantcoin.png" />
-                <Column>
-                  <SplashText>Coins</SplashText>
-                  <SectionText>
-                    Users can earn Relevant coins by upvoting quality posts. You have 3
-                    days to upvote a post after it goes live. If other users with a high
-                    reputation also upvote the post, you’ll earn coins.
-                  </SectionText>
-                  <SectionText>
-                    You can’t earn coins from posting content, only from upvoting, and
-                    having more coins doesn’t impact your reputation score, only your
-                    ownership in the platform.
-                  </SectionText>
-                </Column>
-              </View>
-            </ColumnContainer>
           </Section>
         </Wrapper>
       </View>

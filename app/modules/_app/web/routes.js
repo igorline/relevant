@@ -31,7 +31,7 @@ const CommunityAdminList = loadable(() =>
   import('modules/admin/web/communityAdminList.component')
 );
 
-const CommunityList = loadable(() => import('modules/community/communityList.component'));
+const CommunityList = loadable(() => import('modules/community/communityList.container'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
 // const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
