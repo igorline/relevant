@@ -8,8 +8,8 @@ import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import { initDrizzle } from 'app/utils/eth';
-import Wallet from './wallet.component';
-import Balance from './balance.component';
+import Wallet from './OLDwallet.component';
+import Balance from './OLDbalance.component';
 
 if (process.env.BROWSER === true) {
   require('./wallet.css');

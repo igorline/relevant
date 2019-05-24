@@ -68,7 +68,7 @@ export default class Balance extends Component {
             {stakingPower ? `   Staking Power: ${stakingPower}%` : ''}
           </SecondaryText>
         </View>
-        {!isWeb ? (
+        {isWeb ? (
           <View fdirection="row" mt={2} align="center">
             <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
               <LinkFont c={colors.blue} mr={0.5}>
