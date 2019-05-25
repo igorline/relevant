@@ -44,9 +44,8 @@ const SplashText = styled(Text)`
 const SectionText = styled(Text)`
   font-family: ${fonts.HELVETICA_NEUE};
   flex-direction: column;
-  font-size: ${() => size(3)};
-  line-height: ${() => size(3.8)};
-  margin-bottom: ${() => size(2)};
+  font-size: ${() => size(2)};
+  line-height: ${() => size(3)};
 `;
 
 class Splash extends Component {
@@ -97,26 +96,27 @@ class Splash extends Component {
               rewarded for your expertise.
             </SplashText>
 
-            <Button
-              h={8}
-              p={'2 6'}
-              mr={'auto'}
-              mt={6}
-              onClick={() => actions.showModal('signupSocial')}
-            >
-              <SectionText>Join Relevant</SectionText>
-            </Button>
-            <SectionText mt={2} inline={1}>
-              or,{' '}
-              <Text
-                style={{ textDecoration: 'underline' }}
-                inline={1}
-                onClick={() => actions.showModal('login')}
-                c={colors.blue}
+            <View mt={6} fdirection={'row'} align="center">
+              <Button
+                h={8}
+                p={'2 6'}
+                mr={3}
+                onClick={() => actions.showModal('signupSocial')}
               >
-                Log In
-              </Text>
-            </SectionText>
+                <SectionText>Join Relevant</SectionText>
+              </Button>
+              <SectionText inline={1}>
+                or{' '}
+                <Text
+                  style={{ textDecoration: 'underline' }}
+                  inline={1}
+                  onClick={() => actions.showModal('login')}
+                  c={colors.blue}
+                >
+                  Log In
+                </Text>
+              </SectionText>
+            </View>
           </Section>
 
           <Section>
