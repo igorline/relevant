@@ -442,6 +442,29 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
   }
 };
 
+async function getPostData({ post, communityId }) {
+  if (!post.data) {
+    post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+  }
+  return post;
+}
+
+PostSchema.methods.addTags = async function addTags({ tags, communityId }) {
+  try {
+    let post = this;
+    post = await getPostData({ post, communityId });
+
+    const combinedTags = [...new Set([...(post.tags || []), ...(tags || [])])];
+    post.tags = combinedTags;
+    post.data.tags = combinedTags;
+    await post.data.save();
+    // linkObject.tags = combinedTags;
+    return post.save();
+  } catch (err) {
+    return console.log('error adding tags', err); // eslint-disable-line
+  }
+};
+
 PostSchema.statics.sendOutMentions = async function sendOutMentions(
   mentions,
   post,

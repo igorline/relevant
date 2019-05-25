@@ -24,7 +24,9 @@ export default class Wallet extends Component {
         <BondedTokenHeader title={'Relevant Wallet'} accentColor={'#3E3EFF'} />
         <BondedTokenTransact accentColor={'#3E3EFF'} network={'Rinkeby'}>
           <div>
-            <ShadowButton style={{ margin: '10px 0 10px 0', width: '100%' }}>Submit</ShadowButton>
+            <ShadowButton style={{ margin: '10px 0 10px 0', width: '100%' }}>
+              Submit
+            </ShadowButton>
           </div>
         </BondedTokenTransact>
         <div className="smallText">

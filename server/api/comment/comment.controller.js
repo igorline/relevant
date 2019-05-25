@@ -1,5 +1,5 @@
 import Community from 'server/api/community/community.model';
-import { getMentions, getWords } from 'app/utils/text';
+import { getMentions, getWords, getTags } from 'app/utils/text';
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import socketEvent from 'server/socket/socketEvent';
 
@@ -68,12 +68,16 @@ exports.get = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   let user = req.user._id;
   const { community, communityId } = req.communityMember;
-  const { linkParent, text: body, tags, repost = false, metaPost } = req.body;
-  let { parentPost, parentComment, mentions = [] } = req.body;
+  const { linkParent, text: body, repost = false, metaPost } = req.body;
+  let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
 
   const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
-  const mentionsFromBody = getMentions(getWords(body));
 
+  const words = getWords(body);
+  const mentionsFromBody = getMentions(words);
+  const tagsFromBody = getTags(words);
+
+  tags = [...new Set([...tags, ...tagsFromBody])];
   mentions = [...new Set([...mentions, ...mentionsFromBody])];
 
   const commentObj = {
@@ -119,6 +123,11 @@ exports.create = async (req, res, next) => {
     // TODO increase the post's relevance? **but only if its user's first comment!
     const updateTime = type === 'post' || false;
     await parentPost.updateRank({ communityId, updateTime });
+
+    if (tags && tags.length) {
+      parentPost = await parentPost.addTags({ tags, communityId });
+    }
+
     parentPost = await parentPost.save();
     parentPost.updateClient();
 

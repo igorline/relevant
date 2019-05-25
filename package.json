@@ -32,7 +32,7 @@
     "start-ganache": "ganache-cli -i 7545",
     "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p",
     "heroku-postbuild": "webpack --config ./webpack.production.config.js --progress --colors -p",
-    "preinstall": "rm -r ./node_modules/**/.git"
+    "preinstall": "rm -rf ./node_modules/**/.git"
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
