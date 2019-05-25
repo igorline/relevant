@@ -2,9 +2,13 @@ import createSocketIoMiddleware from 'redux-socket.io';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
+import logger from 'redux-logger';
+import { Map } from 'immutable';
 // import { drizzleSagas } from 'drizzle';
 // import { all, fork } from 'redux-saga/effects';
+import { initProvider } from 'modules/web_ethTools/utils';
 import rootReducer from '../reducers';
+import rootSaga from '../sagas';
 
 let server = process.env.API_SERVER;
 if (process.env.NODE_ENV === 'development') {
@@ -21,20 +25,27 @@ if (process.env.BROWSER) {
   });
 }
 
-// function* rootSaga() {
-//   yield all(drizzleSagas.map(saga => fork(saga)));
-// }
+const web3 = initProvider();
 
-export default function configureStore(initialState = {}) {
+const _initialState = { RelevantToken: { contracts: Map() } };
+export default function configureStore(initialState = _initialState) {
   // Compose final middleware and use devtools in debug environment
   let middleware;
 
-  const sagaMiddleware = createSagaMiddleware();
+  const sagaMiddleware = createSagaMiddleware({
+    context: {
+      web3
+    }
+  });
 
   if (process.env.BROWSER) {
     // only use the socket middleware on client and not on server
     const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
-    middleware = applyMiddleware(thunk, socketIoMiddleware, sagaMiddleware);
+    const _middleware = [thunk, socketIoMiddleware, sagaMiddleware];
+    if (process.env.BROWSER && process.env.DEVTOOLS) {
+      _middleware.push(logger);
+    }
+    middleware = applyMiddleware(..._middleware);
   } else {
     middleware = applyMiddleware(thunk, sagaMiddleware);
   }
@@ -65,6 +76,6 @@ export default function configureStore(initialState = {}) {
     });
   }
 
-  // sagaMiddleware.run(rootSaga);
+  sagaMiddleware.run(rootSaga);
   return store;
 }
