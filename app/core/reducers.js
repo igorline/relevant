@@ -16,11 +16,13 @@ import error from 'modules/ui/error.reducer';
 import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
 import { reducer as formReducer } from 'redux-form';
+import { reducers as web3Reducers } from 'redux-saga-web3';
+import { reducer as RelevantToken } from './contracts';
 
 import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
-
+/*
 let drizzleReducers = {};
 
 if (process.env.WEB !== 'true') {
@@ -30,7 +32,7 @@ if (process.env.WEB !== 'true') {
   const drizzle = require('drizzle');
   drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
 }
-
+ */
 let communityState = {};
 
 const createReducer = (asyncReducers = {}) =>
@@ -57,7 +59,9 @@ const createReducer = (asyncReducers = {}) =>
     admin,
     community,
     earnings,
-    ...drizzleReducers,
+    // ...drizzleReducers,
+    web3: combineReducers({ ...web3Reducers }),
+    ...RelevantToken,
     ...asyncReducers
   });
 
