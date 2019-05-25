@@ -13,54 +13,24 @@ import {
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
-// import Tooltip from 'modules/tooltip/tooltip.component';
 
 export default class Balance extends Component {
   static propTypes = {
     user: PropTypes.object,
-    contract: PropTypes.object,
     actions: PropTypes.object,
     wallet: PropTypes.object,
-    screenSize: PropTypes.number
-  };
-
-  cashOut = async () => {
-    const { actions, user, contract } = this.props;
-    try {
-      const decimals = contract.methods.decimals.cacheCall();
-
-      let cashOut = await actions.cashOut();
-      cashOut = cashOut || user.cashOut;
-
-      const { sig } = cashOut;
-      let amount = new web3.utils.BN(cashOut.amount.toString());
-      let mult = new web3.utils.BN(10 ** (decimals / 2));
-      mult = mult.mul(mult);
-      amount = amount.mul(mult);
-
-      // let result = await this.props.RelevantCoin.methods.cashOut(amount, sig).call();
-      // console.log(result);
-      contract.methods.cashOut.cacheSend(amount, sig, {
-        from: user.ethAddress[0]
-      });
-      // console.log(result);
-    } catch (err) {
-      throw err;
-    }
+    screenSize: PropTypes.number,
+    isWeb: PropTypes.bool
   };
 
   render() {
-    const { user, wallet, screenSize } = this.props;
+    const { user, wallet, screenSize, actions, isWeb } = this.props;
     if (!user) return null;
     const metaMaskTokens = wallet.connectedBalance || user.tokenBalance;
     const { airdropTokens, lockedTokens } = user;
     const stakingPower = user.balance
       ? Math.round(100 * (1 - lockedTokens / user.balance))
       : 0;
-    // <Tooltip
-    //   name='cashOut'
-    //   text={'You can cash out your earnings once you earn 100 tokens'}
-    // >
     return (
       <View m={['4 4 2 4', '2 2 0 2']}>
         {!screenSize ? (
@@ -98,10 +68,10 @@ export default class Balance extends Component {
             {stakingPower ? `   Staking Power: ${stakingPower}%` : ''}
           </SecondaryText>
         </View>
-        {!screenSize ? (
+        {isWeb ? (
           <View fdirection="row" mt={2} align="center">
-            <Touchable onClick={this.cashOut} disabled>
-              <LinkFont mr={0.5} c={colors.grey} td={'underline'}>
+            <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
+              <LinkFont c={colors.blue} mr={0.5}>
                 Claim Tokens
               </LinkFont>
             </Touchable>
@@ -110,7 +80,8 @@ export default class Balance extends Component {
               s={1.5}
               h={1.5}
               w={1.5}
-              m={0}
+              ml={0.5}
+              resizeMode={'contain'}
               data-for="mainTooltip"
               data-tip={JSON.stringify({
                 type: 'TEXT',
@@ -118,7 +89,6 @@ export default class Balance extends Component {
                   text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet\n(temporarily disabled)`
                 }
               })}
-              // onPress={() => this.tooltip.show()}
             />
           </View>
         ) : null}

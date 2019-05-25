@@ -4,18 +4,20 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import * as authActions from 'modules/auth/auth.actions';
 import * as earningsActions from 'modules/wallet/earnings.actions';
+import { showModal, hideModal } from 'modules/navigation/navigation.actions';
+
 import Eth from 'modules/web_ethTools/eth.context';
-// import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import Earning from 'modules/wallet/earning.component';
+import CashOutModal from 'modules/wallet/web/cashOutModal.component';
 // import { initDrizzle } from 'app/utils/eth';
 import Balance from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
-// import moment from 'moment';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
 import { getMonth } from 'app/utils/numbers';
+import ReactTooltip from 'react-tooltip';
 
 // let drizzle;
 
@@ -47,6 +49,7 @@ class WalletContainer extends Component {
       // drizzle = initDrizzle(this.context.store);
     }
     this.reload();
+    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
   }
 
   componentDidUpdate() {
@@ -75,7 +78,10 @@ class WalletContainer extends Component {
     // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
 
     <View>
-      <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
+      <Eth.Consumer>
+        {wallet => <Balance isWeb wallet={wallet} {...this.props} />}
+      </Eth.Consumer>
+      <CashOutModal {...this.props} />
     </View>
   );
 
@@ -119,7 +125,7 @@ class WalletContainer extends Component {
             data={list}
             loadMore={p => this.load(p, list.length)}
             hasMore={this.hasMore}
-            key="recent-activties"
+            key="recent-activity"
             className={'parent'}
             style={{ position: 'relative', marginBottom: 20 }}
           >
@@ -142,6 +148,7 @@ function mapStateToProps(state) {
     contracts: state.contracts,
     accountBalances: state.accountBalances,
     screenSize: state.navigation.screenSize,
+    modal: state.navigation.modal,
     drizzle: {
       transactions: state.transactions,
       web3: state.web3,
@@ -154,7 +161,9 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...authActions,
-      ...earningsActions
+      ...earningsActions,
+      showModal,
+      hideModal
     },
     dispatch
   )
