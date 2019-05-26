@@ -18,13 +18,12 @@ export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);
 
-export const NESTING_UNIT = 8;
+export const NESTING_UNIT = 3;
 export const POST_BUTTONS_NESTING_UNITS = 1.5;
-export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * NESTING_UNIT;
+export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * 8;
 
 export const NESTING_UNIT_RESONSIVE = 2;
-export const POST_BUTTONS_WIDTH_RESPONSIVE =
-  POST_BUTTONS_NESTING_UNITS * NESTING_UNIT_RESONSIVE;
+export const POST_BUTTONS_WIDTH_RESPONSIVE = 4;
 
 // this is handled by mixins now — deprecated
 export const universalBorder = (side, color, width) => `

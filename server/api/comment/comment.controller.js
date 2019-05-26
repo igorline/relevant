@@ -44,7 +44,7 @@ exports.get = async (req, res, next) => {
       path: 'data',
       match: { communityId }
     })
-    .sort({ pagerank: -1, createdAt: 1 });
+    .sort({ pagerank: -1, twitterScore: -1, createdAt: 1 });
 
     const toSend = comments;
     res.status(200).json({ data: toSend, total });

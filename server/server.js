@@ -22,6 +22,8 @@ console.log('NODE_ENV', process.env.NODE_ENV);
 
 require('events').EventEmitter.prototype._maxListeners = 100;
 
+require('server/twitter/twitter.conversations');
+
 // -------------Dev server watch and hot reload---------------
 const isDevelopment =
   process.env.NODE_ENV !== 'production' &&

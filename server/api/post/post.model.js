@@ -166,7 +166,7 @@ PostSchema.pre('save', async function save(next) {
 });
 
 PostSchema.methods.addPostData = async function addPostData(postObject) {
-  const eligibleForReward = !this.parentPost && !this.twitter;
+  const eligibleForReward = !this.parentPost;
   const now = new Date();
   const data = new (this.model('PostData'))({
     eligibleForReward,
@@ -323,7 +323,7 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
       post = await new (this.model('Post'))(parentObj);
     }
 
-    const eligibleForReward = !post.parentPost && !post.twitter;
+    const eligibleForReward = !post.parentPost;
 
     if (!post.data) {
       post = await post.addPostData(postObject);
@@ -375,10 +375,10 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
   }
 };
 
-PostSchema.methods.insertIntoFeed = async function insertIntoFeed(
+PostSchema.methods.insertIntoFeed = async function insertIntoFeed({
   communityId,
   community
-) {
+}) {
   try {
     const post = this;
     if (post.parentPost) throw new Error("Child comments don't go in the feed");

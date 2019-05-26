@@ -39,6 +39,8 @@ const PostDataSchema = new Schema(
 
     latestTweet: { type: Date },
 
+    twitterScore: { type: Number },
+
     // NEW
     isInFeed: { type: Boolean, default: false },
     repost: { type: Boolean, default: false },

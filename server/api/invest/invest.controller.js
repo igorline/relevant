@@ -302,7 +302,7 @@ exports.create = async (req, res, next) => {
 
     // unhide twitter commentary
     if (amount > 0 && post.hidden && post.parentPost) {
-      await post.parentPost.insertIntoFeed(communityId, community);
+      await post.parentPost.insertIntoFeed({ communityId, community });
       post.hidden = false;
     }
     post.hidden = false;
