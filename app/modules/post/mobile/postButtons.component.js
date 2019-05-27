@@ -18,6 +18,7 @@ import { globalStyles, fullHeight } from 'app/styles/global';
 import { CTALink } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import get from 'lodash/get';
+import { getPostUrl, getTitle } from 'app/utils/post';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -90,16 +91,14 @@ class PostButtons extends Component {
   }
 
   onShare = () => {
-    const { parentPost, post, auth } = this.props;
-    const postId = parentPost ? parentPost || parentPost._id : post._id;
-    const commentId = parentPost ? '/' + post._id : '';
+    const { post, auth } = this.props;
+    const { community } = auth;
+    const postUrl = getPostUrl(community, post);
+    const title = getTitle(post);
     Share.open({
-      title: this.props.post.title ? 'Relevant post: ' + this.props.post.title : '',
-      url: `https://relevant.community/${auth.community}/post/${postId}${commentId}`,
+      title: title || '',
+      url: 'https://relevant.community' + postUrl,
       subject: 'Share Link'
-      // message: this.props.post.title
-      //   ? 'Relevant post: ' + this.props.post.title
-      //   : ''
     }).catch(err => console.log(err)); // eslint-disable-line
   };
 
