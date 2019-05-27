@@ -17,22 +17,15 @@ class PostBody extends Component {
     avatarText: PropTypes.func
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.showInvestors = this.showInvestors.bind(this);
-    this.goToPost = this.goToPost.bind(this);
-  }
-
-  componentDidMount() {}
-
-  goToPost() {
+  goToPost = () => {
     const { post, actions } = this.props;
     const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
     if (!actions || !post || !post._id) return;
-    actions.goToPost({ ...post, _id: parentId });
-  }
+    const comment = parentId !== post._id ? post : null;
+    actions.goToPost({ ...post, _id: parentId, comment });
+  };
 
-  showInvestors() {
+  showInvestors = () => {
     this.props.actions.push({
       key: 'people',
       id: this.props.post._id,
@@ -40,7 +33,7 @@ class PostBody extends Component {
       title: 'Votes',
       back: true
     });
-  }
+  };
 
   render() {
     const { post, short, repost, preview, comment, avatarText } = this.props;

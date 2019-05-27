@@ -5,7 +5,7 @@ import { colors } from 'app/styles';
 import * as activityHelper from 'modules/activity/activityHelper';
 import ActivityText from 'modules/activity/activityText.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import RStat from 'modules/stats/rStat.component';
+// import RStat from 'modules/stats/rStat.component';
 import {
   View,
   SecondaryText,
@@ -64,7 +64,7 @@ export default class SingleActivity extends Component {
               @{user.handle}
             </BodyText>
           </ULink>
-          <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '}
+          {/* <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '} */}
           {activity.totalUsers - 1} other{s}
         </InlineText>
       );
@@ -80,7 +80,7 @@ export default class SingleActivity extends Component {
               @{user.handle}
             </BodyText>
           </ULink>{' '}
-          <RStat inline={1} user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '}
+          {/* <RStat inline={1} user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '} */}
         </InlineText>
       );
     }

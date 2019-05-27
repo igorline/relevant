@@ -11,7 +11,7 @@ import { layout } from 'app/styles';
 import SingleComment from 'modules/comment/web/singleComment.container';
 import PostButtons from 'modules/post/postbuttons.component';
 import PostInfo from 'modules/post/postinfo.component';
-import { routing } from 'app/utils';
+import { getPostUrl } from 'app/utils/post';
 import { View, Text, Divider } from 'modules/styled/uni';
 import get from 'lodash/get';
 import ButtonRow from 'modules/post/web/buttonRow.component';
@@ -116,7 +116,7 @@ export class Post extends Component {
     if (!post) return null;
 
     const parentPost = post.parentPost || post;
-    const postUrl = routing.getPostUrl(community, parentPost);
+    const postUrl = getPostUrl(community, parentPost);
     const renderComment = !noComments && comment;
 
     // TODO pass post buttons as prop to Post?
@@ -167,7 +167,7 @@ export class Post extends Component {
     );
 
     const commentCommunity = get(comment, 'community') || community;
-    const commentUrl = routing.getPostUrl(commentCommunity, parentPost);
+    const commentUrl = getPostUrl(commentCommunity, parentPost);
     const additionalNesting =
       hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS;
     const commentEl = renderComment ? (

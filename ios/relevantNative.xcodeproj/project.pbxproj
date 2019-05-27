@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -473,6 +474,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = ADD01A681E09402E00F6D226;
 			remoteInfo = "RCTBlob-tvOS";
+		};
+		FBAF1B98229B722C00412DEC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FB3F481221E06E0300DC0D34 /* RNGestureHandler.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B5C32A36220C603B000FFB8D;
+			remoteInfo = "RNGestureHandler-tvOS";
+		};
+		FBAF1BA3229B722C00412DEC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 567114987AC047DEB33536A1 /* RNVectorIcons.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A39873CE1EA65EE60051E01A;
+			remoteInfo = "RNVectorIcons-tvOS";
 		};
 		FBBBF16F1F8F0BC300F68218 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1134,6 +1149,7 @@
 			isa = PBXGroup;
 			children = (
 				FB3F484A21E06E0300DC0D34 /* libRNGestureHandler.a */,
+				FBAF1B99229B722C00412DEC /* libRNGestureHandler-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1162,6 +1178,7 @@
 			isa = PBXGroup;
 			children = (
 				FB9067F51EB908180027FEA3 /* libRNVectorIcons.a */,
+				FBAF1BA4229B722C00412DEC /* libRNVectorIcons-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1854,6 +1871,20 @@
 			remoteRef = FBA9F219209A515A005635BD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FBAF1B99229B722C00412DEC /* libRNGestureHandler-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNGestureHandler-tvOS.a";
+			remoteRef = FBAF1B98229B722C00412DEC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBAF1BA4229B722C00412DEC /* libRNVectorIcons-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNVectorIcons-tvOS.a";
+			remoteRef = FBAF1BA3229B722C00412DEC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FBBBF1701F8F0BC300F68218 /* libBVLinearGradient.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -2391,7 +2422,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2618,7 +2649,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
@@ -2727,7 +2758,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.staging;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2821,7 +2852,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.staging.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;

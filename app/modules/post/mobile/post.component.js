@@ -11,8 +11,7 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as investActions from 'modules/post/invest.actions';
 import PostInfo from 'modules/post/postinfo.mobile.component';
 import PostButtons from 'modules/post/mobile/postButtons.component';
-import { getTitle } from 'app/utils/post';
-import { routing } from 'app/utils';
+import { getTitle, getPostUrl } from 'app/utils/post';
 import { View } from 'modules/styled/uni';
 import Commentary from './commentary.component';
 
@@ -83,7 +82,7 @@ class Post extends PureComponent {
     }
 
     const title = getTitle({ post, link });
-    const postUrl = routing.getPostUrl(community, post);
+    const postUrl = getPostUrl(community, post);
 
     const postEl = isLinkPost ? (
       <View m={preview ? '4 0 0 0' : 0}>

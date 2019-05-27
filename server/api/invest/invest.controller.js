@@ -413,7 +413,7 @@ exports.create = async (req, res, next) => {
     if (updatePageRank) {
       ({ author, post } = updatePageRank);
     }
-    if (investment) {
+    if (investment && !undoInvest) {
       investment.rankChange = post.data.pagerank - initialPostRank;
       await investment.save();
     }

@@ -20,3 +20,11 @@ export function getTitle({ post, link, firstPost, maxLength }) {
 export function getFavIcon(domain) {
   return `https://s2.googleusercontent.com/s2/favicons?domain=${domain}`;
 }
+
+export const getPostUrl = (community, post) => {
+  if (!post) return null;
+  const { parentPost } = post;
+  const postId = parentPost ? parentPost || parentPost._id : post._id;
+  const commentId = parentPost ? '/' + post._id : '';
+  return `/${community}/post/${postId}${commentId}`;
+};
