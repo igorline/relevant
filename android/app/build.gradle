@@ -160,6 +160,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-reanimated')
     implementation project(':react-native-emoji-compat-text')
     compile project(':react-native-svg')
     compile project(':react-native-gesture-handler')

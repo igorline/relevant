@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, mainPadding, borderGrey } from 'app/styles/global';
 import Pills from 'modules/ui/mobile/pills.component';
 import { Image, Divider, View } from 'modules/styled/uni';
 // import UAvatar from 'modules/user/UAvatar.component';
+import {
+  // PanGestureHandler,
+  FlatList
+  // TapGestureHandler,
+  // State
+} from 'react-native-gesture-handler';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
@@ -166,16 +172,38 @@ export default class Commentary extends Component {
         <FlatList
           style={{ marginTop: !preview ? 16 : 0 }}
           ref={c => (this.scrollView = c)}
+          ref={this.scrollRef}
+          // waitFor={enable ? this.ref : this.scrollRef}
           scrollEnabled={commentary.length > 1}
+          scrollEventThrottle={16}
+          onScroll={e => {
+            const { x } = e.nativeEvent.contentOffset;
+            const length = e.nativeEvent.layoutMeasurement.width;
+            // const { length, offset } = this.scrollView.getItemLayout();
+            // console.log(offset, length);
+            this.scrollView.scrollEnabled = commentary.length > 1;
+            if (x < 0 || x > length) {
+              this.scrollView.scrollEnabled = false;
+            }
+          }}
           keyExtractor={(item, index) => index.toString()}
           horizontal={!preview}
           data={commentary}
+          // getItemLayout={({ length, offset }) => {
+          //   console.log(offset, length)
+          //   this.scrollView.scrollEnabled = true;
+          //   if (offset < 0 || offset > length) {
+          //     this.scrollView.scrollEnabled = false;
+          //   }
+          // }}
+          // bounces={false}
           renderItem={this.renderItem}
           pagingEnabled
           contentContainerStyle={[!preview ? styles.postScroll : null]}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollEnd}
         />
+
         {commentary.length > 1 ? pills : null}
       </View>
     );

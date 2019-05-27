@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import { StyleSheet, View, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View, Platform, StatusBar, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,6 +14,7 @@ import { get } from 'lodash';
 import DefaultTabBar from './discoverTabBar.component';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
 let styles;
 // const SUB_TITLE = 'Via Twitter';
@@ -89,21 +91,21 @@ class DiscoverTabs extends Component {
     }
   }
 
-  onScroll(event) {
-    this.header.onScroll(event);
-  }
+  onScroll = event => {
+    // this.header.onScroll(event);
+  };
 
   setPostTop(height) {
     this.setState({ headerHeight: height });
   }
 
   handleChangeTab(index) {
-    this.header.showHeader();
+    // this.header.showHeader();
     this.setState({ index });
     this.props.actions.setView('discover', index);
   }
 
-  renderScene(route) {
+  renderScene({ route }) {
     const { index } = this.state;
     const currentRoute = this.state.routes[index] || {};
     if (!this.loaded) return <View key={route.key} />;
@@ -210,7 +212,7 @@ class DiscoverTabs extends Component {
   }
 
   render() {
-    const tabs = this.state.routes.map(route => this.renderScene(route));
+    // const tabs = this.state.routes.map(route => this.renderScene(route));
 
     let topics = null;
     if (this.props.topics) {
@@ -241,9 +243,18 @@ class DiscoverTabs extends Component {
     //   return <CustomSpinner />;
     // }
 
+    // console.log(tabs);
+
     return (
       <View style={{ flex: 1 }}>
-        <ScrollableTabView
+        <TabView
+          navigationState={this.state}
+          renderScene={this.renderScene}
+          onIndexChange={index => this.setState({ index })}
+          initialLayout={{ width: Dimensions.get('window').width }}
+        />
+
+        {/*        <ScrollableTabView
           ref={c => (this.tabView = c)}
           tabBarTextStyle={[styles.tabFont]}
           tabBarActiveTextColor={blue}
@@ -271,7 +282,7 @@ class DiscoverTabs extends Component {
           renderTabBar={props => this.renderHeader(props)}
         >
           {tabs}
-        </ScrollableTabView>
+        </ScrollableTabView>*/}
         {topics}
         <CustomSpinner visible={!this.loaded} />
       </View>
