@@ -7,9 +7,11 @@
 /* eslint camelcase: 0 */
 /* eslint no-console: 0 */
 
+// const ADMIN_VOTES = 100;
+
 export default function pagerank(inputs, params) {
   if (!params) params = {};
-  if (!params.alpha) params.alpha = 0.85;
+  if (!params.alpha) params.alpha = 0.97;
   if (!params.personalization) params.personalization = null;
   if (!params.max_iter) params.max_iter = 500;
   if (!params.tol) params.tol = 1.0e-6;
@@ -245,7 +247,7 @@ function objectToMatrix(_inputs, params) {
   const danglingObj = {};
 
   inputs.forEach((el, i) => {
-    const upvotes = new Array(N).fill(0);
+    // const upvotes = new Array(N).fill(0);
     const downvotes = new Array(N).fill(0);
 
     let degree = 0;
@@ -268,10 +270,16 @@ function objectToMatrix(_inputs, params) {
     }
     const id_i = dictionary[el];
 
+    if (params.personalization[el]) {
+      params.personalization[el] = 1 / (1 + Math.E ** (6 - degree / 10));
+      // params.personalization[el] *
+      // Math.min(degree, ADMIN_VOTES) / ADMIN_VOTES;
+    }
+
     Object.keys(_inputs[el]).forEach(vote => {
       const { w } = _inputs[el][vote];
       let n = _inputs[el][vote][params.negative] || 0;
-      upvotes[dictionary[vote]] = w / degree;
+      // upvotes[dictionary[vote]] = w / degree;
       const j = dictionary[vote];
 
       g[j] = g[j] || {};
