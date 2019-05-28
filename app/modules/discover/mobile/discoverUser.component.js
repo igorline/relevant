@@ -70,6 +70,7 @@ class DiscoverUser extends Component {
             <AvatarBox
               bio
               big
+              inline={1}
               type={this.props.type}
               relevance={this.props.topic ? false : this.props.relevance}
               user={{ ...user, relevance }}
