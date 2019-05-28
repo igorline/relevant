@@ -112,11 +112,15 @@ class CommentInput extends Component {
     const { user } = auth;
     const { inputHeight } = this.state;
     if (!editing) {
-      let inputImage = null;
-      if (user.image) {
-        const imageUrl = user.image;
-        inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
-      }
+      const inputImage = user && user.image && (
+        <Image style={styles.inputImage} source={{ uri: user.image }} />
+      );
+
+      // let inputImage = null;
+      // if (user && user.image) {
+      //   const imageUrl = user.image;
+      //   inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
+      // }
       return (
         <View
           onLayout={e => {

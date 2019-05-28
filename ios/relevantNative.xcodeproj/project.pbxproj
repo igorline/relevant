@@ -2368,7 +2368,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2422,7 +2422,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2596,7 +2596,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
@@ -2649,7 +2649,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
@@ -2758,7 +2758,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
 				PRODUCT_NAME = relevantNative;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2852,7 +2852,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.debug.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
