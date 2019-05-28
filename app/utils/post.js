@@ -24,7 +24,7 @@ export function getFavIcon(domain) {
 export const getPostUrl = (community, post) => {
   if (!post) return null;
   const { parentPost } = post;
-  const postId = parentPost ? parentPost || parentPost._id : post._id;
-  const commentId = parentPost ? '/' + post._id : '';
+  const postId = parentPost ? parentPost._id || parentPost : post._id || post;
+  const commentId = parentPost ? '/' + post._id || post : '';
   return `/${community}/post/${postId}${commentId}`;
 };
