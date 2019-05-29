@@ -27,6 +27,8 @@ export default function PostTitle(props) {
   const tags = get(post, 'tags', []);
   const titleLines = preview && mobile ? 2 : 3;
 
+  // console.log(singlePost ? post.url : postUrl || '#');
+
   const titleEl = postUrl ? (
     <ULink
       to={singlePost ? post.url : postUrl || '#'}
