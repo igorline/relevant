@@ -9,11 +9,10 @@ import { standardRoutes } from './discoverHelper';
 const DiscoverTab = props => {
   const { linkData, community, tag } = props;
   let url = `/${community}/${linkData.key}`;
-  if (tag) {
-    url += `/${tag}`;
-  }
+  if (tag) url += `/${tag}`;
+
   return (
-    <StyledNavLink to={url} mr={[2, 1]}>
+    <StyledNavLink to={encodeURI(url)} mr={[2, 1]}>
       {linkData.title}
     </StyledNavLink>
   );
