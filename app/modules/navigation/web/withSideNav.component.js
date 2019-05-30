@@ -118,7 +118,8 @@ const mapDispatchToProps = dispatch => ({
     {
       openWebSideNav,
       closeWebSideNav,
-      hideModal
+      hideModal,
+      getCommunities
     },
     dispatch
   )
