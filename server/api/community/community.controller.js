@@ -24,16 +24,12 @@ export async function findOne(req, res, next) {
   }
 }
 
-export async function index(req, res, next) {
-  try {
-    const communties = await Community.find({ inactive: { $ne: true } }).populate({
-      path: 'admins',
-      match: { role: 'admin' }
-    });
-    res.status(200).json(communties);
-  } catch (err) {
-    next(err);
-  }
+export async function index() {
+  const communties = await Community.find({ inactive: { $ne: true } }).populate({
+    path: 'admins',
+    match: { role: 'admin' }
+  });
+  return communties.map(c => c.toObject());
 }
 
 export async function members(req, res, next) {

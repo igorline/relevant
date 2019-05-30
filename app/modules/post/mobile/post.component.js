@@ -25,7 +25,7 @@ class Post extends PureComponent {
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     hideDivider: PropTypes.bool,
     preview: PropTypes.bool,
     noLink: PropTypes.bool
@@ -37,7 +37,7 @@ class Post extends PureComponent {
       commentary,
       auth,
       actions,
-      myPostInv,
+      // myPostInv,
       singlePost,
       hideDivider,
       preview,
@@ -94,7 +94,7 @@ class Post extends PureComponent {
           link={link}
           title={title}
           postUrl={postUrl}
-          myPostInv={myPostInv}
+          // myPostInv={myPostInv}
           singlePost={singlePost}
           preview={preview}
           noLink={noLink}
@@ -106,7 +106,7 @@ class Post extends PureComponent {
               actions={actions}
               auth={auth}
               link={link}
-              myPostInv={myPostInv[post._id]}
+              // myPostInv={myPostInv[post._id]}
             />
           </View>
         )}
@@ -130,7 +130,7 @@ class Post extends PureComponent {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    myPostInv: state.investments.myPostInv,
+    // myPostInv: state.investments.myPostInv,
     users: state.user.users
   };
 }

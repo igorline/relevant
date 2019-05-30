@@ -5,9 +5,6 @@ const Relevance = require('./api/relevance/relevance.model');
 const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
-// const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
-// const TwitterWorker = require('./utils/twitterWorker');
-
 /* eslint no-console: 0 */
 
 const q = queue({
@@ -213,45 +210,6 @@ async function pagerank(community) {
   await computePageRank({ communityId, community, debug: true });
 }
 
-function getNextUpdateTime() {
-  console.log('get next time');
-  const now = new Date();
-  const h = now.getUTCHours();
-  console.log(h);
-  const nextUpdate = new Date();
-  const computeHour = 14;
-
-  if (h < computeHour) {
-    nextUpdate.setUTCHours(14, 0, 0, 0);
-  } else {
-    nextUpdate.setDate(now.getDate() + 1);
-    nextUpdate.setUTCHours(14, 0, 0, 0);
-  }
-
-  const timeToUpdate = nextUpdate.getTime() - now.getTime();
-  console.log('now ', now);
-  console.log('next update ', nextUpdate);
-
-  global.nextUpdate = nextUpdate;
-  return timeToUpdate;
-}
-
-getNextUpdateTime();
-
-// function startBasicIncomeUpdate() {
-//   // basic income is DEPRECATED
-//   basicIncome();
-//   setTimeout(() => {
-//     startBasicIncomeUpdate();
-//   }, getNextUpdateTime());
-// }
-
-// function startStatsUpdate() {
-//   // taking too long - should move to diff thread?
-//   setInterval(updateUserStats, 60 * 60 * 1000);
-//   updateUserStats();
-// }
-
 async function updateRewards() {
   await ethRewards.rewards();
   updateUserStats();
@@ -261,52 +219,9 @@ async function updateRewards() {
   }
 }
 
-// function startRewards() {
-//   // taking too long - should move to diff thread?
-//   setInterval(updateRewards, PAYOUT_FREQUENCY);
-//   updateRewards(updateReputation);
-// }
-
-// eslint-disable-next-line
-// function startTwitterUpdate() {
-//   setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
-//   TwitterWorker.updateTwitterPosts();
-// }
-
-// updateUserStats(/);
-// startTwitterUpdate();
-// startBasicIncomeUpdate();
-// startRewards();
-// updateRewards();
-
-if (process.env.NODE_ENV !== 'production') {
-  // startTwitterUpdate();
-}
-
 if (process.env.NODE_ENV === 'production') {
   updateRewards();
-  // start interval on the hour
-  // const minutesTillHour = 60 - new Date().getMinutes();
-  // setTimeout(() => {
-  //   startStatsUpdate();
-  // }, minutesTillHour * 60 * 1000);
-  // setTimeout(() => {
-  //   startRewards();
-  // }, (15 + minutesTillHour) * 60 * 1000);
-  // setTimeout(() => {
-  //   startTwitterUpdate();
-  // }, ((10 + minutesTillHour) % 60) * 60 * 1000);
-  // TwitterWorker.updateTwitterPosts();
-  // DEPRECATED
-  // setTimeout(() => {
-  //   startBasicIncomeUpdate();
-  // }, getNextUpdateTime());
 }
-
-// pagerank('crypto');
-// pagerank('relevant');
-
-// setTimeout(TwitterWorker.updateTwitterPosts, 5000);
 
 module.exports = {
   updateUserStats,

@@ -17,8 +17,18 @@ import {
 import { bindActionCreators } from 'redux';
 import Modal from 'modules/ui/web/modal';
 import SettingsComponent from 'modules/admin/web/communityAdminForm.component';
+import { getCommunities } from 'modules/community/community.actions';
 
 class WithSideNav extends Component {
+  static propTypes = {
+    route: PropTypes.object,
+    isAuthenticated: PropTypes.bool,
+    navigation: PropTypes.object,
+    notif: PropTypes.object,
+    actions: PropTypes.object,
+    communities: PropTypes.array
+  };
+
   isMenuOpen = state => {
     if (state.isOpen) {
       this.props.actions.openWebSideNav();
@@ -27,6 +37,15 @@ class WithSideNav extends Component {
     }
     return state.isOpen;
   };
+
+  static fetchData(dispatch) {
+    return dispatch(getCommunities());
+  }
+
+  componentDidMount() {
+    const { actions, communities } = this.props;
+    if (!communities.length) actions.getCommunities();
+  }
 
   render() {
     const { isAuthenticated, navigation, notif, actions } = this.props;
@@ -87,15 +106,8 @@ class WithSideNav extends Component {
   }
 }
 
-WithSideNav.propTypes = {
-  route: PropTypes.object,
-  isAuthenticated: PropTypes.bool,
-  navigation: PropTypes.object,
-  notif: PropTypes.object,
-  actions: PropTypes.object
-};
-
 const mapStateToProps = state => ({
+  communities: state.community.list,
   isAuthenticated: state.auth.isAuthenticated,
   navigation: state.navigation,
   notif: state.notif

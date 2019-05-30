@@ -125,7 +125,7 @@ AvatarBox.propTypes = {
   size: PropTypes.number,
   showRelevance: PropTypes.bool,
   repost: PropTypes.bool,
-  postTime: PropTypes.string,
+  postTime: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   setSelected: PropTypes.func,
   navigationCallback: PropTypes.func
 };

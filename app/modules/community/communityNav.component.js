@@ -36,10 +36,6 @@ export class Community extends Component {
     showSettings: PropTypes.func
   };
 
-  componentDidMount() {
-    this.props.actions.getCommunities();
-  }
-
   renderCommunityLink(community) {
     const { actions } = this.props;
     return (

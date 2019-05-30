@@ -253,6 +253,7 @@ function configurePushNotifications(dispatch) {
       if (!userInteraction) return;
       if (data && data.postId) {
         const comment = data.comment ? { _id: data.comment } : null;
+        if (data.community) dispatch(setCommunity(data.community));
         dispatch(
           navigationActions.goToPost({
             _id: data.postId,
