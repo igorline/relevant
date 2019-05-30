@@ -41,6 +41,7 @@ export function createInitialState(req) {
 
   return {
     auth: {
+      user: req.user,
       confirmed: req.confirmed || (req.user && req.user.confirmed),
       // TODO - get this from req.user
       community: req.params.community || cachedCommunity
@@ -59,7 +60,6 @@ export const initStore = compose(
 
 export default async function handleRender(req, res) {
   const store = initStore(req);
-
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));

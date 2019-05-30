@@ -100,6 +100,13 @@ const PostSchema = new Schema(
   }
 );
 
+PostSchema.virtual('myVote', {
+  ref: 'Invest',
+  localField: '_id',
+  foreignField: 'post',
+  justOne: true
+});
+
 PostSchema.virtual('reposted', {
   ref: 'Post',
   localField: '_id',
@@ -425,22 +432,22 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
   }
 };
 
-PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
-  try {
-    const investments = await this.model('Invest').find({
-      investor: userId,
-      post: { $in: postIds }
-    });
-    const updatePosts = {
-      _id: userId,
-      type: 'UPDATE_POST_INVESTMENTS',
-      payload: investments
-    };
-    socketEvent.emit('socketEvent', updatePosts);
-  } catch (err) {
-    console.log('sendOutInvestInfo error', err); // eslint-disable-line
-  }
-};
+// PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
+//   try {
+//     const investments = await this.model('Invest').find({
+//       investor: userId,
+//       post: { $in: postIds }
+//     });
+//     const updatePosts = {
+//       _id: userId,
+//       type: 'UPDATE_POST_INVESTMENTS',
+//       payload: investments
+//     };
+//     socketEvent.emit('socketEvent', updatePosts);
+//   } catch (err) {
+//     console.log('sendOutInvestInfo error', err); // eslint-disable-line
+//   }
+// };
 
 async function getPostData({ post, communityId }) {
   if (!post.data) {

@@ -61,13 +61,7 @@ exports.show = async (req, res, next) => {
     const { communityId } = req.communityMember;
     const { user } = req;
 
-    let id;
-
-    let blocked = [];
-    if (user) {
-      blocked = [...user.blocked, ...user.blockedBy];
-      id = user._id;
-    }
+    const blocked = user ? [...user.blocked, ...user.blockedBy] : [];
 
     const limit = parseInt(req.query.limit, 10);
     const skip = parseInt(req.query.skip, 10);
@@ -99,11 +93,7 @@ exports.show = async (req, res, next) => {
     .limit(limit)
     .skip(skip)
     .sort(sortQuery);
-    res.status(200).json(investments);
-
-    let postIds = investments.map(inv => (inv.post ? inv.post._id : null));
-    postIds = postIds.filter(postId => postId);
-    return Post.sendOutInvestInfo(postIds, id);
+    return res.status(200).json(investments);
   } catch (err) {
     return next(err);
   }

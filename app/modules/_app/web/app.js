@@ -76,7 +76,8 @@ class App extends Component {
     }
 
     if (community) actions.setCommunity(community);
-    actions.getCommunities();
+
+    // actions.getCommunities();
     actions.getUser();
 
     if (auth.user) this.handleUserLogin();

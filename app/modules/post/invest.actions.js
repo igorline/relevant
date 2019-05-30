@@ -28,7 +28,7 @@ const investmentSchema = new schema.Entity(
 export function updatePostVote(voteObj) {
   return {
     type: types.UPDATE_POST_INVESTMENTS,
-    payload: [voteObj]
+    payload: voteObj
   };
 }
 

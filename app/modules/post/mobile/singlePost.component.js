@@ -35,7 +35,7 @@ class SinglePostComponent extends Component {
     link: PropTypes.object,
     users: PropTypes.object,
     comments: PropTypes.object,
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     auth: PropTypes.object,
     admin: PropTypes.object,
     comment: PropTypes.object
@@ -261,7 +261,7 @@ class SinglePostComponent extends Component {
     const comment = item;
     if (!comment) return null;
 
-    const { post, myPostInv, auth, actions, navigation, users } = this.props;
+    const { post, auth, actions, navigation, users } = this.props;
 
     const setupReply = _comment =>
       this.setState({ activeComment: _comment, activeIndex: index });
@@ -296,7 +296,7 @@ class SinglePostComponent extends Component {
               actions={actions}
               auth={auth}
               navigation={navigation}
-              myPostInv={myPostInv[comment._id]}
+              // myPostInv={myPostInv[comment._id]}
               setupReply={setupReply}
               focusInput={focusInput}
             />

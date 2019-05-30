@@ -222,7 +222,7 @@ export default withRouter(
       usersState: state.user,
       auth: state.auth,
       earnings: state.earnings,
-      myPostInv: state.investments.myPostInv,
+      // myPostInv: state.investments.myPostInv,
       screenSize: state.navigation.screenSize
     }),
     dispatch => ({
