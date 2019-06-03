@@ -1,19 +1,20 @@
-import Web3 from 'web3';
-import contract from 'truffle-contract';
+// import Web3 from 'web3';
+// import contract from 'truffle-contract';
 import EthereumTx from 'ethereumjs-tx';
 import request from 'request-promise-any';
+import { ethers } from 'ethers';
 
 const contractData = require('../../app/contracts/RelevantToken.json');
 
-const RelevantToken = contract(contractData);
+// const RelevantToken = contract(contractData);
 
-function fixTruffleContractCompatibilityIssue(_contract) {
-  if (typeof _contract.currentProvider.sendAsync !== 'function') {
-    _contract.currentProvider.sendAsync = (...args) =>
-      _contract.currentProvider.send(...args);
-  }
-  return _contract;
-}
+// function fixTruffleContractCompatibilityIssue(_contract) {
+//   if (typeof _contract.currentProvider.sendAsync !== 'function') {
+//     _contract.currentProvider.sendAsync = (...args) =>
+//       _contract.currentProvider.send(...args);
+//   }
+//   return _contract;
+// }
 
 let decimals;
 let instance;
@@ -30,6 +31,7 @@ export const getInstance = () => instance;
 
 export async function init() {
   try {
+    // eslint-disable-next-line
     let rpcUrl = `https://${process.env.INFURA_NETWORK}.infura.io/v3/${
       process.env.INFURA_API_KEY
     }`;
@@ -43,15 +45,32 @@ export async function init() {
       account = process.env.TEST_ACCOUNT;
     }
 
-    const provider = new Web3.providers.HttpProvider(rpcUrl);
-    RelevantToken.setProvider(provider);
+    // const provider = new Web3.providers.HttpProvider(rpcUrl);
+    // RelevantToken.setProvider(provider);
 
-    web3 = new Web3(provider);
+    const provider = ethers.getDefaultProvider('rinkeby');
 
-    fixTruffleContractCompatibilityIssue(RelevantToken);
-    instance = await RelevantToken.deployed();
-    decimals = await instance.decimals.call();
-    decimals = decimals.toNumber();
+    // web3 = new Web3(provider);
+    // instance = web3.eth.Contract(contractData.abi, '0xd05e0e497a570Ad0a1402375561293Bd01e9cb73');
+
+    // fixTruffleContractCompatibilityIssue(RelevantToken);
+    // instance = await RelevantToken.deployed()
+    // .catch(console.log);
+
+    instance = new ethers.Contract(
+      '0xd05e0e497a570Ad0a1402375561293Bd01e9cb73',
+      contractData.abi,
+      provider
+    );
+    // RelevantToken = RelevantToken.at('0xd05e0e497a570Ad0a1402375561293Bd01e9cb73');
+
+    // decimals = await instance.methods.decimals();
+    // const totalSupply = await instance.methods.totalSupply();
+
+    decimals = await instance.decimals();
+    // const totalSupply = await instance.totalSupply();
+    // decimals = decimals.toNumber();
+    // console.log('got totalSupply ', totalSupply, decimals);
     initialized = true;
     return true;
   } catch (err) {
