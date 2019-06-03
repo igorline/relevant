@@ -44,7 +44,8 @@ export class Community extends Component {
         key={community._id}
         to={'/' + community.slug + '/new'}
         onPress={() => {
-          actions.goToTab('discover');
+          actions.resetTabs();
+          // actions.goToTab('discover');
           requestAnimationFrame(() => {
             actions.setCommunity(community.slug);
           });
