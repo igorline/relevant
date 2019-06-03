@@ -16,9 +16,9 @@ import error from 'modules/ui/error.reducer';
 import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
 import { reducer as formReducer } from 'redux-form';
-import { reducers as web3Reducers } from 'redux-saga-web3';
 import { reducer as RelevantToken } from './contracts';
 
+import { web3Reducers } from './web3.reducer';
 import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
@@ -60,7 +60,7 @@ const createReducer = (asyncReducers = {}) =>
     community,
     earnings,
     // ...drizzleReducers,
-    web3: combineReducers({ ...web3Reducers }),
+    web3: web3Reducers,
     ...RelevantToken,
     ...asyncReducers
   });
@@ -121,5 +121,7 @@ const rootReducer = (state, action) => {
   }
   return appReducer(state, action);
 };
+
+export const _rootReducer = createReducer();
 
 export default rootReducer;

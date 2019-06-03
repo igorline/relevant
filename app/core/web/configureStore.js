@@ -2,13 +2,11 @@ import createSocketIoMiddleware from 'redux-socket.io';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import logger from 'redux-logger';
-import { Map } from 'immutable';
 // import { drizzleSagas } from 'drizzle';
-// import { all, fork } from 'redux-saga/effects';
-import { initProvider } from 'modules/web_ethTools/utils';
+import { getProvider, getMetamask, getRpcUrl } from 'modules/web_ethTools/utils';
 import rootReducer from '../reducers';
 import rootSaga from '../sagas';
+import { collapseActions, stateTransformer } from '../storeUtils';
 
 let server = process.env.API_SERVER;
 if (process.env.NODE_ENV === 'development') {
@@ -16,6 +14,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 let socket;
 let io;
+let web3;
+let createLogger;
 
 if (process.env.BROWSER) {
   io = require('socket.io-client');
@@ -23,12 +23,16 @@ if (process.env.BROWSER) {
   socket.on('pingKeepAlive', () => {
     socket.emit('pingResponse');
   });
-}
+  web3 = getProvider({
+    _rpcUrl: getRpcUrl(),
+    metamask: getMetamask()
+  });
+  if (process.env.DEVTOOLS) {
+    createLogger = require('redux-logger').createLogger;
+  }
+} else web3 = getProvider({ _rpcUrl: getRpcUrl() });
 
-const web3 = initProvider();
-
-const _initialState = { RelevantToken: { contracts: Map() } };
-export default function configureStore(initialState = _initialState) {
+export default function configureStore(initialState = {}) {
   // Compose final middleware and use devtools in debug environment
   let middleware;
 
@@ -42,7 +46,11 @@ export default function configureStore(initialState = _initialState) {
     // only use the socket middleware on client and not on server
     const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
     const _middleware = [thunk, socketIoMiddleware, sagaMiddleware];
-    if (process.env.BROWSER && process.env.DEVTOOLS) {
+    if (process.env.DEVTOOLS) {
+      const logger = createLogger({
+        collapsed: (getState, action) => collapseActions[action.type],
+        stateTransformer
+      });
       _middleware.push(logger);
     }
     middleware = applyMiddleware(..._middleware);
