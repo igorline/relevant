@@ -62,7 +62,6 @@
     "dotenv": "^8.0.0",
     "drizzle": "git+https://github.com/relevant-community/drizzle.git",
     "eth-sig-util": "^1.4.2",
-    "ethereumjs-tx": "^1.3.4",
     "ethers": "^4.0.28",
     "exifreader": "^2.8.2",
     "express": "^4.17.0",
