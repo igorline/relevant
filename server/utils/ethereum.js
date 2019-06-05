@@ -13,11 +13,13 @@ let wallet;
 
 export const isInitialized = () => initialized;
 export const getWeb3 = () => web3;
+
+// SECURITY - this should never by exposed via any APIs!
 export const getInstance = () => instance;
 
 export async function init() {
   try {
-    // SECURITY - this function should never by exposed via any APIs!
+    // SECURITY - this env var should never by exposed via any APIs!
     key = process.env.OWNER_KEY;
 
     let provider = ethers.getDefaultProvider(INFURA_NETWORK);
@@ -36,6 +38,8 @@ export async function init() {
     wallet = new ethers.Wallet(key, provider);
 
     instance = new ethers.Contract(tokenAddress, RelevantToken.abi, provider);
+
+    // SECURITY - this should never by exposed via any APIs!
     instance = instance.connect(wallet);
 
     decimals = await instance.decimals();
