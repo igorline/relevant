@@ -22,7 +22,7 @@ export function initProvider(options = defaultOptions) {
   return web3;
 }
 
-export function getBN(web3Instance, value) {
+export function getBN(value, web3Instance = web3) {
   return new web3Instance.utils.BN(value);
 }
 
