@@ -14,4 +14,5 @@ module.exports = {
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
   setupFilesAfterEnv: ['<rootDir>/test/testDbSetup'],
   testPathIgnorePatterns: ['<rootDir>/../node_modules/', 'ethereum.test.js']
+  // testPathIgnorePatterns: ['<rootDir>/../node_modules/']
 };
