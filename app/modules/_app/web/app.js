@@ -120,6 +120,9 @@ class App extends Component {
       TwitterCT.pageView();
       ReactGA.pageview(loc.pathname + loc.search);
       ReactPixel.pageView();
+
+      // eslint-disable-next-line
+      Intercom('update');
     });
   };
 
@@ -158,6 +161,14 @@ class App extends Component {
     }
     ReactGA.set({ userId: auth.user._id });
     actions.getEarnings('pending');
+
+    // eslint-disable-next-line
+    Intercom('boot', {
+      app_id: 'uxuj5f7o',
+      name: `${auth.user.name} @${auth.user.handle}`, // Full name
+      email: auth.user.email, // Email address
+      created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
+    });
     return null;
   };
 

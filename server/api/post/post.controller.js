@@ -16,6 +16,11 @@ import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
 
+PostData.updateOne(
+  { post: '5cf6b7775c11c20017dec3f4', community: 'culture' },
+  { isInFeed: false }
+).exec();
+
 const { promisify } = require('util');
 
 const requestAsync = promisify(request);
