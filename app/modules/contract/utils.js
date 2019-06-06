@@ -1,9 +1,10 @@
 import pickBy from 'lodash.pickby';
-import { getProvider, getBN } from 'modules/web_ethTools/utils';
 import { types } from 'core/contracts';
+import { getProvider, getBN } from 'modules/web_ethTools/utils';
 
-export const parseBN = (value, web3Instance = getProvider()) =>
-  value && value.get ? getBN(value.get('_hex'), web3Instance).toString() : value;
+export function parseBN(value, web3Instance = getProvider()) {
+  return value && value.get ? getBN(value.get('_hex'), web3Instance) : value;
+}
 
 // TODO -- provide better method sorting from statesauce
 export const readableMethods = Object.keys(
@@ -15,6 +16,8 @@ export const readableMethods = Object.keys(
       method !== 'isMinter' &&
       method !== 'allowance' &&
       method !== 'partialSum' &&
-      method !== 'nonceOf'
+      method !== 'nonceOf' &&
+      method !== 'isOwner' &&
+      method !== 'roundDecay'
   )
 );

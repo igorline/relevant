@@ -5,7 +5,10 @@ import { actions as tokenActions, tokenAddress, selectors } from 'core/contracts
 import { selectUserBalance } from './contract.selectors';
 
 const mapStateToProps = (state, { accounts }) => ({
-  isInitialized: state.web3.init.isInitialized,
+  web3Status: {
+    isInitialized: state.web3.init.isInitialized,
+    status: state.web3.init.status
+  },
   address: accounts && accounts[0],
   accounts: state.web3.accounts.items && state.web3.accounts.items,
   userBalance: selectUserBalance(state, tokenAddress),
@@ -18,6 +21,11 @@ const mapDispatchToProps = dispatch => ({
   web3Actions: {
     init(web3Instance) {
       dispatch(_web3Actions.init.init(web3Instance));
+    },
+    onAccountsChanged(metamask) {
+      metamask.on('accountsChanged', _accounts =>
+        dispatch(_web3Actions.accounts.getSuccess(_accounts))
+      );
     }
   },
   cacheMethod(method, args) {

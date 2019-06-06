@@ -24,13 +24,13 @@ if (process.env.BROWSER) {
     socket.emit('pingResponse');
   });
   web3 = getProvider({
-    _rpcUrl: getRpcUrl(),
+    rpcUrl: getRpcUrl(),
     metamask: getMetamask()
   });
   if (process.env.DEVTOOLS) {
     createLogger = require('redux-logger').createLogger;
   }
-} else web3 = getProvider({ _rpcUrl: getRpcUrl() });
+} else web3 = getProvider({ rpcUrl: getRpcUrl() });
 
 export default function configureStore(initialState = {}) {
   // Compose final middleware and use devtools in debug environment
