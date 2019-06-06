@@ -28,12 +28,12 @@ export function initProvider(options = defaultOptions) {
   return web3;
 }
 
-export function getBN(value, web3Instance = web3) {
-  let val = new web3Instance.utils.BN(value);
-  if (val.isZero()) return 0;
-  val = val.div(new web3Instance.utils.BN('DE0B6B3A7640000'));
-
-  return val.toString();
+export function getBN(value) {
+  const hex = value.get('_hex');
+  if (hex === '0x00') {
+    return 0;
+  }
+  return formatBN(hex, 18);
 }
 
 export function getRpcUrl() {
@@ -56,4 +56,24 @@ export function buildRpcUrl(
     protocol === 'ws' ? 'ws/' : ''
   }v3/${apiKey}`;
   return rpcUrl;
+}
+
+export function formatBN(hex, decimals = 18) {
+  const numString = Number(hex).toString();
+
+  if (numString[numString.length - 3] === '+') {
+    const trailingZeroes = getTrailingZeros(numString, decimals);
+    const result = Number(withoutZeros(numString) + trailingZeroes);
+
+    return result;
+  }
+  return Number(numString);
+}
+
+export function withoutZeros(numString) {
+  return numString.slice(0, -2).toString();
+}
+
+export function getTrailingZeros(numString, decimals) {
+  return Number(Number(numString.slice(-2)) - decimals).toString();
 }
