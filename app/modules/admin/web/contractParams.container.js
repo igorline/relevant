@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { View, Title, BodyText, SecondaryText } from 'modules/styled/uni';
 import styled from 'styled-components';
 import ContractProvider from 'modules/contract/contract.container';
-import { getProvider } from 'modules/web_ethTools/utils';
+import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN, readableMethods } from 'modules/contract/utils';
-
-const web3 = getProvider();
 
 const ParamsTable = styled.table`
   margin-top: 10px;
@@ -14,21 +12,19 @@ const ParamsTable = styled.table`
 `;
 
 const ContractParams = ({
+  web3Status,
   web3Actions,
   cacheMethod,
   methodCache,
   accounts,
   userBalance
 }) => {
+  useTokenContract(web3Status, web3Actions, cacheMethod, accounts, userBalance);
+
   useEffect(() => {
-    web3Actions.init(web3);
     readableMethods.forEach(method => cacheMethod(method));
   }, []);
-  useEffect(() => {
-    if (accounts && accounts.length && !userBalance) {
-      cacheMethod('balanceOf', accounts[0]);
-    }
-  }, [accounts, userBalance]);
+
   return (
     <View m={4}>
       <Title>Contract Params</Title>
@@ -70,6 +66,7 @@ const ContractParams = ({
 const hasCacheValue = cache => cache.select('name') && cache.select('name').value;
 
 ContractParams.propTypes = {
+  web3Status: PropTypes.object,
   web3Actions: PropTypes.object,
   methodCache: PropTypes.object,
   cacheMethod: PropTypes.func,

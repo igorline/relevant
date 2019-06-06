@@ -3,17 +3,23 @@ import { INFURA_PROTOCOL, INFURA_NETWORK, INFURA_API_KEY } from 'core/config';
 
 let web3;
 let rpcUrl;
+let metamask;
 
-const defaultOptions = { _rpcUrl: getRpcUrl(), metamask: null };
+const defaultOptions = { rpcUrl: getRpcUrl(), metamask: null };
 
 export function getMetamask() {
-  return typeof window !== 'undefined' ? window.ethereum : null;
+  return metamask || initMetamask();
 }
 
 export function getProvider(options = defaultOptions) {
-  return options.metamask || options._rpcUrl !== defaultOptions._rpcUrl
+  return options.metamask || options.rpcUrl !== defaultOptions.rpcUrl
     ? initProvider(options)
     : web3 || initProvider();
+}
+
+export function initMetamask() {
+  metamask = typeof window !== 'undefined' && window.ethereum ? window.ethereum : null;
+  return metamask;
 }
 
 export function initProvider(options = defaultOptions) {
@@ -23,7 +29,11 @@ export function initProvider(options = defaultOptions) {
 }
 
 export function getBN(value, web3Instance = web3) {
-  return new web3Instance.utils.BN(value);
+  let val = new web3Instance.utils.BN(value);
+  if (val.isZero()) return 0;
+  val = val.div(new web3Instance.utils.BN('DE0B6B3A7640000'));
+
+  return val.toString();
 }
 
 export function getRpcUrl() {
@@ -32,9 +42,9 @@ export function getRpcUrl() {
 
 export function createProvider(options = defaultOptions) {
   if (options.metamask) return options.metamask;
-  return options._rpcUrl.slice(0, 2) === 'ws'
-    ? new Web3.providers.WebsocketProvider(options._rpcUrl)
-    : new Web3.providers.HttpProvider(options._rpcUrl);
+  return options.rpcUrl.slice(0, 2) === 'ws'
+    ? new Web3.providers.WebsocketProvider(options.rpcUrl)
+    : new Web3.providers.HttpProvider(options.rpcUrl);
 }
 
 export function buildRpcUrl(
