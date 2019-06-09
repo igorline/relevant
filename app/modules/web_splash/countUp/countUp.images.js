@@ -37,9 +37,9 @@ const ArrowContainer = styled(View)`
   justify-content: center;
   align-items: center;
   background: #ffffff;
-  box-shadow: 1px 0px 4px 4px #eeeeee;
+  box-shadow: 1px 0px 4px 4px #dddddd;
   border-radius: 50%;
-  transition: padding 100ms linear;
+  transition: padding 10ms linear;
 `;
 const ArrowImage = styled(Image)`
   width: 12px;
