@@ -13,6 +13,7 @@ const CountUpBoxContainer = styled(View)`
   justify-content: flex-start;
   flex-direction: row;
   align-items: center;
+  border-radius: 4px;
   color: white;
 `;
 
@@ -63,7 +64,7 @@ export default class CountUpBox extends PureComponent {
         {type === 'thumb' ? (
           <BigThumb score={score} {...thumbTiming} />
         ) : (
-          <Arrows score={score} />
+          <Arrows score={score} {...thumbTiming} />
         )}
         <Headline ref={ref => (this.label = ref)} />
       </CountUpBoxContainer>

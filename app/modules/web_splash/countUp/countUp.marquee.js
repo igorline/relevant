@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { sizing } from 'app/styles';
 import { tween } from 'app/utils';
 
-import { Thumb } from './countUp.images';
+import { Thumb, Arrow } from './countUp.images';
 
 const randint = n => Math.floor(Math.random() * n);
 
@@ -26,19 +26,23 @@ const LeftGradient = styled(View)`
 
 export default class CountUpMarquee extends PureComponent {
   static propTypes = {
+    type: PropTypes.string,
     active: PropTypes.bool,
     firingRate: PropTypes.number,
     parallax: PropTypes.number,
     speed: PropTypes.number,
-    onMeasure: PropTypes.func
+    onMeasure: PropTypes.func,
+    score: PropTypes.number
   };
 
   constructor() {
     super();
     this.index = 0;
     this.thumbs = [];
+    this.arrowTypes = [];
     for (let i = 0; i < 20; i++) {
       this.thumbs.push(React.createRef());
+      this.arrowTypes.push({ up: true, big: false });
     }
     this.container = React.createRef();
   }
@@ -69,13 +73,14 @@ export default class CountUpMarquee extends PureComponent {
   }
 
   add(index) {
-    const { parallax, speed } = this.props;
+    const { parallax, speed, score } = this.props;
     const width = this.container.current.offsetWidth;
     const duration = width * speed;
     let height = this.container.current.offsetHeight;
     height = (height - 100) / 2;
     const y = randint(height) + (index % 2) * (height + 50);
-    const el = this.thumbs[index % this.thumbs.length];
+    const modIndex = index % this.thumbs.length;
+    const el = this.thumbs[modIndex];
     if (!el || !el.current || !y) return;
     tween.add({
       from: { x: -50 },
@@ -88,12 +93,30 @@ export default class CountUpMarquee extends PureComponent {
       },
       finished: () => {
         el.current.style.transform = 'translate3D(' + [-50, y, 0].join('px,') + 'px)';
+        if (score > 100) {
+          this.arrowTypes[modIndex].big = Math.random() < 0.3;
+          this.arrowTypes[modIndex].up = Math.random() < 0.6;
+        } else {
+          this.arrowTypes[modIndex].big = Math.random() < 0.3;
+          this.arrowTypes[modIndex].up = Math.random() < 0.2;
+        }
       }
     });
   }
 
   render() {
-    const thumbs = this.thumbs.map((ref, i) => <Thumb ref={ref} key={i} />);
+    const { type } = this.props;
+    let thumbs;
+    switch (type) {
+      case 'thumb':
+        thumbs = this.thumbs.map((ref, i) => <Thumb ref={ref} key={i} />);
+        break;
+      default:
+        thumbs = this.thumbs.map((ref, i) => (
+          <Arrow ref={ref} key={i} {...this.arrowTypes[i]} />
+        ));
+        break;
+    }
     return (
       <CountUpMarqueeContainer ref={this.container}>
         {thumbs}
