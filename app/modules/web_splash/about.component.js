@@ -158,7 +158,25 @@ class Splash extends Component {
               allows communities to identify experts and curate content according to its
               value.
             </SplashText>
-            <View h={16} m={'2 0'} mr={6} bg={colors.blue} />
+          </Section>
+        </Wrapper>
+
+        <CountUp
+          high={['climate change', 'decentralization']}
+          highScore={[300, 500]}
+          low={['clickbait', 'cat videos']}
+          lowScore={[-40, -10]}
+          type={'relevant'}
+          color={colors.brightBlue}
+        />
+
+        <Wrapper
+          ref={c => (this.container = c)}
+          justify="flex-start"
+          align="center"
+          fdirection="column"
+        >
+          <Section>
             <SplashText>
               The Relevant Reputation System puts curation power in the hands of trusted
               community members and experts instead of passive consumers.
