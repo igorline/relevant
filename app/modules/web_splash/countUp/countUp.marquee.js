@@ -42,7 +42,7 @@ export default class CountUpMarquee extends PureComponent {
     this.arrowTypes = [];
     for (let i = 0; i < 20; i++) {
       this.thumbs.push(React.createRef());
-      this.arrowTypes.push({ up: true, big: false });
+      this.arrowTypes.push({ up: Math.random() > 0.5, big: Math.random() > 0.2 });
     }
     this.container = React.createRef();
   }
@@ -73,19 +73,27 @@ export default class CountUpMarquee extends PureComponent {
   }
 
   add(index) {
-    const { parallax, speed, score } = this.props;
+    let { parallax } = this.props;
+    const { speed, score, type } = this.props;
     const width = this.container.current.offsetWidth;
     const duration = width * speed;
     let height = this.container.current.offsetHeight;
-    height = (height - 100) / 2;
-    const y = randint(height) + (index % 2) * (height + 50);
+    let y;
+    if (type === 'thumb') {
+      height = (height - 100) / 2;
+      y = randint(height) + (index % 2) * (height + 50);
+    } else {
+      parallax *= 1.5;
+      height = (height - 100) / 2;
+      y = randint(height) + (index % 2) * (height + 30);
+    }
     const modIndex = index % this.thumbs.length;
     const el = this.thumbs[modIndex];
     if (!el || !el.current || !y) return;
     tween.add({
       from: { x: -50 },
       to: { x: width },
-      duration: duration + randint(parallax),
+      duration: duration + parallax,
       easing: tween.easing.circOut,
       update: ({ x }) => {
         el.current.style.transform =
@@ -95,10 +103,10 @@ export default class CountUpMarquee extends PureComponent {
         el.current.style.transform = 'translate3D(' + [-50, y, 0].join('px,') + 'px)';
         if (score > 100) {
           this.arrowTypes[modIndex].big = Math.random() < 0.3;
-          this.arrowTypes[modIndex].up = Math.random() < 0.6;
+          this.arrowTypes[modIndex].up = Math.random() < 0.4;
         } else {
           this.arrowTypes[modIndex].big = Math.random() < 0.3;
-          this.arrowTypes[modIndex].up = Math.random() < 0.2;
+          this.arrowTypes[modIndex].up = Math.random() < 0.6;
         }
       }
     });
