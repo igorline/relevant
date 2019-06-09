@@ -5,11 +5,13 @@ import { connect } from 'react-redux';
 import { Text, View, Image, Button } from 'modules/styled/web';
 import styled from 'styled-components';
 import { colors, fonts, sizing, size, responsive } from 'app/styles';
+import { tween } from 'app/utils';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityList from 'modules/community/communityList.component';
 import SocialIcons from 'modules/navigation/social.icons';
 import Marquee from './post.marquee';
+import CountUp from './countUp/countUp.component';
 
 const Phone = styled(Image)`
   position: ${() => responsive(['relative', 'absolute'])};
@@ -61,6 +63,14 @@ class Splash extends Component {
     const y = Math.max(-top / 3, 0);
     this.phone.style.transform = `translateX(0) translateY(${y}px)`;
   };
+
+  componentDidMount() {
+    tween.start();
+  }
+
+  componentWillUnmount() {
+    tween.stop();
+  }
 
   render() {
     const { actions } = this.props;
@@ -124,9 +134,24 @@ class Splash extends Component {
               Engagement metrics make it easy to find popular content, but they don’t help
               us determine what’s important, or who we can trust.
             </SplashText>
-            <View h={16} m={'2 0'} mr={6} bg={'#FF4621'} />
           </Section>
+        </Wrapper>
 
+        <CountUp
+          high={['clickbait', 'cat videos']}
+          highScore={[700, 1000]}
+          low={['climate change', 'decentralization']}
+          lowScore={[10, 30]}
+          type={'thumb'}
+          color={colors.brightRed}
+        />
+
+        <Wrapper
+          ref={c => (this.container = c)}
+          justify="flex-start"
+          align="center"
+          fdirection="column"
+        >
           <Section>
             <SplashText>
               This is why we’ve built a manipulation-resistant Reputation metric that
