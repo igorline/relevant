@@ -200,6 +200,23 @@ class Splash extends Component {
             <SplashText>
               Advertising markets reward popularity. Prediction markets reward expertise.
             </SplashText>
+          </Section>
+        </Wrapper>
+
+        <CountUp
+          high={['a smart post with potential']}
+          low={['a not-so-great listicle']}
+          type={'bet'}
+          color={colors.gold}
+        />
+
+        <Wrapper
+          ref={c => (this.container = c)}
+          justify="flex-start"
+          align="center"
+          fdirection="column"
+        >
+          <Section>
             <SplashText>
               On Relevant users can bet on the relevance of content. Bets don’t impact
               rankings but provide a way to reward expert curators.

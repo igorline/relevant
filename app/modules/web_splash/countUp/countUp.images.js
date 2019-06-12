@@ -9,6 +9,8 @@ import { tween } from 'app/utils';
 
 const ThumbContainer = styled(View)`
   position: absolute;
+  top: 0;
+  right: -50px;
 `;
 const ThumbImage = styled(Image)`
   width: 48px;
@@ -33,7 +35,7 @@ export const Thumb = React.forwardRef((props, ref) => (
 const ArrowContainer = styled(View)`
   position: absolute;
   top: 0;
-  left: 0;
+  right: -50px;
   justify-content: center;
   align-items: center;
   background: #ffffff;
@@ -146,49 +148,18 @@ const ArrowsContents = styled(View)`
   margin-top: ${sizing(3)};
 `;
 export class Arrows extends PureComponent {
-  componentDidMount() {
-    this.animate();
-  }
-
-  componentDidUpdate() {
-    this.animate();
-  }
-
-  animate() {
-    const { score, delay, duration } = this.props;
-    let lastScore = -1;
-    tween.remove(this.t);
-    setTimeout(() => {
-      this.label.innerHTML = '0';
-    }, 0);
-    this.t = tween.add({
-      from: { score: 0 },
-      to: { score },
-      delay,
-      duration,
-      easing: tween.easing.quadOut,
-      update: obj => {
-        const roundedScore = Math.round(obj.score);
-        if (roundedScore !== lastScore) {
-          lastScore = roundedScore;
-          this.label.innerHTML = roundedScore;
-        }
-      }
-    });
-  }
-
   render() {
     return (
       <ArrowsContainer>
         <ArrowsImage src={'/img/countUp-big-arrow-up.svg'} />
-        <ArrowsContents ref={ref => (this.label = ref)} />
+        <ArrowsContents ref={ref => (this.label = ref)}>
+          {this.props.score}
+        </ArrowsContents>
         <ArrowsImage src={'/img/countUp-big-arrow-down.svg'} />
       </ArrowsContainer>
     );
   }
 }
 Arrows.propTypes = {
-  score: PropTypes.number,
-  delay: PropTypes.number,
-  duration: PropTypes.number
+  score: PropTypes.number
 };
