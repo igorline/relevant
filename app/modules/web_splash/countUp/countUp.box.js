@@ -35,8 +35,10 @@ export default class CountUpBox extends PureComponent {
     this.animate();
   }
 
-  componentDidUpdate() {
-    this.animate();
+  componentDidUpdate(oldProps) {
+    if (oldProps.headline !== this.props.headline) {
+      this.animate();
+    }
   }
 
   animate() {

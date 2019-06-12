@@ -7,6 +7,7 @@ export const white = 'white';
 export const modalBackground = 'hsla(0, 0%, 100%, 0.7)';
 export const green = '#7ED321';
 export const red = '#D0021B';
+export const gold = '#FFC864';
 export const brightRed = '#FF4621';
 export const brightBlue = '#0066FF';
 export const twitterBlue = '#00aced';

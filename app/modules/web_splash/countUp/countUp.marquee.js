@@ -25,6 +25,10 @@ const LeftGradient = styled(View)`
 `;
 
 export default class CountUpMarquee extends PureComponent {
+  state = {
+    index: 0
+  };
+
   static propTypes = {
     type: PropTypes.string,
     active: PropTypes.bool,
@@ -32,6 +36,7 @@ export default class CountUpMarquee extends PureComponent {
     parallax: PropTypes.number,
     speed: PropTypes.number,
     onMeasure: PropTypes.func,
+    onFinished: PropTypes.func,
     score: PropTypes.number
   };
 
@@ -50,7 +55,7 @@ export default class CountUpMarquee extends PureComponent {
   componentDidMount() {
     this.animate(0);
     this.thumbs.forEach(el => {
-      el.current.style.transform = 'translate3D(' + [-50, 0, 0].join('px,') + 'px)';
+      el.current.style.transform = 'translate3D(' + [10, 0, 0].join('px,') + 'px)';
     });
     this.props.onMeasure(
       this.container.current.offsetWidth,
@@ -67,6 +72,7 @@ export default class CountUpMarquee extends PureComponent {
     if (active) {
       this.timeout = setTimeout(() => this.animate(index + 1), firingRate);
       this.add(index);
+      this.setState({ index });
     } else {
       this.timeout = setTimeout(() => this.animate(index), 100);
     }
@@ -74,40 +80,62 @@ export default class CountUpMarquee extends PureComponent {
 
   add(index) {
     let { parallax } = this.props;
-    const { speed, score, type } = this.props;
+    const { speed, score, type, onFinished } = this.props;
     const width = this.container.current.offsetWidth;
     const duration = width * speed;
     let height = this.container.current.offsetHeight;
     let y;
-    if (type === 'thumb') {
-      height = (height - 100) / 2;
-      y = randint(height) + (index % 2) * (height + 50);
-    } else {
-      parallax *= 1.5;
-      height = (height - 100) / 2;
-      y = randint(height) + (index % 2) * (height + 30);
-    }
+    let elScore = 1;
     const modIndex = index % this.thumbs.length;
     const el = this.thumbs[modIndex];
+    const arrowType = this.arrowTypes[modIndex];
+
+    switch (type) {
+      case 'relevant':
+        parallax *= 1.5;
+        height = (height - 100) / 2;
+        y = randint(height) + (index % 2) * (height + 50);
+        if (score > 100) {
+          arrowType.big = Math.random() < 0.5;
+          arrowType.up = arrowType.big ? Math.random() < 0.9 : Math.random() < 0.2;
+        } else {
+          arrowType.big = Math.random() < 0.5;
+          arrowType.up = arrowType.big ? Math.random() < 0.2 : Math.random() < 0.9;
+        }
+        if (arrowType.big) {
+          elScore = randint(10) + 10;
+        } else {
+          elScore = randint(5);
+        }
+        if (!arrowType.up) {
+          elScore *= -1;
+        }
+        if (index % 2) {
+          y -= 10;
+        } else {
+          y += 10;
+        }
+        break;
+      default:
+        // 'thumb'
+        height = (height - 100) / 2;
+        y = randint(height) + (index % 2) * (height + 50);
+        break;
+    }
+
     if (!el || !el.current || !y) return;
     tween.add({
-      from: { x: -50 },
-      to: { x: width },
-      duration: duration + parallax,
+      from: { x: -width - 50 - randint(parallax) },
+      to: { x: 0 },
+      duration,
       easing: tween.easing.circOut,
       update: ({ x }) => {
         el.current.style.transform =
           'translate3D(' + [x.toFixed(1), y, 0].join('px,') + 'px)';
       },
       finished: () => {
-        el.current.style.transform = 'translate3D(' + [-50, y, 0].join('px,') + 'px)';
-        if (score > 100) {
-          this.arrowTypes[modIndex].big = Math.random() < 0.3;
-          this.arrowTypes[modIndex].up = Math.random() < 0.4;
-        } else {
-          this.arrowTypes[modIndex].big = Math.random() < 0.3;
-          this.arrowTypes[modIndex].up = Math.random() < 0.6;
-        }
+        el.current.style.transform = 'translate3D(' + [10, y, 0].join('px,') + 'px)';
+        if (onFinished) onFinished(elScore);
       }
     });
   }

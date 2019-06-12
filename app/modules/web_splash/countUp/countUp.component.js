@@ -23,14 +23,21 @@ const CountUpSpacer = styled(View)`
 const marqueeFast = {
   active: true,
   firingRate: 80,
-  parallax: 300,
+  parallax: 150,
   speed: 2.15
 };
 
 const marqueeSlow = {
   active: true,
   firingRate: 240,
-  parallax: 50,
+  parallax: 80,
+  speed: 2.69
+};
+
+const marqueeSlowRelevant = {
+  active: true,
+  firingRate: 180,
+  parallax: 150,
   speed: 2.69
 };
 
@@ -67,25 +74,35 @@ export default class CountUp extends Component {
   };
 
   advance() {
-    const { high, highScore, low, lowScore } = this.props;
+    const { type, high, highScore, low, lowScore } = this.props;
     let { mode, headline, oldScore: score, highIndex, lowIndex } = this.state;
     let marquee;
+    let currentScore;
     mode = !mode;
     if (mode) {
       highIndex += 1;
       headline = high[highIndex % high.length];
-      score = randrange(highScore);
+      score = highScore && randrange(highScore);
       marquee = { ...marqueeFast };
     } else {
       lowIndex += 1;
       headline = low[lowIndex % low.length];
-      score = randrange(lowScore);
-      marquee = { ...marqueeSlow };
+      score = lowScore && randrange(lowScore);
+      marquee = { ...(type === 'relevant' ? marqueeSlowRelevant : marqueeSlow) };
+    }
+    switch (type) {
+      case 'relevant':
+        currentScore = 0;
+        break;
+      default:
+        currentScore = score;
+        break;
     }
     this.setState({
       mode,
       headline,
       score,
+      currentScore,
       highIndex,
       lowIndex,
       marquee,
@@ -108,6 +125,18 @@ export default class CountUp extends Component {
     this.setState({ width, height }, () => this.advance());
   }
 
+  handleFinished(score) {
+    switch (this.props.type) {
+      case 'relevant':
+        this.setState({ currentScore: this.state.currentScore + score });
+        break;
+      case 'bet':
+        break;
+      default:
+        break;
+    }
+  }
+
   componentDidMount() {
     // this.advance();
   }
@@ -119,19 +148,20 @@ export default class CountUp extends Component {
 
   render() {
     const { type, color } = this.props;
-    const { headline, score, marquee, thumbTiming } = this.state;
+    const { headline, score, currentScore, marquee, thumbTiming } = this.state;
     return (
       <CountUpContainer>
         <CountUpMarquee
           type={type}
           score={score}
           onMeasure={this.handleMeasurement.bind(this)}
+          onFinished={this.handleFinished.bind(this)}
           {...marquee}
         />
         <CountUpBox
           type={type}
           color={color}
-          score={score}
+          score={currentScore}
           headline={headline}
           thumbTiming={thumbTiming}
         />
