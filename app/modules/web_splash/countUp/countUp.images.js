@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, Image } from 'modules/styled/web';
 import styled from 'styled-components';
-import { sizing } from 'app/styles';
+import { sizing, colors } from 'app/styles';
 import { tween } from 'app/utils';
 
 /* Thumb image (flying into box) */
@@ -41,7 +41,6 @@ const ArrowContainer = styled(View)`
   background: #ffffff;
   box-shadow: 1px 0px 4px 4px #dddddd;
   border-radius: 50%;
-  transition: padding 10ms linear;
 `;
 const ArrowImage = styled(Image)`
   width: 12px;
@@ -163,3 +162,42 @@ export class Arrows extends PureComponent {
 Arrows.propTypes = {
   score: PropTypes.number
 };
+
+/* Coin image (flying into betting box) */
+
+const CoinContainer = styled(View)`
+  position: absolute;
+  top: 0;
+  right: -100px;
+  width: 100px;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
+  background: ${colors.gold};
+  color: black;
+  box-shadow: 1px 0px 4px 4px #dddddd;
+  border-radius: 50%;
+  text-transform: uppercase;
+  font-size: ${sizing(5)};
+`;
+
+export const Coin = React.forwardRef((props, ref) => (
+  <CoinContainer ref={ref} {...props}>
+    BET
+  </CoinContainer>
+));
+
+/* Arrows with pie chart timer */
+
+export class ArrowTimer extends PureComponent {
+  render() {
+    return (
+      <ArrowsContainer>
+        <ArrowsImage src={'/img/countUp-black-arrow-up.svg'} />
+        <ArrowsContents ref={ref => (this.label = ref)}>{'π'}</ArrowsContents>
+        <ArrowsImage src={'/img/countUp-black-arrow-down.svg'} />
+      </ArrowsContainer>
+    );
+  }
+}
+ArrowTimer.propTypes = {};
