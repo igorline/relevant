@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import { sizing } from 'app/styles';
 import { tween } from 'app/utils';
 
-import { Thumb, Arrow } from './countUp.images';
+import { Thumb, Arrow, Coin } from './countUp.images';
 
+const randfloat = n => Math.random() * n;
 const randint = n => Math.floor(Math.random() * n);
 
 const CountUpMarqueeContainer = styled(View)`
@@ -79,8 +80,7 @@ export default class CountUpMarquee extends PureComponent {
   }
 
   add(index) {
-    let { parallax } = this.props;
-    const { speed, score, type, onFinished } = this.props;
+    const { parallax, speed, score, type, onFinished } = this.props;
     const width = this.container.current.offsetWidth;
     const duration = width * speed;
     let height = this.container.current.offsetHeight;
@@ -92,7 +92,6 @@ export default class CountUpMarquee extends PureComponent {
 
     switch (type) {
       case 'relevant':
-        parallax *= 1.5;
         height = (height - 100) / 2;
         y = randint(height) + (index % 2) * (height + 50);
         if (score > 100) {
@@ -116,16 +115,18 @@ export default class CountUpMarquee extends PureComponent {
           y += 10;
         }
         break;
-      default:
-        // 'thumb'
+      case 'thumb':
         height = (height - 100) / 2;
         y = randint(height) + (index % 2) * (height + 50);
+        break;
+      default:
+        y = (height - 100) / 2;
         break;
     }
 
     if (!el || !el.current || !y) return;
     tween.add({
-      from: { x: -width - 50 - randint(parallax) },
+      from: { x: -(width * (randfloat(parallax - 1) + 1)) - 50 },
       to: { x: 0 },
       duration,
       easing: tween.easing.circOut,
@@ -146,6 +147,9 @@ export default class CountUpMarquee extends PureComponent {
     switch (type) {
       case 'thumb':
         thumbs = this.thumbs.map((ref, i) => <Thumb ref={ref} key={i} />);
+        break;
+      case 'coin':
+        thumbs = this.thumbs.map((ref, i) => <Coin ref={ref} key={i} />);
         break;
       default:
         thumbs = this.thumbs.map((ref, i) => (

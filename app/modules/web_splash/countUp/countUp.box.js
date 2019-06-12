@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { sizing } from 'app/styles';
 import { tween } from 'app/utils';
 
-import { BigThumb, Arrows } from './countUp.images';
+import { BigThumb, Arrows, ArrowTimer } from './countUp.images';
 
 const CountUpBoxContainer = styled(View)`
   width: ${sizing(75)};
@@ -14,12 +14,13 @@ const CountUpBoxContainer = styled(View)`
   flex-direction: row;
   align-items: center;
   border-radius: 4px;
-  color: white;
+  ${p => (p.c ? `color: ${p.c};` : '')};
 `;
 
 const Headline = styled(Text)`
   text-transform: uppercase;
   font-size: ${sizing(5)};
+  line-height: ${sizing(5)};
 `;
 
 export default class CountUpBox extends PureComponent {
@@ -28,6 +29,7 @@ export default class CountUpBox extends PureComponent {
     score: PropTypes.number,
     headline: PropTypes.string,
     color: PropTypes.string,
+    onHeadlineFinished: PropTypes.func,
     thumbTiming: PropTypes.object
   };
 
@@ -42,7 +44,7 @@ export default class CountUpBox extends PureComponent {
   }
 
   animate() {
-    const { headline } = this.props;
+    const { headline, onHeadlineFinished } = this.props;
     const len = headline.length;
     let lastIndex = 0;
     tween.remove(this.t);
@@ -55,6 +57,9 @@ export default class CountUpBox extends PureComponent {
           lastIndex = roundedIndex;
           this.label.innerHTML = headline.substr(0, roundedIndex);
         }
+      },
+      finished: () => {
+        if (onHeadlineFinished) onHeadlineFinished();
       }
     });
   }
@@ -62,11 +67,13 @@ export default class CountUpBox extends PureComponent {
   render() {
     const { type, score, color, thumbTiming } = this.props;
     return (
-      <CountUpBoxContainer bg={color}>
+      <CountUpBoxContainer bg={color} c={type === 'coin' ? 'black' : 'white'}>
         {type === 'thumb' ? (
           <BigThumb score={score} {...thumbTiming} />
-        ) : (
+        ) : type === 'relevant' ? (
           <Arrows score={score} {...thumbTiming} />
+        ) : (
+          <ArrowTimer score={score} {...thumbTiming} />
         )}
         <Headline ref={ref => (this.label = ref)} />
       </CountUpBoxContainer>

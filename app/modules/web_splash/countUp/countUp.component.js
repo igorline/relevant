@@ -23,22 +23,29 @@ const CountUpSpacer = styled(View)`
 const marqueeFast = {
   active: true,
   firingRate: 80,
-  parallax: 150,
+  parallax: 1.3,
   speed: 2.15
 };
 
 const marqueeSlow = {
   active: true,
   firingRate: 240,
-  parallax: 80,
+  parallax: 1.1,
   speed: 2.69
 };
 
 const marqueeSlowRelevant = {
   active: true,
   firingRate: 180,
-  parallax: 150,
+  parallax: 1.3,
   speed: 2.69
+};
+
+const marqueeCoin = {
+  active: true,
+  firingRate: 2000,
+  parallax: 1,
+  speed: 3.2
 };
 
 const marqueeOff = {
@@ -75,9 +82,12 @@ export default class CountUp extends Component {
 
   advance() {
     const { type, high, highScore, low, lowScore } = this.props;
-    let { mode, headline, oldScore: score, highIndex, lowIndex } = this.state;
+    let { mode, highIndex, lowIndex } = this.state;
+    const { score: oldScore } = this.state;
+    let headline;
     let marquee;
     let currentScore;
+    let score;
     mode = !mode;
     if (mode) {
       highIndex += 1;
@@ -90,9 +100,15 @@ export default class CountUp extends Component {
       score = lowScore && randrange(lowScore);
       marquee = { ...(type === 'relevant' ? marqueeSlowRelevant : marqueeSlow) };
     }
+
     switch (type) {
       case 'relevant':
         currentScore = 0;
+        break;
+      case 'coin':
+        marquee = { ...marqueeCoin };
+        currentScore = oldScore;
+        score = oldScore;
         break;
       default:
         currentScore = score;
@@ -130,7 +146,18 @@ export default class CountUp extends Component {
       case 'relevant':
         this.setState({ currentScore: this.state.currentScore + score });
         break;
-      case 'bet':
+      case 'coin':
+        this.setState({ currentScore: this.state.currentScore + 1 });
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleHeadlineFinished() {
+    switch (this.props.type) {
+      case 'coin':
+        this.setState({ score: this.state.score + 1 });
         break;
       default:
         break;
@@ -163,6 +190,7 @@ export default class CountUp extends Component {
           color={color}
           score={currentScore}
           headline={headline}
+          onHeadlineFinished={this.handleHeadlineFinished.bind(this)}
           thumbTiming={thumbTiming}
         />
         <CountUpSpacer />

@@ -206,7 +206,7 @@ class Splash extends Component {
         <CountUp
           high={['a smart post with potential']}
           low={['a not-so-great listicle']}
-          type={'bet'}
+          type={'coin'}
           color={colors.gold}
         />
 
