@@ -94,7 +94,7 @@ export default class CountUpMarquee extends PureComponent {
       case 'relevant':
         height = (height - 100) / 2;
         y = randint(height) + (index % 2) * (height + 50);
-        if (score > 100) {
+        if (score > 0) {
           arrowType.big = Math.random() < 0.5;
           arrowType.up = arrowType.big ? Math.random() < 0.9 : Math.random() < 0.2;
         } else {

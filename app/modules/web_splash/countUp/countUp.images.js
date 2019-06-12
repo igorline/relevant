@@ -47,7 +47,7 @@ const ArrowImage = styled(Image)`
   height: 12px;
 `;
 export const Arrow = React.forwardRef((props, ref) => (
-  <ArrowContainer ref={ref} p={props.big ? sizing(3.2) : sizing(1)} {...props}>
+  <ArrowContainer ref={ref} p={props.big ? sizing(3.2) : sizing(0.6)} {...props}>
     <ArrowImage
       src={
         props.up ? '/img/countUp-small-arrow-up.svg' : '/img/countUp-small-arrow-down.svg'
