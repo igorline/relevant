@@ -30,6 +30,7 @@ export default class CountUpBox extends PureComponent {
     headline: PropTypes.string,
     color: PropTypes.string,
     onHeadlineFinished: PropTypes.func,
+    onTimerFinished: PropTypes.func,
     thumbTiming: PropTypes.object
   };
 
@@ -65,7 +66,7 @@ export default class CountUpBox extends PureComponent {
   }
 
   render() {
-    const { type, score, color, thumbTiming } = this.props;
+    const { type, score, color, thumbTiming, onTimerFinished } = this.props;
     return (
       <CountUpBoxContainer bg={color} c={type === 'coin' ? 'black' : 'white'}>
         {type === 'thumb' ? (
@@ -73,7 +74,7 @@ export default class CountUpBox extends PureComponent {
         ) : type === 'relevant' ? (
           <Arrows score={score} {...thumbTiming} />
         ) : (
-          <ArrowTimer score={score} {...thumbTiming} />
+          <ArrowTimer score={score} {...thumbTiming} onTimerFinished={onTimerFinished} />
         )}
         <Headline ref={ref => (this.label = ref)} />
       </CountUpBoxContainer>

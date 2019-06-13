@@ -54,7 +54,7 @@ export default class CountUpMarquee extends PureComponent {
   }
 
   componentDidMount() {
-    this.animate(0);
+    if (this.props.type !== 'coin') this.animate(0);
     this.thumbs.forEach(el => {
       el.current.style.transform = 'translate3D(' + [10, 0, 0].join('px,') + 'px)';
     });
@@ -66,6 +66,16 @@ export default class CountUpMarquee extends PureComponent {
 
   componentWillUnmount() {
     clearTimeout(this.timeout);
+  }
+
+  componentDidUpdate(oldProps) {
+    if (
+      this.props.type === 'coin' &&
+      this.props.firingRate !== oldProps.firingRate &&
+      this.props.firingRate
+    ) {
+      this.add(0);
+    }
   }
 
   animate(index) {
@@ -123,6 +133,7 @@ export default class CountUpMarquee extends PureComponent {
         y = (height - 100) / 2;
         break;
     }
+    // if (type === 'coin') console.log('added');
 
     if (!el || !el.current || !y) return;
     tween.add({
@@ -135,6 +146,7 @@ export default class CountUpMarquee extends PureComponent {
           'translate3D(' + [x.toFixed(1), y, 0].join('px,') + 'px)';
       },
       finished: () => {
+        // if (type === 'coin') console.log('FINISHED')
         el.current.style.transform = 'translate3D(' + [10, y, 0].join('px,') + 'px)';
         if (onFinished) onFinished(elScore);
       }
