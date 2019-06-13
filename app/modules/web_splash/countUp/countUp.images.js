@@ -190,6 +190,7 @@ export const Coin = React.forwardRef((props, ref) => (
 /* Arrows with pie chart timer */
 
 const TimerWidth = 50;
+const LineWidth = 3.5;
 
 const TimerCanvas = styled.canvas`
   width: ${TimerWidth};
@@ -205,9 +206,7 @@ export class ArrowTimer extends PureComponent {
   }
 
   componentDidUpdate(oldProps) {
-    this.resize();
     if (this.props.score !== oldProps.score) {
-      // console.log(this.props.score, oldProps.score)
       this.animate();
     }
   }
@@ -222,11 +221,14 @@ export class ArrowTimer extends PureComponent {
     this.canvas.style.height = TimerWidth + 'px';
   }
 
-  reset() {
-    const ctx = this.canvas.getContext('2d');
+  reset(ctx) {
+    ctx = ctx || this.canvas.getContext('2d');
     const w = this.canvas.width;
     const h = this.canvas.height;
-    const lineWidth = 2.5 * devicePixelRatio;
+    const lineWidth = LineWidth * devicePixelRatio;
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = lineWidth;
+    ctx.lineJoin = 'round';
     ctx.clearRect(0, 0, w, h);
     ctx.beginPath();
     ctx.arc(w / 2, h / 2, w / 2 - lineWidth, 0, 2.0 * Math.PI);
@@ -238,10 +240,11 @@ export class ArrowTimer extends PureComponent {
     const ctx = this.canvas.getContext('2d');
     const w = this.canvas.width;
     const h = this.canvas.height;
-    const lineWidth = 2.5 * devicePixelRatio;
+    const lineWidth = LineWidth * devicePixelRatio;
     ctx.fillStyle = '#fff';
     ctx.strokeStyle = '#000';
     ctx.lineWidth = lineWidth;
+    ctx.lineJoin = 'round';
     tween.remove(this.t);
     this.t = tween.add({
       from: { angle: 1.5 * Math.PI },
@@ -255,11 +258,12 @@ export class ArrowTimer extends PureComponent {
         ctx.moveTo(w / 2, h / 2);
         ctx.lineTo(w / 2, lineWidth);
         ctx.arc(w / 2, h / 2, w / 2 - lineWidth, 1.5 * Math.PI, angle);
-        ctx.lineTo(w / 2, h / 2);
+        // ctx.lineTo(w / 2, h / 2);
+        ctx.closePath();
         ctx.stroke();
       },
       finished: () => {
-        this.reset();
+        this.reset(ctx);
         if (onTimerFinished) onTimerFinished(score);
       }
     });
