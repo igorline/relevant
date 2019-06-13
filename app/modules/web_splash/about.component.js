@@ -204,8 +204,8 @@ class Splash extends Component {
         </Wrapper>
 
         <CountUp
-          high={['a smart post with potential']}
-          low={['a not-so-great listicle']}
+          high={['a smart post\nwith potential']}
+          low={['a not-so-great\nlisticle']}
           type={'coin'}
           color={colors.gold}
         />

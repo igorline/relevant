@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { colors } from 'app/styles';
 import { tween } from 'app/utils';
 
 import { CountUpContainer, CountUpSpacer } from './countUp.container';
@@ -11,7 +12,7 @@ const marqueeCoin = {
   active: true,
   firingRate: 2000,
   parallax: 1,
-  speed: 5
+  speed: 5.5
 };
 
 const marqueeOff = {
@@ -71,11 +72,13 @@ export default class CountUpCoin extends Component {
   // headline animates first, triggering the coin
   handleHeadlineFinished() {
     if (this.state.animationState !== 0) return;
-    this.setState({ marquee: marqueeCoin, animationState: 1 });
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
-      this.setState({ marquee: marqueeOff, animationState: 2 });
-    }, 20);
+      this.setState({ marquee: marqueeCoin, animationState: 1 });
+      this.timeout = setTimeout(() => {
+        this.setState({ marquee: marqueeOff, animationState: 2 });
+      }, 20);
+    }, 500);
   }
 
   // when coin finishes, increment the score which triggers the timer
@@ -99,8 +102,11 @@ export default class CountUpCoin extends Component {
   }
 
   render() {
-    const { color } = this.props;
-    const { headline, score, marquee, thumbTiming } = this.state;
+    let { color } = this.props;
+    const { mode, headline, score, marquee, thumbTiming } = this.state;
+    if (!mode) {
+      color = colors.darkLightGrey;
+    }
     return (
       <CountUpContainer>
         <CountUpMarquee

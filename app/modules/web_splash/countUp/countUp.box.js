@@ -14,6 +14,7 @@ const CountUpBoxContainer = styled(View)`
   flex-direction: row;
   align-items: center;
   border-radius: 4px;
+  transition: background-color 0.5s ease;
   ${p => (p.c ? `color: ${p.c};` : '')};
 `;
 
@@ -21,6 +22,7 @@ const Headline = styled(Text)`
   text-transform: uppercase;
   font-size: ${sizing(5)};
   line-height: ${sizing(5)};
+  ${p => (p.type === 'coin' ? `height: ${sizing(12)}; white-space: pre;` : '')}
 `;
 
 export default class CountUpBox extends PureComponent {
@@ -66,7 +68,7 @@ export default class CountUpBox extends PureComponent {
   }
 
   render() {
-    const { type, score, color, thumbTiming, onTimerFinished } = this.props;
+    const { type, color, score, thumbTiming, onTimerFinished } = this.props;
     return (
       <CountUpBoxContainer bg={color} c={type === 'coin' ? 'black' : 'white'}>
         {type === 'thumb' ? (
@@ -76,7 +78,7 @@ export default class CountUpBox extends PureComponent {
         ) : (
           <ArrowTimer score={score} {...thumbTiming} onTimerFinished={onTimerFinished} />
         )}
-        <Headline ref={ref => (this.label = ref)} />
+        <Headline type={type} ref={ref => (this.label = ref)} />
       </CountUpBoxContainer>
     );
   }
