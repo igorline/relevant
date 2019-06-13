@@ -10,8 +10,8 @@ import CountUpMarquee from './countUp.marquee';
 const marqueeCoin = {
   active: true,
   firingRate: 2000,
-  parallax: 2.2,
-  speed: 6
+  parallax: 1,
+  speed: 5
 };
 
 const marqueeOff = {
@@ -21,18 +21,16 @@ const marqueeOff = {
   speed: 0
 };
 
-const marqueeOffTime = 2000;
-const marqueeAdvanceTime = 2000;
-
 export default class CountUpCoin extends Component {
   state = {
     mode: false,
+    animationState: 0,
     headline: '',
     score: 0,
     highIndex: -1,
     lowIndex: -1,
     marquee: { ...marqueeOff },
-    thumbTiming: { delay: 0, duration: 2800 },
+    thumbTiming: { delay: 0, duration: 1000 },
     width: window.innerWidth / 3,
     height: 212
   };
@@ -40,14 +38,12 @@ export default class CountUpCoin extends Component {
   static propTypes = {
     high: PropTypes.array,
     low: PropTypes.array,
-    type: PropTypes.string,
     color: PropTypes.string
   };
 
   advance() {
     const { high, low } = this.props;
     let { mode, highIndex, lowIndex } = this.state;
-    const { score: oldScore } = this.state;
     let headline;
     mode = !mode;
     if (mode) {
@@ -58,64 +54,43 @@ export default class CountUpCoin extends Component {
       headline = low[lowIndex % low.length];
     }
 
-    const marquee = { ...marqueeCoin };
-    const currentScore = oldScore;
-    const score = oldScore;
-
     this.setState({
       mode,
       headline,
-      score,
-      currentScore,
       highIndex,
       lowIndex,
-      marquee,
-      thumbTiming: {
-        delay: marquee.speed * this.state.width,
-        duration: 1950
-      }
+      animationState: 0
     });
-
-    this.timeout = setTimeout(() => {
-      marquee.active = false;
-      this.setState({ marquee: marqueeOff });
-      this.timeout = setTimeout(() => {
-        this.advance();
-      }, marqueeAdvanceTime);
-    }, marqueeOffTime);
   }
 
+  // window measurement triggers the animation
   handleMeasurement(width, height) {
     this.setState({ width, height }, () => this.advance());
   }
 
-  handleFinished(score) {
-    switch (this.props.type) {
-      case 'relevant':
-        this.setState({ currentScore: this.state.currentScore + score });
-        break;
-      case 'coin':
-        this.setState({ currentScore: this.state.currentScore + 1 });
-        break;
-      default:
-        break;
-    }
-  }
-
+  // headline animates first, triggering the coin
   handleHeadlineFinished() {
-    if (this.props.type === 'coin') {
-      this.setState({ score: this.state.score + 1 });
-    }
+    if (this.state.animationState !== 0) return;
+    this.setState({ marquee: marqueeCoin, animationState: 1 });
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.setState({ marquee: marqueeOff, animationState: 2 });
+    }, 20);
   }
 
+  // when coin finishes, increment the score which triggers the timer
+  handleCoinFinished() {
+    if (this.state.animationState !== 2) return;
+    this.setState({ score: this.state.score + 1, animationState: 3 });
+  }
+
+  // when the timer is finished, display the funky message!!
   handleTimerFinished() {
-    if (this.props.type === 'coin') {
-      // console.log('wooooooo');
-    }
-  }
-
-  componentDidMount() {
-    // this.advance();
+    if (this.state.animationState !== 3) return;
+    this.setState({ animationState: 4 });
+    setTimeout(() => {
+      this.advance();
+    }, 1000);
   }
 
   componentWillUnmount() {
@@ -124,21 +99,21 @@ export default class CountUpCoin extends Component {
   }
 
   render() {
-    const { type, color } = this.props;
-    const { headline, score, currentScore, marquee, thumbTiming } = this.state;
+    const { color } = this.props;
+    const { headline, score, marquee, thumbTiming } = this.state;
     return (
       <CountUpContainer>
         <CountUpMarquee
-          type={type}
+          type={'coin'}
           score={score}
           onMeasure={this.handleMeasurement.bind(this)}
-          onFinished={this.handleFinished.bind(this)}
+          onFinished={this.handleCoinFinished.bind(this)}
           {...marquee}
         />
         <CountUpBox
-          type={type}
+          type={'coin'}
           color={color}
-          score={currentScore}
+          score={score}
           headline={headline}
           onHeadlineFinished={this.handleHeadlineFinished.bind(this)}
           thumbTiming={thumbTiming}

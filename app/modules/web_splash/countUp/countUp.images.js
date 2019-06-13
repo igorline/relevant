@@ -189,15 +189,97 @@ export const Coin = React.forwardRef((props, ref) => (
 
 /* Arrows with pie chart timer */
 
+const TimerWidth = 50;
+
+const TimerCanvas = styled.canvas`
+  width: ${TimerWidth};
+  height: ${TimerWidth};
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
 export class ArrowTimer extends PureComponent {
+  componentDidMount() {
+    this.resize();
+    this.reset();
+  }
+
+  componentDidUpdate(oldProps) {
+    this.resize();
+    if (this.props.score !== oldProps.score) {
+      // console.log(this.props.score, oldProps.score)
+      this.animate();
+    }
+  }
+
+  resize() {
+    const { devicePixelRatio } = window;
+    const w = TimerWidth * devicePixelRatio;
+    const h = TimerWidth * devicePixelRatio;
+    this.canvas.width = w;
+    this.canvas.height = h;
+    this.canvas.style.width = TimerWidth + 'px';
+    this.canvas.style.height = TimerWidth + 'px';
+  }
+
+  reset() {
+    const ctx = this.canvas.getContext('2d');
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const lineWidth = 2.5 * devicePixelRatio;
+    ctx.clearRect(0, 0, w, h);
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2, w / 2 - lineWidth, 0, 2.0 * Math.PI);
+    ctx.stroke();
+  }
+
+  animate() {
+    const { delay, duration, score, onTimerFinished } = this.props;
+    const ctx = this.canvas.getContext('2d');
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    const lineWidth = 2.5 * devicePixelRatio;
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = lineWidth;
+    tween.remove(this.t);
+    this.t = tween.add({
+      from: { angle: 1.5 * Math.PI },
+      to: { angle: 3.5 * Math.PI },
+      delay,
+      duration,
+      // easing: tween.easing.circIn,
+      update: ({ angle }) => {
+        ctx.clearRect(0, 0, w, h);
+        ctx.beginPath();
+        ctx.moveTo(w / 2, h / 2);
+        ctx.lineTo(w / 2, lineWidth);
+        ctx.arc(w / 2, h / 2, w / 2 - lineWidth, 1.5 * Math.PI, angle);
+        ctx.lineTo(w / 2, h / 2);
+        ctx.stroke();
+      },
+      finished: () => {
+        this.reset();
+        if (onTimerFinished) onTimerFinished(score);
+      }
+    });
+  }
+
   render() {
+    // to test, add to the TimerCanvas: onClick={() => this.animate()}
     return (
       <ArrowsContainer>
         <ArrowsImage src={'/img/countUp-black-arrow-up.svg'} />
-        <ArrowsContents ref={ref => (this.label = ref)}>{'π'}</ArrowsContents>
+        <TimerCanvas ref={ref => (this.canvas = ref)} />
         <ArrowsImage src={'/img/countUp-black-arrow-down.svg'} />
       </ArrowsContainer>
     );
   }
 }
-ArrowTimer.propTypes = {};
+
+ArrowTimer.propTypes = {
+  score: PropTypes.number,
+  delay: PropTypes.number,
+  duration: PropTypes.number,
+  onTimerFinished: PropTypes.func
+};
