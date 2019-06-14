@@ -1,6 +1,7 @@
 import PostData from 'server/api/post/postData.model';
 import { MINIMUM_RANK } from 'server/config/globalConstants';
 import Community from 'server/api/community/community.model';
+import CommunityMember from 'server/api/community/community.member.model';
 
 exports.index = async req => {
   // try {
@@ -18,7 +19,17 @@ exports.index = async req => {
   let sortQuery;
   let commentarySort;
 
-  const cObj = await Community.findOne({ slug: community }, '_id');
+  const cObj = await Community.findOne({ slug: community }, '_id private');
+  if (!cObj) throw new Error(`Community ${community} doesn't exist`);
+
+  if (cObj.private) {
+    if (!user) throw new Error('This community is private');
+    const member = await CommunityMember.findOne({
+      communityId: cObj._id,
+      user: user._id
+    });
+    if (!member) throw new Error('This community is private');
+  }
   const communityId = cObj._id;
 
   let query = { communityId, isInFeed: true };

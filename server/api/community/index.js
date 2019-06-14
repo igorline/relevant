@@ -9,7 +9,7 @@ router.get('/:slug/members', auth.blocked(), controller.members);
 // Search by embedded user handle and name
 router.get('/:slug/members/search', auth.blocked(), controller.memberSearch);
 router.get('/membership/:user', auth.isAuthenticated(), controller.membership);
-router.get('/', asyncMiddleware(controller.index));
+router.get('/', auth.currentUser(), asyncMiddleware(controller.index));
 router.get('/:slug', auth.isAuthenticated(), controller.findOne);
 
 router.post('/', auth.isAuthenticated(), controller.create);
