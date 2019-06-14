@@ -81,6 +81,18 @@ class CommunityAdminForm extends Component {
         validate: [required]
       },
       {
+        name: 'private',
+        label: 'Private',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
+        name: 'hidden',
+        label: 'Unlisted (anyone with link can still see and join the community)',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
         name: 'slug',
         label: 'Slug',
         component: ReduxFormField,
@@ -124,7 +136,7 @@ class CommunityAdminForm extends Component {
         name: 'admins',
         component: AsyncAdminField,
         type: 'text',
-        label: 'Moderators',
+        label: 'Trusted Users',
         validate: []
       }
     ];
