@@ -874,16 +874,16 @@ exports[`Snapshot NavProfile 1`] = `
                 "borderRightWidth": "0px",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "rgba(153,153,153,1.00)",
+                "color": "inherit",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexShrink": 0,
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.05rem",
+                "fontSize": "1.225rem",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "lineHeight": "1.4rem",
+                "lineHeight": "1.6333333333333333rem",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
@@ -901,7 +901,9 @@ exports[`Snapshot NavProfile 1`] = `
               }
             }
           >
-            A community for curating and discussing links related to critical analysis of #technology, #society and #culture.
+            <span>
+              A community for curating and discussing links related to critical analysis of #technology, #society and #culture.
+            </span>
           </div>
         </div>
         <div
