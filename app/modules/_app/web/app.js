@@ -52,7 +52,8 @@ class App extends Component {
     history: PropTypes.object,
     route: PropTypes.object,
     activeCommunity: PropTypes.string,
-    globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
+    globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    navigation: PropTypes.object
   };
 
   state = {
@@ -146,7 +147,9 @@ class App extends Component {
   };
 
   handleUserLogin = () => {
-    const { auth, actions } = this.props;
+    const { auth, actions, navigation } = this.props;
+    const { screenSize } = navigation;
+
     if (auth.user.role === 'temp') {
       return actions.showModal('setHandle');
     }
@@ -164,8 +167,10 @@ class App extends Component {
     ReactGA.set({ userId: auth.user._id });
     actions.getEarnings('pending');
 
+    if (screenSize) return null;
     // eslint-disable-next-line
     Intercom('boot', {
+      alignment: screenSize ? 'left' : 'right',
       app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
       name: `${auth.user.name} @${auth.user.handle}`, // Full name
       email: auth.user.email, // Email address

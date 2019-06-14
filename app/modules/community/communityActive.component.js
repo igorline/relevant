@@ -5,7 +5,7 @@ import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
 import { View, CommunityLink, SecondaryText, BodyText } from 'modules/styled/uni';
-import Linkify from 'linkifyjs/react';
+import { Linkify } from 'app/utils/text';
 
 class CommunityActive extends Component {
   static propTypes = {
