@@ -140,7 +140,7 @@ export default class CountUpMarquee extends PureComponent {
       from: { x: -(width * (randfloat(parallax - 1) + 1)) - 50 },
       to: { x: 0 },
       duration,
-      easing: tween.easing.circOut,
+      easing: tween.easing.circ_in,
       update: ({ x }) => {
         el.current.style.transform =
           'translate3D(' + [x.toFixed(1), y, 0].join('px,') + 'px)';

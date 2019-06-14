@@ -37,6 +37,7 @@ export const Text = styled.span`
   ${mixins.background}
   ${mixins.border}
   ${mixins.color}
+  ${p => (p.onClick ? 'cursor: pointer;' : '')}
 `;
 
 export const InlineText = styled.span`

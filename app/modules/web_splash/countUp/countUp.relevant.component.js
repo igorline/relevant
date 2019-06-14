@@ -9,16 +9,16 @@ import CountUpMarquee from './countUp.marquee';
 
 const marqueeFast = {
   active: true,
-  firingRate: 80,
+  firingRate: 180,
   parallax: 1.3,
-  speed: 2.15
+  speed: 4.15
 };
 
 const marqueeSlowRelevant = {
   active: true,
-  firingRate: 70,
+  firingRate: 670,
   parallax: 1.3,
-  speed: 2.3
+  speed: 5.3
 };
 
 const marqueeOff = {
@@ -40,7 +40,7 @@ export default class CountUpRelevant extends Component {
     lowIndex: -1,
     marquee: { ...marqueeOff },
     thumbTiming: { delay: 0, duration: 2800 },
-    width: window.innerWidth / 3,
+    width: global.window ? window.innerWidth / 3 : 0,
     height: 212
   };
 
