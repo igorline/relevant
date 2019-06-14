@@ -4,6 +4,7 @@ import Profile from 'modules/profile/profile.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { auth } from 'app/mockdata';
+import { Linkify } from 'app/utils/text';
 
 const props = {
   user: auth.auth.user,
@@ -17,7 +18,7 @@ test('Snapshot own Profile', () => {
   const tree = renderer
   .create(
     <MemoryRouter>
-      <Profile {...props} isOwner />
+      <Profile {...props} isOwner bio={<Linkify>{props.user.bio}</Linkify>} />
     </MemoryRouter>
   )
   .toJSON();
@@ -28,7 +29,7 @@ test('Snapshot other users Profile', () => {
   const tree = renderer
   .create(
     <MemoryRouter>
-      <Profile {...props} />
+      <Profile {...props} bio={<Linkify>{props.user.bio}</Linkify>} />
     </MemoryRouter>
   )
   .toJSON();
