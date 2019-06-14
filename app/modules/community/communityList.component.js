@@ -21,7 +21,9 @@ class CommunityAdminList extends Component {
   static propTypes = {
     community: PropTypes.object,
     actions: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    hashtags: PropTypes.bool,
+    p: PropTypes.number
   };
 
   handleJoinCommunity = (e, community) => {
@@ -31,38 +33,54 @@ class CommunityAdminList extends Component {
     }
   };
 
+  renderJoinLink = c => (
+    <LinkFont
+      inline={1}
+      c={colors.blue}
+      onPress={e => this.handleJoinCommunity(e, c)}
+      onClick={e => this.handleJoinCommunity(e, c)}
+    >
+      Join Community
+    </LinkFont>
+  );
+
+  renderInnerText = c => {
+    const { hashtags } = this.props;
+    return hashtags ? (
+      <BodyText c={colors.black} mt={0.5}>
+        {c.topics.map(t => '#' + t).join(', ')}
+      </BodyText>
+    ) : (
+      <React.Fragment>
+        <BodyText inline={1} c={colors.black} mt={0.5}>
+          {c.description}
+        </BodyText>
+        <LinkFont inline={1} c={colors.black} mt={0.5}>
+          {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
+        </LinkFont>
+      </React.Fragment>
+    );
+  };
+
   render() {
     const {
-      community: { communities }
+      community: { communities },
+      p
     } = this.props;
+    const hP = p || 4;
     return (
       <View fdirection="column">
         {Object.values(communities).map(c => {
           const communityURl = `/${c.slug}/new`;
           return (
             <ULink to={communityURl} key={c._id} styles={linkStyles}>
-              <View fdirection="row" align="flex-start" p={'2 4 2 4'}>
-                <Image source={c.image} h={8} w={8} mr={1} bg={colors.secondaryBG} />
+              <View fdirection="row" align="flex-start" p={`2 ${hP}`}>
+                <Image source={c.image} h={8} w={8} mr={2} bg={colors.secondaryBG} />
                 <View fdirection="column" justify="space-between" shrink={1}>
-                  <View fdirection="row">
-                    <BodyText inline={1}>
-                      <Title inline={1}>{c.name} </Title>
-                      <LinkFont
-                        inline={1}
-                        c={colors.blue}
-                        onPress={e => this.handleJoinCommunity(e, c)}
-                        onClick={e => this.handleJoinCommunity(e, c)}
-                      >
-                        Join Community
-                      </LinkFont>
-                    </BodyText>
-                  </View>
-                  <BodyText inline={1} c={colors.black} mt={0.5}>
-                    {c.description}
+                  <BodyText inline={1}>
+                    <Title inline={1}>{c.name} </Title>
                   </BodyText>
-                  <LinkFont inline={1} c={colors.black} mt={0.5}>
-                    {c.memberCount} member{c.memberCount > 1 ? 's' : ''}
-                  </LinkFont>
+                  {this.renderInnerText(c)}
                 </View>
               </View>
             </ULink>

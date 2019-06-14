@@ -38,20 +38,23 @@ const ArrowContainer = styled(View)`
   right: -50px;
   justify-content: center;
   align-items: center;
-  background: #ffffff;
-  box-shadow: 1px 0px 4px 4px #dddddd;
+  /* background: #ffffff; */
+  /* box-shadow: 1px 0px 4px 4px #dddddd; */
   border-radius: 50%;
 `;
 const ArrowImage = styled(Image)`
-  width: 12px;
-  height: 12px;
+  width: 50%;
 `;
 export const Arrow = React.forwardRef((props, ref) => (
-  <ArrowContainer ref={ref} p={props.big ? sizing(3.2) : sizing(0.6)} {...props}>
+  <ArrowContainer
+    ref={ref}
+    w={props.big ? sizing(9) : sizing(3.5)}
+    h={props.big ? sizing(9) : sizing(3.5)}
+    {...props}
+    bg={props.up ? colors.green : colors.red}
+  >
     <ArrowImage
-      src={
-        props.up ? '/img/countUp-small-arrow-up.svg' : '/img/countUp-small-arrow-down.svg'
-      }
+      src={props.up ? '/img/countUp-big-arrow-up.svg' : '/img/countUp-big-arrow-down.svg'}
     />
   </ArrowContainer>
 ));

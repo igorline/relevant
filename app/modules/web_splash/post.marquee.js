@@ -33,9 +33,7 @@ class Marquee extends Component {
     rows: 1
   };
 
-  state = {
-    x: []
-  };
+  x = [];
 
   rows = [];
 
@@ -62,20 +60,17 @@ class Marquee extends Component {
   };
 
   animate = () => {
-    const { x } = this.state;
     const now = new Date();
     const elapsed = this.lastTime ? (now - this.lastTime) / 10 : 0;
 
-    const updatedX = this.rows.map((row, i) => {
+    this.x = this.rows.map((row, i) => {
       const w = row.offsetWidth / 2;
-      let newX = (x[i] || i) - elapsed * this.rowSpeed(i);
+      let newX = (this.x[i] || i) - elapsed * this.rowSpeed(i);
       if (newX <= -w) newX += w;
       const rX = Math.round(newX * 1000) / 1000;
-      // row.style.transform = 'translateX(' + rX + 'px) translateZ(0px)';
+      row.style.transform = `translate3d(${rX}px, 0, 0)`;
       return rX;
     });
-
-    this.setState({ x: updatedX });
 
     this.lastTime = now;
     this.lastFrame = window.requestAnimationFrame(() => this.animate());
@@ -118,7 +113,6 @@ class Marquee extends Component {
   };
 
   renderRow = row => {
-    const { x } = this.state;
     const bg = BG_COLORS[row % 2];
 
     const tickers = this.renderTicker(row, 1);
@@ -126,10 +120,7 @@ class Marquee extends Component {
 
     return (
       <View fdirection="row" flex={1} bg={bg} key={`row${row}`}>
-        <Text
-          style={{ transform: `translateX(${x[row]}px)` }}
-          ref={c => (this.rows[row] = c)}
-        >
+        <Text ref={c => (this.rows[row] = c)}>
           {tickers}
           {tickersDouble}
         </Text>

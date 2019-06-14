@@ -41,7 +41,7 @@ export default class CountUpThumb extends Component {
     lowIndex: -1,
     marquee: { ...marqueeOff },
     thumbTiming: { delay: 0, duration: 2800 },
-    width: window.innerWidth / 3,
+    width: global.window ? window.innerWidth / 3 : 0,
     height: 212
   };
 

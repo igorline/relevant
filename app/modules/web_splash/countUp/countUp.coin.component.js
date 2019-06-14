@@ -32,7 +32,7 @@ export default class CountUpCoin extends Component {
     lowIndex: -1,
     marquee: { ...marqueeOff },
     thumbTiming: { delay: 0, duration: 1000 },
-    width: window.innerWidth / 3,
+    width: global.window ? window.innerWidth / 3 : 0,
     height: 212
   };
 

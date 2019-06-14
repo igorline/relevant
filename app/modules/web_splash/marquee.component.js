@@ -55,10 +55,8 @@ export default class Marquee extends Component {
     ];
     this.x = this.x.map((x, i) => {
       const w = this.dataBlock[i].offsetWidth / 2;
-      // const w = document.getElementsByClassName('m' + i)[0].offsetWidth / 2;
       if (x <= -w) x += w;
-      const rX = Math.round(x * 100) / 100;
-      this.dataBlock[i].style.transform = 'translateX(' + rX + 'px) translateZ(0px)';
+      this.dataBlock[i].style.transform = `translate3d(${x.toFixed()}px, 0, 0)`;
       return x;
     });
 

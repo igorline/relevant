@@ -13,11 +13,31 @@ import SocialIcons from 'modules/navigation/social.icons';
 import Marquee from './post.marquee';
 import CountUp from './countUp/countUp.component';
 
+const SHOW_FIXED_JOIN_HEIGHT = 1200;
+const SHOW_FIXED_LOGO = 2000;
+
 const Phone = styled(Image)`
   position: ${() => responsive(['relative', 'absolute'])};
   bottom: ${() => responsive(['auto', '0'])};
   right: ${() => responsive(['auto', '-20vw'])};
   opacity: ${() => responsive([1, 0.5])};
+`;
+
+const Join = styled(View)`
+  position: fixed;
+  left: 50%;
+  transform: translate3d(-50%, ${p => (p.visible ? '0px' : '200px')}, 0);
+  transition: transform 0.8s ease-out;
+  bottom: ${sizing(4)};
+  z-index: 1000;
+`;
+
+const FixedLogo = styled(View)`
+  position: fixed;
+  left: ${sizing(2)};
+  top: ${sizing(6)};
+  opacity: ${p => (p.visible ? 1 : 0)};
+  transition: opacity 0.1s linear;
 `;
 
 const Wrapper = styled(View)`
@@ -52,42 +72,46 @@ const SectionText = styled(Text)`
 
 class Splash extends Component {
   static propTypes = {
-    // screenSize: PropTypes.number,
+    history: PropTypes.object,
     actions: PropTypes.object
   };
 
+  state = {
+    showJoinButton: false
+  };
+
   onScroll = () => {
-    if (!this.phone) return;
-    this.phone.style.transform = '';
-    const top = this.phone.getBoundingClientRect().top - 169;
-    const y = Math.max(-top / 3, 0);
-    this.phone.style.transform = `translateX(0) translateY(${y}px)`;
+    const showJoinButton = window.scrollY > SHOW_FIXED_JOIN_HEIGHT;
+    if (this.state.showJoinButton !== showJoinButton) this.setState({ showJoinButton });
+
+    const showFixedLogo = window.scrollY > SHOW_FIXED_LOGO;
+    if (this.state.showFixedLogo !== showFixedLogo) this.setState({ showFixedLogo });
   };
 
   componentDidMount() {
+    window.addEventListener('scroll', this.onScroll);
     tween.start();
   }
 
   componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
     tween.stop();
   }
 
+  signUp = async modal => {
+    const { actions, history } = this.props;
+    history.push('/community/all');
+    actions.showModal(modal);
+  };
+
   render() {
-    const { actions } = this.props;
-    // const img = '/img/hand-transparent.png';
-    // const learnMoreUrl =
-    // 'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
+    const { showFixedLogo, showJoinButton } = this.state;
 
     return (
       <View flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
         <Marquee />
 
-        <Wrapper
-          ref={c => (this.container = c)}
-          justify="flex-start"
-          align="center"
-          fdirection="column"
-        >
+        <Wrapper justify="flex-start" align="center" fdirection="column">
           <Section style={{ minHeight: '100vh' }}>
             <Image
               h={[8, 7, 6]}
@@ -107,12 +131,7 @@ class Splash extends Component {
             </SplashText>
 
             <View mt={6} fdirection={'row'} align="center">
-              <Button
-                h={8}
-                p={'2 6'}
-                mr={3}
-                onClick={() => actions.showModal('signupSocial')}
-              >
+              <Button h={8} p={'2 6'} mr={3} onClick={() => this.signUp('signupSocial')}>
                 <SectionText>Join Relevant</SectionText>
               </Button>
               <SectionText inline={1}>
@@ -120,7 +139,7 @@ class Splash extends Component {
                 <Text
                   style={{ textDecoration: 'underline' }}
                   inline={1}
-                  onClick={() => actions.showModal('login')}
+                  onClick={() => this.signUp('login')}
                   c={colors.blue}
                 >
                   Log In
@@ -146,12 +165,7 @@ class Splash extends Component {
           color={colors.brightRed}
         />
 
-        <Wrapper
-          ref={c => (this.container = c)}
-          justify="flex-start"
-          align="center"
-          fdirection="column"
-        >
+        <Wrapper justify="flex-start" align="center" fdirection="column">
           <Section>
             <SplashText>
               This is why we’ve built a manipulation-resistant Reputation metric that
@@ -170,12 +184,7 @@ class Splash extends Component {
           color={colors.brightBlue}
         />
 
-        <Wrapper
-          ref={c => (this.container = c)}
-          justify="flex-start"
-          align="center"
-          fdirection="column"
-        >
+        <Wrapper justify="flex-start" align="center" fdirection="column">
           <Section>
             <SplashText>
               The Relevant Reputation System puts curation power in the hands of trusted
@@ -193,7 +202,7 @@ class Splash extends Component {
               valuable to their members.
             </SplashText>
             <SplashText>Here are a few communities you can join right now:</SplashText>
-            <CommunityList />
+            <CommunityList p={2} hashtags />
           </Section>
 
           <Section>
@@ -210,12 +219,7 @@ class Splash extends Component {
           color={colors.gold}
         />
 
-        <Wrapper
-          ref={c => (this.container = c)}
-          justify="flex-start"
-          align="center"
-          fdirection="column"
-        >
+        <Wrapper justify="flex-start" align="center" fdirection="column">
           <Section>
             <SplashText>
               On Relevant users can bet on the relevance of content. Bets don’t impact
@@ -270,6 +274,16 @@ class Splash extends Component {
         <View style={{ position: 'fixed', top: size(5), right: size(1) }}>
           <SocialIcons />
         </View>
+
+        <FixedLogo visible={showFixedLogo}>
+          <Image h={[6, 6, 6]} src={'/img/r-big.png'} alt={'Relevant'} />
+        </FixedLogo>
+
+        <Join visible={showJoinButton}>
+          <Button h={8} p={'2 6'} mr={3} onClick={() => this.signUp('signupSocial')}>
+            <SectionText>Join Relevant</SectionText>
+          </Button>
+        </Join>
       </View>
     );
   }
