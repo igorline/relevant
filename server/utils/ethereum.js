@@ -22,6 +22,8 @@ export async function init() {
     // SECURITY - this env var should never by exposed via any APIs!
     key = process.env.OWNER_KEY;
 
+    if (!key) return false;
+
     let provider = ethers.getDefaultProvider(INFURA_NETWORK);
     let tokenAddress = RelevantToken.networks[NETWORK_NUMBER]
       ? RelevantToken.networks[NETWORK_NUMBER].address
