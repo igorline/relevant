@@ -8,7 +8,7 @@ import { logoutAction } from 'modules/auth/auth.actions';
 import { authProps } from 'app/utils/propValidation';
 import Profile from 'modules/profile/profile.component';
 import UserPosts from 'modules/profile/web/userPosts.component';
-import { Divider } from 'modules/styled/uni';
+import { Divider, View } from 'modules/styled/web';
 import { showModal, hideModal } from 'modules/navigation/navigation.actions';
 import Linkify from 'linkifyjs/react';
 
@@ -66,7 +66,7 @@ class ProfileContainer extends Component {
     const { user } = this.state;
     const bio = user.bio && <Linkify>{user.bio}</Linkify>;
     return (
-      <div>
+      <View mb={20} fdirection="column">
         <Profile
           key={this.state.user._id + 'profile'}
           {...this.props}
@@ -81,7 +81,7 @@ class ProfileContainer extends Component {
           load={this.grabPosts}
           pageSize={pageSize}
         />
-      </div>
+      </View>
     );
   }
 }
