@@ -364,20 +364,20 @@ export function getSelectedPost(postId) {
   return async (dispatch, getState) => {
     try {
       const { auth } = getState();
-      const responseJSON = await api.request({
+      const post = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '',
         params: { id: postId },
         user: auth.user
       });
-      if (!responseJSON) {
+      if (!post) {
         dispatch(removePost(postId));
       } else {
-        dispatch(updatePost(responseJSON));
+        dispatch(updatePost(post));
       }
       dispatch(errorActions.setError('singlepost', false));
-      return responseJSON;
+      return post;
     } catch (error) {
       dispatch(errorActions.setError('singlepost', true, error.message));
       return false;

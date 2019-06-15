@@ -428,13 +428,15 @@ exports.readable = async (req, res, next) => {
 
 exports.index = async req => {
   const { community } = req.query;
+  const { id: postId } = req.params;
   const { user } = req;
 
   const cObj = await Community.findOne({ slug: community }, '_id');
   const communityId = cObj._id;
 
   let blocked = [];
-  if (user) blocked = [...user.blocked, ...user.blockedBy];
+  // TODO server rendering doesn't run the blocked middleware!
+  if (user) blocked = [...(user.blocked || []), ...(user.blockedBy || [])];
 
   const myVote = user
     ? [
@@ -446,7 +448,7 @@ exports.index = async req => {
     : [];
 
   const post = await Post.findOne({
-    _id: req.params.id,
+    _id: postId,
     user: { $nin: blocked }
   }).populate([
     ...myVote,
