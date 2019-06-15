@@ -142,18 +142,12 @@ function mapStateToProps(state) {
     auth: state.auth,
     earnings: state.earnings,
     user: state.auth.user,
-    drizzleStatus: state.drizzleStatus,
-    contract: get(state, 'contracts.RelevantCoin'),
+    contract: get(state, 'RelevantToken.contracts'),
     accounts: state.accounts,
     contracts: state.contracts,
-    accountBalances: state.accountBalances,
     screenSize: state.navigation.screenSize,
     modal: state.navigation.modal,
-    drizzle: {
-      transactions: state.transactions,
-      web3: state.web3,
-      transactionStack: state.transactionStack
-    }
+    web3: state.web3
   };
 }
 
