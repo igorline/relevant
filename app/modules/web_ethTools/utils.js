@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import crypto from 'crypto';
 import { INFURA_PROTOCOL, INFURA_NETWORK, INFURA_API_KEY } from 'core/config';
 
 let web3;
@@ -68,6 +69,26 @@ export function formatBN(hex, decimals = 18) {
     return result;
   }
   return Number(numString);
+}
+
+export function generateSalt() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+export function formatBalanceRead(balString) {
+  return `${balString.slice(0, -18)}.${balString.slice(-18)}`;
+}
+
+export function formatBalanceWrite(balString, decimals = 18) {
+  return (balString * 10 ** decimals).toString();
+}
+
+export function appendZeroes(numString, amount) {
+  return `${numString}${'0'.repeat(amount)}`;
+}
+
+export function removeDecimal(balString) {
+  return balString.split('.').join('');
 }
 
 export function withoutZeros(numString) {
