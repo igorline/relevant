@@ -151,6 +151,10 @@ export function fetchMeta({ initialState, req }) {
   const postMeta = getPostMeta({ postId, commentId, initialState });
   const communityMeta = getCommunityMeta({ initialState });
 
+  Object.keys(postMeta).forEach(key => {
+    if (!postMeta[key]) delete postMeta[key];
+  });
+
   if (postId) return { ...defaultMeta, ...communityMeta, ...postMeta };
   if (feed) return { ...defaultMeta, ...communityMeta };
   return defaultMeta;
@@ -167,7 +171,7 @@ function getPostMeta({ initialState, postId, commentId }) {
   const linkData = post.metaPost ? posts.links[post.metaPost] : post;
   const { title } = linkData;
   const image = userImage || linkData.image || 'https://relevant.community/img/r-big.png';
-  const description = userComment || post.body;
+  const description = userComment || post.body || linkData.description;
   const type = image && !userImage ? 'summary_large_image' : 'summary';
   return { title, image, description, type };
 }
