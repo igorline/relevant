@@ -6,7 +6,11 @@ const RelevantToken = require('../../app/contracts/RelevantToken.json');
 
 let decimals;
 let instance;
+let rpcUrl;
+let provider;
+let network;
 let key;
+let tokenAddress;
 let web3;
 let initialized = false;
 let wallet;
@@ -20,25 +24,25 @@ export const getInstance = () => instance;
 export async function init() {
   try {
     // SECURITY - this env var should never by exposed via any APIs!
-    key = process.env.OWNER_KEY;
+    if (process.env.NODE_ENV === 'production') {
+      key = process.env.OWNER_KEY;
+      if (!key) return false;
 
-    if (!key) return false;
-
-    let provider = ethers.getDefaultProvider(INFURA_NETWORK);
-    let tokenAddress = RelevantToken.networks[NETWORK_NUMBER]
-      ? RelevantToken.networks[NETWORK_NUMBER].address
-      : null;
-
-    if (process.env.NODE_ENV === 'test') {
-      const rpcUrl = process.env.TEST_RPC;
+      provider = ethers.getDefaultProvider(INFURA_NETWORK);
+      tokenAddress = RelevantToken.networks[NETWORK_NUMBER]
+        ? RelevantToken.networks[NETWORK_NUMBER].address
+        : null;
+    } else {
       key = process.env.TEST_KEY;
+      if (!key) return false;
+
+      rpcUrl = process.env.TEST_RPC;
       provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-      const network = await provider.getNetwork();
+      network = await provider.getNetwork();
       tokenAddress = RelevantToken.networks[network.chainId].address;
     }
 
     wallet = new ethers.Wallet(key, provider);
-
     instance = new ethers.Contract(tokenAddress, RelevantToken.abi, provider);
 
     // SECURITY - this should never by exposed via any APIs!
@@ -59,6 +63,8 @@ export async function getBalance(address) {
 }
 
 export async function getParam(param, opt) {
+  if (!initialized) await init();
+
   let value = await instance[param]();
   if (!opt || !opt.noConvert) value = value.div((10 ** decimals).toString());
   if (!opt || !opt.string) value = value.toNumber();
