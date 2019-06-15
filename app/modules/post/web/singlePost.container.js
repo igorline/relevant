@@ -23,8 +23,9 @@ class SinglePostContainer extends Component {
 
   static async fetchData(dispatch, params) {
     if (!params.id || params.id === undefined) return null;
-    await dispatch(getComments(params.id));
-    return dispatch(postActions.getSelectedPost(params.id));
+    const fetchComments = dispatch(getComments(params.id));
+    const fetchPost = dispatch(postActions.getSelectedPost(params.id));
+    return Promise.all([fetchComments, fetchPost]);
   }
 
   componentDidMount() {
