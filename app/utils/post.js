@@ -18,7 +18,8 @@ export function getTitle({ post, link, firstPost, maxLength }) {
 }
 
 export function getFavIcon(domain) {
-  return `https://s2.googleusercontent.com/s2/favicons?domain=${domain}`;
+  return `https://api.faviconkit.com/${domain}/144`;
+  // return `https://s2.googleusercontent.com/s2/favicons?domain=${domain}`;
 }
 
 export const getPostUrl = (community, post) => {
