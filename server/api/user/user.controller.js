@@ -790,10 +790,15 @@ exports.cashOut = async (req, res, next) => {
     }
 
     if (amount < 100) throw new Error('Balance is too small to withdraw');
-    const distributedRewards = await ethUtils.getParam('distributedRewards');
+    const allocatedRewards = await ethUtils.getParam('allocatedRewards');
 
-    if (distributedRewards < amount) {
-      throw new Error('There are not enough funds in contract at the moment');
+    // eslint-disable-next-line no-console
+    console.log({ allocatedRewards, amount });
+
+    if (allocatedRewards < amount) {
+      throw new Error(
+        'There are not enough funds allocated in the contract at the moment'
+      );
     }
 
     // make sure we 0 out the balance
