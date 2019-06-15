@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { View, Title, BodyText, SecondaryText } from 'modules/styled/uni';
 import styled from 'styled-components';
-import ContractProvider from 'modules/contract/contract.container';
+import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN, readableMethods } from 'modules/contract/utils';
+import { formatBalanceRead } from '../../web_ethTools/utils';
 
 const ParamsTable = styled.table`
   margin-top: 10px;
@@ -15,11 +15,19 @@ const ContractParams = ({
   web3Status,
   web3Actions,
   cacheMethod,
+  cacheEvent,
   methodCache,
   accounts,
   userBalance
 }) => {
-  useTokenContract(web3Status, web3Actions, cacheMethod, accounts, userBalance);
+  useTokenContract(
+    web3Status,
+    web3Actions,
+    cacheMethod,
+    cacheEvent,
+    accounts,
+    userBalance
+  );
 
   useEffect(() => {
     readableMethods.forEach(method => cacheMethod(method));
@@ -35,7 +43,9 @@ const ContractParams = ({
           </SecondaryText>
           <SecondaryText>
             User balance:{' '}
-            {userBalance && userBalance.value ? parseBN(userBalance.value) : 'Loading...'}
+            {userBalance && userBalance.value
+              ? formatBalanceRead(parseBN(userBalance.value).toString())
+              : 'Loading...'}
           </SecondaryText>
           <BodyText>
             <ParamsTable>
@@ -65,13 +75,6 @@ const ContractParams = ({
 
 const hasCacheValue = cache => cache.select('name') && cache.select('name').value;
 
-ContractParams.propTypes = {
-  web3Status: PropTypes.object,
-  web3Actions: PropTypes.object,
-  methodCache: PropTypes.object,
-  cacheMethod: PropTypes.func,
-  accounts: PropTypes.array,
-  userBalance: PropTypes.object
-};
+ContractParams.propTypes = contractPropTypes;
 
 export default ContractProvider(ContractParams);
