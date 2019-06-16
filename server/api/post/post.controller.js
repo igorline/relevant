@@ -558,7 +558,8 @@ async function processSubscriptions(newPost, communityId) {
   try {
     const author = newPost.embeddedUser;
     const subscribers = await Subscriptiton.find({
-      following: newPost.user
+      following: newPost.user,
+      communityId
       // category: newPostObj.category
     }).populate('follower', '_id handle name deviceTokens badge lastFeedNotification');
 
