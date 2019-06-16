@@ -136,7 +136,7 @@ class CommunityAdminForm extends Component {
         name: 'admins',
         component: AsyncAdminField,
         type: 'text',
-        label: 'Trusted Users',
+        label: 'Moderators (Trusted Members)',
         validate: []
       }
     ];
