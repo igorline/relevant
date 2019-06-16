@@ -158,21 +158,31 @@ async function investCheck(params) {
   return investment;
 }
 
-async function updateSubscriptions({ post, user, amount, undoInvest }) {
+async function updateSubscriptions({
+  post,
+  user,
+  amount,
+  undoInvest,
+  communityId,
+  community
+}) {
   if (amount < 0) return null;
   let subscription = await Subscription.findOne({
     follower: user._id,
-    following: post.user
+    following: post.user,
+    communityId
   });
+  if (!subscription && undoInvest) return null;
   if (!subscription) {
-    if (undoInvest) return null;
     subscription = new Subscription({
       follower: user._id,
       following: post.user,
+      communityId,
+      community,
       amount: 0
     });
   }
-  const inc = undoInvest ? Math.max(-4, -subscription.amount) : 4;
+  const inc = undoInvest ? Math.max(-3, -subscription.amount) : 3;
   subscription.amount = Math.min(subscription.amount + inc, 20);
   return subscription.save();
 }
@@ -383,7 +393,13 @@ exports.create = async (req, res, next) => {
     }
 
     // update subscriptions
-    const subscription = await updateSubscriptions({ post, user, amount });
+    const subscription = await updateSubscriptions({
+      post,
+      user,
+      amount,
+      communityId,
+      community
+    });
 
     // TODO - put the rest into queue on worker;
     const initialPostRank = post.data.pagerank;
