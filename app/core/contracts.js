@@ -1,7 +1,6 @@
 import Statesauce from 'redux-saga-web3-eth-contract';
 import { getProvider, getRpcUrl, getMetamask } from 'modules/web_ethTools/utils';
 import RelevantToken from '../contracts/RelevantToken';
-// import RelevantToken from '../contracts/RelevantTokenTest';
 import { NETWORK_NUMBER } from './config';
 
 const web3 = getProvider({
