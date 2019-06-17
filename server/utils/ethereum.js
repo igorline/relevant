@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { INFURA_NETWORK, NETWORK_NUMBER } from 'app/core/config';
 
 const RelevantToken = require('../../app/contracts/RelevantToken.json');
+// const RelevantToken = require('../../app/contracts/RelevantTokenTest.json');
 
 let decimals;
 let instance;
