@@ -18,6 +18,7 @@ export const readableMethods = Object.keys(
       method !== 'partialSum' &&
       method !== 'nonceOf' &&
       method !== 'isOwner' &&
+      method !== 'currentRound' &&
       method !== 'roundDecay'
   )
 );
