@@ -61,12 +61,15 @@ export function buildRpcUrl(
 
 export function formatBN(hex, decimals = 18) {
   const numString = Number(hex).toString();
-
+  // console.log('numString', numString);
   if (numString[numString.length - 3] === '+') {
     const trailingZeroes = getTrailingZeros(numString, decimals);
     const result = Number(withoutZeros(numString) + trailingZeroes);
 
-    return result;
+    return Number.parseFloat(result).toFixed(0);
+  }
+  if (numString.length > 18) {
+    return Number(numString.slice(0, -18));
   }
   return Number(numString);
 }
