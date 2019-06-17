@@ -2,19 +2,29 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'modules/ui/web/modal';
 import { alert } from 'app/utils';
-import { Button, View, BodyText, SecondaryText } from 'modules/styled/uni';
+import { Button, View, BodyText } from 'modules/styled/uni';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 import {
   getProvider,
   formatBalanceWrite,
   generateSalt
 } from 'modules/web_ethTools/utils';
+import { NETWORK_NUMBER } from 'core/config';
 
 const Alert = alert.Alert();
 const web3 = getProvider();
 const decimals = 18;
 
-const AddEthAddress = ({ actions, user, accounts, modal, balance, cacheSend }) => {
+const AddEthAddress = ({
+  actions,
+  web3: _web3,
+  web3Actions,
+  user,
+  accounts,
+  modal,
+  balance,
+  cacheSend
+}) => {
   const _cashOut = async () => {
     try {
       if (!user.ethAddress.length) await connectAddress();
@@ -80,20 +90,16 @@ const AddEthAddress = ({ actions, user, accounts, modal, balance, cacheSend }) =
         <BodyText>
           This will transfer the coins you have to your Ethereum wallet.
         </BodyText>
-        <BodyText mt={2}>TODO: show prompt to install Metamask if no Metamask</BodyText>
-        <SecondaryText>
-          Like this: *We'll need to connect your account, it is not a transaction and is
-          totally free
-        </SecondaryText>
-        <BodyText>
-          TODO: explain if no account is connected to db (prompt to sign tx)
-        </BodyText>
-        <BodyText>TODO: warning if network mismatch</BodyText>
-        <BodyText>TODO: warning if current account mismatch</BodyText>
-        <BodyText>TODO: warning if current account mismatch</BodyText>
-        <BodyText>TODO: add custom amount?</BodyText>
-        <BodyText>TODO: add custom address?</BodyText>
-
+        {!accounts ? (
+          <ConnectMetamask />
+        ) : (
+          <EnableMetamask getAccounts={web3Actions.accounts.getRequest} />
+        )}
+        {_web3.network.id && _web3.network.id !== NETWORK_NUMBER && <SwitchToMainnet />}
+        {user.ethAddress.length &&
+          accounts &&
+          accounts[0] &&
+          user.ethAddress[0] !== accounts[0] && <SwitchAccounts />}
         <Button mr={'auto'} mt={4} onClick={() => _cashOut()}>
           Claim Relevant Coins
         </Button>
@@ -112,4 +118,33 @@ AddEthAddress.propTypes = {
 
 export default ContractProvider(AddEthAddress);
 
-// To allacote Rewards -- cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+const ConnectMetamask = () => (
+  <BodyText mt={2}>
+    Connect{' '}
+    <a href="https://metamask.io/" target="_blank">
+      Metamask
+    </a>{' '}
+    to securely connect to Ethereum.
+  </BodyText>
+);
+
+const EnableMetamask = ({ getAccounts }) => (
+  <BodyText mt={2}>
+    Enable <a onClick={() => getAccounts()}>Metamask</a> to withdraw your tokens
+  </BodyText>
+);
+
+EnableMetamask.propTypes = {
+  getAccounts: PropTypes.func
+};
+
+const SwitchToMainnet = () => <BodyText>Switch to to Ehereum Mainnet</BodyText>;
+
+const SwitchAccounts = () => (
+  <BodyText>
+    Your current Ethereum account doesn't match our records. Please switch to the account
+    you used when signing up.
+  </BodyText>
+);
+
+// TODO -- Add custom amount, account support
