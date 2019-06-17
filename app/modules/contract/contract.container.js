@@ -1,6 +1,7 @@
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
 import { actions as tokenActions, tokenAddress, selectors } from 'core/contracts';
 import { selectUserBalance } from './contract.selectors';
@@ -25,6 +26,7 @@ export const mapContractDispatch = dispatch => ({
     init(web3Instance) {
       dispatch(_web3Actions.init.init(web3Instance));
     },
+    accounts: bindActionCreators({ ..._web3Actions.accounts }, dispatch),
     onAccountsChanged(metamask) {
       metamask.on('accountsChanged', _accounts =>
         dispatch(_web3Actions.accounts.getSuccess(_accounts))
