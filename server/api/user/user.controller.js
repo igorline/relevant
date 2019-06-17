@@ -800,14 +800,20 @@ exports.cashOut = async (req, res, next) => {
         'There are not enough funds allocated in the contract at the moment'
       );
     }
+    /*
+      TODO -- Consider persisting balances/cachOut attempts
+       or migrating to immutable data structures
+    */
 
-    // make sure we 0 out the balance
-    user.balance = 0;
+    amount = Number.parseFloat(amount).toFixed(0);
+    // make sure we subtract claim amount from balance
+    user.balance -= amount;
     await user.save();
 
     const sig = await ethUtils.sign(address, amount);
     user.nonce = nonce;
     user.cashOut = { sig, amount, nonce };
+    // console.log('user', user);
     await user.save();
     return res.status(200).json(user);
   } catch (err) {
