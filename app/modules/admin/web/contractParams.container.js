@@ -1,20 +1,27 @@
 import React, { useEffect } from 'react';
-import { View, Title, BodyText, SecondaryText } from 'modules/styled/uni';
+import { View, Title, BodyText, SecondaryText, Button } from 'modules/styled/uni';
 import styled from 'styled-components';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN, readableMethods } from 'modules/contract/utils';
-import { formatBalanceRead } from '../../web_ethTools/utils';
+import { formatBalanceWrite } from '../../web_ethTools/utils';
 
 const ParamsTable = styled.table`
   margin-top: 10px;
   margin-left: 20px;
 `;
 
+const AdminActions = styled.div`
+  max-width: 280px;
+  margin-top: 10px;
+`;
+
+const rewardsToAllocate = formatBalanceWrite('999', 18);
 const ContractParams = ({
   web3Status,
   web3Actions,
   cacheMethod,
+  cacheSend,
   cacheEvent,
   methodCache,
   accounts,
@@ -32,7 +39,9 @@ const ContractParams = ({
   useEffect(() => {
     readableMethods.forEach(method => cacheMethod(method));
   }, []);
-
+  const releaseTokens = () => cacheSend('releaseTokens', { from: accounts[0] });
+  const allocateRewards = () =>
+    cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
   return (
     <View m={4}>
       <Title>Contract Params</Title>
@@ -44,7 +53,7 @@ const ContractParams = ({
           <SecondaryText>
             User balance:{' '}
             {userBalance && userBalance.value
-              ? formatBalanceRead(parseBN(userBalance.value).toString())
+              ? parseBN(userBalance.value).toString()
               : 'Loading...'}
           </SecondaryText>
           <BodyText>
@@ -67,6 +76,16 @@ const ContractParams = ({
               </tbody>
             </ParamsTable>
           </BodyText>
+          {accounts && accounts[0] && (
+            <AdminActions>
+              <Button mr={'auto'} mt={4} onClick={() => releaseTokens()}>
+                Release Tokens
+              </Button>
+              <Button mr={'auto'} mt={4} onClick={() => allocateRewards()}>
+                Allocate Rewards
+              </Button>
+            </AdminActions>
+          )}
         </View>
       </View>
     </View>
