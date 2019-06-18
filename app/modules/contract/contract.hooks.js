@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getProvider, getMetamask } from 'modules/web_ethTools/utils';
+import { getProvider, getMetamask } from 'app/utils/eth';
 
 const web3 = getProvider();
 const metamask = getMetamask();

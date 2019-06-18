@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Title, BodyText, SecondaryText, Button } from 'modules/styled/uni';
 import styled from 'styled-components';
+import pickBy from 'lodash.pickby';
+import { types } from 'core/contracts';
+import { View, Title, BodyText, SecondaryText, Button } from 'modules/styled/uni';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract } from 'modules/contract/contract.hooks';
-import { parseBN, readableMethods } from 'modules/contract/utils';
-import { formatBalanceWrite } from '../../web_ethTools/utils';
+import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 
 const ParamsTable = styled.table`
   margin-top: 10px;
@@ -17,6 +18,8 @@ const AdminActions = styled.div`
 `;
 
 const rewardsToAllocate = formatBalanceWrite('999', 18);
+const readableMethods = getReadableMethods();
+
 const ContractParams = ({
   web3Status,
   web3Actions,
@@ -92,8 +95,28 @@ const ContractParams = ({
   );
 };
 
-const hasCacheValue = cache => cache.select('name') && cache.select('name').value;
-
 ContractParams.propTypes = contractPropTypes;
 
 export default ContractProvider(ContractParams);
+
+// Utils
+function hasCacheValue(cache) {
+  return cache.select('name') && cache.select('name').value;
+}
+
+function getReadableMethods() {
+  return Object.keys(
+    pickBy(
+      types.methods,
+      (_, method) =>
+        !types.methods[method].send &&
+        method !== 'balanceOf' &&
+        method !== 'isMinter' &&
+        method !== 'allowance' &&
+        method !== 'partialSum' &&
+        method !== 'nonceOf' &&
+        method !== 'isOwner' &&
+        method !== 'currentRound'
+    )
+  );
+}

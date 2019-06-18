@@ -4,11 +4,7 @@ import Modal from 'modules/ui/web/modal';
 import { alert } from 'app/utils';
 import { Button, View, BodyText } from 'modules/styled/uni';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
-import {
-  getProvider,
-  formatBalanceWrite,
-  generateSalt
-} from 'modules/web_ethTools/utils';
+import { getProvider, formatBalanceWrite, generateSalt } from 'app/utils/eth';
 import { NETWORK_NUMBER } from 'core/config';
 
 const Alert = alert.Alert();
