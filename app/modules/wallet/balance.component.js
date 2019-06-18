@@ -15,7 +15,7 @@ import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract } from 'modules/contract/contract.hooks';
-import { formatBalanceRead } from 'modules/web_ethTools/utils';
+import { formatBalanceRead } from 'app/utils/eth';
 
 const Balance = ({
   user,

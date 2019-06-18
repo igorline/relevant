@@ -1,5 +1,5 @@
 import Statesauce from 'redux-saga-web3-eth-contract';
-import { getProvider, getRpcUrl, getMetamask } from 'modules/web_ethTools/utils';
+import { getProvider, getRpcUrl, getMetamask } from 'app/utils/eth';
 import RelevantToken from '../contracts/RelevantToken';
 import { NETWORK_NUMBER } from './config';
 
