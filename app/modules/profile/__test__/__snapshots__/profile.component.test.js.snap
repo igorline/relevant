@@ -1015,7 +1015,7 @@ exports[`Snapshot other users Profile 1`] = `
           "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
-          "marginTop": "2.1rem",
+          "marginTop": "1.4rem",
           "minHeight": "0px",
           "minWidth": "0px",
           "msFlexAlign": "stretch",
@@ -1042,16 +1042,16 @@ exports[`Snapshot other users Profile 1`] = `
             "borderRightWidth": "0px",
             "borderTopWidth": "0px",
             "boxSizing": "border-box",
-            "color": "rgba(153,153,153,1.00)",
+            "color": "inherit",
             "display": "flex",
             "flexBasis": "auto",
             "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.05rem",
+            "fontSize": "1.225rem",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
             "fontWeight": "inherit",
-            "lineHeight": "1.4rem",
+            "lineHeight": "1.6333333333333333rem",
             "marginBottom": "0px",
             "marginLeft": "0px",
             "marginRight": "0px",
@@ -1069,7 +1069,9 @@ exports[`Snapshot other users Profile 1`] = `
           }
         }
       >
-        hi i'm alice!
+        <span>
+          hi i'm alice!
+        </span>
       </div>
     </div>
   </div>
@@ -2092,7 +2094,7 @@ exports[`Snapshot own Profile 1`] = `
           "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
-          "marginTop": "2.1rem",
+          "marginTop": "1.4rem",
           "minHeight": "0px",
           "minWidth": "0px",
           "msFlexAlign": "stretch",
@@ -2119,16 +2121,16 @@ exports[`Snapshot own Profile 1`] = `
             "borderRightWidth": "0px",
             "borderTopWidth": "0px",
             "boxSizing": "border-box",
-            "color": "rgba(153,153,153,1.00)",
+            "color": "inherit",
             "display": "flex",
             "flexBasis": "auto",
             "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.05rem",
+            "fontSize": "1.225rem",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
             "fontWeight": "inherit",
-            "lineHeight": "1.4rem",
+            "lineHeight": "1.6333333333333333rem",
             "marginBottom": "0px",
             "marginLeft": "0px",
             "marginRight": "0px",
@@ -2146,7 +2148,9 @@ exports[`Snapshot own Profile 1`] = `
           }
         }
       >
-        hi i'm alice!
+        <span>
+          hi i'm alice!
+        </span>
       </div>
     </div>
     <div
@@ -2176,7 +2180,7 @@ exports[`Snapshot own Profile 1`] = `
           "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
-          "marginTop": "0.7rem",
+          "marginTop": "1.4rem",
           "minHeight": "0px",
           "minWidth": "0px",
           "msFlexAlign": "center",

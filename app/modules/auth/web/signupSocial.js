@@ -38,6 +38,7 @@ class SignupSocial extends Component {
           <ULink
             to={`/auth/twitter?invitecode=${invitecode}&redirect=${redirect}`}
             external
+            rel="nofollow"
             mr={[4, 0]}
           >
             <Button bg={colors.twitterBlue}>

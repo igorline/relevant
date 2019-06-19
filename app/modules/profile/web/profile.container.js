@@ -8,8 +8,9 @@ import { logoutAction } from 'modules/auth/auth.actions';
 import { authProps } from 'app/utils/propValidation';
 import Profile from 'modules/profile/profile.component';
 import UserPosts from 'modules/profile/web/userPosts.component';
-import { Divider } from 'modules/styled/uni';
+import { Divider, View } from 'modules/styled/web';
 import { showModal, hideModal } from 'modules/navigation/navigation.actions';
+import Linkify from 'linkifyjs/react';
 
 const pageSize = 10;
 
@@ -62,9 +63,16 @@ class ProfileContainer extends Component {
 
   render() {
     const { screenSize } = this.props;
+    const { user } = this.state;
+    const bio = user.bio && <Linkify>{user.bio}</Linkify>;
     return (
-      <div>
-        <Profile key={this.state.user._id + 'profile'} {...this.props} {...this.state} />
+      <View mb={20} fdirection="column">
+        <Profile
+          key={this.state.user._id + 'profile'}
+          {...this.props}
+          {...this.state}
+          bio={bio}
+        />
         <Divider m={[4, 0]} screenSize={screenSize} />
         <UserPosts
           key={this.state.user._id}
@@ -73,7 +81,7 @@ class ProfileContainer extends Component {
           load={this.grabPosts}
           pageSize={pageSize}
         />
-      </div>
+      </View>
     );
   }
 }

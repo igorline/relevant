@@ -120,6 +120,7 @@ class LoginForm extends Component {
               <ULink
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
+                rel="nofollow"
                 mr={[2, 0]}
                 mt={[0, 2]}
               >

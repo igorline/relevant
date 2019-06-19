@@ -39,12 +39,6 @@ export function percentChange(user) {
 
 export function abbreviateNumber(num, _fixed) {
   let fixed = 0;
-  if (Math.abs(num) < 100) fixed = 1;
-  if (Math.abs(num) < 10) fixed = 1;
-  if (Math.abs(num) < 1) fixed++;
-  if (Math.abs(num) < 0.1) fixed++;
-  if (Math.abs(num) < 0.01) fixed++;
-  if (Math.abs(num) < 0.001) fixed++;
 
   if (typeof _fixed === 'number') fixed = _fixed;
   if (num === null) {
@@ -59,7 +53,15 @@ export function abbreviateNumber(num, _fixed) {
   // floor at decimals, ceiling at trillions
   const k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
   // divide by power
-  const c = k < 1 ? num.toFixed(0 + fixed) : (num / 10 ** (k * 3)).toFixed(2 + fixed);
+  const newNum = k < 1 ? num : num / 10 ** (k * 3);
+  if (Math.abs(newNum) < 100) fixed = 1;
+  if (Math.abs(newNum) < 10) fixed = 1;
+  if (Math.abs(newNum) < 1) fixed++;
+  if (Math.abs(newNum) < 0.1) fixed++;
+  if (Math.abs(newNum) < 0.01) fixed++;
+  if (Math.abs(newNum) < 0.001) fixed++;
+
+  const c = newNum.toFixed(fixed);
   const d = c < 0 ? -Math.abs(c) : Math.abs(c); // enforce -0 is 0 and trim .00s
   const e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
   return e;

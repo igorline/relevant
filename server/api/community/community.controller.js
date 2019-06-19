@@ -16,24 +16,59 @@ const RESERVED = [
 
 export async function findOne(req, res, next) {
   try {
+    const { user } = req;
     const { slug } = req.params;
     const community = await Community.findOne({ slug, inactive: { $ne: true } });
+    if (!community) throw new Error(`Community ${community} doesn't exist`);
+
+    if (community.private) {
+      if (!user) throw new Error('This community is private');
+      const member = await CommunityMember.findOne({
+        communityId: community._id,
+        user: user._id
+      });
+      if (!member) throw new Error('This community is private');
+    }
+
     res.status(200).json(community);
   } catch (err) {
     next(err);
   }
 }
 
-export async function index(req, res, next) {
-  try {
-    const communties = await Community.find({ inactive: { $ne: true } }).populate({
-      path: 'admins',
-      match: { role: 'admin' }
+// uses middleware for server-sider rendering
+export async function index(req) {
+  const { user } = req;
+  const { community } = req.query;
+  const onlyPublic = user && user.role === 'admin' ? {} : { private: { $ne: true } };
+  const onlyVisible = user && user.role === 'admin' ? {} : { hidden: { $ne: true } };
+
+  const communties = await Community.find({
+    inactive: { $ne: true },
+    ...onlyPublic,
+    $or: [onlyVisible, { slug: community }]
+  }).populate({
+    path: 'admins',
+    match: { role: 'admin' }
+  });
+
+  // find private communities where user is a member
+  let privateCommunities = [];
+  if (user) {
+    const memberships = await CommunityMember.find({ user: user._id }).populate({
+      path: 'communityId',
+      match: { inactive: { $ne: true } }
     });
-    res.status(200).json(communties);
-  } catch (err) {
-    next(err);
+    privateCommunities = memberships
+    .filter(m => m.communityId)
+    .filter(
+      m =>
+        m.communityId.private === true ||
+          (m.communityId.hidden === true && m.communityId.slug !== community)
+    )
+    .map(m => m.communityId);
   }
+  return [...communties, ...privateCommunities].map(c => c.toObject());
 }
 
 export async function members(req, res, next) {
@@ -208,7 +243,9 @@ export async function update(req, res, next) {
       name: updatedCommunity.name,
       topics: updatedCommunity.topics,
       description: updatedCommunity.description,
-      channels: updatedCommunity.channels
+      channels: updatedCommunity.channels,
+      private: updatedCommunity.private,
+      hidden: updatedCommunity.hidden
     });
     community = await community.save();
 

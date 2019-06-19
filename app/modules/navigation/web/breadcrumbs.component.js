@@ -8,7 +8,7 @@ import { StyledNavLink } from 'modules/styled/web';
 import { View } from 'modules/styled/uni';
 import { refreshTab } from 'modules/navigation/navigation.actions';
 
-class Breakcrumbs extends Component {
+class Breadcrumbs extends Component {
   static propTypes = {
     view: PropTypes.object,
     auth: PropTypes.object,
@@ -48,7 +48,7 @@ class Breakcrumbs extends Component {
             lh={1.5}
             fs={1.5}
             c={colors.black}
-            to={`/${communitySlug}/${sort}`}
+            to={encodeURI(`/${communitySlug}/${sort}`)}
           >
             Community: {activeCommunity.name}{' '}
           </StyledNavLink>
@@ -58,7 +58,7 @@ class Breakcrumbs extends Component {
             lh={1.5}
             fs={1.5}
             c={colors.black}
-            to={`/${communitySlug}/${sort}/${view.discover.tag}`}
+            to={encodeURI(`/${communitySlug}/${sort}/${view.discover.tag}`)}
           >
             &nbsp;→ #{view.discover.tag}
           </StyledNavLink>
@@ -84,4 +84,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Breakcrumbs);
+)(Breadcrumbs);

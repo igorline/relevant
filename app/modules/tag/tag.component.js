@@ -13,7 +13,7 @@ class Tag extends Component {
 
   render() {
     const { community, name, noLink, actions, ...rest } = this.props;
-    const link = `/${community}/top/${name}`;
+    const link = encodeURI(`/${community}/top/${name}`);
     return (
       <ULink
         hu
