@@ -17,7 +17,7 @@ import ContractProvider, { contractPropTypes } from 'modules/contract/contract.c
 import { useTokenContract } from 'modules/contract/contract.hooks';
 import { formatBalanceRead } from 'app/utils/eth';
 
-const Balance = ({
+export const Balance = ({
   user,
   wallet,
   screenSize,
