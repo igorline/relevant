@@ -30,6 +30,7 @@ const CommunityAdminForm = loadable(() =>
 const CommunityAdminList = loadable(() =>
   import('modules/admin/web/communityAdminList.component')
 );
+const Styles = loadable(() => import('modules/ui/styles.component'));
 
 const CommunityList = loadable(() => import('modules/community/communityList.component'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
@@ -111,6 +112,7 @@ const routes = [
 
           // INFO
           { path: '/info/faq', component: Faq, exact: true },
+          { path: '/info/styles', component: Styles, exact: true },
 
           {
             path: '/',
