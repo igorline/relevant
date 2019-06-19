@@ -6,7 +6,7 @@ import UAvatar from 'modules/user/UAvatar.component';
 import { colors, sizing, mixins, fonts } from 'app/styles';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
-import { View, Header, AltLink, SecondaryText, Text } from 'modules/styled/uni';
+import { View, Header, AltLink, BodyText, Text } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 import { css } from 'styled-components/primitives';
 import Percent from 'modules/stats/percent.component';
@@ -25,7 +25,8 @@ class Profile extends Component {
     isOwner: PropTypes.bool,
     user: PropTypes.object,
     location: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    bio: PropTypes.object
   };
 
   componentDidMount() {
@@ -48,7 +49,7 @@ class Profile extends Component {
   }
 
   render() {
-    const { user, isOwner, actions, location } = this.props;
+    const { user, isOwner, actions, location, bio } = this.props;
     if (!user) {
       return <div className="profileContainer">User not found!</div>;
     }
@@ -99,13 +100,13 @@ class Profile extends Component {
               <View />
             )}
           </View>
-          {user.bio ? (
-            <View mt={[3, 2]}>
-              <SecondaryText>{user.bio}</SecondaryText>
+          {bio ? (
+            <View mt={[2, 2]}>
+              <BodyText>{bio}</BodyText>
             </View>
           ) : null}
           {isOwner ? (
-            <View fdirection="row" align="center" mt={1}>
+            <View fdirection="row" align="center" mt={2}>
               <AltLink mr={sizing(0.5)}>
                 <ULink
                   c={colors.black}

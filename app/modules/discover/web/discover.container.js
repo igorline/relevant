@@ -37,6 +37,27 @@ export class Discover extends Component {
     reload: PropTypes.number
   };
 
+  static fetchData(dispatch, params) {
+    const { sort, tag, community } = params;
+    const length = 0; // TODO: ssr multi-page?
+    const tags = tag ? [tag] : [];
+
+    switch (sort) {
+      case 'feed':
+        return dispatch(postActions.getFeed(length, tags));
+      case 'new':
+        return dispatch(
+          postActions.getPosts(length, tags, null, POST_PAGE_SIZE, community)
+        );
+      case 'top':
+        return dispatch(
+          postActions.getPosts(length, tags, 'rank', POST_PAGE_SIZE, community)
+        );
+      default:
+        return null;
+    }
+  }
+
   constructor(props, context) {
     super(props, context);
     const { params } = this.props.match;
@@ -118,6 +139,7 @@ export class Discover extends Component {
   }
 
   load(sort, props, _length) {
+    const { actions, auth } = this.props;
     if (!this.state.routes[this.state.tabIndex]) return;
     const { community } = this.props.auth;
     sort = sort || this.state.routes[this.state.tabIndex].key;
@@ -126,17 +148,17 @@ export class Discover extends Component {
     const length = _length || 0;
     switch (sort) {
       case 'feed':
-        this.props.actions.getFeed(length, tags);
+        actions.getFeed(length, tags);
         break;
       case 'new':
-        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE, community);
+        actions.getPosts(length, tags, null, POST_PAGE_SIZE, community);
         break;
       case 'top':
-        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE, community);
+        actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE, community);
         break;
       case 'people':
-        if (this.props.auth.user) {
-          this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
+        if (auth.user) {
+          actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
         }
         break;
       default:

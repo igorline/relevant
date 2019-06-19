@@ -4,27 +4,6 @@ const { notificationStyle } = require('server/utils/emailStyle');
 const User = require('server/api/user/user.model');
 const { getUrls } = require('./notificationHelper');
 
-// sendNotificationEmail({
-//   commentor: { handle: 'commenter', name: 'Commentor' },
-//   user: {
-//     email: 'slava@relevant.community',
-//     handle: 'test',
-//     name: 'Test',
-//     notificationSettings: { email: { replies: true } }
-//   },
-//   comment: {
-//     body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-//     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-//     Ut enim ad minim veniam, quis nostrud
-//     exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-//     Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-//     dolore eu fugiat nulla pariatur.
-//     Excepteur sint occaecat cupidatat non
-//     proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-//     data: { community: 'relevant' },
-//   }
-// });
-
 export async function handleEmailNotifications(params) {
   try {
     params.toUser = await ensureUserEamil(params.toUser);
@@ -76,17 +55,6 @@ function emailNotificationIsEnabled({ noteType, toUser }) {
   }
   return false;
 }
-
-// function getUrls({ post, fromUser, toUser }) {
-//   const postId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
-//   const replyIdSting = post.parentPost ? `/${post._id}` : '';
-//   const userUrl = `${process.env.API_SERVER}/user/profile/${fromUser.handle}`;
-//   const postUrl = `${process.env.API_SERVER}/${
-//     post.data.community
-//   }/post/${postId}${replyIdSting}`;
-//   const settingsUrl = `${process.env.API_SERVER}/user/profile/${toUser.handle}/settings`;
-//   return { userUrl, postUrl, settingsUrl };
-// }
 
 async function getDefaultEmailHtml({ urls, fromUser, post, toUser, action, noteType }) {
   const { userUrl, postUrl, settingsUrl } = urls;

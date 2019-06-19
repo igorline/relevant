@@ -130,8 +130,8 @@ function mapStateToProps(state) {
     error: state.error.singlepost,
     comments: state.comments,
     users: state.user,
-    tags: state.tags,
-    myPostInv: state.investments.myPostInv
+    tags: state.tags
+    // myPostInv: state.investments.myPostInv
   };
 }
 

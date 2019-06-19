@@ -94,7 +94,7 @@ export default function AvatarBox(props) {
               {user.name}
               {twitterIcon}
             </Name>
-            {user.relevance && showRelevance && (
+            {user.relevance && showRelevance && !avatarText && (
               <Text inline={1}>
                 {' '}
                 <RStat inline={1} align={'baseline'} lh={1.75} size={1.75} user={user} />
@@ -125,7 +125,7 @@ AvatarBox.propTypes = {
   size: PropTypes.number,
   showRelevance: PropTypes.bool,
   repost: PropTypes.bool,
-  postTime: PropTypes.string,
+  postTime: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   setSelected: PropTypes.func,
   navigationCallback: PropTypes.func
 };

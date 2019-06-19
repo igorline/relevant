@@ -18,7 +18,7 @@ if (process.env.WEB !== 'true') {
 class PostButtons extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     post: PropTypes.shape({
       data: PropTypes.object
     }),
@@ -141,7 +141,7 @@ class PostButtons extends Component {
       // community,
       className,
       // earnings,
-      myPostInv,
+      // myPostInv,
       color,
       horizontal
     } = this.props;
@@ -157,18 +157,10 @@ class PostButtons extends Component {
 
     if (!post || post === 'notFound') return null;
 
-    let vote;
-    let votedUp;
-    let votedDown;
-
-    if (this.props.myPostInv) {
-      vote = myPostInv[post.id] || !this.props.auth.isAuthenticated;
-      if (auth.user && auth.user._id === post.user) vote = true;
-      if (vote) {
-        votedUp = vote.amount > 0;
-        votedDown = vote.amount < 0;
-      }
-    }
+    const ownPost = auth.user && auth.user._id === post.user;
+    const vote = ownPost ? true : post.myVote;
+    const votedUp = vote && vote.amount > 0;
+    const votedDown = vote && vote.amount < 0;
 
     const postRank = post.data
       ? Math.round(post.data.pagerank) + post.data.upVotes - post.data.downVotes

@@ -18,6 +18,7 @@ import { globalStyles, fullHeight } from 'app/styles/global';
 import { CTALink } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import get from 'lodash/get';
+import { getPostUrl, getTitle } from 'app/utils/post';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -39,7 +40,7 @@ class PostButtons extends Component {
     auth: PropTypes.object,
     navigation: PropTypes.object,
     focusInput: PropTypes.func,
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     link: PropTypes.object,
     comment: PropTypes.object
   };
@@ -90,16 +91,14 @@ class PostButtons extends Component {
   }
 
   onShare = () => {
-    const { parentPost, post, auth } = this.props;
-    const postId = parentPost ? parentPost || parentPost._id : post._id;
-    const commentId = parentPost ? '/' + post._id : '';
+    const { post, auth } = this.props;
+    const { community } = auth;
+    const postUrl = getPostUrl(community, post);
+    const title = getTitle(post);
     Share.open({
-      title: this.props.post.title ? 'Relevant post: ' + this.props.post.title : '',
-      url: `https://relevant.community/${auth.community}/post/${postId}${commentId}`,
+      title: title || '',
+      url: 'https://relevant.community' + postUrl,
       subject: 'Share Link'
-      // message: this.props.post.title
-      //   ? 'Relevant post: ' + this.props.post.title
-      //   : ''
     }).catch(err => console.log(err)); // eslint-disable-line
   };
 
@@ -315,36 +314,40 @@ class PostButtons extends Component {
   }
 
   render() {
-    const { post, auth, myPostInv, link } = this.props;
+    const { post, auth, link } = this.props;
     let investButtonEl = null;
-    let investible = false;
-    let myVote;
+    // let investible = false;
+    // let myVote;
 
     const isLink = !post.parentPost && post.url;
 
-    if (post && auth.user) {
-      if (!post.user || post.user !== auth.user._id) {
-        if (!myPostInv) {
-          investible = true;
-        } else {
-          myVote = myPostInv;
-        }
-      }
-    }
+    const ownPost = auth.user && auth.user._id === post.user;
+    const vote = ownPost ? true : post.myVote;
+    const votedUp = vote && vote.amount > 0;
+    const votedDown = vote && vote.amount < 0;
+
+    // if (post && auth.user) {
+    //   if (!post.user || post.user !== auth.user._id) {
+    //     if (!myPostInv) {
+    //       investible = true;
+    //     } else {
+    //       myVote = myPostInv;
+    //     }
+    //   }
+    // }
 
     const space = 8;
 
     const opacity = 1;
-    let upvoteIcon = require('app/public/img/icons/upvote.png');
-    if (myVote && myVote.amount > 0) {
-      upvoteIcon = require('app/public/img/icons/upvoteActive.png');
-    }
+    const upvoteIcon = votedUp
+      ? require('app/public/img/icons/upvoteActive.png')
+      : require('app/public/img/icons/upvote.png');
 
     investButtonEl = (
       <TouchableOpacity
         style={{ paddingRight: space }}
         ref={c => (this.investButton = c)}
-        onPress={() => this.invest(investible)}
+        onPress={() => this.invest(!vote)}
       >
         <Image
           resizeMode={'contain'}
@@ -389,15 +392,14 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    let downvoteIcon = require('app/public/img/icons/downvote.png');
-    if (myVote && myVote.amount < 0) {
-      downvoteIcon = require('app/public/img/icons/downvoteActive.png');
-    }
+    const downvoteIcon = votedDown
+      ? require('app/public/img/icons/downvoteActive.png')
+      : require('app/public/img/icons/downvote.png');
 
     const irrelevantButton = (
       <TouchableOpacity
         style={{ paddingLeft: space }}
-        onPress={() => this.irrelevantPrompt(investible)}
+        onPress={() => this.irrelevantPrompt(!vote)}
       >
         <Image
           resizeMode={'contain'}

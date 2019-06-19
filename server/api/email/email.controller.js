@@ -59,7 +59,7 @@ async function generateList(type) {
       // const now = new Date();
       // now.setDate(now.getDate() - 5);
       query = { 'notificationSettings.email.digest': false };
-      users = await List.find(query);
+      users = await User.find(query, 'email code twitterEmail twitter handle name');
       console.log('nodigest', users.length);
     }
 
