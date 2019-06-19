@@ -6,7 +6,8 @@ import {
   BodyText,
   SecondaryText,
   Button,
-  CommentText
+  CommentText,
+  NumericalValue
 } from 'app/modules/styled/uni';
 import { StyledTextarea, Input } from 'app/modules/styled/web';
 
@@ -16,6 +17,7 @@ export default () => (
     <Title mt={2}>Title</Title>
     <BodyText mt={2}>BodyText</BodyText>
     <SecondaryText mt={2}>SecondaryText</SecondaryText>
+    <NumericalValue mt={2}>NumericalValue</NumericalValue>
     <Button mt={2} mr={'auto'}>
       Button
     </Button>
