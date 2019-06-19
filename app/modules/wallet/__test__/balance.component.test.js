@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Balance from 'modules/wallet/balance.component';
+import { Balance } from 'modules/wallet/balance.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { user } from 'app/mockdata';
@@ -10,7 +10,14 @@ const props = {
   contract: {},
   actions: {},
   wallet: {},
-  isWeb: true
+  isWeb: true,
+
+  // web3 props
+  web3Status: {},
+  web3Actions: {
+    init: () => null
+  },
+  cacheEvent: () => null
 };
 
 test('Snapshot Balance Web', () => {
