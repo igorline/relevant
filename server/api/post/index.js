@@ -16,10 +16,10 @@ router.put('/', auth.isAuthenticated(), auth.communityMember(), controller.updat
 router.put('/flag', auth.isAuthenticated(), controller.flag);
 
 router.get('/flagged', auth.hasRole('admin'), controller.flagged);
-router.get('/', auth.authMiddleware(), controller.index);
+// router.get('/', auth.authMiddleware(), controller.index);
 router.get('/readable', controller.readable);
 router.get('/topPosts', controller.topPosts);
-router.get('/:id', auth.blocked(), asyncMiddleware(controller.findById));
+router.get('/:id', auth.blocked(), asyncMiddleware(controller.index));
 router.get('/user/:id', auth.blocked(), controller.userPosts);
 router.get('/preview/generate', controller.preview);
 

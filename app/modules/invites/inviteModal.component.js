@@ -134,7 +134,7 @@ class InviteModal extends Component {
               </CTALink>
               <View ml={0.5} w={6}>
                 <CTALink c={colors.grey}>
-                  {invite.type === 'admin' ? '(admin)' : null}
+                  {invite.type === 'admin' ? '(moderator)' : null}
                 </CTALink>
               </View>
             </View>
@@ -204,7 +204,7 @@ class InviteModal extends Component {
             c={colors.blue}
           >
             <LinkFont mt={1} c={colors.blue}>
-              Click here to generate a new private admin link
+              Click here to generate moderator invite link
             </LinkFont>
           </ULink>
         ) : null}

@@ -11,6 +11,7 @@ const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 const repostSchema = new schema.Entity('posts', { idAttribute: '_id' });
 
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
+// const myVoteSchema = new schema.Entity('myVote', {}, { idAttribute: '_id' });
 
 const parentPostSchema = new schema.Entity(
   'posts',
@@ -29,6 +30,7 @@ export const postSchema = new schema.Entity(
     metaPost: linkSchema,
     parentPost: parentPostSchema,
     commentPost: parentPostSchema
+    // myVote: [myVoteSchema]
   },
   { idAttribute: '_id' }
 );
@@ -76,7 +78,7 @@ export function setUsers(users) {
 
 export function setUserPosts(data, id, index) {
   return {
-    type: 'SET_USER_POSTS',
+    type: types.SET_USER_POSTS,
     payload: {
       data,
       id,
@@ -272,7 +274,6 @@ export function getPosts(skip, tags, sort, limit) {
 
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
-  const endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {
@@ -281,19 +282,19 @@ export function getPosts(skip, tags, sort, limit) {
     if (tags.length === 1) topic = tags[0];
   }
 
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
+      const { auth } = getState();
       dispatch(getPostsAction(type));
-
       const res = await api.request({
         method: 'GET',
-        endpoint,
-        query: { skip, sort, limit, tag }
+        endpoint: 'communityFeed',
+        query: { skip, sort, limit, tag },
+        user: auth.user
       });
+
       const dataType = feedSchema;
       const data = normalize({ [type]: res }, { [type]: [dataType] });
-
-      // dispatch(setUsers(data.entities.users));
 
       if (topic) {
         dispatch(setTopic(data, type, skip, topic));
@@ -360,21 +361,23 @@ export function editPost(post) {
 }
 
 export function getSelectedPost(postId) {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
-      const responseJSON = await api.request({
+      const { auth } = getState();
+      const post = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '',
-        params: { id: postId }
+        params: { id: postId },
+        user: auth.user
       });
-      if (!responseJSON) {
+      if (!post) {
         dispatch(removePost(postId));
       } else {
-        dispatch(updatePost(responseJSON));
+        dispatch(updatePost(post));
       }
       dispatch(errorActions.setError('singlepost', false));
-      return responseJSON;
+      return post;
     } catch (error) {
       dispatch(errorActions.setError('singlepost', true, error.message));
       return false;

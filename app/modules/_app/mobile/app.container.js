@@ -30,6 +30,8 @@ import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
+import { getCommunities } from 'modules/community/community.actions';
+
 import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
@@ -109,6 +111,7 @@ class Application extends Component {
       Analytics.setUserId(user._id);
       const { community } = user;
       if (community) actions.setCommunity(community);
+      actions.getCommunities();
       return null;
     });
 
@@ -262,7 +265,8 @@ function mapDispatchToProps(dispatch) {
         ...notifActions,
         ...userActions,
         ...navigationActions,
-        ...tooltipActions
+        ...tooltipActions,
+        getCommunities
       },
       dispatch
     )

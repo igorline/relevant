@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
 import { View } from 'modules/styled/uni';
-import { routing } from 'app/utils';
+import { getPostUrl } from 'app/utils/post';
 
 class UserPosts extends Component {
   static propTypes = {
@@ -50,7 +50,7 @@ class UserPosts extends Component {
       if (parentId) {
         parentPost = this.props.posts.posts[parentId];
       }
-      const postUrl = routing.getPostUrl(community, post);
+      const postUrl = getPostUrl(community, post);
 
       let link = this.props.posts.links[post.metaPost];
       if (!link && parentPost) {

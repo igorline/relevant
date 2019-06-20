@@ -66,7 +66,7 @@ export default class CountUpBox extends PureComponent {
     onHeadlineFinished: PropTypes.func,
     onTimerFinished: PropTypes.func,
     thumbTiming: PropTypes.object,
-    outcome: PropTypes.string
+    outcome: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
   };
 
   componentDidMount() {

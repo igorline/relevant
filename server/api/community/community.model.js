@@ -30,7 +30,9 @@ const CommunitySchema = new Schema(
     maxPostRank: { type: Number },
     numberOfElements: { type: Number },
     memberCount: { type: Number },
-    inactive: Boolean
+    inactive: Boolean,
+    private: { type: Boolean, default: false },
+    hidden: { type: Boolean, default: false }
   },
   {
     timestamps: true,

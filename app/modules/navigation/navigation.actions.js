@@ -109,6 +109,17 @@ export function goToTab(tab) {
   };
 }
 
+export function resetTabs() {
+  return () => {
+    if (!native) return;
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'main' })]
+    });
+    dispatchNavigatorAction(resetAction);
+  };
+}
+
 export function goToTopic(topic) {
   return dispatch => {
     dispatchNavigatorAction(

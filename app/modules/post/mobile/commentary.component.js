@@ -18,7 +18,7 @@ export default class Commentary extends Component {
     link: PropTypes.object,
     users: PropTypes.object,
     auth: PropTypes.object,
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
     tooltip: PropTypes.bool,
     focusInput: PropTypes.func,
@@ -67,7 +67,7 @@ export default class Commentary extends Component {
       singlePost,
       focusInput,
       tooltip,
-      myPostInv,
+      // myPostInv,
       preview,
       isReply
     } = this.props;
@@ -136,7 +136,7 @@ export default class Commentary extends Component {
                   comments={post.comments || null}
                   actions={actions}
                   auth={auth}
-                  myPostInv={myPostInv[post._id]}
+                  // myPostInv={myPostInv[post._id]}
                   focusInput={focusInput}
                   navigation={this.props.navigation}
                 />

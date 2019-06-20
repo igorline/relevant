@@ -5,12 +5,11 @@ import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import PostButtons from 'modules/post/postbuttons.component';
 import { copyToClipBoard } from 'app/utils/text';
+import { getPostUrl } from 'app/utils/post';
 
 export default function PostButtonRow(props) {
   const { post, hidePostButtons, screenSize, setActiveComment, parentPost, auth } = props;
-
-  const localUrl = `/${auth.community}/post/${parentPost ? parentPost._id : post._id}`;
-  const url = `https://relevant.community${localUrl}`;
+  const url = 'https://relevant.community' + getPostUrl(auth.community, post);
 
   return (
     <View
@@ -28,7 +27,7 @@ export default function PostButtonRow(props) {
       <View fdirection="row">
         <ULink
           hu
-          to={setActiveComment ? '#' : localUrl}
+          to={setActiveComment ? '#' : url}
           inline
           authrequired={true}
           onClick={e => {

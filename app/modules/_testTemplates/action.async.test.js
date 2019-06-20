@@ -77,7 +77,7 @@ describe('async actions', () => {
       { type: types.SET_ERROR, payload: { type: 'discover', bool: false } }
     ];
 
-    const store = mockStore({ posts: [] });
+    const store = mockStore({ posts: [], auth: {} });
 
     return store.dispatch(actions.getPosts(skip, null, sort, limit)).then(() => {
       // return of async actions
