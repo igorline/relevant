@@ -66,6 +66,9 @@ module.exports = app => {
   });
 
   app.get('/:community', currentUser(), handleRender);
-  app.get('/:community/*', currentUser(), handleRender);
+  app.get('/:community/post/:postId', currentUser(), handleRender);
+  app.get('/:community/post/:postId/:commentId', currentUser(), handleRender);
+  app.get('/:community/:feed', currentUser(), handleRender);
+  app.get('/:community/:feed/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
 };

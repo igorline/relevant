@@ -4,7 +4,8 @@ import get from 'lodash.get';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import { View, CommunityLink, SecondaryText } from 'modules/styled/uni';
+import { View, CommunityLink, SecondaryText, BodyText } from 'modules/styled/uni';
+import { Linkify } from 'app/utils/text';
 
 class CommunityActive extends Component {
   static propTypes = {
@@ -84,25 +85,18 @@ class CommunityActive extends Component {
           </View>
 
           <View mt={[3, 2]}>
-            {isSuperAdmin && (
-              <SecondaryText
-                mb={1}
-                c={colors.blue}
-                onPress={showSettings}
-                key={'settings_'}
-                p={'0.5 0'}
-              >
-                Settings
-              </SecondaryText>
-            )}
-            <SecondaryText>{community.description}</SecondaryText>
+            <BodyText>
+              <Linkify>{community.description}</Linkify>
+            </BodyText>
           </View>
+
           <View mt={3} mb={2} fdirection="row" justify="space-between">
             <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
             <ULink to="#" onPress={viewCommunityMembers} onClick={viewCommunityMembers}>
               <CommunityLink c={colors.blue}>See All</CommunityLink>
             </ULink>
           </View>
+
           <View fdirection={'row'} wrap>
             {limitedMembers.map(member => (
               <UAvatar
@@ -114,6 +108,18 @@ class CommunityActive extends Component {
               />
             ))}
           </View>
+
+          {isSuperAdmin && (
+            <SecondaryText
+              mt={2}
+              c={colors.blue}
+              onPress={showSettings}
+              key={'settings_'}
+              p={'0.5 0'}
+            >
+              Settings
+            </SecondaryText>
+          )}
         </View>
       </View>
     );

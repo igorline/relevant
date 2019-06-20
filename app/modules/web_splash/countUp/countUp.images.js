@@ -5,6 +5,8 @@ import { sizing, colors } from 'app/styles';
 import { tween } from 'app/utils';
 import styled from 'styled-components';
 
+const isWeb = process.env.BROWSER;
+
 /* Thumb image (flying into box) */
 
 const ThumbContainer = styled(View)`
@@ -129,7 +131,7 @@ const ArrowsContents = styled(View)`
 export function Arrows({ score }) {
   const [_score, setSize] = useState(0);
   const animate = _score !== score && score !== 0;
-  if (animate) requestAnimationFrame(() => setSize(score));
+  if (animate && isWeb) requestAnimationFrame(() => setSize(score));
 
   return (
     <ArrowsContainer>

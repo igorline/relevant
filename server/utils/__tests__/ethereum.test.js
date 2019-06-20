@@ -52,7 +52,7 @@ describe('ethRewards', () => {
       const signature = await sign(owner, testAmount);
       expect(signature).toBeTruthy();
 
-      const bn = (10 * 10 ** 18).toString();
+      const bn = (testAmount * 10 ** 18).toString();
       const r = await sendTx({ method: 'claimTokens', args: [bn, signature] });
       expect(r.status).toBe(1);
 

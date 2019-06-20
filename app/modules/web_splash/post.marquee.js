@@ -7,8 +7,7 @@ import { View, Text, NumericalValue, Image } from 'modules/styled/web';
 import { colors } from 'app/styles';
 import { getTopPosts } from 'modules/post/post.actions';
 import ULink from 'modules/navigation/ULink.component';
-import { getPostUrl } from 'app/utils/routing';
-import { getTitle, getFavIcon } from 'app/utils/post';
+import { getTitle, getFavIcon, getPostUrl } from 'app/utils/post';
 import { abbreviateNumber } from 'app/utils/numbers';
 
 const MarqueeContainer = styled(View)`

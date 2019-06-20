@@ -3,7 +3,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 // import { drizzleSagas } from 'drizzle';
-import { getProvider, getMetamask, getRpcUrl } from 'modules/web_ethTools/utils';
+import { getProvider, getMetamask, getRpcUrl } from 'app/utils/eth';
 import rootReducer from '../reducers';
 import rootSaga from '../sagas';
 import { collapseActions, stateTransformer } from '../storeUtils';

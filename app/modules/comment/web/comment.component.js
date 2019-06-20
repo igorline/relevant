@@ -66,7 +66,7 @@ class Comment extends Component {
     const { focusedComment, comment, scrollTo } = this.props;
     if (comment && focusedComment === comment._id) {
       this.el.current.measureInWindow((x, y) => {
-        scrollTo(0, y);
+        scrollTo && scrollTo(0, y);
       });
     }
   };

@@ -111,3 +111,13 @@ Hint
 Open ```ios/AwesomeApp/AppDelegate.m```
 Uncomment jsCodeLocation = [[NSBundle mainBundle] ...
 The JS bundle will be built for dev or prod depending on your app's scheme (Debug = development build with warnings, Release = minified prod build with perf optimizations). To change the scheme navigate to ```Product > Scheme > Edit Scheme...``` in xcode and change ```Build Configuration``` between ```Debug``` and ```Release```.
+
+### Talking to contracts from react
+
+This repo uses [Statesauce](https://github.com/statesauce/redux-saga-web3) for web3 managagement, contract interactions, caching, and side-effects. Initialized in `app/core/contracts.js` and consumed by files in `app/modules/contract/` which contain the reusable hocs, hooks, helpers, and propTypes for talking to Relevant Token contracts in a reliable way while staying synced to a strictly-defined reactive data store.
+
+`app/modules/contract/contract.container.js` exports a Higher Order Container (HOC) that exposes a RelevantToken-specific implementation of Statesauce's read/write semantics.
+
+The mapDispatch function `cacheMethod` is used for pure contract methods that don't mutate contract state in anyway. It takes arguments `method` and `args`, and dispatches an action to announce a requested contract call, updating the store, and triggering the saga that makes the contract call that ultimately updates the store with the result.
+
+The mapState function `methodCache` runs selector functions that derive state from the store for the method specified. It will force an update to the react component whenever any of the arguments or store keys change. It's the compliment to `cacheMethod` that tells you what's going on - it does reading, whereas `cacheMethod` does writing.

@@ -1,5 +1,4 @@
 import Feed from './twitterFeed.model';
-import Post from '../post/post.model';
 
 exports.get = async (req, res, next) => {
   try {
@@ -43,21 +42,6 @@ exports.get = async (req, res, next) => {
       // console.log('seen ', f.metaPost.seenInFeedNumber);
       // console.log('tw score ', f.metaPost.twitterScore);
     });
-
-    // TODO worker thread?
-    // TODO worker thread
-    if (user) {
-      const postIds = [];
-      posts.forEach(p => {
-        // console.log(p.commentary);
-        p.commentary.forEach(post => {
-          post.user = post.embeddedUser.id;
-          postIds.push(post._id || post);
-        });
-      });
-      Post.sendOutInvestInfo(postIds, user);
-    }
-
     res.status(200).json(posts);
   } catch (err) {
     next(err);

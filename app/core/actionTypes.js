@@ -58,6 +58,7 @@ export const INC_FEED_COUNT = 'INC_FEED_COUNT';
 export const SET_FEED_COUNT = 'SET_FEED_COUNT';
 export const SET_TOP_POSTS = 'SET_TOP_POSTS';
 export const SET_RELATED = 'SET_RELATED';
+export const SET_USER_POSTS = 'SET_USER_POSTS';
 
 export const SET_SUBSCRIPTIONS = 'SET_SUBSCRIPTIONS';
 

@@ -43,8 +43,8 @@ const ActionButton = styledComponents(Button)`
     position: fixed;
     bottom: ${sizing(2)};
     right: ${sizing(2)};
-    height: ${sizing(10)};
-    width: ${sizing(10)};
+    height: ${sizing(8)};
+    width: ${sizing(8)};
     min-width: 0;
     border-radius: 100%;
     background-color: ${colors.blue};

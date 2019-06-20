@@ -30,11 +30,6 @@ class Comments extends Component {
     activeComment: null
   };
 
-  componentDidMount() {
-    const { params } = this.props.match;
-    this.props.actions.getComments(params.id);
-  }
-
   setActiveComment = commentId => {
     const activeComment = this.state.activeComment === commentId ? null : commentId;
     this.setState({ activeComment });

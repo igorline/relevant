@@ -1,5 +1,14 @@
 import { Alert } from 'app/utils/alert';
 
+let LinkifyContainer;
+if (process.env.WEB !== 'true') {
+  LinkifyContainer = require('modules/text/mobile/textBody.component').default;
+} else {
+  LinkifyContainer = require('linkifyjs/react');
+}
+
+export const Linkify = LinkifyContainer;
+
 export function getMentions(words) {
   return words
   .map(word => {

@@ -35,7 +35,7 @@ class SinglePostComponent extends Component {
     link: PropTypes.object,
     users: PropTypes.object,
     comments: PropTypes.object,
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     auth: PropTypes.object,
     admin: PropTypes.object,
     comment: PropTypes.object
@@ -49,7 +49,8 @@ class SinglePostComponent extends Component {
       reloading: false,
       top: 0,
       suggestionHeight: 0,
-      loaded: false
+      loaded: false,
+      gotData: false
     };
     this.id = null;
     this.comments = null;
@@ -84,18 +85,22 @@ class SinglePostComponent extends Component {
     if (params.comment) {
       this.setState({ activeComment: params.comment });
     }
+  }
 
+  onLoad = () => {
     setTimeout(() => {
+      const { params } = this.props.navigation.state;
+      if (params.comment && this.comments.length) {
+        const id = params.comment._id || params.comment;
+        const index = this.comments.findIndex(c => id === c._id);
+        this.scrollToComment(index);
+      }
       if (params && params.openComment) {
-        if (params.commentCount && this.comments) {
-          // this.scrollToBottom(true);
-        } else if (!params.commentCount) {
-          this.input.textInput.focus();
-        }
+        this.input.textInput.focus();
       }
       this.forceUpdate();
-    }, 100);
-  }
+    }, 1000);
+  };
 
   getChildren = (id = this.props.postId, nestingLevel = 0) => {
     if (nestingLevel === 0) this.comments = [];
@@ -108,16 +113,14 @@ class SinglePostComponent extends Component {
     });
   };
 
-  componentWillReceiveProps(next) {
-    if (next.postComments && next.postComments !== this.props.postComments) {
-      if (!this.comments && this.props.navigation.state.openComment) {
-        this.scrollToBottom(true);
-      }
-
-      this.total = next.postComments.total;
-      if (this.total > 10) this.longFormat = true;
+  componentDidUpdate() {
+    if (this.comments.length && !this.state.gotData && this.scrollView) {
+      this.onLoad();
+      this.setState({ gotData: true });
     }
+  }
 
+  componentWillReceiveProps(next) {
     if (this.props.post !== next.post || this.props.error) {
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() => this.setState({ reloading: false }), 1000);
@@ -258,7 +261,7 @@ class SinglePostComponent extends Component {
     const comment = item;
     if (!comment) return null;
 
-    const { post, myPostInv, auth, actions, navigation, users } = this.props;
+    const { post, auth, actions, navigation, users } = this.props;
 
     const setupReply = _comment =>
       this.setState({ activeComment: _comment, activeIndex: index });
@@ -293,7 +296,7 @@ class SinglePostComponent extends Component {
               actions={actions}
               auth={auth}
               navigation={navigation}
-              myPostInv={myPostInv[comment._id]}
+              // myPostInv={myPostInv[comment._id]}
               setupReply={setupReply}
               focusInput={focusInput}
             />
@@ -376,6 +379,7 @@ class SinglePostComponent extends Component {
           overScrollMode={'always'}
           style={{ flex: 1 }}
           ListHeaderComponent={this.renderHeader}
+          onScrollToIndexFailed={() => {}}
           onLayout={e => {
             this.scrollHeight = e.nativeEvent.layout.height;
           }}

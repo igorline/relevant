@@ -12,7 +12,7 @@ const WithTopNav = ({ route }) => (
           path={r.path}
           exact={r.exact}
           state={r.state}
-          render={props => <r.navbar {...props} title={r.title} />}
+          render={props => (r.navbar ? <r.navbar {...props} title={r.title} /> : null)}
         />
       ))}
     </Switch>

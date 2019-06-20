@@ -7,9 +7,9 @@ const initialState = {
   myEarnings: {},
   posts: {},
   loaded: {},
-  loadedProfileInv: false,
-  myPostInvList: [],
-  myPostInv: {}
+  loadedProfileInv: false
+  // myPostInvList: [],
+  // myPostInv: {}
 };
 
 export default function investments(state = initialState, action) {
@@ -56,34 +56,6 @@ export default function investments(state = initialState, action) {
         myEarnings: {
           ...state.myEarnings,
           ...earnings
-        }
-      };
-    }
-
-    case types.UNDO_POST_INVESTMENT: {
-      const myPostInvList = state.myPostInvList.filter(p => p !== action.payload);
-      return {
-        ...state,
-        myPostInvList,
-        myPostInv: {
-          ...state.myPostInv,
-          [action.payload]: null
-        }
-      };
-    }
-
-    case types.UPDATE_POST_INVESTMENTS: {
-      const postsInv = {};
-      const postInvList = action.payload.map(i => {
-        postsInv[i.post] = i;
-        return i.post;
-      });
-      return {
-        ...state,
-        myPostInvList: [...new Set([...state.myInvestments, ...postInvList])],
-        myPostInv: {
-          ...state.myPostInv,
-          ...postsInv
         }
       };
     }
