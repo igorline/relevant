@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { colors } from 'app/styles';
 import { tween } from 'app/utils';
 
 import { CountUpContainer, CountUpSpacer } from './countUp.container';
@@ -91,9 +90,10 @@ export default class CountUpCoin extends Component {
   handleTimerFinished() {
     if (this.state.animationState !== 3) return;
     this.setState({ animationState: 4 });
+
     setTimeout(() => {
       this.advance();
-    }, 1000);
+    }, 3000);
   }
 
   componentWillUnmount() {
@@ -102,11 +102,9 @@ export default class CountUpCoin extends Component {
   }
 
   render() {
-    let { color } = this.props;
-    const { mode, headline, score, marquee, thumbTiming } = this.state;
-    if (!mode) {
-      color = colors.darkLightGrey;
-    }
+    const { color } = this.props;
+    const { mode, headline, score, marquee, thumbTiming, animationState } = this.state;
+
     return (
       <CountUpContainer>
         <CountUpMarquee
@@ -124,6 +122,7 @@ export default class CountUpCoin extends Component {
           onHeadlineFinished={this.handleHeadlineFinished.bind(this)}
           thumbTiming={thumbTiming}
           onTimerFinished={this.handleTimerFinished.bind(this)}
+          outcome={animationState === 4 && (mode ? 'win' : 'loose')}
         />
         <CountUpSpacer />
       </CountUpContainer>

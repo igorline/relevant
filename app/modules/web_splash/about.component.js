@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Text, View, Image, Button } from 'modules/styled/web';
+import { Text, View, Image, Button, SecondaryText } from 'modules/styled/web';
 import styled from 'styled-components';
 import { colors, fonts, sizing, size, responsive } from 'app/styles';
 import { tween } from 'app/utils';
@@ -13,8 +13,8 @@ import SocialIcons from 'modules/navigation/social.icons';
 import Marquee from './post.marquee';
 import CountUp from './countUp/countUp.component';
 
-const SHOW_FIXED_JOIN_HEIGHT = 1200;
-const SHOW_FIXED_LOGO = 2000;
+const SHOW_FIXED_JOIN_HEIGHT = 350;
+const SHOW_FIXED_LOGO = 500;
 
 const Phone = styled(Image)`
   position: ${() => responsive(['relative', 'absolute'])};
@@ -27,7 +27,7 @@ const Join = styled(View)`
   position: fixed;
   left: 50%;
   transform: translate3d(-50%, ${p => (p.visible ? '0px' : '200px')}, 0);
-  transition: transform 0.8s ease-out;
+  transition: transform 0.4s ease-in-out;
   bottom: ${sizing(4)};
   z-index: 1000;
 `;
@@ -81,7 +81,9 @@ class Splash extends Component {
   };
 
   onScroll = () => {
-    const showJoinButton = window.scrollY > SHOW_FIXED_JOIN_HEIGHT;
+    const showJoinButton =
+      document.body.scrollHeight - window.innerHeight - window.scrollY <
+      SHOW_FIXED_JOIN_HEIGHT;
     if (this.state.showJoinButton !== showJoinButton) this.setState({ showJoinButton });
 
     const showFixedLogo = window.scrollY > SHOW_FIXED_LOGO;
@@ -159,11 +161,14 @@ class Splash extends Component {
         <CountUp
           high={['clickbait', 'cat videos']}
           highScore={[700, 1000]}
-          low={['climate change', 'decentralization']}
+          low={['climate change', 'a nuanced opinion']}
           lowScore={[10, 30]}
           type={'thumb'}
-          color={colors.brightRed}
+          color={colors.darkLightGrey}
         />
+        <SecondaryText m={'auto'} mt={1} c={colors.black}>
+          Web 2.0 metrics controlled by mobs and bots
+        </SecondaryText>
 
         <Wrapper justify="flex-start" align="center" fdirection="column">
           <Section>
@@ -176,13 +181,16 @@ class Splash extends Component {
         </Wrapper>
 
         <CountUp
-          high={['climate change', 'decentralization']}
+          high={['climate change', 'a nuanced opinion']}
           highScore={[300, 500]}
           low={['clickbait', 'cat videos']}
           lowScore={[-40, -10]}
           type={'relevant'}
-          color={colors.brightBlue}
+          color={colors.blue}
         />
+        <SecondaryText m={'auto'} mt={1} c={colors.black}>
+          Relevant metrics where votes are weighed by the user's Reputaiton
+        </SecondaryText>
 
         <Wrapper justify="flex-start" align="center" fdirection="column">
           <Section>

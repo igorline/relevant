@@ -9,16 +9,16 @@ import CountUpMarquee from './countUp.marquee';
 
 const marqueeFast = {
   active: true,
-  firingRate: 180,
+  firingRate: 300,
   parallax: 1.3,
-  speed: 4.15
+  speed: 4
 };
 
 const marqueeSlowRelevant = {
   active: true,
-  firingRate: 670,
+  firingRate: 100,
   parallax: 1.3,
-  speed: 5.3
+  speed: 4
 };
 
 const marqueeOff = {
