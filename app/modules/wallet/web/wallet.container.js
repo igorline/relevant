@@ -5,21 +5,15 @@ import PropTypes from 'prop-types';
 import * as authActions from 'modules/auth/auth.actions';
 import * as earningsActions from 'modules/wallet/earnings.actions';
 import { showModal, hideModal } from 'modules/navigation/navigation.actions';
-
-import Eth from 'modules/web_ethTools/eth.context';
 import Earning from 'modules/wallet/earning.component';
 import CashOutModal from 'modules/wallet/web/cashOutModal.component';
-// import { initDrizzle } from 'app/utils/eth';
-import Balance from 'modules/wallet/balance.component';
+import BalanceComponent from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
-import get from 'lodash/get';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import { computeUserPayout } from 'app/utils/rewards';
 import PostPreview from 'modules/post/postPreview.container';
 import { getMonth } from 'app/utils/numbers';
 import ReactTooltip from 'react-tooltip';
-
-// let drizzle;
 
 const PAGE_SIZE = 50;
 
@@ -71,16 +65,8 @@ class WalletContainer extends Component {
   reload = () => this.load(0, 0);
 
   renderHeader = () => (
-    // eslint-disable-line
-    // if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
-    //   return null;
-    // }
-    // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
-
     <View>
-      <Eth.Consumer>
-        {wallet => <Balance isWeb wallet={wallet} {...this.props} />}
-      </Eth.Consumer>
+      <BalanceComponent isWeb {...this.props} />
       <CashOutModal {...this.props} />
     </View>
   );
@@ -110,8 +96,7 @@ class WalletContainer extends Component {
   };
 
   render() {
-    const { contract, earnings } = this.props;
-    if (contract && !contract.initialized) return null;
+    const { earnings } = this.props;
 
     const { list } = earnings;
     const entities = list.map(id => earnings.entities[id]);
@@ -142,9 +127,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     earnings: state.earnings,
     user: state.auth.user,
-    contract: get(state, 'RelevantToken.contracts'),
     accounts: state.accounts,
-    contracts: state.contracts,
     screenSize: state.navigation.screenSize,
     modal: state.navigation.modal,
     web3: state.web3

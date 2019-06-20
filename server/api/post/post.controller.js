@@ -89,30 +89,30 @@ exports.flagged = async (req, res, next) => {
 
 exports.topPosts = async (req, res, next) => {
   try {
-    const { community } = req.query;
+    // const { community } = req.query;
     let posts;
     const now = new Date();
     now.setDate(now.getDate() - 7);
-    posts = await PostData.find({ createdAt: { $gt: now }, community })
+    posts = await PostData.find({ createdAt: { $gt: now }, isInFeed: true })
     .populate({
       path: 'post',
       populate: [
-        {
-          path: 'commentary',
-          match: {
-            // TODO implement intra-community commentary
-            community,
-            // TODO - we should probably sort the non-community commentary
-            // with some randomness on client side
-            repost: { $exists: false },
-            $or: [{ hidden: { $ne: true } }]
-          }
-        },
-        {
-          path: 'embeddedUser.relevance',
-          match: { community, global: true },
-          select: 'pagerank'
-        },
+        // {
+        //   path: 'commentary',
+        //   match: {
+        //     // TODO implement intra-community commentary
+        //     // community,
+        //     // TODO - we should probably sort the non-community commentary
+        //     // with some randomness on client side
+        //     repost: { $exists: false },
+        //     $or: [{ hidden: { $ne: true } }]
+        //   }
+        // },
+        // {
+        //   path: 'embeddedUser.relevance',
+        //   match: { community, global: true },
+        //   select: 'pagerank'
+        // },
         { path: 'metaPost' }
       ]
     })
@@ -120,6 +120,7 @@ exports.topPosts = async (req, res, next) => {
     .limit(20);
 
     // TODO do this on frontend?
+    posts = posts.filter(d => d.post);
     posts = posts.map(d => ({
       ...d.post.toObject(),
       data: { ...d.toObject(), post: get(d, 'post._id') }

@@ -19,7 +19,6 @@ import { formatBalanceRead } from 'app/utils/eth';
 
 export const Balance = ({
   user,
-  wallet,
   screenSize,
   actions,
   isWeb,
@@ -71,12 +70,10 @@ export const Balance = ({
         <SecondaryText>
           {`Unclaimed REL: ${numbers.abbreviateNumber(user.balance)}`}
           {metaMaskTokens
-            ? `   Metamask: ${numbers.abbreviateNumber(
-              wallet.connectedBalance || user.tokenBalance
-            )}`
+            ? `   Metamask: ${numbers.abbreviateNumber(metaMaskTokens)}`
             : ''}
           {airdropTokens
-            ? `   Airdrop Coins: ${numbers.abbreviateNumber(user.airdropTokens)}`
+            ? `   Airdrop Coins: ${numbers.abbreviateNumber(airdropTokens)}`
             : ''}
           {lockedTokens
             ? `   Locked Coins: ${numbers.abbreviateNumber(lockedTokens)}`
@@ -123,7 +120,6 @@ Balance.propTypes = {
   ...contractPropTypes,
   user: PropTypes.object,
   actions: PropTypes.object,
-  wallet: PropTypes.object,
   screenSize: PropTypes.number,
   isWeb: PropTypes.bool
 };

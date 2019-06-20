@@ -4,11 +4,11 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import * as authActions from 'modules/auth/auth.actions';
 import * as earningsActions from 'modules/wallet/earnings.actions';
-import Eth from 'modules/web_ethTools/eth.context';
+// import Eth from 'modules/web_ethTools/eth.context';
 // import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import Earning from 'modules/wallet/earning.component';
 // import { initDrizzle } from 'app/utils/eth';
-import Balance from 'modules/wallet/balance.component';
+import BalanceComponent from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import get from 'lodash/get';
 import CustomListView from 'modules/listview/mobile/customList.component';
@@ -93,14 +93,8 @@ class WalletContainer extends Component {
   reload = () => this.load(0, 0);
 
   renderHeader = () => (
-    // eslint-disable-line
-    // if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
-    //   return null;
-    // }
-    // return <Eth.Consumer>{wallet => <MetaMaskCta {...wallet} />}</Eth.Consumer>;
-
     <View>
-      <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
+      <BalanceComponent {...this.props} />
     </View>
   );
 
