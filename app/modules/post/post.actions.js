@@ -497,12 +497,14 @@ export function getFlaggedPosts(skip) {
 export function getTopPosts() {
   return async dispatch => {
     try {
-      const responseJSON = await api.request({
+      const topPosts = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '/topPosts'
       });
-      return dispatch(setTopPosts(responseJSON));
+      // const data = normalize({ topPosts }, { topPosts: [postSchema] });
+      // return dispatch(setPosts(data, 'topPosts', 0));
+      return dispatch(setTopPosts(topPosts));
     } catch (error) {
       return false;
     }

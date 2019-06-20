@@ -37,6 +37,7 @@ export const Text = styled.span`
   ${mixins.background}
   ${mixins.border}
   ${mixins.color}
+  ${p => (p.onClick ? 'cursor: pointer;' : '')}
 `;
 
 export const InlineText = styled.span`
@@ -128,6 +129,16 @@ export const Button = styled.button`
   ${mixins.padding}
   ${mixins.width}
   ${mixins.margin}
+  ${mixins.color}
+  ${mixins.width}
+  ${mixins.height}
+`;
+
+export const NumericalValue = styled(Text)`
+  ${fonts.numericalValue}
+  ${mixins.width}
+  ${mixins.font}
+  ${mixins.inheritfont}
   ${mixins.color}
 `;
 

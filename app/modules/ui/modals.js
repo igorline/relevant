@@ -54,8 +54,8 @@ export const resetPassword = {
 export const login = {
   title: 'Sign In',
   Body: LoginForm,
-  footer: () => {},
-  redirect: '/'
+  footer: () => {}
+  // redirect: '/'
 };
 
 export const forgot = {
@@ -68,27 +68,27 @@ export const forgot = {
 export const signupSocial = {
   title: 'Join the Community',
   Body: SignupSocial,
-  footer: () => {},
-  redirect: '/'
+  footer: () => {}
+  // redirect: '/'
 };
 
 export const signupEmail = {
   title: 'Join the Community',
   Body: SignupEmail,
-  footer: () => {},
-  redirect: '/'
+  footer: () => {}
+  // redirect: '/'
 };
 
 export const setHandle = {
   title: 'Set your Handle',
   Body: SetHandle,
-  footer: () => {},
-  redirect: '/'
+  footer: () => {}
+  // redirect: '/'
 };
 
 export const confirm = {
   title: 'Confirm Your Email',
   Body: ConfirmEmail,
-  footer: () => {},
-  redirect: '/'
+  footer: () => {}
+  // redirect: '/'
 };
