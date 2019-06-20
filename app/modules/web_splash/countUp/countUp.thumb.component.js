@@ -6,20 +6,18 @@ import { CountUpContainer, CountUpSpacer } from './countUp.container';
 import CountUpBox from './countUp.box';
 import CountUpMarquee from './countUp.marquee';
 
-const randrange = a => Math.floor(Math.random() * (a[1] - a[0]) + a[0]);
-
 const marqueeFast = {
   active: true,
-  firingRate: 80,
+  firingRate: 20,
   parallax: 1.3,
-  speed: 2.15
+  speed: 0.8
 };
 
 const marqueeSlow = {
   active: true,
-  firingRate: 240,
+  firingRate: 340,
   parallax: 1.1,
-  speed: 2.69
+  speed: 3.69
 };
 
 const marqueeOff = {
@@ -36,13 +34,13 @@ export default class CountUpThumb extends Component {
   state = {
     mode: false,
     headline: '',
-    score: 0,
     highIndex: -1,
     lowIndex: -1,
     marquee: { ...marqueeOff },
     thumbTiming: { delay: 0, duration: 2800 },
     width: global.window ? window.innerWidth / 3 : 0,
-    height: 212
+    height: 212,
+    currentScore: 0
   };
 
   static propTypes = {
@@ -55,28 +53,27 @@ export default class CountUpThumb extends Component {
   };
 
   advance() {
-    const { high, highScore, low, lowScore } = this.props;
+    const { high, low } = this.props;
     let { mode, highIndex, lowIndex } = this.state;
     let headline;
     let marquee;
-    let score;
     mode = !mode;
     if (mode) {
       highIndex += 1;
       headline = high[highIndex % high.length];
-      score = highScore && randrange(highScore);
       marquee = { ...marqueeFast };
     } else {
       lowIndex += 1;
       headline = low[lowIndex % low.length];
-      score = lowScore && randrange(lowScore);
       marquee = { ...marqueeSlow };
     }
+
+    const currentScore = 0;
 
     this.setState({
       mode,
       headline,
-      score,
+      currentScore,
       highIndex,
       lowIndex,
       marquee,
@@ -99,8 +96,8 @@ export default class CountUpThumb extends Component {
     this.setState({ width, height }, () => this.advance());
   }
 
-  componentDidMount() {
-    // this.advance();
+  handleFinished(score) {
+    this.setState({ currentScore: this.state.currentScore + score });
   }
 
   componentWillUnmount() {
@@ -110,13 +107,14 @@ export default class CountUpThumb extends Component {
 
   render() {
     const { color } = this.props;
-    const { headline, score, currentScore, marquee, thumbTiming } = this.state;
+    const { headline, currentScore, marquee, thumbTiming } = this.state;
     return (
       <CountUpContainer>
         <CountUpMarquee
           type={'thumb'}
-          score={score}
+          score={currentScore}
           onMeasure={this.handleMeasurement.bind(this)}
+          onFinished={this.handleFinished.bind(this)}
           {...marquee}
         />
         <CountUpBox

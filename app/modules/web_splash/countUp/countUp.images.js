@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, Image } from 'modules/styled/web';
-import styled from 'styled-components';
 import { sizing, colors } from 'app/styles';
 import { tween } from 'app/utils';
+import styled from 'styled-components';
 
 /* Thumb image (flying into box) */
 
@@ -23,6 +23,7 @@ const ThumbContents = styled(Text)`
   font-size: 14px;
   font-weight: bold;
 `;
+
 export const Thumb = React.forwardRef((props, ref) => (
   <ThumbContainer ref={ref} {...props}>
     <ThumbImage src={'/img/thumb-bg.svg'} />
@@ -38,18 +39,19 @@ const ArrowContainer = styled(View)`
   right: -50px;
   justify-content: center;
   align-items: center;
-  /* background: #ffffff; */
-  /* box-shadow: 1px 0px 4px 4px #dddddd; */
   border-radius: 50%;
 `;
+
 const ArrowImage = styled(Image)`
   width: 50%;
 `;
+
 export const Arrow = React.forwardRef((props, ref) => (
   <ArrowContainer
     ref={ref}
-    w={props.big ? sizing(9) : sizing(3.5)}
-    h={props.big ? sizing(9) : sizing(3.5)}
+    bounce
+    w={props.big ? sizing(9) : sizing(3)}
+    h={props.big ? sizing(9) : sizing(3)}
     {...props}
     bg={props.up ? colors.green : colors.red}
   >
@@ -58,6 +60,7 @@ export const Arrow = React.forwardRef((props, ref) => (
     />
   </ArrowContainer>
 ));
+
 Arrow.propTypes = {
   big: PropTypes.bool,
   up: PropTypes.bool
@@ -70,11 +73,14 @@ const BigThumbContainer = styled(View)`
   margin-left: ${sizing(2)};
   margin-right: ${sizing(2)};
   padding-bottom: ${sizing(2)};
+  color: ${colors.black};
 `;
+
 const BigThumbImage = styled(Image)`
   width: ${sizing(14)};
   height: 60px;
 `;
+
 const BigThumbContents = styled(View)`
   position: absolute;
   top: 32px;
@@ -82,56 +88,23 @@ const BigThumbContents = styled(View)`
   width: 34px;
   justify-content: center;
   font-size: 16px;
+  color: ${colors.black};
+  font-weight: bold;
 `;
-export class BigThumb extends PureComponent {
-  componentDidMount() {
-    this.animate();
-  }
 
-  componentDidUpdate() {
-    this.animate();
-  }
-
-  animate() {
-    const { score, delay, duration } = this.props;
-    let lastScore = -1;
-    tween.remove(this.t);
-    setTimeout(() => {
-      this.label.innerHTML = '';
-    }, 0);
-    this.t = tween.add({
-      from: { score: 1 },
-      to: { score },
-      delay,
-      duration,
-      easing: tween.easing.circIn,
-      update: obj => {
-        const roundedScore = Math.round(obj.score);
-        if (roundedScore !== lastScore) {
-          lastScore = roundedScore;
-          this.label.innerHTML = roundedScore;
-        }
-      }
-    });
-  }
-
-  render() {
-    return (
-      <BigThumbContainer>
-        <BigThumbImage src={'/img/thumb-white.svg'} />
-        <BigThumbContents ref={ref => (this.label = ref)} />
-      </BigThumbContainer>
-    );
-  }
+export function BigThumb({ score }) {
+  return (
+    <BigThumbContainer>
+      <BigThumbImage src={'/img/thumb.svg'} />
+      <BigThumbContents>{score}</BigThumbContents>
+    </BigThumbContainer>
+  );
 }
 BigThumb.propTypes = {
-  score: PropTypes.number,
-  delay: PropTypes.number,
-  duration: PropTypes.number
+  score: PropTypes.number
 };
 
 /* Arrows with score (Relevant box) */
-
 const ArrowsContainer = styled(View)`
   flex-direction: column;
   justify-content: center;
@@ -142,26 +115,37 @@ const ArrowsContainer = styled(View)`
 const ArrowsImage = styled(Image)`
   width: ${sizing(14)};
   height: 50px;
+  transition: ${p => (p.bounce ? 'transform .2 ease-out' : 'transform .7s ease-out')};
+  transform: ${p => (p.bounce ? 'scale(1.2)' : '')};
 `;
+
 const ArrowsContents = styled(View)`
   justify-content: center;
   font-size: ${sizing(5)};
   height: ${sizing(5)};
   margin-top: ${sizing(3)};
 `;
-export class Arrows extends PureComponent {
-  render() {
-    return (
-      <ArrowsContainer>
-        <ArrowsImage src={'/img/countUp-big-arrow-up.svg'} />
-        <ArrowsContents ref={ref => (this.label = ref)}>
-          {this.props.score}
-        </ArrowsContents>
-        <ArrowsImage src={'/img/countUp-big-arrow-down.svg'} />
-      </ArrowsContainer>
-    );
-  }
+
+export function Arrows({ score }) {
+  const [_score, setSize] = useState(0);
+  const animate = _score !== score && score !== 0;
+  if (animate) requestAnimationFrame(() => setSize(score));
+
+  return (
+    <ArrowsContainer>
+      <ArrowsImage
+        bounce={animate && _score < score}
+        src={'/img/countUp-big-arrow-up.svg'}
+      />
+      <ArrowsContents bounce={animate}>{score}</ArrowsContents>
+      <ArrowsImage
+        bounce={animate && _score > score}
+        src={'/img/countUp-big-arrow-down.svg'}
+      />
+    </ArrowsContainer>
+  );
 }
+
 Arrows.propTypes = {
   score: PropTypes.number
 };
@@ -178,7 +162,6 @@ const CoinContainer = styled(View)`
   align-items: center;
   background: ${colors.gold};
   color: black;
-  box-shadow: 1px 0px 4px 4px #dddddd;
   border-radius: 50%;
   text-transform: uppercase;
   font-size: ${sizing(5)};

@@ -14,16 +14,17 @@ const CountUpMarqueeContainer = styled(View)`
   flex: 1;
   height: ${sizing(30)};
   overflow: hidden;
+  max-width: ${sizing(30)};
 `;
 
-const LeftGradient = styled(View)`
-  background: linear-gradient(0.25turn, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-  width: 50%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
+// const LeftGradient = styled(View)`
+//   background: linear-gradient(0.25turn, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+//   width: 80%;
+//   height: 100%;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+// `;
 
 export default class CountUpMarquee extends PureComponent {
   state = {
@@ -92,65 +93,78 @@ export default class CountUpMarquee extends PureComponent {
   add(index) {
     const { parallax, speed, score, type, onFinished } = this.props;
     const width = this.container.current.offsetWidth;
+    const height = this.container.current.offsetHeight;
+
     const duration = width * speed;
-    let height = this.container.current.offsetHeight;
+
     let y;
     let elScore = 1;
+
     const modIndex = index % this.thumbs.length;
     const el = this.thumbs[modIndex];
+    let elHeight = el.current.offsetHeight;
+    this.arrowTypes[modIndex] = {};
     const arrowType = this.arrowTypes[modIndex];
+    let targetY;
 
     switch (type) {
       case 'relevant':
-        height = (height - 100) / 2;
-        y = randint(height) + (index % 2) * (height + 50);
         if (score > 0) {
-          arrowType.big = Math.random() < 0.5;
+          arrowType.big = Math.random() < 0.7;
           arrowType.up = arrowType.big ? Math.random() < 0.9 : Math.random() < 0.2;
         } else {
-          arrowType.big = Math.random() < 0.5;
-          arrowType.up = arrowType.big ? Math.random() < 0.2 : Math.random() < 0.9;
+          arrowType.big = Math.random() < 0.3;
+          arrowType.up = arrowType.big ? Math.random() < 0.1 : Math.random() < 0.8;
         }
-        if (arrowType.big) {
-          elScore = randint(10) + 10;
-        } else {
-          elScore = randint(5);
-        }
-        if (!arrowType.up) {
-          elScore *= -1;
-        }
-        if (index % 2) {
-          y -= 10;
-        } else {
-          y += 10;
-        }
+
+        elScore = arrowType.big ? randint(10) + 10 : 1;
+        if (!arrowType.up) elScore *= -1;
+
+        elHeight = arrowType.big ? 63 : 25;
+
+        y = randint(height - elHeight);
+        targetY = arrowType.up ? 0 : height - elHeight;
         break;
       case 'thumb':
-        height = (height - 100) / 2;
-        y = randint(height) + (index % 2) * (height + 50);
+        targetY = (height - elHeight) / 2;
+        y = randint(height - elHeight);
         break;
       default:
-        y = (height - 100) / 2;
+        y = (height - elHeight) / 2;
+        targetY = y;
         break;
     }
-    // if (type === 'coin') console.log('added');
 
     if (!el || !el.current || !y) return;
-    tween.add({
-      from: { x: -(width * (randfloat(parallax - 1) + 1)) - 50 },
-      to: { x: 0 },
-      duration,
-      easing: tween.easing.circ_in,
-      update: ({ x }) => {
-        el.current.style.transform =
-          'translate3D(' + [x.toFixed(1), y, 0].join('px,') + 'px)';
-      },
-      finished: () => {
-        // if (type === 'coin') console.log('FINISHED')
-        el.current.style.transform = 'translate3D(' + [10, y, 0].join('px,') + 'px)';
-        if (onFinished) onFinished(elScore);
-      }
-    });
+
+    const tween1 = () =>
+      tween.add({
+        from: { scale: 0 },
+        to: { scale: 1 },
+        duration: 200,
+        update: ({ scale }) => {
+          el.current.style.transform = `translate3D(${-width +
+            20}px, ${y}px, 0) scale(${scale}) `;
+        },
+        easing: tween.easing.quad_in_out,
+        finished: () => tween2()
+      });
+
+    const tween2 = () =>
+      tween.add({
+        from: { x: -width + 20, y },
+        to: { x: elHeight, y: targetY },
+        duration: duration + randfloat(parallax),
+        easing: tween.easing.circ_in,
+        update: ({ x, y: tY }) => {
+          el.current.style.transform = `translate3D(${x.toFixed(1)}px, ${tY || y}px, 0)`;
+        },
+        finished: () => {
+          el.current.style.transform = `translate3D(${50}px, ${y}px, 0)`;
+          if (onFinished) onFinished(elScore);
+        }
+      });
+    tween1();
   }
 
   render() {
@@ -172,7 +186,7 @@ export default class CountUpMarquee extends PureComponent {
     return (
       <CountUpMarqueeContainer ref={this.container}>
         {thumbs}
-        <LeftGradient />
+        {/* <LeftGradient /> */}
       </CountUpMarqueeContainer>
     );
   }
