@@ -187,8 +187,8 @@ class Splash extends Component {
 
         <Section pt={sectionSpace}>
           <SplashText>
-            Engagement metrics make it easy to find popular content, but they don’t help
-            us determine what’s important, or who we can trust.
+            Most social networks make it easy to find popular content, but they don't help
+            us determine what’s relevant, or who we can trust.
           </SplashText>
         </Section>
 
@@ -200,7 +200,7 @@ class Splash extends Component {
           type={'thumb'}
           color={colors.darkLightGrey}
         />
-        <ImageLabel>Web 2.0 metrics controlled by mobs and bots</ImageLabel>
+        <ImageLabel>Web 2.0 metrics measure value according to engagement.</ImageLabel>
 
         <Section pt={sectionSpace}>
           <SplashText>
@@ -236,11 +236,12 @@ class Splash extends Component {
           type={'coin'}
           color={colors.gold}
         />
+        <ImageLabel>Users earn coins for betting on quality content.</ImageLabel>
 
         <Section>
           <SplashText>
             Users can earn coins by betting on the relevance of content. Bets don’t impact
-            rankings but provide a way to reward users for their expertise.
+            content rankings but provide a way to reward users for their expertise.
           </SplashText>
         </Section>
 
@@ -251,7 +252,7 @@ class Splash extends Component {
             measured.
           </SplashText>
           <SplashText>Here are a few communities you can join right now:</SplashText>
-          <CommunityList p={2} hashtags />
+          <CommunityList p={0} hashtags />
         </Section>
 
         <View
