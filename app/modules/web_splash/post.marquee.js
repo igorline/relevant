@@ -14,7 +14,7 @@ const MarqueeContainer = styled(View)`
   white-space: nowrap;
   width: 100vw;
   overflow: hidden;
-  z-index: 1;
+  z-index: 10;
   position: fixed;
   top: 0;
 `;
@@ -39,10 +39,14 @@ class Marquee extends Component {
   componentDidMount() {
     this.props.actions.getTopPosts();
     this.animate();
+    window.addEventListener('blur', () => window.cancelAnimationFrame(this.lastFrame));
+    window.addEventListener('focus', () => this.animate());
   }
 
   componentWillUnmount() {
     window.cancelAnimationFrame(this.lastFrame);
+    window.removeEventListener('blur', () => window.cancelAnimationFrame(this.lastFrame));
+    window.removeEventListener('focus', () => this.animate());
   }
 
   rowSpeed = i => {

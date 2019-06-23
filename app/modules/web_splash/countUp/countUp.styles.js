@@ -10,6 +10,5 @@ export const CountUpContainer = styled(View)`
 `;
 
 export const CountUpSpacer = styled(View)`
-  flex: 1;
   max-width: ${sizing(30)};
 `;

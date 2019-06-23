@@ -125,6 +125,7 @@ export const Button = styled.button`
     background: ${colors.grey};
     `
       : ''};
+  ${mixins.flex}
   ${mixins.background}
   ${mixins.padding}
   ${mixins.width}
@@ -177,4 +178,14 @@ export const StyledTextarea = styled(Textarea)`
 export const Form = styled.form`
   ${mixins.flex}
   ${mixins.margin}
+`;
+
+export const Video = styled.video`
+  ${mixins.margin}
+  ${mixins.height}
+  ${mixins.width}
+  ${mixins.padding}
+  ${mixins.background}
+  ${mixins.borderRadius}
+  ${mixins.flex}
 `;
