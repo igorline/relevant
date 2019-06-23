@@ -12,7 +12,6 @@ const randint = n => Math.floor(Math.random() * n);
 
 const CountUpMarqueeContainer = styled(View)`
   flex: 1;
-  height: ${sizing(30)};
   overflow: hidden;
   max-width: ${sizing(30)};
 `;
@@ -39,23 +38,24 @@ export default class CountUpMarquee extends PureComponent {
     speed: PropTypes.number,
     onMeasure: PropTypes.func,
     onFinished: PropTypes.func,
-    score: PropTypes.number
+    score: PropTypes.number,
+    mode: PropTypes.bool,
+    height: PropTypes.number
   };
 
-  constructor() {
-    super();
-    this.index = 0;
-    this.thumbs = [];
-    this.arrowTypes = [];
-    for (let i = 0; i < 20; i++) {
-      this.thumbs.push(React.createRef());
-      this.arrowTypes.push({ up: Math.random() > 0.5, big: Math.random() > 0.2 });
-    }
-    this.container = React.createRef();
-  }
+  container = React.createRef();
+
+  index = 0;
+
+  thumbs = Array.from({ length: 20 }, React.createRef);
+
+  arrowTypes = Array.from({ length: 20 }, () => ({
+    up: Math.random() > 0.5,
+    big: Math.random() > 0.2
+  }));
 
   componentDidMount() {
-    if (this.props.type !== 'coin') this.animate(0);
+    this.animate(0);
     this.thumbs.forEach(el => {
       el.current.style.transform = 'translate3D(' + [10, 0, 0].join('px,') + 'px)';
     });
@@ -63,35 +63,34 @@ export default class CountUpMarquee extends PureComponent {
       this.container.current.offsetWidth,
       this.container.current.offsetHeight
     );
+    window.addEventListener('blur', this.pause);
   }
 
   componentWillUnmount() {
+    window.removeEventListener('blur', this.pause);
+    window.removeEventListener('focus', this.animate);
     clearTimeout(this.timeout);
   }
 
-  componentDidUpdate(oldProps) {
-    if (
-      this.props.type === 'coin' &&
-      this.props.firingRate !== oldProps.firingRate &&
-      this.props.firingRate
-    ) {
-      this.add(0);
-    }
-  }
+  pause = () => {
+    clearTimeout(this.timeout);
+    window.removeEventListener('focus', this.animate);
+    window.addEventListener('focus', this.animate);
+  };
 
-  animate(index) {
+  animate = ({ index = 0 }) => {
     const { active, firingRate } = this.props;
     if (active) {
-      this.timeout = setTimeout(() => this.animate(index + 1), firingRate);
+      this.timeout = setTimeout(() => this.animate({ index: index + 1 }), firingRate);
       this.add(index);
       this.setState({ index });
     } else {
-      this.timeout = setTimeout(() => this.animate(index), 100);
+      this.timeout = setTimeout(() => this.animate({ index }), 100);
     }
-  }
+  };
 
-  add(index) {
-    const { parallax, speed, score, type, onFinished } = this.props;
+  add = index => {
+    const { parallax, speed, mode, type, onFinished } = this.props;
     const width = this.container.current.offsetWidth;
     const height = this.container.current.offsetHeight;
 
@@ -106,10 +105,11 @@ export default class CountUpMarquee extends PureComponent {
     this.arrowTypes[modIndex] = {};
     const arrowType = this.arrowTypes[modIndex];
     let targetY;
+    let startX = 0;
 
     switch (type) {
       case 'relevant':
-        if (score > 0) {
+        if (mode) {
           arrowType.big = Math.random() < 0.7;
           arrowType.up = arrowType.big ? Math.random() < 0.9 : Math.random() < 0.2;
         } else {
@@ -120,7 +120,8 @@ export default class CountUpMarquee extends PureComponent {
         elScore = arrowType.big ? randint(10) + 10 : 1;
         if (!arrowType.up) elScore *= -1;
 
-        elHeight = arrowType.big ? 63 : 25;
+        elHeight = arrowType.big ? 70 : 25;
+        startX = randfloat(20);
 
         y = randint(height - elHeight);
         targetY = arrowType.up ? 0 : height - elHeight;
@@ -144,16 +145,16 @@ export default class CountUpMarquee extends PureComponent {
         duration: 200,
         update: ({ scale }) => {
           el.current.style.transform = `translate3D(${-width +
-            20}px, ${y}px, 0) scale(${scale}) `;
+            startX}px, ${y}px, 0) scale(${scale}) `;
         },
-        easing: tween.easing.quad_in_out,
+        easing: tween.easing.cubic_bezier(0.83, 0.42, 0, 1.24),
         finished: () => tween2()
       });
 
     const tween2 = () =>
       tween.add({
-        from: { x: -width + 20, y },
-        to: { x: elHeight, y: targetY },
+        from: { x: -width + startX, y },
+        to: { x: 0, y: targetY },
         duration: duration + randfloat(parallax),
         easing: tween.easing.circ_in,
         update: ({ x, y: tY }) => {
@@ -165,10 +166,10 @@ export default class CountUpMarquee extends PureComponent {
         }
       });
     tween1();
-  }
+  };
 
   render() {
-    const { type } = this.props;
+    const { type, height } = this.props;
     let thumbs;
     switch (type) {
       case 'thumb':
@@ -184,7 +185,7 @@ export default class CountUpMarquee extends PureComponent {
         break;
     }
     return (
-      <CountUpMarqueeContainer ref={this.container}>
+      <CountUpMarqueeContainer h={height} ref={this.container}>
         {thumbs}
         {/* <LeftGradient /> */}
       </CountUpMarqueeContainer>

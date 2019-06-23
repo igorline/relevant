@@ -67,7 +67,7 @@ class CommunityAdminList extends Component {
       community: { communities },
       p
     } = this.props;
-    const hP = p || 4;
+    const hP = typeof p !== 'undefined' ? p : 4;
     return (
       <View fdirection="column">
         {Object.values(communities).map(c => {

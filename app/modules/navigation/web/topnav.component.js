@@ -190,7 +190,7 @@ class TopNav extends Component {
           </View>
         </View>
         <View fdirection={'row'} mt={[0, 1]} ml={[0, 5.5]}>
-          <Breadcrumbs />
+          {!title && <Breadcrumbs />}
         </View>
       </Nav>
     );
