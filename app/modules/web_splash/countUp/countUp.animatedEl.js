@@ -63,28 +63,33 @@ export default class CountUpMarquee extends PureComponent {
       this.container.current.offsetWidth,
       this.container.current.offsetHeight
     );
-    window.addEventListener('blur', () => clearTimeout(this.timeout));
-    window.addEventListener('focus', () => this.animate(0));
+    window.addEventListener('blur', this.pause);
   }
 
   componentWillUnmount() {
+    window.removeEventListener('blur', this.pause);
+    window.removeEventListener('focus', this.animate);
     clearTimeout(this.timeout);
-    window.removeEventListener('blur', () => clearTimeout(this.timeout));
-    window.removeEventListener('focus', () => this.animate(0));
   }
 
-  animate(index) {
+  pause = () => {
+    clearTimeout(this.timeout);
+    window.removeEventListener('focus', this.animate);
+    window.addEventListener('focus', this.animate);
+  };
+
+  animate = ({ index = 0 }) => {
     const { active, firingRate } = this.props;
     if (active) {
-      this.timeout = setTimeout(() => this.animate(index + 1), firingRate);
+      this.timeout = setTimeout(() => this.animate({ index: index + 1 }), firingRate);
       this.add(index);
       this.setState({ index });
     } else {
-      this.timeout = setTimeout(() => this.animate(index), 100);
+      this.timeout = setTimeout(() => this.animate({ index }), 100);
     }
-  }
+  };
 
-  add(index) {
+  add = index => {
     const { parallax, speed, mode, type, onFinished } = this.props;
     const width = this.container.current.offsetWidth;
     const height = this.container.current.offsetHeight;
@@ -161,7 +166,7 @@ export default class CountUpMarquee extends PureComponent {
         }
       });
     tween1();
-  }
+  };
 
   render() {
     const { type, height } = this.props;

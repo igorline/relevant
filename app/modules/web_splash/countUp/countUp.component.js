@@ -72,11 +72,16 @@ export default class CountUp extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener('blur', () => clearTimeout(this.timeout));
-    window.addEventListener('focus', () => this.advance());
+    window.addEventListener('blur', this.pause);
   }
 
-  advance() {
+  pause = () => {
+    clearTimeout(this.timeout);
+    window.removeEventListener('focus', this.advance);
+    window.addEventListener('focus', this.advance);
+  };
+
+  advance = () => {
     const { high, low, type } = this.props;
     let { mode, highIndex, lowIndex } = this.state;
     let headline;
@@ -118,7 +123,7 @@ export default class CountUp extends Component {
         this.advance();
       }, marqueeAdvanceTime);
     }, marqueeOffTime);
-  }
+  };
 
   handleMeasurement(width) {
     this.setState({ width }, () => this.advance());
@@ -131,8 +136,8 @@ export default class CountUp extends Component {
   componentWillUnmount() {
     tween.reset();
     clearTimeout(this.timeout);
-    window.removeEventListener('blur', () => clearTimeout(this.timeout));
-    window.removeEventListener('focus', () => this.advance());
+    window.removeEventListener('blur', this.pause);
+    window.removeEventListener('focus', this.advance);
   }
 
   render() {

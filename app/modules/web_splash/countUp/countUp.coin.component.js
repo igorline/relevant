@@ -91,11 +91,16 @@ export default class CountUpCoin extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener('blur', () => clearTimeout(this.timeout));
-    window.addEventListener('focus', () => this.advance());
+    window.addEventListener('blur', this.pause);
   }
 
-  advance() {
+  pause = () => {
+    clearTimeout(this.timeout);
+    window.removeEventListener('focus', this.advance);
+    window.addEventListener('focus', this.advance);
+  };
+
+  advance = () => {
     const { high, low } = this.props;
     let { mode, highIndex, lowIndex, postRank } = this.state;
     let headline;
@@ -118,7 +123,7 @@ export default class CountUpCoin extends Component {
       animationState: 0,
       postRank
     });
-  }
+  };
 
   // window measurement triggers the animation
   handleMeasurement = (width, height) => {
@@ -146,10 +151,10 @@ export default class CountUpCoin extends Component {
   };
 
   componentWillUnmount() {
-    tween.reset();
+    window.removeEventListener('blur', this.pause);
+    window.removeEventListener('focus', this.advance);
     clearTimeout(this.timeout);
-    window.removeEventListener('blur', () => clearTimeout(this.timeout));
-    window.removeEventListener('focus', () => this.advance());
+    tween.reset();
   }
 
   render() {

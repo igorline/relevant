@@ -39,15 +39,20 @@ class Marquee extends Component {
   componentDidMount() {
     this.props.actions.getTopPosts();
     this.animate();
-    window.addEventListener('blur', () => window.cancelAnimationFrame(this.lastFrame));
-    window.addEventListener('focus', () => this.animate());
+    window.addEventListener('blur', this.pause);
   }
 
   componentWillUnmount() {
-    window.cancelAnimationFrame(this.lastFrame);
-    window.removeEventListener('blur', () => window.cancelAnimationFrame(this.lastFrame));
-    window.removeEventListener('focus', () => this.animate());
+    window.removeEventListener('blur', this.pause);
+    window.removeEventListener('focus', this.animate);
+    cancelAnimationFrame(this.lastFrame);
   }
+
+  pause = () => {
+    cancelAnimationFrame(this.lastFrame);
+    window.removeEventListener('focus', this.animate);
+    window.addEventListener('focus', this.animate);
+  };
 
   rowSpeed = i => {
     switch (i % 3) {
@@ -76,7 +81,7 @@ class Marquee extends Component {
     });
 
     this.lastTime = now;
-    this.lastFrame = window.requestAnimationFrame(() => this.animate());
+    this.lastFrame = requestAnimationFrame(this.animate);
   };
 
   renderTicker = (row, key) => {
