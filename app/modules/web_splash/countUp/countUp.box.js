@@ -1,39 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, BodyText } from 'modules/styled/web';
+import { Text, View, InlineText } from 'modules/styled/web';
 import styled from 'styled-components';
-import { sizing } from 'app/styles';
+import { sizing, size } from 'app/styles';
 import { tween } from 'app/utils';
 
-import { BigThumb, Arrows, ArrowTimer } from './countUp.images';
-
-const BetResult = styled(Text)`
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background-size: contain;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  z-index: 1;
-`;
-const BetWin = styled(BetResult)`
-  top: -60px;
-  right: -100px;
-  transform: rotate(23deg);
-  background-image: url(/img/betWin.png);
-`;
-const BetLoose = styled(BetResult)`
-  bottom: -60px;
-  right: -20px;
-  background-image: url(/img/betLoose.png);
-  transform: rotate(-15deg);
-`;
-
 const CountUpBoxContainer = styled(View)`
-  width: ${sizing(75)};
-  height: ${sizing(30)};
   justify-content: flex-start;
   flex-direction: row;
   align-items: center;
@@ -43,8 +15,6 @@ const CountUpBoxContainer = styled(View)`
 
 const CountUpBoxShadow = styled(View)`
   position: absolute;
-  width: ${sizing(75)};
-  height: ${sizing(30)};
   top: 0;
   box-shadow: -4px 0px 5px -1px #dddddd;
   z-index: -1;
@@ -52,21 +22,19 @@ const CountUpBoxShadow = styled(View)`
 
 const Headline = styled(Text)`
   text-transform: uppercase;
-  font-size: ${sizing(5)};
-  line-height: ${sizing(5)};
-  ${p => (p.type === 'coin' ? `height: ${sizing(12)}; white-space: pre;` : '')}
+  font-size: ${() => size([5, 3])};
+  line-height: ${() => size([5, 3])};
+  ${p => (p.hide ? 'visibility: hidden;' : '')}
 `;
 
 export default class CountUpBox extends PureComponent {
   static propTypes = {
+    height: PropTypes.number,
     type: PropTypes.string,
-    score: PropTypes.number,
     headline: PropTypes.string,
     color: PropTypes.string,
     onHeadlineFinished: PropTypes.func,
-    onTimerFinished: PropTypes.func,
-    thumbTiming: PropTypes.object,
-    outcome: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
   };
 
   componentDidMount() {
@@ -78,8 +46,6 @@ export default class CountUpBox extends PureComponent {
       this.animate();
     }
   }
-
-  animateRewards = () => {};
 
   animate() {
     const { headline, onHeadlineFinished } = this.props;
@@ -94,6 +60,7 @@ export default class CountUpBox extends PureComponent {
         if (lastIndex !== roundedIndex) {
           lastIndex = roundedIndex;
           this.label.innerHTML = headline.substr(0, roundedIndex);
+          this.labelRest.innerHTML = headline.substr(roundedIndex, headline.length - 1);
         }
       },
       finished: () => {
@@ -103,39 +70,23 @@ export default class CountUpBox extends PureComponent {
   }
 
   render() {
-    const { type, color, score, thumbTiming, onTimerFinished, outcome } = this.props;
+    const { type, color, children, height } = this.props;
+    const width = [sizing(75), '65%'];
+
     return (
-      <CountUpBoxContainer bg={color} c={type === 'relevant' ? 'white' : 'black'}>
-        {type === 'thumb' ? (
-          <BigThumb score={score} {...thumbTiming} />
-        ) : type === 'relevant' ? (
-          <Arrows score={score} {...thumbTiming} />
-        ) : (
-          <ArrowTimer
-            score={score}
-            {...thumbTiming}
-            onTimerFinished={() => {
-              this.animateRewards();
-              onTimerFinished();
-            }}
-          />
-        )}
-        {outcome === 'win' && (
-          <BetWin>
-            <BodyText p={4} fs={3} lh={4}>
-              YOU WIN!
-            </BodyText>
-          </BetWin>
-        )}
-        {outcome === 'loose' && (
-          <BetLoose>
-            <BodyText p={7} fs={3} lh={4}>
-              NOT A GREAT BET :(
-            </BodyText>
-          </BetLoose>
-        )}
-        <Headline type={type} ref={ref => (this.label = ref)} />
-        <CountUpBoxShadow />
+      <CountUpBoxContainer
+        h={height}
+        w={width}
+        bg={color}
+        c={type === 'relevant' ? 'white' : 'black'}
+        pr={1}
+      >
+        {children}
+        <InlineText>
+          <Headline inline={1} ref={ref => (this.label = ref)} />
+          <Headline inline={1} hide ref={ref => (this.labelRest = ref)} />
+        </InlineText>
+        <CountUpBoxShadow h={height} w={width} />
       </CountUpBoxContainer>
     );
   }

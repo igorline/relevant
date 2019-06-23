@@ -123,6 +123,8 @@ const routes = [
               {
                 path: '/user/wallet',
                 component: Wallet,
+                navbar: TopNav,
+                title: 'Wallet',
                 exact: true
               },
               // USER

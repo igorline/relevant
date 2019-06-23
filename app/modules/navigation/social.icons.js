@@ -10,6 +10,11 @@ const MediumIcon = require('app/public/img/medium.png');
 
 const icons = [
   {
+    href: 'https://blog.relevant.community',
+    source: MediumIcon,
+    target: '_blank'
+  },
+  {
     href: 'https://twitter.com/relevantfeed',
     source: TwitterIcon,
     target: '_blank'
@@ -23,11 +28,6 @@ const icons = [
   {
     href: 'mailto:info@relevant.community',
     source: EmailIcon,
-    target: '_blank'
-  },
-  {
-    href: 'https://blog.relevant.community',
-    source: MediumIcon,
     target: '_blank'
   }
 ];
