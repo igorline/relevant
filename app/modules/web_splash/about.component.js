@@ -311,7 +311,7 @@ class Splash extends Component {
             <Image
               w={[50, 'auto']}
               h={['auto', '100vh']}
-              src={'/img/Phone-blank.png'}
+              src={'/img/phone-blank.png'}
               alt={'Relevant Phone'}
             />
           </Phone>
