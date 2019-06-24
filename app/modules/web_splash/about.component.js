@@ -70,7 +70,8 @@ const Section = styled(View)`
   flex: 1;
   flex-direction: column;
   justify-content: center;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
   padding: ${sizing(6)};
   padding-left: ${sizing(2)};
   padding-right: ${sizing(2)};
@@ -82,7 +83,7 @@ const SplashText = styled(Text)`
   color: ${colors.black};
   font-size: ${() => size([4.5, 3])};
   line-height: ${() => size([6, 4.8])};
-  margin: ${() => size(2)} 0;
+  margin-top: ${() => size(2)} 0;
 `;
 
 const SectionText = styled(Text)`
@@ -135,7 +136,7 @@ class Splash extends Component {
   render() {
     const { showFixedLogo, showJoinButton } = this.state;
 
-    const sectionSpace = 12;
+    const sectionSpace = 16;
 
     return (
       <View flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
@@ -185,10 +186,10 @@ class Splash extends Component {
           </View>
         </Section>
 
-        <Section pt={sectionSpace}>
+        <Section mt={sectionSpace}>
           <SplashText>
             Most social networks make it easy to find popular content, but they don't help
-            us determine what’s relevant, or who we can trust.
+            us determine what’s important, or who we can trust.
           </SplashText>
         </Section>
 
@@ -202,7 +203,7 @@ class Splash extends Component {
         />
         <ImageLabel>Web 2.0 metrics measure value according to engagement.</ImageLabel>
 
-        <Section pt={sectionSpace}>
+        <Section mt={sectionSpace}>
           <SplashText>
             That’s why we created Relevant, a manipulation-resistant social network that
             filters content according to quality, not clicks.
@@ -226,7 +227,7 @@ class Splash extends Component {
           </SplashText>
         </Section>
 
-        <Section pt={sectionSpace}>
+        <Section mt={sectionSpace}>
           <SplashText>Relevant rewards users for curating content.</SplashText>
         </Section>
 
@@ -245,20 +246,21 @@ class Splash extends Component {
           </SplashText>
         </Section>
 
-        <Section pt={sectionSpace}>
+        <Section mt={sectionSpace}>
           <SplashText>
             Each Relevant Community has its own unique Reputation System. Communities
             decide what kind of information is valuable to them and how that value is
             measured.
           </SplashText>
           <SplashText>Here are a few communities you can join right now:</SplashText>
+          <View mt={6} />
           <CommunityList p={0} hashtags />
         </Section>
 
         <View
           margin={'auto'}
           flex={[1, null]}
-          mt={4}
+          mt={sectionSpace}
           fdirection={['row', 'column']}
           justify={['center', 'space-between']}
           align={'center'}
