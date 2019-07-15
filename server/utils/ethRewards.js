@@ -31,6 +31,7 @@ exports.rewards = async () => {
     console.log('rewardPool', rewardPool); // eslint-disable;
   } catch (err) {
     console.log(err);
+    throw err;
   }
 
   try {

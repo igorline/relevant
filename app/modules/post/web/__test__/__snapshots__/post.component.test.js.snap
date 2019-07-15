@@ -84,8 +84,8 @@ exports[`Snapshot Post Web 1`] = `
           "url": "https://example.com/testPost1",
         },
         "parentPost": "000000000000000000000003",
-        "payoutTime": 2019-02-03T06:01:01.000Z,
-        "postDate": 2019-01-31T06:01:01.000Z,
+        "payoutTime": 2019-02-03T12:01:01.000Z,
+        "postDate": 2019-01-31T12:01:01.000Z,
         "tags": Array [
           "tag11",
           "tag12",
@@ -136,8 +136,8 @@ exports[`Snapshot Post Web 1`] = `
           "url": "https://example.com/testPost1",
         },
         "parentPost": "000000000000000000000003",
-        "payoutTime": 2019-02-03T06:01:01.000Z,
-        "postDate": 2019-01-31T06:01:01.000Z,
+        "payoutTime": 2019-02-03T12:01:01.000Z,
+        "postDate": 2019-01-31T12:01:01.000Z,
         "tags": Array [
           "tag11",
           "tag12",

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components/primitives';
 import { View, Header, Touchable, CloseX } from 'modules/styled/uni';
 import { colors, layout } from 'app/styles';
@@ -36,7 +37,7 @@ const Modal = styled(View)`
   max-width: 100vw;
 `;
 
-export default class ModalComponent extends Component {
+class ModalComponent extends Component {
   static propTypes = {
     header: PropTypes.object,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
@@ -84,8 +85,9 @@ export default class ModalComponent extends Component {
   }
 
   render() {
-    const { close, footer, children, hideX, header, title } = this.props;
-    if (!this.props.visible) return null;
+    const { close, footer, children, hideX, visible } = this.props;
+    const header = this.props.header || this.props.title;
+    if (!visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
     return (
       <ModalParent onClick={close} ref={c => (this.targetElement = c)}>
@@ -114,12 +116,10 @@ export default class ModalComponent extends Component {
               </Touchable>
             )}
             {header ? (
-              this.props.header
-            ) : (
               <Header pr={5} shrink={1}>
-                {title}
+                {header}
               </Header>
-            )}
+            ) : null}
             {children && <View mt={3}>{children}</View>}
             {footerEl && <View mt={6}>{footerEl}</View>}
           </Modal>
@@ -128,3 +128,8 @@ export default class ModalComponent extends Component {
     );
   }
 }
+
+export default props =>
+  props.visible && document
+    ? ReactDOM.createPortal(<ModalComponent {...props} />, document.body)
+    : null;

@@ -1,14 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { renderRoutes } from 'react-router-config';
-import TopNav from 'modules/navigation/web/topnav.component';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Route, Switch } from 'react-router-dom';
 import { View } from 'modules/styled/uni';
 
-const WithTopNav = props => (
+const WithTopNav = ({ route }) => (
   <View fdirection="column" display="flex" grow={1}>
-    <TopNav />
-    {renderRoutes(props.route.routes)}
+    <Switch>
+      {route.routes.map((r, index) => (
+        <Route
+          key={index}
+          path={r.path}
+          exact={r.exact}
+          state={r.state}
+          render={props => (r.navbar ? <r.navbar {...props} title={r.title} /> : null)}
+        />
+      ))}
+    </Switch>
+    <Switch>
+      {route.routes.map((r, index) => (
+        <Route key={index} path={r.path} exact={r.exact} component={r.component} />
+      ))}
+    </Switch>
   </View>
 );
 
