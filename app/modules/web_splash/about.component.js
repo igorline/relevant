@@ -89,8 +89,8 @@ const SplashText = styled(Text)`
 const SectionText = styled(Text)`
   font-family: ${fonts.HELVETICA_NEUE};
   flex-direction: column;
-  font-size: ${() => size(2.5)};
-  line-height: ${() => size(3)};
+  font-size: ${() => size([2.5, 2])};
+  line-height: ${() => size([3, 2.5])};
 `;
 
 class Splash extends Component {
@@ -332,7 +332,7 @@ class Splash extends Component {
           </Phone>
         </View>
 
-        <FixedLogo mt={[2, 1]} visible={showFixedLogo}>
+        <FixedLogo mt={[2, 1]} visible={showFixedLogo && !screenSize}>
           <ULink to={'/relevant/top'}>
             <Image h={[6, 4, 3]} src={'/img/r-big.png'} alt={'Relevant'} />
           </ULink>
