@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import App from './app'; // eslint-disable-line
 import NotFound from './404';
 import withAuth from './withAuth';
-import CommunityRedirect from './communityRedirect';
+// import CommunityRedirect from './communityRedirect';
 
 const DiscoverContainer = loadable(() =>
   import('modules/discover/web/discover.container')
@@ -76,7 +76,7 @@ const routes = [
       // },
       {
         path: '/',
-        component: CommunityRedirect,
+        component: About,
         exact: true
       },
       { path: '/about', component: About, exact: true },
@@ -179,12 +179,19 @@ const routes = [
                 navbar: TopNav
               },
               {
-                path: '/community/all',
+                path: '/communities',
                 component: CommunityList,
                 exact: true,
                 navbar: TopNav,
-                title: 'Communities on Relevant'
+                title: 'Communities'
               },
+              // {
+              //   path: '/community/all',
+              //   component: CommunityList,
+              //   exact: true,
+              //   navbar: TopNav,
+              //   title: 'Communities'
+              // },
               {
                 path: '/:community/post/:id',
                 component: PostContainer,

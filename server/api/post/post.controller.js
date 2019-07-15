@@ -254,6 +254,7 @@ exports.userPosts = async (req, res, next) => {
     const { community } = req.query;
 
     const cObj = await Community.findOne({ slug: community }, '_id');
+    if (!cObj) return res.status(200).json({});
     const communityId = cObj._id;
 
     const { user } = req;
@@ -338,9 +339,7 @@ exports.userPosts = async (req, res, next) => {
     .skip(skip)
     .sort(sortQuery);
 
-    res.status(200).json(posts);
-
-    return null;
+    return res.status(200).json(posts);
   } catch (err) {
     return next(err);
   }
