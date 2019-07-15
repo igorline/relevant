@@ -99,7 +99,7 @@ export async function handleErrors(response) {
 export async function request(options) {
   try {
     // Add community query parameter
-    options.query = { ...options.query, community };
+    options.query = { community, ...options.query };
     const query = queryParams(options.query);
     let apiPath = '/api/';
     if (options.endpoint.match('auth')) apiPath = '';
