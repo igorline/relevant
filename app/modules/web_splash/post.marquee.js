@@ -25,7 +25,8 @@ class Marquee extends Component {
   static propTypes = {
     rows: PropTypes.number,
     actions: PropTypes.object,
-    posts: PropTypes.object
+    posts: PropTypes.object,
+    communityState: PropTypes.object
   };
 
   static defaultProps = {
@@ -85,13 +86,15 @@ class Marquee extends Component {
   };
 
   renderTicker = (row, key) => {
-    const { posts, rows } = this.props;
+    const { posts, rows, communityState } = this.props;
     const links = posts.topPosts.filter(post => post.title);
 
     return links.map((post, i) => {
       if (i % rows !== row) return null;
       const color = BG_COLORS[(row + 1) % 2];
-      const tick = post.data.pagerank - 25;
+      const community = communityState.communities[post.data.community];
+      const avgRank = community.currentShares / community.postCount;
+      const tick = post.data.pagerank - avgRank;
       const title = getTitle({ post, maxLength: 60 }).toUpperCase();
       const icon = getFavIcon(post.metaPost.domain);
 
@@ -147,7 +150,8 @@ class Marquee extends Component {
 
 function mapStateToProps(state) {
   return {
-    posts: state.posts
+    posts: state.posts,
+    communityState: state.community
   };
 }
 

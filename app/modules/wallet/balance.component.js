@@ -14,7 +14,7 @@ import {
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
-import { useTokenContract } from 'modules/contract/contract.hooks';
+// import { useTokenContract } from 'modules/contract/contract.hooks';
 import { formatBalanceRead } from 'app/utils/eth';
 
 export const Balance = ({
@@ -22,21 +22,22 @@ export const Balance = ({
   screenSize,
   actions,
   isWeb,
-  web3Status,
-  web3Actions,
-  cacheMethod,
-  cacheEvent,
-  accounts,
+  // web3Status,
+  // web3Actions,
+  // cacheMethod,
+  // cacheEvent,
+  // accounts,
   userBalance
 }) => {
-  useTokenContract(
-    web3Status,
-    web3Actions,
-    cacheMethod,
-    cacheEvent,
-    accounts,
-    userBalance
-  );
+  // Temporarily disable - don't want to trigger metamask popup here
+  // useTokenContract(
+  //   web3Status,
+  //   web3Actions,
+  //   cacheMethod,
+  //   cacheEvent,
+  //   accounts,
+  //   userBalance
+  // );
 
   if (!user) return null;
   const metaMaskTokens = userBalance
