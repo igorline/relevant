@@ -123,8 +123,9 @@ const ArrowsImage = styled(Image)`
 const ArrowsContents = styled(View)`
   justify-content: center;
   font-size: ${() => size([5, 3.5])};
+  line-height: ${sizing(5)};
   height: ${sizing(5)};
-  margin-top: ${sizing(3)};
+  margin: ${sizing(1.5)} 0;
 `;
 
 export function Arrows({ score }) {

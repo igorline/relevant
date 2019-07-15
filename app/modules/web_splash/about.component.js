@@ -35,7 +35,7 @@ const PhoneVideo = styled(Video)`
 
 const Phone = styled(View)`
   position: ${() => responsive(['relative', 'absolute'])};
-  bottom: ${() => responsive(['auto', size(6)])};
+  bottom: ${() => responsive(['auto', 0])};
   right: ${() => responsive(['auto', '-20vw'])};
   opacity: ${() => responsive([1, 0.5])};
   transform: rotate(-2.82deg);
@@ -89,14 +89,16 @@ const SplashText = styled(Text)`
 const SectionText = styled(Text)`
   font-family: ${fonts.HELVETICA_NEUE};
   flex-direction: column;
-  font-size: ${() => size(2)};
+  font-size: ${() => size(2.5)};
   line-height: ${() => size(3)};
 `;
 
 class Splash extends Component {
   static propTypes = {
     history: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    communities: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   state = {
@@ -118,8 +120,10 @@ class Splash extends Component {
   };
 
   componentDidMount() {
+    const { communities, actions } = this.props;
     window.addEventListener('scroll', this.onScroll);
     tween.start();
+    if (!communities.length) actions.getCommunities();
   }
 
   componentWillUnmount() {
@@ -129,36 +133,39 @@ class Splash extends Component {
 
   signUp = async modal => {
     const { actions, history } = this.props;
-    history.push('/community/all');
+    history.push('/communities');
     actions.showModal(modal);
   };
 
   render() {
+    const { screenSize } = this.props;
     const { showFixedLogo, showJoinButton } = this.state;
 
-    const sectionSpace = 16;
+    const sectionSpace = screenSize ? 4 : 16;
 
     return (
       <View flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
         <Marquee />
 
         <Section minHeight={'100vh'}>
-          <Image
-            mt={[0, 6]}
-            h={[8, 7, 6]}
-            mb={[6, 4]}
-            mr={'auto'}
-            ml={[0, 'auto']}
-            src={'/img//logo.png'}
-            alt={'Relevant'}
-          />
+          <ULink to={'/relevant/top'}>
+            <Image
+              mt={[0, 6]}
+              h={[8, 7, 6]}
+              mb={[6, 4]}
+              mr={'auto'}
+              ml={[0, 'auto']}
+              src={'/img//logo.png'}
+              alt={'Relevant'}
+            />
+          </ULink>
           <SplashText>
             Tired of the social media
             <br />
             popularity game?
           </SplashText>
           <SplashText inline={1} mt={6}>
-            Join a <ULink to="/community/all">Relevant Community</ULink> and get rewarded
+            Join a <ULink to="/communities">Relevant Community</ULink> and get rewarded
             for your expertise.
           </SplashText>
 
@@ -262,7 +269,7 @@ class Splash extends Component {
           flex={[1, null]}
           mt={sectionSpace}
           fdirection={['row', 'column']}
-          justify={['center', 'space-between']}
+          justify={['center', 'center']}
           align={'center'}
           h={['auto', '100vh']}
           mb={[0, 0]}
@@ -274,7 +281,10 @@ class Splash extends Component {
             style={{ zIndex: 1 }}
             flex={[0, 1]}
           >
-            <View flex={1} align={'center'}>
+            <View
+              // flex={1}
+              align={'center'}
+            >
               <Image
                 h={[8, 0]}
                 src={'/img/logo.png'}
@@ -306,10 +316,13 @@ class Splash extends Component {
             <PhoneVideo
               w={[VID_TO_PHONE * 50, 'auto']}
               h={[VID_TO_PHONE * 50 * VID_RATIO, `${VID_TO_PHONE * 100}vh`]}
-              src={'img/vid.webm'}
               autoPlay
               loop
-            />
+              muted
+            >
+              <source src="/img/vid.webm" type="video/webm" />
+              <source src="/img/vid.mp4" type="video/mp4" />
+            </PhoneVideo>
             <Image
               w={[50, 'auto']}
               h={['auto', '100vh']}
@@ -320,10 +333,12 @@ class Splash extends Component {
         </View>
 
         <FixedLogo mt={[2, 1]} visible={showFixedLogo}>
-          <Image h={[6, 4, 3]} src={'/img/r-big.png'} alt={'Relevant'} />
+          <ULink to={'/relevant/top'}>
+            <Image h={[6, 4, 3]} src={'/img/r-big.png'} alt={'Relevant'} />
+          </ULink>
         </FixedLogo>
 
-        <Join w={['auto', '100%']} mb={[0, 12]} p={[0, '0 2']} visible={showJoinButton}>
+        <Join w={['auto', '100%']} mb={[0, 0]} p={[0, '0 2']} visible={showJoinButton}>
           <Button flex={1} h={8} p={'2 6'} onClick={() => this.signUp('signupSocial')}>
             <SectionText>Join Relevant</SectionText>
           </Button>
@@ -335,7 +350,8 @@ class Splash extends Component {
 
 function mapStateToProps(state) {
   return {
-    screenSize: state.navigation.screenSize
+    screenSize: state.navigation.screenSize,
+    communities: state.community.communities
   };
 }
 
@@ -343,7 +359,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...navigationActions
+        ...navigationActions,
+        getCommunities
       },
       dispatch
     )

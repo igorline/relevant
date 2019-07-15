@@ -494,6 +494,14 @@ export function getFlaggedPosts(skip) {
   };
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 export function getTopPosts() {
   return async dispatch => {
     try {
@@ -502,9 +510,7 @@ export function getTopPosts() {
         endpoint: 'post',
         path: '/topPosts'
       });
-      // const data = normalize({ topPosts }, { topPosts: [postSchema] });
-      // return dispatch(setPosts(data, 'topPosts', 0));
-      return dispatch(setTopPosts(topPosts));
+      return dispatch(setTopPosts(shuffleArray(topPosts)));
     } catch (error) {
       return false;
     }

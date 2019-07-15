@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot SplashComponent 1`] = `
-.c1 {
+.c0 {
   color: #0000ff;
 }
 
-.c0 {
+.c1 {
   color: #0000ff;
   -webkit-text-decoration: underline;
   text-decoration: underline;
@@ -464,12 +464,23 @@ exports[`Snapshot SplashComponent 1`] = `
             }
           }
         >
-          Join a community, curate content and earn rewards.
-           
+          Join a 
           <a
             className="ulink-mock c0"
+            href="/communities"
+            hu={0}
+            inline={0}
+            onClick={[Function]}
+            styles=""
+          >
+            community
+          </a>
+          , curate content and earn rewards.
+           
+          <a
+            className="ulink-mock c1"
             display="inline"
-            href="https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c"
+            href="https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
             onClick={[Function]}
             target="_blank"
           >
@@ -569,7 +580,7 @@ exports[`Snapshot SplashComponent 1`] = `
         }
       >
         <a
-          className="ulink-mock c1"
+          className="ulink-mock c0"
           href="/user/login?redirect=/"
           hu={0}
           inline={0}
@@ -631,7 +642,7 @@ exports[`Snapshot SplashComponent 1`] = `
           </div>
         </a>
         <a
-          className="ulink-mock c1"
+          className="ulink-mock c0"
           href="/user/signup?redirect=/"
           hu={0}
           inline={0}
