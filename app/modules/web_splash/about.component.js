@@ -309,6 +309,7 @@ class Splash extends Component {
               src={'img/vid.webm'}
               autoPlay
               loop
+              muted
             />
             <Image
               w={[50, 'auto']}
