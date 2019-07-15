@@ -319,6 +319,7 @@ class Splash extends Component {
               autoPlay
               loop
               muted
+              playsinline
             >
               <source src="/img/vid.webm" type="video/webm" />
               <source src="/img/vid.mp4" type="video/mp4" />
