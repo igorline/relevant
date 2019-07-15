@@ -265,7 +265,7 @@ export function clearSelectedPost() {
 }
 
 // this function queries the meta posts
-export function getPosts(skip, tags, sort, limit) {
+export function getPosts(skip, tags, sort, limit, community) {
   let tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = DEFAULT_LIMIT;
@@ -289,7 +289,7 @@ export function getPosts(skip, tags, sort, limit) {
       const res = await api.request({
         method: 'GET',
         endpoint: 'communityFeed',
-        query: { skip, sort, limit, tag },
+        query: { skip, sort, limit, tag, community },
         user: auth.user
       });
 
