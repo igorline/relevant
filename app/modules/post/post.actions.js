@@ -494,15 +494,23 @@ export function getFlaggedPosts(skip) {
   };
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 export function getTopPosts() {
   return async dispatch => {
     try {
-      const responseJSON = await api.request({
+      const topPosts = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '/topPosts'
       });
-      return dispatch(setTopPosts(responseJSON));
+      return dispatch(setTopPosts(shuffleArray(topPosts)));
     } catch (error) {
       return false;
     }

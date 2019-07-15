@@ -743,10 +743,9 @@ exports[`Snapshot Balance Web 1`] = `
     }
   >
     <div
-      aria-disabled={true}
-      c="#999999"
+      c="#0000ff"
+      data-focusable={true}
       dir="auto"
-      disabled={true}
       mr={0.5}
       onClick={[Function]}
       onKeyDown={[Function]}
@@ -761,14 +760,15 @@ exports[`Snapshot Balance Web 1`] = `
         Object {
           "WebkitFlexBasis": "auto",
           "WebkitFlexShrink": 0,
-          "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
+          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
           "WebkitTextDecorationStyle": "solid",
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
-          "color": "rgba(153,153,153,1.00)",
+          "color": "rgba(0,0,255,1.00)",
+          "cursor": "pointer",
           "display": "flex",
           "flexBasis": "auto",
           "flexShrink": 0,
@@ -784,18 +784,21 @@ exports[`Snapshot Balance Web 1`] = `
           "marginTop": "0px",
           "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
+          "msTouchAction": "manipulation",
           "paddingBottom": "0px",
           "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(153,153,153,1.00)",
+          "textDecorationColor": "rgba(0,0,255,1.00)",
           "textDecorationStyle": "solid",
+          "touchAction": "manipulation",
           "whiteSpace": "pre-wrap",
           "wordWrap": "break-word",
         }
       }
+      tabIndex="0"
       td="underline"
     >
       Claim Tokens
@@ -828,7 +831,7 @@ exports[`Snapshot Balance Web 1`] = `
           "flexShrink": 0,
           "height": "1.05rem",
           "marginBottom": "0px",
-          "marginLeft": "0px",
+          "marginLeft": "0.35rem",
           "marginRight": "0px",
           "marginTop": "0px",
           "minHeight": "0px",
@@ -864,7 +867,7 @@ exports[`Snapshot Balance Web 1`] = `
             "backgroundImage": "url(\\"info.png\\")",
             "backgroundPosition": "center",
             "backgroundRepeat": "no-repeat",
-            "backgroundSize": "cover",
+            "backgroundSize": "contain",
             "borderBottomStyle": "solid",
             "borderBottomWidth": "0px",
             "borderLeftStyle": "solid",

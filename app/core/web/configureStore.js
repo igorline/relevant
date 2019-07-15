@@ -3,8 +3,10 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 // import { drizzleSagas } from 'drizzle';
-// import { all, fork } from 'redux-saga/effects';
+import { getProvider, getMetamask, getRpcUrl } from 'app/utils/eth';
 import rootReducer from '../reducers';
+import rootSaga from '../sagas';
+import { collapseActions, stateTransformer } from '../storeUtils';
 
 let server = process.env.API_SERVER;
 if (process.env.NODE_ENV === 'development') {
@@ -12,6 +14,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 let socket;
 let io;
+let web3;
+let createLogger;
 
 if (process.env.BROWSER) {
   io = require('socket.io-client');
@@ -19,22 +23,37 @@ if (process.env.BROWSER) {
   socket.on('pingKeepAlive', () => {
     socket.emit('pingResponse');
   });
-}
-
-// function* rootSaga() {
-//   yield all(drizzleSagas.map(saga => fork(saga)));
-// }
+  web3 = getProvider({
+    rpcUrl: getRpcUrl(),
+    metamask: getMetamask()
+  });
+  if (process.env.DEVTOOLS) {
+    createLogger = require('redux-logger').createLogger;
+  }
+} else web3 = getProvider({ rpcUrl: getRpcUrl() });
 
 export default function configureStore(initialState = {}) {
   // Compose final middleware and use devtools in debug environment
   let middleware;
 
-  const sagaMiddleware = createSagaMiddleware();
+  const sagaMiddleware = createSagaMiddleware({
+    context: {
+      web3
+    }
+  });
 
   if (process.env.BROWSER) {
     // only use the socket middleware on client and not on server
     const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
-    middleware = applyMiddleware(thunk, socketIoMiddleware, sagaMiddleware);
+    const _middleware = [thunk, socketIoMiddleware, sagaMiddleware];
+    if (process.env.DEVTOOLS) {
+      const logger = createLogger({
+        collapsed: (getState, action) => collapseActions[action.type],
+        stateTransformer
+      });
+      _middleware.push(logger);
+    }
+    middleware = applyMiddleware(..._middleware);
   } else {
     middleware = applyMiddleware(thunk, sagaMiddleware);
   }
@@ -65,6 +84,6 @@ export default function configureStore(initialState = {}) {
     });
   }
 
-  // sagaMiddleware.run(rootSaga);
+  sagaMiddleware.run(rootSaga);
   return store;
 }

@@ -78,16 +78,14 @@ export const BANNED_COMMUNITY_SLUGS = [
   'user',
   'channel',
   'home',
-  'admin',
   'auth',
-  'profile'
+  'profile',
+  'communities'
 ];
 
 export const BANNED_USER_HANDLES = [
-  'admin',
+  ...BANNED_COMMUNITY_SLUGS,
   'everyone',
-  'user',
-  'channel',
   'group',
   'all',
   'invite'
