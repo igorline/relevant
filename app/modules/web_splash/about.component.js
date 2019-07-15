@@ -35,7 +35,7 @@ const PhoneVideo = styled(Video)`
 
 const Phone = styled(View)`
   position: ${() => responsive(['relative', 'absolute'])};
-  bottom: ${() => responsive(['auto', size(6)])};
+  bottom: ${() => responsive(['auto', 0])};
   right: ${() => responsive(['auto', '-20vw'])};
   opacity: ${() => responsive([1, 0.5])};
   transform: rotate(-2.82deg);
@@ -97,7 +97,8 @@ class Splash extends Component {
   static propTypes = {
     history: PropTypes.object,
     actions: PropTypes.object,
-    communities: PropTypes.object
+    communities: PropTypes.object,
+    screenSize: PropTypes.number
   };
 
   state = {
@@ -137,9 +138,10 @@ class Splash extends Component {
   };
 
   render() {
+    const { screenSize } = this.props;
     const { showFixedLogo, showJoinButton } = this.state;
 
-    const sectionSpace = 16;
+    const sectionSpace = screenSize ? 4 : 16;
 
     return (
       <View flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
@@ -314,11 +316,13 @@ class Splash extends Component {
             <PhoneVideo
               w={[VID_TO_PHONE * 50, 'auto']}
               h={[VID_TO_PHONE * 50 * VID_RATIO, `${VID_TO_PHONE * 100}vh`]}
-              src={'img/vid.webm'}
               autoPlay
               loop
               muted
-            />
+            >
+              <source src="/img/vid.webm" type="video/webm" />
+              <source src="/img/vid.mp4" type="video/mp4" />
+            </PhoneVideo>
             <Image
               w={[50, 'auto']}
               h={['auto', '100vh']}
