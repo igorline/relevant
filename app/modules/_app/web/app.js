@@ -60,12 +60,6 @@ class App extends Component {
     authType: null
   };
 
-  componentWillMount() {
-    const { actions } = this.props;
-    const { community } = this.props.auth;
-    actions.setCommunity(community || 'relevant');
-  }
-
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
     const { community } = auth;
@@ -147,7 +141,7 @@ class App extends Component {
   };
 
   handleUserLogin = () => {
-    const { auth, actions, navigation } = this.props;
+    const { auth, actions, navigation, location, history } = this.props;
     const { screenSize } = navigation;
 
     if (auth.user.role === 'temp') {
@@ -167,6 +161,10 @@ class App extends Component {
     ReactGA.set({ userId: auth.user._id });
     actions.getEarnings('pending');
 
+    if (!auth.community && location.pathname === '/') {
+      history.replace('/communities');
+    }
+
     if (screenSize) return null;
     // eslint-disable-next-line
     Intercom('boot', {
@@ -181,12 +179,6 @@ class App extends Component {
 
   componentDidUpdate(prevProps) {
     const { actions, auth, location } = this.props;
-    // const { community } = match.params;
-    // if (community && activeCommunity !== community) {
-    //   if (community === 'home') {
-    //     this.props.history.push(`/${activeCommunity}/new`);
-    //   } else actions.setCommunity(community);
-    // }
 
     const route = matchRoutes(routes, location.pathname);
     const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
@@ -213,6 +205,7 @@ class App extends Component {
     if (!prevProps.auth.user && auth.user) {
       this.handleUserLogin();
     }
+
     if (
       prevProps.auth.user &&
       auth.user &&

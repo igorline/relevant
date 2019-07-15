@@ -121,7 +121,7 @@ class Splash extends Component {
 
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
-      'https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c';
+      'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
     const CtaComponent = CTA[cta];
     return (
       <Wrapper
@@ -163,7 +163,8 @@ class Splash extends Component {
             </SplashText>
             <View mt={[5, 2]} mb={[8, 2]}>
               <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
-                Join a community, curate content and earn rewards.{' '}
+                Join a <ULink to="/communities">community</ULink>, curate content and earn
+                rewards.{' '}
                 <ULink
                   to={learnMoreUrl}
                   external
