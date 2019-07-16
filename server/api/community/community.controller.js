@@ -19,7 +19,7 @@ export async function findOne(req, res, next) {
     const { user } = req;
     const { slug } = req.params;
     const community = await Community.findOne({ slug, inactive: { $ne: true } });
-    if (!community) throw new Error(`Community ${community} doesn't exist`);
+    if (!community) throw new Error(`Community ${slug} doesn't exist`);
 
     if (community.private) {
       if (!user) throw new Error('This community is private');
