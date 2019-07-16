@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { joinCommunity } from 'community/community.actions';
+import { setCommunity } from 'auth/auth.actions';
 import { css } from 'styled-components';
 
 import ULink from 'modules/navigation/ULink.component';
@@ -65,6 +66,7 @@ class CommunityAdminList extends Component {
   render() {
     const {
       community: { communities },
+      actions,
       p
     } = this.props;
     const hP = typeof p !== 'undefined' ? p : 4;
@@ -73,7 +75,12 @@ class CommunityAdminList extends Component {
         {Object.values(communities).map(c => {
           const communityURl = `/${c.slug}/new`;
           return (
-            <ULink to={communityURl} key={c._id} styles={linkStyles}>
+            <ULink
+              to={communityURl}
+              onClick={() => actions.setCommunity(c.slug)}
+              key={c._id}
+              styles={linkStyles}
+            >
               <View fdirection="row" align="flex-start" p={`2 ${hP}`}>
                 <Image source={c.image} h={8} w={8} mr={2} bg={colors.secondaryBG} />
                 <View fdirection="column" justify="space-between" shrink={1}>
@@ -98,7 +105,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      joinCommunity
+      joinCommunity,
+      setCommunity
     },
     dispatch
   )
