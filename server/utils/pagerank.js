@@ -9,6 +9,8 @@
 
 // const ADMIN_VOTES = 100;
 
+const ADMIN_MAX_POWER_VOTES = 50;
+
 export default function pagerank(inputs, params) {
   if (!params) params = {};
   if (!params.alpha) params.alpha = 0.97;
@@ -75,6 +77,9 @@ export default function pagerank(inputs, params) {
   let tildeP = P.map(arr => arr.slice());
   let iter;
   let err;
+
+  params.alpha = 1 - 0.03 / N;
+  console.log(params.alpha);
 
   for (iter = 0; iter < params.max_iter; iter++) {
     // this enables garbage collector to free up memory
@@ -271,7 +276,9 @@ function objectToMatrix(_inputs, params) {
     const id_i = dictionary[el];
 
     if (params.personalization[el]) {
-      params.personalization[el] = 1 / (1 + Math.E ** (6 - degree / 10));
+      const adminWeight = 1 / (1 + Math.E ** (6 - (degree * 10) / ADMIN_MAX_POWER_VOTES));
+      // console.log(degree, adminWeight);
+      params.personalization[el] = adminWeight;
       // params.personalization[el] *
       // Math.min(degree, ADMIN_VOTES) / ADMIN_VOTES;
     }

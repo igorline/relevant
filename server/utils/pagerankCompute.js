@@ -168,6 +168,7 @@ export default async function computePageRank(params) {
     debug && console.log('After PR is using ' + mb + 'MB of Heap.');
 
     let max = 0;
+    let secondMax = 0;
     const min = 0;
     let maxPost = 0;
     const minPost = 0;
@@ -181,7 +182,10 @@ export default async function computePageRank(params) {
 
       const u = scores[id] || 0;
       if (postNode) maxPost = Math.max(u, maxPost);
-      else max = Math.max(u, max);
+      else {
+        secondMax = Math.max(secondMax, Math.min(u, max));
+        max = Math.max(u, max);
+      }
 
       array.push({
         id,
@@ -228,6 +232,7 @@ export default async function computePageRank(params) {
       u = await updateItemRank({
         min,
         max,
+        secondMax,
         minPost,
         maxPost,
         u,
@@ -247,6 +252,7 @@ export default async function computePageRank(params) {
           await updateItemRank({
             min,
             max,
+            secondMax,
             minPost,
             maxPost,
             u,
@@ -294,12 +300,15 @@ function mergeNegativeNodes(array) {
 }
 
 async function updateItemRank(props) {
-  const { max, maxPost, u, N, debug, communityId, community, maxRel } = props;
+  const { secondMax, maxPost, u, N, debug, communityId, community, maxRel } = props;
   let { min, minPost } = props;
   min = 0;
   minPost = 0;
   let rank =
-    (100 * Math.log(N * (u.rank - min) + 1)) / Math.log(N * (max - min) + 1) || 0;
+    Math.min(
+      99,
+      (100 * Math.log(N * (u.rank - min) + 1)) / Math.log(N * (secondMax - min) + 1)
+    ) || 0;
 
   const postRank =
     (100 * Math.log(N * (u.rank - minPost) + 1)) /
