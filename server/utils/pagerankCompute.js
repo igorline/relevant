@@ -201,7 +201,7 @@ export default async function computePageRank(params) {
 
     await Community.findOneAndUpdate(
       { _id: communityId },
-      { maxPostRank: maxPost || 50, maxUserRank: max || 50, numberOfElements: N }
+      { maxPostRank: maxPost || 50, maxUserRank: secondMax || 50, numberOfElements: N }
     );
 
     array = mergeNegativeNodes(array);
@@ -214,6 +214,7 @@ export default async function computePageRank(params) {
       u = await updateItemRank({
         min,
         max,
+        secondMax,
         minPost,
         maxPost,
         u,
@@ -232,7 +233,6 @@ export default async function computePageRank(params) {
       u = await updateItemRank({
         min,
         max,
-        secondMax,
         minPost,
         maxPost,
         u,
@@ -649,7 +649,7 @@ export async function computeApproxPageRank(params) {
     if (author) {
       const rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
       author.relevance.pagerank = Math.min(
-        100,
+        99,
         (100 * Math.log(N * rA + 1)) / Math.log(N * maxUserRank + 1)
       );
     }
