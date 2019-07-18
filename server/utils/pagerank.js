@@ -78,8 +78,7 @@ export default function pagerank(inputs, params) {
   let iter;
   let err;
 
-  params.alpha = 1 - 0.03 / N;
-  console.log(params.alpha);
+  params.alpha = Math.max(1 - 1 / N, params.alpha);
 
   for (iter = 0; iter < params.max_iter; iter++) {
     // this enables garbage collector to free up memory
