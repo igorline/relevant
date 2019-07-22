@@ -67,7 +67,7 @@ export async function getParam(param, opt) {
 
   let value = await instance[param]();
   if (!opt || !opt.noConvert) value = value.div((10 ** decimals).toString());
-  if (!opt || !opt.string) value = value.toString().toNumber();
+  if (!opt || !opt.string) value = parseFloat(value.toString());
   return value;
 }
 
