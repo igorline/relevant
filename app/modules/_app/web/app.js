@@ -60,19 +60,22 @@ class App extends Component {
     authType: null
   };
 
+  componentWillMount() {
+    const { auth, history, actions, location } = this.props;
+    const { community } = auth;
+    if (community && location.pathname === '/') {
+      history.replace(`/${community}/new`);
+    }
+    // TODO don't need this if api is middleware
+    if (community) actions.setCommunity(community);
+  }
+
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
-    const { community } = auth;
 
     if (process.env.NODE_ENV !== 'development') {
       this.initAnalytics({ location, history });
     }
-
-    if (community && location.pathname === '/') {
-      history.replace(`/${community}/new`);
-    }
-
-    if (community) actions.setCommunity(community);
 
     // actions.getCommunities();
     actions.getUser();
