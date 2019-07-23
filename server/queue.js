@@ -217,10 +217,12 @@ async function updateRewards() {
   if (now.getUTCHours() === 14) {
     basicIncome();
   }
+  console.log('finished all');
 }
 
 if (process.env.NODE_ENV === 'production') {
   updateRewards();
+  process.exit();
 }
 
 module.exports = {
