@@ -7,9 +7,7 @@ const ethRewards = require('./utils/ethRewards.js');
 
 /* eslint no-console: 0 */
 
-const q = queue({
-  concurrency: 5
-});
+const q = queue({ concurrency: 5 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -17,47 +15,41 @@ q.on('timeout', (next, job) => {
 });
 
 async function updateUserStats() {
-  Relevance.find({ global: true }).exec((err, res) => {
-    if (err || !res) {
-      console.log('db error', err);
-      return;
-    }
-    res.forEach(rel => {
-      q.push(cb => {
-        const date = new Date();
-        const hour = date.getHours();
-        const day = date.setUTCHours(0, 0, 0, 0);
-        const endTime = day + 24 * 60 * 60 * 1000;
-        const query = {
-          user: rel.user,
-          date: day,
-          endTime,
-          communityId: rel.communityId
-        };
-        const set = {};
-        set['hours.' + hour] = rel.pagerank || 0;
-        const update = {
-          $set: set,
-          $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
-        };
-        Stats.findOneAndUpdate(query, update, {
-          new: true,
-          upsert: true,
-          setDefaultsOnInsert: true
-        }).exec(statsError => {
-          if (!statsError) cb();
-          else throw statsError;
-        });
+  const repuatations = await Relevance.find({ global: true });
+  repuatations.forEach(rel => {
+    q.push(async cb => {
+      const date = new Date();
+      const hour = date.getHours();
+      const day = date.setUTCHours(0, 0, 0, 0);
+      const endTime = day + 24 * 60 * 60 * 1000;
+      const query = {
+        user: rel.user,
+        date: day,
+        endTime,
+        communityId: rel.communityId
+      };
+      const set = {};
+      set['hours.' + hour] = rel.pagerank || 0;
+      const update = {
+        $set: set,
+        $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
+      };
+      const s = await Stats.findOneAndUpdate(query, update, {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true
       });
+      console.log(s);
+      cb();
     });
-    q.start(queErr => {
-      if (queErr) return console.log(queErr);
-      return console.log('done updating stats');
-    });
+  });
+
+  return new Promise((resolve, reject) => {
+    q.start(err => (err ? reject(err) : resolve()));
   });
 }
 
-// setTimeout(basicIncome, 10000);
+// setTimeout(updateRepChange, 10000);
 
 async function getCommunityUserRank(community) {
   try {
@@ -167,40 +159,26 @@ async function updateReputation() {
   }
 }
 
-async function basicIncome(done) {
-  const topicRelevance = await Relevance.find({ global: true });
+async function updateRepChange() {
+  const rep = await Relevance.find({ global: true });
 
-  function updateTopicRelevance() {
-    console.log('updating topic relevance');
-    return topic => {
-      q.push(async cb => {
-        try {
-          if (topic.user) {
-            // updates % stats
-            await topic.updateRelevanceRecord();
-            await topic.save();
-          }
-        } catch (err) {
-          console.log('error updating topic relevance income ', err);
-          console.log(topic);
-          cb();
+  rep.forEach(userRep =>
+    q.push(async cb => {
+      try {
+        if (userRep.user) {
+          // updates % stats
+          await userRep.updateRelevanceRecord();
+          await userRep.save();
         }
-        cb();
-      });
-    };
-  }
+      } catch (err) {
+        console.log('error updating topic relevance income ', err);
+      }
+      cb();
+    })
+  );
 
-  topicRelevance.forEach(updateTopicRelevance());
-
-  q.start(queErr => {
-    if (queErr) return console.log(queErr);
-    if (done) done();
-    return console.log('all finished basic income: ');
-  });
-
-  q.on('timeout', (next, job) => {
-    console.log('error: queue timeout', job);
-    next();
+  return new Promise((resolve, reject) => {
+    q.start(err => (err ? reject(err) : resolve()));
   });
 }
 
@@ -211,22 +189,35 @@ async function pagerank(community) {
 }
 
 async function updateRewards() {
-  await ethRewards.rewards();
-  updateUserStats();
-  const now = new Date();
-  if (now.getUTCHours() === 14) {
-    basicIncome();
+  try {
+    await ethRewards.rewards();
+    console.log('done updating rewards');
+  } catch (err) {
+    console.log(err);
   }
-  console.log('finished all');
+
+  try {
+    await updateUserStats();
+    console.log('done updating stats');
+
+    const now = new Date();
+    if (now.getUTCHours() === 14) {
+      await updateRepChange();
+      console.log('done updating rep stats: ');
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  process.exit();
 }
 
 if (process.env.NODE_ENV === 'production') {
   updateRewards();
-  process.exit();
 }
 
 module.exports = {
   updateUserStats,
-  basicIncome,
+  updateRepChange,
   updateReputation
 };
