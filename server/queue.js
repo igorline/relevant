@@ -34,12 +34,11 @@ async function updateUserStats() {
         $set: set,
         $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
       };
-      const s = await Stats.findOneAndUpdate(query, update, {
+      await Stats.findOneAndUpdate(query, update, {
         new: true,
         upsert: true,
         setDefaultsOnInsert: true
       });
-      console.log(s);
       cb();
     });
   });

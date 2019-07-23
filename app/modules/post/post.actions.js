@@ -281,6 +281,7 @@ export function getPosts(skip, tags, sort, limit, community) {
     tag = tagsString;
     if (tags.length === 1) topic = tags[0];
   }
+  const communityParam = community ? { community } : {};
 
   return async (dispatch, getState) => {
     try {
@@ -289,7 +290,7 @@ export function getPosts(skip, tags, sort, limit, community) {
       const res = await api.request({
         method: 'GET',
         endpoint: 'communityFeed',
-        query: { skip, sort, limit, tag, community },
+        query: { skip, sort, limit, tag, ...communityParam },
         user: auth.user
       });
 
