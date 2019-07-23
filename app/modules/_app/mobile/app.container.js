@@ -111,9 +111,9 @@ class Application extends Component {
       Analytics.setUserId(user._id);
       const { community } = user;
       if (community) actions.setCommunity(community);
-      actions.getCommunities();
       return null;
     });
+    actions.getCommunities();
 
     PushNotification.setApplicationIconBadgeNumber(0);
     Linking.addEventListener('url', this.handleOpenURL);

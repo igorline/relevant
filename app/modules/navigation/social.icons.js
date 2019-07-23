@@ -50,18 +50,17 @@ const FooterIcon = ({ href, source, target, actions }) => {
 
 FooterIcon.propTypes = {
   href: PropTypes.string,
-  source: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.func]),
+  source: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
   target: PropTypes.string,
   actions: PropTypes.object
 };
 
 export default function FooterIcons({ actions }) {
   return (
-    <View flex={1} fdirection={'row'} mt={2} mb={2}>
-      {icons.map(icon => {
-        if (!icon.source || typeof icon.source !== 'string') return null;
-        return <FooterIcon actions={actions} key={icon.href} {...icon} />;
-      })}
+    <View flex={1} fdirection={'row'} mt={2} mb={[2, 4]}>
+      {icons.map(icon => (
+        <FooterIcon actions={actions} key={icon.href} {...icon} />
+      ))}
     </View>
   );
 }

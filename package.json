@@ -185,6 +185,9 @@
     "./server/api/communityFeed/communityFeed.controller": false,
     "./server/api/community/community.controller": false,
     "web3-eth-accounts": false,
+    "web3-providers": false,
+    "./app/core/contracts": false,
+    "./app/core/web3.reducer": false,
     "drizzle": false,
     "web3": false,
     "react-tooltip": false
