@@ -1,48 +1,52 @@
 import { useEffect } from 'react';
 import { getProvider, getMetamask } from 'app/utils/eth';
 
-const web3 = getProvider();
+const _web3 = getProvider();
 const metamask = getMetamask();
 
-export const useWeb3 = (web3Status, web3Actions) => {
+export const useWeb3 = ({ web3 }, ethActions) => {
   useEffect(() => {
-    if (!web3Status.isInitialized) web3Actions.init(web3);
-  }, [web3Status.status]);
+    if (!web3.isInitialized) ethActions.web3.init(_web3);
+  }, [web3.status]);
+
+  return [web3.accounts, web3.isInitialized, web3.networkId];
 };
 
-export const useMetamask = web3Actions => {
+export const useMetamask = ({ web3 }) => {
   useEffect(() => {
-    if (metamask) web3Actions.onAccountsChanged(metamask);
+    if (metamask) web3.onAccountsChanged(metamask);
     return () => {
       metamask.autoRefreshOnNetworkChange = false;
     };
   }, []);
 };
 
-export const useBalance = (accounts, userBalance, cacheMethod) => {
+export const useBalance = (
+  { web3: { accounts }, Relevant: { userBalance } },
+  { Relevant: { cacheMethod } }
+) => {
   useEffect(() => {
     if (accounts && accounts.length && !userBalance) {
       cacheMethod('balanceOf', accounts[0]);
     }
   }, [accounts, userBalance]);
+
+  return userBalance;
 };
 
-export const useEventSubscription = cacheEvent => {
+export const useEventSubscription = ({ Relevant: { cacheEvent } }) => {
   useEffect(() => {
     cacheEvent('Released');
     return () => {};
   }, []);
 };
-export const useTokenContract = (
-  web3Status,
-  web3Actions,
-  cacheMethod,
-  cacheEvent,
-  accounts,
-  userBalance
-) => {
-  useWeb3(web3Status, web3Actions);
-  useMetamask(web3Actions);
-  useBalance(accounts, userBalance, cacheMethod);
-  useEventSubscription(cacheEvent);
+
+// Rerturns [Accounts, Relevant State, Relevant Actions]
+export const useTokenContract = (ethState, ethActions) => {
+  useWeb3(ethState, ethActions);
+  useMetamask(ethActions);
+  useBalance(ethState, ethActions);
+  useEventSubscription(ethActions);
+
+  return [ethState.web3.accounts, ethState.Relevant, ethActions.Relevant];
 };
