@@ -221,6 +221,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-import-resolver-babel-module": "^5.1.0",
     "eslint-import-resolver-webpack": "^0.11.1",
+    "eslint-plugin-immutable": "^1.0.0",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-react-hooks": "^1.6.0",
