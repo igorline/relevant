@@ -1,6 +1,6 @@
 module.exports = {
   extends: 'airbnb-base',
-  plugins: ['react'],
+  plugins: ['react', 'immutable'],
   settings: {
     'import/resolver': {
       'babel-module': {}
@@ -17,6 +17,7 @@ module.exports = {
     }
   },
   rules: {
+    'immutable/no-let': 0,
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/forbid-prop-types': 'off',
     'react/jsx-uses-vars': 2,
