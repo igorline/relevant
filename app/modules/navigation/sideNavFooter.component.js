@@ -7,7 +7,8 @@ import { colors } from 'styles';
 
 const SideNavFooter = ({ actions }) => (
   <View m={[4, 2]}>
-    <BodyText inline={1} mt={1}>
+    <SocialIcons actions={actions} />
+    <BodyText inline={1} mt={3}>
       <ULink to="/info/faq">
         <InlineText c={colors.blue}>FAQ</InlineText>
       </ULink>
@@ -20,8 +21,7 @@ const SideNavFooter = ({ actions }) => (
         <InlineText c={colors.blue}>Privacy Policy</InlineText>
       </ULink>
     </BodyText>
-    <SocialIcons actions={actions} />
-    <BodyText>© 2019 Relevant Protocols Inc.</BodyText>
+    <BodyText mt={2}>© 2019 Relevant Protocols Inc.</BodyText>
   </View>
 );
 
