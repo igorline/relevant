@@ -93,11 +93,11 @@ exports.rewards = async () => {
 
     computingRewards = false;
     return { payoutData, totalDistributedRewards };
-  } catch (error) {
-    console.log('rewards error', error);
+  } catch (err) {
+    console.log('rewards error', err);
     computingRewards = false;
     // return null;
-    throw error;
+    throw err;
   }
 };
 
