@@ -20,7 +20,7 @@ import { formatBalanceRead } from 'app/utils/eth';
 export const Balance = ({
   user,
   screenSize,
-  actions,
+  // actions,
   isWeb,
   // web3Status,
   // web3Actions,
@@ -84,8 +84,11 @@ export const Balance = ({
       </View>
       {isWeb ? (
         <View fdirection="row" mt={2} align="center">
-          <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
-            <LinkFont c={colors.blue} mr={0.5}>
+          <Touchable
+            // onClick={() => actions.showModal('cashOut')}
+            td={'underline'}
+          >
+            <LinkFont c={colors.grey} mr={0.5}>
               Claim Tokens
             </LinkFont>
           </Touchable>
@@ -121,7 +124,7 @@ Balance.propTypes = {
   // ...contractPropTypes,
   userBalance: PropTypes.object,
   user: PropTypes.object,
-  actions: PropTypes.object,
+  // actions: PropTypes.object,
   screenSize: PropTypes.number,
   isWeb: PropTypes.bool
 };
