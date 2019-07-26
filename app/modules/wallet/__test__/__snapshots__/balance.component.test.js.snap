@@ -743,11 +743,10 @@ exports[`Snapshot Balance Web 1`] = `
     }
   >
     <div
-      c="#0000ff"
+      c="#999999"
       data-focusable={true}
       dir="auto"
       mr={0.5}
-      onClick={[Function]}
       onKeyDown={[Function]}
       onKeyUp={[Function]}
       onResponderGrant={[Function]}
@@ -760,14 +759,14 @@ exports[`Snapshot Balance Web 1`] = `
         Object {
           "WebkitFlexBasis": "auto",
           "WebkitFlexShrink": 0,
-          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+          "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
           "WebkitTextDecorationStyle": "solid",
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
-          "color": "rgba(0,0,255,1.00)",
+          "color": "rgba(153,153,153,1.00)",
           "cursor": "pointer",
           "display": "flex",
           "flexBasis": "auto",
@@ -791,7 +790,7 @@ exports[`Snapshot Balance Web 1`] = `
           "paddingTop": "0px",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(0,0,255,1.00)",
+          "textDecorationColor": "rgba(153,153,153,1.00)",
           "textDecorationStyle": "solid",
           "touchAction": "manipulation",
           "whiteSpace": "pre-wrap",
