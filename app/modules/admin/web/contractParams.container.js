@@ -2,14 +2,31 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import pickBy from 'lodash.pickby';
 import { types } from 'core/contracts';
-import { View, Title, BodyText, SecondaryText, Button } from 'modules/styled/uni';
+import { numbers } from 'app/utils';
+import {
+  View,
+  Title,
+  BodyText,
+  SecondaryText,
+  Button,
+  NumericalValue
+} from 'modules/styled/uni';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
+import { Input } from 'app/modules/styled/web';
 
 const ParamsTable = styled.table`
   margin-top: 10px;
   margin-left: 20px;
+  th,
+  td {
+    padding: 15px;
+    text-align: left;
+  }
+  tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
 `;
 
 const AdminActions = styled.div`
@@ -20,31 +37,21 @@ const AdminActions = styled.div`
 const rewardsToAllocate = formatBalanceWrite('999', 18);
 const readableMethods = getReadableMethods();
 
-const ContractParams = ({
-  web3Status,
-  web3Actions,
-  cacheMethod,
-  cacheSend,
-  cacheEvent,
-  methodCache,
-  accounts,
-  userBalance
-}) => {
-  useTokenContract(
-    web3Status,
-    web3Actions,
-    cacheMethod,
-    cacheEvent,
-    accounts,
-    userBalance
+const ContractParams = ({ ethState, ethActions }) => {
+  const [accounts, { userBalance, methodCache }, tokenActions] = useTokenContract(
+    ethState,
+    ethActions
   );
 
   useEffect(() => {
-    readableMethods.forEach(method => cacheMethod(method));
+    readableMethods.forEach(method => tokenActions.cacheMethod(method));
   }, []);
-  const releaseTokens = () => cacheSend('releaseTokens', { from: accounts[0] });
+
+  const releaseTokens = () =>
+    tokenActions.cacheSend('releaseTokens', { from: accounts[0] });
   const allocateRewards = () =>
-    cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+    tokenActions.cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+
   return (
     <View m={4}>
       <Title>Contract Params</Title>
@@ -61,18 +68,32 @@ const ContractParams = ({
           </SecondaryText>
           <BodyText>
             <ParamsTable>
+              <tr>
+                <th>Method</th>
+                <th>Value</th>
+              </tr>
               <tbody>
-                <tr>
-                  <td>Metdod</td>
-                  <td>value</td>
-                </tr>
                 {hasCacheValue(methodCache) &&
                   readableMethods.map(method => (
                     <tr key={method}>
-                      <td>{method}: </td>
+                      <td>{method}</td>
                       <td>
-                        {methodCache.select(method) &&
-                          parseBN(methodCache.select(method).value)}
+                        <NumericalValue>
+                          {methodCache.select(method) &&
+                          typeof parseBN(methodCache.select(method).value) !== 'number'
+                            ? parseBN(methodCache.select(method).value)
+                            : numbers.abbreviateNumber(
+                              parseBN(methodCache.select(method).value)
+                            )}
+                        </NumericalValue>
+                      </td>
+                      <td>
+                        <Button onClick={() => tokenActions.cacheMethod(method)}>
+                          Call
+                        </Button>
+                      </td>
+                      <td>
+                        <Input />
                       </td>
                     </tr>
                   ))}
