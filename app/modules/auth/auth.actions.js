@@ -716,20 +716,35 @@ export function addEthAddress(msg, sig, acc) {
   };
 }
 
-export function cashOut() {
-  return async dispatch => {
-    try {
-      const result = await utils.api.request({
-        method: 'POST',
-        endpoint: 'user',
-        path: '/cashOut'
-      });
-      dispatch(updateAuthUser(result));
-      return result.cashOut;
-    } catch (err) {
-      Alert.alert(err.message);
-      return false;
-    }
+export function connectAccount() {
+  return {
+    type: types.CONNECT_ACCOUNT.REQUEST
+  };
+}
+
+export function connectAccountFailure(error, msg) {
+  return {
+    type: types.CONNECT_ACCOUNT.FAILURE,
+    payload: { error },
+    meta: { msg }
+  };
+}
+
+export function cashOutCall(meta, user, accounts) {
+  return {
+    type: types.CASH_OUT.REQUEST,
+    payload: {
+      args: [user, accounts]
+    },
+    meta
+  };
+}
+
+export function cashOutFailure(meta, error) {
+  return {
+    type: types.CASH_OUT.FAILURE,
+    payload: { error },
+    meta
   };
 }
 
