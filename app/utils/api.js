@@ -25,6 +25,7 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   const commentsApi = '../../server/api/comment/comment.controller';
   const feedApi = '../../server/api/communityFeed/communityFeed.controller';
   const communityApi = '../../server/api/community/community.controller';
+  const loggerApi = '../../server/api/logger/logger.controller';
 
   // post = require(postApi);
   routes.comment = require(commentsApi) || {}; // eslint-disable-line
@@ -32,6 +33,7 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   routes.post = require(postApi) || {}; // eslint-disable-line
   routes.user = require(userApi) || {}; // eslint-disable-line
   routes.community = require(communityApi) || {}; // eslint-disable-line
+  routes.logger = require(loggerApi) || {}; // eslint-disable-line
 }
 
 export const queryParams = params => {
