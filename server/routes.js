@@ -36,6 +36,7 @@ module.exports = app => {
   app.use('/api/twitterFeed', require('./api/twitterFeed'));
   app.use('/api/communityFeed', require('./api/communityFeed'));
   app.use('/api/community', require('./api/community'));
+  app.use('/api/logger', require('./api/logger'));
   app.get('/confirm/:user/:code', userController.confirm); // deprecate
   app.get('/user/confirm/:user/:code', userController.confirm);
   app.get('/user/:user/confirm/:code', userController.confirm);
