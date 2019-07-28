@@ -15,34 +15,17 @@ import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
 import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 // import { useTokenContract } from 'modules/contract/contract.hooks';
-import { formatBalanceRead } from 'app/utils/eth';
+import { parseBN } from 'app/utils/eth';
 
-export const Balance = ({
-  user,
-  screenSize,
-  actions,
-  isWeb,
-  // web3Status,
-  // web3Actions,
-  // cacheMethod,
-  // cacheEvent,
-  // accounts,
-  userBalance
-}) => {
+export const Balance = ({ user, screenSize, actions, isWeb, userBalance }) => {
   // Temporarily disable - don't want to trigger metamask popup here
-  // useTokenContract(
-  //   web3Status,
-  //   web3Actions,
-  //   cacheMethod,
-  //   cacheEvent,
-  //   accounts,
-  //   userBalance
-  // );
+  // useTokenContract(ethState, ethActions);
 
   if (!user) return null;
-  const metaMaskTokens = userBalance
-    ? formatBalanceRead(userBalance.toString())
-    : user.tokenBalance;
+  const metaMaskTokens =
+    userBalance && userBalance.phase === 'SUCCESS'
+      ? parseBN(userBalance.value)
+      : user.tokenBalance;
   const { airdropTokens, lockedTokens } = user;
   const stakingPower = user.balance
     ? Math.round(100 * (1 - lockedTokens / user.balance))
