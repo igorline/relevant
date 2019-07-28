@@ -4,3 +4,6 @@ ScrollView.js
 bundle.js
 /ios
 /android
+/server/api/user/user.controller.js
+/app/utils/api.js
+/app/modules/auth/auth.actions.js
