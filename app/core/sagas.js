@@ -22,32 +22,20 @@ export function* connectAccount() {
     if (!accounts || !accounts.length) {
       yield put(web3Actions.accounts.getFailure());
     } else {
+      const salt = generateSalt();
+      const msgParams = [
+        {
+          type: 'string',
+          name: 'Message',
+          value: 'Connect Ethereum address to the Relevant account ' + salt
+        }
+      ];
+      const result = yield call(web3.currentProvider.connection.send, {
+        method: 'eth_signTypedData',
+        params: [msgParams, accounts[0]],
+        from: accounts[0]
+      });
       try {
-        const salt = generateSalt();
-        const msgParams = [
-          {
-            type: 'string',
-            name: 'Message',
-            value: 'Connect Ethereum address to the Relevant account ' + salt
-          }
-        ];
-
-        let result;
-        yield web3.currentProvider.connection.sendAsync(
-          {
-            method: 'eth_signTypedData',
-            params: [msgParams, accounts[0]],
-            from: accounts[0]
-          },
-          function* cb(err, msg) {
-            if (err || msg.error) {
-              // eslint-disable-next-line no-console
-              console.error('Error: ', err || msg.error);
-              yield put(connectAccountFailure(err, msg));
-            }
-            result = msg.result;
-          }
-        );
         yield put(addEthAddress(msgParams, result, accounts[0]));
       } catch (err) {
         yield put(connectAccountFailure(err));

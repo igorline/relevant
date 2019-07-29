@@ -19,6 +19,7 @@ export function* handleRequest({
   }
 }) {
   if (!user.ethAddress || !user.ethAddress[0].length) {
+    // It should not be possible to get here
     yield put(cashOutFailure({ args: [user, accounts], ...meta }, NO_ETH_ADDRESS));
   } else {
     const result = yield call(apiRequest, {
