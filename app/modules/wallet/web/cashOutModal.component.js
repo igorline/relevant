@@ -42,15 +42,17 @@ const AddEthAddress = ({ ethState, ethActions, actions, user, modal, balance }) 
         },
         (err, msg) => {
           if (err || msg.error) {
+            const error = err || msg.error;
             // eslint-disable-next-line no-console
-            console.error('Error: ', err || msg.error);
+            console.error('Error: ', error);
+            Alert('Error: ', error);
             return;
           }
           actions.addEthAddress(msgParams, msg.result, accounts[0]);
         }
       );
     } catch (err) {
-      Alert('failed signing message ', err);
+      Alert('Failed signing message: ', err);
     }
   };
   const cashOut = async () => {
