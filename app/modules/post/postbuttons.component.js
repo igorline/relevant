@@ -4,7 +4,7 @@ import { browserAlerts } from 'app/utils/alert';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import ReactTooltip from 'react-tooltip';
 
 let Analytics;

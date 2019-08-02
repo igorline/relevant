@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import filter from 'lodash.filter';
-import sortBy from 'lodash.sortby';
+import filter from 'lodash/filter';
+import sortBy from 'lodash/sortBy';
 import * as warnings from './warningStack.constants';
 import {
   hasAccount,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
-import get from 'lodash.get';
+import get from 'lodash/get';
 // import { LinkFont } from 'modules/styled/uni';
 // import { colors } from 'styles';
 

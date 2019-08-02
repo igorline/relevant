@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { LinkFont, Image, ViewButton } from 'modules/styled/uni';
 import { Form, View, Button } from 'modules/styled/web';
 import { bindActionCreators } from 'redux';

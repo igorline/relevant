@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Divider, CommentText, Spacer, Touchable, Image } from 'modules/styled/uni';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';

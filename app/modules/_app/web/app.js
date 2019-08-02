@@ -6,7 +6,7 @@ import loadable from '@loadable/component';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import routes from 'modules/_app/web/routes'; // eslint-disable-line
 import queryString from 'query-string';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';

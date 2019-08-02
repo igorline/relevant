@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import pickBy from 'lodash.pickby';
+import pickBy from 'lodash/pickBy';
 import { types } from 'core/contracts';
 import { numbers } from 'app/utils';
 import {

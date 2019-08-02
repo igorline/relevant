@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { LinkFont, SecondaryText, View } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 
