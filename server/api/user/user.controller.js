@@ -1,8 +1,9 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
-import merge from 'lodash.merge';
+import merge from 'lodash/merge';
 import url from 'url';
+// eslint-disable-next-line import/named
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import mail from 'server/config/mail';
@@ -31,9 +32,7 @@ async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';
   try {
-    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
-      user.confirmCode
-    }`;
+    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
     const data = {
       from: 'Relevant <info@relevant.community>',
       to: user.email,
@@ -60,9 +59,7 @@ async function sendConfirmation(user, newUser) {
 async function sendResetEmail(user, queryString) {
   let status;
   try {
-    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${
-      user.resetPasswordToken
-    }${queryString}`;
+    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}${queryString}`;
     const data = {
       from: 'Relevant <info@relevant.community>',
       to: user.email,

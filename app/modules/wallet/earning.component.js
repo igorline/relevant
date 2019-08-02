@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
 import { View, BodyText } from 'modules/styled/uni';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { createInvite, getInviteCount, getInvites } from 'modules/admin/admin.actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

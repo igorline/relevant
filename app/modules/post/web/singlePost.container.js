@@ -6,7 +6,7 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import { getComments } from 'modules/comment/comment.actions';
 import Comments from 'modules/comment/web/comment.container';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { View } from 'modules/styled/uni';
 import PostComponent from './post.component';
 // import ButtonRow from 'modules/post/web/buttonRow.component';

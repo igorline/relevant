@@ -1,4 +1,4 @@
-import get from 'lodash.get';
+import get from 'lodash/get';
 
 export const URL_REGEX = new RegExp(
   // eslint-disable-next-line
