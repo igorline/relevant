@@ -1,6 +1,6 @@
 module.exports = {
-  extends: 'airbnb-base',
-  plugins: ['react', 'immutable'],
+  extends: ['airbnb-base', 'prettier', 'prettier/react'],
+  plugins: ['react', 'immutable', 'prettier'],
   settings: {
     'import/resolver': {
       'babel-module': {}
