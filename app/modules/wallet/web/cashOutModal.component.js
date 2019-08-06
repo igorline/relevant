@@ -55,13 +55,7 @@ const AddEthAddress = ({ ethState, ethActions, actions, user, modal, balance }) 
       Alert('Failed signing message: ', err);
     }
   };
-  const cashOut = async () => {
-    try {
-      actions.cashOutCall({ time: new Date() }, user, accounts);
-    } catch (err) {
-      Alert(err);
-    }
-  };
+  const cashOut = () => actions.cashOutCall({ time: new Date() }, user, accounts);
 
   return (
     <Modal
