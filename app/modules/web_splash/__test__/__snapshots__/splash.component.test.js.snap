@@ -466,7 +466,7 @@ exports[`Snapshot SplashComponent 1`] = `
         >
           Join a 
           <a
-            className="ulink-mock c0"
+            className="c0 ulink-mock"
             href="/communities"
             hu={0}
             inline={0}
@@ -478,7 +478,7 @@ exports[`Snapshot SplashComponent 1`] = `
           , curate content and earn rewards.
            
           <a
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             display="inline"
             href="https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
             onClick={[Function]}
@@ -580,7 +580,7 @@ exports[`Snapshot SplashComponent 1`] = `
         }
       >
         <a
-          className="ulink-mock c0"
+          className="c0 ulink-mock"
           href="/user/login?redirect=/"
           hu={0}
           inline={0}
@@ -588,61 +588,112 @@ exports[`Snapshot SplashComponent 1`] = `
           styles=""
         >
           <div
-            dir="auto"
-            mr={4}
+            data-focusable={true}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseEnter={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
             style={
               Object {
+                "MozUserSelect": "none",
                 "WebkitAlignItems": "center",
                 "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "vertical",
                 "WebkitBoxPack": "center",
                 "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "column",
                 "WebkitFlexShrink": 0,
                 "WebkitJustifyContent": "center",
+                "WebkitUserSelect": "none",
                 "alignItems": "center",
                 "backgroundColor": "rgba(0,0,255,1.00)",
+                "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "rgba(255,255,255,1.00)",
                 "cursor": "pointer",
                 "display": "flex",
                 "flexBasis": "auto",
+                "flexDirection": "column",
                 "flexShrink": 0,
-                "fontFamily": "HelveticaNeue-Medium",
-                "fontSize": "1.05rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
                 "height": "4.2rem",
                 "justifyContent": "center",
-                "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "2.8rem",
                 "marginTop": "0px",
+                "minHeight": "0px",
                 "minWidth": "12.6rem",
                 "msFlexAlign": "center",
+                "msFlexDirection": "column",
                 "msFlexNegative": 0,
                 "msFlexPack": "center",
                 "msFlexPreferredSize": "auto",
+                "msTouchAction": "manipulation",
+                "msUserSelect": "none",
                 "paddingBottom": "0px",
                 "paddingLeft": "1.4rem",
                 "paddingRight": "1.4rem",
                 "paddingTop": "0px",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
+                "touchAction": "manipulation",
+                "userSelect": "none",
+                "zIndex": 0,
               }
             }
+            tabIndex="0"
           >
-            Login
+            <div
+              dir="auto"
+              style={
+                Object {
+                  "borderBottomWidth": "0px",
+                  "borderLeftWidth": "0px",
+                  "borderRightWidth": "0px",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "color": "rgba(255,255,255,1.00)",
+                  "display": "inline",
+                  "fontFamily": "HelveticaNeue-Medium",
+                  "fontSize": "1.05rem",
+                  "fontStyle": "inherit",
+                  "fontVariant": "inherit",
+                  "fontWeight": "inherit",
+                  "lineHeight": "inherit",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "textDecoration": "none",
+                  "whiteSpace": "pre-wrap",
+                  "wordWrap": "break-word",
+                }
+              }
+            >
+              Login
+            </div>
           </div>
         </a>
         <a
-          className="ulink-mock c0"
+          className="c0 ulink-mock"
           href="/user/signup?redirect=/"
           hu={0}
           inline={0}
@@ -650,57 +701,108 @@ exports[`Snapshot SplashComponent 1`] = `
           styles=""
         >
           <div
-            dir="auto"
-            mr={0}
+            data-focusable={true}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseEnter={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
             style={
               Object {
+                "MozUserSelect": "none",
                 "WebkitAlignItems": "center",
                 "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "vertical",
                 "WebkitBoxPack": "center",
                 "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "column",
                 "WebkitFlexShrink": 0,
                 "WebkitJustifyContent": "center",
+                "WebkitUserSelect": "none",
                 "alignItems": "center",
                 "backgroundColor": "rgba(0,0,255,1.00)",
+                "borderBottomStyle": "solid",
                 "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
                 "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
                 "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
                 "boxSizing": "border-box",
-                "color": "rgba(255,255,255,1.00)",
                 "cursor": "pointer",
                 "display": "flex",
                 "flexBasis": "auto",
+                "flexDirection": "column",
                 "flexShrink": 0,
-                "fontFamily": "HelveticaNeue-Medium",
-                "fontSize": "1.05rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
                 "height": "4.2rem",
                 "justifyContent": "center",
-                "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
                 "marginTop": "0px",
+                "minHeight": "0px",
                 "minWidth": "12.6rem",
                 "msFlexAlign": "center",
+                "msFlexDirection": "column",
                 "msFlexNegative": 0,
                 "msFlexPack": "center",
                 "msFlexPreferredSize": "auto",
+                "msTouchAction": "manipulation",
+                "msUserSelect": "none",
                 "paddingBottom": "0px",
                 "paddingLeft": "1.4rem",
                 "paddingRight": "1.4rem",
                 "paddingTop": "0px",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
+                "touchAction": "manipulation",
+                "userSelect": "none",
+                "zIndex": 0,
               }
             }
+            tabIndex="0"
           >
-            Sign Up
+            <div
+              dir="auto"
+              style={
+                Object {
+                  "borderBottomWidth": "0px",
+                  "borderLeftWidth": "0px",
+                  "borderRightWidth": "0px",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "color": "rgba(255,255,255,1.00)",
+                  "display": "inline",
+                  "fontFamily": "HelveticaNeue-Medium",
+                  "fontSize": "1.05rem",
+                  "fontStyle": "inherit",
+                  "fontVariant": "inherit",
+                  "fontWeight": "inherit",
+                  "lineHeight": "inherit",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "textDecoration": "none",
+                  "whiteSpace": "pre-wrap",
+                  "wordWrap": "break-word",
+                }
+              }
+            >
+              Sign Up
+            </div>
           </div>
         </a>
       </div>

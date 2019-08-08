@@ -1,4 +1,3 @@
-/* eslint no-console: 0 */
 import mongoose from 'mongoose';
 import { VOTE_COST_RATIO } from 'server/config/globalConstants';
 import Earnings from 'server/api/earnings/earnings.model';
@@ -62,6 +61,7 @@ InvestSchema.methods.removeVote = async function removeVote({ post, user }) {
   post.data.balance = Math.max(post.data.balance - vote.stakedTokens, 0);
   const returnTokens = Math.min(user.lockedTokens, vote.stakedTokens);
   user.lockedTokens = (user.lockedTokens || 0) - returnTokens;
+  // eslint-disable-next-line
   console.log('UNLOCK TOKENS', vote.stakedTokens, user.balance, user.lockedTokens);
   post.data.needsRankUpdate = true;
 
@@ -90,6 +90,8 @@ InvestSchema.methods.placeBet = async function placeBet({
   canBet({ user, post, stakedTokens });
 
   const shares = computeShares({ post, stakedTokens });
+
+  // eslint-disable-next-line
   console.log(user.handle, 'got', shares, 'for', stakedTokens, 'staked tokens');
 
   user.lockedTokens += stakedTokens;
@@ -163,9 +165,8 @@ InvestSchema.statics.createVote = async function createVote({
       });
     }
   } catch (err) {
-    console.log("can't bet");
+    // console.log("can't bet");
   }
-  console.log(vote);
   return vote;
 };
 
