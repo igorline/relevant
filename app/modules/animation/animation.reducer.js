@@ -2,7 +2,7 @@ import * as types from 'core/actionTypes';
 
 const initialState = {
   invest: 0,
-  irrelevant: 0,
+  downvote: 0,
   amount: {},
   upvote: 0,
   parents: {}

@@ -1,10 +1,10 @@
 import CommunityMember from 'server/api/community/community.member.model';
 import { sanitize, toObject } from 'server/test/utils';
-// import Invest from 'server/api/invest/invest.model';
+import Invest from 'server/api/invest/invest.model';
 import Post from 'server/api/post/post.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
 import computePageRank from 'server/utils/pagerankCompute';
-import { create } from 'server/api/invest/invest.controller';
+import { create, bet } from 'server/api/invest/invest.controller';
 import { response } from 'jest-mock-express';
 
 // this will define the database name where the tests are run
@@ -16,6 +16,7 @@ describe('ethRewards', () => {
   let { alice, relevant, link1, req, res, communityId, communityMember } = {};
 
   const next = console.log; // eslint-disable-line
+  let voteId;
 
   beforeAll(async () => {
     ({ relevant } = getCommunities());
@@ -23,9 +24,12 @@ describe('ethRewards', () => {
     ({ link1 } = getPosts());
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
+
+    const stakedTokens = alice.balance * 0.1;
+
     req = {
       user: alice,
-      body: { post: { _id: link1._id }, amount: 0.5 },
+      body: { post: { _id: link1._id }, amount: 0.5, stakedTokens, postId: link1._id },
       communityMember
     };
     // need to run this to give inital rank to admin
@@ -34,13 +38,14 @@ describe('ethRewards', () => {
 
   beforeEach(() => {
     res = response();
-    global.console = { log: jest.fn() }; // hides logs
+    // global.console = { log: jest.fn() }; // hides logs
   });
 
   describe('Invest', () => {
     test('should create invest', async () => {
       await create(req, res, next);
       let apiRes = toObject(res.json.mock.calls[0][0]);
+      voteId = apiRes.investment._id;
       apiRes = sanitize(apiRes, 'rankChange');
       expect(apiRes).toMatchSnapshot();
     });
@@ -54,14 +59,30 @@ describe('ethRewards', () => {
     });
   });
 
+  describe('Bet', () => {
+    test('should bet on post', async () => {
+      await bet(req, res, next);
+      const { stakedTokens } = req.body;
+      let apiRes = toObject(res.json.mock.calls[0][0]);
+      apiRes = sanitize(apiRes, 'rankChange');
+      expect(apiRes).toMatchSnapshot();
+
+      expect(apiRes.shares).toBeGreaterThan(0);
+      expect(apiRes.stakedTokens).toBe(stakedTokens);
+    });
+  });
+
   // Todo test all cases of non-invest
 
-  // describe('Invest', () => {
-  //   test('should create invest', async () => {
-  //     await create(req, res, next);
-  //     let apiRes = toObject(res.json.mock.calls[0][0]);
-  //     apiRes = sanitize(apiRes, 'rankChange');
-  //     expect(apiRes).toMatchSnapshot();
-  //   });
-  // });
+  describe('Undo', () => {
+    test('should undo invest', async () => {
+      await create(req, res, next);
+      let apiRes = toObject(res.json.mock.calls[0][0]);
+      apiRes = sanitize(apiRes, 'rankChange');
+      expect(apiRes).toMatchSnapshot();
+
+      const removedVote = await Invest.findOne({ _id: voteId });
+      expect(removedVote).toBe(null);
+    });
+  });
 });

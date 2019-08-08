@@ -1,8 +1,9 @@
 /* eslint no-console: 0 */
 import mongoose from 'mongoose';
-import { VOTE_COST_RATIO, SLOPE, EXPONENT } from 'server/config/globalConstants';
+import { VOTE_COST_RATIO } from 'server/config/globalConstants';
 import Earnings from 'server/api/earnings/earnings.model';
 import { computePostPayout } from 'app/utils/rewards';
+import { computeShares } from 'app/utils/post';
 
 const { Schema } = mongoose;
 const TEST_ENV = process.env.NODE_ENV === 'test';
@@ -55,15 +56,16 @@ InvestSchema.index({ communityId: 1, investor: 1, createdAt: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
 InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
 
-async function undoInvest({ post, investment, user }) {
-  post.data.shares -= investment.shares;
-  post.data.balance = Math.max(post.data.balance - investment.stakedTokens, 0);
-  const returnTokens = Math.min(user.lockedTokens, investment.stakedTokens);
+InvestSchema.methods.removeVote = async function removeVote({ post, user }) {
+  const vote = this;
+  post.data.shares -= vote.shares;
+  post.data.balance = Math.max(post.data.balance - vote.stakedTokens, 0);
+  const returnTokens = Math.min(user.lockedTokens, vote.stakedTokens);
   user.lockedTokens = (user.lockedTokens || 0) - returnTokens;
-  console.log('UNLOCK TOKENS', investment.stakedTokens, user.balance, user.lockedTokens);
+  console.log('UNLOCK TOKENS', vote.stakedTokens, user.balance, user.lockedTokens);
   post.data.needsRankUpdate = true;
 
-  post.data.totalShares -= investment.stakedTokens;
+  post.data.totalShares -= vote.stakedTokens;
   const earning = await Earnings.findOne({ user: user._id, post: post._id });
   if (earning) {
     await earning.remove();
@@ -72,125 +74,112 @@ async function undoInvest({ post, investment, user }) {
   await post.data.save();
   await user.save();
   await post.save();
-  await investment.remove();
-  return investment;
-}
+  await vote.remove();
+  return null;
+};
 
-InvestSchema.statics.createVote = async function createVote(props) {
-  const { post, relevanceToAdd, community, communityId, amount } = props;
-  let { user, investment } = props;
+InvestSchema.methods.placeBet = async function placeBet({
+  post,
+  communityId,
+  stakedTokens,
+  user
+}) {
+  let vote = this;
 
-  // user = user.updatePower();
   user = await user.updateBalance();
-  const userBalance = user.balance + user.tokenBalance;
+  canBet({ user, post, stakedTokens });
 
-  investment = await this.findOne({ investor: user._id, post: post._id });
-  if (investment) return undoInvest({ post, investment, user });
+  const shares = computeShares({ post, stakedTokens });
+  console.log(user.handle, 'got', shares, 'for', stakedTokens, 'staked tokens');
 
-  let shares = 0;
-  let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
+  user.lockedTokens += stakedTokens;
 
-  // can only invest in top-level posts
-  let canInvest = false;
-  const now = new Date();
+  post.data.shares += shares;
+  post.data.balance += stakedTokens;
+  post.data.totalShares += stakedTokens;
 
-  const leeway = TEST_ENV ? 1000 * 60 : 0;
-
-  if (
-    amount > 0 &&
-    !post.parentPost &&
-    user.lockedTokens + stakedTokens <= userBalance &&
-    post.data.eligibleForReward &&
-    !post.data.paidOut &&
-    post.data.payoutTime &&
-    new Date(post.data.payoutTime).getTime() + leeway > now.getTime()
-  ) {
-    canInvest = true;
-  }
-
-  if (!canInvest) stakedTokens = 0;
-  console.log('canInvest', canInvest);
-
-  // TODO - total tokens staked within a community instead
   const communityInstance = await this.model('Community').findOne({ _id: communityId });
-  // userBalance *= communityMember.weight;
+  post.data.expectedPayout = computePostPayout(post.data, communityInstance);
 
-  // only compute shares for upvotes
-  // for downvotes only track staked tokens
-  // we can use totalStaked to rank by stake
-  // only stake on top-level posts
-  if (canInvest) {
-    const { balance, shares: postShares } = post.data;
-    const nexp = EXPONENT + 1;
-    stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
-    shares =
-      (((Math.max(balance, 0) + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) -
-      (postShares || 0);
-    console.log(user.handle, 'got', shares, 'for', stakedTokens, 'staked tokens');
-  }
+  await user.save();
+  await post.data.save();
 
-  investment = new (this.model('Invest'))({
+  vote.shares += shares;
+  vote.stakedTokens += stakedTokens;
+  vote = await vote.save();
+
+  post.myVote = vote;
+  await post.save();
+  user.updateClient();
+  post.updateClient();
+
+  await updateUserEarnings({
+    user,
+    post,
+    vote
+  });
+
+  return vote;
+};
+
+InvestSchema.statics.createVote = async function createVote({
+  post,
+  communityInstance,
+  community,
+  communityId,
+  amount,
+  user
+}) {
+  let vote = new (this.model('Invest'))({
     investor: user._id,
     post: post._id,
     author: post.user,
     amount,
-    relevantPoints: relevanceToAdd,
     ownPost: user._id.equals(post.user),
-    shares,
-    stakedTokens,
-    community,
-    communityId,
+    community: communityInstance.slug,
+    communityId: communityInstance._id,
     // TODO track parentPost && linkPost/aboutLink?
     // parentPost: post.parentPost,
     // linkPost: post.linkPost,
     payoutDate: post.data.payoutDate,
     paidOut: post.data.paidOut
   });
-  await investment.save();
+
+  vote = await vote.save();
   post.data.needsRankUpdate = true;
 
-  if (!canInvest) {
-    await post.data.save();
-    return investment;
+  if (communityInstance.betEnabled || amount <= 0) return vote;
+
+  try {
+    const stakedTokens =
+      Math.abs(amount) * VOTE_COST_RATIO * (user.balance + user.tokenBalance);
+    if (stakedTokens > 0) {
+      vote = await vote.placeBet({
+        post,
+        community,
+        communityId,
+        stakedTokens,
+        user
+      });
+    }
+  } catch (err) {
+    console.log("can't bet");
   }
-
-  post.data.shares += shares;
-  post.data.balance += stakedTokens;
-  user.lockedTokens += stakedTokens;
-  post.data.totalShares += stakedTokens;
-  post.data.expectedPayout = computePostPayout(post.data, communityInstance);
-  await user.save();
-  await post.data.save();
-
-  if (amount > 0) {
-    await updateUserEarnings({
-      user,
-      post,
-      shares,
-      stakedTokens,
-      community,
-      communityId
-    });
-  }
-
-  return investment;
+  console.log(vote);
+  return vote;
 };
 
-async function updateUserEarnings({
-  user,
-  post,
-  shares,
-  stakedTokens,
-  community,
-  communityId
-}) {
+async function updateUserEarnings({ user, post, vote }) {
+  const lookup = { user: user._id, post: post._id, communityId: vote.communityId };
+  const earningExists = await Earnings.countDocuments(lookup);
+
   const earning = await Earnings.findOneAndUpdate(
-    { user: user._id, post: post._id },
+    lookup,
     {
-      shares,
-      stakedTokens,
-      community,
-      communityId,
+      shares: vote.shares,
+      stakedTokens: vote.stakedTokens,
+      community: vote.community,
+      communityId: vote.communityId,
       payoutTime: post.data.payoutTime,
       estimatedPostPayout: post.data.expectedPayout,
       totalPostShares: post.data.shares,
@@ -198,7 +187,28 @@ async function updateUserEarnings({
     },
     { new: true, upsert: true }
   );
-  earning.updateClient({ actionType: 'ADD_EARNING' });
+
+  if (earningExists) return earning.updateClient({ actionType: 'UPDATE_EARNING' });
+  return earning.updateClient({ actionType: 'ADD_EARNING' });
+}
+
+function canBet({ post, user, stakedTokens }) {
+  const now = new Date();
+  const leeway = TEST_ENV ? 1000 * 60 : 0;
+  const availableBalance = user.balance + user.tokenBalance - user.lockedTokens;
+
+  if (
+    !post.parentPost &&
+    stakedTokens <= availableBalance &&
+    post.data.eligibleForReward &&
+    !post.data.paidOut &&
+    post.data.payoutTime &&
+    new Date(post.data.payoutTime).getTime() + leeway > now.getTime()
+  ) {
+    return true;
+  }
+
+  throw new Error('You cannot bet on this post');
 }
 
 module.exports = mongoose.model('Invest', InvestSchema);
