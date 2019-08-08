@@ -54,33 +54,33 @@ export default async function computePageRank(params) {
       ownPost: { $ne: true },
       investor: { $exists: true }
     })
-    .populate({
-      path: 'investor',
-      select: 'relevance handle',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'author',
-      select: 'relevance handle',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'post',
-      select: 'data title',
-      options: { select: 'data body' },
-      populate: {
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw body'
-      }
-    });
+      .populate({
+        path: 'investor',
+        select: 'relevance handle',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'author',
+        select: 'relevance handle',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'post',
+        select: 'data title',
+        options: { select: 'data body' },
+        populate: {
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw body'
+        }
+      });
 
     votes.forEach(vote => {
       const user = vote.investor;
@@ -507,32 +507,32 @@ export async function computeApproxPageRank(params) {
       communityId,
       createdAt: { $gt: repCutoff }
     })
-    .populate({
-      path: 'investor',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'author',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'post',
-      options: { select: 'data body' },
-      populate: {
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw pagerankRawNeg'
-      }
-    });
+      .populate({
+        path: 'investor',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'author',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'post',
+        options: { select: 'data body' },
+        populate: {
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw pagerankRawNeg'
+        }
+      });
 
     const rankedNodes = {};
     const rankedPosts = {};
