@@ -62,8 +62,9 @@ export const create = async (req, res, next) => {
         user
       });
 
-    post.data.upVotes += amount > 0 ? 1 : 0;
-    post.data.downVotes += amount < 0 ? 1 : 0;
+    const adjustVotes = undoInvest ? -1 : 1;
+    post.data.upVotes += amount > 0 ? adjustVotes : 0;
+    post.data.downVotes += amount < 0 ? adjustVotes : 0;
     post.data = await post.data.save();
 
     const authorPagerank = author && (author.relevance.pagerank || 0);
@@ -327,8 +328,8 @@ async function ensureAuthorPagerank({ author, communityId, community }) {
 
 async function queryDb({ userId, postId, communityId }) {
   const post = await Post.findOne({ _id: postId })
-  .populate({ path: 'parentPost' })
-  .populate({ path: 'data', match: { communityId } });
+    .populate({ path: 'parentPost' })
+    .populate({ path: 'data', match: { communityId } });
 
   const user = await User.findOne(
     { _id: userId },

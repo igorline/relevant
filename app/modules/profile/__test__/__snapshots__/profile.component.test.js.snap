@@ -96,7 +96,7 @@ exports[`Snapshot other users Profile 1`] = `
     }
   >
     <a
-      className="ulink-mock c0"
+      className="c0 ulink-mock"
       href="/user/profile/alice"
       hu={0}
       inline={0}
@@ -1207,7 +1207,7 @@ exports[`Snapshot own Profile 1`] = `
     }
   >
     <a
-      className="ulink-mock c0"
+      className="c0 ulink-mock"
       href="/user/profile/alice"
       hu={0}
       inline={0}
@@ -2056,7 +2056,7 @@ exports[`Snapshot own Profile 1`] = `
         </div>
       </div>
       <a
-        className="ulink-mock c1"
+        className="c1 ulink-mock"
         color="#0000ff"
         href="/"
         hu={0}
@@ -2241,7 +2241,7 @@ exports[`Snapshot own Profile 1`] = `
       >
         <a
           c="#000000"
-          className="ulink-mock c2"
+          className="c2 ulink-mock"
           hc="#999999"
           href="//settings?redirect=/"
           hu={0}
@@ -2249,7 +2249,11 @@ exports[`Snapshot own Profile 1`] = `
           onClick={[Function]}
           styles={
             Array [
-              "font-size: 1.05rem; line-height: 1.4rem; font-family: HelveticaNeue-Medium; color: #999999; text-decoration: underline;",
+              "font-size: 1.05rem;",
+              "line-height: 1.4rem;",
+              "font-family: HelveticaNeue-Medium;",
+              "color: #999999;",
+              "text-decoration: underline;",
               " ",
               [Function],
               ";",
@@ -2419,7 +2423,7 @@ exports[`Snapshot own Profile 1`] = `
       >
         <a
           c="#000000"
-          className="ulink-mock c2"
+          className="c2 ulink-mock"
           hc="#999999"
           href="/invites"
           hu={0}
@@ -2427,7 +2431,11 @@ exports[`Snapshot own Profile 1`] = `
           onClick={[Function]}
           styles={
             Array [
-              "font-size: 1.05rem; line-height: 1.4rem; font-family: HelveticaNeue-Medium; color: #999999; text-decoration: underline;",
+              "font-size: 1.05rem;",
+              "line-height: 1.4rem;",
+              "font-family: HelveticaNeue-Medium;",
+              "color: #999999;",
+              "text-decoration: underline;",
               " ",
               [Function],
               ";",

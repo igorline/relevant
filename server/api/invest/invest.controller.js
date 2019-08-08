@@ -1,5 +1,6 @@
 import Invest from 'server/api/invest/invest.model';
 import Post from 'server/api/post/post.model';
+import Community from 'server/api/community/community.model';
 import { create } from './createVote';
 
 exports.create = create;
@@ -10,6 +11,10 @@ exports.bet = async (req, res, next) => {
     const { stakedTokens, postId: _id } = req.body;
     if (stakedTokens === 0) throw new Error("You don't have enough tokens to bet");
     const { communityId, community } = req.communityMember;
+    const communityObj = await Community.findOne({ _id: communityId });
+    if (communityObj.betEnabled === false) {
+      throw new Error("This community doesn't support betting");
+    }
     const post = await Post.findOne({ _id }).populate({
       path: 'data',
       match: { communityId }
@@ -31,17 +36,17 @@ exports.postInvestments = async (req, res, next) => {
     const { community } = req.query;
 
     const investments = await Invest.find({ post: postId, amount: { $gt: 0 } })
-    .limit(limit)
-    .skip(skip)
-    .sort({ createdAt: -1 })
-    .populate({
-      path: 'investor',
-      select: 'relevance name image handle',
-      populate: {
-        path: 'relevance',
-        match: { global: true, community }
-      }
-    });
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'investor',
+        select: 'relevance name image handle',
+        populate: {
+          path: 'relevance',
+          match: { global: true, community }
+        }
+      });
 
     return res.status(200).json(investments);
   } catch (err) {
@@ -57,17 +62,17 @@ exports.postvotes = async (req, res, next) => {
     const { community } = req.query;
 
     const votes = await Invest.find({ post: postId, amount: { $gt: 0 } })
-    .limit(limit)
-    .skip(skip)
-    .sort({ createdAt: -1 })
-    .populate({
-      path: 'investor',
-      select: 'relevance name image handle',
-      populate: {
-        path: 'relevance',
-        match: { global: true, community }
-      }
-    });
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'investor',
+        select: 'relevance name image handle',
+        populate: {
+          path: 'relevance',
+          match: { global: true, community }
+        }
+      });
 
     return res.status(200).json(votes);
   } catch (err) {
@@ -81,10 +86,10 @@ exports.downvotes = async (req, res, next) => {
   let downvotes;
   try {
     downvotes = await Invest.find({ amount: { $lt: 0 } })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('post');
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('post');
 
     return res.status(200).json(downvotes);
   } catch (err) {
@@ -110,25 +115,25 @@ exports.show = async (req, res, next) => {
     }
 
     const votes = await Invest.find(query)
-    .populate({
-      path: 'post',
-      populate: [
-        {
-          path: 'embeddedUser.relevance',
-          match: { communityId, global: true }
-        },
-        {
-          path: 'data',
-          select: 'pagerank'
-        },
-        {
-          path: 'metaPost'
-        }
-      ]
-    })
-    .limit(limit)
-    .skip(skip)
-    .sort(sortQuery);
+      .populate({
+        path: 'post',
+        populate: [
+          {
+            path: 'embeddedUser.relevance',
+            match: { communityId, global: true }
+          },
+          {
+            path: 'data',
+            select: 'pagerank'
+          },
+          {
+            path: 'metaPost'
+          }
+        ]
+      })
+      .limit(limit)
+      .skip(skip)
+      .sort(sortQuery);
     return res.status(200).json(votes);
   } catch (err) {
     return next(err);

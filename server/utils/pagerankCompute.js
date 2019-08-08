@@ -474,9 +474,15 @@ function createPostNode({ post, rankedNodes, nstart, user, rankedPosts, downvote
   return postId;
 }
 
-export async function computeApproxPageRank(params) {
+export async function computeApproxPageRank({
+  author,
+  post,
+  user,
+  communityId,
+  vote,
+  undoInvest
+}) {
   try {
-    const { author, post, user, communityId, vote, undoInvest } = params;
     const com = await Community.findOne(
       { _id: communityId },
       'maxUserRank maxPostRank numberOfElements'
