@@ -15,6 +15,9 @@ import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 
+// User.find({ handle: 'thisben' }, '+email').then(console.log)
+// User.findOneAndUpdate({ handle: 'thisben' }, { email: 'thisben@tutanota.com' }).exec();
+
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
 // .then(u => u);
@@ -31,9 +34,7 @@ async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';
   try {
-    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
-      user.confirmCode
-    }`;
+    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
     const data = {
       from: 'Relevant <info@relevant.community>',
       to: user.email,
@@ -60,9 +61,7 @@ async function sendConfirmation(user, newUser) {
 async function sendResetEmail(user, queryString) {
   let status;
   try {
-    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${
-      user.resetPasswordToken
-    }${queryString}`;
+    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}${queryString}`;
     const data = {
       from: 'Relevant <info@relevant.community>',
       to: user.email,

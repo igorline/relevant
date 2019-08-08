@@ -87,6 +87,12 @@ class CommunityAdminForm extends Component {
         type: 'checkbox'
       },
       {
+        name: 'betEnabled',
+        label: 'Enable Betting',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
         name: 'hidden',
         label: 'Unlisted (anyone with link can still see and join the community)',
         component: ReduxFormField,

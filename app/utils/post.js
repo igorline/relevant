@@ -1,4 +1,5 @@
 import get from 'lodash.get';
+import { SLOPE, EXPONENT } from 'server/config/globalConstants';
 
 export const URL_REGEX = new RegExp(
   // eslint-disable-next-line
@@ -28,4 +29,14 @@ export const getPostUrl = (community, post) => {
   const postId = parentPost ? parentPost._id || parentPost : post._id || post;
   const commentId = parentPost ? '/' + post._id || post : '';
   return `/${community}/post/${postId}${commentId}`;
+};
+
+export const computeShares = ({ post, stakedTokens }) => {
+  const { balance, shares: postShares } = post.data;
+  const nexp = EXPONENT + 1;
+
+  const shares =
+    (((Math.max(balance, 0) + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) -
+    (postShares || 0);
+  return shares;
 };

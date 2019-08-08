@@ -74,9 +74,9 @@ export function capitalize(string) {
   .join(' ');
 }
 
-export function getTimestamp(date) {
+export function getTimestamp(date, withoutSuffix) {
   if (!date) return null;
-  const fromNow = dayjs(date).fromNow();
+  const fromNow = dayjs(date).fromNow(withoutSuffix);
   return capitalize(fromNow);
 }
 
@@ -96,4 +96,22 @@ export function guid() {
     const v = c === 'x' ? r : (r & 0x3) | 0x8; // eslint-disable-line
     return v.toString(16);
   });
+}
+
+export function timeLeft({ _date, index }) {
+  const now = new Date();
+  const date = new Date(_date);
+  const seconds = Math.round((date.getTime() - now.getTime()) / 1000);
+
+  const d = Math.round(seconds / (3600 * 24));
+  const h = Math.round((seconds % (3600 * 24)) / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+  const s = seconds % 60;
+  const abr = ['d', 'h', 'm', 's'];
+  const data = [d, h > 9 ? h : d ? h : h || '0', m > 9 ? m : d && h ? m : m || '0', s]
+  .map((t, i) => (t ? t + abr[i] : null))
+  .filter(t => t);
+
+  if (index) return data[index - 1];
+  return data.join(':');
 }

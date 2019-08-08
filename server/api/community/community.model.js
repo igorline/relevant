@@ -32,7 +32,8 @@ const CommunitySchema = new Schema(
     memberCount: { type: Number },
     inactive: Boolean,
     private: { type: Boolean, default: false },
-    hidden: { type: Boolean, default: false }
+    hidden: { type: Boolean, default: false },
+    betEnabled: { type: Boolean, default: true }
   },
   {
     timestamps: true,

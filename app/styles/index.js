@@ -11,4 +11,6 @@ if (process.env.WEB === 'true') {
   GlobalStyle = require('app/styles/baseStyles').GlobalStyle;
 }
 
+export const isNative = process.env.WEB !== 'true';
+
 export { sizing, colors, layout, mixins, fonts, GlobalStyle, size, screens, responsive };

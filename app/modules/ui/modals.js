@@ -13,6 +13,14 @@ import SignupSocial from 'modules/auth/web/signupSocial';
 import SignupEmail from 'modules/auth/web/signupEmail';
 import SetHandle from 'modules/auth/web/handle.component';
 import ConfirmEmail from 'modules/auth/web/confirmEmail.component';
+import BetBody from 'modules/post/bet';
+
+export const investModal = {
+  // title: 'Place Your Bet',
+  Body: BetBody,
+  maxWidth: [45, 40]
+  // padding: 2,
+};
 
 export const onboarding = {
   title: 'Welcome To Relevant',
