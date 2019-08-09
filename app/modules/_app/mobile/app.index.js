@@ -66,7 +66,7 @@ class App extends Component {
           ref={navigatorRef => {
             setTopLevelNavigator(navigatorRef);
           }}
-          nNavigationStateChange={(prevState, currentState) => {
+          onNavigationStateChange={(prevState, currentState) => {
             const currentScreen = getActiveRouteName(currentState);
             const prevScreen = getActiveRouteName(prevState);
 
