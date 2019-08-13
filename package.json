@@ -32,7 +32,8 @@
     "start-ganache": "ganache-cli -i 7545",
     "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p",
     "heroku-postbuild": "webpack --config ./webpack.production.config.js --progress --colors -p",
-    "preinstall": "rm -rf ./node_modules/**/.git & rm -rf ./node_modules/**/**/websocket/.git"
+    "preinstall": "rm -rf ./node_modules/**/.git & rm -rf ./node_modules/**/**/websocket/.git",
+    "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
