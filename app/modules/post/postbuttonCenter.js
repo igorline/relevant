@@ -10,7 +10,8 @@ import {
   // NumericalValue,
   // Image
 } from 'modules/styled/uni';
-import { timeLeft } from 'utils/numbers';
+import { timeLeft, getTimestamp } from 'utils/numbers';
+
 // import { timeLeft, abbreviateNumber as toFixed } from 'utils/numbers';
 import { colors, sizing } from 'styles';
 import { PAYOUT_TIME } from 'server/config/globalConstants';
@@ -44,7 +45,7 @@ export function CenterButton({ post, votedUp, horizontal }) {
 
   const timer = (
     <View w={size} h={size}>
-      <Timer payoutTime={payoutTime} size={size} />
+      <Timer payoutTime={payoutTime} size={size} post={post} />
     </View>
   );
 
@@ -73,7 +74,7 @@ export function BetButton({ size, openBetModal, post }) {
   );
 
   const tooltipData = {
-    text: 'Bet on this post to earn rewards',
+    text: 'Bet on the relevance of this post to earn rewards',
     position: 'right',
     desktopOnly: true
   };
@@ -120,10 +121,11 @@ export function BetButton({ size, openBetModal, post }) {
 
 Timer.propTypes = {
   payoutTime: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  size: PropTypes.number
+  size: PropTypes.number,
+  post: PropTypes.object
 };
 
-export function Timer({ payoutTime, size }) {
+export function Timer({ payoutTime, size, post }) {
   const updateTimerParams = () => {
     const now = new Date();
     const payoutDate = new Date(payoutTime);
@@ -139,8 +141,10 @@ export function Timer({ payoutTime, size }) {
     return () => clearInterval(id);
   }, [payoutTime]);
 
+  const timeLelft = getTimestamp(post.data.payoutTime, true).toLowerCase();
+
   const tooltipData = {
-    text: 'Upvote this post to be able to bet on it',
+    text: `Upvote this post to be able to bet on it.\nYou have ${timeLelft} to bet.`,
     position: 'right'
   };
 

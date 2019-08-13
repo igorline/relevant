@@ -83,6 +83,7 @@ export const MobileDivider = styled(View)`
 export const Header = styled(Text)`
   ${fonts.header}
   ${mixins.color}
+  ${mixins.font}
 `;
 
 export const Title = styled(Text)`
