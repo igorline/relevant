@@ -40,7 +40,7 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
   const community = useCommunity();
 
   const { initTooltips, toggleTooltip } = setupMobileTooltips({
-    tooltips: [{ name: 'vote', el: investButton }],
+    tooltips: [{ name: 'vote', el: investButton, data: {} }],
     dispatch
   });
 
@@ -169,7 +169,7 @@ function RankEl({ horizontal, toggleTooltip, postRank, color, post }) {
   return (
     <View
       h={horizontal ? 2 : 4}
-      minwidth={horizontal ? 7 : null}
+      minwidth={horizontal ? 8 : null}
       justify={'center'}
       align={'center'}
     >
