@@ -265,12 +265,12 @@ class Application extends Component {
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <AppContainer navigation={this.props.navigation} />
         <BannerPrompt />
+        {this.renderModal()}
         <Tooltip />
         <InvestAnimation />
         <HeartAnimation />
         <DownvoteAnimation />
         <UpvoteAnimation />
-        {this.renderModal()}
       </View>
     );
   }

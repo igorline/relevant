@@ -1,14 +1,13 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
-import ReactTooltip from 'react-tooltip';
 import { colors } from 'app/styles';
 import { triggerAnimation } from 'modules/animation/animation.actions';
-import { setupMobileTooltips } from 'modules/tooltip/mobile/setupTooltips';
 import { useCommunity } from 'modules/community/community.selectors';
+import Tooltip from 'modules/tooltip/tooltip.component';
 import { CenterButton } from './postbuttonCenter';
 import { vote as voteAction } from './invest.actions';
 
@@ -26,28 +25,20 @@ PostButtons.propTypes = {
     id: PropTypes.string,
     data: PropTypes.object,
     user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    myVote: PropTypes.object
+    myVote: PropTypes.object,
+    parentPost: PropTypes.string,
+    type: PropTypes.string,
+    url: PropTypes.string
   }),
   color: PropTypes.string,
-  horizontal: PropTypes.bool,
-  tooltip: PropTypes.bool
+  horizontal: PropTypes.bool
 };
 
-export default function PostButtons({ post, auth, color, horizontal, tooltip }) {
+export default function PostButtons({ post, auth, color, horizontal }) {
   const dispatch = useDispatch();
   const investButton = useRef();
   const [processingVote, setProcessingVote] = useState(false);
   const community = useCommunity();
-
-  const { initTooltips, toggleTooltip } = setupMobileTooltips({
-    tooltips: [{ name: 'vote', el: investButton, data: {} }],
-    dispatch
-  });
-
-  useEffect(() => {
-    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
-    if (tooltip) initTooltips();
-  }, []);
 
   const castVote = useCallback(
     async (e, vote, amount) => {
@@ -57,8 +48,7 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
         e.preventDefault();
         e.stopPropagation();
         if (!auth.isAuthenticated) {
-          setProcessingVote(false);
-          throw new Error('You must be logged in to  posts');
+          throw new Error(`You must be logged in to ${type} posts`);
         }
         if (processingVote) return null;
 
@@ -88,7 +78,7 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
         return browserAlerts.alert(err.message);
       }
     },
-    [dispatch, post, auth, vote, processingVote]
+    [dispatch, post, auth, vote, processingVote, setProcessingVote]
   );
 
   if (!post || post === 'notFound') return null;
@@ -109,6 +99,18 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
     post.data.eligibleForReward &&
     now.getTime() < new Date(post.data.payoutTime).getTime();
 
+  const isLink = !post.parentPost && post.url;
+
+  const postType = post.type === 'comment' ? 'comments' : 'posts';
+  const tipText = isLink
+    ? 'Upvote articles that are worth reading, downvote spam.'
+    : `Upvote quality ${postType} and downvote spam`;
+  const tooltipData = {
+    text: tipText,
+    position: 'right',
+    desktopOnly: true
+  };
+
   return (
     <View
       ref={investButton}
@@ -118,25 +120,21 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
       style={{ opacity: 1 }} // need this to make animations work on android
     >
       <PostButton
+        tooltipData={tooltipData}
         key={`${post.id}-up`}
         imageSet="UPVOTE"
         isActive={votedUp}
-        alt="Upvote"
+        alt="upvote"
         color={color}
         onPress={e => castVote(e, vote, 1)}
       />
       {canBet ? (
         <CenterButton horizontal={horizontal} votedUp={votedUp} post={post} />
       ) : (
-        <RankEl
-          horizontal={horizontal}
-          toggleTooltip={toggleTooltip}
-          postRank={postRank}
-          color={color}
-          post={post}
-        />
+        <RankEl horizontal={horizontal} postRank={postRank} color={color} post={post} />
       )}
       <PostButton
+        tooltipData={tooltipData}
         key={`${post.id}-down`}
         imageSet="DOWNVOTE"
         isActive={votedDown}
@@ -150,21 +148,26 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
 
 RankEl.propTypes = {
   horizontal: PropTypes.bool,
-  toggleTooltip: PropTypes.func,
   postRank: PropTypes.number,
   color: PropTypes.string,
   post: PropTypes.object
 };
 
-function RankEl({ horizontal, toggleTooltip, postRank, color, post }) {
+function RankEl({ horizontal, postRank, color, post }) {
   const isLink = !post.parentPost && post.url;
-  const isComment = post.type === 'comment';
+
+  // const postType = post.type === 'comment' ? 'comments' : 'posts';
+  // const tipText = isLink
+  //   ? 'Upvote articles that are worth reading, downvote spam.'
+  //   : `Upvote quality ${postType} and downvote spam`;
+
+  const postType = post.type === 'comment' ? 'comment' : 'post';
 
   const tipText = isLink
-    ? 'Upvote articles that are worth reading, downvote spam.'
-    : isComment
-      ? 'Upvote quality comments and downvote spam'
-      : 'Upvote quality posts and downvote spam';
+    ? "This is the article's reputation score"
+    : `This is the ${postType}'s reputation scroe`;
+
+  const tooltipData = { text: tipText, position: 'right' };
 
   return (
     <View
@@ -173,20 +176,12 @@ function RankEl({ horizontal, toggleTooltip, postRank, color, post }) {
       justify={'center'}
       align={'center'}
     >
+      <Tooltip name="vote" data={tooltipData} />
       <NumericalValue
-        onPress={() => toggleTooltip('vote')}
         c={color || colors.secondaryText}
         fs={2}
         lh={2}
         m={horizontal ? '0 1' : null}
-        data-place={'right'}
-        data-for="mainTooltip"
-        data-tip={JSON.stringify({
-          type: 'TEXT',
-          props: {
-            text: tipText
-          }
-        })}
       >
         {postRank || 0}
       </NumericalValue>
