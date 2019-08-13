@@ -107,7 +107,7 @@
     "react-facebook-pixel": "^0.1.2",
     "react-ga": "^2.5.7",
     "react-is": "^16.8.6",
-    "react-native": "^0.59.8",
+    "react-native": "^0.60.5",
     "react-native-bottom-sheet": "^1.0.3",
     "react-native-code-push": "^5.6.0",
     "react-native-contacts": "^4.0.2",
