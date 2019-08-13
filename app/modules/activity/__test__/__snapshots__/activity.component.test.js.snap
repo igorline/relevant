@@ -232,7 +232,7 @@ exports[`Snapshot Activity Web 1`] = `
           }
         >
           <a
-            className="ulink-mock c0"
+            className="c0 ulink-mock"
             href="/user/profile/bob"
             hu={0}
             inline={0}
@@ -476,7 +476,7 @@ exports[`Snapshot Activity Web 1`] = `
             }
           >
             <a
-              className="ulink-mock c0"
+              className="c0 ulink-mock"
               href="/user/profile/bob"
               hu={0}
               inline={0}
@@ -767,7 +767,7 @@ exports[`Snapshot Activity Web 1`] = `
     }
   >
     <a
-      className="ulink-mock c0"
+      className="c0 ulink-mock"
       href="/undefined/post/000000000000000000000003"
       hu={0}
       inline={0}

@@ -36,10 +36,13 @@ if (process.env.WEB !== 'true') {
   native = true;
 }
 
-export function showModal(modal) {
+export function showModal(modal, data) {
   return {
     type: SHOW_MODAL,
-    payload: modal
+    payload: {
+      modal,
+      data
+    }
   };
 }
 
@@ -222,29 +225,29 @@ export function goToUrl(url, id) {
     dispatch(setButtonTooltip('upvote', id));
     if (safariView) {
       safariView
-      .isAvailable()
-      .then(() => {
-        Orientation.unlockAllOrientations();
-        safariView.show({
-          url,
-          readerMode: true // optional,
+        .isAvailable()
+        .then(() => {
+          Orientation.unlockAllOrientations();
+          safariView.show({
+            url,
+            readerMode: true // optional,
+          });
+        })
+        .catch(() => {
+          dispatch(
+            push(
+              {
+                key: 'articleView',
+                component: 'articleView',
+                back: true,
+                uri: url,
+                id: url,
+                gestureResponseDistance: 120
+              },
+              'home'
+            )
+          );
         });
-      })
-      .catch(() => {
-        dispatch(
-          push(
-            {
-              key: 'articleView',
-              component: 'articleView',
-              back: true,
-              uri: url,
-              id: url,
-              gestureResponseDistance: 120
-            },
-            'home'
-          )
-        );
-      });
     }
     return null;
   };

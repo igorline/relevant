@@ -43,25 +43,24 @@ const FooterIcon = ({ href, source, target, actions }) => {
       onPress={() => actions.goToUrl(href)}
       target={target || '_self'}
     >
-      <Image w={3} h={2.3} mr={1.5} resizeMode={'contain'} source={source} />
+      <Image w={2.8} h={2.4} mr={1.5} resizeMode={'contain'} source={source} />
     </ULink>
   );
 };
 
 FooterIcon.propTypes = {
   href: PropTypes.string,
-  source: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.func]),
+  source: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.object]),
   target: PropTypes.string,
   actions: PropTypes.object
 };
 
 export default function FooterIcons({ actions }) {
   return (
-    <View flex={1} fdirection={'row'} mt={2} mb={2}>
-      {icons.map(icon => {
-        if (!icon.source || typeof icon.source !== 'string') return null;
-        return <FooterIcon actions={actions} key={icon.href} {...icon} />;
-      })}
+    <View flex={1} fdirection={'row'} mt={2} mb={[2, 4]}>
+      {icons.map(icon => (
+        <FooterIcon actions={actions} key={icon.href} {...icon} />
+      ))}
     </View>
   );
 }

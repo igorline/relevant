@@ -23,7 +23,7 @@ describe('ethRewards', () => {
     ({ alice, bob, carol } = getUsers());
     ({ link1, link2, link3, link4, link5 } = getPosts());
     ({ relevant, crypto } = getCommunities());
-    // global.console = { log: jest.fn() }; // hides logs
+    global.console = { log: jest.fn() }; // hides logs
   });
 
   describe('No Rewards', () => {
@@ -35,33 +35,17 @@ describe('ethRewards', () => {
 
   describe('Votes', () => {
     test('should be created', async () => {
-      const relevantVote = {
-        relevanceToAdd: 10,
-        community: relevant.slug,
-        communityId: relevant._id,
-        amount: 1
-      };
+      const voteArray = createVoteArray();
 
-      const cryptoVote = {
-        relevanceToAdd: 10,
-        community: crypto.slug,
-        communityId: crypto._id,
-        amount: 1
-      };
+      const wait = {};
+      wait.p = Promise.resolve(true);
+      const votes = await voteArray.reduce(async (executed, vote) => {
+        executed = await executed;
+        return [...executed, await voteAndBet(vote)];
+      }, Promise.resolve([]));
 
-      let invest = await Invest.createVote({
-        ...relevantVote,
-        user: alice,
-        post: link1
-      });
-      await Invest.createVote({ ...relevantVote, user: bob, post: link2 });
-      await Invest.createVote({ ...relevantVote, user: carol, post: link2 });
-      await Invest.createVote({ ...cryptoVote, user: bob, post: link3 });
-      await Invest.createVote({ ...cryptoVote, user: bob, post: link4 });
-      await Invest.createVote({ ...cryptoVote, user: carol, post: link5 });
-
-      invest = sanitize(invest);
-      expect(invest).toMatchSnapshot();
+      const bet = sanitize(votes[0].bet);
+      expect(bet).toMatchSnapshot();
     });
   });
 
@@ -138,4 +122,41 @@ describe('ethRewards', () => {
     //   expect(logs).toMatchSnapshot();
     // });
   });
+
+  async function voteAndBet(vote) {
+    const repVote = await Invest.createVote(vote);
+    const stakedTokens = (vote.user.balance + vote.user.tokenBalance) * 0.1;
+    const bet = await repVote.placeBet({ ...vote, stakedTokens });
+    return { repVote, bet };
+  }
+
+  function createVoteArray() {
+    const relevantVote = {
+      communityInstance: relevant,
+      community: relevant.slug,
+      communityId: relevant._id,
+      amount: 1
+    };
+
+    const cryptoVote = {
+      communityInstance: crypto,
+      community: crypto.slug,
+      communityId: crypto._id,
+      amount: 1
+    };
+
+    return [
+      { ...relevantVote, user: alice, post: link1 },
+      { ...relevantVote, user: bob, post: link2 },
+      { ...relevantVote, user: carol, post: link2 },
+      { ...cryptoVote, user: bob, post: link3 },
+      { ...cryptoVote, user: bob, post: link4 },
+      { ...cryptoVote, user: carol, post: link5 }
+    ];
+  }
 });
+
+// async function placeBet({ user, post }) {
+//   const stakedTokens = (user.balance + user.tokenBalance ) * 0.1;
+//   await
+// }

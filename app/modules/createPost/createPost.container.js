@@ -14,9 +14,9 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text } from 'app/utils';
 
-import { View, Button, Divider, BodyText } from 'modules/styled/uni';
+import { View, Button, Divider, BodyText, LinkFont } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
-import { colors, sizing } from 'app/styles';
+import { sizing } from 'app/styles';
 
 import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
@@ -447,16 +447,15 @@ class CreatePostContainer extends Component {
               <BodyText ml={0.5}>This is a chat channel</BodyText>
             </View>
           )}
-          <View fdirection="row" flex={1} justify="flex-end">
-            <Button c={colors.black} bg={colors.white} onClick={this.clearPost}>
+          <View fdirection="row" flex={1} justify="flex-end" align="center">
+            <LinkFont mr={3} onClick={this.clearPost}>
               Clear
-            </Button>
+            </LinkFont>
 
             <Button
               onClick={() => !submitDisabled && this.createPost()}
               disabled={submitDisabled}
               ml={2}
-              bb={1}
             >
               {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
             </Button>

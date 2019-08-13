@@ -29,6 +29,9 @@ import CreatePostModal from 'modules/createPost/web/createPost.modal';
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/mobile/upvoteAnimation.component')
 );
+const DownvoteAnimation = loadable(() =>
+  import('modules/animation/mobile/downvoteAnimation.component')
+);
 
 let ReactPixel;
 
@@ -60,19 +63,22 @@ class App extends Component {
     authType: null
   };
 
+  componentWillMount() {
+    const { auth, history, actions, location } = this.props;
+    const { community } = auth;
+    if (community && location.pathname === '/') {
+      history.replace(`/${community}/new`);
+    }
+    // TODO don't need this if api is middleware
+    if (community) actions.setCommunity(community);
+  }
+
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
-    const { community } = auth;
 
     if (process.env.NODE_ENV !== 'development') {
       this.initAnalytics({ location, history });
     }
-
-    if (community && location.pathname === '/') {
-      history.replace(`/${community}/new`);
-    }
-
-    if (community) actions.setCommunity(community);
 
     // actions.getCommunities();
     actions.getUser();
@@ -260,7 +266,8 @@ class App extends Component {
   }
 
   render() {
-    const { globalModal } = this.props;
+    const { globalModal, navigation } = this.props;
+    const { screenSize } = navigation;
 
     return (
       <div>
@@ -272,7 +279,14 @@ class App extends Component {
           position={'top'}
           // force={'ios'}
         />
-        <TextTooltip type={'dark'} scrollHide id="mainTooltip" multiline />
+        <TextTooltip
+          globalEventOff="click"
+          type={'dark'}
+          scrollHide
+          id="mainTooltip"
+          multiline
+          isCapture={true}
+        />
         {/*        <CustomTooltip id="tooltip" multiline />
          */}
         <div
@@ -284,26 +298,14 @@ class App extends Component {
           }}
         >
           <UpvoteAnimation />
+          <DownvoteAnimation />
         </div>
-
-        {/* TODO - separate modal
-        <EthTools>
-          <div style={{ display: 'flex', width: '100%' }}>{children}</div>
-          <Eth.Consumer>
-            {wallet => (
-              <AddEthAddress
-                connectAccount={connectAccount}
-                closeModal={this.closeModal.bind(this)}
-                {...this.props}
-                {...wallet}
-              />
-            )}
-          </Eth.Consumer>
-        </EthTools> */}
         {this.renderModal()}
         <CreatePostModal visible={globalModal === 'newpost'} />
         <ToastContainer />
-        {renderRoutes(this.props.route.routes)}
+        <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+          {renderRoutes(this.props.route.routes)}
+        </div>
       </div>
     );
   }

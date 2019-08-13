@@ -116,9 +116,7 @@ export class Community extends Component {
           )}
           <View m={'2 0'}>{this.renderOtherCommunities()}</View>
         </View>
-        <BodyText m={[4, 2]}>
-          We'll be adding more communities in the coming weeks!{'\n\n'}
-        </BodyText>
+        <BodyText m={[4, 2]}>We'll be adding more communities soon!{'\n\n'}</BodyText>
       </View>
     );
   }

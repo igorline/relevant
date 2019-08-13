@@ -67,7 +67,7 @@ export async function getParam(param, opt) {
 
   let value = await instance[param]();
   if (!opt || !opt.noConvert) value = value.div((10 ** decimals).toString());
-  if (!opt || !opt.string) value = value.toNumber();
+  if (!opt || !opt.string) value = parseFloat(value.toString());
   return value;
 }
 
@@ -96,6 +96,10 @@ export async function sendTx({ method, args }) {
   }
 }
 
+function toBN(num) {
+  return ethers.utils.parseUnits((num / 10 ** decimals).toString(), decimals);
+}
+
 export async function mintRewardTokens() {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast();
@@ -104,11 +108,11 @@ export async function mintRewardTokens() {
 }
 
 export async function allocateRewards(_amount) {
-  return sendTx({ method: 'allocateRewards', args: [_amount] });
+  return sendTx({ method: 'allocateRewards', args: [toBN(_amount)] });
 }
 
 export async function allocateAirdrops(_amount) {
-  return sendTx({ method: 'allocateAirdrops', args: [_amount] });
+  return sendTx({ method: 'allocateAirdrops', args: [toBN(_amount)] });
 }
 
 export async function getNonce(_account) {
@@ -118,7 +122,8 @@ export async function getNonce(_account) {
 
 export async function sign(_account, _amount) {
   const nonce = await getNonce(_account);
-  const amnt = ethers.utils.bigNumberify((_amount * 10 ** 18).toString());
+  // const amnt = ethers.utils.bigNumberify((_amount * 10 ** 18).toString());
+  const amnt = ethers.utils.parseUnits(_amount.toString(), decimals);
   const hash = ethers.utils.solidityKeccak256(
     ['uint256', 'address', 'uint256'],
     [amnt.toString(), _account, nonce]

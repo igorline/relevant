@@ -743,11 +743,10 @@ exports[`Snapshot Balance Web 1`] = `
     }
   >
     <div
-      c="#0000ff"
+      c="#999999"
       data-focusable={true}
       dir="auto"
       mr={0.5}
-      onClick={[Function]}
       onKeyDown={[Function]}
       onKeyUp={[Function]}
       onResponderGrant={[Function]}
@@ -758,16 +757,18 @@ exports[`Snapshot Balance Web 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         Object {
+          "MozUserSelect": "none",
           "WebkitFlexBasis": "auto",
           "WebkitFlexShrink": 0,
-          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+          "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
           "WebkitTextDecorationStyle": "solid",
+          "WebkitUserSelect": "none",
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
-          "color": "rgba(0,0,255,1.00)",
+          "color": "rgba(153,153,153,1.00)",
           "cursor": "pointer",
           "display": "flex",
           "flexBasis": "auto",
@@ -785,15 +786,17 @@ exports[`Snapshot Balance Web 1`] = `
           "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
           "msTouchAction": "manipulation",
+          "msUserSelect": "none",
           "paddingBottom": "0px",
           "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(0,0,255,1.00)",
+          "textDecorationColor": "rgba(153,153,153,1.00)",
           "textDecorationStyle": "solid",
           "touchAction": "manipulation",
+          "userSelect": "none",
           "whiteSpace": "pre-wrap",
           "wordWrap": "break-word",
         }

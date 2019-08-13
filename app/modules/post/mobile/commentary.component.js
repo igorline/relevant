@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, mainPadding, borderGrey } from 'app/styles/global';
 import Pills from 'modules/ui/mobile/pills.component';
 import { Image, Divider, View } from 'modules/styled/uni';
-// import UAvatar from 'modules/user/UAvatar.component';
+import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
-import PostButtons from './postButtons.component';
 
 let styles;
 
@@ -127,19 +126,22 @@ export default class Commentary extends Component {
                 preview={preview}
               />
               {!hideButtons && (
-                <PostButtons
-                  post={post}
-                  parentPost={post.parentPost ? post.parentPost : post}
-                  comment={post}
-                  link={link}
-                  tooltip={index === 0 ? tooltip : null}
-                  comments={post.comments || null}
-                  actions={actions}
-                  auth={auth}
-                  // myPostInv={myPostInv[post._id]}
-                  focusInput={focusInput}
-                  navigation={this.props.navigation}
-                />
+                <View m={'2 0'}>
+                  <ButtonContainer
+                    horizontal
+                    post={post}
+                    parentPost={post.parentPost ? post.parentPost : post}
+                    comment={post}
+                    link={link}
+                    tooltip={index === 0 ? tooltip : null}
+                    comments={post.comments || null}
+                    actions={actions}
+                    auth={auth}
+                    // myPostInv={myPostInv[post._id]}
+                    focusInput={focusInput}
+                    navigation={this.props.navigation}
+                  />
+                </View>
               )}
             </View>
           </View>
