@@ -7,7 +7,7 @@ import styled from 'styled-components/primitives';
 import Vote from './vote.component';
 import VoteNumber from './upvoteNumber.component';
 
-const MoneyContainer = styled.View`
+const Container = styled.View`
   position: absolute
   zIndex: 10000;
   left: 0;
@@ -91,10 +91,10 @@ class UpvoteAnimation extends Component {
 
   render() {
     return (
-      <MoneyContainer pointerEvents={'none'} style={{ height: this.fullHeight }}>
+      <Container pointerEvents={'none'} style={{ height: this.fullHeight }}>
         {this.state.coinAni}
         {this.state.investAni}
-      </MoneyContainer>
+      </Container>
     );
   }
 }

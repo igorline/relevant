@@ -218,7 +218,7 @@ exports[`Snapshot NavProfile 1`] = `
         Alice
       </div>
       <a
-        className="ulink-mock c0"
+        className="c0 ulink-mock"
         href="/user/wallet"
         hu={1}
         inline={0}
@@ -357,7 +357,7 @@ exports[`Snapshot NavProfile 1`] = `
         }
       >
         <a
-          className="ulink-mock c1"
+          className="c1 ulink-mock"
           href="/user/profile/alice"
           hu={0}
           inline={0}
@@ -577,7 +577,7 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <a
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             href="/user/wallet"
             hu={0}
             inline={0}
@@ -794,7 +794,7 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             href="/user/wallet"
             hu={0}
             inline={0}
@@ -1359,7 +1359,7 @@ exports[`Snapshot NavProfile 1`] = `
     >
       <a
         c="#0000ff"
-        className="ulink-mock c2"
+        className="c2 ulink-mock"
         href="/user/wallet"
         hu={1}
         inline={0}
@@ -1452,7 +1452,7 @@ exports[`Snapshot NavProfile 1`] = `
       </div>
       <a
         c="#0000ff"
-        className="ulink-mock c3"
+        className="c3 ulink-mock"
         href="/user/wallet"
         hu={1}
         inline={0}

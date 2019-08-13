@@ -757,10 +757,12 @@ exports[`Snapshot Balance Web 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         Object {
+          "MozUserSelect": "none",
           "WebkitFlexBasis": "auto",
           "WebkitFlexShrink": 0,
           "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
           "WebkitTextDecorationStyle": "solid",
+          "WebkitUserSelect": "none",
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
@@ -784,6 +786,7 @@ exports[`Snapshot Balance Web 1`] = `
           "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
           "msTouchAction": "manipulation",
+          "msUserSelect": "none",
           "paddingBottom": "0px",
           "paddingLeft": "0px",
           "paddingRight": "0px",
@@ -793,6 +796,7 @@ exports[`Snapshot Balance Web 1`] = `
           "textDecorationColor": "rgba(153,153,153,1.00)",
           "textDecorationStyle": "solid",
           "touchAction": "manipulation",
+          "userSelect": "none",
           "whiteSpace": "pre-wrap",
           "wordWrap": "break-word",
         }
