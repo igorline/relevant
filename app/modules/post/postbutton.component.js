@@ -49,8 +49,8 @@ function PostButton({ alt, isActive, imageSet, onPress, color, tooltipData }) {
   const source = (isActive && images.active) || (hover && images.hover) || defaultState;
 
   return (
-    <Touchable onPress={onPress} bradius={2}>
-      <Tooltip data={tooltipData}>
+    <Tooltip data={tooltipData} name="voteDesk">
+      <Touchable onPress={onPress} bradius={2}>
         <ButtonImage
           w={3}
           h={3}
@@ -67,8 +67,8 @@ function PostButton({ alt, isActive, imageSet, onPress, color, tooltipData }) {
             setActive(0);
           }}
         />
-      </Tooltip>
-    </Touchable>
+      </Touchable>
+    </Tooltip>
   );
 }
 
