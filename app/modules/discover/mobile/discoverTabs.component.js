@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import { globalStyles, fullWidth, fullHeight, blue } from 'app/styles/global';
+import { globalStyles, blue } from 'app/styles/global';
 import { getParentTags } from 'modules/tag/tag.actions';
 import { goToTopic } from 'modules/navigation/navigation.actions';
-import Topics from 'modules/createPost/mobile/topics.component';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import { get } from 'lodash/get';
 import DefaultTabBar from './discoverTabBar.component';
@@ -42,7 +41,6 @@ class DiscoverTabs extends Component {
     this.setPostTop = this.setPostTop.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.renderScene = this.renderScene.bind(this);
-    this.renderBadge = this.renderBadge.bind(this);
     this.scrollOffset = {};
     this.initialTab = 0;
 
@@ -162,31 +160,6 @@ class DiscoverTabs extends Component {
     }
   }
 
-  renderBadge() {
-    // if (title !== SUB_TITLE) return null;
-    // const count = this.props.feedUnread;
-    // if (typeof count === 'number') {
-    //   this.totalBadge += count;
-    // }
-    // if (!count) return null;
-    // return (
-    //   <Text
-    //     style={{
-    //       backgroundColor: 'transparent',
-    //       fontSize: 14,
-    //       fontWeight: 'bold',
-    //       position: 'absolute',
-    //       color: 'red',
-    //       // color: blue,
-    //       top: -1,
-    //       right: -10
-    //     }}
-    //   >
-    //     {'•'}
-    //   </Text>
-    // );
-  }
-
   renderHeader(props) {
     if (!this.loaded) return <View {...props} />;
     return (
@@ -201,7 +174,7 @@ class DiscoverTabs extends Component {
           }}
           textStyle={{}}
           initialTab={this.initialTab}
-          renderBadge={this.renderBadge}
+          renderBadge={() => null}
           topic={this.topicId || 'default'}
           {...props}
         />
@@ -211,35 +184,6 @@ class DiscoverTabs extends Component {
 
   render() {
     const tabs = this.state.routes.map(route => this.renderScene(route));
-
-    let topics = null;
-    if (this.props.topics) {
-      topics = (
-        <View
-          style={{
-            position: 'absolute',
-            backgroundColor: 'white',
-            width: fullWidth,
-            height:
-              fullHeight -
-              108 -
-              (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0)
-          }}
-        >
-          <Topics
-            topics={this.props.tags.parentTags}
-            action={topic => {
-              this.props.actions.goToTopic(topic);
-            }}
-            actions={this.props.actions}
-          />
-        </View>
-      );
-    }
-
-    // if (!this.loaded) {
-    //   return <CustomSpinner />;
-    // }
 
     return (
       <View style={{ flex: 1 }}>
@@ -272,7 +216,6 @@ class DiscoverTabs extends Component {
         >
           {tabs}
         </ScrollableTabView>
-        {topics}
         <CustomSpinner visible={!this.loaded} />
       </View>
     );
