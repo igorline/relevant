@@ -12,7 +12,6 @@ import {
 import PropTypes from 'prop-types';
 import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
-// import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, fullHeight } from 'app/styles/global';
 import { CTALink } from 'modules/styled/uni';

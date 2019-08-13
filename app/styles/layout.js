@@ -8,6 +8,10 @@ export const linkStyle = `
   color: ${props => props.color || 'black'}
 `;
 
+export const activeButtonShadow = {
+  boxShadow: '0 2px 6px hsl(240,0%,70%);'
+};
+
 export const modalShadow = {
   boxShadow: '0 2px 6px hsl(0,0%,70%)'
 };

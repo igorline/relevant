@@ -60,7 +60,7 @@ module.exports = {
     'class-methods-use-this': 0,
     'function-paren-newline': 0,
     'space-before-function-paren': 0,
-    indent: ['error', 2, { MemberExpression: 0, SwitchCase: 1 }],
+    indent: ['error', 2, { MemberExpression: 1, SwitchCase: 1 }],
     'implicit-arrow-linebreak': 0,
     'newline-per-chained-call': [
       1,

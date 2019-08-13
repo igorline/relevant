@@ -36,10 +36,13 @@ if (process.env.WEB !== 'true') {
   native = true;
 }
 
-export function showModal(modal) {
+export function showModal(modal, data) {
   return {
     type: SHOW_MODAL,
-    payload: modal
+    payload: {
+      modal,
+      data
+    }
   };
 }
 
