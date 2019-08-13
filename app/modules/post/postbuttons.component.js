@@ -105,6 +105,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
   const tipText = isLink
     ? 'Upvote articles that are worth reading, downvote spam.'
     : `Upvote quality ${postType} and downvote spam`;
+
   const tooltipData = {
     text: tipText,
     position: 'right',

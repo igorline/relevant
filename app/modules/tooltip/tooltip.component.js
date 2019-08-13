@@ -44,7 +44,6 @@ export default function TooltipContainer({ children, name, data, info, ...rest }
   return info ? (
     <Text
       ref={el}
-      // inline={1}
       global-event-off="click"
       data-place={data.position}
       data-for="mainTooltip"
@@ -52,6 +51,7 @@ export default function TooltipContainer({ children, name, data, info, ...rest }
         type: 'TEXT',
         props: data
       })}
+      // onLongPress={() => toggleTooltip(name)}
       onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
     >
       <Image source={InfoImage} resizeMode={'contain'} h={1.5} w={1.5} {...rest} />
@@ -66,7 +66,8 @@ export default function TooltipContainer({ children, name, data, info, ...rest }
         type: 'TEXT',
         props: data
       })}
-      onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
+      // onLongPress={() => toggleTooltip(name)}
+      // onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
     >
       {children}
     </Wrapper>

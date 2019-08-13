@@ -74,7 +74,9 @@ export function BetButton({ size, openBetModal, post }) {
   );
 
   const tooltipData = {
-    text: 'Bet on the relevance of this post to earn rewards',
+    text: earning
+      ? 'This is how much you have bet on this post, press to increase your bet'
+      : 'Bet on the relevance of this post to earn rewards',
     position: 'right',
     desktopOnly: true
   };
