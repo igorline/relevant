@@ -32,7 +32,8 @@ const CommunitySchema = new Schema(
     memberCount: { type: Number },
     inactive: Boolean,
     private: { type: Boolean, default: false },
-    hidden: { type: Boolean, default: false }
+    hidden: { type: Boolean, default: false },
+    betEnabled: { type: Boolean, default: false }
   },
   {
     timestamps: true,
@@ -65,8 +66,8 @@ CommunitySchema.pre('remove', async function remove(next) {
   try {
     const members = await this.model('CommunityMember').find({ community: this.slug });
     await this.model('CommunityMember')
-    .deleteMany({ community: this.slug })
-    .exec();
+      .deleteMany({ community: this.slug })
+      .exec();
     // THIS IS TRICKY BECAUSE OF LEAVE RACE CONDITIONS
     const leave = members.map(async m => this.leave(m.user));
     if (leave) await Promise.all(leave);

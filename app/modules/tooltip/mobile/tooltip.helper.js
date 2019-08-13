@@ -21,6 +21,13 @@ exports.tooltips = [
   'vote'
 ];
 
+exports.data.default = {
+  vertical: 'top',
+  horizontal: 'right',
+  horizontalOffset: 1,
+  verticalOffset: 15
+};
+
 exports.data.relevance = {
   name: 'relevance',
   vertical: 'bottom',
@@ -166,7 +173,7 @@ exports.data.vote = {
   name: 'vote',
   vertical: 'top',
   horizontal: 'right',
-  horizontalOffset: -2,
+  horizontalOffset: 1,
   verticalOffset: 15
 };
 

@@ -210,7 +210,7 @@ export async function create(req, res, next) {
 
 export async function update(req, res, next) {
   try {
-    // for no only admins create communities
+    // for now only admins create communities
     const updatedCommunity = req.body;
     const { admins, superAdmins } = updatedCommunity;
     const { user } = req;
@@ -245,7 +245,8 @@ export async function update(req, res, next) {
       description: updatedCommunity.description,
       channels: updatedCommunity.channels,
       private: updatedCommunity.private,
-      hidden: updatedCommunity.hidden
+      hidden: updatedCommunity.hidden,
+      betEnabled: updatedCommunity.betEnabled
     });
     community = await community.save();
 

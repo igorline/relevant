@@ -513,6 +513,7 @@ export default class DrawerLayout extends Component<PropType, StateType> {
       <PanGestureHandler
         ref={this._setPanGestureRef}
         hitSlop={hitSlop}
+        // activeOffsetX={0}
         activeOffsetX={gestureOrientation * minSwipeDistance}
         failOffsetY={[-15, 15]}
         onGestureEvent={this._onGestureEvent}

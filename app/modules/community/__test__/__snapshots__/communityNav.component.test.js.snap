@@ -230,7 +230,7 @@ exports[`Snapshot NavProfile 1`] = `
         }
       />
       <a
-        className="ulink-mock c0"
+        className="c0 ulink-mock"
         href="/relevant/new"
         hu={0}
         inline={0}
@@ -547,7 +547,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             color="#999999"
             hc="#000000"
             href="/relevant/new/technology"
@@ -602,7 +602,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             color="#999999"
             hc="#000000"
             href="/relevant/new/society"
@@ -657,7 +657,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             color="#999999"
             hc="#000000"
             href="/relevant/new/culture"
@@ -712,7 +712,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             color="#999999"
             hc="#000000"
             href="/relevant/new/politics"
@@ -767,7 +767,7 @@ exports[`Snapshot NavProfile 1`] = `
           <a
             ac="#000000"
             aria-current={null}
-            className="ulink-mock c1"
+            className="c1 ulink-mock"
             color="#999999"
             hc="#000000"
             href="/relevant/new/altwoke"
@@ -997,7 +997,7 @@ exports[`Snapshot NavProfile 1`] = `
             60 Members
           </div>
           <a
-            className="ulink-mock c2"
+            className="c2 ulink-mock"
             href="/"
             hu={0}
             inline={0}
@@ -1142,7 +1142,7 @@ exports[`Snapshot NavProfile 1`] = `
       }
     >
       <a
-        className="ulink-mock c0"
+        className="c0 ulink-mock"
         href="/crypto/new"
         hu={0}
         inline={0}

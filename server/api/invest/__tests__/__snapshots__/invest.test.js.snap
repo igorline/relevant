@@ -1,5 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ethRewards Bet should bet on post 1`] = `
+Object {
+  "__v": 0,
+  "_id": "[SANITIZED]",
+  "amount": 0.5,
+  "community": "relevant",
+  "communityId": "c00000000000000000000001",
+  "createdAt": "[SANITIZED]",
+  "downVotes": 0,
+  "investor": "a00000000000000000000000",
+  "ownPost": false,
+  "paidOut": false,
+  "partialRelevance": 0,
+  "partialUsers": 0,
+  "post": "000000000000000000000003",
+  "rankChange": "[SANITIZED]",
+  "relevance": 0,
+  "relevantPoints": 0,
+  "shares": 4.711687595755899,
+  "stakedTokens": 11.100000000000001,
+  "updatedAt": "[SANITIZED]",
+  "upvotes": 0,
+}
+`;
+
 exports[`ethRewards Invest should create invest 1`] = `
 Object {
   "investment": Object {
@@ -23,15 +48,15 @@ Object {
         "pagerankRaw": 0,
         "pagerankRawNeg": 0,
         "post": "000000000000000000000003",
-        "relevance": 20,
+        "relevance": 0,
       },
       "id": "[SANITIZED]",
     },
     "rankChange": "[SANITIZED]",
     "relevance": 0,
-    "relevantPoints": 20,
-    "shares": 3.3316662497915366,
-    "stakedTokens": 5.550000000000001,
+    "relevantPoints": 0,
+    "shares": 0,
+    "stakedTokens": 0,
     "updatedAt": "[SANITIZED]",
     "upvotes": 0,
   },
@@ -48,6 +73,26 @@ Object {
     "updatedAt": "[SANITIZED]",
   },
   "success": true,
-  "undoInvest": undefined,
+  "undoInvest": false,
+}
+`;
+
+exports[`ethRewards Undo should undo invest 1`] = `
+Object {
+  "investment": null,
+  "rankChange": "[SANITIZED]",
+  "subscription": Object {
+    "__v": 0,
+    "_id": "[SANITIZED]",
+    "amount": 0,
+    "category": Array [],
+    "community": "relevant",
+    "communityId": "c00000000000000000000001",
+    "createdAt": "[SANITIZED]",
+    "follower": "a00000000000000000000000",
+    "updatedAt": "[SANITIZED]",
+  },
+  "success": true,
+  "undoInvest": true,
 }
 `;
