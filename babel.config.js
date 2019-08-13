@@ -41,6 +41,7 @@ module.exports = {
               modules: './app/modules',
               core: './app/core',
               app: './app',
+              'react-native-svg$': 'react-native-web-svg',
               '^react-native$': 'react-native-web',
               'react-native-linear-gradient$': 'react-native-web-linear-gradient'
             }
@@ -61,6 +62,7 @@ module.exports = {
               modules: './app/modules',
               core: './app/core',
               app: './app',
+              'react-native-svg$': 'react-native-web-svg',
               '^react-native$': 'react-native-web',
               'react-native-linear-gradient$': 'react-native-web-linear-gradient'
             }

@@ -27,6 +27,7 @@ export const View = styled.div`
   ${mixins.border}
   ${mixins.width}
   ${mixins.height}
+  ${p => (p.onClick ? 'cursor: pointer;' : '')}
 `;
 
 export const Text = styled.span`
@@ -133,6 +134,10 @@ export const Button = styled.button`
   ${mixins.color}
   ${mixins.width}
   ${mixins.height}
+  &:hover {
+    ${layout.activeButtonShadow}
+  };
+  user-select: none; cursor: pointer;
 `;
 
 export const NumericalValue = styled(Text)`
