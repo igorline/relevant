@@ -32,8 +32,8 @@ export function* handleRequest({
       const { sig, amount } = result.cashOut || user.cashOut;
       yield put(
         actions.methods
-        .claimTokens({ at: tokenAddress, from: accounts[0] })
-        .send(formatBalanceWrite(amount, decimals), sig)
+          .claimTokens({ at: tokenAddress, from: accounts[0] })
+          .send(formatBalanceWrite(amount, decimals), sig)
       );
     } catch (error) {
       yield put(cashOutFailure({ args: [user, accounts], ...meta }, error));
@@ -43,6 +43,7 @@ export function* handleRequest({
 export function* handleFailure({ payload: { error }, meta }) {
   const [user, accounts] = meta.args;
   if (error === NO_ETH_ADDRESS) {
+    // It should not be possible to get here
     yield put(connectAccount(accounts));
   } else {
     yield call(apiRequest, {
