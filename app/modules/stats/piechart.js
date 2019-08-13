@@ -48,9 +48,8 @@ export function PieChart({ percent, color, text, strokeWidth, w, h }) {
         <SVGText
           fontSize={'10px'}
           x={'50%'}
-          y={'53%'}
+          y={'60%'}
           fill={colors.black}
-          alignmentBaseline="middle"
           textAnchor="middle"
           fontFamily="HelveticaNeue-CondensedBold"
         >

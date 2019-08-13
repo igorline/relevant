@@ -11,7 +11,7 @@ import {
   Header
 } from 'modules/styled/uni';
 import { getTimestamp, abbreviateNumber as toFixed } from 'utils/numbers';
-import { colors, size } from 'styles';
+import { colors } from 'styles';
 import { VOTE_COST_RATIO } from 'server/config/globalConstants';
 import CoinStat from 'modules/stats/coinStat.component';
 import { bet, getPostInvestments } from 'modules/post/invest.actions';
@@ -158,8 +158,8 @@ function PotentialRewards({ post, amount, earning }) {
       {' ( '}
       <Text style={{ top: 2 }} inline={1} mb={-0.5}>
         <PieChart
-          w={size(1.5)}
-          h={size(1.5)}
+          w={'12px'}
+          h={'12px'}
           percent={100 - shareOfRewardsPercent}
           strokeWidth={30}
           color={colors.blue}
@@ -172,10 +172,12 @@ function PotentialRewards({ post, amount, earning }) {
   return (
     <Fragment>
       <SmallText>{invText}</SmallText>
-      <SmallText inline={1} mt={0.25}>
-        Your estimated rewards: <SmallCoinStat amount={potentialRewards} />
-        {shareEl}
-      </SmallText>
+      {potentialRewards > 0 && (
+        <SmallText inline={1} mt={0.25}>
+          Your estimated rewards: <SmallCoinStat amount={potentialRewards} />
+          {shareEl}
+        </SmallText>
+      )}
     </Fragment>
   );
 }
