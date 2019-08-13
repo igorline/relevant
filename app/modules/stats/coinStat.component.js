@@ -43,7 +43,7 @@ function CoinStat(props) {
   if (isOwner && user.ethAddress && user.ethAddress[0] && wallet.connectedBalance) {
     tokens = wallet.connectedBalance + user.balance;
   }
-  const iconSize = size || 3;
+  const iconSize = typeof size === 'number' ? size : 3;
   const NumberStyle = secondary ? SecondaryText : NumericalValue;
   const imageMargin = align === 'center' ? 0 : sizing(-1, 'px');
   const Wrapper = inline ? Text : ImageWrapper;

@@ -60,13 +60,13 @@ export async function index(req) {
       match: { inactive: { $ne: true } }
     });
     privateCommunities = memberships
-    .filter(m => m.communityId)
-    .filter(
-      m =>
-        m.communityId.private === true ||
+      .filter(m => m.communityId)
+      .filter(
+        m =>
+          m.communityId.private === true ||
           (m.communityId.hidden === true && m.communityId.slug !== community)
-    )
-    .map(m => m.communityId);
+      )
+      .map(m => m.communityId);
   }
   return [...communties, ...privateCommunities].map(c => c.toObject());
 }
@@ -89,9 +89,9 @@ export async function members(req, res, next) {
         $nin: blocked
       }
     })
-    .sort({ role: 1, reputation: -1 })
-    .limit(limit)
-    .skip(skip);
+      .sort({ role: 1, reputation: -1 })
+      .limit(limit)
+      .skip(skip);
     res.status(200).json(users || []);
   } catch (err) {
     next(err);
@@ -116,11 +116,11 @@ export async function memberSearch(req, res, next) {
     };
     const community = req.params.slug;
     CommunityMember.find({ community, ...query })
-    .sort({ role: 1, reputation: -1 })
-    .limit(parseInt(limit, 10))
-    .then(users => {
-      res.status(200).json(users || []);
-    });
+      .sort({ role: 1, reputation: -1 })
+      .limit(parseInt(limit, 10))
+      .then(users => {
+        res.status(200).json(users || []);
+      });
     // res.status(200).json(users);
     // .catch(next);
   } catch (err) {
@@ -210,7 +210,7 @@ export async function create(req, res, next) {
 
 export async function update(req, res, next) {
   try {
-    // for no only admins create communities
+    // for now only admins create communities
     const updatedCommunity = req.body;
     const { admins, superAdmins } = updatedCommunity;
     const { user } = req;
@@ -245,7 +245,8 @@ export async function update(req, res, next) {
       description: updatedCommunity.description,
       channels: updatedCommunity.channels,
       private: updatedCommunity.private,
-      hidden: updatedCommunity.hidden
+      hidden: updatedCommunity.hidden,
+      betEnabled: updatedCommunity.betEnabled
     });
     community = await community.save();
 

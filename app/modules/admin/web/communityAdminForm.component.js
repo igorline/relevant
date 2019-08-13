@@ -87,6 +87,12 @@ class CommunityAdminForm extends Component {
         type: 'checkbox'
       },
       {
+        name: 'betEnabled',
+        label: 'Enable Betting',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
         name: 'hidden',
         label: 'Unlisted (anyone with link can still see and join the community)',
         component: ReduxFormField,
@@ -179,8 +185,8 @@ const mapStateToProps = (state, ownProps) => {
   const adminMembers = get(community, 'admins', []);
   const admins = adminMembers.map(m => (m.embeddedUser ? m.embeddedUser.handle : m._id));
   const superAdmins = adminMembers
-  .filter(m => m.superAdmin)
-  .map(m => m.embeddedUser.handle);
+    .filter(m => m.superAdmin)
+    .map(m => m.embeddedUser.handle);
 
   const initialValues = { ...community, admins, superAdmins };
   return {

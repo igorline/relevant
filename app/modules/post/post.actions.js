@@ -166,24 +166,24 @@ export function getFeed(skip, _tag) {
 
   return dispatch =>
     api
-    .request({
-      method: 'GET',
-      query: { skip, limit, tag },
-      endpoint: 'feed',
-      path: '/'
-    })
-    .then(res => {
-      const data = normalize({ feed: res }, { feed: [postSchema] });
-      dispatch(setUsers(data.entities.users));
-      dispatch(setPosts(data, type, skip));
-      dispatch(errorActions.setError('read', false));
-    })
-    .catch(err => {
-      // TODO do we need this?
-      if (!err.message.match('Get fail for key: token')) {
-        dispatch(errorActions.setError('read', true, err.message));
-      }
-    });
+      .request({
+        method: 'GET',
+        query: { skip, limit, tag },
+        endpoint: 'feed',
+        path: '/'
+      })
+      .then(res => {
+        const data = normalize({ feed: res }, { feed: [postSchema] });
+        dispatch(setUsers(data.entities.users));
+        dispatch(setPosts(data, type, skip));
+        dispatch(errorActions.setError('read', false));
+      })
+      .catch(err => {
+        // TODO do we need this?
+        if (!err.message.match('Get fail for key: token')) {
+          dispatch(errorActions.setError('read', true, err.message));
+        }
+      });
 }
 
 export function getTwitterFeed(skip, _tag) {
@@ -194,38 +194,38 @@ export function getTwitterFeed(skip, _tag) {
 
   return dispatch =>
     api
-    .request({
-      method: 'GET',
-      query: { skip, limit, tag },
-      endpoint: 'twitterFeed',
-      path: '/'
-    })
-    .then(res => {
-      const data = normalize({ twitterFeed: res }, { twitterFeed: [feedSchema] });
-      dispatch(setPosts(data, type, skip));
-      dispatch(errorActions.setError('read', false));
-    })
-    .catch(err => {
-      // TODO do we need this?
-      if (!err.message.match('Get fail for key: token')) {
-        dispatch(errorActions.setError('read', true, err.message));
-      }
-    });
+      .request({
+        method: 'GET',
+        query: { skip, limit, tag },
+        endpoint: 'twitterFeed',
+        path: '/'
+      })
+      .then(res => {
+        const data = normalize({ twitterFeed: res }, { twitterFeed: [feedSchema] });
+        dispatch(setPosts(data, type, skip));
+        dispatch(errorActions.setError('read', false));
+      })
+      .catch(err => {
+        // TODO do we need this?
+        if (!err.message.match('Get fail for key: token')) {
+          dispatch(errorActions.setError('read', true, err.message));
+        }
+      });
 }
 
 export function deletePost(post, redirect) {
   return dispatch =>
     api
-    .request({
-      method: 'DELETE',
-      endpoint: 'post',
-      params: { id: post._id }
-    })
-    .then(() => {
-      dispatch(removePost(post));
-      if (redirect) dispatch(navigationActions.pop());
-    })
-    .catch(null);
+      .request({
+        method: 'DELETE',
+        endpoint: 'post',
+        params: { id: post._id }
+      })
+      .then(() => {
+        dispatch(removePost(post));
+        if (redirect) dispatch(navigationActions.pop());
+      })
+      .catch(null);
 }
 
 export function clearPosts(type) {
@@ -281,6 +281,7 @@ export function getPosts(skip, tags, sort, limit, community) {
     tag = tagsString;
     if (tags.length === 1) topic = tags[0];
   }
+  const communityParam = community ? { community } : {};
 
   return async (dispatch, getState) => {
     try {
@@ -289,7 +290,7 @@ export function getPosts(skip, tags, sort, limit, community) {
       const res = await api.request({
         method: 'GET',
         endpoint: 'communityFeed',
-        query: { skip, sort, limit, tag, community },
+        query: { skip, sort, limit, tag, ...communityParam },
         user: auth.user
       });
 
@@ -318,21 +319,21 @@ export function getUserPosts(skip, limit, userId) {
   return async dispatch => {
     dispatch(loadingUserPosts());
     return api
-    .request({
-      method: 'GET',
-      endpoint: 'post/user',
-      params: { id: userId },
-      query: { skip, limit }
-    })
-    .then(responseJSON => {
-      const data = normalize({ [userId]: responseJSON }, { [userId]: [postSchema] });
-      dispatch(setUsers(data.entities.users));
-      dispatch(setUserPosts(data, userId, skip));
-      dispatch(errorActions.setError('profile', false));
-    })
-    .catch(error => {
-      dispatch(errorActions.setError('profile', true, error.message));
-    });
+      .request({
+        method: 'GET',
+        endpoint: 'post/user',
+        params: { id: userId },
+        query: { skip, limit }
+      })
+      .then(responseJSON => {
+        const data = normalize({ [userId]: responseJSON }, { [userId]: [postSchema] });
+        dispatch(setUsers(data.entities.users));
+        dispatch(setUserPosts(data, userId, skip));
+        dispatch(errorActions.setError('profile', false));
+      })
+      .catch(error => {
+        dispatch(errorActions.setError('profile', true, error.message));
+      });
   };
 }
 
@@ -424,35 +425,35 @@ export function setSubscriptions(data) {
 export function getSubscriptions() {
   return dispatch =>
     storage
-    .getToken()
-    .then(tk =>
-      fetch(`${apiServer}subscription/user`, {
-        ...reqOptions(tk),
-        method: 'GET'
-      })
-    )
-    .then(response => response.json())
-    .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
-    .catch(null);
+      .getToken()
+      .then(tk =>
+        fetch(`${apiServer}subscription/user`, {
+          ...reqOptions(tk),
+          method: 'GET'
+        })
+      )
+      .then(response => response.json())
+      .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
+      .catch(null);
 }
 
 export function flag(post) {
   return dispatch =>
     storage
-    .getToken()
-    .then(tk =>
-      fetch(`${apiServer}post/flag`, {
-        ...reqOptions(tk),
-        method: 'PUT',
-        body: JSON.stringify({ postId: post._id })
+      .getToken()
+      .then(tk =>
+        fetch(`${apiServer}post/flag`, {
+          ...reqOptions(tk),
+          method: 'PUT',
+          body: JSON.stringify({ postId: post._id })
+        })
+      )
+      .then(response => response.json())
+      .then(responseJSON => {
+        Alert.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
+        dispatch(updatePost(responseJSON));
       })
-    )
-    .then(response => response.json())
-    .then(responseJSON => {
-      Alert.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
-      dispatch(updatePost(responseJSON));
-    })
-    .catch(null);
+      .catch(null);
 }
 
 export function getPostHtml(post) {
@@ -460,11 +461,11 @@ export function getPostHtml(post) {
     fetch(`${apiServer}post/readable?uri=${post.link}`, {
       method: 'GET'
     })
-    .then(response => response.text())
-    .then(html => {
-      dispatch(updatePost({ ...post, html }));
-    })
-    .catch(null);
+      .then(response => response.text())
+      .then(html => {
+        dispatch(updatePost({ ...post, html }));
+      })
+      .catch(null);
 }
 
 export function setTopPosts(data) {

@@ -23,13 +23,14 @@ import Analytics from 'react-native-firebase-analytics';
 import InvestAnimation from 'modules/animation/mobile/investAnimation.component';
 import HeartAnimation from 'modules/animation/mobile/heartAnimation.component';
 import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
-import IrrelevantAnimation from 'modules/animation/mobile/irrelevantAnimation.component';
+import DownvoteAnimation from 'modules/animation/mobile/downvoteAnimation.component';
 
 import * as authActions from 'modules/auth/auth.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
+import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 
 import BannerPrompt from 'modules/activity/bannerPrompt.component';
@@ -37,6 +38,9 @@ import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
+
+import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
+import * as modals from 'modules/ui/mobile/modals';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -55,7 +59,7 @@ class Application extends Component {
   static propTypes = {
     actions: PropTypes.object,
     auth: PropTypes.object,
-    // error: PropTypes.bool,
+    globalModal: PropTypes.object,
     navigation: PropTypes.object
   };
 
@@ -111,9 +115,10 @@ class Application extends Component {
       Analytics.setUserId(user._id);
       const { community } = user;
       if (community) actions.setCommunity(community);
-      actions.getCommunities();
+      actions.getEarnings('pending');
       return null;
     });
+    actions.getCommunities();
 
     PushNotification.setApplicationIconBadgeNumber(0);
     Linking.addEventListener('url', this.handleOpenURL);
@@ -227,6 +232,26 @@ class Application extends Component {
     return true;
   }
 
+  renderModal() {
+    let { globalModal } = this.props;
+
+    if (!globalModal) return null;
+    globalModal = modals[globalModal] || globalModal;
+
+    if (typeof globalModal === 'string') return null;
+    const { Body } = globalModal;
+
+    const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    const close = () => {
+      this.props.actions.hideModal();
+    };
+    return (
+      <BottomSheet {...globalModal} close={close} visible>
+        <Body {...bodyProps} close={close} />
+      </BottomSheet>
+    );
+  }
+
   render() {
     let platformStyles = {};
     if (Platform.OS === 'android') {
@@ -243,8 +268,9 @@ class Application extends Component {
         <Tooltip />
         <InvestAnimation />
         <HeartAnimation />
-        <IrrelevantAnimation />
+        <DownvoteAnimation />
         <UpvoteAnimation />
+        {this.renderModal()}
       </View>
     );
   }
@@ -253,7 +279,8 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    error: state.error.universal
+    error: state.error.universal,
+    globalModal: state.navigation.modal
   };
 }
 
@@ -266,6 +293,7 @@ function mapDispatchToProps(dispatch) {
         ...userActions,
         ...navigationActions,
         ...tooltipActions,
+        getEarnings,
         getCommunities
       },
       dispatch

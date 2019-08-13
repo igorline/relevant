@@ -13,11 +13,17 @@ import {
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
-import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
+// import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
 // import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN } from 'app/utils/eth';
 
-export const Balance = ({ user, screenSize, actions, isWeb, userBalance }) => {
+export const Balance = ({
+  user,
+  screenSize,
+  /* actions, */
+  isWeb,
+  userBalance
+}) => {
   // Temporarily disable - don't want to trigger metamask popup here
   // useTokenContract(ethState, ethActions);
 
@@ -67,8 +73,11 @@ export const Balance = ({ user, screenSize, actions, isWeb, userBalance }) => {
       </View>
       {isWeb ? (
         <View fdirection="row" mt={2} align="center">
-          <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
-            <LinkFont c={colors.blue} mr={0.5}>
+          <Touchable
+            // onClick={() => actions.showModal('cashOut')}
+            td={'underline'}
+          >
+            <LinkFont c={colors.grey} mr={0.5}>
               Claim Tokens
             </LinkFont>
           </Touchable>
@@ -101,11 +110,13 @@ export const Balance = ({ user, screenSize, actions, isWeb, userBalance }) => {
 };
 
 Balance.propTypes = {
-  ...contractPropTypes,
+  // ...contractPropTypes,
+  userBalance: PropTypes.object,
   user: PropTypes.object,
-  actions: PropTypes.object,
+  // actions: PropTypes.object,
   screenSize: PropTypes.number,
   isWeb: PropTypes.bool
 };
 
-export default ContractProvider(Balance);
+export default Balance;
+// export default ContractProvider(Balance);
