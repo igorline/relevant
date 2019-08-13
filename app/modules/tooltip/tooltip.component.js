@@ -67,7 +67,7 @@ export default function TooltipContainer({ children, name, data, info, ...rest }
         props: data
       })}
       // onLongPress={() => toggleTooltip(name)}
-      // onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
+      onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
     >
       {children}
     </Wrapper>
