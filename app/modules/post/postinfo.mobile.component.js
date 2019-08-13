@@ -53,11 +53,10 @@ export default function ImagePost(props) {
       fdirection={'row'}
     >
       <ULink
-        onPress={goToPost}
+        onPress={goToPost || (() => actions.goToUrl(post.url))}
         external
         to={post.url}
         target="_blank"
-        onPress={() => actions.goToUrl(post.url)}
         noLink={noLink}
         style={{ flex: 1 }}
       >
