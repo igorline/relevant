@@ -20,7 +20,12 @@ const BUTTON_IMAGES = {
 };
 
 const ButtonImage = styled(Image)`
-  ${() => (!isNative ? 'transition: all 0.2s ease;' : '')}
+  ${() =>
+    !isNative
+      ? `transition-property: all;
+        transition-duration: 0.2s;
+        transition-timing-function: ease`
+      : ''}
   ${p =>
     p.hover && !p.active && !p.disabled && !isNative ? 'transform: scale(1.1);' : ''}
 `;

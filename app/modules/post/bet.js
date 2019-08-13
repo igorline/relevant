@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -14,7 +14,7 @@ import { getTimestamp, abbreviateNumber as toFixed } from 'utils/numbers';
 import { colors, size } from 'styles';
 import { VOTE_COST_RATIO } from 'server/config/globalConstants';
 import CoinStat from 'modules/stats/coinStat.component';
-import { bet } from 'modules/post/invest.actions';
+import { bet, getPostInvestments } from 'modules/post/invest.actions';
 import { hideModal } from 'modules/navigation/navigation.actions';
 import { computeShares } from 'app/utils/post';
 import { computePostPayout } from 'app/utils/rewards';
@@ -71,9 +71,7 @@ export function Bet() {
   return (
     <View>
       <Header>{title}</Header>
-      <SecondaryText mt={1} c={colors.black}>
-        Payout: {time}
-      </SecondaryText>
+      <SmallText mt={1}>Payout: {time}</SmallText>
 
       <View mt={4} fdirection="row" justify="space-between" align={'center'}>
         <CircleButton onPress={minusAmount}>–</CircleButton>
@@ -96,45 +94,25 @@ export function Bet() {
           <View w={`${100 - power}%`} bg={colors.lightBorder} />
         </View>
         <SecondaryText alignself={'center'} mt={0.5}>
-          betting power: {Math.round(power)}% {amount < defaultAmount}
+          Available Coins: <SmallCoinStat amount={maxBet - amount} />
         </SecondaryText>
       </View>
 
-      <SmallText inline={1} mt={4}>
-        Your Coins: <SmallCoinStat amount={totalBalance} />
-      </SmallText>
-      <SmallText inline={1} mt={0.25}>
-        locked: {toFixed(maxBet + amount)} | available: {toFixed(maxBet - amount)}
-      </SmallText>
-
-      <View mt={2}>
+      <View mt={4}>
         <PotentialRewards post={post} amount={amount} earning={earning} />
       </View>
 
       <HoverButton mt={3} onPress={placeBet}>
-        Place Bet
+        Bet {toFixed(amount)} Coins
       </HoverButton>
 
       <SmallText mt={2}>
-        If this post ranks highly you will win some curation rewards, if not you will get
-        your coins back.
+        If this post ranks highly you will win some coins, if not you will get your coins
+        back.
       </SmallText>
     </View>
   );
 }
-
-// <SmallText inline={1} mt={2}>
-//   Your Total Coins: {toFixed(totalBalance)}
-//   {/* <SmallCoinStat amount={totalBalance} /> */}
-// </SmallText>
-// <SmallText inline={1} mt={0.25}>
-//   Your Locked Coins: {toFixed(maxBet + amount)}
-//   {/* <SmallCoinStat amount={maxBet + amount} /> */}
-// </SmallText>
-// <SmallText inline={1} mt={0.25}>
-//   Your Available Coins: {toFixed(maxBet - amount)}
-//   {/* <SmallCoinStat amount={maxBet - amount} /> */}
-// </SmallText>
 
 PotentialRewards.propTypes = {
   post: PropTypes.object,
@@ -145,7 +123,28 @@ PotentialRewards.propTypes = {
 function PotentialRewards({ post, amount, earning }) {
   const community = useCommunity();
 
+  const investments = useSelector(state =>
+    (state.investments.posts[post._id] || [])
+      .map(_id => state.investments.investments[_id])
+      .filter(inv => inv.amount > 0 && inv.investor !== state.auth.user._id)
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getPostInvestments(post._id));
+  }, []);
+
   const existingShares = earning ? earning.shares : 0;
+  const existingStake = earning ? earning.stakedTokens : 0;
+
+  const bets = investments.length;
+  const users = bets > 1 ? 'users' : 'user';
+  const invText = investments.length
+    ? `${bets} ${users} bet a total of ${toFixed(
+      post.data.totalShares - existingStake
+    )} coins on this post`
+    : 'You are the first to bet on this post!';
 
   const shares = computeShares({ post, stakedTokens: amount });
   const postRewards = computePostPayout(post.data, community);
@@ -153,25 +152,29 @@ function PotentialRewards({ post, amount, earning }) {
   const shareOfRewardsPercent = shareOfRewards * 100;
   const potentialRewards = postRewards * shareOfRewards;
   const showPie = shareOfRewards !== 1;
+
+  const shareEl = showPie && (
+    <SmallText inline={1}>
+      {' ( '}
+      <Text style={{ top: 2 }} inline={1} mb={-0.5}>
+        <PieChart
+          w={size(1.5)}
+          h={size(1.5)}
+          percent={100 - shareOfRewardsPercent}
+          strokeWidth={30}
+          color={colors.blue}
+        />
+      </Text>{' '}
+      {toFixed(shareOfRewardsPercent)}% )
+    </SmallText>
+  );
+
   return (
     <Fragment>
-      <SmallText inline={1}>
-        Your share of post rewards:{' '}
-        {showPie && (
-          <Text style={{ top: '2px' }} inline={1} mb={-0.5}>
-            <PieChart
-              w={size(2)}
-              h={size(2)}
-              percent={100 - shareOfRewardsPercent}
-              strokeWidth={30}
-              color={colors.blue}
-            />{' '}
-          </Text>
-        )}
-        {toFixed(shareOfRewardsPercent)}%
-      </SmallText>
-      <SmallText mt={0.25}>
+      <SmallText>{invText}</SmallText>
+      <SmallText inline={1} mt={0.25}>
         Your estimated rewards: <SmallCoinStat amount={potentialRewards} />
+        {shareEl}
       </SmallText>
     </Fragment>
   );

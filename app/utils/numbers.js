@@ -69,9 +69,9 @@ export function abbreviateNumber(num, _fixed) {
 
 export function capitalize(string) {
   return string
-  .split(' ')
-  .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-  .join(' ');
+    .split(' ')
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
+    .join(' ');
 }
 
 export function getTimestamp(date, withoutSuffix) {
@@ -103,14 +103,15 @@ export function timeLeft({ _date, index }) {
   const date = new Date(_date);
   const seconds = Math.round((date.getTime() - now.getTime()) / 1000);
 
-  const d = Math.round(seconds / (3600 * 24));
-  const h = Math.round((seconds % (3600 * 24)) / 3600);
+  const d = 0;
+  // const d = Math.round(seconds / (3600 * 24));
+  const h = Math.round(seconds / 3600);
   const m = Math.round((seconds % 3600) / 60);
   const s = seconds % 60;
-  const abr = ['d', 'h', 'm', 's'];
-  const data = [d, h > 9 ? h : d ? h : h || '0', m > 9 ? m : d && h ? m : m || '0', s]
-  .map((t, i) => (t ? t + abr[i] : null))
-  .filter(t => t);
+  const abr = ['hr', 'min', 'sec'];
+  const data = [h > 9 ? h : d ? h : h || '0', m > 9 ? m : d && h ? m : m || '0', s]
+    .map((t, i) => (t ? t + abr[i] : null))
+    .filter(t => t);
 
   if (index) return data[index - 1];
   return data.join(':');

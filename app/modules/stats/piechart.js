@@ -15,8 +15,17 @@ PieChart.propTypes = {
 export function PieChart({ percent, color, text, strokeWidth, w, h }) {
   const r = 15.91549430918954;
   const d = 2 * r + strokeWidth;
+  // const deg = 3.6 * percent;
   return (
     <Svg height={h || '100%'} width={w || '100%'} viewBox={`0 0 ${d} ${d}`}>
+      {/*      <Line
+        x1="50%"
+        y1="50%"
+        x2="50%"
+        y2="0"
+        style={{ transform: `rotate(${deg}deg)`, transformOrigin: '50% 50%' }}
+        stroke={colors.grey}
+      /> */}
       <Circle
         cx={'50%'}
         cy={'50%'}
@@ -37,7 +46,7 @@ export function PieChart({ percent, color, text, strokeWidth, w, h }) {
       />
       {text && (
         <SVGText
-          fontSize={'12px'}
+          fontSize={'10px'}
           x={'50%'}
           y={'53%'}
           fill={colors.black}

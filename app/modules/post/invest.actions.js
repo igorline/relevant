@@ -70,7 +70,7 @@ export function setPostInvestments(data, postId, skip) {
     payload: {
       postId,
       data,
-      index: skip
+      index: skip || 0
     }
   };
 }

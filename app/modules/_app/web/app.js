@@ -279,7 +279,14 @@ class App extends Component {
           position={'top'}
           // force={'ios'}
         />
-        <TextTooltip type={'dark'} scrollHide id="mainTooltip" multiline />
+        <TextTooltip
+          globalEventOff="click"
+          type={'dark'}
+          scrollHide
+          id="mainTooltip"
+          multiline
+          isCapture={true}
+        />
         {/*        <CustomTooltip id="tooltip" multiline />
          */}
         <div
@@ -293,21 +300,6 @@ class App extends Component {
           <UpvoteAnimation />
           <DownvoteAnimation />
         </div>
-
-        {/* TODO - separate modal
-        <EthTools>
-          <div style={{ display: 'flex', width: '100%' }}>{children}</div>
-          <Eth.Consumer>
-            {wallet => (
-              <AddEthAddress
-                connectAccount={connectAccount}
-                closeModal={this.closeModal.bind(this)}
-                {...this.props}
-                {...wallet}
-              />
-            )}
-          </Eth.Consumer>
-        </EthTools> */}
         {this.renderModal()}
         <CreatePostModal visible={globalModal === 'newpost'} />
         <ToastContainer />
