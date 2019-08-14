@@ -142,6 +142,7 @@ class Tooltip extends Component {
     const horizontalOffset =
       tooltip.horizontalOffset || helper.data.default.horizontalOffset;
 
+    let arrowOffset = 3;
     if (tooltip.vertical === 'bottom') {
       transform = [...transform, { translateY: this.state.height / 2 }];
       style = {
@@ -149,6 +150,7 @@ class Tooltip extends Component {
         top: -10 + parent.y + parent.h + verticalOffset - this.state.height / 2,
         transform
       };
+      arrowOffset = 5;
       arrowStyle = [...arrowStyle, { top: Platform.OS === 'android' ? 5 : 4 }];
     }
 
@@ -181,7 +183,10 @@ class Tooltip extends Component {
         left: px - TOOLTIP_WIDTH / 2 - TOOLTIP_MARGIN,
         transform
       };
-      arrowStyle = [...arrowStyle, { right: fullWidth - px - TOOLTIP_MARGIN - 3 }];
+      arrowStyle = [
+        ...arrowStyle,
+        { right: fullWidth - px - TOOLTIP_MARGIN - arrowOffset }
+      ];
     }
 
     if (horizontal === 'left') {

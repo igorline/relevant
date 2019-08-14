@@ -30,7 +30,7 @@ export function Bet() {
     state.earnings.pending.map(e => state.earnings.entities[e])
   );
   const earning = earnigns.find(e => e.post === post._id);
-  const title = earning ? 'Increase Your Bet' : 'Place Your Bet';
+  const title = earning ? 'Increase Your Bet' : 'Bet on the Relevance of this Post';
 
   if (!user) return null;
 
@@ -76,14 +76,16 @@ export function Bet() {
 
   return (
     <View>
+      <Header inline={1} mr={2}>
+        {title}
+      </Header>
+
       <View fdirection={'row'} align={'baseline'}>
-        <Header lh={3} mr={1}>
-          {title}
-        </Header>
+        <SmallText mt={1} mr={1}>
+          Payout: {time}
+        </SmallText>
         <Tooltip name={'betInfo'} data={tooltipData} info />
       </View>
-
-      <SmallText mt={1}>Payout: {time}</SmallText>
 
       <View mt={4} fdirection="row" justify="space-between" align={'center'}>
         <CircleButton onPress={minusAmount}>–</CircleButton>

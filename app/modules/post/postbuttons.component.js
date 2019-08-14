@@ -2,6 +2,7 @@ import React, { useRef, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
+import { getPostType } from 'app/utils/post';
 import PostButton from 'modules/post/postbutton.component';
 import { View, NumericalValue } from 'modules/styled/uni';
 import { colors } from 'app/styles';
@@ -62,7 +63,11 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         investButton.current.measureInWindow((x, y, w, h) => {
           const parent = { x, y, w, h };
           if (x + y + w + h === 0) return;
-          const action = triggerAnimation(type, { parent, amount: upvoteAmount });
+          const action = triggerAnimation(type, {
+            parent,
+            amount: upvoteAmount,
+            horizontal
+          });
           dispatch(action);
         });
 
@@ -99,12 +104,11 @@ export default function PostButtons({ post, auth, color, horizontal }) {
     post.data.eligibleForReward &&
     now.getTime() < new Date(post.data.payoutTime).getTime();
 
-  const isLink = !post.parentPost && post.url;
-
-  const postType = post.type === 'comment' ? 'comments' : 'posts';
-  const tipText = isLink
-    ? 'Upvote articles that are worth reading, downvote spam.'
-    : `Upvote quality ${postType} and downvote spam`;
+  const postType = getPostType({ post });
+  const tipText =
+    postType === 'link'
+      ? 'Upvote articles that are worth reading, downvote spam.'
+      : `Upvote quality ${postType}s and downvote spam`;
 
   const tooltipData = {
     text: tipText,
@@ -155,19 +159,11 @@ RankEl.propTypes = {
 };
 
 function RankEl({ horizontal, postRank, color, post }) {
-  const isLink = !post.parentPost && post.url;
-
-  // const postType = post.type === 'comment' ? 'comments' : 'posts';
-  // const tipText = isLink
-  //   ? 'Upvote articles that are worth reading, downvote spam.'
-  //   : `Upvote quality ${postType} and downvote spam`;
-
-  const postType = post.type === 'comment' ? 'comment' : 'post';
-
-  const tipText = isLink
-    ? "This is the article's reputation score"
-    : `This is the ${postType}'s reputation scroe`;
-
+  const type = getPostType({ post });
+  const tipText =
+    type === 'link'
+      ? "This is the article's reputation score"
+      : `This is the ${type}'s reputation scroe`;
   const tooltipData = { text: tipText, position: 'right' };
 
   return (

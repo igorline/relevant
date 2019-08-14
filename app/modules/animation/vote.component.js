@@ -7,6 +7,7 @@ const ENDY = 300;
 
 class Vote extends Component {
   static propTypes = {
+    horizontal: PropTypes.bool,
     parent: PropTypes.object,
     specialKey: PropTypes.number,
     destroy: PropTypes.func
@@ -66,8 +67,7 @@ class Vote extends Component {
   }
 
   render() {
-    const { w } = this.props.parent;
-    const { specialKey } = this.props;
+    const { specialKey, horizontal, parent } = this.props;
     const icon = require('app/public/img/icons/upvoteActive.png');
     const img = (
       <Image resizeMode={'contain'} style={{ width: 28, height: 28 }} source={icon} />
@@ -79,7 +79,7 @@ class Vote extends Component {
         style={[
           { ...animatedElement },
           {
-            left: w / 3,
+            left: horizontal ? 0 : parent.w / 2,
             transform: [
               { translateX: this.x },
               { translateY: this.y },
