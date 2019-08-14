@@ -1,31 +1,20 @@
 import * as types from 'core/actionTypes';
 
-const initialState = {
-  invest: 0,
-  downvote: 0,
-  amount: {},
-  upvote: 0,
-  parents: {}
-};
+const initialState = {};
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
     case types.SET_ANIMATION: {
       const { type } = action.payload;
+      const index = state[type] ? state[type].index + 1 : 0;
       return {
         ...state,
-        amount: {
-          ...state.amount,
-          [type]: action.payload.amount
-        },
-        parents: {
-          ...state.parents,
-          [type]: action.payload.parent
-        },
-        [type]: state[type] + 1
+        [type]: {
+          index,
+          ...action.payload.data
+        }
       };
     }
-
     default:
       return state;
   }

@@ -27,10 +27,10 @@ import { ToastContainer } from 'react-toastify';
 import CreatePostModal from 'modules/createPost/web/createPost.modal';
 
 const UpvoteAnimation = loadable(() =>
-  import('modules/animation/mobile/upvoteAnimation.component')
+  import('modules/animation/upvoteAnimation.component')
 );
 const DownvoteAnimation = loadable(() =>
-  import('modules/animation/mobile/downvoteAnimation.component')
+  import('modules/animation/downvoteAnimation.component')
 );
 
 let ReactPixel;
@@ -285,7 +285,6 @@ class App extends Component {
           scrollHide
           id="mainTooltip"
           multiline
-          isCapture={true}
         />
         {/*        <CustomTooltip id="tooltip" multiline />
          */}

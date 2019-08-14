@@ -40,3 +40,8 @@ export const computeShares = ({ post, stakedTokens }) => {
     (postShares || 0);
   return shares;
 };
+
+export const getPostType = ({ post }) => {
+  const type = !post.parentPost && post.url ? 'link' : post.type;
+  return type;
+};

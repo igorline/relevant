@@ -12,7 +12,8 @@ class VoteNumber extends Component {
     parent: PropTypes.object,
     specialKey: PropTypes.number,
     amount: PropTypes.number,
-    destroy: PropTypes.func
+    destroy: PropTypes.func,
+    horizontal: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -67,8 +68,8 @@ class VoteNumber extends Component {
   }
 
   render() {
-    const { amount } = this.props;
-    const { w } = this.props.parent;
+    const { amount, parent, horizontal } = this.props;
+    const { w } = parent;
     const { specialKey } = this.props;
     const element = <Title c={colors.green}>+{amount}</Title>;
 
@@ -78,7 +79,7 @@ class VoteNumber extends Component {
         style={[
           { ...animatedElement },
           {
-            left: (w * 2) / 3,
+            left: horizontal ? 20 : (w * 2) / 3,
             transform: [
               { translateX: this.x },
               { translateY: this.y },

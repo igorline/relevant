@@ -44,29 +44,36 @@ export default function TooltipContainer({ children, name, data, info, ...rest }
   return info ? (
     <Text
       ref={el}
-      global-event-off="click"
-      data-place={data.position}
-      data-for="mainTooltip"
-      data-tip={JSON.stringify({
-        type: 'TEXT',
-        props: data
-      })}
       // onLongPress={() => toggleTooltip(name)}
       onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
     >
-      <Image source={InfoImage} resizeMode={'contain'} h={1.5} w={1.5} {...rest} />
+      <Image
+        data-event-off="click"
+        data-place={data.position}
+        data-for="mainTooltip"
+        data-tip={JSON.stringify({
+          type: 'TEXT',
+          props: data
+        })}
+        {...rest}
+        source={InfoImage}
+        resizeMode={'contain'}
+        h={1.5}
+        w={1.5}
+        {...rest}
+      />
     </Text>
   ) : (
     <Wrapper
       ref={el}
-      global-event-off="click"
+      data-event-off="click"
       data-place={data.position}
       data-for="mainTooltip"
       data-tip={JSON.stringify({
         type: 'TEXT',
         props: data
       })}
-      // onLongPress={() => toggleTooltip(name)}
+      onLongPress={() => toggleTooltip(name)}
       onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
     >
       {children}

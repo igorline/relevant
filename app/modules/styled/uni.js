@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
-import { mixins, layout, fonts, colors, sizing, size } from 'app/styles';
-
-const isNative = process.env.WEB !== 'true';
+import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
