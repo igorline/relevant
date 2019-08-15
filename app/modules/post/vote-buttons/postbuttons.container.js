@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { getPostType } from 'app/utils/post';
-import { View, NumericalValue, Image } from 'modules/styled/uni';
+import { View, Image, SmallText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { triggerAnimation } from 'modules/animation/animation.actions';
 import { useCommunity } from 'modules/community/community.selectors';
@@ -185,16 +185,16 @@ function RankEl({ horizontal, postRank, color, post }) {
           // bg={'orange'}
           source={require('app/public/img/r.png')}
         />
-        <NumericalValue
+        <SmallText
           // h={1.9}
           // bg={'pink'}
           // inline={1}
           c={color || colors.secondaryText}
-          fs={1.75}
-          lh={1.75}
+          // fs={1.75}
+          // lh={1.75}
         >
           {postRank || 0}
-        </NumericalValue>
+        </SmallText>
       </View>
     </View>
   );
