@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
-import { mixins, layout, fonts, colors, sizing, size } from 'app/styles';
+import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
@@ -11,6 +13,7 @@ export const View = styled.View`
   ${mixins.width}
   ${mixins.height}
   ${mixins.zIndex}
+  ${mixins.borderRadius}
 `;
 
 export const Text = styled.Text`
@@ -78,6 +81,7 @@ export const MobileDivider = styled(View)`
 export const Header = styled(Text)`
   ${fonts.header}
   ${mixins.color}
+  ${mixins.font}
 `;
 
 export const Title = styled(Text)`
@@ -92,6 +96,7 @@ export const LinkFont = styled(Text)`
   ${mixins.link}
   ${mixins.font}
   ${mixins.color}
+  ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
 `;
 
 export const CTALink = styled(Text)`
@@ -103,6 +108,13 @@ export const CTALink = styled(Text)`
 
 export const SecondaryText = styled(Text)`
   ${fonts.secondaryText}
+  ${mixins.color}
+  ${mixins.font}
+`;
+
+export const SmallText = styled(Text)`
+  ${fonts.secondaryText}
+  color: ${colors.black};
   ${mixins.color}
   ${mixins.font}
 `;
@@ -134,10 +146,8 @@ export const BodyText = styled(Text)`
 
 export const Touchable = styled.Touchable``;
 
-export const Button = styled(Text)`
+export const StaticButton = styled(View)`
   ${layout.button}
-  ${layout.buttonFont}
-  ${p => (!p.mobile ? 'cursor: pointer;' : '')}
   ${p =>
     p.disabled
       ? `
@@ -145,15 +155,56 @@ export const Button = styled(Text)`
     background: ${colors.grey};
     `
       : ''};
+  ${mixins.width}
+  ${mixins.height}
   ${mixins.margin}
   ${mixins.background}
   ${mixins.padding}
   ${mixins.color}
+  ${mixins.border}
+  ${mixins.borderRadius}
+  ${p => (p.hover && !p.active && !p.disabled ? layout.activeButtonShadow : '')}
+  ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
 `;
+
+const ButtonText = styled.Text`
+  ${layout.buttonFont}
+`;
+
+HoverButton.propTypes = {
+  children: PropTypes.node,
+  onPress: PropTypes.func
+};
+
+export function HoverButton({ children, onPress, ...rest }) {
+  const [hover, setHover] = useState(0);
+  const [active, setActive] = useState(0);
+  const renderString = !children.$$typeof;
+  return (
+    <Touchable onPress={onPress}>
+      <StaticButton
+        hover={hover}
+        active={active}
+        onMouseDown={() => setActive(1)}
+        onMouseUp={() => setActive(0)}
+        onMouseEnter={() => setHover(1)}
+        onMouseLeave={() => {
+          setHover(0);
+          setActive(0);
+        }}
+        {...rest}
+      >
+        {renderString ? <ButtonText>{children}</ButtonText> : children}
+      </StaticButton>
+    </Touchable>
+  );
+}
+
+export const Button = HoverButton;
 
 export const ViewButton = styled(View)`
   ${layout.button}
-  ${p => (!p.mobile ? 'cursor: pointer;' : '')}
+  ${() => (!isNative ? 'cursor: pointer;' : '')}
   ${p =>
     p.disabled
       ? `
@@ -188,6 +239,10 @@ export const NumericalValue = styled(Text)`
   ${mixins.color}
 `;
 
+export const BigNumber = styled(NumericalValue)`
+  ${fonts.bigNumber}
+`;
+
 export const Spacer = styled(View)`
   flex-direction: row;
   position: relative;
@@ -198,7 +253,7 @@ export const Spacer = styled(View)`
       if (!total * UNIT) {
         return '';
       }
-      return `padding-left: ${sizing((total - 1) * UNIT)};`;
+      return `padding-left: ${sizing((total - (p.screenSize > 0 ? 1 : 0)) * UNIT)};`;
     }
     return '';
   }}

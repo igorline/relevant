@@ -11,13 +11,8 @@ import {
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  globalStyles,
-  fullHeight,
-  fullWidth,
-  blue,
-  smallScreen
-} from 'app/styles/global';
+import { globalStyles, fullHeight, fullWidth, smallScreen } from 'app/styles/global';
+import { colors } from 'styles';
 import * as authActions from 'modules/auth/auth.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as helper from './tooltip.helper';
@@ -97,6 +92,7 @@ class Tooltip extends Component {
 
     setTimeout(() => {
       if (!props.auth.user) return;
+      // this.props.actions.setCurrentTooltip(0);
       this.props.actions.setCurrentTooltip(props.auth.user.onboarding);
     }, 1100);
   }
@@ -141,13 +137,20 @@ class Tooltip extends Component {
       tooltip.vertical = 'top';
     }
 
+    const verticalOffset = tooltip.verticalOffset || helper.data.default.verticalOffset;
+    const horizontal = tooltip.horizontal || helper.data.default.horizontal;
+    const horizontalOffset =
+      tooltip.horizontalOffset || helper.data.default.horizontalOffset;
+
+    let arrowOffset = 3;
     if (tooltip.vertical === 'bottom') {
       transform = [...transform, { translateY: this.state.height / 2 }];
       style = {
         ...style,
-        top: -10 + parent.y + parent.h + tooltip.verticalOffset - this.state.height / 2,
+        top: -10 + parent.y + parent.h + verticalOffset - this.state.height / 2,
         transform
       };
+      arrowOffset = 5;
       arrowStyle = [...arrowStyle, { top: Platform.OS === 'android' ? 5 : 4 }];
     }
 
@@ -155,7 +158,7 @@ class Tooltip extends Component {
       transform = [...transform, { translateY: -this.state.height / 2 }];
       style = {
         ...style,
-        top: 10 + parent.y - this.state.height / 2 - tooltip.verticalOffset,
+        top: 10 + parent.y - this.state.height / 2 - verticalOffset,
         transform
       };
       arrowStyle = [
@@ -165,9 +168,8 @@ class Tooltip extends Component {
       ];
     }
 
-    if (tooltip.horizontal === 'right') {
-      const offset = tooltip.horizontalOffset;
-      const px = parent.w / 2 + parent.x + offset * 2;
+    if (horizontal === 'right') {
+      const px = parent.w / 2 + parent.x + horizontalOffset * 2;
       const o = fullWidth - px - TOOLTIP_MARGIN;
 
       const x = this.state.scale.interpolate({
@@ -181,23 +183,26 @@ class Tooltip extends Component {
         left: px - TOOLTIP_WIDTH / 2 - TOOLTIP_MARGIN,
         transform
       };
-      arrowStyle = [...arrowStyle, { right: fullWidth - px - TOOLTIP_MARGIN - 6 }];
+      arrowStyle = [
+        ...arrowStyle,
+        { right: fullWidth - px - TOOLTIP_MARGIN - arrowOffset }
+      ];
     }
 
-    if (tooltip.horizontal === 'left') {
+    if (horizontal === 'left') {
       style = {
         ...style,
-        left: parent.x + tooltip.horizontalOffset,
+        left: parent.x + horizontalOffset,
         transform
       };
       arrowStyle = [...arrowStyle, { left: 8 }];
     }
 
-    if (tooltip.horizontal === 'center') {
+    if (horizontal === 'center') {
       style = {
         ...style,
         width: tooltip.width,
-        left: parent.x + parent.w / 2 - this.state.width / 2 + tooltip.horizontalOffset,
+        left: parent.x + parent.w / 2 - this.state.width / 2 + horizontalOffset,
         transform
       };
       arrowStyle = [...arrowStyle, ...styles.arrowBottom, { left: this.state.width / 2 }];
@@ -207,7 +212,7 @@ class Tooltip extends Component {
       <TouchableOpacity
         style={[styles.mediumButton, { borderColor: 'white' }]}
         onPress={this.nextOnboarding}
-        underlayColor={blue}
+        underlayColor={colors.blue}
       >
         <Text style={[styles.mediumButtonText, { color: 'white' }]}>Got It</Text>
       </TouchableOpacity>
@@ -215,11 +220,23 @@ class Tooltip extends Component {
     // const dismiss = helper.data[tooltip.name].noButton || true;
     const dismiss = true;
 
+    const body = helper.text[tooltip.name] ? (
+      helper.text[tooltip.name]({
+        ...this.props,
+        style: styles.tooltipText,
+        ...tooltip
+      })
+    ) : (
+      <Text {...this.props} style={styles.tooltipText}>
+        {tooltip.data.text}
+      </Text>
+    );
+
     return (
       <TouchableHighlight
         style={styles.overlay}
         onPress={dismiss ? this.nextOnboarding : null}
-        underlayColor={blue}
+        underlayColor={colors.blue}
         // pointerEvents={dismiss ? 'all' : 'none'}
       >
         <Animated.View
@@ -229,7 +246,6 @@ class Tooltip extends Component {
             // backgroundColor: 'hsla(240,70%,50%,0.4)',
             opacity: this.state.opacity
           }}
-          // pointerEvents={dismiss ? 'all' : 'none'}
         >
           <Animated.View
             style={[styles.tooltip, style]}
@@ -242,15 +258,13 @@ class Tooltip extends Component {
             <TouchableHighlight
               style={styles.tooltipCard}
               onPress={this.nextOnboarding}
-              underlayColor={blue}
+              underlayColor={colors.blue}
             >
               <View>
-                {helper.text[tooltip.name]({
-                  ...this.props,
-                  style: styles.tooltipText,
-                  ...tooltip
-                })}
-                {helper.data[tooltip.name].noButton ? null : button}
+                {body}
+                {!helper.data[tooltip.name] || helper.data[tooltip.name].noButton
+                  ? null
+                  : button}
               </View>
             </TouchableHighlight>
           </Animated.View>
@@ -271,7 +285,7 @@ const localStyles = StyleSheet.create({
     bottom: 0
   },
   tooltipCard: {
-    backgroundColor: blue,
+    backgroundColor: colors.blue,
     padding: 15,
     paddingVertical: 20,
     paddingTop: 25,
@@ -295,7 +309,7 @@ const localStyles = StyleSheet.create({
       Platform.OS === 'android'
         ? [{ rotate: '45deg' }]
         : [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
-    backgroundColor: blue
+    backgroundColor: colors.blue
   },
   arrowBottom: {
     shadowOffset: { width: 1, height: 1 }

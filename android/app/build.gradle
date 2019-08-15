@@ -160,8 +160,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-svg')
     implementation project(':react-native-emoji-compat-text')
-    compile project(':react-native-svg')
     compile project(':react-native-gesture-handler')
     compile project(':rn-fetch-blob')
     compile project(':react-native-video')
@@ -170,7 +170,6 @@ dependencies {
     compile project(':react-native-share-menu')
     compile project(':react-native-share-extension')
     compile project(':react-native-share')
-    compile project(':react-native-push-notification')
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
@@ -181,7 +180,6 @@ dependencies {
     compile project(':react-native-share-menu')
     compile project(':react-native-share-extension')
     compile project(':react-native-share')
-    compile project(':react-native-push-notification')
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')

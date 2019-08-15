@@ -9,13 +9,12 @@ import { getParentTags } from 'modules/tag/tag.actions';
 import { goToTopic } from 'modules/navigation/navigation.actions';
 import Topics from 'modules/createPost/mobile/topics.component';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import DefaultTabBar from './discoverTabBar.component';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
 
 let styles;
-// const SUB_TITLE = 'Via Twitter';
 
 class DiscoverTabs extends Component {
   static propTypes = {

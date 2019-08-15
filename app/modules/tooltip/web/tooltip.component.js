@@ -4,14 +4,22 @@ import ReactTooltip from 'react-tooltip';
 import EarningTooltip from 'modules/tooltip/web/postEarningTooltip.component';
 import styled from 'styled-components';
 import { BodyText, Title } from 'modules/styled/uni';
-// import { colors, sizing } from 'app/styles';
+import { colors } from 'app/styles';
 
 const TooltipView = styled.div``;
 
 const TextTooltipComponent = ({ text, title }) => (
   <TooltipView flex={1} fdirection={'column'}>
-    {title ? <Title mb={1}>{title}</Title> : null}
-    {text ? <BodyText flex={1}>{text}</BodyText> : null}
+    {title ? (
+      <Title c={colors.white} mb={1}>
+        {title}
+      </Title>
+    ) : null}
+    {text ? (
+      <BodyText c={colors.white} flex={1}>
+        {text}
+      </BodyText>
+    ) : null}
   </TooltipView>
 );
 
@@ -48,13 +56,13 @@ const TOOLTIPS = {
 //   z-Index: 10000;
 // `;
 
-export const TextTooltip = ({ id, type }) => (
+export const TextTooltip = ({ id, type, ...rest }) => (
   <ReactTooltip
     className="reactTooltip"
     id={id}
     effect="solid"
     type={type || 'light'}
-    delayHide={100}
+    // delayHide={100}
     getContent={dataTip => {
       const data = JSON.parse(dataTip);
       if (!data) return null;
@@ -65,6 +73,7 @@ export const TextTooltip = ({ id, type }) => (
       const TT = TOOLTIPS[type];
       return <TT {...props} />;
     }}
+    {...rest}
   />
 );
 

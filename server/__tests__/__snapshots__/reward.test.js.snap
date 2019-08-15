@@ -137,7 +137,7 @@ Object {
   "post": "000000000000000000000003",
   "rankChange": 0,
   "relevance": 0,
-  "relevantPoints": 10,
+  "relevantPoints": 0,
   "shares": 4.711687595755899,
   "stakedTokens": 11.100000000000001,
   "updatedAt": "[SANITIZED]",

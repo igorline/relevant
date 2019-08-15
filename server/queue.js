@@ -6,6 +6,7 @@ const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
 /* eslint no-console: 0 */
+const relevantEnv = process.env.RELEVANT_ENV;
 
 const q = queue({ concurrency: 5 });
 
@@ -60,8 +61,8 @@ async function getCommunityUserRank(community) {
     });
     // let grandTotal = await Relevance.countDocuments({ global: true, communityId });
     const topUser = await Relevance.findOne({})
-    .sort('-pagerank')
-    .limit(1);
+      .sort('-pagerank')
+      .limit(1);
     const topR = topUser.pagerank;
     const users = await Relevance.find({
       global: true,
@@ -90,16 +91,16 @@ async function getCommunityUserRank(community) {
             tag: { $ne: null },
             communityId
           })
-          .sort('-relevance')
-          .limit(5);
+            .sort('-relevance')
+            .limit(5);
 
           user.topTopics = topicRelevance.map(tR => tR.tag);
 
           // TODO this may not work!
           const topicPromises = topicRelevance.map(async tR => {
             const topTopicUser = await Relevance.findOne({ tag: tR.tag, communityId })
-            .sort('-relevance')
-            .limit(1);
+              .sort('-relevance')
+              .limit(1);
             const topTopicR = topTopicUser.relevance;
 
             const totalTopicUsers = await Relevance.find({
@@ -208,6 +209,9 @@ async function updateRewards() {
     console.log(err);
   }
 
+  if (relevantEnv === 'staging' || process.env.NODE_ENV === 'native') {
+    return;
+  }
   process.exit();
 }
 

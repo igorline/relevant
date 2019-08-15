@@ -3,7 +3,7 @@ import { View, CTALink } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
-import PostButtons from 'modules/post/postbuttons.component';
+import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import { copyToClipBoard } from 'app/utils/text';
 import { getPostUrl } from 'app/utils/post';
 
