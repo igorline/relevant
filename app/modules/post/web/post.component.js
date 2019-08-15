@@ -177,7 +177,7 @@ export class Post extends Component {
         hidePostButtons={screenSize === 0}
         hideBorder={isLink && !screenSize}
         additionalNesting={additionalNesting}
-        nestingLevel={0}
+        nestingLevel={isLink ? 0 : 1}
         actions={actions}
         preview={preview}
         inMainFeed

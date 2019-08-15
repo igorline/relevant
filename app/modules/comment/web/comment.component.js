@@ -206,6 +206,11 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
+    const borderMargin =
+      hidePostButtons || screenSize
+        ? (nestingLevel && -3) || 0
+        : layout.POST_BUTTONS_WIDTH / 3;
+
     return (
       <View ref={this.el}>
         <Spacer
@@ -216,10 +221,7 @@ class Comment extends Component {
           fdirection="column"
         >
           {!hideBorder && nestingLevel > 0 && (
-            <Divider
-              className="divider"
-              ml={hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_WIDTH / 3}
-            />
+            <Divider className="divider" ml={borderMargin} />
           )}
           <View fdirection="row" mt={4}>
             {!hidePostButtons && !screenSize ? (
