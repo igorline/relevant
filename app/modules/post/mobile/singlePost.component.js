@@ -137,7 +137,7 @@ class SinglePostComponent extends Component {
   }
 
   scrollToComment(index) {
-    if (typeof index !== 'number') return;
+    if (typeof index !== 'number' || index < 0) return;
     this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
     const scroll = () => {
       this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
