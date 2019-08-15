@@ -32,12 +32,9 @@ export class Community extends Component {
     view: PropTypes.object,
     auth: PropTypes.object,
     screenSize: PropTypes.number,
-    viewCommunityMembers: PropTypes.func
+    viewCommunityMembers: PropTypes.func,
+    showSettings: PropTypes.func
   };
-
-  componentDidMount() {
-    this.props.actions.getCommunities();
-  }
 
   renderCommunityLink(community) {
     const { actions } = this.props;
@@ -47,7 +44,8 @@ export class Community extends Component {
         key={community._id}
         to={'/' + community.slug + '/new'}
         onPress={() => {
-          actions.goToTab('discover');
+          actions.resetTabs();
+          // actions.goToTab('discover');
           requestAnimationFrame(() => {
             actions.setCommunity(community.slug);
           });
@@ -81,9 +79,16 @@ export class Community extends Component {
       view,
       auth,
       screenSize,
-      viewCommunityMembers
+      viewCommunityMembers,
+      showSettings
     } = this.props;
-    const { communityMembers, members, communities, userCommunities } = community;
+    const {
+      communityMembers,
+      members,
+      communities,
+      userCommunities,
+      userMemberships
+    } = community;
     const activeCommunity = communities[community.active];
     const activeMembers = get(communityMembers, community.active, []).map(
       id => members[id]
@@ -96,11 +101,13 @@ export class Community extends Component {
               key={activeCommunity._id}
               community={activeCommunity}
               userCommunities={userCommunities}
+              userMemberships={userMemberships}
               members={activeMembers}
               actions={actions}
               screenSize={screenSize}
               getCommunityMembers={get(actions, 'getCommunityMembers', null)}
               viewCommunityMembers={viewCommunityMembers}
+              showSettings={showSettings}
               view={view}
               auth={auth}
             >
@@ -109,9 +116,7 @@ export class Community extends Component {
           )}
           <View m={'2 0'}>{this.renderOtherCommunities()}</View>
         </View>
-        <BodyText m={[4, 2]}>
-          We'll be adding more communities in the coming weeks!{'\n\n'}
-        </BodyText>
+        <BodyText m={[4, 2]}>We'll be adding more communities soon!{'\n\n'}</BodyText>
       </View>
     );
   }

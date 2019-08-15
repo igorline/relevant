@@ -12,20 +12,30 @@ const initialState = {
   members: {},
   communityMembers: {},
   userMemberships: [],
-  userCommunities: []
+  userCommunities: [],
+  slugToId: {}
 };
 
 export default function community(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMUNITIES: {
       const normalized = normalize(action.payload, [CommunitySchema]);
+      const slugToId = {};
+      normalized.result.forEach(cId => {
+        const c = normalized.entities.communities[cId];
+        slugToId[c.slug] = c._id;
+      });
       return {
         ...state,
         communities: {
           ...state.communities,
           ...normalized.entities.communities
         },
-        list: [...new Set([...state.list, ...normalized.result])]
+        list: [...new Set([...state.list, ...normalized.result])],
+        slugToId: {
+          ...state.slugToId,
+          ...slugToId
+        }
       };
     }
 
@@ -54,6 +64,7 @@ export default function community(state = initialState, action) {
 
     case types.REMOVE_COMMUNITY: {
       const updatedCommunities = { ...state.communities };
+      delete updatedCommunities[action.payload];
       delete updatedCommunities[action.payload];
       return {
         ...state,

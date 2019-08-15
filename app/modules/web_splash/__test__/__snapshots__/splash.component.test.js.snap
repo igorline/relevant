@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot SplashComponent 1`] = `
-.c1 {
+.c0 {
   color: #0000ff;
 }
 
-.c0 {
+.c1 {
   color: #0000ff;
   -webkit-text-decoration: underline;
   text-decoration: underline;
@@ -97,7 +97,7 @@ exports[`Snapshot SplashComponent 1`] = `
         "flexBasis": "auto",
         "flexDirection": "column",
         "flexShrink": 0,
-        "height": "2.16rem",
+        "height": "2.1rem",
         "marginBottom": "0px",
         "marginLeft": "0px",
         "marginRight": "0px",
@@ -116,10 +116,10 @@ exports[`Snapshot SplashComponent 1`] = `
         "paddingRight": "0px",
         "paddingTop": "0px",
         "position": "absolute",
-        "right": "4.32rem",
-        "top": "4.32rem",
+        "right": "4.2rem",
+        "top": "4.2rem",
         "touchAction": "manipulation",
-        "width": "2.16rem",
+        "width": "2.1rem",
         "zIndex": 10,
       }
     }
@@ -230,9 +230,9 @@ exports[`Snapshot SplashComponent 1`] = `
         "flexShrink": 1,
         "justifyContent": "center",
         "marginBottom": "0rem",
-        "marginLeft": "8.64rem",
-        "marginRight": "8.64rem",
-        "marginTop": "8.64rem",
+        "marginLeft": "8.4rem",
+        "marginRight": "8.4rem",
+        "marginTop": "8.4rem",
         "minHeight": "0px",
         "minWidth": "0px",
         "msFlexAlign": "start",
@@ -317,11 +317,11 @@ exports[`Snapshot SplashComponent 1`] = `
             "color": "rgba(0,0,0,1.00)",
             "display": "inline",
             "fontFamily": "HelveticaNeue-Medium",
-            "fontSize": "4.32rem",
+            "fontSize": "4.2rem",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
             "fontWeight": "inherit",
-            "lineHeight": "6.4799999999999995rem",
+            "lineHeight": "6.3rem",
             "marginBottom": "0px",
             "marginLeft": "0px",
             "marginRight": "0px",
@@ -338,43 +338,6 @@ exports[`Snapshot SplashComponent 1`] = `
       >
         <span
           dir="auto"
-          inheritfont={1}
-          m={0}
-          p={0}
-          style={
-            Object {
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "rgba(0,0,0,1.00)",
-              "display": "inline",
-              "fontFamily": "Outline",
-              "fontSize": "inherit",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "0.8px",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
-              "textDecoration": "none",
-              "whiteSpace": "inherit",
-              "wordWrap": "break-word",
-            }
-          }
-        >
-          Relevant.
-        </span>
-         
-        <span
-          dir="auto"
           style={
             Object {
               "WebkitFlexBasis": "auto",
@@ -411,47 +374,7 @@ exports[`Snapshot SplashComponent 1`] = `
             }
           }
         >
-          Curated by communities.
-        </span>
-        <span
-          dir="auto"
-          style={
-            Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "inherit",
-              "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
-              "fontFamily": "inherit",
-              "fontSize": "inherit",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "inherit",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
-              "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "inherit",
-              "wordWrap": "break-word",
-            }
-          }
-        >
-          Not clicks.
+          A new kind of social network built on trust.
         </span>
       </div>
       <div
@@ -478,10 +401,10 @@ exports[`Snapshot SplashComponent 1`] = `
             "flexBasis": "auto",
             "flexDirection": "column",
             "flexShrink": 0,
-            "marginBottom": "5.76rem",
+            "marginBottom": "5.6rem",
             "marginLeft": "0px",
             "marginRight": "0px",
-            "marginTop": "3.6rem",
+            "marginTop": "3.5rem",
             "minHeight": "0px",
             "minWidth": "0px",
             "msFlexAlign": "stretch",
@@ -521,11 +444,11 @@ exports[`Snapshot SplashComponent 1`] = `
               "color": "inherit",
               "display": "inline",
               "fontFamily": "Georgia",
-              "fontSize": "1.8rem",
+              "fontSize": "1.75rem",
               "fontStyle": "inherit",
               "fontVariant": "inherit",
               "fontWeight": "inherit",
-              "lineHeight": "2.88rem",
+              "lineHeight": "2.8rem",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
@@ -541,12 +464,23 @@ exports[`Snapshot SplashComponent 1`] = `
             }
           }
         >
-          Join the thought leaders, build trust and earn rewards.
-           
+          Join a 
           <a
             className="ulink-mock c0"
+            href="/communities"
+            hu={0}
+            inline={0}
+            onClick={[Function]}
+            styles=""
+          >
+            community
+          </a>
+          , curate content and earn rewards.
+           
+          <a
+            className="ulink-mock c1"
             display="inline"
-            href="https://blog.relevant.community/relevant-beta-is-live-c385d0e1286c"
+            href="https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da"
             onClick={[Function]}
             target="_blank"
           >
@@ -589,7 +523,7 @@ exports[`Snapshot SplashComponent 1`] = `
           "msFlexDirection": "column",
           "msFlexNegative": 0,
           "msFlexPreferredSize": "auto",
-          "paddingBottom": "5.76rem",
+          "paddingBottom": "5.6rem",
           "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
@@ -646,7 +580,7 @@ exports[`Snapshot SplashComponent 1`] = `
         }
       >
         <a
-          className="ulink-mock c1"
+          className="ulink-mock c0"
           href="/user/login?redirect=/"
           hu={0}
           inline={0}
@@ -677,25 +611,25 @@ exports[`Snapshot SplashComponent 1`] = `
                 "flexBasis": "auto",
                 "flexShrink": 0,
                 "fontFamily": "HelveticaNeue-Medium",
-                "fontSize": "1.08rem",
+                "fontSize": "1.05rem",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "height": "4.32rem",
+                "height": "4.2rem",
                 "justifyContent": "center",
                 "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "2.88rem",
+                "marginRight": "2.8rem",
                 "marginTop": "0px",
-                "minWidth": "12.959999999999999rem",
+                "minWidth": "12.6rem",
                 "msFlexAlign": "center",
                 "msFlexNegative": 0,
                 "msFlexPack": "center",
                 "msFlexPreferredSize": "auto",
                 "paddingBottom": "0px",
-                "paddingLeft": "1.44rem",
-                "paddingRight": "1.44rem",
+                "paddingLeft": "1.4rem",
+                "paddingRight": "1.4rem",
                 "paddingTop": "0px",
                 "position": "relative",
                 "textDecoration": "none",
@@ -708,7 +642,7 @@ exports[`Snapshot SplashComponent 1`] = `
           </div>
         </a>
         <a
-          className="ulink-mock c1"
+          className="ulink-mock c0"
           href="/user/signup?redirect=/"
           hu={0}
           inline={0}
@@ -739,25 +673,25 @@ exports[`Snapshot SplashComponent 1`] = `
                 "flexBasis": "auto",
                 "flexShrink": 0,
                 "fontFamily": "HelveticaNeue-Medium",
-                "fontSize": "1.08rem",
+                "fontSize": "1.05rem",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "height": "4.32rem",
+                "height": "4.2rem",
                 "justifyContent": "center",
                 "lineHeight": "inherit",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
                 "marginTop": "0px",
-                "minWidth": "12.959999999999999rem",
+                "minWidth": "12.6rem",
                 "msFlexAlign": "center",
                 "msFlexNegative": 0,
                 "msFlexPack": "center",
                 "msFlexPreferredSize": "auto",
                 "paddingBottom": "0px",
-                "paddingLeft": "1.44rem",
-                "paddingRight": "1.44rem",
+                "paddingLeft": "1.4rem",
+                "paddingRight": "1.4rem",
                 "paddingTop": "0px",
                 "position": "relative",
                 "textDecoration": "none",
@@ -827,6 +761,7 @@ exports[`Snapshot SplashComponent 1`] = `
   >
     <img
       alt="phone"
+      onLoad={[Function]}
       src="/img/hand-transparent.png"
       style={
         Object {

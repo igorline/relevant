@@ -46,6 +46,7 @@ pre {
   margin: 0;
   display: inline-block;
   overflow-wrap: break-word;
+  overflow-wrap: anywhere;
   max-width: 100%;
 }
 

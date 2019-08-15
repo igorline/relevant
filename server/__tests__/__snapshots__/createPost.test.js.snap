@@ -6,9 +6,8 @@ Object {
   "_id": "[SANITIZED]",
   "body": "awesome post #1!",
   "category": null,
-  "children": null,
+  "channel": false,
   "commentCount": 0,
-  "commentary": null,
   "community": "relevant",
   "communityId": "c00000000000000000000001",
   "createdAt": "[SANITIZED]",
@@ -32,9 +31,8 @@ Object {
     "parentPost": Object {
       "__v": 0,
       "_id": "[SANITIZED]",
-      "children": null,
+      "channel": false,
       "commentCount": 1,
-      "commentary": null,
       "createdAt": "[SANITIZED]",
       "data": Object {
         "__v": 0,
@@ -74,9 +72,6 @@ Object {
       },
       "description": "my amazing post",
       "downVotes": 0,
-      "embeddedUser": Object {
-        "relevance": null,
-      },
       "flagged": false,
       "flaggedBy": Array [],
       "hidden": false,
@@ -114,7 +109,6 @@ Object {
       "postDate": "[SANITIZED]",
       "rank": "[SANITIZED]",
       "relevance": 0,
-      "reposted": null,
       "seenInFeedNumber": 0,
       "tags": Array [
         "tag11",
@@ -148,13 +142,13 @@ Object {
     "upVotes": 0,
     "updatedAt": "[SANITIZED]",
   },
+  "description": null,
   "downVotes": 0,
   "embeddedUser": Object {
     "_id": "[SANITIZED]",
     "handle": "alice",
     "image": "alice-pic.jpg",
     "name": "Alice",
-    "relevance": null,
   },
   "flagged": false,
   "flaggedBy": Array [],
@@ -164,9 +158,8 @@ Object {
   "linkParent": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
-    "children": null,
+    "channel": false,
     "commentCount": 1,
-    "commentary": null,
     "createdAt": "[SANITIZED]",
     "data": Object {
       "__v": 0,
@@ -206,9 +199,6 @@ Object {
     },
     "description": "my amazing post",
     "downVotes": 0,
-    "embeddedUser": Object {
-      "relevance": null,
-    },
     "flagged": false,
     "flaggedBy": Array [],
     "hidden": false,
@@ -246,7 +236,6 @@ Object {
     "postDate": "[SANITIZED]",
     "rank": "[SANITIZED]",
     "relevance": 0,
-    "reposted": null,
     "seenInFeedNumber": 0,
     "tags": Array [
       "tag11",
@@ -294,9 +283,8 @@ Object {
   "parentPost": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
-    "children": null,
+    "channel": false,
     "commentCount": 1,
-    "commentary": null,
     "createdAt": "[SANITIZED]",
     "data": Object {
       "__v": 0,
@@ -336,9 +324,6 @@ Object {
     },
     "description": "my amazing post",
     "downVotes": 0,
-    "embeddedUser": Object {
-      "relevance": null,
-    },
     "flagged": false,
     "flaggedBy": Array [],
     "hidden": false,
@@ -376,7 +361,6 @@ Object {
     "postDate": "[SANITIZED]",
     "rank": "[SANITIZED]",
     "relevance": 0,
-    "reposted": null,
     "seenInFeedNumber": 0,
     "tags": Array [
       "tag11",
@@ -395,7 +379,6 @@ Object {
   "postDate": "[SANITIZED]",
   "rank": 0,
   "relevance": 0,
-  "reposted": null,
   "seenInFeedNumber": 0,
   "tags": Array [
     "tag11",
@@ -419,9 +402,8 @@ Object {
   "_id": "[SANITIZED]",
   "body": "awesome post #1!",
   "category": null,
-  "children": null,
+  "channel": false,
   "commentCount": 0,
-  "commentary": null,
   "community": "relevant",
   "communityId": "c00000000000000000000001",
   "createdAt": "[SANITIZED]",
@@ -461,13 +443,13 @@ Object {
     "upVotes": 0,
     "updatedAt": "[SANITIZED]",
   },
+  "description": null,
   "downVotes": 0,
   "embeddedUser": Object {
     "_id": "[SANITIZED]",
     "handle": "alice",
     "image": "alice-pic.jpg",
     "name": "Alice",
-    "relevance": null,
   },
   "flagged": false,
   "flaggedBy": Array [],
@@ -485,7 +467,6 @@ Object {
   "postDate": "[SANITIZED]",
   "rank": 0,
   "relevance": 0,
-  "reposted": null,
   "seenInFeedNumber": 0,
   "tags": Array [
     "tag11",

@@ -10,8 +10,8 @@ const apiServer = process.env.API_SERVER + '/api/';
 const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 const repostSchema = new schema.Entity('posts', { idAttribute: '_id' });
 
-let metaPostSchema;
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
+// const myVoteSchema = new schema.Entity('myVote', {}, { idAttribute: '_id' });
 
 const parentPostSchema = new schema.Entity(
   'posts',
@@ -30,6 +30,7 @@ export const postSchema = new schema.Entity(
     metaPost: linkSchema,
     parentPost: parentPostSchema,
     commentPost: parentPostSchema
+    // myVote: [myVoteSchema]
   },
   { idAttribute: '_id' }
 );
@@ -77,7 +78,7 @@ export function setUsers(users) {
 
 export function setUserPosts(data, id, index) {
   return {
-    type: 'SET_USER_POSTS',
+    type: types.SET_USER_POSTS,
     payload: {
       data,
       id,
@@ -264,7 +265,7 @@ export function clearSelectedPost() {
 }
 
 // this function queries the meta posts
-export function getPosts(skip, tags, sort, limit) {
+export function getPosts(skip, tags, sort, limit, community) {
   let tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = DEFAULT_LIMIT;
@@ -273,7 +274,6 @@ export function getPosts(skip, tags, sort, limit) {
 
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
-  const endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {
@@ -281,20 +281,21 @@ export function getPosts(skip, tags, sort, limit) {
     tag = tagsString;
     if (tags.length === 1) topic = tags[0];
   }
+  const communityParam = community ? { community } : {};
 
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
+      const { auth } = getState();
       dispatch(getPostsAction(type));
-
       const res = await api.request({
         method: 'GET',
-        endpoint,
-        query: { skip, sort, limit, tag }
+        endpoint: 'communityFeed',
+        query: { skip, sort, limit, tag, ...communityParam },
+        user: auth.user
       });
+
       const dataType = feedSchema;
       const data = normalize({ [type]: res }, { [type]: [dataType] });
-
-      // dispatch(setUsers(data.entities.users));
 
       if (topic) {
         dispatch(setTopic(data, type, skip, topic));
@@ -361,21 +362,23 @@ export function editPost(post) {
 }
 
 export function getSelectedPost(postId) {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
-      const responseJSON = await api.request({
+      const { auth } = getState();
+      const post = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '',
-        params: { id: postId }
+        params: { id: postId },
+        user: auth.user
       });
-      if (!responseJSON) {
+      if (!post) {
         dispatch(removePost(postId));
       } else {
-        dispatch(updatePost(responseJSON));
+        dispatch(updatePost(post));
       }
       dispatch(errorActions.setError('singlepost', false));
-      return responseJSON;
+      return post;
     } catch (error) {
       dispatch(errorActions.setError('singlepost', true, error.message));
       return false;
@@ -476,42 +479,39 @@ export function getFlaggedPosts(skip) {
   if (!skip) skip = 0;
   const type = 'flagged';
 
-  function getUrl() {
-    const url = `${apiServer}metaPost/flagged?skip=${skip}&limit=${DEFAULT_LIMIT}`;
-    return url;
-  }
-
   return async dispatch => {
-    // dispatch(getPostsAction(type));
-    fetch(getUrl(), {
-      method: 'GET',
-      ...(await api.reqOptions())
-    })
-    .then(response => response.json())
-    .then(responseJSON => {
-      const dataType = metaPostSchema;
-      const data = normalize({ [type]: responseJSON }, { [type]: [dataType] });
+    try {
+      const flagged = await api.request({
+        method: 'GET',
+        endpoint: 'post',
+        path: '/flagged',
+        query: { skip, limit: DEFAULT_LIMIT }
+      });
+      const data = normalize({ [type]: flagged }, { [type]: [postSchema] });
       dispatch(setPosts(data, type, skip));
-      // dispatch(errorActions.setError(type, false));
-    })
-    .catch(error => {
-      Alert('Feed error ', error);
-      if (!error.message.match('Get fail for key: token')) {
-        // dispatch(errorActions.setError(type, true, error.message));
-      }
-    });
+    } catch (err) {
+      Alert.alert(err.message, 'error');
+    }
   };
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 export function getTopPosts() {
   return async dispatch => {
     try {
-      const responseJSON = await api.request({
+      const topPosts = await api.request({
         method: 'GET',
         endpoint: 'post',
         path: '/topPosts'
       });
-      return dispatch(setTopPosts(responseJSON));
+      return dispatch(setTopPosts(shuffleArray(topPosts)));
     } catch (error) {
       return false;
     }

@@ -1,6 +1,6 @@
 // This assumes we are working with 2 breakpoints/3 sizes
 // export default
-import { mediumScreenWidth, smallScreenWidth } from './layout';
+import { mediumScreenWidth, smallScreenWidth } from './screens';
 
 let Dimensions;
 let isNative = false;

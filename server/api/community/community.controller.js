@@ -2,10 +2,6 @@ import Community from './community.model';
 import CommunityMember from './community.member.model';
 import User from '../user/user.model';
 
-// Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
-
-CommunityMember.remove({ 'embeddedUser.handle': 'a' }).exec();
-
 const RESERVED = [
   'user',
   'admin',
@@ -20,24 +16,59 @@ const RESERVED = [
 
 export async function findOne(req, res, next) {
   try {
+    const { user } = req;
     const { slug } = req.params;
     const community = await Community.findOne({ slug, inactive: { $ne: true } });
+    if (!community) throw new Error(`Community ${slug} doesn't exist`);
+
+    if (community.private) {
+      if (!user) throw new Error('This community is private');
+      const member = await CommunityMember.findOne({
+        communityId: community._id,
+        user: user._id
+      });
+      if (!member) throw new Error('This community is private');
+    }
+
     res.status(200).json(community);
   } catch (err) {
     next(err);
   }
 }
 
-export async function index(req, res, next) {
-  try {
-    const communties = await Community.find({ inactive: { $ne: true } }).populate({
-      path: 'members',
-      match: { role: 'admin' }
+// uses middleware for server-sider rendering
+export async function index(req) {
+  const { user } = req;
+  const { community } = req.query;
+  const onlyPublic = user && user.role === 'admin' ? {} : { private: { $ne: true } };
+  const onlyVisible = user && user.role === 'admin' ? {} : { hidden: { $ne: true } };
+
+  const communties = await Community.find({
+    inactive: { $ne: true },
+    ...onlyPublic,
+    $or: [onlyVisible, { slug: community }]
+  }).populate({
+    path: 'admins',
+    match: { role: 'admin' }
+  });
+
+  // find private communities where user is a member
+  let privateCommunities = [];
+  if (user) {
+    const memberships = await CommunityMember.find({ user: user._id }).populate({
+      path: 'communityId',
+      match: { inactive: { $ne: true } }
     });
-    res.status(200).json(communties);
-  } catch (err) {
-    next(err);
+    privateCommunities = memberships
+    .filter(m => m.communityId)
+    .filter(
+      m =>
+        m.communityId.private === true ||
+          (m.communityId.hidden === true && m.communityId.slug !== community)
+    )
+    .map(m => m.communityId);
   }
+  return [...communties, ...privateCommunities].map(c => c.toObject());
 }
 
 export async function members(req, res, next) {
@@ -145,6 +176,7 @@ export async function create(req, res, next) {
   try {
     // for no only admins create communities
     // TODO relax this and community creator as admin
+    const { user } = req;
     if (!req.user || !req.user.role === 'admin') {
       throw new Error("You don't have permission to create a community");
     }
@@ -156,6 +188,8 @@ export async function create(req, res, next) {
     if (!admins || !admins.length) throw new Error('Please set community admins');
     community = new Community(community);
     community = await community.save();
+
+    if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
 
     // TODO - this should create an invitation!
     admins = admins.map(async admin => {
@@ -178,14 +212,15 @@ export async function update(req, res, next) {
   try {
     // for no only admins create communities
     const updatedCommunity = req.body;
-    const { admins } = updatedCommunity;
+    const { admins, superAdmins } = updatedCommunity;
     const { user } = req;
 
     if (!updatedCommunity || !user) return;
     const member = await CommunityMember.findOne({
-      _id: updatedCommunity._id,
+      communityId: updatedCommunity._id,
       user: user._id
     });
+
     const currentAdmins = await CommunityMember.find({
       communityId: updatedCommunity._id,
       role: 'admin'
@@ -194,7 +229,7 @@ export async function update(req, res, next) {
     const currentAdminsList = currentAdmins.map(a => a.embeddedUser.handle);
     let newAdmins = admins.filter(a => !currentAdminsList.includes(a));
 
-    const canEdit = user.role === 'admin' || (member && member.role === 'admin');
+    const canEdit = user.role === 'admin' || (member && member.superAdmin);
 
     if (!canEdit) {
       throw new Error("You don't have permission to edit a community");
@@ -208,36 +243,52 @@ export async function update(req, res, next) {
       name: updatedCommunity.name,
       topics: updatedCommunity.topics,
       description: updatedCommunity.description,
-      channels: updatedCommunity.channels
+      channels: updatedCommunity.channels,
+      private: updatedCommunity.private,
+      hidden: updatedCommunity.hidden
     });
     community = await community.save();
 
     // TODO - this should create an invitation!
     newAdmins = newAdmins.map(async admin => {
       try {
-        return await community.join(admin._id, 'admin');
+        const role = superAdmins.includes(admin._id) ? 'superAdmin' : 'admin';
+        return await community.join(admin._id, role);
       } catch (err) {
         throw err;
       }
     });
 
-    newAdmins = await Promise.all(newAdmins);
+    await Promise.all(newAdmins);
 
     let removeAdmins;
     if (user.role === 'admin') {
       removeAdmins = currentAdminsList.filter(a => !admins.includes(a));
       removeAdmins = await User.find({ handle: { $in: removeAdmins } }, '_id');
       removeAdmins = removeAdmins.map(u => u._id.toString());
-      await CommunityMember.update(
+      await CommunityMember.updateMany(
         { user: { $in: removeAdmins } },
-        { role: 'user' },
+        { role: 'user', superAdmin: false },
         { multi: true }
       );
     }
 
-    community.members = [...newAdmins, ...currentAdmins].filter(u =>
-      removeAdmins.includes(u.user.toString())
+    await CommunityMember.updateMany(
+      { 'embeddedUser.handle': { $in: admins } },
+      { superAdmin: false },
+      { multi: true }
     );
+
+    await CommunityMember.updateMany(
+      { 'embeddedUser.handle': { $in: superAdmins }, role: 'admin' },
+      { superAdmin: true },
+      { multi: true }
+    );
+
+    community.admins = await CommunityMember.find({
+      communityId: community._id,
+      role: 'admin'
+    });
 
     res.status(200).json(community);
   } catch (err) {

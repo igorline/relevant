@@ -1,5 +1,5 @@
 import styled from 'styled-components/primitives';
-import { mixins, layout, fonts, colors, sizing } from 'app/styles';
+import { mixins, layout, fonts, colors, sizing, size } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
@@ -51,6 +51,10 @@ export const ImageWrapper = styled.View`
   ${mixins.margin}
   ${mixins.flex}
 `;
+
+export const FormImage = props => (
+  <Image {...props} bg={colors.blue} {...layout.formImageProps} />
+);
 
 export const Divider = styled.View`
   ${mixins.margin}
@@ -194,7 +198,7 @@ export const Spacer = styled(View)`
       if (!total * UNIT) {
         return '';
       }
-      return `padding-left: ${sizing(total * UNIT)};`;
+      return `padding-left: ${sizing((total - 1) * UNIT)};`;
     }
     return '';
   }}
@@ -204,8 +208,8 @@ export const Spacer = styled(View)`
 
 export const CloseX = styled(Image)`
   position: absolute;
-  ${p => (p.top ? `top: ${mixins.size(p.top)};` : null)}
-  ${p => (p.right ? `right: ${mixins.size(p.right)};` : null)}
+  ${p => (p.top ? `top: ${size(p.top)};` : null)}
+  ${p => (p.right ? `right: ${size(p.right)};` : null)}
   cursor: pointer;
   z-index: 10;
 `;

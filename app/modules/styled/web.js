@@ -37,6 +37,7 @@ export const Text = styled.span`
   ${mixins.background}
   ${mixins.border}
   ${mixins.color}
+  ${p => (p.onClick ? 'cursor: pointer;' : '')}
 `;
 
 export const InlineText = styled.span`
@@ -124,21 +125,31 @@ export const Button = styled.button`
     background: ${colors.grey};
     `
       : ''};
+  ${mixins.flex}
   ${mixins.background}
   ${mixins.padding}
   ${mixins.width}
   ${mixins.margin}
   ${mixins.color}
+  ${mixins.width}
+  ${mixins.height}
+`;
+
+export const NumericalValue = styled(Text)`
+  ${fonts.numericalValue}
+  ${mixins.width}
+  ${mixins.font}
+  ${mixins.inheritfont}
+  ${mixins.color}
 `;
 
 export const Input = styled.input`
-  ${fonts.bodyStyle}
-  ${mixins.padding}
-  ${mixins.margin}
+  padding: ${sizing(2)} ${sizing(2)};
+  margin-top: ${sizing(1)};  ${fonts.bodyStyle}
   ${mixins.border}
   ${layout.universalBorder()}
-  padding: ${sizing(2)} ${sizing(2)};
-  margin-top: ${sizing(1)};
+  ${mixins.padding}
+  ${mixins.margin}
   ::placeholder: {
     font-size: ${sizing(1.75)};
     line-height: ${sizing(1.75)};
@@ -167,4 +178,14 @@ export const StyledTextarea = styled(Textarea)`
 export const Form = styled.form`
   ${mixins.flex}
   ${mixins.margin}
+`;
+
+export const Video = styled.video`
+  ${mixins.margin}
+  ${mixins.height}
+  ${mixins.width}
+  ${mixins.padding}
+  ${mixins.background}
+  ${mixins.borderRadius}
+  ${mixins.flex}
 `;

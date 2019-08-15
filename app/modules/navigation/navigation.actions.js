@@ -14,7 +14,7 @@ import {
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction, getScreenSize } from 'app/utils/nav';
-import { setCommunity } from 'modules/auth/auth.actions';
+import { setCommunity } from 'modules/auth/auth.actions'; // eslint-disable-line
 
 let dismissKeyboard;
 let safariView;
@@ -106,6 +106,17 @@ export function goToTab(tab) {
         routeName: tab
       })
     );
+  };
+}
+
+export function resetTabs() {
+  return () => {
+    if (!native) return;
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'main' })]
+    });
+    dispatchNavigatorAction(resetAction);
   };
 }
 

@@ -3,9 +3,10 @@ import loadable from '@loadable/component';
 import { Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
-import App from './app';
+import App from './app'; // eslint-disable-line
 import NotFound from './404';
 import withAuth from './withAuth';
+// import CommunityRedirect from './communityRedirect';
 
 const DiscoverContainer = loadable(() =>
   import('modules/discover/web/discover.container')
@@ -20,14 +21,19 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
+const Contract = loadable(() => import('modules/admin/web/contractParams.container'));
+const About = loadable(() => import('modules/web_splash/about.component'));
+const TopNav = loadable(() => import('modules/navigation/web/topnav.component'));
+
 const CommunityAdminForm = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
 );
 const CommunityAdminList = loadable(() =>
   import('modules/admin/web/communityAdminList.component')
 );
+const Styles = loadable(() => import('modules/ui/styles.component'));
 
-const CommunityList = loadable(() => import('modules/community/communityList.component'));
+const CommunityList = loadable(() => import('modules/community/communityList.container'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
 // const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
@@ -38,8 +44,8 @@ const WithTopNav = loadable(() => import('modules/navigation/web/withTopNav.comp
 
 const PostContainer = loadable(() => import('modules/post/web/singlePost.container'));
 const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
-const AdminWallet = loadable(() => import('modules/admin/web/admin.main.component'));
 const Auth = loadable(() => import('modules/auth/web/auth.container'));
+
 const CreatePostContainer = loadable(() =>
   import('modules/createPost/createPost.container')
 );
@@ -70,13 +76,20 @@ const routes = [
       // },
       {
         path: '/',
+        component: About,
+        exact: true
+      },
+      { path: '/about', component: About, exact: true },
+      {
+        path: '/',
         component: WithSideNav,
         routes: [
           {
             path: '/admin',
             component: withAuth(AdminHeader, 'admin'),
-            indexRoute: { component: AdminWallet },
+            indexRoute: { component: Contract },
             routes: [
+              { path: '/admin/contract', component: Contract },
               { path: '/admin/flagged', component: Flagged },
               { path: '/admin/waitlist', component: Waitlist },
               { path: '/admin/downvotes', component: Downvotes },
@@ -100,46 +113,96 @@ const routes = [
 
           // INFO
           { path: '/info/faq', component: Faq, exact: true },
+          { path: '/info/styles', component: Styles, exact: true },
 
           {
             path: '/',
             component: WithTopNav,
             routes: [
               // WALLET
-              { path: '/user/wallet', component: Wallet, exact: true },
+              {
+                path: '/user/wallet',
+                component: Wallet,
+                navbar: TopNav,
+                title: 'Wallet',
+                exact: true
+              },
               // USER
-              { path: '/user/login', component: Auth, exact: true },
-              { path: '/user/signup', component: Auth, exact: true },
               {
-                path: '/user/confirm/:id/:code',
+                path: '/user/:modal(resetPassword)/:token',
                 component: Auth,
+                navbar: TopNav,
                 exact: true
               },
               {
-                path: '/user/confirm',
+                path:
+                  '/user/:modal(login|confirmEmail|confirm|signup|resetPassword|forgot|setHandle)',
                 component: Auth,
+                navbar: TopNav,
                 exact: true
               },
-              { path: '/user/profile/:id', component: ProfileContainer, exact: true },
+              {
+                path: '/user/:modal(confirm)/:user/:code',
+                component: Auth,
+                navbar: TopNav,
+                exact: true
+              },
+              {
+                path: '/user/profile/:id',
+                component: ProfileContainer,
+                navbar: TopNav,
+                exact: true
+              },
               {
                 path: '/user/profile/:id/settings',
                 component: ProfileContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
-              { path: '/user/activity', component: ActivityContainer, exact: true },
-              { path: '/user/forgot', component: Auth, exact: true },
+              {
+                path: '/user/activity',
+                component: ActivityContainer,
+                exact: true,
+                navbar: TopNav
+              },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!
-              { path: '/user/resetPassword/:token', component: Auth, exact: true },
-              { path: '/user/resetPassword', component: Auth, exact: true },
-              { path: '/user/confirm/:user/:code', component: Auth, exact: true },
-              { path: '/user/confirmEmail', component: Auth, exact: true },
-              { path: '/user/invite/:code', component: Invite, exact: true },
-              { path: '/community/all', component: CommunityList, exact: true },
-              { path: '/:community/post/:id', component: PostContainer, exact: true },
+              // '/user/resetPassword/:token'
+              // '/user/resetPassword'
+              // '/user/confirm/:user/:code'
+
+              // TODO: use this route
+              // { path: '/user/confirmEmail', component: Auth, exact: true },
+              {
+                path: '/user/invite/:code',
+                component: Invite,
+                exact: true,
+                navbar: TopNav
+              },
+              {
+                path: '/communities',
+                component: CommunityList,
+                exact: true,
+                navbar: TopNav,
+                title: 'Communities'
+              },
+              // {
+              //   path: '/community/all',
+              //   component: CommunityList,
+              //   exact: true,
+              //   navbar: TopNav,
+              //   title: 'Communities'
+              // },
+              {
+                path: '/:community/post/:id',
+                component: PostContainer,
+                exact: true,
+                navbar: TopNav
+              },
               {
                 path: '/:community/post/:id/:commentId',
                 component: PostContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
 
               // DISCOVER
@@ -147,7 +210,8 @@ const routes = [
               {
                 path: '/:community/',
                 component: props => <MyRedirect {...props} to={'/new'} />,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
               // {
               //   path: '/:community/invite/:handle',
@@ -157,17 +221,20 @@ const routes = [
               {
                 path: '/:community/:sort/invite/slava',
                 component: DiscoverContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
               {
                 path: '/:community/:sort/:tag?',
                 component: DiscoverContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
               {
                 path: '/:community/post/new',
                 exact: true,
-                component: withAuth(CreatePostContainer)
+                component: withAuth(CreatePostContainer),
+                navbar: TopNav
                 // component: CreatePostContainer
               }
             ]

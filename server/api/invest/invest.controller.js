@@ -61,13 +61,7 @@ exports.show = async (req, res, next) => {
     const { communityId } = req.communityMember;
     const { user } = req;
 
-    let id;
-
-    let blocked = [];
-    if (user) {
-      blocked = [...user.blocked, ...user.blockedBy];
-      id = user._id;
-    }
+    const blocked = user ? [...user.blocked, ...user.blockedBy] : [];
 
     const limit = parseInt(req.query.limit, 10);
     const skip = parseInt(req.query.skip, 10);
@@ -99,11 +93,7 @@ exports.show = async (req, res, next) => {
     .limit(limit)
     .skip(skip)
     .sort(sortQuery);
-    res.status(200).json(investments);
-
-    let postIds = investments.map(inv => (inv.post ? inv.post._id : null));
-    postIds = postIds.filter(postId => postId);
-    return Post.sendOutInvestInfo(postIds, id);
+    return res.status(200).json(investments);
   } catch (err) {
     return next(err);
   }
@@ -168,23 +158,32 @@ async function investCheck(params) {
   return investment;
 }
 
-async function updateSubscriptions(params) {
-  const { post, user, amount, undoInvest } = params;
+async function updateSubscriptions({
+  post,
+  user,
+  amount,
+  undoInvest,
+  communityId,
+  community
+}) {
   if (amount < 0) return null;
   let subscription = await Subscription.findOne({
     follower: user._id,
-    following: post.user
+    following: post.user,
+    communityId
   });
+  if (!subscription && undoInvest) return null;
   if (!subscription) {
-    if (undoInvest) return null;
     subscription = new Subscription({
       follower: user._id,
       following: post.user,
+      communityId,
+      community,
       amount: 0
     });
   }
-  const inc = undoInvest ? Math.max(-4, -subscription.amount) : 4;
-  subscription.amount = Math.max(subscription.amount + inc, 20);
+  const inc = undoInvest ? Math.max(-3, -subscription.amount) : 3;
+  subscription.amount = Math.min(subscription.amount + inc, 20);
   return subscription.save();
 }
 
@@ -231,7 +230,7 @@ async function sendAuthorNotification({ author, user, post, type, undoInvest, am
   if (!author) return null;
   // Remove notification if undo;
   if (undoInvest) {
-    await Notification.remove({
+    await Notification.deleteOne({
       type,
       post: post._id,
       forUser: author._id,
@@ -394,7 +393,13 @@ exports.create = async (req, res, next) => {
     }
 
     // update subscriptions
-    const subscription = await updateSubscriptions({ post, user, amount });
+    const subscription = await updateSubscriptions({
+      post,
+      user,
+      amount,
+      communityId,
+      community
+    });
 
     // TODO - put the rest into queue on worker;
     const initialPostRank = post.data.pagerank;
@@ -414,7 +419,7 @@ exports.create = async (req, res, next) => {
     if (updatePageRank) {
       ({ author, post } = updatePageRank);
     }
-    if (investment) {
+    if (investment && !undoInvest) {
       investment.rankChange = post.data.pagerank - initialPostRank;
       await investment.save();
     }
@@ -442,7 +447,10 @@ exports.create = async (req, res, next) => {
     Earnings.updateEarnings({ post, communityId });
 
     // updates user investments
-    user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
+    user.investmentCount = await Invest.countDocuments({
+      investor: user._id,
+      amount: { $gt: 0 }
+    });
 
     // update subscriptions
     user = await user.getSubscriptions();

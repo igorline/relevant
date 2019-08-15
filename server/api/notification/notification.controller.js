@@ -69,7 +69,7 @@ exports.unread = (req, res, next) => {
   if (userId) {
     query = { forUser: userId, read: false };
   }
-  Notification.count(query)
+  Notification.countDocuments(query)
   .then(unread => {
     res.status(200).json({ unread });
   })
@@ -94,7 +94,7 @@ exports.showGeneral = (req, res, next) => {
 
 exports.markRead = (req, res, next) => {
   const query = { forUser: req.user._id, read: false };
-  return Notification.update(query, { read: true }, { multi: true })
+  return Notification.updateMany(query, { read: true }, { multi: true })
   .then(() => res.status(200).send())
   .catch(next);
 };

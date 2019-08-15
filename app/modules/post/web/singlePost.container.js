@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
+import { getComments } from 'modules/comment/comment.actions';
 import Comments from 'modules/comment/web/comment.container';
 import get from 'lodash.get';
 import { View } from 'modules/styled/uni';
 import PostComponent from './post.component';
+// import ButtonRow from 'modules/post/web/buttonRow.component';
 
 class SinglePostContainer extends Component {
   static propTypes = {
@@ -19,9 +21,11 @@ class SinglePostContainer extends Component {
     auth: PropTypes.object
   };
 
-  static fetchData(dispatch, params) {
+  static async fetchData(dispatch, params) {
     if (!params.id || params.id === undefined) return null;
-    return dispatch(postActions.getSelectedPost(params.id));
+    const fetchComments = dispatch(getComments(params.id));
+    const fetchPost = dispatch(postActions.getSelectedPost(params.id));
+    return Promise.all([fetchComments, fetchPost]);
   }
 
   componentDidMount() {
@@ -29,11 +33,13 @@ class SinglePostContainer extends Component {
   }
 
   getPost = () => {
-    const { params } = this.props.match;
-    const post = this.props.posts.posts[params.id];
-    if (!post) {
-      this.props.actions.getSelectedPost(params.id);
-    }
+    const { actions, match, posts } = this.props;
+    const { params } = match;
+    const post = posts.posts[params.id];
+    if (!post) actions.getSelectedPost(params.id);
+    // TODO - we don't actually need to do this all the time...
+    // but we do want to grab updated comments...
+    actions.getComments(params.id);
   };
 
   componentDidUpdate(prevProps) {
@@ -56,20 +62,18 @@ class SinglePostContainer extends Component {
     return (
       <View mb={20}>
         {hasPost && (
-          <div>
-            <View>
-              <PostComponent
-                noComments
-                link={link}
-                post={post}
-                firstPost={firstPost}
-                {...this.props}
-                hideDivider
-                singlePost
-              />
-            </View>
+          <View>
+            <PostComponent
+              noComments
+              link={link}
+              post={post}
+              firstPost={firstPost}
+              {...this.props}
+              hideDivider
+              singlePost
+            />
             <Comments post={post} {...this.props} />
-          </div>
+          </View>
         )}
       </View>
     );
@@ -83,14 +87,15 @@ export default connect(
     posts: state.posts,
     user: state.user,
     investments: state.investments,
-    myPostInv: state.investments.myPostInv,
+    // myPostInv: state.investments.myPostInv,
     isAuthenticated: state.auth.isAuthenticated
   }),
   dispatch => ({
     actions: bindActionCreators(
       {
         ...postActions,
-        ...investActions
+        ...investActions,
+        getComments
       },
       dispatch
     )

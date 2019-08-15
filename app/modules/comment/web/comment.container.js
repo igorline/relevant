@@ -30,11 +30,6 @@ class Comments extends Component {
     activeComment: null
   };
 
-  componentDidMount() {
-    const { params } = this.props.match;
-    this.props.actions.getComments(params.id);
-  }
-
   setActiveComment = commentId => {
     const activeComment = this.state.activeComment === commentId ? null : commentId;
     this.setState({ activeComment });
@@ -67,7 +62,7 @@ class Comments extends Component {
       <div>
         <CommentForm
           {...this.props}
-          nestingLevel={0}
+          nestingLevel={1}
           additionalNesting={screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
           text={'Comment'}
           parentPost={post}

@@ -32,6 +32,7 @@ export const GlobalStyle = createGlobalStyle`
   }
   a {
     color: ${colors.blue};
+    overflow-wrap: anywhere;
   }
 
   .smartbanner-top.smartbanner-android {

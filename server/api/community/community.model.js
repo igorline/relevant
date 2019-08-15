@@ -30,7 +30,9 @@ const CommunitySchema = new Schema(
     maxPostRank: { type: Number },
     numberOfElements: { type: Number },
     memberCount: { type: Number },
-    inactive: Boolean
+    inactive: Boolean,
+    private: { type: Boolean, default: false },
+    hidden: { type: Boolean, default: false }
   },
   {
     timestamps: true,
@@ -38,6 +40,12 @@ const CommunitySchema = new Schema(
     toObject: { virtuals: true }
   }
 );
+
+CommunitySchema.virtual('admins', {
+  ref: 'CommunityMember',
+  localField: 'slug',
+  foreignField: 'community'
+});
 
 CommunitySchema.virtual('members', {
   ref: 'CommunityMember',
@@ -57,7 +65,7 @@ CommunitySchema.pre('remove', async function remove(next) {
   try {
     const members = await this.model('CommunityMember').find({ community: this.slug });
     await this.model('CommunityMember')
-    .remove({ community: this.slug })
+    .deleteMany({ community: this.slug })
     .exec();
     // THIS IS TRICKY BECAUSE OF LEAVE RACE CONDITIONS
     const leave = members.map(async m => this.leave(m.user));
@@ -70,7 +78,7 @@ CommunitySchema.pre('remove', async function remove(next) {
 
 CommunitySchema.methods.updateMemeberCount = async function updateMemeberCount() {
   try {
-    this.memberCount = await this.model('CommunityMember').count({
+    this.memberCount = await this.model('CommunityMember').countDocuments({
       communityId: this._id
     });
     return this.save();
@@ -152,8 +160,9 @@ CommunitySchema.methods.join = async function join(userId, role) {
       communityId: this._id
     });
 
-    if (member && role === 'admin') {
-      member.role = role;
+    if ((member && role === 'admin') || role === 'superAdmin') {
+      member.role = 'admin';
+      member.superAdmin = role === 'superAdmin';
       return member.save();
     }
 

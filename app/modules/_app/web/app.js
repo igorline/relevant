@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import loadable from '@loadable/component';
 
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
-import routes from 'modules/_app/web/routes';
+import routes from 'modules/_app/web/routes'; // eslint-disable-line
 import queryString from 'query-string';
 import get from 'lodash.get';
 import { renderRoutes, matchRoutes } from 'react-router-config';
@@ -22,8 +22,9 @@ import SmartBanner from 'react-smartbanner';
 import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
 import * as modals from 'modules/ui/modals';
-import { TextTooltip, CustomTooltip } from 'modules/tooltip/web/tooltip.component';
+import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
+import CreatePostModal from 'modules/createPost/web/createPost.modal';
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/mobile/upvoteAnimation.component')
@@ -31,10 +32,11 @@ const UpvoteAnimation = loadable(() =>
 
 let ReactPixel;
 
+const DEV_MODE = process.env.NODE_ENV === 'development';
+
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
   require('app/styles/fonts.css');
-  // require('modules/web_splash/splash.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');
 }
@@ -50,34 +52,32 @@ class App extends Component {
     history: PropTypes.object,
     route: PropTypes.object,
     activeCommunity: PropTypes.string,
-    globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
+    globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    navigation: PropTypes.object
   };
 
   state = {
-    openLoginModal: false,
     authType: null
   };
 
   componentWillMount() {
-    const { actions } = this.props;
-    const { community } = this.props.auth;
-    actions.setCommunity(community || 'relevant');
+    const { auth, history, actions, location } = this.props;
+    const { community } = auth;
+    if (community && location.pathname === '/') {
+      history.replace(`/${community}/new`);
+    }
+    // TODO don't need this if api is middleware
+    if (community) actions.setCommunity(community);
   }
 
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
-    const { community } = auth;
 
     if (process.env.NODE_ENV !== 'development') {
       this.initAnalytics({ location, history });
     }
 
-    if (community && location.pathname === '/') {
-      history.replace(`/${community}/new`);
-    }
-
-    if (community) actions.setCommunity(community);
-    actions.getCommunities();
+    // actions.getCommunities();
     actions.getUser();
 
     if (auth.user) this.handleUserLogin();
@@ -120,6 +120,9 @@ class App extends Component {
       TwitterCT.pageView();
       ReactGA.pageview(loc.pathname + loc.search);
       ReactPixel.pageView();
+
+      // eslint-disable-next-line
+      Intercom('update');
     });
   };
 
@@ -128,9 +131,11 @@ class App extends Component {
   };
 
   debouncedSetWidth = AwesomeDebouncePromise(this.setWidth, 100);
+
   updateWidth = () => {
     this.debouncedSetWidth();
   };
+
   reloadTabs = () => {
     const now = new Date().getTime();
     if (now - this.backgroundTime > 10 * 60 * 1000) {
@@ -139,8 +144,12 @@ class App extends Component {
   };
 
   handleUserLogin = () => {
-    const { auth, actions } = this.props;
-    if (auth.user.role === 'temp') return;
+    const { auth, actions, navigation, location, history } = this.props;
+    const { screenSize } = navigation;
+
+    if (auth.user.role === 'temp') {
+      return actions.showModal('setHandle');
+    }
     if (!auth.user.webOnboard.onboarding) {
       actions.showModal('onboarding');
       actions.webOnboard('onboarding');
@@ -154,16 +163,25 @@ class App extends Component {
     }
     ReactGA.set({ userId: auth.user._id });
     actions.getEarnings('pending');
+
+    if (!auth.community && location.pathname === '/') {
+      history.replace('/communities');
+    }
+
+    if (screenSize) return null;
+    // eslint-disable-next-line
+    Intercom('boot', {
+      alignment: screenSize ? 'left' : 'right',
+      app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
+      name: `${auth.user.name} @${auth.user.handle}`, // Full name
+      email: auth.user.email, // Email address
+      created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
+    });
+    return null;
   };
 
   componentDidUpdate(prevProps) {
     const { actions, auth, location } = this.props;
-    // const { community } = match.params;
-    // if (community && activeCommunity !== community) {
-    //   if (community === 'home') {
-    //     this.props.history.push(`/${activeCommunity}/new`);
-    //   } else actions.setCommunity(community);
-    // }
 
     const route = matchRoutes(routes, location.pathname);
     const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
@@ -190,6 +208,7 @@ class App extends Component {
     if (!prevProps.auth.user && auth.user) {
       this.handleUserLogin();
     }
+
     if (
       prevProps.auth.user &&
       auth.user &&
@@ -200,15 +219,13 @@ class App extends Component {
     }
   }
 
-  toggleLogin(authType) {
-    this.setState({ openLoginModal: !this.state.openLoginModal, authType });
-  }
-
-  closeModal() {
+  closeModal(redirect) {
     const { history, location } = this.props;
     const queryParams = queryString.parse(location.search);
     if (queryParams.redirect) {
       history.push(queryParams.redirect);
+    } else if (redirect) {
+      history.push(redirect);
     } else {
       history.push(location.pathname);
     }
@@ -232,32 +249,21 @@ class App extends Component {
     globalModal = modals[globalModal] || globalModal;
 
     if (typeof globalModal === 'string') return null;
-    const { Body } = globalModal;
+    const { Body, redirect } = globalModal;
     const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    const close = () => {
+      this.props.actions.hideModal();
+      this.closeModal(redirect);
+    };
     return (
-      <Modal
-        {...globalModal}
-        close={() => {
-          this.props.actions.hideModal();
-          this.closeModal();
-        }}
-        visible
-      >
-        <Body
-          {...bodyProps}
-          close={() => {
-            this.props.actions.hideModal();
-            this.closeModal();
-          }}
-        />
+      <Modal {...globalModal} close={close} visible>
+        <Body {...bodyProps} close={close} />
       </Modal>
     );
   }
 
   render() {
-    // const { location, user } = this.props;
-    // const temp = user && user.role === 'temp';
-    // const connectAccount = location.hash === '#connectAccount';
+    const { globalModal } = this.props;
 
     return (
       <div>
@@ -266,19 +272,12 @@ class App extends Component {
           daysHidden={0}
           daysReminder={0}
           title={'Relevant Communities'}
-          // author={''}
           position={'top'}
           // force={'ios'}
         />
-        <TextTooltip
-          type={'dark'}
-          scrollHide
-          id="mainTooltip"
-          multiline
-          ref={c => (this.tooltip = c)}
-        />
-        <CustomTooltip id="tooltip" multiline ref={c => (this.tooltip = c)} />
-
+        <TextTooltip type={'dark'} scrollHide id="mainTooltip" multiline />
+        {/*        <CustomTooltip id="tooltip" multiline />
+         */}
         <div
           pointerEvents={'none'}
           style={{
@@ -289,14 +288,6 @@ class App extends Component {
         >
           <UpvoteAnimation />
         </div>
-
-        {/* <AuthContainer
-          toggleLogin={this.toggleLogin.bind(this)}
-          open={this.state.openLoginModal || temp}
-          modal
-          type={this.state.authType}
-          {...this.props}
-        /> */}
 
         {/* TODO - separate modal
         <EthTools>
@@ -313,6 +304,7 @@ class App extends Component {
           </Eth.Consumer>
         </EthTools> */}
         {this.renderModal()}
+        <CreatePostModal visible={globalModal === 'newpost'} />
         <ToastContainer />
         {renderRoutes(this.props.route.routes)}
       </div>

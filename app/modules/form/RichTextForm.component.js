@@ -12,6 +12,7 @@ export default class RichTextForm extends Component {
     label: PropTypes.string,
     initialValues: PropTypes.object
   };
+
   state = {
     admins: this.props.initialValues,
     adminsText: ''

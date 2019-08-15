@@ -6,7 +6,8 @@ import {
   TextInput,
   Image,
   Alert,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, greyText, mainPadding } from 'app/styles/global';
@@ -14,6 +15,7 @@ import * as utils from 'app/utils';
 import TextBody from 'modules/text/mobile/textBody.component';
 
 let styles;
+const DEFAULT_INPUT_HEIGHT = 25;
 
 class CommentInput extends Component {
   static propTypes = {
@@ -24,7 +26,8 @@ class CommentInput extends Component {
     onFocus: PropTypes.func,
     scrollToBottom: PropTypes.func,
     updatePosition: PropTypes.func,
-    editing: PropTypes.bool
+    editing: PropTypes.bool,
+    placeholder: PropTypes.string
   };
 
   constructor(props, context) {
@@ -34,7 +37,7 @@ class CommentInput extends Component {
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
     this.state = {
-      inputHeight: 50
+      inputHeight: DEFAULT_INPUT_HEIGHT
     };
   }
 
@@ -72,14 +75,14 @@ class CommentInput extends Component {
       user: auth.user._id
     };
 
-    this.setState({ comment: '', inputHeight: 50 });
+    this.setState({ comment: '', inputHeight: DEFAULT_INPUT_HEIGHT });
     this.textInput.blur();
     onFocus('new');
     actions.setUserSearch([]);
 
     return this.props.actions.createComment(commentObj).then(success => {
       if (!success) {
-        this.setState({ comment, inputHeight: 50 });
+        this.setState({ comment, inputHeight: DEFAULT_INPUT_HEIGHT });
         this.textInput.focus();
         return;
       }
@@ -105,15 +108,19 @@ class CommentInput extends Component {
   }
 
   renderInput() {
-    const { auth, editing } = this.props;
+    const { auth, editing, placeholder } = this.props;
     const { user } = auth;
     const { inputHeight } = this.state;
     if (!editing) {
-      let inputImage = null;
-      if (user.image) {
-        const imageUrl = user.image;
-        inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
-      }
+      const inputImage = user && user.image && (
+        <Image style={styles.inputImage} source={{ uri: user.image }} />
+      );
+
+      // let inputImage = null;
+      // if (user && user.image) {
+      //   const imageUrl = user.image;
+      //   inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
+      // }
       return (
         <View
           onLayout={e => {
@@ -123,7 +130,7 @@ class CommentInput extends Component {
               top: this.top
             });
           }}
-          style={[styles.commentInputParent, { height: Math.min(inputHeight, 120) }]}
+          style={styles.commentInputParent}
         >
           {inputImage}
           <TextInput
@@ -136,17 +143,14 @@ class CommentInput extends Component {
               styles.commentInput,
               styles.font15,
               {
-                flex: 1,
+                flex: 5,
                 lineHeight: 18,
-                paddingTop: 15,
-                maxHeight: 120,
-                minHeight: 50,
+                maxHeight: 200,
                 flexDirection: 'row',
-                alignItems: 'center',
-                height: Math.min(inputHeight, 120)
+                alignItems: 'center'
               }
             ]}
-            placeholder="Enter reply..."
+            placeholder={placeholder || 'Enter reply...'}
             placeholderTextColor={greyText}
             multiline
             onChangeText={comment => {
@@ -156,7 +160,7 @@ class CommentInput extends Component {
             onContentSizeChange={event => {
               const h = event.nativeEvent.contentSize.height;
               this.setState({
-                inputHeight: Math.max(50, h)
+                inputHeight: Math.max(DEFAULT_INPUT_HEIGHT, h)
               });
             }}
             returnKeyType="default"
@@ -183,7 +187,9 @@ class CommentInput extends Component {
             style={[styles.commentSubmit]}
             onPress={() => this.createComment()}
           >
-            <Text style={[styles.font15, styles.active]}>Submit</Text>
+            <Text style={[{ fontSize: 18, fontWeight: 'bold', color: 'white' }]}>
+              {'\u2191'}
+            </Text>
           </TouchableHighlight>
         </View>
       );
@@ -201,16 +207,21 @@ export default CommentInput;
 const localStyles = StyleSheet.create({
   commentInput: {
     flex: 1,
-    padding: 10,
-    height: 200
+    paddingBottom: 4,
+    justifyContent: 'center',
+    // backgroundColor: 'pink',
+    minHeight: 25,
+    paddingLeft: 10,
+    marginTop: 12.5,
+    marginBottom: Platform.OS === 'android' ? 4 : 12.5
+    // marginVertical: 12.5
   },
   commentInputParent: {
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: 'lightgrey',
-    backgroundColor: 'white',
-    height: 180
+    backgroundColor: 'white'
   },
   inputImage: {
     height: 25,
@@ -219,8 +230,13 @@ const localStyles = StyleSheet.create({
     marginLeft: mainPadding
   },
   commentSubmit: {
+    backgroundColor: '#0000FF',
+    marginRight: 16,
     flex: 0,
-    width: 75,
+    width: 25,
+    height: 25,
+    paddingHorizontal: 4,
+    borderRadius: 12.5,
     justifyContent: 'center',
     alignItems: 'center'
   }

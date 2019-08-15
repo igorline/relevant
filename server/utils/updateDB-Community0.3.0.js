@@ -34,11 +34,20 @@ let DEFAULT_COMMINITY_ID;
 
 async function populateCommunityEmbeddedUsuer() {
   let members = await CommunityMember.find({
-    'embeddedUser.handle': { $exists: false }
-  }).populate('user', 'name handle image');
-  members = members.map(m => {
-    m.embeddedUser = m.user.toObject();
-    return m.save();
+    // 'embeddedUser.handle': { $exists: false }
+  });
+  // .populate('user', 'name handle image');
+
+  members = members.map(async m => {
+    try {
+      const user = await User.findOne({ _id: m.user }, 'name handle image');
+      m.embeddedUser = user.toObject();
+      // console.log(m.embeddedUser.toObject());
+      // return m.save();
+      return null;
+    } catch (err) {
+      return console.log(err);
+    }
   });
   return Promise.all(members);
 }

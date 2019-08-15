@@ -30,6 +30,8 @@ import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
+import { getCommunities } from 'modules/community/community.actions';
+
 import BannerPrompt from 'modules/activity/bannerPrompt.component';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
@@ -111,6 +113,7 @@ class Application extends Component {
       if (community) actions.setCommunity(community);
       return null;
     });
+    actions.getCommunities();
 
     PushNotification.setApplicationIconBadgeNumber(0);
     Linking.addEventListener('url', this.handleOpenURL);
@@ -262,7 +265,8 @@ function mapDispatchToProps(dispatch) {
         ...notifActions,
         ...userActions,
         ...navigationActions,
-        ...tooltipActions
+        ...tooltipActions,
+        getCommunities
       },
       dispatch
     )

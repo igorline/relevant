@@ -9,9 +9,9 @@ import Invite from './invite.model';
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
-// Invite.count({ status: 'email sent' }).then(c => console.log('email sent', c));
-// Invite.count({ status: 'registered' }).then(c => console.log('registered', c));
-// User.count({}).then(u => console.log('Users', u));
+// Invite.countDocuments({ status: 'email sent' }).then(c => console.log('email sent', c));
+// Invite.countDocuments({ status: 'registered' }).then(c => console.log('registered', c));
+// User.countDocuments({}).then(u => console.log('Users', u));
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
@@ -91,7 +91,7 @@ exports.create = async (req, res, next) => {
     }
 
     // TODO consensus of existing admins
-    if (invite.type === 'admin' && user.role !== 'admin') {
+    if (invite.type === 'admin' && user.role !== 'admin' && !communityMember.superAdmin) {
       throw new Error("You don't have the privileges required to invite an admin");
     }
 
@@ -117,7 +117,7 @@ async function computeInviteNumber({ user, communityId }) {
     if (!user.relevance) return 0;
   }
   const totalInvites = totalAllowedInvites(user.relevance.pagerank);
-  const usedInvites = await Invite.count({
+  const usedInvites = await Invite.countDocuments({
     invitedBy: user._id,
     communityId,
     type: 'referral'

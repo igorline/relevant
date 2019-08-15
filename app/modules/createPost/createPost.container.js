@@ -3,24 +3,23 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as navigationActions from 'modules/navigation/navigation.actions';
 import RichText from 'modules/text/web/richText.component';
 import get from 'lodash.get';
 import ReactGA from 'react-ga';
 
+import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text } from 'app/utils';
 
-import { View, Button, Divider } from 'modules/styled/uni';
+import { View, Button, Divider, BodyText } from 'modules/styled/uni';
+import { Input } from 'modules/styled/web';
 import { colors, sizing } from 'app/styles';
 
-import UAvatar from 'modules/user/UAvatar.component';
-import RStat from 'modules/stats/rStat.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
-import CreatePostTeaser from 'modules/createPost/web/createPostTeaser.component';
 import TagInput from 'modules/createPost/web/TagInput.component';
 import SelectTags from 'modules/createPost/web/selectTags.component';
 import styled from 'styled-components/primitives';
@@ -40,7 +39,7 @@ class CreatePostContainer extends Component {
     actions: PropTypes.object,
     userSearch: PropTypes.array,
     createPost: PropTypes.object,
-    modal: PropTypes.bool,
+    // modal: PropTypes.bool,
     auth: PropTypes.object,
     close: PropTypes.func,
     location: PropTypes.object,
@@ -169,7 +168,17 @@ class CreatePostContainer extends Component {
   createPost = async () => {
     this.setState({ submitting: true });
     const { auth, close, actions, history, location, createPost } = this.props;
-    const { selectedTags, postUrl, urlPreview, category, mentions, domain } = this.state;
+    const {
+      selectedTags,
+      postUrl,
+      urlPreview,
+      category,
+      mentions,
+      domain,
+      channel,
+      title
+    } = this.state;
+
     let { tags, body } = this.state;
     try {
       const validate = this.validateInput();
@@ -185,12 +194,13 @@ class CreatePostContainer extends Component {
         url: postUrl || postUrl,
         tags,
         body,
-        title: urlPreview ? urlPreview.title : null,
+        title: urlPreview ? urlPreview.title : title,
         description: urlPreview ? urlPreview.description : null,
         category,
         image: urlPreview ? urlPreview.image : null,
         mentions,
-        domain
+        domain,
+        channel
       };
 
       if (createPost.edit) {
@@ -328,10 +338,14 @@ class CreatePostContainer extends Component {
     );
   }
 
+  handleInput = e => this.setState({ [e.target.name]: e.target.value });
+
+  handleCheckbox = e => this.setState({ [e.target.name]: e.target.checked });
+
   render() {
     const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
-    const { body, url, submitting } = this.state;
-    const { community } = this.props;
+    const { body, url, submitting, channel, title } = this.state;
+    const { community, auth } = this.props;
     const articleTags = this.state.keywords;
     let communityTags = [];
     if (community) {
@@ -339,23 +353,26 @@ class CreatePostContainer extends Component {
       communityTags = get(activeCommunity, 'topics', []) || [].map(t => t._id);
     }
     const allTags = [].concat(articleTags, communityTags);
+    const isAdmin = auth.user && auth.user.role === 'admin';
 
-    if (!this.state.active && !this.props.modal) {
-      return (
-        <CreatePostTeaser
-          user={this.props.auth.user}
-          onClick={() => this.setState({ active: true })}
-        />
-      );
-    }
     const submitDisabled =
       submitting || !this.state.selectedTags.length || !body || !body.trim().length;
     return (
       <View>
         <View display="flex" fdirection="row" align="center">
-          <UAvatar user={this.props.auth.user} size={4} />
-          <RStat user={this.props.auth.user} size={2} ml={1.5} />
+          <AvatarBox user={auth.user} size={4} />
         </View>
+
+        {channel && (
+          <Input
+            onChange={this.handleInput}
+            value={title}
+            name="title"
+            mt={2}
+            type="text"
+            placeholder="Title"
+          />
+        )}
 
         <View mt={2}>
           <RichText
@@ -417,19 +434,33 @@ class CreatePostContainer extends Component {
             <Divider mt={[4, 2]} />
           </View>
         ) : null}
-        <View display="flex" fdirection="row" mt={2} justify="flex-end">
-          <Button c={colors.black} bg={colors.white} onClick={this.clearPost}>
-            Clear
-          </Button>
 
-          <Button
-            onClick={() => !submitDisabled && this.createPost()}
-            disabled={submitDisabled}
-            ml={2}
-            bb={1}
-          >
-            {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
-          </Button>
+        <View mt={2} fdirection="row" justify="space-between">
+          {isAdmin && (
+            <View fdirection="row" align={'center'} alignself={'center'}>
+              <input
+                checked={channel}
+                type="checkbox"
+                name={'channel'}
+                onChange={this.handleCheckbox}
+              />
+              <BodyText ml={0.5}>This is a chat channel</BodyText>
+            </View>
+          )}
+          <View fdirection="row" flex={1} justify="flex-end">
+            <Button c={colors.black} bg={colors.white} onClick={this.clearPost}>
+              Clear
+            </Button>
+
+            <Button
+              onClick={() => !submitDisabled && this.createPost()}
+              disabled={submitDisabled}
+              ml={2}
+              bb={1}
+            >
+              {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
+            </Button>
+          </View>
         </View>
       </View>
     );

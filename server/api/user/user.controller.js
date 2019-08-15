@@ -123,16 +123,14 @@ exports.confirm = async (req, res, next) => {
     user = await User.findOne({ handle, confirmCode });
     if (!user) throw new Error('Wrong confirmation code');
 
-    if (!user.confirmed) {
-      user.confirmed = true;
-      user = await user.addReward({ type: 'email' });
-      user = await user.save();
-    } else {
-      req.unconfirmed = true; // ?
-    }
+    user.confirmed = true;
+    user = await user.addReward({ type: 'email' });
+    user = await user.save();
+    req.confirmed = true;
     return middleware ? next() : res.status(200).json(user);
   } catch (err) {
-    return next(err);
+    console.error(err); // eslint-disable-line
+    return next();
   }
 };
 
@@ -268,24 +266,39 @@ exports.index = (req, res, next) => {
 
 exports.checkUser = async (req, res, next) => {
   try {
-    const { name, email } = req.query;
+    const { name, email, omitSelf } = req.query;
+    const { user } = req;
     let query = {};
     let type;
 
     if (name === 'everyone') {
       return res.status(200).json({ type });
     }
+    let formatted;
+    let omit;
+    if (user && omitSelf) {
+      omit = user.handle;
+    }
 
     if (name) {
       type = 'user';
-      const formatted = '^' + name + '$';
-      query = { ...query, handle: { $regex: formatted, $options: 'i' } };
+      formatted = '^' + name + '$';
+      query = {
+        ...query,
+        $and: [
+          { handle: { $regex: formatted, $options: 'i' } },
+          { handle: { $ne: omit } }
+        ]
+      };
     } else if (email) {
+      formatted = '^' + email + '$';
       type = 'email';
-      query = { email };
+      query = {
+        $and: [{ email: { $regex: formatted, $options: 'i' } }, { handle: { $ne: omit } }]
+      };
     }
 
-    const userExists = await User.findOne(query, 'handle', '_id handle');
+    const userExists = await User.findOne(query, '_id handle');
     if (userExists) return res.status(200).json(userExists);
     return res.status(200).json(null);
   } catch (err) {
@@ -550,7 +563,7 @@ exports.updateHandle = async (req, res, next) => {
       _id: user._id
     };
 
-    await CommunityMember.update(
+    await CommunityMember.updateMany(
       { user: user._id },
       { embeddedUser: newUser },
       { multi: true }
@@ -607,9 +620,13 @@ exports.update = async (req, res, next) => {
       };
 
       // Do this on a separate thread?
-      await Post.update({ user: user._id }, { embeddedUser: newUser }, { multi: true });
+      await Post.updateMany(
+        { user: user._id },
+        { embeddedUser: newUser },
+        { multi: true }
+      );
 
-      await CommunityMember.update(
+      await CommunityMember.updateMany(
         { user: user._id },
         { embeddedUser: newUser },
         { multi: true }
@@ -640,10 +657,10 @@ exports.block = async (req, res, next) => {
     );
 
     // clear any existing subscriptions
-    const sub1 = Subscription.remove({ following: user._id, follower: block });
-    const sub2 = Subscription.remove({ following: block, follower: user._id });
-    const feed1 = Feed.remove({ userId: user._id, from: block });
-    const feed2 = Feed.remove({ userId: block, from: user._id });
+    const sub1 = Subscription.deleteMany({ following: user._id, follower: block }).exec();
+    const sub2 = Subscription.deleteMany({ following: block, follower: user._id }).exec();
+    const feed1 = Feed.deleteMany({ userId: user._id, from: block }).exec();
+    const feed2 = Feed.deleteMany({ userId: block, from: user._id }).exec();
 
     const results = await Promise.all([
       userPromise,
@@ -773,19 +790,30 @@ exports.cashOut = async (req, res, next) => {
     }
 
     if (amount < 100) throw new Error('Balance is too small to withdraw');
-    const distributedRewards = await ethUtils.getParam('distributedRewards');
+    const allocatedRewards = await ethUtils.getParam('allocatedRewards');
 
-    if (distributedRewards < amount) {
-      throw new Error('There are not enough funds in contract at the moment');
+    // eslint-disable-next-line no-console
+    console.log({ allocatedRewards, amount });
+
+    if (allocatedRewards < amount) {
+      throw new Error(
+        'There are not enough funds allocated in the contract at the moment'
+      );
     }
+    /*
+      TODO -- Consider persisting balances/cachOut attempts
+       or migrating to immutable data structures
+    */
 
-    // make sure we 0 out the balance
-    user.balance = 0;
+    amount = Number.parseFloat(amount).toFixed(0);
+    // make sure we subtract claim amount from balance
+    user.balance -= amount;
     await user.save();
 
     const sig = await ethUtils.sign(address, amount);
     user.nonce = nonce;
     user.cashOut = { sig, amount, nonce };
+    // console.log('user', user);
     await user.save();
     return res.status(200).json(user);
   } catch (err) {

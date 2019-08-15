@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components/primitives';
 import { View, Header, Touchable, CloseX } from 'modules/styled/uni';
 import { colors, layout } from 'app/styles';
@@ -36,7 +37,7 @@ const Modal = styled(View)`
   max-width: 100vw;
 `;
 
-export default class ModalComponent extends Component {
+class ModalComponent extends Component {
   static propTypes = {
     header: PropTypes.object,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
@@ -46,10 +47,12 @@ export default class ModalComponent extends Component {
     children: PropTypes.node,
     footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
   };
+
   constructor(props) {
     super(props);
     this.escFunction = this.escFunction.bind(this);
   }
+
   escFunction(event) {
     if (event.keyCode === 27) {
       if (this.props.visible) {
@@ -57,6 +60,7 @@ export default class ModalComponent extends Component {
       }
     }
   }
+
   componentDidMount() {
     document.addEventListener('keydown', this.escFunction, false);
     // disableBodyScroll(this.targetElement, {
@@ -74,15 +78,16 @@ export default class ModalComponent extends Component {
     // }
     // });
   }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.escFunction, false);
     // clearAllBodyScrollLocks();
   }
 
   render() {
-    const { close, footer, children, hideX } = this.props;
+    const { close, footer, children, hideX, visible } = this.props;
     const header = this.props.header || this.props.title;
-    if (!this.props.visible) return null;
+    if (!visible) return null;
     const footerEl = typeof footer === 'function' ? footer(this.props) : footer;
     return (
       <ModalParent onClick={close} ref={c => (this.targetElement = c)}>
@@ -112,7 +117,7 @@ export default class ModalComponent extends Component {
             )}
             {header ? (
               <Header pr={5} shrink={1}>
-                {this.props.header || this.props.title}
+                {header}
               </Header>
             ) : null}
             {children && <View mt={3}>{children}</View>}
@@ -123,3 +128,8 @@ export default class ModalComponent extends Component {
     );
   }
 }
+
+export default props =>
+  props.visible && document
+    ? ReactDOM.createPortal(<ModalComponent {...props} />, document.body)
+    : null;

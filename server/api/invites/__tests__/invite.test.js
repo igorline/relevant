@@ -44,7 +44,6 @@ describe('CreatePost', () => {
     ({ alice, bob } = getUsers());
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
-    await Invite.ensureIndexes();
     req = {
       user: alice,
       body: referral,

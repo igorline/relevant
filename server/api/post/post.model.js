@@ -11,6 +11,7 @@ const PostSchema = new Schema(
     body: String,
     title: String,
     description: String,
+    channel: { type: Boolean, default: false },
     community: String,
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
     tags: [{ type: String, ref: 'Tag' }],
@@ -99,6 +100,13 @@ const PostSchema = new Schema(
   }
 );
 
+PostSchema.virtual('myVote', {
+  ref: 'Invest',
+  localField: '_id',
+  foreignField: 'post',
+  justOne: true
+});
+
 PostSchema.virtual('reposted', {
   ref: 'Post',
   localField: '_id',
@@ -156,7 +164,7 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 PostSchema.pre('save', async function save(next) {
   try {
     const countQuery = { parentPost: this._id, hidden: false };
-    this.commentCount = await this.model('Post').count(countQuery);
+    this.commentCount = await this.model('Post').countDocuments(countQuery);
     return next();
   } catch (err) {
     console.log('error updating post count', err); // eslint-disable-line
@@ -424,20 +432,43 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
   }
 };
 
-PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
+// PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
+//   try {
+//     const investments = await this.model('Invest').find({
+//       investor: userId,
+//       post: { $in: postIds }
+//     });
+//     const updatePosts = {
+//       _id: userId,
+//       type: 'UPDATE_POST_INVESTMENTS',
+//       payload: investments
+//     };
+//     socketEvent.emit('socketEvent', updatePosts);
+//   } catch (err) {
+//     console.log('sendOutInvestInfo error', err); // eslint-disable-line
+//   }
+// };
+
+async function getPostData({ post, communityId }) {
+  if (!post.data) {
+    post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+  }
+  return post;
+}
+
+PostSchema.methods.addTags = async function addTags({ tags, communityId }) {
   try {
-    const investments = await this.model('Invest').find({
-      investor: userId,
-      post: { $in: postIds }
-    });
-    const updatePosts = {
-      _id: userId,
-      type: 'UPDATE_POST_INVESTMENTS',
-      payload: investments
-    };
-    socketEvent.emit('socketEvent', updatePosts);
+    let post = this;
+    post = await getPostData({ post, communityId });
+
+    const combinedTags = [...new Set([...(post.tags || []), ...(tags || [])])];
+    post.tags = combinedTags;
+    post.data.tags = combinedTags;
+    await post.data.save();
+    // linkObject.tags = combinedTags;
+    return post.save();
   } catch (err) {
-    console.log('sendOutInvestInfo error', err); // eslint-disable-line
+    return console.log('error adding tags', err); // eslint-disable-line
   }
 };
 
@@ -576,7 +607,7 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
     if (!communityId) throw new Error('missing community');
 
     // Thread has no children - remove everything
-    const children = await this.model('Post').count({ parentPost: post._id });
+    const children = await this.model('Post').countDocuments({ parentPost: post._id });
 
     // there is no way to remove post link
     // maybe we shouldn't 'invest in links automatically'?
@@ -585,17 +616,17 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
       return null;
     }
 
-    const communityChildren = await this.model('Post').count({
+    const communityChildren = await this.model('Post').countDocuments({
       communityId,
       parentPost: post._id
     });
 
     if (communityChildren || shares) return post;
 
-    await this.model('PostData').findOneAndUpdate(
-      { post: post._id, communityId },
-      { isInFeed: false }
-    );
+    await this.model('PostData')
+    .deleteOne({ post: post._id, communityId })
+    .exec();
+
     return post;
   } catch (err) {
     throw err;
@@ -645,22 +676,22 @@ PostSchema.post('remove', async function postRemove(post, next) {
 
     // await this.model('CommunityFeed').removeFromAllFeeds(doc);
     const note = this.model('Notification')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
     const feed = this.model('Feed')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
     const twitterFeed = this.model('TwitterFeed')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
     const data = this.model('PostData')
-    .remove({ post: post._id })
+    .deleteMany({ post: post._id })
     .exec();
 
     let metaPost;
     // if (post.type === 'link' && !post.parentParent) {
     //   metaPost = await this.model('MetaPost')
-    //   .remove({ post: post._id })
+    //   .deleteMany({ post: post._id })
     //   .exec();
     // }
 
@@ -668,7 +699,7 @@ PostSchema.post('remove', async function postRemove(post, next) {
     // remove notifications
     if (post.type === 'comment' || post.type === 'repost') {
       commentNote = this.model('Notification')
-      .remove({ comment: post._id })
+      .deleteMany({ comment: post._id })
       .exec();
     }
 

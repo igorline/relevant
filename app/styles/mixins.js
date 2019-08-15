@@ -1,17 +1,7 @@
 import { css } from 'styled-components';
 import { lineColor } from './colors';
-import sizing from './sizing';
+import { size } from './sizing';
 import { responsiveHandler } from './responsive';
-
-export const size = (value, screen) => {
-  const units = responsiveHandler(value, screen);
-
-  if (typeof units === 'number') return sizing(units);
-  if (!units || units.match(/px|rem|em|vh|vw|auto|%|pt/)) return units;
-  const uArray = units.split(' ');
-  if (uArray.length === 1) sizing(Number(units));
-  return uArray.map(u => sizing(Number(u))).join(' ');
-};
 
 export const color = css`
   ${p => (p.c ? `color: ${p.c};` : '')};
@@ -50,9 +40,9 @@ export const inheritfont = css`
   ${p =>
     p.inheritfont
       ? `
-      font-size: 'inherit';
-      line-height: 'inherit';
-      font-family: 'inherit';`
+    font-size: 'inherit';
+    line-height: 'inherit';
+    font-family: 'inherit';`
       : ''};
 `;
 
@@ -60,13 +50,14 @@ export const inheritcolor = css`
   ${p =>
     p.inheritcolor
       ? `
-      color: 'inherit';`
+    color: 'inherit';`
       : ''};
 `;
 
 export const width = css`
   ${p => (p.w ? `width: ${size(p.w)};` : '')};
   ${p => (p.minwidth ? `min-width: ${size(p.minwidth)};` : '')};
+  ${p => (p.maxWidth ? `max-width: ${size(p.maxWidth)};` : '')};
 `;
 
 export const height = css`

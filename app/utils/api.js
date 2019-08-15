@@ -22,9 +22,16 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   // prevent react native from loading these modules
   const postApi = '../../server/api/post/post.controller';
   const userApi = '../../server/api/user/user.controller';
+  const commentsApi = '../../server/api/comment/comment.controller';
+  const feedApi = '../../server/api/communityFeed/communityFeed.controller';
+  const communityApi = '../../server/api/community/community.controller';
+
   // post = require(postApi);
+  routes.comment = require(commentsApi) || {}; // eslint-disable-line
+  routes.communityFeed = require(feedApi) || {}; // eslint-disable-line
   routes.post = require(postApi) || {}; // eslint-disable-line
   routes.user = require(userApi) || {}; // eslint-disable-line
+  routes.community = require(communityApi) || {}; // eslint-disable-line
 }
 
 export const queryParams = params => {
@@ -92,7 +99,7 @@ export async function handleErrors(response) {
 export async function request(options) {
   try {
     // Add community query parameter
-    options.query = { ...options.query, community };
+    options.query = { community, ...options.query };
     const query = queryParams(options.query);
     let apiPath = '/api/';
     if (options.endpoint.match('auth')) apiPath = '';
@@ -114,14 +121,17 @@ export async function request(options) {
     // ---------------------------------------------
 
     if (!process.env.BROWSER && process.env.WEB === 'true') {
-      if (options.path === '' && options.params) options.path = 'findById';
+      if (path === '') options.path = 'index';
       const req = {
         params: options.params,
         body: options.body,
-        query: options.query
+        query: options.query,
+        user: options.user
       };
       const next = () => null;
       const res = null;
+      // console.log('req', req);
+      // console.log('route', routes[options.endpoint], path);
       if (!routes[options.endpoint] || !routes[options.endpoint][options.path]) {
         return null;
       }
@@ -147,3 +157,5 @@ export async function request(options) {
     throw error;
   }
 }
+
+// export middleware

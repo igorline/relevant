@@ -169,7 +169,7 @@ export async function cleanupData() {
   }).remove();
 
   const posts = await Post.find({ body: 'Hotties' });
-  const clearPostData = await PostData.remove({
+  const clearPostData = await PostData.deleteMany({
     post: { $in: posts.map(p => p._id) }
   }).exec();
 

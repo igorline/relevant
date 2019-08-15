@@ -74,9 +74,9 @@ class Bio extends Component {
               editing: true
             });
           }}
-          style={{ paddingLeft: 10 }}
+          style={{ paddingLeft: 10, paddingTop: 3 }}
         >
-          <Icon name="ios-create-outline" size={22} color={blue} />
+          <Icon name="ios-create" size={22} color={blue} />
         </Text>
       );
     }

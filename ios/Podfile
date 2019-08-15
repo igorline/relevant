@@ -27,4 +27,6 @@ target 'relevantNative' do
 
   # pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
+
 end

@@ -5,7 +5,7 @@ module.exports.getUrls = ({ post, fromUser, toUser }) => {
     ? `${process.env.API_SERVER}/user/profile/${fromUser.handle}`
     : null;
   const postUrl = `${process.env.API_SERVER}/${
-    post.data.community
+    post.data ? post.data.community : post.community
   }/post/${postId}${replyIdSting}`;
   const settingsUrl = `${process.env.API_SERVER}/user/profile/${toUser.handle}/settings`;
   return { userUrl, postUrl, settingsUrl };

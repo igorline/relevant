@@ -81,11 +81,13 @@ export function getCommunityMembers({ slug, skip, limit }) {
 }
 
 export function getCommunities() {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const { auth } = getState();
     try {
       const res = await api.request({
         method: 'GET',
-        endpoint: 'community'
+        endpoint: 'community',
+        user: auth.user
       });
       return dispatch(setCommunities(res));
     } catch (error) {

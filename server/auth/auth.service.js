@@ -92,27 +92,32 @@ function isAuthenticated() {
   .use(getUser('+email'));
 }
 
-function communityMember() {
+function communityMember(role) {
   return async (req, res, next) => {
     try {
       if (!req.user || !req.user._id) {
         throw new Error('missing user credentials');
       }
       const user = req.user._id;
-      // TODO make sure share extension supports this
       const community = req.query.community || 'relevant';
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
       if (!member) {
-        // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
         const com = await Community.findOne({ slug: community });
+        // TODO private communities
+        if (!com || com.private) throw new Error("Community doesn't exist");
+
         member = await com.join(user);
         if (!member.community) {
           member.community = com.slug;
           member = await member.save();
         }
+      }
+
+      if (role === 'superAdmin' && !member.superAdmin && req.user.role !== 'admin') {
+        throw new Error("You don't have the priveleges required to do this");
       }
 
       if (!member) throw new Error('you are not a member of this community');

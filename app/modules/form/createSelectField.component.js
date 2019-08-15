@@ -21,17 +21,20 @@ export default class CreatableMulti extends Component {
     label: PropTypes.string,
     error: PropTypes.string
   };
+
   state = {
     inputValue: '',
     value: this.props.input.value
       ? this.props.input.value.map(option => ({ value: option, label: option }))
       : []
   };
+
   componentDidUpdate() {
     const vals = this.state.value.map(v => v.label);
     // console.log('did update', vals);
     this.props.input.onChange(vals);
   }
+
   handleChange = (
     value: any
     // actionMeta: any
@@ -42,9 +45,11 @@ export default class CreatableMulti extends Component {
     // console.groupEnd();
     this.setState({ value });
   };
+
   handleInputChange = (inputValue: string) => {
     this.setState({ inputValue });
   };
+
   handleKeyDown = event => {
     const { inputValue, value } = this.state;
     if (!inputValue) return;

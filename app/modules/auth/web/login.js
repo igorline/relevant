@@ -1,130 +1,142 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, LinkFont, View, Image } from 'modules/styled/uni';
-import FormField from 'modules/styled/form/field.component';
-import { browserAlerts } from 'app/utils/alert';
+import get from 'lodash.get';
+import { LinkFont, Image, ViewButton } from 'modules/styled/uni';
+import { Form, View, Button } from 'modules/styled/web';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import queryString from 'query-string';
+import { loginUser } from 'modules/auth/auth.actions';
+import { withRouter } from 'react-router-dom';
+import { showModal } from 'modules/navigation/navigation.actions';
+import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import { Field, reduxForm } from 'redux-form';
+import { required } from 'modules/form/validators';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
 const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
-    parentFunction: PropTypes.func,
-    authNav: PropTypes.func,
     location: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    actions: PropTypes.object,
+    close: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    username: PropTypes.string,
+    password: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
-    // this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      username: '',
-      password: ''
-    };
-    this.submit = this.submit.bind(this);
-  }
-
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  submit() {
-    if (!this.state.username) {
-      browserAlerts.alert('username requied');
-      return;
+  login = async data => {
+    try {
+      const user = {
+        name: data.username,
+        password: data.password
+      };
+      const loggedIn = await this.props.actions.loginUser(user);
+      if (loggedIn) {
+        this.props.close();
+      }
+    } catch (err) {
+      // TODO error handling
     }
-    if (!this.state.password) {
-      browserAlerts.alert('password required');
-      return;
-    }
-    this.props.parentFunction(this.state);
-  }
+  };
 
   render() {
-    const { location } = this.props;
+    const { location, handleSubmit, username, password } = this.props;
     const { invitecode } = this.props.auth;
-    const { username, password } = this.state;
-    const local = username.length && password.length;
+    const local = username && username.length && password && password.length;
     let { redirect } = queryString.parse(location.search);
     if (!redirect) redirect = location.pathname;
 
     const FORM_FIELDS = [
       {
-        placeholder: 'Username or email',
         label: 'Username or email',
-        value: this.state.username,
-        key: 'Username',
-        name: 'Username',
-        onChange: e => {
-          this.setState({ username: e.target.value });
-        },
-        type: 'text'
+        component: ReduxFormField,
+        name: 'username',
+        autocomplete: 'username',
+        type: 'text',
+        validate: [required]
       },
       {
-        key: 'Password',
         type: 'password',
-        placeholder: 'Password',
+        component: ReduxFormField,
         label: 'Password',
-        value: this.state.password,
-        // name: 'Password',
-        onChange: Password => {
-          this.handleChange('password', Password.target.value);
-        },
-        onKeyDown: e => {
-          if (e.keyCode === 13) {
-            this.submit();
-          }
-        }
+        name: 'password',
+        autocomplete: 'current-password',
+        validate: [required]
       }
     ];
 
+    const socialSignup = (
+      <LinkFont shrink={1} mt={[0, 4]}>
+        Not registered yet?{' '}
+        <a
+          onClick={() => {
+            this.props.actions.showModal('signupSocial');
+          }}
+        >
+          Sign up
+        </a>
+      </LinkFont>
+    );
+
     return (
-      <div>
+      <Form fdirection="column" onSubmit={handleSubmit(this.login)}>
         {FORM_FIELDS.map(field => (
-          <FormField {...field} />
+          <Field {...field} key={field.name} />
         ))}
-        <View display="flex" fdirection="row" align="center" justify="flex-start">
-          <a onClick={() => this.props.authNav('forgot')}>
+        <View display="flex" fdirection="column" align="flex-start" justify="flex-start">
+          <a
+            onClick={() => {
+              this.props.actions.showModal('forgot');
+            }}
+          >
             <LinkFont c={colors.blue} mt={2}>
               Forgot Your Password?
             </LinkFont>
           </a>
+          {local ? (
+            <View fdirection="row" mt={[4, 2]} align="center">
+              <Button onClick={this.submit} type="submit" mr={[2, 0]} fdirection="row">
+                {' '}
+                Sign In{' '}
+              </Button>
+              {socialSignup}
+            </View>
+          ) : null}
         </View>
 
-        <View
-          display="flex"
-          fdirection={['row', 'column']}
-          align={['center', 'stretch']}
-          mt={4}
-        >
-          {!local && (
-            <React.Fragment>
+        <View>
+          {!local ? (
+            <View
+              fdirection={['row', 'column']}
+              align={['center', 'stretch']}
+              mt={[4, 2]}
+              flex={1}
+            >
               <ULink
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
+                rel="nofollow"
                 mr={[2, 0]}
+                mt={[0, 2]}
               >
-                <Button mt={2} flex={1} bg={colors.twitterBlue}>
+                <ViewButton flex={1} bg={colors.twitterBlue} fdirection="row">
                   <Image source={twitterIcon} w={2.5} h={2.5} mr={1.5} />
-                  Sign In with Twitter
-                </Button>
+                  <LinkFont c={colors.white}>Sign In with Twitter</LinkFont>
+                </ViewButton>
               </ULink>
-            </React.Fragment>
-          )}
-          {!local ? (
-            <React.Fragment>
               <ULink
                 flex={1}
                 to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
                 external
                 mr={[2, 0]}
+                mt={[0, 2]}
               >
-                <Button mt={2} flex={1} bg={colors.redditColor}>
+                <ViewButton flex={1} bg={colors.redditColor} fdirection="row">
                   <Image
                     resizeMode={'contain'}
                     source={redditIcon}
@@ -132,28 +144,46 @@ class LoginForm extends Component {
                     h={3}
                     mr={1.5}
                   />
-                  Sign In with Reddit
-                </Button>
+                  <LinkFont c={colors.white}>Sign In with Reddit </LinkFont>
+                </ViewButton>
               </ULink>
-            </React.Fragment>
+              {socialSignup}
+            </View>
           ) : null}
-          {local ? (
-            <Button mt={2} onClick={this.submit} mr={[2, 0]}>
-              {' '}
-              Sign In{' '}
-            </Button>
-          ) : null}
-
-          <View mt={[2, 4]}>
-            <LinkFont shrink={1}>
-              Not registered yet?{' '}
-              <a onClick={() => this.props.authNav('signup')}>Sign up</a>
-            </LinkFont>
-          </View>
         </View>
-      </div>
+      </Form>
     );
   }
 }
 
-export default LoginForm;
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  auth: state.auth,
+  // TODO:
+  // See if there's a better way to do this, perhaps using formValueSelector?
+  password: get(state.form, 'login.values.password'),
+  username: get(state.form, 'login.values.username'),
+  initialValues: {},
+  enableReinitialize: true
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      loginUser,
+      showModal
+    },
+    dispatch
+  )
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(
+    reduxForm({
+      form: 'login'
+    })(LoginForm)
+  )
+);

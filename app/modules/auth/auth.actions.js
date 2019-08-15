@@ -1,27 +1,23 @@
 import * as types from 'core/actionTypes';
 import * as utils from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
+// eslint-disable-next-line
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import { setUserMemberships } from 'modules/community/community.actions';
 
 const Alert = utils.alert.Alert();
-let ReactNative = {};
 let PushNotification;
 let userDefaults;
 
 let Analytics;
 let ReactGA;
-let Platform;
-let okToRequestPermissions = true;
 let ReactPixel;
 let TwitterCT;
 
 if (process.env.WEB !== 'true') {
-  ReactNative = require('react-native');
   Analytics = require('react-native-firebase-analytics');
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
-  Platform = ReactNative.Platform;
   PushNotification = require('react-native-push-notification');
 } else {
   ReactGA = require('react-ga').default;
@@ -242,65 +238,62 @@ export function removeDeviceToken(auth) {
 
 export function enableMobileNotifications(user) {
   return dispatch => {
-    PushNotification.configure({
-      // (required) Called when a remote or local notification is opened or received
-      onNotification: notification => {
-        // other params: foreground, message
-        const { userInteraction, data } = notification;
-        if (!userInteraction) return;
-        if (data && data.post) {
-          const parentId = data.post.parentId
-            ? data.post.parentId._id || data.post.parentId
-            : data.post._id;
-          const comment = parentId !== data.post._id ? { _id: data.post._id } : null;
-          dispatch(
-            navigationActions.goToPost({ _id: parentId, title: data.post.title, comment })
-          );
-        }
-      },
+    if (!user.notificationSettings.mobile.all) return;
+    if (!PushNotification) return;
+    configurePushNotifications(dispatch);
+    registerPushNotification({ dispatch, user });
+  };
+}
 
-      // ANDROID ONLY: GCM Sender ID
-      // (optional - not required for local notifications,
-      // but is need to receive remote push notifications)
-      senderID: '271994332492',
-
-      // IOS ONLY (optional): default: all - Permissions to register.
-      permissions: {
-        alert: true,
-        badge: true,
-        sound: true
-      },
-      popInitialNotification: true,
-      requestPermissions: Platform.OS !== 'ios'
-    });
-
-    if (Platform.OS === 'ios') {
-      if (okToRequestPermissions) {
-        okToRequestPermissions = false;
-        PushNotification.requestPermissions().then(() => {
-          okToRequestPermissions = true;
-        });
+function configurePushNotifications(dispatch) {
+  PushNotification.configure({
+    onNotification: notification => {
+      // other params: foreground, message
+      const { userInteraction, data } = notification;
+      if (!userInteraction) return;
+      if (data && data.postId) {
+        const comment = data.comment ? { _id: data.comment } : null;
+        if (data.community) dispatch(setCommunity(data.community));
+        dispatch(
+          navigationActions.goToPost({
+            _id: data.postId,
+            title: data.title,
+            comment
+          })
+        );
       }
+    },
+    // ANDROID ONLY: GCM Sender ID
+    // need to receive remote push notifications)
+    senderID: '271994332492',
+    // IOS ONLY (optional): default: all - Permissions to register.
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true
+    },
+    popInitialNotification: true,
+    requestPermissions: true
+  });
+}
+
+function registerPushNotification({ dispatch, user }) {
+  PushNotification.onRegister = deviceToken => {
+    const { token } = deviceToken;
+    userDefaults.set('deviceToken', token, APP_GROUP_ID);
+    dispatch(setDeviceToken(token));
+    const newUser = { ...user };
+    if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
+      newUser.deviceTokens.push(token);
+    } else if (user.deviceTokens.indexOf(token) < 0) {
+      newUser.deviceTokens = [token];
     }
-
-    PushNotification.onRegister = deviceToken => {
-      const { token } = deviceToken;
-      userDefaults.set('deviceToken', token, APP_GROUP_ID);
-      dispatch(setDeviceToken(token));
-      const newUser = { ...user };
-      if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
-        newUser.deviceTokens.push(token);
-      } else if (user.deviceTokens.indexOf(token) < 0) {
-        newUser.deviceTokens = [token];
-      }
-      const notificationSettings = {
-        ...newUser.notificationSettings,
-        mobile: { all: true }
-      };
-      dispatch(
-        updateNotificationSettings(notificationSettings, null, newUser.deviceTokens)
-      );
+    const notificationSettings = {
+      ...newUser.notificationSettings
     };
+    dispatch(
+      updateNotificationSettings(notificationSettings, null, newUser.deviceTokens)
+    );
   };
 }
 
@@ -324,6 +317,7 @@ export function getUser(callback) {
         path: '/me'
       });
       setupUser(user, dispatch);
+      dispatch(enableMobileNotifications(user));
       if (user.memberships) {
         dispatch(setUserMemberships(user.memberships));
       }
@@ -419,16 +413,21 @@ export function userOnline(user, token) {
     });
 }
 
-export function checkUser(string, type) {
+export function checkUser(string, type, omitSelf = false) {
   return () =>
-    fetch(`${process.env.API_SERVER}/api/user/check/user/?${type}=${string}`, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+    fetch(
+      `${
+        process.env.API_SERVER
+      }/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
+      {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then(response => response.json())
     .then(responseJSON => responseJSON)
     .catch(error => {
@@ -464,7 +463,8 @@ export function createUser(user, invitecode) {
           dispatch(getUser());
           return true;
         });
-      } else if (responseJSON.errors) {
+      }
+      if (responseJSON.errors) {
         const { errors } = responseJSON;
         let message = '';
         Object.keys(errors).forEach(key => {
@@ -682,7 +682,8 @@ export function twitterAuth(profile, invite) {
         dispatch(setPreUser(result.user));
         dispatch(setTwitter({ ...profile, token: result.token }));
         return false;
-      } else if (result.token && result.user) {
+      }
+      if (result.token && result.user) {
         await utils.storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);

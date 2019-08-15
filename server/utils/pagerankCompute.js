@@ -168,6 +168,7 @@ export default async function computePageRank(params) {
     debug && console.log('After PR is using ' + mb + 'MB of Heap.');
 
     let max = 0;
+    let secondMax = 0;
     const min = 0;
     let maxPost = 0;
     const minPost = 0;
@@ -181,7 +182,10 @@ export default async function computePageRank(params) {
 
       const u = scores[id] || 0;
       if (postNode) maxPost = Math.max(u, maxPost);
-      else max = Math.max(u, max);
+      else {
+        secondMax = Math.max(secondMax, Math.min(u, max));
+        max = Math.max(u, max);
+      }
 
       array.push({
         id,
@@ -197,7 +201,7 @@ export default async function computePageRank(params) {
 
     await Community.findOneAndUpdate(
       { _id: communityId },
-      { maxPostRank: maxPost || 50, maxUserRank: max || 50, numberOfElements: N }
+      { maxPostRank: maxPost || 50, maxUserRank: secondMax || 50, numberOfElements: N }
     );
 
     array = mergeNegativeNodes(array);
@@ -210,6 +214,7 @@ export default async function computePageRank(params) {
       u = await updateItemRank({
         min,
         max,
+        secondMax,
         minPost,
         maxPost,
         u,
@@ -247,6 +252,7 @@ export default async function computePageRank(params) {
           await updateItemRank({
             min,
             max,
+            secondMax,
             minPost,
             maxPost,
             u,
@@ -294,12 +300,15 @@ function mergeNegativeNodes(array) {
 }
 
 async function updateItemRank(props) {
-  const { max, maxPost, u, N, debug, communityId, community, maxRel } = props;
+  const { secondMax, maxPost, u, N, debug, communityId, community, maxRel } = props;
   let { min, minPost } = props;
   min = 0;
   minPost = 0;
   let rank =
-    (100 * Math.log(N * (u.rank - min) + 1)) / Math.log(N * (max - min) + 1) || 0;
+    Math.min(
+      99,
+      (100 * Math.log(N * (u.rank - min) + 1)) / Math.log(N * (secondMax - min) + 1)
+    ) || 0;
 
   const postRank =
     (100 * Math.log(N * (u.rank - minPost) + 1)) /
@@ -344,7 +353,8 @@ async function updateItemRank(props) {
         fields: 'pagerank pagerankRaw user rank relevance communityId community'
       }
     );
-  } else if (u.type === 'post') {
+  }
+  if (u.type === 'post') {
     if (Number.isNaN(rank)) {
       return null;
     }
@@ -569,14 +579,14 @@ export async function computeApproxPageRank(params) {
     let postVotes = true;
     let userVotes = true;
     if (undoInvest) {
-      postVotes = await Invest.count({ post: post._id, ownPost: false });
+      postVotes = await Invest.countDocuments({ post: post._id, ownPost: false });
       if (!postVotes) {
         post.data.pagerank = 0;
         post.data.pagerankRaw = 0;
         post.data.pagerankRawNeg = 0;
         await post.data.save();
       }
-      userVotes = await Invest.count({ author: authorId, ownPost: false });
+      userVotes = await Invest.countDocuments({ author: authorId, ownPost: false });
       if (!userVotes) {
         author.relevance.pagerank = 0;
         author.relevance.pagerankRaw = 0;
@@ -639,7 +649,7 @@ export async function computeApproxPageRank(params) {
     if (author) {
       const rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
       author.relevance.pagerank = Math.min(
-        100,
+        99,
         (100 * Math.log(N * rA + 1)) / Math.log(N * maxUserRank + 1)
       );
     }

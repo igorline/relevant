@@ -145,9 +145,11 @@ class SignUp extends Component {
 
     if (!this.state.email) {
       return Alert.alert('email required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this.state.email)) {
+    }
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this.state.email)) {
       return Alert.alert('invalid email address');
-    } else if (this.state.emailError) {
+    }
+    if (this.state.emailError) {
       return Alert.alert(this.state.emailError);
     }
 

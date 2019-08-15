@@ -31,6 +31,15 @@ const IDLE = 'Idle';
 const DRAGGING = 'Dragging';
 const SETTLING = 'Settling';
 
+const SPRING_CONFIG = {
+  damping: 30,
+  mass: 0.3,
+  stiffness: 150,
+  overshootClamping: true,
+  restSpeedThreshold: 0.001,
+  restDisplacementThreshold: 0.001
+};
+
 export type PropType = {
   children: any,
   drawerBackgroundColor?: string,
@@ -90,11 +99,17 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     Left: 'left',
     Right: 'right'
   };
+
   _openValue: ?Animated.Interpolation;
+
   _onGestureEvent: ?Animated.Event;
+
   _accessibilityIsModalView = React.createRef();
+
   _pointerEventsView = React.createRef();
+
   _panGestureHandler = React.createRef();
+
   _drawerShown = false;
 
   constructor(props: PropType, context: any) {
@@ -309,18 +324,18 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     );
 
     if (fromValue !== undefined) {
-      let nextFramePosition = fromValue;
-      if (this.props.useNativeAnimations) {
-        // When using native driver, we predict the next position of the animation
-        // because it takes one frame of a roundtrip to pass RELEASE event from
-        // native driver to JS before we can start animating. Without it, it is more
-        // noticable that the frame is dropped.
-        if (fromValue < toValue && velocity > 0) {
-          nextFramePosition = Math.min(fromValue + velocity / 60.0, toValue);
-        } else if (fromValue > toValue && velocity < 0) {
-          nextFramePosition = Math.max(fromValue + velocity / 60.0, toValue);
-        }
-      }
+      const nextFramePosition = fromValue;
+      // if (this.props.useNativeAnimations) {
+      //   // When using native driver, we predict the next position of the animation
+      //   // because it takes one frame of a roundtrip to pass RELEASE event from
+      //   // native driver to JS before we can start animating. Without it, it is more
+      //   // noticable that the frame is dropped.
+      //   if (fromValue < toValue && velocity > 0) {
+      //     nextFramePosition = Math.min(fromValue + velocity / 60.0, toValue);
+      //   } else if (fromValue > toValue && velocity < 0) {
+      //     nextFramePosition = Math.max(fromValue + velocity / 60.0, toValue);
+      //   }
+      // }
       this.state.drawerTranslation.setValue(nextFramePosition);
     }
 
@@ -332,7 +347,7 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     }
     Animated.spring(this.state.drawerTranslation, {
       velocity,
-      bounciness: 0,
+      ...SPRING_CONFIG,
       toValue,
       useNativeDriver: this.props.useNativeAnimations
     }).start(({ finished }) => {

@@ -3,6 +3,7 @@ require('@babel/polyfill');
 require('dotenv').config({ silent: true });
 
 process.env.NODE_ENV = 'test';
+process.env.WEB = 'true';
 
 const computePageRank = require('./pagerankCompute').default;
 const Community = require('../api/community/community.model').default;

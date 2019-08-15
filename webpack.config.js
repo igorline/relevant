@@ -68,7 +68,11 @@ module.exports = {
         BABEL_ENV: JSON.stringify('development_web'),
         VAPID_PUBLIC_KEY: JSON.stringify(
           'BJp16DSJF-SdwZ3yxE2cK502FKKI7hxTON6YDoCaTctcq9sr3scJS1iTsa3YSlvOV-p2_P51cNWF5-os4Gc0rq4'
-        )
+        ),
+        INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
+        INFURA_NETWORK: JSON.stringify(process.env.INFURA_NETWORK),
+        INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
+        NETWORK_NUMBER: JSON.stringify(process.env.NETWORK_NUMBER)
       }
     }),
     new CompressionPlugin(),
@@ -81,11 +85,11 @@ module.exports = {
     symlinks: false,
     alias: {
       react: path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom'),
       'react-native$': 'react-native-web',
       'react-native-linear-gradient$': 'react-native-web-linear-gradient',
       lodash: path.resolve(__dirname, 'node_modules/lodash'),
-      'bn.js': path.resolve(__dirname, 'node_modules/bn.js')
+      'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
+      'react-dom': '@hot-loader/react-dom'
     }
   },
 

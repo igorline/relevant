@@ -14,35 +14,41 @@ class AsyncAdminField extends Component {
     input: PropTypes.object,
     label: PropTypes.string,
     error: PropTypes.string,
-    actions: PropTypes.object,
-    userSearch: PropTypes.array
+    actions: PropTypes.object
+    // userSearch: PropTypes.array
   };
+
   state = { inputValue: '' };
+
   handleInputChange = (newValue: string) => {
     const inputValue = newValue.replace(/\W/g, '');
     this.setState({ inputValue });
     return inputValue;
   };
+
   loadOptions = async val => {
-    const { userSearch } = this.props;
-    await this.props.actions.searchUser(val);
+    if (!val.length) return null;
+    const userSearch = await this.props.actions.searchUser(val);
     return userSearch.map(u => ({ label: u.handle, value: u.handle }));
   };
+
   handleChange = vals => {
     const formattedVals = vals.map(v => v.value);
     this.props.input.onChange(formattedVals);
   };
+
   render() {
     const { label, error, input } = this.props;
     const vals = get(input, 'value', []).map(u => ({ label: u, value: u }));
     return (
-      <View mt={2} zIndex={10}>
+      <View mt={2} zIndex={0}>
         {label ? (
           <LinkFont c={colors.black} mb={1}>
             {label}
           </LinkFont>
         ) : null}
         <AsyncSelect
+          styles={{ menu: styles => ({ ...styles, position: 'relative', top: 0 }) }}
           isMulti
           cacheOptions
           defaultOptions
