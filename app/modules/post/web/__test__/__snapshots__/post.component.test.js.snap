@@ -10,6 +10,7 @@ exports[`Snapshot Post Web 1`] = `
       "WebkitFlexDirection": "column",
       "display": "flex",
       "flexDirection": "column",
+      "maxWidth": "60rem",
       "msFlexDirection": "column",
       "position": "relative",
     }
@@ -125,15 +126,15 @@ exports[`Snapshot Post Web 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
         "borderLeftStyle": "solid",
         "borderRightStyle": "solid",
         "borderTopStyle": "solid",
         "marginBottom": "0rem",
-        "marginLeft": "2.8rem",
-        "marginRight": "2.8rem",
+        "marginLeft": "2rem",
+        "marginRight": "2rem",
         "marginTop": "0rem",
       }
     }

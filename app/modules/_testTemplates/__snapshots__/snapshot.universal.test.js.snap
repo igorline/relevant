@@ -47,18 +47,18 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         style={
           Object {
             "WebkitFlexBasis": "auto",
-            "borderBottomLeftRadius": "1.4rem",
-            "borderBottomRightRadius": "1.4rem",
-            "borderTopLeftRadius": "1.4rem",
-            "borderTopRightRadius": "1.4rem",
+            "borderBottomLeftRadius": "1rem",
+            "borderBottomRightRadius": "1rem",
+            "borderTopLeftRadius": "1rem",
+            "borderTopRightRadius": "1rem",
             "display": "flex",
             "flexBasis": "auto",
-            "height": "2.8rem",
+            "height": "2rem",
             "msFlexPreferredSize": "auto",
             "overflowX": "hidden",
             "overflowY": "hidden",
             "position": "relative",
-            "width": "2.8rem",
+            "width": "2rem",
             "zIndex": 0,
           }
         }
@@ -106,7 +106,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
           "flexGrow": 1,
           "flexShrink": 1,
           "justifyContent": "center",
-          "marginLeft": "0.7rem",
+          "marginLeft": "0.5rem",
           "msFlexNegative": 1,
           "msFlexPack": "center",
           "msFlexPositive": 1,
@@ -126,7 +126,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         }
       >
         <span
-          c="#000000"
+          c="hsl(0, 0%, 0%)"
           className="css-text-901oao css-textHasAncestor-16my406"
           dir="auto"
           inline={1}
@@ -135,8 +135,8 @@ exports[`Snapshot AvatarBox Styled 1`] = `
               "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
               "color": "rgba(0,0,0,1.00)",
               "fontFamily": "HelveticaNeue",
-              "fontSize": "1.225rem",
-              "lineHeight": "1.6333333333333333rem",
+              "fontSize": "0.875rem",
+              "lineHeight": "1.2249999999999999rem",
               "position": "relative",
               "textDecorationColor": "rgba(0,0,0,1.00)",
             }
@@ -151,12 +151,12 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         mt={0.25}
         style={
           Object {
-            "color": "rgba(153,153,153,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.05rem",
-            "lineHeight": "1.4rem",
-            "marginTop": "0.175rem",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginTop": "0.125rem",
             "position": "relative",
           }
         }
@@ -166,11 +166,11 @@ exports[`Snapshot AvatarBox Styled 1`] = `
           dir="auto"
           style={
             Object {
-              "color": "rgba(153,153,153,1.00)",
+              "color": "rgba(128,128,128,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue",
-              "fontSize": "1.05rem",
-              "lineHeight": "1.4rem",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
               "position": "relative",
             }
           }

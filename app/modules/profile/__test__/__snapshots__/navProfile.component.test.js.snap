@@ -28,7 +28,7 @@ exports[`Snapshot NavProfile 1`] = `
 
 .c3 {
   color: #0000ff;
-  margin-left: 0.7rem;
+  margin-left: 0.5rem;
   color: #0000ff;
   -webkit-text-decoration-color: #0000ff;
   text-decoration-color: #0000ff;
@@ -47,7 +47,7 @@ exports[`Snapshot NavProfile 1`] = `
       "WebkitFlexBasis": "0px",
       "WebkitFlexGrow": 1,
       "WebkitFlexShrink": 1,
-      "borderBottomColor": "rgba(221,221,221,1.00)",
+      "borderBottomColor": "rgba(222,222,222,1.00)",
       "borderBottomStyle": "solid",
       "borderBottomWidth": "1px",
       "borderLeftStyle": "solid",
@@ -69,10 +69,10 @@ exports[`Snapshot NavProfile 1`] = `
     style={
       Object {
         "display": "flex",
-        "paddingBottom": "3.5rem",
-        "paddingLeft": "2.8rem",
-        "paddingRight": "2.8rem",
-        "paddingTop": "2.8rem",
+        "paddingBottom": "2rem",
+        "paddingLeft": "1.5rem",
+        "paddingRight": "1.5rem",
+        "paddingTop": "1.5rem",
         "position": "relative",
       }
     }
@@ -107,8 +107,8 @@ exports[`Snapshot NavProfile 1`] = `
             "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue-Bold",
-            "fontSize": "2.1rem",
-            "lineHeight": "2.8rem",
+            "fontSize": "1.5rem",
+            "lineHeight": "2.0999999999999996rem",
             "position": "relative",
           }
         }
@@ -133,8 +133,8 @@ exports[`Snapshot NavProfile 1`] = `
               "color": "rgba(0,0,255,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue",
-              "fontSize": "1.05rem",
-              "lineHeight": "1.4rem",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
               "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
@@ -156,7 +156,7 @@ exports[`Snapshot NavProfile 1`] = `
           "alignItems": "center",
           "display": "flex",
           "flexDirection": "row",
-          "marginTop": "2.8rem",
+          "marginTop": "1.5rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -185,18 +185,18 @@ exports[`Snapshot NavProfile 1`] = `
             style={
               Object {
                 "WebkitFlexBasis": "auto",
-                "borderBottomLeftRadius": "2.8rem",
-                "borderBottomRightRadius": "2.8rem",
-                "borderTopLeftRadius": "2.8rem",
-                "borderTopRightRadius": "2.8rem",
+                "borderBottomLeftRadius": "2rem",
+                "borderBottomRightRadius": "2rem",
+                "borderTopLeftRadius": "2rem",
+                "borderTopRightRadius": "2rem",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "5.6rem",
+                "height": "4rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "5.6rem",
+                "width": "4rem",
                 "zIndex": 0,
               }
             }
@@ -243,7 +243,7 @@ exports[`Snapshot NavProfile 1`] = `
             "flexShrink": 1,
             "msFlexDirection": "column",
             "msFlexNegative": 1,
-            "paddingLeft": "1.4rem",
+            "paddingLeft": "1rem",
           }
         }
       >
@@ -283,7 +283,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "alignItems": "center",
                   "display": "flex",
                   "flexDirection": "row",
-                  "marginRight": "1.05rem",
+                  "marginRight": "0.75rem",
                   "msFlexAlign": "center",
                   "msFlexDirection": "row",
                   "position": "relative",
@@ -298,13 +298,13 @@ exports[`Snapshot NavProfile 1`] = `
                     "bottom": "0px",
                     "display": "flex",
                     "flexBasis": "auto",
-                    "height": "2.1rem",
-                    "marginRight": "0.21000000000000002rem",
+                    "height": "1.5rem",
+                    "marginRight": "0.15rem",
                     "msFlexPreferredSize": "auto",
                     "overflowX": "hidden",
                     "overflowY": "hidden",
                     "position": "relative",
-                    "width": "2.1rem",
+                    "width": "1.5rem",
                     "zIndex": 0,
                   }
                 }
@@ -345,8 +345,8 @@ exports[`Snapshot NavProfile 1`] = `
                     "color": "rgba(0,0,0,1.00)",
                     "display": "flex",
                     "fontFamily": "HelveticaNeue-CondensedBold",
-                    "fontSize": "1.225rem",
-                    "lineHeight": "1.6333333333333333rem",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
                     "position": "relative",
                   }
                 }
@@ -377,7 +377,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "alignItems": "center",
                   "display": "flex",
                   "flexDirection": "row",
-                  "marginRight": "1.05rem",
+                  "marginRight": "0.75rem",
                   "msFlexAlign": "center",
                   "msFlexDirection": "row",
                   "position": "relative",
@@ -392,12 +392,12 @@ exports[`Snapshot NavProfile 1`] = `
                     "bottom": "0px",
                     "display": "flex",
                     "flexBasis": "auto",
-                    "height": "2.1rem",
+                    "height": "1.5rem",
                     "msFlexPreferredSize": "auto",
                     "overflowX": "hidden",
                     "overflowY": "hidden",
                     "position": "relative",
-                    "width": "2.2050000000000005rem",
+                    "width": "1.5750000000000002rem",
                     "zIndex": 0,
                   }
                 }
@@ -439,9 +439,9 @@ exports[`Snapshot NavProfile 1`] = `
                     "color": "rgba(0,0,0,1.00)",
                     "display": "flex",
                     "fontFamily": "HelveticaNeue-CondensedBold",
-                    "fontSize": "1.225rem",
-                    "lineHeight": "1.6333333333333333rem",
-                    "marginLeft": "0.525rem",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                    "marginLeft": "0.375rem",
                     "position": "relative",
                   }
                 }
@@ -464,7 +464,7 @@ exports[`Snapshot NavProfile 1`] = `
               "alignItems": "baseline",
               "display": "flex",
               "flexDirection": "row",
-              "marginTop": "1.4rem",
+              "marginTop": "1rem",
               "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "position": "relative",
@@ -477,11 +477,11 @@ exports[`Snapshot NavProfile 1`] = `
             fs={1.5}
             style={
               Object {
-                "color": "rgba(153,153,153,1.00)",
+                "color": "rgba(128,128,128,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.05rem",
-                "lineHeight": "1.4rem",
+                "fontSize": "0.75rem",
+                "lineHeight": "1.0499999999999998rem",
                 "position": "relative",
               }
             }
@@ -502,7 +502,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "alignItems": "baseline",
                 "display": "flex",
                 "flexDirection": "row",
-                "marginRight": "1.05rem",
+                "marginRight": "0.75rem",
                 "msFlexAlign": "baseline",
                 "msFlexDirection": "row",
                 "position": "relative",
@@ -517,12 +517,12 @@ exports[`Snapshot NavProfile 1`] = `
                   "bottom": "-1px",
                   "display": "flex",
                   "flexBasis": "auto",
-                  "height": "1.05rem",
+                  "height": "0.75rem",
                   "msFlexPreferredSize": "auto",
                   "overflowX": "hidden",
                   "overflowY": "hidden",
                   "position": "relative",
-                  "width": "1.1025000000000003rem",
+                  "width": "0.7875000000000001rem",
                   "zIndex": 0,
                 }
               }
@@ -555,7 +555,7 @@ exports[`Snapshot NavProfile 1`] = `
               />
             </div>
             <div
-              c="#000000"
+              c="hsl(0, 0%, 0%)"
               className="css-text-901oao"
               dir="auto"
               fs={1.5}
@@ -567,9 +567,9 @@ exports[`Snapshot NavProfile 1`] = `
                   "color": "rgba(0,0,0,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.05rem",
-                  "lineHeight": "1.4rem",
-                  "marginLeft": "0.2625rem",
+                  "fontSize": "0.75rem",
+                  "lineHeight": "1.0499999999999998rem",
+                  "marginLeft": "0.1875rem",
                   "position": "relative",
                   "textDecorationColor": "rgba(0,0,0,1.00)",
                 }
@@ -594,7 +594,7 @@ exports[`Snapshot NavProfile 1`] = `
           "alignItems": "baseline",
           "display": "flex",
           "flexDirection": "row",
-          "marginTop": "2.1rem",
+          "marginTop": "1.5rem",
           "msFlexAlign": "baseline",
           "msFlexDirection": "row",
           "position": "relative",
@@ -620,8 +620,8 @@ exports[`Snapshot NavProfile 1`] = `
               "color": "rgba(0,0,255,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue",
-              "fontSize": "1.05rem",
-              "lineHeight": "1.4rem",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
               "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
@@ -662,8 +662,8 @@ exports[`Snapshot NavProfile 1`] = `
               "color": "rgba(0,0,255,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue",
-              "fontSize": "1.05rem",
-              "lineHeight": "1.4rem",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
               "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
