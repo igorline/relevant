@@ -16,14 +16,27 @@ export const modalShadow = {
   boxShadow: '0 2px 6px hsl(0,0%,70%)'
 };
 
+const s = 1;
+
+export const AVATAR_SIZE = 4 * s;
+export const POST_IMAGE_H = 10 * s;
+export const POST_IMAGE_W = 20 * s;
+export const CENTER_BUTTON_SIZE = 4.5 * s;
+export const VOTE_BUTTON_SIZE = 2.75 * s;
+export const SIDE_NAV_PADDING = 3;
+export const MAX_POST_WIDTH = 120;
+
+export const DESKTOP_PADDING = 4;
+
 export const BANNER_PROMPT_HEIGHT = sizing(5);
 
-export const headerHeight = sizing(16);
-export const mainHeaderHeight = sizing(12);
-export const sideNavWidth = sizing(40);
+export const headerHeight = sizing(10);
+export const mainHeaderHeight = sizing(10);
+export const sideNavWidth = sizing(37);
 
-export const NESTING_UNIT = 8;
-export const POST_BUTTONS_NESTING_UNITS = 1.5;
+export const NESTING_UNIT = 3;
+export const POST_BUTTONS_NESTING_UNITS = 4;
+// export const POST_BUTTONS_UNITS = 4;
 export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * NESTING_UNIT;
 
 export const NESTING_UNIT_RESONSIVE = 2;

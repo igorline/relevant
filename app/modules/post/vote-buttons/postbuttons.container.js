@@ -3,14 +3,14 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { getPostType } from 'app/utils/post';
-import PostButton from 'modules/post/postbutton.component';
-import { View, NumericalValue } from 'modules/styled/uni';
+import { View, NumericalValue, Image } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { triggerAnimation } from 'modules/animation/animation.actions';
 import { useCommunity } from 'modules/community/community.selectors';
 import Tooltip from 'modules/tooltip/tooltip.component';
-import { CenterButton } from './postbuttonCenter';
-import { vote as voteAction } from './invest.actions';
+import { CenterButton } from './center-button';
+import PostButton from './postbutton';
+import { vote as voteAction } from '../invest.actions';
 
 let Analytics;
 let ReactGA;
@@ -174,14 +174,28 @@ function RankEl({ horizontal, postRank, color, post }) {
       align={'center'}
     >
       <Tooltip name="vote" data={tooltipData} />
-      <NumericalValue
-        c={color || colors.secondaryText}
-        fs={2}
-        lh={2}
-        m={horizontal ? '0 1' : null}
-      >
-        {postRank || 0}
-      </NumericalValue>
+      <View m={horizontal ? '0 1' : null} fdirection={'row'} align={'baseline'}>
+        <Image
+          h={1.2}
+          w={1.2}
+          style={{ opacity: 0.5, transform: [{ translateY: 0.5 }] }}
+          resizeMode={'contain'}
+          resizeMethod={'resize'}
+          mr={0.15}
+          // bg={'orange'}
+          source={require('app/public/img/r.png')}
+        />
+        <NumericalValue
+          // h={1.9}
+          // bg={'pink'}
+          // inline={1}
+          c={color || colors.secondaryText}
+          fs={1.75}
+          lh={1.75}
+        >
+          {postRank || 0}
+        </NumericalValue>
+      </View>
     </View>
   );
 }

@@ -144,7 +144,7 @@ class Splash extends Component {
     const sectionSpace = screenSize ? 4 : 16;
 
     return (
-      <View flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
+      <View bg={colors.white} flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
         <Marquee />
 
         <Section minHeight={'100vh'}>
@@ -206,7 +206,7 @@ class Splash extends Component {
           low={['climate change study', 'a nuanced opinion']}
           lowScore={[10, 30]}
           type={'thumb'}
-          color={colors.darkLightGrey}
+          color={colors.lightGrey}
         />
         <ImageLabel>Web 2.0 metrics measure value according to engagement.</ImageLabel>
 

@@ -7,6 +7,7 @@ import { ActivityIndicator } from 'react-native-web';
 import { View, Image } from 'modules/styled/uni';
 import { getTitle, getFavIcon } from 'app/utils/post';
 import PostInfoMobile from 'modules/post/postinfo.mobile.component';
+import { POST_IMAGE_W, POST_IMAGE_H } from 'styles/layout';
 import PostTitle from './postTitle.component';
 
 export default class PostInfo extends Component {
@@ -35,7 +36,7 @@ export default class PostInfo extends Component {
 
     const postImage = (
       <ULink external to={post.url} target="_blank" noLink={noLink}>
-        <View flex={1} w={20} h={10} mr={2}>
+        <View flex={1} w={POST_IMAGE_W} h={POST_IMAGE_H} mr={2}>
           {showImage && imageUrl ? (
             <Image
               flex={1}

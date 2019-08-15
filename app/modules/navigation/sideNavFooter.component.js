@@ -4,9 +4,10 @@ import { View, BodyText, InlineText } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 import SocialIcons from 'modules/navigation/social.icons';
 import { colors } from 'styles';
+import { SIDE_NAV_PADDING } from 'styles/layout';
 
 const SideNavFooter = ({ actions }) => (
-  <View m={[4, 2]}>
+  <View m={[SIDE_NAV_PADDING, 2]} mb={4}>
     <SocialIcons actions={actions} />
     <BodyText inline={1} mt={3}>
       <ULink to="/info/faq">

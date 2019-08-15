@@ -17,8 +17,10 @@ import MenuIcon from 'modules/ui/web/menuIcon.component';
 
 const Nav = styled(View)`
   position: sticky;
-  background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
+  /*   background-image: linear-gradient(hsla(0, 0%, 100%, 1) 80%, hsla(0, 0%, 100%, 0) 100%);
+   */
   z-index: 100;
+  background-color: ${colors.white};
   height: ${layout.headerHeight};
   top: ${p => (p.top ? p.top : 0)};
   left: ${layout.sideNavWidth};
