@@ -8,8 +8,8 @@ import { getComments } from 'modules/comment/comment.actions';
 import Comments from 'modules/comment/web/comment.container';
 import get from 'lodash.get';
 import { View } from 'modules/styled/uni';
+import { MAX_POST_WIDTH } from 'styles/layout';
 import PostComponent from './post.component';
-// import ButtonRow from 'modules/post/web/buttonRow.component';
 
 class SinglePostContainer extends Component {
   static propTypes = {
@@ -60,7 +60,7 @@ class SinglePostContainer extends Component {
     const link = posts.links[post.metaPost];
 
     return (
-      <View mb={20}>
+      <View maxWidth={MAX_POST_WIDTH} mb={20}>
         {hasPost && (
           <View>
             <PostComponent

@@ -1,12 +1,11 @@
 import * as types from 'core/actionTypes';
 
-export function triggerAnimation(type, params) {
+export function triggerAnimation(type, data) {
   return {
     type: types.SET_ANIMATION,
     payload: {
       type,
-      amount: params && params.amount ? params.amount : 1,
-      parent: params && params.parent ? params.parent : null
+      data
     }
   };
 }
