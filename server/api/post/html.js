@@ -11,6 +11,11 @@ const fbHeader = {
     'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
 };
 
+const relevantHeader = {
+  'User-Agent':
+    'This is a user request for article matadata for Relevant Community (https://relevant.community | info@relevant.community)'
+};
+
 const URL_REGEX = new RegExp(
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_+~#?&//=]*)/
 );
@@ -43,7 +48,10 @@ exports.getReadable = async uri => {
     const body = await request({
       url: uri,
       jar: true,
-      headers: fbHeader
+      headers:
+        uri.match('bloomberg.com') || uri.match('washingtonpost.com')
+          ? relevantHeader
+          : fbHeader
     });
 
     // let doc = new JSDOMParser().parse(body);
@@ -66,8 +74,8 @@ exports.getReadable = async uri => {
 
 exports.trimToLength = (doc, length) => {
   Array.prototype.slice
-  .call(doc.getElementsByTagName('figure'))
-  .forEach(item => item.remove());
+    .call(doc.getElementsByTagName('figure'))
+    .forEach(item => item.remove());
 
   let totalLength = 0;
   Array.prototype.slice.call(doc.getElementsByTagName('*')).forEach(el => {
@@ -145,8 +153,8 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   if (uri.match('apple.news')) {
     try {
       const articleUrl = body
-      .match(/redirectToUrl\("(.*)"/)[0]
-      .replace(/redirectToUrl\(|"/g, '');
+        .match(/redirectToUrl\("(.*)"/)[0]
+        .replace(/redirectToUrl\(|"/g, '');
       if (articleUrl) {
         return {
           redirect: true,
@@ -243,9 +251,9 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   const k2 = data.news_keywords ? data.news_keywords.split(',').map(k => k.trim()) : [];
   const k3 = data['article:tag']
     ? data['article:tag']
-    .split(',')
-    .map(k => k.replace('--primarykeyword-', '').trim())
-    .filter(k => !k.match('--'))
+      .split(',')
+      .map(k => k.replace('--primarykeyword-', '').trim())
+      .filter(k => !k.match('--'))
     : [];
 
   let keywords = [...new Set([...k1, ...k2, ...k3])];
@@ -256,18 +264,18 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   }
 
   let amp = $('[type="application/ld+json"]')
-  .eq(0)
-  .text();
+    .eq(0)
+    .text();
   let ampKeywords;
   let ampAuthor;
   if (amp) {
     try {
       amp = amp
-      .replace('//<![CDATA[', '')
-      .replace('// <![CDATA[', '')
-      .replace('//]]>', '')
-      .replace('// ]]>', '')
-      .trim();
+        .replace('//<![CDATA[', '')
+        .replace('// <![CDATA[', '')
+        .replace('//]]>', '')
+        .replace('// ]]>', '')
+        .trim();
       amp = JSON.parse(amp);
       if (!amp) throw new Error('no amp');
       ampAuthor = amp.author ? amp.author.name : null;
@@ -292,9 +300,9 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   data['article:author'] = data['article:author'] || '';
 
   const metaAuthor = data.author
-  .split(/,|\sand\s/)
-  .map(a => a.trim())
-  .filter(a => a !== '');
+    .split(/,|\sand\s/)
+    .map(a => a.trim())
+    .filter(a => a !== '');
 
   ampAuthor = ampAuthor || [];
 
@@ -311,8 +319,8 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   keywords = [...new Set([...(keywords || []), ...(ampKeywords || [])])];
 
   keywords = keywords
-  .map(k => k.replace(/tag:|publication:|elevated:false|lockedpostsource:0/, ''))
-  .filter(k => k.trim() !== '');
+    .map(k => k.replace(/tag:|publication:|elevated:false|lockedpostsource:0/, ''))
+    .filter(k => k.trim() !== '');
 
   let doc = jsdom.jsdom(body, {
     features: {
@@ -340,18 +348,18 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     }
     if (!author.length && article.byline) {
       const by = article.byline
-      .split(/\n|,|•/)
-      .map(a => a.replace(/by|by:\s/i, '').trim())
-      .filter(
-        a =>
-          a !== '' &&
+        .split(/\n|,|•/)
+        .map(a => a.replace(/by|by:\s/i, '').trim())
+        .filter(
+          a =>
+            a !== '' &&
             !a.match(/^by$/i) &&
             a.length > 2 &&
             !a.match('UTC') &&
             Number.isNaN(new Date(a).getTime()) &&
             !a.match('http')
-        // && !a.match(/2017|2016|2015|2018/)
-      );
+          // && !a.match(/2017|2016|2015|2018/)
+        );
       author = by[0] ? [by[0]] : [];
     }
   }
