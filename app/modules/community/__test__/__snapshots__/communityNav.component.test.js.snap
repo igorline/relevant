@@ -10,16 +10,16 @@ exports[`Snapshot NavProfile 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  color: #000000;
+  color: hsl(0,0%,0%);
   color: #0000ff;
 }
 
 .c0:hover {
   -webkit-text-decoration: underline;
   text-decoration: underline;
-  -webkit-text-decoration-color: #000000;
-  text-decoration-color: #000000;
-  background: white;
+  -webkit-text-decoration-color: hsl(0,0%,0%);
+  text-decoration-color: hsl(0,0%,0%);
+  background: hsl(0,0%,100%);
 }
 
 .c2 {
@@ -28,27 +28,27 @@ exports[`Snapshot NavProfile 1`] = `
 
 .c1 {
   color: #0000ff;
-  color: #999999;
+  color: hsl(0,0%,50%);
 }
 
 .c1:hover * {
-  color: #000000;
+  color: hsl(0,0%,0%);
 }
 
 .c1:hover * {
-  fill: #000000;
+  fill: hsl(0,0%,0%);
 }
 
 .c1.active * {
-  color: #000000;
+  color: hsl(0,0%,0%);
 }
 
 .c1.active * {
-  fill: #000000;
+  fill: hsl(0,0%,0%);
 }
 
 .c1:hover * {
-  color: #000000;
+  color: hsl(0,0%,0%);
 }
 
 <div
@@ -74,7 +74,7 @@ exports[`Snapshot NavProfile 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
         "borderLeftStyle": "solid",
@@ -101,7 +101,7 @@ exports[`Snapshot NavProfile 1`] = `
         style={
           Object {
             "display": "flex",
-            "marginTop": "2.8rem",
+            "marginTop": "1.5rem",
             "position": "relative",
           }
         }
@@ -115,11 +115,11 @@ exports[`Snapshot NavProfile 1`] = `
         styles={
           Array [
             "display:flex;align-items:center;color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";&:hover{text-decoration:underline;text-decoration-color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";background:",
-            "white",
+            "hsl(0, 0%, 100%)",
             ";}",
           ]
         }
@@ -138,10 +138,10 @@ exports[`Snapshot NavProfile 1`] = `
               "flexDirection": "row",
               "msFlexAlign": "center",
               "msFlexDirection": "row",
-              "paddingBottom": "0.7rem",
-              "paddingLeft": "2.8rem",
-              "paddingRight": "2.8rem",
-              "paddingTop": "0.7rem",
+              "paddingBottom": "0.5rem",
+              "paddingLeft": "1.5rem",
+              "paddingRight": "1.5rem",
+              "paddingTop": "0.5rem",
               "position": "relative",
             }
           }
@@ -151,16 +151,16 @@ exports[`Snapshot NavProfile 1`] = `
             style={
               Object {
                 "WebkitFlexBasis": "auto",
-                "backgroundColor": "rgba(153,153,153,1.00)",
+                "backgroundColor": "rgba(128,128,128,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "2.8rem",
-                "marginRight": "1.05rem",
+                "height": "2rem",
+                "marginRight": "0.75rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "2.8rem",
+                "width": "2rem",
                 "zIndex": 0,
               }
             }
@@ -193,7 +193,7 @@ exports[`Snapshot NavProfile 1`] = `
             />
           </div>
           <div
-            c="#000000"
+            c="hsl(0, 0%, 0%)"
             className="css-text-901oao"
             dir="auto"
             lh={1.75}
@@ -203,8 +203,8 @@ exports[`Snapshot NavProfile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.225rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "0.875rem",
                 "position": "relative",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
               }
@@ -218,16 +218,16 @@ exports[`Snapshot NavProfile 1`] = `
         className="css-view-1dbjc4n"
         style={
           Object {
-            "borderBottomColor": "rgba(221,221,221,1.00)",
+            "borderBottomColor": "rgba(222,222,222,1.00)",
             "borderBottomStyle": "solid",
             "borderBottomWidth": "1px",
             "borderLeftStyle": "solid",
             "borderRightStyle": "solid",
             "borderTopStyle": "solid",
             "display": "flex",
-            "paddingBottom": "2.8rem",
-            "paddingLeft": "2.8rem",
-            "paddingRight": "2.8rem",
+            "paddingBottom": "2rem",
+            "paddingLeft": "1.5rem",
+            "paddingRight": "1.5rem",
             "paddingTop": "0rem",
             "position": "relative",
           }
@@ -239,19 +239,19 @@ exports[`Snapshot NavProfile 1`] = `
             Object {
               "display": "flex",
               "marginBottom": "0rem",
-              "marginLeft": "3.85rem",
+              "marginLeft": "2.75rem",
               "marginRight": "0rem",
-              "marginTop": "0.35rem",
+              "marginTop": "0.25rem",
               "position": "relative",
             }
           }
         >
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/technology"
             hu={0}
             inline={0}
@@ -264,15 +264,15 @@ exports[`Snapshot NavProfile 1`] = `
               p="0.5 0"
               style={
                 Object {
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
                 }
               }
@@ -282,11 +282,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/society"
             hu={0}
             inline={0}
@@ -299,15 +299,15 @@ exports[`Snapshot NavProfile 1`] = `
               p="0.5 0"
               style={
                 Object {
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
                 }
               }
@@ -317,11 +317,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/culture"
             hu={0}
             inline={0}
@@ -334,15 +334,15 @@ exports[`Snapshot NavProfile 1`] = `
               p="0.5 0"
               style={
                 Object {
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
                 }
               }
@@ -352,11 +352,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/politics"
             hu={0}
             inline={0}
@@ -369,15 +369,15 @@ exports[`Snapshot NavProfile 1`] = `
               p="0.5 0"
               style={
                 Object {
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
                 }
               }
@@ -387,11 +387,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/altwoke"
             hu={0}
             inline={0}
@@ -404,15 +404,15 @@ exports[`Snapshot NavProfile 1`] = `
               p="0.5 0"
               style={
                 Object {
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
                 }
               }
@@ -427,7 +427,7 @@ exports[`Snapshot NavProfile 1`] = `
           style={
             Object {
               "display": "flex",
-              "marginTop": "2.1rem",
+              "marginTop": "1.5rem",
               "position": "relative",
             }
           }
@@ -437,10 +437,11 @@ exports[`Snapshot NavProfile 1`] = `
             dir="auto"
             style={
               Object {
+                "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
               }
             }
@@ -462,8 +463,8 @@ exports[`Snapshot NavProfile 1`] = `
               "display": "flex",
               "flexDirection": "row",
               "justifyContent": "space-between",
-              "marginBottom": "1.4rem",
-              "marginTop": "2.1rem",
+              "marginBottom": "1rem",
+              "marginTop": "1.5rem",
               "msFlexDirection": "row",
               "msFlexPack": "justify",
               "position": "relative",
@@ -471,7 +472,7 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <div
-            c="#000000"
+            c="hsl(0, 0%, 0%)"
             className="css-text-901oao"
             dir="auto"
             style={
@@ -480,8 +481,8 @@ exports[`Snapshot NavProfile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
               }
@@ -507,8 +508,8 @@ exports[`Snapshot NavProfile 1`] = `
                   "color": "rgba(0,0,255,1.00)",
                   "display": "flex",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
                   "position": "relative",
                   "textDecorationColor": "rgba(0,0,255,1.00)",
                 }
@@ -543,10 +544,10 @@ exports[`Snapshot NavProfile 1`] = `
       style={
         Object {
           "display": "flex",
-          "marginBottom": "1.4rem",
+          "marginBottom": "1rem",
           "marginLeft": "0rem",
           "marginRight": "0rem",
-          "marginTop": "1.4rem",
+          "marginTop": "1rem",
           "position": "relative",
         }
       }
@@ -560,11 +561,11 @@ exports[`Snapshot NavProfile 1`] = `
         styles={
           Array [
             "display:flex;align-items:center;color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";&:hover{text-decoration:underline;text-decoration-color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";background:",
-            "white",
+            "hsl(0, 0%, 100%)",
             ";}",
           ]
         }
@@ -583,10 +584,10 @@ exports[`Snapshot NavProfile 1`] = `
               "flexDirection": "row",
               "msFlexAlign": "center",
               "msFlexDirection": "row",
-              "paddingBottom": "0.7rem",
-              "paddingLeft": "2.8rem",
-              "paddingRight": "2.8rem",
-              "paddingTop": "0.7rem",
+              "paddingBottom": "0.5rem",
+              "paddingLeft": "1.5rem",
+              "paddingRight": "1.5rem",
+              "paddingTop": "0.5rem",
               "position": "relative",
             }
           }
@@ -596,16 +597,16 @@ exports[`Snapshot NavProfile 1`] = `
             style={
               Object {
                 "WebkitFlexBasis": "auto",
-                "backgroundColor": "rgba(153,153,153,1.00)",
+                "backgroundColor": "rgba(128,128,128,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "2.8rem",
-                "marginRight": "1.05rem",
+                "height": "2rem",
+                "marginRight": "0.75rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "2.8rem",
+                "width": "2rem",
                 "zIndex": 0,
               }
             }
@@ -638,7 +639,7 @@ exports[`Snapshot NavProfile 1`] = `
             />
           </div>
           <div
-            c="#000000"
+            c="hsl(0, 0%, 0%)"
             className="css-text-901oao"
             dir="auto"
             lh={1.75}
@@ -648,8 +649,8 @@ exports[`Snapshot NavProfile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.225rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "0.875rem",
                 "position": "relative",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
               }
@@ -666,20 +667,21 @@ exports[`Snapshot NavProfile 1`] = `
     dir="auto"
     m={
       Array [
-        4,
+        3,
         2,
       ]
     }
     style={
       Object {
+        "color": "rgba(0,0,0,1.00)",
         "display": "flex",
         "fontFamily": "HelveticaNeue",
-        "fontSize": "1.225rem",
-        "lineHeight": "1.6333333333333333rem",
-        "marginBottom": "2.8rem",
-        "marginLeft": "2.8rem",
-        "marginRight": "2.8rem",
-        "marginTop": "2.8rem",
+        "fontSize": "0.875rem",
+        "lineHeight": "1.2249999999999999rem",
+        "marginBottom": "1.5rem",
+        "marginLeft": "1.5rem",
+        "marginRight": "1.5rem",
+        "marginTop": "1.5rem",
         "position": "relative",
       }
     }

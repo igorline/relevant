@@ -7,8 +7,8 @@ exports[`Snapshot Paidout Web 1`] = `
     Object {
       "display": "flex",
       "marginBottom": "0rem",
-      "marginLeft": "2.8rem",
-      "marginRight": "2.8rem",
+      "marginLeft": "2rem",
+      "marginRight": "2rem",
       "marginTop": "0rem",
       "position": "relative",
     }
@@ -19,7 +19,7 @@ exports[`Snapshot Paidout Web 1`] = `
     style={
       Object {
         "display": "flex",
-        "marginTop": "2.8rem",
+        "marginTop": "2rem",
         "position": "relative",
       }
     }
@@ -29,10 +29,11 @@ exports[`Snapshot Paidout Web 1`] = `
       dir="auto"
       style={
         Object {
+          "color": "rgba(0,0,0,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.225rem",
-          "lineHeight": "1.6333333333333333rem",
+          "fontSize": "0.875rem",
+          "lineHeight": "1.2249999999999999rem",
           "position": "relative",
         }
       }
@@ -51,29 +52,29 @@ exports[`Snapshot Paidout Web 1`] = `
         "WebkitFlexDirection": "row",
         "WebkitFlexGrow": 1,
         "WebkitJustifyContent": "space-between",
-        "backgroundColor": "rgba(248,248,248,1.00)",
+        "backgroundColor": "rgba(250,250,250,1.00)",
         "borderBottomStyle": "solid",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
         "flexDirection": "row",
         "flexGrow": 1,
         "justifyContent": "space-between",
-        "marginTop": "1.4rem",
+        "marginTop": "1rem",
         "msFlexDirection": "row",
         "msFlexPack": "justify",
         "msFlexPositive": 1,
-        "paddingBottom": "1.05rem",
-        "paddingLeft": "1.4rem",
-        "paddingRight": "1.4rem",
-        "paddingTop": "1.05rem",
+        "paddingBottom": "0.75rem",
+        "paddingLeft": "1rem",
+        "paddingRight": "1rem",
+        "paddingTop": "0.75rem",
         "position": "relative",
       }
     }
@@ -98,11 +99,12 @@ exports[`Snapshot Paidout Web 1`] = `
         mr={4}
         style={
           Object {
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
-            "marginRight": "2.8rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
+            "marginRight": "2rem",
             "position": "relative",
           }
         }
@@ -110,19 +112,19 @@ exports[`Snapshot Paidout Web 1`] = `
         Feb 5, 2019
       </div>
       <div
-        c="#999999"
+        c="hsl(0, 0%, 50%)"
         className="css-text-901oao"
         dir="auto"
         style={
           Object {
-            "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
-            "color": "rgba(153,153,153,1.00)",
+            "WebkitTextDecorationColor": "rgba(128,128,128,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
             "position": "relative",
-            "textDecorationColor": "rgba(153,153,153,1.00)",
+            "textDecorationColor": "rgba(128,128,128,1.00)",
           }
         }
       >
@@ -139,8 +141,8 @@ exports[`Snapshot Paidout Web 1`] = `
           "color": "rgba(126,211,33,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.225rem",
-          "lineHeight": "1.6333333333333333rem",
+          "fontSize": "0.875rem",
+          "lineHeight": "1.2249999999999999rem",
           "position": "relative",
           "textDecorationColor": "rgba(126,211,33,1.00)",
         }
@@ -155,16 +157,16 @@ exports[`Snapshot Paidout Web 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
@@ -184,8 +186,8 @@ exports[`Snapshot Pending Web 1`] = `
     Object {
       "display": "flex",
       "marginBottom": "0rem",
-      "marginLeft": "2.8rem",
-      "marginRight": "2.8rem",
+      "marginLeft": "2rem",
+      "marginRight": "2rem",
       "marginTop": "0rem",
       "position": "relative",
     }
@@ -196,7 +198,7 @@ exports[`Snapshot Pending Web 1`] = `
     style={
       Object {
         "display": "flex",
-        "marginTop": "2.8rem",
+        "marginTop": "2rem",
         "position": "relative",
       }
     }
@@ -206,10 +208,11 @@ exports[`Snapshot Pending Web 1`] = `
       dir="auto"
       style={
         Object {
+          "color": "rgba(0,0,0,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.225rem",
-          "lineHeight": "1.6333333333333333rem",
+          "fontSize": "0.875rem",
+          "lineHeight": "1.2249999999999999rem",
           "position": "relative",
         }
       }
@@ -228,29 +231,29 @@ exports[`Snapshot Pending Web 1`] = `
         "WebkitFlexDirection": "row",
         "WebkitFlexGrow": 1,
         "WebkitJustifyContent": "space-between",
-        "backgroundColor": "rgba(248,248,248,1.00)",
+        "backgroundColor": "rgba(250,250,250,1.00)",
         "borderBottomStyle": "solid",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
         "flexDirection": "row",
         "flexGrow": 1,
         "justifyContent": "space-between",
-        "marginTop": "1.4rem",
+        "marginTop": "1rem",
         "msFlexDirection": "row",
         "msFlexPack": "justify",
         "msFlexPositive": 1,
-        "paddingBottom": "1.05rem",
-        "paddingLeft": "1.4rem",
-        "paddingRight": "1.4rem",
-        "paddingTop": "1.05rem",
+        "paddingBottom": "0.75rem",
+        "paddingLeft": "1rem",
+        "paddingRight": "1rem",
+        "paddingTop": "0.75rem",
         "position": "relative",
       }
     }
@@ -275,29 +278,30 @@ exports[`Snapshot Pending Web 1`] = `
         mr={4}
         style={
           Object {
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
-            "marginRight": "2.8rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
+            "marginRight": "2rem",
             "position": "relative",
           }
         }
       />
       <div
-        c="#999999"
+        c="hsl(0, 0%, 50%)"
         className="css-text-901oao"
         dir="auto"
         style={
           Object {
-            "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
-            "color": "rgba(153,153,153,1.00)",
+            "WebkitTextDecorationColor": "rgba(128,128,128,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
             "position": "relative",
-            "textDecorationColor": "rgba(153,153,153,1.00)",
+            "textDecorationColor": "rgba(128,128,128,1.00)",
           }
         }
       >
@@ -314,8 +318,8 @@ exports[`Snapshot Pending Web 1`] = `
           "color": "rgba(126,211,33,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.225rem",
-          "lineHeight": "1.6333333333333333rem",
+          "fontSize": "0.875rem",
+          "lineHeight": "1.2249999999999999rem",
           "position": "relative",
           "textDecorationColor": "rgba(126,211,33,1.00)",
         }
@@ -330,16 +334,16 @@ exports[`Snapshot Pending Web 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
