@@ -126,7 +126,6 @@ class Splash extends Component {
     return (
       <Wrapper
         ref={c => (this.container = c)}
-        className="splashContent"
         display="flex"
         justify="flex-start"
         align="center"
@@ -147,7 +146,6 @@ class Splash extends Component {
           </Touchable>
         )}
         <View
-          className="mainSection"
           m={['12 12 0 12', '3 8 0 2']}
           flex={1}
           justify="center"
@@ -183,7 +181,7 @@ class Splash extends Component {
             </View>
           ) : null}
         </View>
-        <Phone screenSize={screenSize} className="phone" flexshrink={[1, 0]}>
+        <Phone screenSize={screenSize} flexshrink={[1, 0]}>
           <img
             style={{ width: '100%' }}
             ref={c => (this.phone = c)}

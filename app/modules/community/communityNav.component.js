@@ -12,6 +12,7 @@ import CommunityActive from 'modules/community/communityActive.component';
 import CommunityListItem from 'modules/community/communityListItem.component';
 import get from 'lodash.get';
 import { View, BodyText } from 'modules/styled/uni';
+import { SIDE_NAV_PADDING } from 'styles/layout';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
@@ -54,7 +55,7 @@ export class Community extends Component {
           actions.setCommunity(community.slug);
         }}
       >
-        <CommunityListItem community={community} p={['1 4', '1 2']} />
+        <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
       </ULink>
     );
   }
@@ -116,7 +117,9 @@ export class Community extends Component {
           )}
           <View m={'2 0'}>{this.renderOtherCommunities()}</View>
         </View>
-        <BodyText m={[4, 2]}>We'll be adding more communities soon!{'\n\n'}</BodyText>
+        <BodyText m={[SIDE_NAV_PADDING, 2]}>
+          We'll be adding more communities soon!{'\n\n'}
+        </BodyText>
       </View>
     );
   }

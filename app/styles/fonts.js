@@ -14,12 +14,13 @@ export const HelveticaNeueMedium = `font-family: '${HELVETICA_NEUE_MEDIUM}';`;
 export const HelveticaNeue = `font-family: '${HELVETICA_NEUE}';`;
 export const Georgia = `font-family: '${GEORGIA}';`;
 
-export const lh = 4 / 3;
+export const lh = 1.4;
 
 export const bodyStyle = {
   fontSize: sizing(1.75),
   lineHeight: sizing(1.75 * lh),
-  fontFamily: HELVETICA_REGULAR
+  fontFamily: HELVETICA_REGULAR,
+  color: colors.black
 };
 
 export const header = {
@@ -58,12 +59,12 @@ export const altLink = {
   textDecoration: 'underline'
 };
 
-export const bodyText = {
-  fontSize: sizing(1.5),
-  lineHeight: sizing(1.5 * lh),
-  fontFamily: HELVETICA_REGULAR,
-  color: colors.black
-};
+// export const bodyText = {
+//   fontSize: sizing(1.5),
+//   lineHeight: sizing(1.5 * lh),
+//   fontFamily: HELVETICA_REGULAR,
+//   color: colors.black
+// };
 
 export const commentText = {
   fontSize: sizing(2),

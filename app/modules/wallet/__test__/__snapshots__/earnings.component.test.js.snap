@@ -2,126 +2,38 @@
 
 exports[`Snapshot Paidout Web 1`] = `
 <div
+  className="css-view-1dbjc4n"
   style={
     Object {
-      "WebkitAlignItems": "stretch",
-      "WebkitBoxAlign": "stretch",
-      "WebkitBoxDirection": "normal",
-      "WebkitBoxOrient": "vertical",
-      "WebkitFlexBasis": "auto",
-      "WebkitFlexDirection": "column",
-      "WebkitFlexShrink": 0,
-      "alignItems": "stretch",
-      "borderBottomStyle": "solid",
-      "borderBottomWidth": "0px",
-      "borderLeftStyle": "solid",
-      "borderLeftWidth": "0px",
-      "borderRightStyle": "solid",
-      "borderRightWidth": "0px",
-      "borderTopStyle": "solid",
-      "borderTopWidth": "0px",
-      "boxSizing": "border-box",
       "display": "flex",
-      "flexBasis": "auto",
-      "flexDirection": "column",
-      "flexShrink": 0,
       "marginBottom": "0rem",
       "marginLeft": "2.8rem",
       "marginRight": "2.8rem",
       "marginTop": "0rem",
-      "minHeight": "0px",
-      "minWidth": "0px",
-      "msFlexAlign": "stretch",
-      "msFlexDirection": "column",
-      "msFlexNegative": 0,
-      "msFlexPreferredSize": "auto",
-      "paddingBottom": "0px",
-      "paddingLeft": "0px",
-      "paddingRight": "0px",
-      "paddingTop": "0px",
       "position": "relative",
-      "zIndex": 0,
     }
   }
 >
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
         "marginTop": "2.8rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-text-901oao"
       dir="auto"
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "inherit",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue",
           "fontSize": "1.225rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
           "lineHeight": "1.6333333333333333rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
@@ -129,23 +41,18 @@ exports[`Snapshot Paidout Web 1`] = `
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
         "WebkitBoxDirection": "normal",
         "WebkitBoxFlex": 1,
         "WebkitBoxOrient": "horizontal",
         "WebkitBoxPack": "justify",
-        "WebkitFlexBasis": "auto",
         "WebkitFlexDirection": "row",
         "WebkitFlexGrow": 1,
-        "WebkitFlexShrink": 0,
         "WebkitJustifyContent": "space-between",
-        "alignItems": "stretch",
         "backgroundColor": "rgba(248,248,248,1.00)",
         "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
         "borderLeftColor": "rgba(221,221,221,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
@@ -155,113 +62,48 @@ exports[`Snapshot Paidout Web 1`] = `
         "borderTopColor": "rgba(221,221,221,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
         "flexDirection": "row",
         "flexGrow": 1,
-        "flexShrink": 0,
         "justifyContent": "space-between",
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
         "marginTop": "1.4rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
         "msFlexDirection": "row",
-        "msFlexNegative": 0,
         "msFlexPack": "justify",
         "msFlexPositive": 1,
-        "msFlexPreferredSize": "auto",
         "paddingBottom": "1.05rem",
         "paddingLeft": "1.4rem",
         "paddingRight": "1.4rem",
         "paddingTop": "1.05rem",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
           "WebkitBoxDirection": "normal",
           "WebkitBoxOrient": "horizontal",
-          "WebkitFlexBasis": "auto",
           "WebkitFlexDirection": "row",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
           "flexDirection": "row",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
           "msFlexDirection": "row",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-text-901oao"
         dir="auto"
         mr={4}
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "color": "inherit",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
             "fontSize": "1.225rem",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
             "lineHeight": "1.6333333333333333rem",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
             "marginRight": "2.8rem",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "textDecoration": "none",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
           }
         }
       >
@@ -269,42 +111,18 @@ exports[`Snapshot Paidout Web 1`] = `
       </div>
       <div
         c="#999999"
+        className="css-text-901oao"
         dir="auto"
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
             "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "color": "rgba(153,153,153,1.00)",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
             "fontSize": "1.225rem",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
             "lineHeight": "1.6333333333333333rem",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "textDecoration": "none",
             "textDecorationColor": "rgba(153,153,153,1.00)",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
           }
         }
       >
@@ -313,42 +131,18 @@ exports[`Snapshot Paidout Web 1`] = `
     </div>
     <div
       c="#7ED321"
+      className="css-text-901oao"
       dir="auto"
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
           "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "color": "rgba(126,211,33,1.00)",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue",
           "fontSize": "1.225rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
           "lineHeight": "1.6333333333333333rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
           "textDecorationColor": "rgba(126,211,33,1.00)",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
@@ -358,16 +152,9 @@ exports[`Snapshot Paidout Web 1`] = `
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
         "borderBottomColor": "rgba(221,221,221,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
@@ -380,27 +167,8 @@ exports[`Snapshot Paidout Web 1`] = `
         "borderTopColor": "rgba(221,221,221,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
@@ -411,126 +179,38 @@ exports[`Snapshot Paidout Web 1`] = `
 
 exports[`Snapshot Pending Web 1`] = `
 <div
+  className="css-view-1dbjc4n"
   style={
     Object {
-      "WebkitAlignItems": "stretch",
-      "WebkitBoxAlign": "stretch",
-      "WebkitBoxDirection": "normal",
-      "WebkitBoxOrient": "vertical",
-      "WebkitFlexBasis": "auto",
-      "WebkitFlexDirection": "column",
-      "WebkitFlexShrink": 0,
-      "alignItems": "stretch",
-      "borderBottomStyle": "solid",
-      "borderBottomWidth": "0px",
-      "borderLeftStyle": "solid",
-      "borderLeftWidth": "0px",
-      "borderRightStyle": "solid",
-      "borderRightWidth": "0px",
-      "borderTopStyle": "solid",
-      "borderTopWidth": "0px",
-      "boxSizing": "border-box",
       "display": "flex",
-      "flexBasis": "auto",
-      "flexDirection": "column",
-      "flexShrink": 0,
       "marginBottom": "0rem",
       "marginLeft": "2.8rem",
       "marginRight": "2.8rem",
       "marginTop": "0rem",
-      "minHeight": "0px",
-      "minWidth": "0px",
-      "msFlexAlign": "stretch",
-      "msFlexDirection": "column",
-      "msFlexNegative": 0,
-      "msFlexPreferredSize": "auto",
-      "paddingBottom": "0px",
-      "paddingLeft": "0px",
-      "paddingRight": "0px",
-      "paddingTop": "0px",
       "position": "relative",
-      "zIndex": 0,
     }
   }
 >
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
         "marginTop": "2.8rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-text-901oao"
       dir="auto"
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "inherit",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue",
           "fontSize": "1.225rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
           "lineHeight": "1.6333333333333333rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
@@ -538,23 +218,18 @@ exports[`Snapshot Pending Web 1`] = `
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
         "WebkitBoxDirection": "normal",
         "WebkitBoxFlex": 1,
         "WebkitBoxOrient": "horizontal",
         "WebkitBoxPack": "justify",
-        "WebkitFlexBasis": "auto",
         "WebkitFlexDirection": "row",
         "WebkitFlexGrow": 1,
-        "WebkitFlexShrink": 0,
         "WebkitJustifyContent": "space-between",
-        "alignItems": "stretch",
         "backgroundColor": "rgba(248,248,248,1.00)",
         "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
         "borderLeftColor": "rgba(221,221,221,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
@@ -564,154 +239,65 @@ exports[`Snapshot Pending Web 1`] = `
         "borderTopColor": "rgba(221,221,221,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
         "flexDirection": "row",
         "flexGrow": 1,
-        "flexShrink": 0,
         "justifyContent": "space-between",
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
         "marginTop": "1.4rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
         "msFlexDirection": "row",
-        "msFlexNegative": 0,
         "msFlexPack": "justify",
         "msFlexPositive": 1,
-        "msFlexPreferredSize": "auto",
         "paddingBottom": "1.05rem",
         "paddingLeft": "1.4rem",
         "paddingRight": "1.4rem",
         "paddingTop": "1.05rem",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
           "WebkitBoxDirection": "normal",
           "WebkitBoxOrient": "horizontal",
-          "WebkitFlexBasis": "auto",
           "WebkitFlexDirection": "row",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
           "flexDirection": "row",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
           "msFlexDirection": "row",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-text-901oao"
         dir="auto"
         mr={4}
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "color": "inherit",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
             "fontSize": "1.225rem",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
             "lineHeight": "1.6333333333333333rem",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
             "marginRight": "2.8rem",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "textDecoration": "none",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
           }
         }
       />
       <div
         c="#999999"
+        className="css-text-901oao"
         dir="auto"
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
             "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "color": "rgba(153,153,153,1.00)",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
             "fontSize": "1.225rem",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
             "lineHeight": "1.6333333333333333rem",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "textDecoration": "none",
             "textDecorationColor": "rgba(153,153,153,1.00)",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
           }
         }
       >
@@ -720,42 +306,18 @@ exports[`Snapshot Pending Web 1`] = `
     </div>
     <div
       c="#7ED321"
+      className="css-text-901oao"
       dir="auto"
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
           "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "color": "rgba(126,211,33,1.00)",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue",
           "fontSize": "1.225rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
           "lineHeight": "1.6333333333333333rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
           "textDecorationColor": "rgba(126,211,33,1.00)",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
@@ -765,16 +327,9 @@ exports[`Snapshot Pending Web 1`] = `
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
         "borderBottomColor": "rgba(221,221,221,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
@@ -787,27 +342,8 @@ exports[`Snapshot Pending Web 1`] = `
         "borderTopColor": "rgba(221,221,221,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >

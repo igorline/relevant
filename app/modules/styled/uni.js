@@ -253,7 +253,7 @@ export const Spacer = styled(View)`
       if (!total * UNIT) {
         return '';
       }
-      return `padding-left: ${sizing((total - 1) * UNIT)};`;
+      return `padding-left: ${sizing((total - (p.screenSize > 0 ? 1 : 0)) * UNIT)};`;
     }
     return '';
   }}

@@ -19,6 +19,7 @@ import { showModal } from 'modules/navigation/navigation.actions';
 import { PieChart } from 'modules/stats/piechart';
 import CoinStat from 'modules/stats/coinStat.component';
 import Tooltip from 'modules/tooltip/tooltip.component';
+import { CENTER_BUTTON_SIZE } from 'styles/layout';
 // import styled from 'styled-components/primitives';
 
 // const coinImage = require('app/public/img/relevantcoin.png');
@@ -38,13 +39,11 @@ CenterButton.propTypes = {
 export function CenterButton({ post, votedUp, horizontal }) {
   const { payoutTime } = post.data;
 
-  const size = 5;
-
   const dispatch = useDispatch();
   const openBetModal = () => dispatch(showModal('investModal', post));
 
   const timer = (
-    <View w={size} h={size}>
+    <View w={CENTER_BUTTON_SIZE} h={CENTER_BUTTON_SIZE}>
       <Timer payoutTime={payoutTime} post={post} />
     </View>
   );
@@ -52,7 +51,7 @@ export function CenterButton({ post, votedUp, horizontal }) {
   return (
     <View p={horizontal ? '0 1.5' : '.75 0'}>
       {votedUp ? (
-        <BetButton size={size} openBetModal={openBetModal} post={post} />
+        <BetButton size={CENTER_BUTTON_SIZE} openBetModal={openBetModal} post={post} />
       ) : (
         timer
       )}

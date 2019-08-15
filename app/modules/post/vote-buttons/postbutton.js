@@ -4,6 +4,7 @@ import { Image, Touchable } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { isNative } from 'styles';
 import Tooltip from 'modules/tooltip/tooltip.component';
+import { VOTE_BUTTON_SIZE } from 'styles/layout';
 
 const BUTTON_IMAGES = {
   UPVOTE: {
@@ -52,8 +53,8 @@ function PostButton({ alt, isActive, imageSet, onPress, color, tooltipData }) {
     <Tooltip data={tooltipData} name="voteDesk">
       <Touchable onPress={onPress} bradius={2}>
         <ButtonImage
-          w={3}
-          h={3}
+          w={VOTE_BUTTON_SIZE}
+          h={VOTE_BUTTON_SIZE}
           alt={alt}
           resizeMode="contain"
           source={source}
