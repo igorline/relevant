@@ -6,10 +6,10 @@ exports[`Snapshot Balance Web 1`] = `
   style={
     Object {
       "display": "flex",
-      "marginBottom": "1.4rem",
-      "marginLeft": "2.8rem",
-      "marginRight": "2.8rem",
-      "marginTop": "2.8rem",
+      "marginBottom": "1rem",
+      "marginLeft": "2rem",
+      "marginRight": "2rem",
+      "marginTop": "2rem",
       "position": "relative",
     }
   }
@@ -31,8 +31,8 @@ exports[`Snapshot Balance Web 1`] = `
           "color": "rgba(0,0,0,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue-Bold",
-          "fontSize": "2.1rem",
-          "lineHeight": "2.8rem",
+          "fontSize": "1.5rem",
+          "lineHeight": "2.0999999999999996rem",
           "position": "relative",
         }
       }
@@ -45,11 +45,12 @@ exports[`Snapshot Balance Web 1`] = `
       mt={2}
       style={
         Object {
+          "color": "rgba(0,0,0,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.225rem",
-          "lineHeight": "1.6333333333333333rem",
-          "marginTop": "1.4rem",
+          "fontSize": "0.875rem",
+          "lineHeight": "1.2249999999999999rem",
+          "marginTop": "1rem",
           "position": "relative",
         }
       }
@@ -65,21 +66,21 @@ exports[`Snapshot Balance Web 1`] = `
     style={
       Object {
         "borderBottomStyle": "solid",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
-        "marginTop": "1.4rem",
-        "paddingBottom": "1.4rem",
-        "paddingLeft": "1.4rem",
-        "paddingRight": "1.4rem",
-        "paddingTop": "1.4rem",
+        "marginTop": "1rem",
+        "paddingBottom": "1rem",
+        "paddingLeft": "1rem",
+        "paddingRight": "1rem",
+        "paddingTop": "1rem",
         "position": "relative",
       }
     }
@@ -112,11 +113,12 @@ exports[`Snapshot Balance Web 1`] = `
         mb={0.5}
         style={
           Object {
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
-            "marginBottom": "0.35rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
+            "marginBottom": "0.25rem",
             "position": "relative",
           }
         }
@@ -129,12 +131,12 @@ exports[`Snapshot Balance Web 1`] = `
         mb={0.5}
         style={
           Object {
-            "color": "rgba(153,153,153,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.05rem",
-            "lineHeight": "1.4rem",
-            "marginBottom": "0.35rem",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginBottom": "0.25rem",
             "position": "relative",
           }
         }
@@ -154,7 +156,7 @@ exports[`Snapshot Balance Web 1`] = `
           "alignItems": "center",
           "display": "flex",
           "flexDirection": "row",
-          "marginTop": "1.4rem",
+          "marginTop": "1rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -173,7 +175,7 @@ exports[`Snapshot Balance Web 1`] = `
             "alignItems": "center",
             "display": "flex",
             "flexDirection": "row",
-            "marginRight": "1.05rem",
+            "marginRight": "0.75rem",
             "msFlexAlign": "center",
             "msFlexDirection": "row",
             "position": "relative",
@@ -188,12 +190,12 @@ exports[`Snapshot Balance Web 1`] = `
               "bottom": "0px",
               "display": "flex",
               "flexBasis": "auto",
-              "height": "3.5rem",
+              "height": "2.5rem",
               "msFlexPreferredSize": "auto",
               "overflowX": "hidden",
               "overflowY": "hidden",
               "position": "relative",
-              "width": "3.675rem",
+              "width": "2.625rem",
               "zIndex": 0,
             }
           }
@@ -237,9 +239,9 @@ exports[`Snapshot Balance Web 1`] = `
               "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue-CondensedBold",
-              "fontSize": "3.15rem",
-              "lineHeight": "3.5rem",
-              "marginLeft": "0.875rem",
+              "fontSize": "2.25rem",
+              "lineHeight": "2.5rem",
+              "marginLeft": "0.625rem",
               "position": "relative",
             }
           }
@@ -254,23 +256,23 @@ exports[`Snapshot Balance Web 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
-        "paddingBottom": "1.4rem",
-        "paddingLeft": "1.4rem",
-        "paddingRight": "1.4rem",
-        "paddingTop": "1.4rem",
+        "paddingBottom": "1rem",
+        "paddingLeft": "1rem",
+        "paddingRight": "1rem",
+        "paddingTop": "1rem",
         "position": "relative",
       }
     }
@@ -280,11 +282,11 @@ exports[`Snapshot Balance Web 1`] = `
       dir="auto"
       style={
         Object {
-          "color": "rgba(153,153,153,1.00)",
+          "color": "rgba(128,128,128,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.05rem",
-          "lineHeight": "1.4rem",
+          "fontSize": "0.75rem",
+          "lineHeight": "1.0499999999999998rem",
           "position": "relative",
         }
       }
@@ -308,7 +310,7 @@ exports[`Snapshot Balance Web 1`] = `
         "alignItems": "center",
         "display": "flex",
         "flexDirection": "row",
-        "marginTop": "1.4rem",
+        "marginTop": "1rem",
         "msFlexAlign": "center",
         "msFlexDirection": "row",
         "position": "relative",
@@ -316,7 +318,7 @@ exports[`Snapshot Balance Web 1`] = `
     }
   >
     <div
-      c="#999999"
+      c="hsl(0, 0%, 50%)"
       className="css-text-901oao"
       data-focusable={true}
       dir="auto"
@@ -332,21 +334,21 @@ exports[`Snapshot Balance Web 1`] = `
       style={
         Object {
           "MozUserSelect": "none",
-          "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
+          "WebkitTextDecorationColor": "rgba(128,128,128,1.00)",
           "WebkitTextDecorationStyle": "solid",
           "WebkitUserSelect": "none",
-          "color": "rgba(153,153,153,1.00)",
+          "color": "rgba(128,128,128,1.00)",
           "cursor": "pointer",
           "display": "flex",
           "fontFamily": "HelveticaNeue-Medium",
-          "fontSize": "1.05rem",
-          "lineHeight": "1.4rem",
-          "marginRight": "0.35rem",
+          "fontSize": "0.75rem",
+          "lineHeight": "1.0499999999999998rem",
+          "marginRight": "0.25rem",
           "msTouchAction": "manipulation",
           "msUserSelect": "none",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(153,153,153,1.00)",
+          "textDecorationColor": "rgba(128,128,128,1.00)",
           "textDecorationStyle": "solid",
           "touchAction": "manipulation",
           "userSelect": "none",
@@ -366,13 +368,13 @@ exports[`Snapshot Balance Web 1`] = `
           "WebkitFlexBasis": "auto",
           "display": "flex",
           "flexBasis": "auto",
-          "height": "1.05rem",
-          "marginLeft": "0.35rem",
+          "height": "0.75rem",
+          "marginLeft": "0.25rem",
           "msFlexPreferredSize": "auto",
           "overflowX": "hidden",
           "overflowY": "hidden",
           "position": "relative",
-          "width": "1.05rem",
+          "width": "0.75rem",
           "zIndex": 0,
         }
       }
@@ -419,9 +421,9 @@ exports[`Snapshot Balance Web 1`] = `
         "color": "rgba(0,0,0,1.00)",
         "display": "flex",
         "fontFamily": "HelveticaNeue-Bold",
-        "fontSize": "2.1rem",
-        "lineHeight": "2.8rem",
-        "marginTop": "6.3rem",
+        "fontSize": "1.5rem",
+        "lineHeight": "2.0999999999999996rem",
+        "marginTop": "4.5rem",
         "position": "relative",
       }
     }
@@ -434,11 +436,12 @@ exports[`Snapshot Balance Web 1`] = `
     mt={2}
     style={
       Object {
+        "color": "rgba(0,0,0,1.00)",
         "display": "flex",
         "fontFamily": "HelveticaNeue",
-        "fontSize": "1.225rem",
-        "lineHeight": "1.6333333333333333rem",
-        "marginTop": "1.4rem",
+        "fontSize": "0.875rem",
+        "lineHeight": "1.2249999999999999rem",
+        "marginTop": "1rem",
         "position": "relative",
       }
     }

@@ -10,6 +10,7 @@ exports[`Snapshot Activity Web 1`] = `
   style={
     Object {
       "display": "flex",
+      "maxWidth": "60rem",
       "position": "relative",
     }
   }
@@ -30,9 +31,9 @@ exports[`Snapshot Activity Web 1`] = `
         "flexDirection": "row",
         "justifyContent": "space-between",
         "marginBottom": "0rem",
-        "marginLeft": "2.8rem",
-        "marginRight": "2.8rem",
-        "marginTop": "2.8rem",
+        "marginLeft": "2rem",
+        "marginRight": "2rem",
+        "marginTop": "2rem",
         "msFlexAlign": "center",
         "msFlexDirection": "row",
         "msFlexPack": "justify",
@@ -75,7 +76,7 @@ exports[`Snapshot Activity Web 1`] = `
             "WebkitAlignSelf": "flex-start",
             "alignSelf": "flex-start",
             "display": "flex",
-            "marginRight": "1.05rem",
+            "marginRight": "0.75rem",
             "msFlexItemAlign": "start",
             "position": "relative",
           }
@@ -103,18 +104,18 @@ exports[`Snapshot Activity Web 1`] = `
               style={
                 Object {
                   "WebkitFlexBasis": "auto",
-                  "borderBottomLeftRadius": "1.4rem",
-                  "borderBottomRightRadius": "1.4rem",
-                  "borderTopLeftRadius": "1.4rem",
-                  "borderTopRightRadius": "1.4rem",
+                  "borderBottomLeftRadius": "1rem",
+                  "borderBottomRightRadius": "1rem",
+                  "borderTopLeftRadius": "1rem",
+                  "borderTopRightRadius": "1rem",
                   "display": "flex",
                   "flexBasis": "auto",
-                  "height": "2.8rem",
+                  "height": "2rem",
                   "msFlexPreferredSize": "auto",
                   "overflowX": "hidden",
                   "overflowY": "hidden",
                   "position": "relative",
-                  "width": "2.8rem",
+                  "width": "2rem",
                   "zIndex": 0,
                 }
               }
@@ -203,8 +204,8 @@ exports[`Snapshot Activity Web 1`] = `
                     "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
                     "color": "rgba(0,0,255,1.00)",
                     "fontFamily": "HelveticaNeue",
-                    "fontSize": "1.225rem",
-                    "lineHeight": "1.6333333333333333rem",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
                     "position": "relative",
                     "textDecorationColor": "rgba(0,0,255,1.00)",
                   }
@@ -222,9 +223,10 @@ exports[`Snapshot Activity Web 1`] = `
             inline={1}
             style={
               Object {
+                "color": "rgba(0,0,0,1.00)",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
               }
             }
@@ -236,9 +238,10 @@ exports[`Snapshot Activity Web 1`] = `
               inline={1}
               style={
                 Object {
+                  "color": "rgba(0,0,0,1.00)",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "lineHeight": "1.6333333333333333rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
                   "position": "relative",
                 }
               }
@@ -282,11 +285,11 @@ exports[`Snapshot Activity Web 1`] = `
       lh={2}
       style={
         Object {
-          "color": "rgba(153,153,153,1.00)",
+          "color": "rgba(128,128,128,1.00)",
           "display": "flex",
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.05rem",
-          "lineHeight": "1.4rem",
+          "fontSize": "0.75rem",
+          "lineHeight": "1rem",
           "position": "relative",
         }
       }
@@ -299,7 +302,7 @@ exports[`Snapshot Activity Web 1`] = `
     style={
       Object {
         "display": "flex",
-        "marginLeft": "4.2rem",
+        "marginLeft": "3rem",
         "position": "relative",
       }
     }
@@ -318,8 +321,8 @@ exports[`Snapshot Activity Web 1`] = `
           Object {
             "display": "flex",
             "marginBottom": "0rem",
-            "marginLeft": "2.8rem",
-            "marginRight": "2.8rem",
+            "marginLeft": "2rem",
+            "marginRight": "2rem",
             "marginTop": "0rem",
             "position": "relative",
           }
@@ -333,7 +336,7 @@ exports[`Snapshot Activity Web 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
         "borderLeftStyle": "solid",
@@ -342,7 +345,7 @@ exports[`Snapshot Activity Web 1`] = `
         "marginBottom": "0rem",
         "marginLeft": "0rem",
         "marginRight": "0rem",
-        "marginTop": "1.4rem",
+        "marginTop": "1rem",
       }
     }
   />

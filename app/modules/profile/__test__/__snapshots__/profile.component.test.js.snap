@@ -20,10 +20,10 @@ exports[`Snapshot other users Profile 1`] = `
       "display": "flex",
       "flexDirection": "row",
       "justifyContent": "flex-start",
-      "marginBottom": "2.8rem",
-      "marginLeft": "2.8rem",
-      "marginRight": "2.8rem",
-      "marginTop": "2.8rem",
+      "marginBottom": "2rem",
+      "marginLeft": "2rem",
+      "marginRight": "2rem",
+      "marginTop": "2rem",
       "msFlexAlign": "start",
       "msFlexDirection": "row",
       "msFlexPack": "start",
@@ -53,18 +53,18 @@ exports[`Snapshot other users Profile 1`] = `
         style={
           Object {
             "WebkitFlexBasis": "auto",
-            "borderBottomLeftRadius": "3.15rem",
-            "borderBottomRightRadius": "3.15rem",
-            "borderTopLeftRadius": "3.15rem",
-            "borderTopRightRadius": "3.15rem",
+            "borderBottomLeftRadius": "2.25rem",
+            "borderBottomRightRadius": "2.25rem",
+            "borderTopLeftRadius": "2.25rem",
+            "borderTopRightRadius": "2.25rem",
             "display": "flex",
             "flexBasis": "auto",
-            "height": "6.3rem",
+            "height": "4.5rem",
             "msFlexPreferredSize": "auto",
             "overflowX": "hidden",
             "overflowY": "hidden",
             "position": "relative",
-            "width": "6.3rem",
+            "width": "4.5rem",
             "zIndex": 0,
           }
         }
@@ -111,7 +111,7 @@ exports[`Snapshot other users Profile 1`] = `
         "flexGrow": 1,
         "flexShrink": 1,
         "flexWrap": "wrap",
-        "marginLeft": "1.4rem",
+        "marginLeft": "1rem",
         "msFlexNegative": 1,
         "msFlexPositive": 1,
         "msFlexWrap": "wrap",
@@ -173,15 +173,15 @@ exports[`Snapshot other users Profile 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          mr="1.4rem"
+          mr="1rem"
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue-Bold",
-              "fontSize": "2.1rem",
-              "lineHeight": "2.8rem",
-              "marginRight": "1.4rem",
+              "fontSize": "1.5rem",
+              "lineHeight": "2.0999999999999996rem",
+              "marginRight": "1rem",
               "position": "relative",
             }
           }
@@ -200,7 +200,7 @@ exports[`Snapshot other users Profile 1`] = `
               "alignItems": "baseline",
               "display": "flex",
               "flexDirection": "row",
-              "marginRight": "1.4rem",
+              "marginRight": "1rem",
               "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "position": "relative",
@@ -215,13 +215,13 @@ exports[`Snapshot other users Profile 1`] = `
                 "bottom": "-1px",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "1.225rem",
-                "marginRight": "0.12249999999999998rem",
+                "height": "0.875rem",
+                "marginRight": "0.0875rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "1.225rem",
+                "width": "0.875rem",
                 "zIndex": 0,
               }
             }
@@ -262,8 +262,8 @@ exports[`Snapshot other users Profile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
               }
             }
@@ -284,9 +284,9 @@ exports[`Snapshot other users Profile 1`] = `
               "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue-CondensedBold",
-              "fontSize": "1.225rem",
-              "lineHeight": "1.6333333333333333rem",
-              "marginRight": "1.4rem",
+              "fontSize": "0.875rem",
+              "lineHeight": "1.2249999999999999rem",
+              "marginRight": "1rem",
               "msFlexAlign": "baseline",
               "position": "relative",
             }
@@ -321,7 +321,7 @@ exports[`Snapshot other users Profile 1`] = `
                 "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
                 "color": "rgba(126,211,33,1.00)",
                 "display": "flex",
-                "fontSize": "1.225rem",
+                "fontSize": "0.875rem",
                 "position": "relative",
                 "textDecorationColor": "rgba(126,211,33,1.00)",
               }
@@ -344,7 +344,7 @@ exports[`Snapshot other users Profile 1`] = `
               "alignItems": "baseline",
               "display": "flex",
               "flexDirection": "row",
-              "marginRight": "1.05rem",
+              "marginRight": "0.75rem",
               "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "position": "relative",
@@ -359,12 +359,12 @@ exports[`Snapshot other users Profile 1`] = `
                 "bottom": "-1px",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "1.225rem",
+                "height": "0.875rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "1.2862500000000001rem",
+                "width": "0.9187500000000001rem",
                 "zIndex": 0,
               }
             }
@@ -406,9 +406,9 @@ exports[`Snapshot other users Profile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
-                "marginLeft": "0.30625rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
+                "marginLeft": "0.21875rem",
                 "position": "relative",
               }
             }
@@ -433,7 +433,7 @@ exports[`Snapshot other users Profile 1`] = `
       style={
         Object {
           "display": "flex",
-          "marginTop": "1.4rem",
+          "marginTop": "1rem",
           "position": "relative",
         }
       }
@@ -443,10 +443,11 @@ exports[`Snapshot other users Profile 1`] = `
         dir="auto"
         style={
           Object {
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
             "position": "relative",
           }
         }
@@ -471,31 +472,31 @@ exports[`Snapshot own Profile 1`] = `
 }
 
 .c2 {
-  font-size: 1.05rem;
-  line-height: 1.4rem;
+  font-size: 0.75rem;
+  line-height: 1.0499999999999998rem;
   font-family: HelveticaNeue-Medium;
-  color: #999999;
+  color: hsl(0,0%,50%);
   -webkit-text-decoration: underline;
   text-decoration: underline;
-  color: #000000;
-  -webkit-text-decoration-color: #000000;
-  text-decoration-color: #000000;
+  color: hsl(0,0%,0%);
+  -webkit-text-decoration-color: hsl(0,0%,0%);
+  text-decoration-color: hsl(0,0%,0%);
   color: #0000ff;
-  color: #000000;
-  -webkit-text-decoration-color: #000000;
-  text-decoration-color: #000000;
+  color: hsl(0,0%,0%);
+  -webkit-text-decoration-color: hsl(0,0%,0%);
+  text-decoration-color: hsl(0,0%,0%);
 }
 
 .c2:hover * {
-  color: #999999;
+  color: hsl(0,0%,50%);
 }
 
 .c2:hover * {
-  fill: #999999;
+  fill: hsl(0,0%,50%);
 }
 
 .c2:hover * {
-  color: #999999;
+  color: hsl(0,0%,50%);
 }
 
 <div
@@ -513,10 +514,10 @@ exports[`Snapshot own Profile 1`] = `
       "display": "flex",
       "flexDirection": "row",
       "justifyContent": "flex-start",
-      "marginBottom": "2.8rem",
-      "marginLeft": "2.8rem",
-      "marginRight": "2.8rem",
-      "marginTop": "2.8rem",
+      "marginBottom": "2rem",
+      "marginLeft": "2rem",
+      "marginRight": "2rem",
+      "marginTop": "2rem",
       "msFlexAlign": "start",
       "msFlexDirection": "row",
       "msFlexPack": "start",
@@ -546,18 +547,18 @@ exports[`Snapshot own Profile 1`] = `
         style={
           Object {
             "WebkitFlexBasis": "auto",
-            "borderBottomLeftRadius": "3.15rem",
-            "borderBottomRightRadius": "3.15rem",
-            "borderTopLeftRadius": "3.15rem",
-            "borderTopRightRadius": "3.15rem",
+            "borderBottomLeftRadius": "2.25rem",
+            "borderBottomRightRadius": "2.25rem",
+            "borderTopLeftRadius": "2.25rem",
+            "borderTopRightRadius": "2.25rem",
             "display": "flex",
             "flexBasis": "auto",
-            "height": "6.3rem",
+            "height": "4.5rem",
             "msFlexPreferredSize": "auto",
             "overflowX": "hidden",
             "overflowY": "hidden",
             "position": "relative",
-            "width": "6.3rem",
+            "width": "4.5rem",
             "zIndex": 0,
           }
         }
@@ -604,7 +605,7 @@ exports[`Snapshot own Profile 1`] = `
         "flexGrow": 1,
         "flexShrink": 1,
         "flexWrap": "wrap",
-        "marginLeft": "1.4rem",
+        "marginLeft": "1rem",
         "msFlexNegative": 1,
         "msFlexPositive": 1,
         "msFlexWrap": "wrap",
@@ -666,15 +667,15 @@ exports[`Snapshot own Profile 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          mr="1.4rem"
+          mr="1rem"
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue-Bold",
-              "fontSize": "2.1rem",
-              "lineHeight": "2.8rem",
-              "marginRight": "1.4rem",
+              "fontSize": "1.5rem",
+              "lineHeight": "2.0999999999999996rem",
+              "marginRight": "1rem",
               "position": "relative",
             }
           }
@@ -693,7 +694,7 @@ exports[`Snapshot own Profile 1`] = `
               "alignItems": "baseline",
               "display": "flex",
               "flexDirection": "row",
-              "marginRight": "1.4rem",
+              "marginRight": "1rem",
               "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "position": "relative",
@@ -708,13 +709,13 @@ exports[`Snapshot own Profile 1`] = `
                 "bottom": "-1px",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "1.225rem",
-                "marginRight": "0.12249999999999998rem",
+                "height": "0.875rem",
+                "marginRight": "0.0875rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "1.225rem",
+                "width": "0.875rem",
                 "zIndex": 0,
               }
             }
@@ -755,8 +756,8 @@ exports[`Snapshot own Profile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
               }
             }
@@ -777,9 +778,9 @@ exports[`Snapshot own Profile 1`] = `
               "color": "rgba(0,0,0,1.00)",
               "display": "flex",
               "fontFamily": "HelveticaNeue-CondensedBold",
-              "fontSize": "1.225rem",
-              "lineHeight": "1.6333333333333333rem",
-              "marginRight": "1.4rem",
+              "fontSize": "0.875rem",
+              "lineHeight": "1.2249999999999999rem",
+              "marginRight": "1rem",
               "msFlexAlign": "baseline",
               "position": "relative",
             }
@@ -814,7 +815,7 @@ exports[`Snapshot own Profile 1`] = `
                 "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
                 "color": "rgba(126,211,33,1.00)",
                 "display": "flex",
-                "fontSize": "1.225rem",
+                "fontSize": "0.875rem",
                 "position": "relative",
                 "textDecorationColor": "rgba(126,211,33,1.00)",
               }
@@ -837,7 +838,7 @@ exports[`Snapshot own Profile 1`] = `
               "alignItems": "baseline",
               "display": "flex",
               "flexDirection": "row",
-              "marginRight": "1.05rem",
+              "marginRight": "0.75rem",
               "msFlexAlign": "baseline",
               "msFlexDirection": "row",
               "position": "relative",
@@ -852,12 +853,12 @@ exports[`Snapshot own Profile 1`] = `
                 "bottom": "-1px",
                 "display": "flex",
                 "flexBasis": "auto",
-                "height": "1.225rem",
+                "height": "0.875rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
                 "position": "relative",
-                "width": "1.2862500000000001rem",
+                "width": "0.9187500000000001rem",
                 "zIndex": 0,
               }
             }
@@ -899,9 +900,9 @@ exports[`Snapshot own Profile 1`] = `
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "1.225rem",
-                "lineHeight": "1.6333333333333333rem",
-                "marginLeft": "0.30625rem",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
+                "marginLeft": "0.21875rem",
                 "position": "relative",
               }
             }
@@ -928,7 +929,7 @@ exports[`Snapshot own Profile 1`] = `
       style={
         Object {
           "display": "flex",
-          "marginTop": "1.4rem",
+          "marginTop": "1rem",
           "position": "relative",
         }
       }
@@ -938,10 +939,11 @@ exports[`Snapshot own Profile 1`] = `
         dir="auto"
         style={
           Object {
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.225rem",
-            "lineHeight": "1.6333333333333333rem",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
             "position": "relative",
           }
         }
@@ -963,7 +965,7 @@ exports[`Snapshot own Profile 1`] = `
           "alignItems": "center",
           "display": "flex",
           "flexDirection": "row",
-          "marginTop": "1.4rem",
+          "marginTop": "1rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -973,17 +975,17 @@ exports[`Snapshot own Profile 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr="0.35rem"
+        mr="0.25rem"
         style={
           Object {
             "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "WebkitTextDecorationStyle": "solid",
-            "color": "rgba(153,153,153,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue-Medium",
-            "fontSize": "1.05rem",
-            "lineHeight": "1.4rem",
-            "marginRight": "0.35rem",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "0.25rem",
             "position": "relative",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
@@ -992,19 +994,19 @@ exports[`Snapshot own Profile 1`] = `
         }
       >
         <a
-          c="#000000"
+          c="hsl(0, 0%, 0%)"
           className="c2 ulink-mock"
-          hc="#999999"
+          hc="hsl(0, 0%, 50%)"
           href="//settings?redirect=/"
           hu={0}
           inline={0}
           onClick={[Function]}
           styles={
             Array [
-              "font-size: 1.05rem;",
-              "line-height: 1.4rem;",
+              "font-size: 0.75rem;",
+              "line-height: 1.0499999999999998rem;",
               "font-family: HelveticaNeue-Medium;",
-              "color: #999999;",
+              "color: hsl(0, 0%, 50%);",
               "text-decoration: underline;",
               " ",
               [Function],
@@ -1040,17 +1042,17 @@ exports[`Snapshot own Profile 1`] = `
               style={
                 Object {
                   "display": "flex",
-                  "marginRight": "0.35rem",
+                  "marginRight": "0.25rem",
                   "position": "relative",
                 }
               }
             >
               <svg
-                bg="#999999"
-                h="1.4rem"
+                bg="hsl(0, 0%, 50%)"
+                h="1rem"
                 height="12"
                 viewBox="0 0 12 12"
-                w="1.4rem"
+                w="1rem"
                 width="12"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -1071,19 +1073,19 @@ exports[`Snapshot own Profile 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        ml="0.35rem"
-        mr="0.35rem"
+        ml="0.25rem"
+        mr="0.25rem"
         style={
           Object {
             "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "WebkitTextDecorationStyle": "solid",
-            "color": "rgba(153,153,153,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
             "fontFamily": "HelveticaNeue-Medium",
-            "fontSize": "1.05rem",
-            "lineHeight": "1.4rem",
-            "marginLeft": "0.35rem",
-            "marginRight": "0.35rem",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginLeft": "0.25rem",
+            "marginRight": "0.25rem",
             "position": "relative",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
@@ -1092,19 +1094,19 @@ exports[`Snapshot own Profile 1`] = `
         }
       >
         <a
-          c="#000000"
+          c="hsl(0, 0%, 0%)"
           className="c2 ulink-mock"
-          hc="#999999"
+          hc="hsl(0, 0%, 50%)"
           href="/invites"
           hu={0}
           inline={0}
           onClick={[Function]}
           styles={
             Array [
-              "font-size: 1.05rem;",
-              "line-height: 1.4rem;",
+              "font-size: 0.75rem;",
+              "line-height: 1.0499999999999998rem;",
               "font-family: HelveticaNeue-Medium;",
-              "color: #999999;",
+              "color: hsl(0, 0%, 50%);",
               "text-decoration: underline;",
               " ",
               [Function],
@@ -1119,7 +1121,7 @@ exports[`Snapshot own Profile 1`] = `
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
             fdirection="row"
-            ml="0.7rem"
+            ml="0.5rem"
             style={
               Object {
                 "WebkitAlignItems": "center",
@@ -1130,7 +1132,7 @@ exports[`Snapshot own Profile 1`] = `
                 "alignItems": "center",
                 "display": "flex",
                 "flexDirection": "row",
-                "marginLeft": "0.7rem",
+                "marginLeft": "0.5rem",
                 "msFlexAlign": "center",
                 "msFlexDirection": "row",
                 "position": "relative",
@@ -1142,17 +1144,17 @@ exports[`Snapshot own Profile 1`] = `
               style={
                 Object {
                   "display": "flex",
-                  "marginRight": "0.35rem",
+                  "marginRight": "0.25rem",
                   "position": "relative",
                 }
               }
             >
               <svg
-                bg="#999999"
-                h="1.4rem"
+                bg="hsl(0, 0%, 50%)"
+                h="1rem"
                 height="13"
                 viewBox="0 0 15 13"
-                w="1.4rem"
+                w="1rem"
                 width="15"
                 xmlns="http://www.w3.org/2000/svg"
               >
