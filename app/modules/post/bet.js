@@ -20,6 +20,7 @@ import { computeShares } from 'app/utils/post';
 import { computePostPayout } from 'app/utils/rewards';
 import { useCommunity } from 'modules/community/community.selectors';
 import { PieChart } from 'modules/stats/piechart';
+import Tooltip from 'modules/tooltip/tooltip.component';
 
 export function Bet() {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ export function Bet() {
     state.earnings.pending.map(e => state.earnings.entities[e])
   );
   const earning = earnigns.find(e => e.post === post._id);
-  const title = earning ? 'Increase Your Bet' : 'Bet On This Post';
+  const title = earning ? 'Increase Your Bet' : 'Bet on the Relevance of this Post';
 
   if (!user) return null;
 
@@ -68,10 +69,23 @@ export function Bet() {
 
   const power = (100 * amount) / maxBet;
 
+  const tooltipData = {
+    text:
+      "Do you think this post will be relevant?\nThe more you bet, the more you'll earn.\n\nBut use your coins wisely, only posts that\nachieve a high Reputation score get payouts."
+  };
+
   return (
     <View>
-      <Header>{title}</Header>
-      <SmallText mt={1}>Payout: {time}</SmallText>
+      <Header inline={1} mr={2}>
+        {title}
+      </Header>
+
+      <View fdirection={'row'} align={'baseline'}>
+        <SmallText mt={1} mr={1}>
+          Payout: {time}
+        </SmallText>
+        <Tooltip name={'betInfo'} data={tooltipData} info />
+      </View>
 
       <View mt={4} fdirection="row" justify="space-between" align={'center'}>
         <CircleButton onPress={minusAmount}>–</CircleButton>
@@ -107,9 +121,13 @@ export function Bet() {
       </HoverButton>
 
       <SmallText mt={2}>
-        If this post ranks highly you will win some coins, if not you will get your coins
-        back.
+        *You get your coins back once the betting round ends, win or lose.
       </SmallText>
+
+      {/*      <SmallText mt={2}>
+        If this post ranks highly you will win some coins, either way you allways get your
+        coins back.
+      </SmallText> */}
     </View>
   );
 }
@@ -126,7 +144,7 @@ function PotentialRewards({ post, amount, earning }) {
   const investments = useSelector(state =>
     (state.investments.posts[post._id] || [])
       .map(_id => state.investments.investments[_id])
-      .filter(inv => inv.amount > 0 && inv.investor !== state.auth.user._id)
+      .filter(inv => inv.stakedTokens > 0 && inv.investor !== state.auth.user._id)
   );
 
   const dispatch = useDispatch();

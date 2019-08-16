@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { ActionSheetIOS, TouchableOpacity, Platform } from 'react-native';
+import { ActionSheetIOS, TouchableOpacity, Platform, Linking } from 'react-native';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Share from 'react-native-share';
 import { getPostUrl, getTitle } from 'app/utils/post';
@@ -19,7 +19,7 @@ if (Platform.OS === 'android') {
 }
 
 const linkMenu = {
-  buttons: ['Repost Article', 'Share Via...', 'Cancel'],
+  buttons: ['Repost Article', 'Share Via...', 'Open Link in Browser', 'Cancel'],
   cancelIndex: 3
 };
 
@@ -71,7 +71,26 @@ export default function ButtonRow({
         cancelButtonIndex: menu.cancelIndex,
         destructiveButtonIndex: menu.destructiveIndex
       },
-      selectAction({ repostUrl, onShare, link })
+      buttonIndex => {
+        if (link) {
+          switch (buttonIndex) {
+            case 0:
+              return repostUrl();
+            case 1:
+              return onShare();
+            case 2:
+              return Linking.openURL(link.url);
+            default:
+              return null;
+          }
+        }
+        switch (buttonIndex) {
+          case 0:
+            return onShare();
+          default:
+            return null;
+        }
+      }
     );
   }
 
@@ -129,25 +148,4 @@ export default function ButtonRow({
       </TouchableOpacity>
     </View>
   );
-}
-
-function selectAction({ repostUrl, onShare, link }) {
-  return buttonIndex => {
-    if (link) {
-      switch (buttonIndex) {
-        case 0:
-          return repostUrl();
-        case 1:
-          return onShare();
-        default:
-          return null;
-      }
-    }
-    switch (buttonIndex) {
-      case 0:
-        return onShare();
-      default:
-        return null;
-    }
-  };
 }

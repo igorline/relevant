@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
-import PostButton from 'modules/post/postbutton.component';
-import { View, NumericalValue } from 'modules/styled/uni';
+import { getPostType } from 'app/utils/post';
+import { View, Image, SmallText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
-import ReactTooltip from 'react-tooltip';
 import { triggerAnimation } from 'modules/animation/animation.actions';
-import { setupMobileTooltips } from 'modules/tooltip/mobile/setupTooltips';
 import { useCommunity } from 'modules/community/community.selectors';
-import { CenterButton } from './postbuttonCenter';
-import { vote as voteAction } from './invest.actions';
+import Tooltip from 'modules/tooltip/tooltip.component';
+import { CenterButton } from './center-button';
+import PostButton from './postbutton';
+import { vote as voteAction } from '../invest.actions';
 
 let Analytics;
 let ReactGA;
@@ -26,28 +26,20 @@ PostButtons.propTypes = {
     id: PropTypes.string,
     data: PropTypes.object,
     user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    myVote: PropTypes.object
+    myVote: PropTypes.object,
+    parentPost: PropTypes.string,
+    type: PropTypes.string,
+    url: PropTypes.string
   }),
   color: PropTypes.string,
-  horizontal: PropTypes.bool,
-  tooltip: PropTypes.bool
+  horizontal: PropTypes.bool
 };
 
-export default function PostButtons({ post, auth, color, horizontal, tooltip }) {
+export default function PostButtons({ post, auth, color, horizontal }) {
   const dispatch = useDispatch();
   const investButton = useRef();
   const [processingVote, setProcessingVote] = useState(false);
   const community = useCommunity();
-
-  const { initTooltips, toggleTooltip } = setupMobileTooltips({
-    tooltips: [{ name: 'vote', el: investButton, data: {} }],
-    dispatch
-  });
-
-  useEffect(() => {
-    if (ReactTooltip.rebuild) ReactTooltip.rebuild();
-    if (tooltip) initTooltips();
-  }, []);
 
   const castVote = useCallback(
     async (e, vote, amount) => {
@@ -57,8 +49,7 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
         e.preventDefault();
         e.stopPropagation();
         if (!auth.isAuthenticated) {
-          setProcessingVote(false);
-          throw new Error('You must be logged in to  posts');
+          throw new Error(`You must be logged in to ${type} posts`);
         }
         if (processingVote) return null;
 
@@ -74,7 +65,8 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
           if (x + y + w + h === 0) return;
           const action = triggerAnimation(type, {
             parent,
-            amount: upvoteAmount
+            amount: upvoteAmount,
+            horizontal
           });
           dispatch(action);
         });
@@ -91,7 +83,7 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
         return browserAlerts.alert(err.message);
       }
     },
-    [dispatch, post, auth, vote, processingVote]
+    [dispatch, post, auth, vote, processingVote, setProcessingVote]
   );
 
   if (!post || post === 'notFound') return null;
@@ -112,6 +104,18 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
     post.data.eligibleForReward &&
     now.getTime() < new Date(post.data.payoutTime).getTime();
 
+  const postType = getPostType({ post });
+  const tipText =
+    postType === 'link'
+      ? 'Upvote articles that are worth reading, downvote spam.'
+      : `Upvote quality ${postType}s and downvote spam`;
+
+  const tooltipData = {
+    text: tipText,
+    position: 'right',
+    desktopOnly: true
+  };
+
   return (
     <View
       ref={investButton}
@@ -121,25 +125,21 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
       style={{ opacity: 1 }} // need this to make animations work on android
     >
       <PostButton
+        tooltipData={tooltipData}
         key={`${post.id}-up`}
         imageSet="UPVOTE"
         isActive={votedUp}
-        alt="Upvote"
+        alt="upvote"
         color={color}
         onPress={e => castVote(e, vote, 1)}
       />
       {canBet ? (
         <CenterButton horizontal={horizontal} votedUp={votedUp} post={post} />
       ) : (
-        <RankEl
-          horizontal={horizontal}
-          toggleTooltip={toggleTooltip}
-          postRank={postRank}
-          color={color}
-          post={post}
-        />
+        <RankEl horizontal={horizontal} postRank={postRank} color={color} post={post} />
       )}
       <PostButton
+        tooltipData={tooltipData}
         key={`${post.id}-down`}
         imageSet="DOWNVOTE"
         isActive={votedDown}
@@ -153,21 +153,18 @@ export default function PostButtons({ post, auth, color, horizontal, tooltip }) 
 
 RankEl.propTypes = {
   horizontal: PropTypes.bool,
-  toggleTooltip: PropTypes.func,
   postRank: PropTypes.number,
   color: PropTypes.string,
   post: PropTypes.object
 };
 
-function RankEl({ horizontal, toggleTooltip, postRank, color, post }) {
-  const isLink = !post.parentPost && post.url;
-  const isComment = post.type === 'comment';
-
-  const tipText = isLink
-    ? 'Upvote articles that are worth reading, downvote spam.'
-    : isComment
-      ? 'Upvote quality comments and downvote spam'
-      : 'Upvote quality posts and downvote spam';
+function RankEl({ horizontal, postRank, color, post }) {
+  const type = getPostType({ post });
+  const tipText =
+    type === 'link'
+      ? "This is the article's reputation score"
+      : `This is the ${type}'s reputation scroe`;
+  const tooltipData = { text: tipText, position: 'right' };
 
   return (
     <View
@@ -176,23 +173,29 @@ function RankEl({ horizontal, toggleTooltip, postRank, color, post }) {
       justify={'center'}
       align={'center'}
     >
-      <NumericalValue
-        onPress={() => toggleTooltip('vote')}
-        c={color || colors.secondaryText}
-        fs={2}
-        lh={2}
-        m={horizontal ? '0 1' : null}
-        data-place={'right'}
-        data-for="mainTooltip"
-        data-tip={JSON.stringify({
-          type: 'TEXT',
-          props: {
-            text: tipText
-          }
-        })}
-      >
-        {postRank || 0}
-      </NumericalValue>
+      <Tooltip name="vote" data={tooltipData} />
+      <View m={horizontal ? '0 1' : null} fdirection={'row'} align={'baseline'}>
+        <Image
+          h={1.2}
+          w={1.2}
+          style={{ opacity: 0.5, transform: [{ translateY: 0.5 }] }}
+          resizeMode={'contain'}
+          resizeMethod={'resize'}
+          mr={0.15}
+          // bg={'orange'}
+          source={require('app/public/img/r.png')}
+        />
+        <SmallText
+          // h={1.9}
+          // bg={'pink'}
+          // inline={1}
+          c={color || colors.secondaryText}
+          // fs={1.75}
+          // lh={1.75}
+        >
+          {postRank || 0}
+        </SmallText>
+      </View>
     </View>
   );
 }

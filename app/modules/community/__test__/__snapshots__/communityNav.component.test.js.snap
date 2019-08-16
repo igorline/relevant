@@ -10,16 +10,16 @@ exports[`Snapshot NavProfile 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  color: #000000;
+  color: hsl(0,0%,0%);
   color: #0000ff;
 }
 
 .c0:hover {
   -webkit-text-decoration: underline;
   text-decoration: underline;
-  -webkit-text-decoration-color: #000000;
-  text-decoration-color: #000000;
-  background: white;
+  -webkit-text-decoration-color: hsl(0,0%,0%);
+  text-decoration-color: hsl(0,0%,0%);
+  background: hsl(0,0%,100%);
 }
 
 .c2 {
@@ -28,204 +28,81 @@ exports[`Snapshot NavProfile 1`] = `
 
 .c1 {
   color: #0000ff;
-  color: #999999;
+  color: hsl(0,0%,50%);
 }
 
 .c1:hover * {
-  color: #000000;
+  color: hsl(0,0%,0%);
 }
 
 .c1:hover * {
-  fill: #000000;
+  fill: hsl(0,0%,0%);
 }
 
 .c1.active * {
-  color: #000000;
+  color: hsl(0,0%,0%);
 }
 
 .c1.active * {
-  fill: #000000;
+  fill: hsl(0,0%,0%);
 }
 
 .c1:hover * {
-  color: #000000;
+  color: hsl(0,0%,0%);
 }
 
 <div
+  className="css-view-1dbjc4n"
   style={
     Object {
-      "WebkitAlignItems": "stretch",
-      "WebkitBoxAlign": "stretch",
-      "WebkitBoxDirection": "normal",
       "WebkitBoxFlex": 1,
-      "WebkitBoxOrient": "vertical",
       "WebkitFlexBasis": "0px",
-      "WebkitFlexDirection": "column",
       "WebkitFlexGrow": 1,
       "WebkitFlexShrink": 1,
-      "alignItems": "stretch",
-      "borderBottomStyle": "solid",
-      "borderBottomWidth": "0px",
-      "borderLeftStyle": "solid",
-      "borderLeftWidth": "0px",
-      "borderRightStyle": "solid",
-      "borderRightWidth": "0px",
-      "borderTopStyle": "solid",
-      "borderTopWidth": "0px",
-      "boxSizing": "border-box",
       "display": "flex",
       "flexBasis": "0px",
-      "flexDirection": "column",
       "flexGrow": 1,
       "flexShrink": 1,
-      "marginBottom": "0px",
-      "marginLeft": "0px",
-      "marginRight": "0px",
-      "marginTop": "0px",
-      "minHeight": "0px",
-      "minWidth": "0px",
-      "msFlexAlign": "stretch",
-      "msFlexDirection": "column",
       "msFlexNegative": 1,
       "msFlexPositive": 1,
       "msFlexPreferredSize": "0px",
-      "paddingBottom": "0px",
-      "paddingLeft": "0px",
-      "paddingRight": "0px",
-      "paddingTop": "0px",
       "position": "relative",
-      "zIndex": 0,
     }
   }
 >
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
         "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
         "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
         "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
-          "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
           "backgroundColor": "rgba(255,255,255,1.00)",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
           "marginRight": "1px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-view-1dbjc4n"
         style={
           Object {
-            "WebkitAlignItems": "stretch",
-            "WebkitBoxAlign": "stretch",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "vertical",
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "column",
-            "WebkitFlexShrink": 0,
-            "alignItems": "stretch",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexDirection": "column",
-            "flexShrink": 0,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "2.8rem",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "stretch",
-            "msFlexDirection": "column",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
+            "marginTop": "1.5rem",
             "position": "relative",
-            "zIndex": 0,
           }
         }
       />
@@ -238,152 +115,68 @@ exports[`Snapshot NavProfile 1`] = `
         styles={
           Array [
             "display:flex;align-items:center;color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";&:hover{text-decoration:underline;text-decoration-color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";background:",
-            "white",
+            "hsl(0, 0%, 100%)",
             ";}",
           ]
         }
       >
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
               "WebkitAlignItems": "center",
               "WebkitBoxAlign": "center",
               "WebkitBoxDirection": "normal",
               "WebkitBoxOrient": "horizontal",
-              "WebkitFlexBasis": "auto",
               "WebkitFlexDirection": "row",
-              "WebkitFlexShrink": 0,
               "alignItems": "center",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
               "flexDirection": "row",
-              "flexShrink": 0,
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
               "msFlexAlign": "center",
               "msFlexDirection": "row",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0.7rem",
-              "paddingLeft": "2.8rem",
-              "paddingRight": "2.8rem",
-              "paddingTop": "0.7rem",
+              "paddingBottom": "0.5rem",
+              "paddingLeft": "1.5rem",
+              "paddingRight": "1.5rem",
+              "paddingTop": "0.5rem",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         >
           <div
+            className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitAlignItems": "stretch",
-                "WebkitBoxAlign": "stretch",
-                "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "vertical",
                 "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "column",
-                "WebkitFlexShrink": 0,
-                "alignItems": "stretch",
-                "backgroundColor": "rgba(153,153,153,1.00)",
-                "borderBottomStyle": "solid",
-                "borderBottomWidth": "0px",
-                "borderLeftStyle": "solid",
-                "borderLeftWidth": "0px",
-                "borderRightStyle": "solid",
-                "borderRightWidth": "0px",
-                "borderTopStyle": "solid",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
+                "backgroundColor": "rgba(128,128,128,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
-                "flexDirection": "column",
-                "flexShrink": 0,
-                "height": "2.8rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "1.05rem",
-                "marginTop": "0px",
-                "minHeight": "0px",
-                "minWidth": "0px",
-                "msFlexAlign": "stretch",
-                "msFlexDirection": "column",
-                "msFlexNegative": 0,
+                "height": "2rem",
+                "marginRight": "0.75rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
                 "position": "relative",
-                "width": "2.8rem",
+                "width": "2rem",
                 "zIndex": 0,
               }
             }
           >
             <div
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexDirection": "column",
-                  "WebkitFlexShrink": 0,
-                  "alignItems": "stretch",
                   "backgroundColor": "rgba(0,0,0,0.00)",
                   "backgroundImage": "url(\\"https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
                   "backgroundSize": "cover",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
                   "bottom": "0px",
-                  "boxSizing": "border-box",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexDirection": "column",
-                  "flexShrink": 0,
                   "height": "100%",
                   "left": "0px",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
                   "position": "absolute",
                   "right": "0px",
                   "top": "0px",
@@ -394,62 +187,26 @@ exports[`Snapshot NavProfile 1`] = `
             />
             <img
               alt=""
+              className="css-accessibilityImage-9pa8cd"
               draggable={false}
               src="https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg"
-              style={
-                Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
             />
           </div>
           <div
-            c="#000000"
+            c="hsl(0, 0%, 0%)"
+            className="css-text-901oao"
             dir="auto"
             lh={1.75}
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexShrink": 0,
                 "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
-                "flexBasis": "auto",
-                "flexShrink": 0,
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "1.225rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
+                "fontSize": "0.875rem",
+                "lineHeight": "0.875rem",
                 "position": "relative",
-                "textDecoration": "none",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
               }
             }
           >
@@ -458,98 +215,43 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
       </a>
       <div
+        className="css-view-1dbjc4n"
         style={
           Object {
-            "WebkitAlignItems": "stretch",
-            "WebkitBoxAlign": "stretch",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "vertical",
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "column",
-            "WebkitFlexShrink": 0,
-            "alignItems": "stretch",
-            "borderBottomColor": "rgba(221,221,221,1.00)",
+            "borderBottomColor": "rgba(222,222,222,1.00)",
             "borderBottomStyle": "solid",
             "borderBottomWidth": "1px",
             "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
             "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
             "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexDirection": "column",
-            "flexShrink": 0,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "stretch",
-            "msFlexDirection": "column",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "2.8rem",
-            "paddingLeft": "2.8rem",
-            "paddingRight": "2.8rem",
+            "paddingBottom": "2rem",
+            "paddingLeft": "1.5rem",
+            "paddingRight": "1.5rem",
             "paddingTop": "0rem",
             "position": "relative",
-            "zIndex": 0,
           }
         }
       >
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "vertical",
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "column",
-              "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
-              "flexDirection": "column",
-              "flexShrink": 0,
               "marginBottom": "0rem",
-              "marginLeft": "3.85rem",
+              "marginLeft": "2.75rem",
               "marginRight": "0rem",
-              "marginTop": "0.35rem",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
+              "marginTop": "0.25rem",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         >
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/technology"
             hu={0}
             inline={0}
@@ -557,41 +259,21 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
+              className="css-text-901oao"
               dir="auto"
               p="0.5 0"
               style={
                 Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6333333333333333rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
                 }
               }
             >
@@ -600,11 +282,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/society"
             hu={0}
             inline={0}
@@ -612,41 +294,21 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
+              className="css-text-901oao"
               dir="auto"
               p="0.5 0"
               style={
                 Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6333333333333333rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
                 }
               }
             >
@@ -655,11 +317,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/culture"
             hu={0}
             inline={0}
@@ -667,41 +329,21 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
+              className="css-text-901oao"
               dir="auto"
               p="0.5 0"
               style={
                 Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6333333333333333rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
                 }
               }
             >
@@ -710,11 +352,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/politics"
             hu={0}
             inline={0}
@@ -722,41 +364,21 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
+              className="css-text-901oao"
               dir="auto"
               p="0.5 0"
               style={
                 Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6333333333333333rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
                 }
               }
             >
@@ -765,11 +387,11 @@ exports[`Snapshot NavProfile 1`] = `
             </div>
           </a>
           <a
-            ac="#000000"
+            ac="hsl(0, 0%, 0%)"
             aria-current={null}
             className="c1 ulink-mock"
-            color="#999999"
-            hc="#000000"
+            color="hsl(0, 0%, 50%)"
+            hc="hsl(0, 0%, 0%)"
             href="/relevant/new/altwoke"
             hu={0}
             inline={0}
@@ -777,41 +399,21 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
+              className="css-text-901oao"
               dir="auto"
               p="0.5 0"
               style={
                 Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "rgba(153,153,153,1.00)",
+                  "color": "rgba(128,128,128,1.00)",
                   "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6333333333333333rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0.35rem",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "paddingBottom": "0.25rem",
                   "paddingLeft": "0rem",
                   "paddingRight": "0rem",
-                  "paddingTop": "0.35rem",
+                  "paddingTop": "0.25rem",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
                 }
               }
             >
@@ -821,83 +423,26 @@ exports[`Snapshot NavProfile 1`] = `
           </a>
         </div>
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "vertical",
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "column",
-              "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
-              "flexDirection": "column",
-              "flexShrink": 0,
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "2.1rem",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
+              "marginTop": "1.5rem",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         >
           <div
+            className="css-text-901oao"
             dir="auto"
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexShrink": 0,
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
-                "color": "inherit",
+                "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
-                "flexBasis": "auto",
-                "flexShrink": 0,
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "1.6333333333333333rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
               }
             }
           >
@@ -907,90 +452,39 @@ exports[`Snapshot NavProfile 1`] = `
           </div>
         </div>
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
               "WebkitBoxDirection": "normal",
               "WebkitBoxOrient": "horizontal",
               "WebkitBoxPack": "justify",
-              "WebkitFlexBasis": "auto",
               "WebkitFlexDirection": "row",
-              "WebkitFlexShrink": 0,
               "WebkitJustifyContent": "space-between",
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
               "flexDirection": "row",
-              "flexShrink": 0,
               "justifyContent": "space-between",
-              "marginBottom": "1.4rem",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "2.1rem",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
+              "marginBottom": "1rem",
+              "marginTop": "1.5rem",
               "msFlexDirection": "row",
-              "msFlexNegative": 0,
               "msFlexPack": "justify",
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         >
           <div
-            c="#000000"
+            c="hsl(0, 0%, 0%)"
+            className="css-text-901oao"
             dir="auto"
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexShrink": 0,
                 "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
-                "flexBasis": "auto",
-                "flexShrink": 0,
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "1.6333333333333333rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
-                "textDecoration": "none",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
               }
             }
           >
@@ -1006,42 +500,18 @@ exports[`Snapshot NavProfile 1`] = `
           >
             <div
               c="#0000ff"
+              className="css-text-901oao"
               dir="auto"
               style={
                 Object {
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexShrink": 0,
                   "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
                   "color": "rgba(0,0,255,1.00)",
                   "display": "flex",
-                  "flexBasis": "auto",
-                  "flexShrink": 0,
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.225rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6333333333333333rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
                   "position": "relative",
-                  "textDecoration": "none",
                   "textDecorationColor": "rgba(0,0,255,1.00)",
-                  "whiteSpace": "pre-wrap",
-                  "wordWrap": "break-word",
                 }
               }
             >
@@ -1050,94 +520,35 @@ exports[`Snapshot NavProfile 1`] = `
           </a>
         </div>
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
               "WebkitBoxDirection": "normal",
               "WebkitBoxLines": "multiple",
               "WebkitBoxOrient": "horizontal",
-              "WebkitFlexBasis": "auto",
               "WebkitFlexDirection": "row",
-              "WebkitFlexShrink": 0,
               "WebkitFlexWrap": "wrap",
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
               "flexDirection": "row",
-              "flexShrink": 0,
               "flexWrap": "wrap",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
               "msFlexDirection": "row",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
               "msFlexWrap": "wrap",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         />
       </div>
     </div>
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
-          "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 0,
-          "marginBottom": "1.4rem",
+          "marginBottom": "1rem",
           "marginLeft": "0rem",
           "marginRight": "0rem",
-          "marginTop": "1.4rem",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
+          "marginTop": "1rem",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
@@ -1150,152 +561,68 @@ exports[`Snapshot NavProfile 1`] = `
         styles={
           Array [
             "display:flex;align-items:center;color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";&:hover{text-decoration:underline;text-decoration-color:",
-            "#000000",
+            "hsl(0, 0%, 0%)",
             ";background:",
-            "white",
+            "hsl(0, 0%, 100%)",
             ";}",
           ]
         }
       >
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
               "WebkitAlignItems": "center",
               "WebkitBoxAlign": "center",
               "WebkitBoxDirection": "normal",
               "WebkitBoxOrient": "horizontal",
-              "WebkitFlexBasis": "auto",
               "WebkitFlexDirection": "row",
-              "WebkitFlexShrink": 0,
               "alignItems": "center",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
               "flexDirection": "row",
-              "flexShrink": 0,
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
               "msFlexAlign": "center",
               "msFlexDirection": "row",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0.7rem",
-              "paddingLeft": "2.8rem",
-              "paddingRight": "2.8rem",
-              "paddingTop": "0.7rem",
+              "paddingBottom": "0.5rem",
+              "paddingLeft": "1.5rem",
+              "paddingRight": "1.5rem",
+              "paddingTop": "0.5rem",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         >
           <div
+            className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitAlignItems": "stretch",
-                "WebkitBoxAlign": "stretch",
-                "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "vertical",
                 "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "column",
-                "WebkitFlexShrink": 0,
-                "alignItems": "stretch",
-                "backgroundColor": "rgba(153,153,153,1.00)",
-                "borderBottomStyle": "solid",
-                "borderBottomWidth": "0px",
-                "borderLeftStyle": "solid",
-                "borderLeftWidth": "0px",
-                "borderRightStyle": "solid",
-                "borderRightWidth": "0px",
-                "borderTopStyle": "solid",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
+                "backgroundColor": "rgba(128,128,128,1.00)",
                 "display": "flex",
                 "flexBasis": "auto",
-                "flexDirection": "column",
-                "flexShrink": 0,
-                "height": "2.8rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "1.05rem",
-                "marginTop": "0px",
-                "minHeight": "0px",
-                "minWidth": "0px",
-                "msFlexAlign": "stretch",
-                "msFlexDirection": "column",
-                "msFlexNegative": 0,
+                "height": "2rem",
+                "marginRight": "0.75rem",
                 "msFlexPreferredSize": "auto",
                 "overflowX": "hidden",
                 "overflowY": "hidden",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
                 "position": "relative",
-                "width": "2.8rem",
+                "width": "2rem",
                 "zIndex": 0,
               }
             }
           >
             <div
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
-                  "WebkitFlexBasis": "auto",
-                  "WebkitFlexDirection": "column",
-                  "WebkitFlexShrink": 0,
-                  "alignItems": "stretch",
                   "backgroundColor": "rgba(0,0,0,0.00)",
                   "backgroundImage": "url(\\"default_community.png\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
                   "backgroundSize": "cover",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
                   "bottom": "0px",
-                  "boxSizing": "border-box",
-                  "display": "flex",
-                  "flexBasis": "auto",
-                  "flexDirection": "column",
-                  "flexShrink": 0,
                   "height": "100%",
                   "left": "0px",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "msFlexNegative": 0,
-                  "msFlexPreferredSize": "auto",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
                   "position": "absolute",
                   "right": "0px",
                   "top": "0px",
@@ -1306,62 +633,26 @@ exports[`Snapshot NavProfile 1`] = `
             />
             <img
               alt=""
+              className="css-accessibilityImage-9pa8cd"
               draggable={false}
               src="default_community.png"
-              style={
-                Object {
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "opacity": 0,
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
             />
           </div>
           <div
-            c="#000000"
+            c="hsl(0, 0%, 0%)"
+            className="css-text-901oao"
             dir="auto"
             lh={1.75}
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexShrink": 0,
                 "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
-                "flexBasis": "auto",
-                "flexShrink": 0,
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.225rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "1.225rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
+                "fontSize": "0.875rem",
+                "lineHeight": "0.875rem",
                 "position": "relative",
-                "textDecoration": "none",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
-                "whiteSpace": "pre-wrap",
-                "wordWrap": "break-word",
               }
             }
           >
@@ -1372,46 +663,26 @@ exports[`Snapshot NavProfile 1`] = `
     </div>
   </div>
   <div
+    className="css-text-901oao"
     dir="auto"
     m={
       Array [
-        4,
+        3,
         2,
       ]
     }
     style={
       Object {
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexShrink": 0,
-        "borderBottomWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "color": "inherit",
+        "color": "rgba(0,0,0,1.00)",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexShrink": 0,
         "fontFamily": "HelveticaNeue",
-        "fontSize": "1.225rem",
-        "fontStyle": "inherit",
-        "fontVariant": "inherit",
-        "fontWeight": "inherit",
-        "lineHeight": "1.6333333333333333rem",
-        "marginBottom": "2.8rem",
-        "marginLeft": "2.8rem",
-        "marginRight": "2.8rem",
-        "marginTop": "2.8rem",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
+        "fontSize": "0.875rem",
+        "lineHeight": "1.2249999999999999rem",
+        "marginBottom": "1.5rem",
+        "marginLeft": "1.5rem",
+        "marginRight": "1.5rem",
+        "marginTop": "1.5rem",
         "position": "relative",
-        "textDecoration": "none",
-        "whiteSpace": "pre-wrap",
-        "wordWrap": "break-word",
       }
     }
   >

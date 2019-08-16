@@ -220,36 +220,32 @@ export function goToPeople(topic) {
 }
 
 export function goToUrl(url, id) {
-  return dispatch => {
-    if (url.match('mailto:')) return Linking.openURL(url);
-    dispatch(setButtonTooltip('upvote', id));
-    if (safariView) {
-      safariView
-        .isAvailable()
-        .then(() => {
-          Orientation.unlockAllOrientations();
-          safariView.show({
-            url,
-            readerMode: true // optional,
-          });
-        })
-        .catch(() => {
-          dispatch(
-            push(
-              {
-                key: 'articleView',
-                component: 'articleView',
-                back: true,
-                uri: url,
-                id: url,
-                gestureResponseDistance: 120
-              },
-              'home'
-            )
-          );
-        });
+  return async dispatch => {
+    try {
+      if (url.match('mailto:')) return Linking.openURL(url);
+      dispatch(setButtonTooltip('upvote', id));
+      if (!safariView) return null;
+      await safariView.isAvailable();
+      Orientation.unlockAllOrientations();
+      return safariView.show({
+        url,
+        readerMode: true
+      });
+    } catch (err) {
+      return dispatch(
+        push(
+          {
+            key: 'articleView',
+            component: 'articleView',
+            back: true,
+            uri: url,
+            id: url,
+            gestureResponseDistance: 120
+          },
+          'home'
+        )
+      );
     }
-    return null;
   };
 }
 

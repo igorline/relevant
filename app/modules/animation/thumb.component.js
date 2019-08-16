@@ -14,15 +14,14 @@ Thumb.propTypes = {
   parent: PropTypes.object,
   id: PropTypes.string,
   destroy: PropTypes.func,
-  specialKey: PropTypes.number
+  key: PropTypes.number
 };
 
-export default function Thumb({ parent, id, destroy, specialKey }) {
+export default function Thumb({ parent, id, destroy, key }) {
   const [opacity] = useState(new Animated.Value(1));
   const [scale] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    const key = id;
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0,
@@ -40,17 +39,17 @@ export default function Thumb({ parent, id, destroy, specialKey }) {
       }).start()
     ]).start();
 
-    const timeout = setTimeout(() => destroy(key), 2000);
+    const timeout = setTimeout(() => destroy(id), 2000);
     return () => {
       clearTimeout(timeout);
-      destroy(key);
+      destroy(id);
     };
   }, []);
 
   return (
     <Animated.Text
       pointerEvents={'none'}
-      key={specialKey}
+      key={key}
       style={[
         { ...thumbStyles },
         {

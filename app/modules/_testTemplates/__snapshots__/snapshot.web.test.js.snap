@@ -2,13 +2,13 @@
 
 exports[`Snapshot AvatarBox Web 1`] = `
 .c0 {
-  color: #999999;
+  color: hsl(0,0%,50%);
   font-size: 10px;
   font-family: Arial,sans-serif;
 }
 
 .c0 a {
-  color: #999999;
+  color: hsl(0,0%,50%);
 }
 
 <div

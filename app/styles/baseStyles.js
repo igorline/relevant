@@ -10,7 +10,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   html {
-    font-size: 62.5%;
+    font-size: 95%;
     display: flex;
   }
   body {
@@ -52,7 +52,7 @@ export const GlobalStyle = createGlobalStyle`
   @media screen
   and (max-device-width: 414px) {
     html {
-      font-size: 68%;
+      font-size: 100%;
     }
   }
 `;

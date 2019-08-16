@@ -8,7 +8,7 @@ if (process.env.WEB === 'true') {
 export default function sizing(unit, type) {
   if (!isNative) {
     if (type) return `${unit}${type}`;
-    return `${(unit * 7) / 10}rem`;
+    return `${unit / 2}rem`;
   }
   if (type) {
     if (unit < 0) return unit;

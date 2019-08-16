@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/primitives';
+import { isNative } from 'styles';
 import { numbers } from 'app/utils';
 import Thumb from './thumb.component';
 
 const Container = styled.View`
-  position: absolute
+  position: ${isNative ? 'absolute' : 'fixed'};
   z-index: 10000;
   left: 0;
   top: 0;
@@ -18,8 +19,7 @@ const Container = styled.View`
 export default function DownvoteAnimation() {
   const [animEls, setAnimEls] = useState({});
 
-  const animation = useSelector(state => state.animation);
-  const { downvote: irrelevantAnimation } = animation;
+  const { index, parent } = useSelector(state => state.animation.downvote || {});
 
   function destroy(key) {
     setAnimEls(els => {
@@ -29,7 +29,6 @@ export default function DownvoteAnimation() {
   }
 
   function runAnimation() {
-    const parent = animation.parents.downvote;
     if (!parent) return;
     const key = numbers.guid();
     const newEl = {
@@ -40,7 +39,7 @@ export default function DownvoteAnimation() {
 
   useEffect(() => {
     runAnimation();
-  }, [irrelevantAnimation]);
+  }, [index]);
 
   return <Container pointerEvents={'none'}>{Object.values(animEls)}</Container>;
 }
