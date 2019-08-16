@@ -15,16 +15,8 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text } from 'app/utils';
 
-import {
-  View,
-  Button,
-  Divider,
-  BodyText,
-  LinkFont,
-  SecondaryText
-} from 'modules/styled/uni';
+import { View, Button, Divider, BodyText, LinkFont, SmallText } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
-
 
 import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
@@ -36,9 +28,10 @@ const urlPlaceholder = "What's relevant?  Paste article URL.";
 const textPlaceholder =
   'Add your commentary, opinion, summary or a relevant quote from the article';
 
-const PasteTextFromLink = styled(SecondaryText)`
+const PasteTextFromLink = styled(SmallText)`
+  position: absolute;
   right: ${sizing(1.5)};
-  top: ${sizing(-3)};
+  bottom: ${sizing(1.5)};
 `;
 
 class CreatePostContainer extends Component {
@@ -337,11 +330,11 @@ class CreatePostContainer extends Component {
           post={this.state.urlPreview}
           link={this.state.linkPreview}
         />
-        <View display="flex" justify="flex-end" fdirection="row">
+        <SmallText display="flex" justify="flex-end" fdirection="row">
           <a onClick={this.clearUrl.bind(this)} className="removeUrl">
             remove url
           </a>
-        </View>
+        </SmallText>
       </div>
     );
   }
