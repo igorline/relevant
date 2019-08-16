@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { View } from 'modules/styled/uni';
+import { View, Image, Text } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { setupMobileTooltips } from 'modules/tooltip/mobile/setupTooltips';
 import ReactTooltip from 'react-tooltip';
+
+const InfoImage = require('app/public/img/info.png');
 
 const AbsoluteWrapper = styled.Text`
   position: absolute;
@@ -19,10 +21,11 @@ const AbsoluteWrapper = styled.Text`
 TooltipContainer.propTypes = {
   name: PropTypes.string,
   data: PropTypes.object,
-  children: PropTypes.object
+  children: PropTypes.object,
+  info: PropTypes.bool
 };
 
-export default function TooltipContainer({ children, name, data, ...rest }) {
+export default function TooltipContainer({ children, name, data, info, ...rest }) {
   useEffect(() => {
     if (ReactTooltip.rebuild) ReactTooltip.rebuild();
   }, [data, name, children]);
@@ -36,20 +39,41 @@ export default function TooltipContainer({ children, name, data, ...rest }) {
     dispatch
   });
 
-  const Wrapper = children ? View : AbsoluteWrapper;
+  const Wrapper = (children && View) || AbsoluteWrapper;
 
-  return (
-    <Wrapper
-      {...rest}
+  return info ? (
+    <Text
       ref={el}
-      global-event-off="click"
+      // onLongPress={() => toggleTooltip(name)}
+      onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
+    >
+      <Image
+        data-event-off="click"
+        data-place={data.position}
+        data-for="mainTooltip"
+        data-tip={JSON.stringify({
+          type: 'TEXT',
+          props: data
+        })}
+        {...rest}
+        source={InfoImage}
+        resizeMode={'contain'}
+        h={1.5}
+        w={1.5}
+        {...rest}
+      />
+    </Text>
+  ) : (
+    <Wrapper
+      ref={el}
+      data-event-off="click"
       data-place={data.position}
       data-for="mainTooltip"
       data-tip={JSON.stringify({
         type: 'TEXT',
         props: data
       })}
-      // pointerEvents="none"
+      onLongPress={() => toggleTooltip(name)}
       onPress={data.desktopOnly ? null : () => toggleTooltip(name)}
     >
       {children}

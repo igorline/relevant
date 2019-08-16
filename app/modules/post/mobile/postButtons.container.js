@@ -1,5 +1,5 @@
 import React from 'react';
-import PostButtons from 'modules/post/postbuttons.component';
+import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import ButtonRow from 'modules/post/mobile/buttonRow';
 import { View } from 'modules/styled/uni';
 

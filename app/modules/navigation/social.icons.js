@@ -57,7 +57,7 @@ FooterIcon.propTypes = {
 
 export default function FooterIcons({ actions }) {
   return (
-    <View flex={1} fdirection={'row'} mt={2} mb={[2, 4]}>
+    <View flex={1} fdirection={'row'} mt={2} mb={[2, 0]}>
       {icons.map(icon => (
         <FooterIcon actions={actions} key={icon.href} {...icon} />
       ))}

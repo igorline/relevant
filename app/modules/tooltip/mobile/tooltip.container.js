@@ -11,13 +11,8 @@ import {
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  globalStyles,
-  fullHeight,
-  fullWidth,
-  blue,
-  smallScreen
-} from 'app/styles/global';
+import { globalStyles, fullHeight, fullWidth, smallScreen } from 'app/styles/global';
+import { colors } from 'styles';
 import * as authActions from 'modules/auth/auth.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as helper from './tooltip.helper';
@@ -147,6 +142,7 @@ class Tooltip extends Component {
     const horizontalOffset =
       tooltip.horizontalOffset || helper.data.default.horizontalOffset;
 
+    let arrowOffset = 3;
     if (tooltip.vertical === 'bottom') {
       transform = [...transform, { translateY: this.state.height / 2 }];
       style = {
@@ -154,6 +150,7 @@ class Tooltip extends Component {
         top: -10 + parent.y + parent.h + verticalOffset - this.state.height / 2,
         transform
       };
+      arrowOffset = 5;
       arrowStyle = [...arrowStyle, { top: Platform.OS === 'android' ? 5 : 4 }];
     }
 
@@ -186,7 +183,10 @@ class Tooltip extends Component {
         left: px - TOOLTIP_WIDTH / 2 - TOOLTIP_MARGIN,
         transform
       };
-      arrowStyle = [...arrowStyle, { right: fullWidth - px - TOOLTIP_MARGIN - 6 }];
+      arrowStyle = [
+        ...arrowStyle,
+        { right: fullWidth - px - TOOLTIP_MARGIN - arrowOffset }
+      ];
     }
 
     if (horizontal === 'left') {
@@ -212,7 +212,7 @@ class Tooltip extends Component {
       <TouchableOpacity
         style={[styles.mediumButton, { borderColor: 'white' }]}
         onPress={this.nextOnboarding}
-        underlayColor={blue}
+        underlayColor={colors.blue}
       >
         <Text style={[styles.mediumButtonText, { color: 'white' }]}>Got It</Text>
       </TouchableOpacity>
@@ -236,7 +236,7 @@ class Tooltip extends Component {
       <TouchableHighlight
         style={styles.overlay}
         onPress={dismiss ? this.nextOnboarding : null}
-        underlayColor={blue}
+        underlayColor={colors.blue}
         // pointerEvents={dismiss ? 'all' : 'none'}
       >
         <Animated.View
@@ -258,7 +258,7 @@ class Tooltip extends Component {
             <TouchableHighlight
               style={styles.tooltipCard}
               onPress={this.nextOnboarding}
-              underlayColor={blue}
+              underlayColor={colors.blue}
             >
               <View>
                 {body}
@@ -285,7 +285,7 @@ const localStyles = StyleSheet.create({
     bottom: 0
   },
   tooltipCard: {
-    backgroundColor: blue,
+    backgroundColor: colors.blue,
     padding: 15,
     paddingVertical: 20,
     paddingTop: 25,
@@ -309,7 +309,7 @@ const localStyles = StyleSheet.create({
       Platform.OS === 'android'
         ? [{ rotate: '45deg' }]
         : [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
-    backgroundColor: blue
+    backgroundColor: colors.blue
   },
   arrowBottom: {
     shadowOffset: { width: 1, height: 1 }

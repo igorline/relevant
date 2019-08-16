@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
-import { mixins, layout, fonts, colors, sizing, size } from 'app/styles';
-
-const isNative = process.env.WEB !== 'true';
+import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
@@ -83,6 +81,7 @@ export const MobileDivider = styled(View)`
 export const Header = styled(Text)`
   ${fonts.header}
   ${mixins.color}
+  ${mixins.font}
 `;
 
 export const Title = styled(Text)`
@@ -254,7 +253,7 @@ export const Spacer = styled(View)`
       if (!total * UNIT) {
         return '';
       }
-      return `padding-left: ${sizing((total - 1) * UNIT)};`;
+      return `padding-left: ${sizing((total - (p.screenSize > 0 ? 1 : 0)) * UNIT)};`;
     }
     return '';
   }}

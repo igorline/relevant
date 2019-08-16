@@ -22,8 +22,8 @@ import Analytics from 'react-native-firebase-analytics';
 // Animiations
 import InvestAnimation from 'modules/animation/mobile/investAnimation.component';
 import HeartAnimation from 'modules/animation/mobile/heartAnimation.component';
-import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
-import DownvoteAnimation from 'modules/animation/mobile/downvoteAnimation.component';
+import UpvoteAnimation from 'modules/animation/upvoteAnimation.component';
+import DownvoteAnimation from 'modules/animation/downvoteAnimation.component';
 
 import * as authActions from 'modules/auth/auth.actions';
 import * as userActions from 'modules/user/user.actions';
@@ -265,12 +265,12 @@ class Application extends Component {
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <AppContainer navigation={this.props.navigation} />
         <BannerPrompt />
+        {this.renderModal()}
         <Tooltip />
         <InvestAnimation />
         <HeartAnimation />
         <DownvoteAnimation />
         <UpvoteAnimation />
-        {this.renderModal()}
       </View>
     );
   }

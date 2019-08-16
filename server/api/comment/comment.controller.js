@@ -36,19 +36,19 @@ exports.index = async req => {
     : [];
 
   const comments = await Post.find(query)
-  .populate([
-    ...myVote,
-    {
-      path: 'embeddedUser.relevance',
-      select: 'pagerank',
-      match: { communityId, global: true }
-    },
-    {
-      path: 'data',
-      match: { communityId }
-    }
-  ])
-  .sort({ pagerank: -1, createdAt: 1 });
+    .populate([
+      ...myVote,
+      {
+        path: 'embeddedUser.relevance',
+        select: 'pagerank',
+        match: { communityId, global: true }
+      },
+      {
+        path: 'data',
+        match: { communityId }
+      }
+    ])
+    .sort({ pagerank: -1, createdAt: 1 });
 
   return { data: comments.map(c => c.toObject()) };
 };
@@ -99,16 +99,16 @@ exports.create = async (req, res, next) => {
     // this will also save the new comment
     comment = await Post.sendOutMentions(mentions, comment, user, comment);
 
-    await Invest.createVote({
-      post: comment,
-      user,
-      amount: 0,
-      relevanceToAdd: 0,
-      community,
-      communityId
-    });
+    // Do we need this?
+    // await Invest.createVote({
+    //   post: comment,
+    //   user,
+    //   amount: 0,
+    //   relevanceToAdd: 0,
+    //   community,
+    //   communityId,
+    // });
 
-    // TODO increase the post's relevance? **but only if its user's first comment!
     const updateTime = type === 'post' || false;
     await parentPost.updateRank({ communityId, updateTime });
 

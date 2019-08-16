@@ -10,14 +10,16 @@ import {
   // NumericalValue,
   // Image
 } from 'modules/styled/uni';
-import { timeLeft } from 'utils/numbers';
+import { timeLeft, getTimestamp } from 'utils/numbers';
+
 // import { timeLeft, abbreviateNumber as toFixed } from 'utils/numbers';
-import { colors, sizing } from 'styles';
+import { colors } from 'styles';
 import { PAYOUT_TIME } from 'server/config/globalConstants';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { PieChart } from 'modules/stats/piechart';
 import CoinStat from 'modules/stats/coinStat.component';
 import Tooltip from 'modules/tooltip/tooltip.component';
+import { CENTER_BUTTON_SIZE } from 'styles/layout';
 // import styled from 'styled-components/primitives';
 
 // const coinImage = require('app/public/img/relevantcoin.png');
@@ -37,21 +39,19 @@ CenterButton.propTypes = {
 export function CenterButton({ post, votedUp, horizontal }) {
   const { payoutTime } = post.data;
 
-  const size = horizontal ? 5 : 5;
-
   const dispatch = useDispatch();
   const openBetModal = () => dispatch(showModal('investModal', post));
 
   const timer = (
-    <View w={size} h={size}>
-      <Timer payoutTime={payoutTime} size={size} />
+    <View w={CENTER_BUTTON_SIZE} h={CENTER_BUTTON_SIZE}>
+      <Timer payoutTime={payoutTime} post={post} />
     </View>
   );
 
   return (
     <View p={horizontal ? '0 1.5' : '.75 0'}>
       {votedUp ? (
-        <BetButton size={size} openBetModal={openBetModal} post={post} />
+        <BetButton size={CENTER_BUTTON_SIZE} openBetModal={openBetModal} post={post} />
       ) : (
         timer
       )}
@@ -73,10 +73,15 @@ export function BetButton({ size, openBetModal, post }) {
   );
 
   const tooltipData = {
-    text: 'Bet on this post to earn rewards',
+    text: earning
+      ? 'This is your projected reward for this post, click to increase your bet'
+      : 'Bet on the relevance of this post to earn rewards',
     position: 'right',
     desktopOnly: true
   };
+
+  const estimatedRewards =
+    earning && (earning.estimatedPostPayout * earning.shares) / earning.totalPostShares;
 
   return (
     <View>
@@ -101,8 +106,7 @@ export function BetButton({ size, openBetModal, post }) {
               fs={1.5}
               size={1.5}
               align={'center'}
-              // inline={1}
-              amount={earning.stakedTokens}
+              amount={estimatedRewards}
             />
           ) : (
             <LinkFont c={earning ? colors.white : colors.black}>BET</LinkFont>
@@ -120,10 +124,10 @@ export function BetButton({ size, openBetModal, post }) {
 
 Timer.propTypes = {
   payoutTime: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  size: PropTypes.number
+  post: PropTypes.object
 };
 
-export function Timer({ payoutTime, size }) {
+export function Timer({ payoutTime, post }) {
   const updateTimerParams = () => {
     const now = new Date();
     const payoutDate = new Date(payoutTime);
@@ -139,21 +143,17 @@ export function Timer({ payoutTime, size }) {
     return () => clearInterval(id);
   }, [payoutTime]);
 
+  const timeLelft = getTimestamp(post.data.payoutTime, true).toLowerCase();
+
   const tooltipData = {
-    text: 'Upvote this post to be able to bet on it',
+    text: `Upvote this post to be able to bet on it.\nYou have ${timeLelft} to bet.`,
     position: 'right'
   };
 
   return (
-    <View>
-      <PieChart
-        w={sizing(size)}
-        h={sizing(size)}
-        color={colors.black}
-        strokeWidth={1}
-        {...timer}
-      />
+    <React.Fragment>
+      <PieChart color={colors.black} strokeWidth={1} {...timer} />
       <Tooltip name="bet" data={tooltipData} />
-    </View>
+    </React.Fragment>
   );
 }

@@ -93,6 +93,7 @@ class Marquee extends Component {
       if (i % rows !== row) return null;
       const color = BG_COLORS[(row + 1) % 2];
       const community = communityState.communities[post.data.community];
+      if (!community) return null;
       const avgRank = community.currentShares / community.postCount;
       const tick = post.data.pagerank - avgRank;
       const title = getTitle({ post, maxLength: 60 }).toUpperCase();

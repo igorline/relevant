@@ -121,7 +121,6 @@ class CommunityMembers extends Component {
         <ScrollContainer h={40} mt={2}>
           {!searchValue ? (
             <InfScroll
-              className={'communityMembers'}
               data={activeCommunityMembers}
               loadMore={p => this.load(p, activeCommunityMembers.length)}
               hasMore={this.hasMore}

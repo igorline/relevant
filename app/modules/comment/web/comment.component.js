@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
-import PostButtons from 'modules/post/postbuttons.component';
+import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { colors, layout } from 'app/styles';
 import Linkify from 'linkifyjs/react';
@@ -153,9 +153,9 @@ class Comment extends Component {
       let lines = text.split(/\n/);
       lines = lines.map(line =>
         line
-        .split(/\s/)
-        .slice(0, 50)
-        .join(' ')
+          .split(/\s/)
+          .slice(0, 50)
+          .join(' ')
       );
       text = lines.slice(0, 3).join('\n');
       readMore = text.length < comment.body.length;
@@ -206,20 +206,22 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
+    const borderMargin =
+      hidePostButtons || screenSize
+        ? (nestingLevel && -3) || 0
+        : layout.POST_BUTTONS_WIDTH / 3;
+
     return (
       <View ref={this.el}>
         <Spacer
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
           screenSize={screenSize}
-          m={['0 4 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
+          m={['0 3 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
           fdirection="column"
         >
           {!hideBorder && nestingLevel > 0 && (
-            <Divider
-              className="divider"
-              ml={hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_WIDTH / 3}
-            />
+            <Divider className="divider" ml={borderMargin} />
           )}
           <View fdirection="row" mt={4}>
             {!hidePostButtons && !screenSize ? (
@@ -231,7 +233,7 @@ class Comment extends Component {
               <Image
                 h={3}
                 w={2}
-                ml={0}
+                ml={[-3, 0]}
                 mr={1}
                 resizeMode={'contain'}
                 source={require('app/public/img/reply.png')}

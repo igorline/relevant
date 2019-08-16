@@ -103,7 +103,7 @@ const ModalComponent = props => {
           onClick={e => e.stopPropagation()}
         >
           {hideX ? null : (
-            <Touchable onPress={() => close()}>
+            <Touchable onClick={() => close()}>
               <CloseX
                 w={2.5}
                 h={2.5}
