@@ -71,7 +71,26 @@ export default function ButtonRow({
         cancelButtonIndex: menu.cancelIndex,
         destructiveButtonIndex: menu.destructiveIndex
       },
-      selectAction({ repostUrl, onShare, link })
+      buttonIndex => {
+        if (link) {
+          switch (buttonIndex) {
+            case 0:
+              return repostUrl();
+            case 1:
+              return onShare();
+            case 2:
+              return Linking.openURL(link.url);
+            default:
+              return null;
+          }
+        }
+        switch (buttonIndex) {
+          case 0:
+            return onShare();
+          default:
+            return null;
+        }
+      }
     );
   }
 
@@ -129,27 +148,4 @@ export default function ButtonRow({
       </TouchableOpacity>
     </View>
   );
-}
-
-function selectAction({ repostUrl, onShare, link }) {
-  return buttonIndex => {
-    if (link) {
-      switch (buttonIndex) {
-        case 0:
-          return repostUrl();
-        case 1:
-          return onShare();
-        case 2:
-          return Linking.openURL(link.url);
-        default:
-          return null;
-      }
-    }
-    switch (buttonIndex) {
-      case 0:
-        return onShare();
-      default:
-        return null;
-    }
-  };
 }
