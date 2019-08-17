@@ -17,13 +17,7 @@ import { CASHOUT_LIMIT } from 'server/config/globalConstants';
 // import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN } from 'app/utils/eth';
 
-export const Balance = ({
-  user,
-  screenSize,
-  /* actions, */
-  isWeb,
-  userBalance
-}) => {
+export const Balance = ({ user, screenSize, actions, isWeb, userBalance }) => {
   // Temporarily disable - don't want to trigger metamask popup here
   // useTokenContract(ethState, ethActions);
 
@@ -73,10 +67,7 @@ export const Balance = ({
       </View>
       {isWeb ? (
         <View fdirection="row" mt={2} align="center">
-          <Touchable
-            // onClick={() => actions.showModal('cashOut')}
-            td={'underline'}
-          >
+          <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
             <LinkFont c={colors.grey} mr={0.5}>
               Claim Tokens
             </LinkFont>
@@ -113,7 +104,7 @@ Balance.propTypes = {
   // ...contractPropTypes,
   userBalance: PropTypes.object,
   user: PropTypes.object,
-  // actions: PropTypes.object,
+  actions: PropTypes.object,
   screenSize: PropTypes.number,
   isWeb: PropTypes.bool
 };
