@@ -1,5 +1,6 @@
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import handleRender from './render';
+// eslint-disable-next-line import/named
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
 
@@ -36,7 +37,6 @@ module.exports = app => {
   app.use('/api/twitterFeed', require('./api/twitterFeed'));
   app.use('/api/communityFeed', require('./api/communityFeed'));
   app.use('/api/community', require('./api/community'));
-  app.use('/api/logger', require('./api/logger'));
   app.get('/confirm/:user/:code', userController.confirm); // deprecate
   app.get('/user/confirm/:user/:code', userController.confirm);
   app.get('/user/:user/confirm/:code', userController.confirm);
