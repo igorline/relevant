@@ -1,6 +1,6 @@
 module.exports = {
   extends: ['airbnb-base', 'prettier', 'prettier/react'],
-  plugins: ['react', 'immutable', 'prettier'],
+  plugins: ['react', 'immutable', 'prettier', 'react-hooks'],
   settings: {
     'import/resolver': {
       'babel-module': {}
@@ -30,7 +30,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     'import/named': 1,
     'no-underscore-dangle': 0,
-    'comma-dangle': ['error', 'only-multiline'],
+    // 'comma-dangle': ['error', 'only-multiline'],
     'no-plusplus': 'off',
     'no-param-reassign': 0,
     'no-return-assign': 0,
@@ -61,14 +61,16 @@ module.exports = {
     'class-methods-use-this': 0,
     'function-paren-newline': 0,
     'space-before-function-paren': 0,
-    indent: ['error', 2, { MemberExpression: 1, SwitchCase: 1 }],
     'implicit-arrow-linebreak': 0,
-    'newline-per-chained-call': [
-      1,
-      {
-        ignoreChainWithDepth: 2
-      }
-    ]
+    // indent: ['error', 2, { MemberExpression: 1, SwitchCase: 1 }],
+    // 'newline-per-chained-call': [
+    //   1,
+    //   {
+    //     ignoreChainWithDepth: 2
+    //   }
+    // ]
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn' // Checks effect dependencies
   },
   env: {
     browser: true,

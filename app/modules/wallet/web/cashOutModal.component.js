@@ -1,28 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'modules/ui/web/modal';
 import { alert } from 'app/utils';
 import { Button, View, BodyText } from 'modules/styled/uni';
-import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
-import { useWarningStack, renderWarning } from 'modules/warningStack';
+import Web3Warning from 'modules/web3Warning/web3Warning.component';
 import { useWeb3, useMetamask, useBalance } from 'modules/contract/contract.hooks';
 import { getProvider, generateSalt } from 'app/utils/eth';
 
 const Alert = alert.Alert();
 const web3 = getProvider();
 
-const AddEthAddress = ({ ethState, ethActions, actions, user, modal, balance }) => {
-  const [accounts, , networkId] = useWeb3(ethState, ethActions);
-  const [_modal, setModal] = useState(false);
-  const warningStack = useWarningStack(accounts, user, networkId);
+AddEthAddress.propTypes = {
+  actions: PropTypes.object,
+  // balance: PropTypes.number,
+  modal: PropTypes.string,
+  user: PropTypes.object
+};
 
-  useBalance(ethState, ethActions);
-  useMetamask(ethActions);
-  useEffect(() => {
-    if (!balance || (balance > 0 && _modal === false)) {
-      setModal(true);
-    }
-  }, [balance]);
+function AddEthAddress({ actions, user, modal /* balance */ }) {
+  const [accounts] = useWeb3();
+
+  useBalance();
+  useMetamask();
 
   const connectAddress = async () => {
     try {
@@ -65,9 +64,7 @@ const AddEthAddress = ({ ethState, ethActions, actions, user, modal, balance }) 
     >
       <View>
         <BodyText>Transfer Coins to your Ethereum Wallet</BodyText>
-        {warningStack.length ? (
-          renderWarning(warningStack[0], connectAddress)
-        ) : (
+        {<Web3Warning connectAddress={connectAddress} user={user} /> || (
           <Button mr={'auto'} mt={4} onClick={() => cashOut()}>
             Claim Relevant Coins
           </Button>
@@ -75,14 +72,6 @@ const AddEthAddress = ({ ethState, ethActions, actions, user, modal, balance }) 
       </View>
     </Modal>
   );
-};
+}
 
-AddEthAddress.propTypes = {
-  ...contractPropTypes,
-  actions: PropTypes.object,
-  balance: PropTypes.number,
-  modal: PropTypes.string,
-  user: PropTypes.object
-};
-
-export default ContractProvider(AddEthAddress);
+export default AddEthAddress;
