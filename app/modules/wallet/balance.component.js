@@ -28,7 +28,6 @@ Balance.propTypes = {
 };
 
 export function Balance({ user, screenSize, actions, isWeb, userBalance }) {
-  // const dispatch = useDispatch();
   // Temporarily disable - don't want to trigger metamask popup here
   // useTokenContract(ethState, ethActions);
 
