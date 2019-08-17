@@ -41,17 +41,11 @@ export function* handleRequest({
   }
 }
 export function* handleFailure({ payload: { error }, meta }) {
-  const [user, accounts] = meta.args;
   if (error === NO_ETH_ADDRESS) {
     // It should not be possible to get here
-    yield put(connectAccount(accounts));
+    yield put(connectAccount(meta.args.accounts));
   } else {
-    yield call(apiRequest, {
-      method: 'POST',
-      endpoint: 'logger',
-      path: '/logError',
-      body: JSON.stringify({ error, user, accounts, meta })
-    });
+    yield put(cashOutFailure(meta, error));
   }
 }
 

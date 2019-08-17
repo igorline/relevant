@@ -15,6 +15,7 @@ import Relevance from '../relevance/relevance.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
+import { logCashOut } from '../../utils/cashOut';
 
 // User.find({ handle: 'thisben' }, '+email').then(console.log)
 // User.findOneAndUpdate({ handle: 'thisben' }, { email: 'thisben@tutanota.com' }).exec();
@@ -800,13 +801,11 @@ exports.cashOut = async (req, res, next) => {
         'There are not enough funds allocated in the contract at the moment'
       );
     }
-    /*
-      TODO -- Consider persisting balances/cachOut attempts
-       or migrating to immutable data structures
-    */
-
     amount = Number.parseFloat(amount).toFixed(0);
-    // make sure we subtract claim amount from balance
+
+    // Log cashOut data before mutating
+    logCashOut(user, amount, next);
+
     user.balance -= amount;
     await user.save();
 
