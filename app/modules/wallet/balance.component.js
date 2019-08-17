@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+// import { useDispatch } from 'react-redux';
 import { colors } from 'app/styles';
 import { numbers } from 'app/utils';
 import {
@@ -17,13 +18,17 @@ import { CASHOUT_LIMIT } from 'server/config/globalConstants';
 // import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN } from 'app/utils/eth';
 
-export const Balance = ({
-  user,
-  screenSize,
-  /* actions, */
-  isWeb,
-  userBalance
-}) => {
+Balance.propTypes = {
+  // ...contractPropTypes,
+  userBalance: PropTypes.object,
+  user: PropTypes.object,
+  actions: PropTypes.object,
+  screenSize: PropTypes.number,
+  isWeb: PropTypes.bool
+};
+
+export function Balance({ user, screenSize, actions, isWeb, userBalance }) {
+  // const dispatch = useDispatch();
   // Temporarily disable - don't want to trigger metamask popup here
   // useTokenContract(ethState, ethActions);
 
@@ -73,11 +78,8 @@ export const Balance = ({
       </View>
       {isWeb ? (
         <View fdirection="row" mt={2} align="center">
-          <Touchable
-            // onClick={() => actions.showModal('cashOut')}
-            td={'underline'}
-          >
-            <LinkFont c={colors.grey} mr={0.5}>
+          <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
+            <LinkFont c={colors.blue} mr={0.5}>
               Claim Tokens
             </LinkFont>
           </Touchable>
@@ -107,16 +109,7 @@ export const Balance = ({
       ) : null}
     </View>
   );
-};
-
-Balance.propTypes = {
-  // ...contractPropTypes,
-  userBalance: PropTypes.object,
-  user: PropTypes.object,
-  // actions: PropTypes.object,
-  screenSize: PropTypes.number,
-  isWeb: PropTypes.bool
-};
+}
 
 export default Balance;
 // export default ContractProvider(Balance);

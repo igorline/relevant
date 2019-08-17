@@ -235,12 +235,12 @@ async function updateLatestComment({ post, communityId }) {
   if (post.parentPost) return post;
 
   const latestComment = await post
-  .model('Post')
-  .findOne(
-    { parentPost: post._id, communityId, hidden: { $ne: true }, type: 'post' },
-    'postDate'
-  )
-  .sort({ postDate: -1 });
+    .model('Post')
+    .findOne(
+      { parentPost: post._id, communityId, hidden: { $ne: true }, type: 'post' },
+      'postDate'
+    )
+    .sort({ postDate: -1 });
 
   if (!latestComment) return post;
 
@@ -273,9 +273,9 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
     // But if a comment ranks highly - update post rank
     const topComment = await post
-    .model('PostData')
-    .findOne({ parentPost: post._id, communityId }, 'rank pagerank')
-    .sort({ rank: -1 });
+      .model('PostData')
+      .findOne({ parentPost: post._id, communityId }, 'rank pagerank')
+      .sort({ rank: -1 });
 
     if (topComment) rank = Math.max(rank, topComment.rank);
 
@@ -311,8 +311,8 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
     } = postObject;
 
     let post = await this.model('Post')
-    .findOne({ url, type: 'link' })
-    .populate({ path: 'data', match: { communityId } });
+      .findOne({ url, type: 'link' })
+      .populate({ path: 'data', match: { communityId } });
 
     if (!post) {
       const parentObj = {
@@ -624,8 +624,8 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
     if (communityChildren || shares) return post;
 
     await this.model('PostData')
-    .deleteOne({ post: post._id, communityId })
-    .exec();
+      .deleteOne({ post: post._id, communityId })
+      .exec();
 
     return post;
   } catch (err) {
@@ -640,9 +640,9 @@ async function updateParentPostOnRemovingChild(post) {
     throw new Error('error missing post community id!', post.toObject());
   }
   let parent = await post
-  .model('Post')
-  .findOne({ _id: post.linkParent })
-  .populate({ path: 'data', match: { communityId } });
+    .model('Post')
+    .findOne({ _id: post.linkParent })
+    .populate({ path: 'data', match: { communityId } });
 
   if (parent) parent = await parent.pruneFeed({ communityId });
 
@@ -676,17 +676,17 @@ PostSchema.post('remove', async function postRemove(post, next) {
 
     // await this.model('CommunityFeed').removeFromAllFeeds(doc);
     const note = this.model('Notification')
-    .deleteMany({ post: post._id })
-    .exec();
+      .deleteMany({ post: post._id })
+      .exec();
     const feed = this.model('Feed')
-    .deleteMany({ post: post._id })
-    .exec();
+      .deleteMany({ post: post._id })
+      .exec();
     const twitterFeed = this.model('TwitterFeed')
-    .deleteMany({ post: post._id })
-    .exec();
+      .deleteMany({ post: post._id })
+      .exec();
     const data = this.model('PostData')
-    .deleteMany({ post: post._id })
-    .exec();
+      .deleteMany({ post: post._id })
+      .exec();
 
     let metaPost;
     // if (post.type === 'link' && !post.parentParent) {
@@ -699,8 +699,8 @@ PostSchema.post('remove', async function postRemove(post, next) {
     // remove notifications
     if (post.type === 'comment' || post.type === 'repost') {
       commentNote = this.model('Notification')
-      .deleteMany({ comment: post._id })
-      .exec();
+        .deleteMany({ comment: post._id })
+        .exec();
     }
 
     await Promise.all([note, feed, twitterFeed, data, metaPost, commentNote]);

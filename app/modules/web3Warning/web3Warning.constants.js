@@ -4,7 +4,7 @@ export const metamask = {
   message:
     "We'll need to connect your Metamask account before you can transfer coins. Connecting your Metamask to Relevant is not a transaction and totally free.",
   buttonText: 'Download Metamask',
-  onClick: () => window.open('https://metamask.io/', '_blank')
+  buttonAction: 'openMetamask'
 };
 
 export const connection = {
@@ -12,7 +12,8 @@ export const connection = {
   title: 'Connect Relevant to Metamask',
   message:
     "We'll need to connect your Metamask account before you can transfer coins. Connecting your Metamask to Relevant is not a transaction and totally free.",
-  buttonText: 'Connect Account'
+  buttonText: 'Connect Account',
+  buttonAction: 'connectAddress'
 };
 
 export const network = {
@@ -21,11 +22,8 @@ export const network = {
   message: 'Please connect to Ethereum Mainnet.',
   buttonText: 'Switch Networks',
   disabled: true,
-  styling: {
-    bottom: '36.22%',
-    background: 'rgba(208, 2, 27, 0.02)',
-    borderColor: '#d0021b'
-  }
+  bg: 'rgba(208, 2, 27, 0.02)',
+  bc: '#d0021b'
 };
 
 export const account = (ethAddress = '0x..') => ({
@@ -34,9 +32,6 @@ export const account = (ethAddress = '0x..') => ({
   message: `Your connected wallet address is different from the address linked to your Relevant account. Please select account ${ethAddress} in Metamask`,
   buttonText: 'Switch Accounts',
   disabled: true,
-  styling: {
-    bottom: '27.55%',
-    background: 'rgba(255, 159, 0, 0.02)',
-    borderColor: '#f7931a'
-  }
+  bg: 'rgba(255, 159, 0, 0.02)',
+  bc: '#f7931a'
 });

@@ -179,7 +179,7 @@ HoverButton.propTypes = {
 export function HoverButton({ children, onPress, ...rest }) {
   const [hover, setHover] = useState(0);
   const [active, setActive] = useState(0);
-  const renderString = !children.$$typeof;
+  const renderString = !children || !children.$$typeof;
   return (
     <Touchable onPress={onPress}>
       <StaticButton
