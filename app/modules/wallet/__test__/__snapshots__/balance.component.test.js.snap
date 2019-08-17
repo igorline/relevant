@@ -318,7 +318,7 @@ exports[`Snapshot Balance Web 1`] = `
     }
   >
     <div
-      c="hsl(0, 0%, 50%)"
+      c="#0000ff"
       className="css-text-901oao"
       data-focusable={true}
       dir="auto"
@@ -335,10 +335,10 @@ exports[`Snapshot Balance Web 1`] = `
       style={
         Object {
           "MozUserSelect": "none",
-          "WebkitTextDecorationColor": "rgba(128,128,128,1.00)",
+          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
           "WebkitTextDecorationStyle": "solid",
           "WebkitUserSelect": "none",
-          "color": "rgba(128,128,128,1.00)",
+          "color": "rgba(0,0,255,1.00)",
           "cursor": "pointer",
           "display": "flex",
           "fontFamily": "HelveticaNeue-Medium",
@@ -349,7 +349,7 @@ exports[`Snapshot Balance Web 1`] = `
           "msUserSelect": "none",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(128,128,128,1.00)",
+          "textDecorationColor": "rgba(0,0,255,1.00)",
           "textDecorationStyle": "solid",
           "touchAction": "manipulation",
           "userSelect": "none",
