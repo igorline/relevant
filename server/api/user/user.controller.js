@@ -777,7 +777,7 @@ exports.ethAddress = async (req, res, next) => {
 
 exports.cashOut = async (req, res, next) => {
   try {
-    const { user } = req;
+    const { user, params } = req;
     if (!user) throw new Error('missing user');
     if (!user.ethAddress[0]) throw new Error('No Ethereum address connected');
     let amount = user.balance;
@@ -785,6 +785,10 @@ exports.cashOut = async (req, res, next) => {
 
     // if the nonce is the same as last time, resend last signature
     const nonce = await ethUtils.getNonce(address);
+    // TODO -- Should we prioritize last attempted amount or custom amount?
+    if (params.customAmount && params.customAmount > 0) {
+      amount = params.customAmount;
+    }
     if (user.cashOut && user.cashOut.nonce === nonce) {
       amount = user.cashOut.amount;
       // return res.status(200).json(user);

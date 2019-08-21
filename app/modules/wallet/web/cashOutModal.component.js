@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'modules/ui/web/modal';
 import { alert } from 'app/utils';
 import { Button, View, BodyText } from 'modules/styled/uni';
+import { Input } from 'modules/styled/web';
 import Web3Warning from 'modules/web3Warning/web3Warning.component';
 import { useWeb3, useMetamask, useBalance } from 'modules/contract/contract.hooks';
 import { getProvider, generateSalt } from 'app/utils/eth';
+import { ALLOW_CUSTOM_CASHOUT } from 'core/config';
 
 const Alert = alert.Alert();
 const web3 = getProvider();
@@ -54,7 +56,37 @@ function AddEthAddress({ actions, user, modal /* balance */ }) {
       Alert('Failed signing message: ', err);
     }
   };
-  const cashOut = () => actions.cashOutCall({ time: new Date() }, user, accounts);
+  const cashOut = (customAmount = 0) =>
+    actions.cashOutCall(
+      { time: new Date(), errorHandler: Alert },
+      user,
+      accounts,
+      customAmount
+    );
+  const CashOutHandler = () => {
+    const [useCustomAmt, toggleCustomAmt] = useState(false);
+    const [customAmount, setCustomAmount] = useState(0);
+    return (
+      <Fragment>
+        <Button mr={'auto'} mt={4} onClick={() => cashOut(customAmount)}>
+          Claim {!useCustomAmt ? 'all redeemeable' : customAmount} Relevant Coins.
+        </Button>
+        {ALLOW_CUSTOM_CASHOUT && (
+          <Fragment>
+            <Button mr={'auto'} mt={1} onClick={() => toggleCustomAmt(!useCustomAmt)}>
+              Toggle custom amt
+            </Button>
+            <Input
+              placeholder="Claiming all tokens 😎"
+              disabled={useCustomAmt}
+              onChange={({ target: { value } }) => setCustomAmount(value)}
+              value={customAmount}
+            />
+          </Fragment>
+        )}
+      </Fragment>
+    );
+  };
 
   return (
     <Modal
@@ -64,11 +96,11 @@ function AddEthAddress({ actions, user, modal /* balance */ }) {
     >
       <View>
         <BodyText>Transfer Coins to your Ethereum Wallet</BodyText>
-        {<Web3Warning connectAddress={connectAddress} user={user} /> || (
-          <Button mr={'auto'} mt={4} onClick={() => cashOut()}>
-            Claim Relevant Coins
-          </Button>
-        )}
+        <Web3Warning
+          connectAddress={connectAddress}
+          user={user}
+          Component={<CashOutHandler />}
+        />
       </View>
     </Modal>
   );

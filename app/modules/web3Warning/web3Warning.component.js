@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { elementTypePropTypeChecker } from 'utils/propValidation';
 import { Button, BodyText, Title, View } from 'modules/styled/uni';
 import { useWeb3 } from 'modules/contract/contract.hooks';
 import { useCurrentWarning } from './web3Warning.hooks';
@@ -9,14 +10,16 @@ const DEFAULT_BORDER_C = '#000000';
 
 Web3Warning.propTypes = {
   connectAddress: PropTypes.func,
-  user: PropTypes.object
+  user: PropTypes.object,
+  Component: PropTypes.oneOfType([PropTypes.node, elementTypePropTypeChecker])
 };
 
-// TODO -- Add custom amount, account support
-export default function Web3Warning({ connectAddress, user }) {
+// TODO -- Add custom account support
+export default function Web3Warning({ connectAddress, user, Component = null }) {
   const [accounts, , networkId] = useWeb3();
-
   const warning = useCurrentWarning(accounts, user, networkId);
+
+  if (!warning) return Component;
 
   const { bg = DEFAULT_BG, bc = DEFAULT_BORDER_C } = warning;
 
