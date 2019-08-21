@@ -72,7 +72,8 @@ module.exports = {
         INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
         INFURA_NETWORK: JSON.stringify(process.env.INFURA_NETWORK),
         INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
-        NETWORK_NUMBER: JSON.stringify(process.env.NETWORK_NUMBER)
+        NETWORK_NUMBER: JSON.stringify(process.env.NETWORK_NUMBER),
+        ALLOW_CUSTOM_CASHOUT: JSON.stringify(process.env.ALLOW_CUSTOM_CASHOUT)
       }
     }),
     new CompressionPlugin(),
