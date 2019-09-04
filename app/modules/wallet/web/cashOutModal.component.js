@@ -6,6 +6,7 @@ import { Button, View, BodyText } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
 import Web3Warning from 'modules/web3Warning/web3Warning.component';
 import { useWeb3, useMetamask, useBalance } from 'modules/contract/contract.hooks';
+import { useCurrentWarning } from 'modules/web3Warning/web3Warning.hooks';
 import { getProvider, generateSalt } from 'app/utils/eth';
 import { ALLOW_CUSTOM_CASHOUT } from 'core/config';
 
@@ -20,10 +21,12 @@ AddEthAddress.propTypes = {
 };
 
 function AddEthAddress({ actions, user, modal /* balance */ }) {
-  const [accounts] = useWeb3();
+  const [accounts, , networkId] = useWeb3();
 
   useBalance();
   useMetamask();
+
+  const warning = useCurrentWarning(accounts, user, networkId);
 
   const connectAddress = async () => {
     try {
@@ -96,11 +99,11 @@ function AddEthAddress({ actions, user, modal /* balance */ }) {
     >
       <View>
         <BodyText>Transfer Coins to your Ethereum Wallet</BodyText>
-        <Web3Warning
-          connectAddress={connectAddress}
-          user={user}
-          Component={<CashOutHandler />}
-        />
+        {warning ? (
+          <Web3Warning connectAddress={connectAddress} warning={warning} />
+        ) : (
+          <CashOutHandler />
+        )}
       </View>
     </Modal>
   );
