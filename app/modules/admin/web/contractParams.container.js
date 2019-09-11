@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import pickBy from 'lodash/pickBy';
 import { types } from 'core/contracts';
@@ -11,7 +12,7 @@ import {
   Button,
   NumericalValue
 } from 'modules/styled/uni';
-import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
+import { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
@@ -37,15 +38,40 @@ const AdminActions = styled.div`
 const rewardsToAllocate = formatBalanceWrite('999', 18);
 const readableMethods = getReadableMethods();
 
-const ContractParams = ({ ethState, ethActions }) => {
-  const [accounts, { userBalance, methodCache }, tokenActions] = useTokenContract(
-    ethState,
-    ethActions
-  );
+const ParamRow = ({ method, methodCache, cacheMethod }) => (
+  <tr>
+    <td>{method}</td>
+    <td>
+      <NumericalValue>
+        {methodCache.select(method) &&
+        typeof parseBN(methodCache.select(method).value) !== 'number'
+          ? parseBN(methodCache.select(method).value)
+          : numbers.abbreviateNumber(parseBN(methodCache.select(method).value))}
+      </NumericalValue>
+    </td>
+    <td>
+      <Button onClick={() => cacheMethod(method)}>Call</Button>
+    </td>
+    <td>
+      <Input />
+    </td>
+  </tr>
+);
+
+ParamRow.propTypes = {
+  method: PropTypes.string,
+  methodCache: PropTypes.shape({
+    select: PropTypes.func
+  }),
+  cacheMethod: PropTypes.func
+};
+
+const ContractParams = () => {
+  const [accounts, { userBalance, methodCache }, tokenActions] = useTokenContract();
 
   useEffect(() => {
     readableMethods.forEach(method => tokenActions.cacheMethod(method));
-  }, []);
+  }, [tokenActions]);
 
   const releaseTokens = () =>
     tokenActions.cacheSend('releaseTokens', { from: accounts[0] });
@@ -66,40 +92,6 @@ const ContractParams = ({ ethState, ethActions }) => {
               ? parseBN(userBalance.value).toString()
               : 'Loading...'}
           </SecondaryText>
-          <BodyText>
-            <ParamsTable>
-              <tr>
-                <th>Method</th>
-                <th>Value</th>
-              </tr>
-              <tbody>
-                {hasCacheValue(methodCache) &&
-                  readableMethods.map(method => (
-                    <tr key={method}>
-                      <td>{method}</td>
-                      <td>
-                        <NumericalValue>
-                          {methodCache.select(method) &&
-                          typeof parseBN(methodCache.select(method).value) !== 'number'
-                            ? parseBN(methodCache.select(method).value)
-                            : numbers.abbreviateNumber(
-                              parseBN(methodCache.select(method).value)
-                            )}
-                        </NumericalValue>
-                      </td>
-                      <td>
-                        <Button onClick={() => tokenActions.cacheMethod(method)}>
-                          Call
-                        </Button>
-                      </td>
-                      <td>
-                        <Input />
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </ParamsTable>
-          </BodyText>
           {accounts && accounts[0] && (
             <AdminActions>
               <Button mr={'auto'} mt={4} onClick={() => releaseTokens()}>
@@ -110,6 +102,25 @@ const ContractParams = ({ ethState, ethActions }) => {
               </Button>
             </AdminActions>
           )}
+          <BodyText>
+            <ParamsTable>
+              <tr>
+                <th>Method</th>
+                <th>Value</th>
+              </tr>
+              <tbody>
+                {hasCacheValue(methodCache) &&
+                  readableMethods.map(method => (
+                    <ParamRow
+                      key={method}
+                      method={method}
+                      methodCache={methodCache}
+                      cacheMethod={tokenActions.cacheMethod}
+                    />
+                  ))}
+              </tbody>
+            </ParamsTable>
+          </BodyText>
         </View>
       </View>
     </View>
@@ -118,7 +129,7 @@ const ContractParams = ({ ethState, ethActions }) => {
 
 ContractParams.propTypes = contractPropTypes;
 
-export default ContractProvider(ContractParams);
+export default ContractParams;
 
 // Utils
 function hasCacheValue(cache) {
@@ -126,18 +137,22 @@ function hasCacheValue(cache) {
 }
 
 function getReadableMethods() {
-  return Object.keys(
-    pickBy(
-      types.methods,
-      (_, method) =>
-        !types.methods[method].send &&
-        method !== 'balanceOf' &&
-        method !== 'isMinter' &&
-        method !== 'allowance' &&
-        method !== 'partialSum' &&
-        method !== 'nonceOf' &&
-        method !== 'isOwner' &&
-        method !== 'currentRound'
+  return ['allocatedRewards', 'totalReleased'].concat(
+    Object.keys(
+      pickBy(
+        types.methods,
+        (_, method) =>
+          !types.methods[method].send &&
+          method !== 'balanceOf' &&
+          method !== 'isMinter' &&
+          method !== 'allowance' &&
+          method !== 'partialSum' &&
+          method !== 'nonceOf' &&
+          method !== 'isOwner' &&
+          method !== 'allocatedRewards' &&
+          method !== 'totalReleased' &&
+          method !== 'currentRound'
+      )
     )
   );
 }
