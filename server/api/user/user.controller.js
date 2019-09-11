@@ -785,7 +785,7 @@ exports.cashOut = async (req, res, next) => {
 
     // if the nonce is the same as last time, resend last signature
     const nonce = await ethUtils.getNonce(address);
-    // TODO -- Should we prioritize last attempted amount or custom amount?
+    // TODO -- Should we prioritize last attempted amount, custom amount, or total balance?
     if (params.customAmount && params.customAmount > 0) {
       amount = params.customAmount;
     }
