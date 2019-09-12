@@ -160,7 +160,6 @@ export const StaticButton = styled(View)`
   ${mixins.margin}
   ${mixins.background}
   ${mixins.padding}
-  ${mixins.color}
   ${mixins.border}
   ${mixins.borderRadius}
   ${p => (p.hover && !p.active && !p.disabled ? layout.activeButtonShadow : '')}
@@ -169,19 +168,21 @@ export const StaticButton = styled(View)`
 
 const ButtonText = styled.Text`
   ${layout.buttonFont}
+  ${mixins.color}
 `;
 
 HoverButton.propTypes = {
   children: PropTypes.node,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  onClick: PropTypes.func
 };
 
-export function HoverButton({ children, onPress, ...rest }) {
+export function HoverButton({ children, onPress, onClick, ...rest }) {
   const [hover, setHover] = useState(0);
   const [active, setActive] = useState(0);
   const renderString = !children || !children.$$typeof;
   return (
-    <Touchable onPress={onPress}>
+    <Touchable onPress={onPress} onClick={onClick}>
       <StaticButton
         hover={hover}
         active={active}
@@ -194,7 +195,7 @@ export function HoverButton({ children, onPress, ...rest }) {
         }}
         {...rest}
       >
-        {renderString ? <ButtonText>{children}</ButtonText> : children}
+        {renderString ? <ButtonText {...rest}>{children}</ButtonText> : children}
       </StaticButton>
     </Touchable>
   );

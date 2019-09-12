@@ -13,24 +13,19 @@ const ModalHeader = loadable(() =>
   import('modules/createPost/web/createPostModal.header')
 );
 
+CreatePostModal.propTypes = {
+  name: PropTypes.string,
+  actions: PropTypes.object
+};
+
 function CreatePostModal(props) {
-  const { visible, actions } = props;
-  if (!visible) return null;
+  const { name, actions } = props;
   return (
-    <Modal
-      visible={visible}
-      close={actions.hideModal}
-      header={<ModalHeader {...props} />}
-    >
+    <Modal name={name} header={<ModalHeader {...props} />}>
       <CreatePost modal close={actions.hideModal} />
     </Modal>
   );
 }
-
-CreatePostModal.propTypes = {
-  visible: PropTypes.bool,
-  actions: PropTypes.object
-};
 
 function mapStateToProps(state) {
   return {

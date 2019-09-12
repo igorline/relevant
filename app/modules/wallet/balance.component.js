@@ -1,6 +1,6 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-// import { useDispatch } from 'react-redux';
 import { colors } from 'app/styles';
 import { numbers } from 'app/utils';
 import {
@@ -9,27 +9,27 @@ import {
   Header,
   SecondaryText,
   Touchable,
-  Image,
   LinkFont
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
-// import ContractProvider, { contractPropTypes } from 'modules/contract/contract.container';
-// import { useTokenContract } from 'modules/contract/contract.hooks';
 import { parseBN } from 'app/utils/eth';
+import Tooltip from 'modules/tooltip/tooltip.component';
+import { showModal } from 'modules/navigation/navigation.actions';
+import { useTokenContract, useBalance } from 'modules/contract/contract.hooks';
 
 Balance.propTypes = {
-  // ...contractPropTypes,
-  userBalance: PropTypes.object,
-  user: PropTypes.object,
-  actions: PropTypes.object,
-  screenSize: PropTypes.number,
   isWeb: PropTypes.bool
 };
 
-export function Balance({ user, screenSize, actions, isWeb, userBalance }) {
+export function Balance({ isWeb }) {
   // Temporarily disable - don't want to trigger metamask popup here
-  // useTokenContract(ethState, ethActions);
+  useTokenContract();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  const screenSize = useSelector(state => state.navigation.screenSize);
+
+  const userBalance = useBalance();
 
   if (!user) return null;
   const metaMaskTokens =
@@ -77,25 +77,16 @@ export function Balance({ user, screenSize, actions, isWeb, userBalance }) {
       </View>
       {isWeb ? (
         <View fdirection="row" mt={2} align="center">
-          <Touchable onClick={() => actions.showModal('cashOut')} td={'underline'}>
+          <Touchable onClick={() => dispatch(showModal('cashOut'))} td={'underline'}>
             <LinkFont c={colors.blue} mr={0.5}>
               Claim Tokens
             </LinkFont>
           </Touchable>
-          <Image
-            source={require('app/public/img/info.png')}
-            s={1.5}
-            h={1.5}
-            w={1.5}
-            ml={0.5}
-            resizeMode={'contain'}
-            data-for="mainTooltip"
-            data-tip={JSON.stringify({
-              type: 'TEXT',
-              props: {
-                text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet\n(temporarily disabled)`
-              }
-            })}
+          <Tooltip
+            info
+            data={{
+              text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet\n(temporarily disabled)`
+            }}
           />
         </View>
       ) : null}
@@ -111,4 +102,3 @@ export function Balance({ user, screenSize, actions, isWeb, userBalance }) {
 }
 
 export default Balance;
-// export default ContractProvider(Balance);
