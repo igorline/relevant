@@ -13,7 +13,7 @@ import {
   NumericalValue
 } from 'modules/styled/uni';
 import { contractPropTypes } from 'modules/contract/contract.container';
-import { useTokenContract } from 'modules/contract/contract.hooks';
+import { useTokenContract, useEthActions } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
 
@@ -67,16 +67,19 @@ ParamRow.propTypes = {
 };
 
 const ContractParams = () => {
-  const [accounts, { userBalance, methodCache }, tokenActions] = useTokenContract();
+  const [accounts, { userBalance, methodCache }] = useTokenContract();
+
+  const {
+    Relevant: { cacheMethod, cacheSend }
+  } = useEthActions();
 
   useEffect(() => {
-    readableMethods.forEach(method => tokenActions.cacheMethod(method));
-  }, [tokenActions]);
+    readableMethods.forEach(method => cacheMethod(method));
+  }, [cacheMethod]);
 
-  const releaseTokens = () =>
-    tokenActions.cacheSend('releaseTokens', { from: accounts[0] });
+  const releaseTokens = () => cacheSend('releaseTokens', { from: accounts[0] });
   const allocateRewards = () =>
-    tokenActions.cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+    cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
 
   return (
     <View m={4}>
@@ -104,10 +107,12 @@ const ContractParams = () => {
           )}
           <BodyText>
             <ParamsTable>
-              <tr>
-                <th>Method</th>
-                <th>Value</th>
-              </tr>
+              <tbody>
+                <tr>
+                  <th>Method</th>
+                  <th>Value</th>
+                </tr>
+              </tbody>
               <tbody>
                 {hasCacheValue(methodCache) &&
                   readableMethods.map(method => (
@@ -115,7 +120,7 @@ const ContractParams = () => {
                       key={method}
                       method={method}
                       methodCache={methodCache}
-                      cacheMethod={tokenActions.cacheMethod}
+                      cacheMethod={cacheMethod}
                     />
                   ))}
               </tbody>
