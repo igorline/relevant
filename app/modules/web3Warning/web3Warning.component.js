@@ -1,25 +1,18 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { elementTypePropTypeChecker } from 'utils/propValidation';
 import { Button, BodyText, Title, View } from 'modules/styled/uni';
-import { useWeb3 } from 'modules/contract/contract.hooks';
-import { useCurrentWarning } from './web3Warning.hooks';
 
 const DEFAULT_BG = 'rgba(0, 0, 0, 0.05)';
 const DEFAULT_BORDER_C = '#000000';
 
 Web3Warning.propTypes = {
   connectAddress: PropTypes.func,
-  user: PropTypes.object,
-  Component: PropTypes.oneOfType([PropTypes.node, elementTypePropTypeChecker])
+  warning: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
 };
 
 // TODO -- Add custom account support
-export default function Web3Warning({ connectAddress, user, Component = null }) {
-  const [accounts, , networkId] = useWeb3();
-  const warning = useCurrentWarning(accounts, user, networkId);
-
-  if (!warning) return Component;
+export default function Web3Warning({ connectAddress, warning }) {
+  if (!warning) return null;
 
   const { bg = DEFAULT_BG, bc = DEFAULT_BORDER_C } = warning;
 

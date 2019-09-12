@@ -7,6 +7,7 @@ import { Input } from 'modules/styled/web';
 import Web3Warning from 'modules/web3Warning/web3Warning.component';
 import { useWeb3, useMetamask, useBalance } from 'modules/contract/contract.hooks';
 // import { useEthState } from 'modules/contract/contract.selectors';
+import { useCurrentWarning } from 'modules/web3Warning/web3Warning.hooks';
 import { getProvider, generateSalt } from 'app/utils/eth';
 import { ALLOW_CUSTOM_CASHOUT } from 'core/config';
 import { cashOutCall, addEthAddress } from 'modules/auth/auth.actions';
@@ -16,7 +17,7 @@ const Alert = alert.Alert();
 const web3 = getProvider();
 
 function AddEthAddress() {
-  const [accounts] = useWeb3();
+  const [accounts, , networkId] = useWeb3();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
   // const ethState = useEthState();
@@ -24,6 +25,8 @@ function AddEthAddress() {
 
   useBalance();
   useMetamask();
+
+  const warning = useCurrentWarning(accounts, user, networkId);
 
   const connectAddress = async () => {
     try {
@@ -98,11 +101,11 @@ function AddEthAddress() {
     <Modal name="cashOut" title="Claim Your Relevant Coins">
       <View>
         <BodyText>Transfer Coins to your Ethereum Wallet</BodyText>
-        <Web3Warning
-          connectAddress={connectAddress}
-          user={user}
-          Component={<CashOutHandler />}
-        />
+        {warning ? (
+          <Web3Warning connectAddress={connectAddress} warning={warning} />
+        ) : (
+          <CashOutHandler />
+        )}
       </View>
     </Modal>
   );

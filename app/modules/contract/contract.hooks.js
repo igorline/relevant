@@ -132,6 +132,6 @@ export const useTokenContract = () => {
   useWeb3();
   useMetamask();
   useBalance();
-  useEventSubscription();
+  // useEventSubscription(ethActions);
   return [ethState.web3.accounts, ethState.Relevant, ethActions.Relevant];
 };
