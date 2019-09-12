@@ -17,9 +17,7 @@ import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 import { logCashOut } from '../../utils/cashOut';
 
-// User.find({ handle: 'thisben' }, '+email').then(console.log)
-// User.findOneAndUpdate({ handle: 'thisben' }, { email: 'thisben@tutanota.com' }).exec();
-
+// User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
 // .then(u => u);
@@ -785,16 +783,18 @@ exports.cashOut = async (req, res, next) => {
 
     // if the nonce is the same as last time, resend last signature
     const nonce = await ethUtils.getNonce(address);
-    // TODO -- Should we prioritize last attempted amount or custom amount?
+
+    // Prioritize last withdrawal attempt
+    if (user.cashOut && user.cashOut.nonce === nonce) {
+      amount = user.cashOut.amount;
+      return res.status(200).json(user);
+    }
+
     if (params.customAmount && params.customAmount > 0) {
       amount = params.customAmount;
     }
-    if (user.cashOut && user.cashOut.nonce === nonce) {
-      amount = user.cashOut.amount;
-      // return res.status(200).json(user);
-    }
 
-    if (amount < 100) throw new Error('Balance is too small to withdraw');
+    // if (amount < 100) throw new Error('Balance is too small to withdraw');
     const allocatedRewards = await ethUtils.getParam('allocatedRewards');
 
     // eslint-disable-next-line no-console
@@ -805,7 +805,10 @@ exports.cashOut = async (req, res, next) => {
         'There are not enough funds allocated in the contract at the moment'
       );
     }
-    amount = Number.parseFloat(amount).toFixed(0);
+    if (user.balance < amount) {
+      throw new Error('Your balance is too low');
+    }
+    // amount = Number.parseFloat(amount).toFixed(0);
 
     // Log cashOut data before mutating
     logCashOut(user, amount, next);
@@ -813,10 +816,9 @@ exports.cashOut = async (req, res, next) => {
     user.balance -= amount;
     await user.save();
 
-    const sig = await ethUtils.sign(address, amount);
+    const { sig, amount: bnAmount } = await ethUtils.sign(address, amount);
     user.nonce = nonce;
-    user.cashOut = { sig, amount, nonce };
-    // console.log('user', user);
+    user.cashOut = { sig, amount: bnAmount, nonce };
     await user.save();
     return res.status(200).json(user);
   } catch (err) {

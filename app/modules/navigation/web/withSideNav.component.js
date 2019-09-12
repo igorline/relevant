@@ -48,7 +48,7 @@ class WithSideNav extends Component {
   }
 
   render() {
-    const { isAuthenticated, navigation, notif, actions } = this.props;
+    const { isAuthenticated, navigation, notif, route } = this.props;
     const { sideNavIsOpen, screenSize } = navigation;
     const { promptType } = notif;
     const isDesktop = screenSize === 0;
@@ -91,13 +91,9 @@ class WithSideNav extends Component {
             </View>
           )}
           <View display="flex" flex={1}>
-            {renderRoutes(this.props.route.routes)}
+            {renderRoutes(route.routes)}
           </View>
-          <Modal
-            visible={navigation.modal === 'communitySettings'}
-            title="Community Settings"
-            close={actions.hideModal}
-          >
+          <Modal name="communitySettings" title="Community Settings">
             <SettingsComponent />
           </Modal>
         </View>

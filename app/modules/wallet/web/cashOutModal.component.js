@@ -1,26 +1,26 @@
 import React, { Fragment, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'modules/ui/web/modal';
 import { alert } from 'app/utils';
 import { Button, View, BodyText } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
 import Web3Warning from 'modules/web3Warning/web3Warning.component';
 import { useWeb3, useMetamask, useBalance } from 'modules/contract/contract.hooks';
+// import { useEthState } from 'modules/contract/contract.selectors';
 import { getProvider, generateSalt } from 'app/utils/eth';
 import { ALLOW_CUSTOM_CASHOUT } from 'core/config';
+import { cashOutCall, addEthAddress } from 'modules/auth/auth.actions';
+import { hideModal } from 'modules/navigation/navigation.actions';
 
 const Alert = alert.Alert();
 const web3 = getProvider();
 
-AddEthAddress.propTypes = {
-  actions: PropTypes.object,
-  // balance: PropTypes.number,
-  modal: PropTypes.string,
-  user: PropTypes.object
-};
-
-function AddEthAddress({ actions, user, modal /* balance */ }) {
+function AddEthAddress() {
   const [accounts] = useWeb3();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  // const ethState = useEthState();
+  // console.log(ethState);
 
   useBalance();
   useMetamask();
@@ -49,51 +49,53 @@ function AddEthAddress({ actions, user, modal /* balance */ }) {
             Alert('Error: ', error);
             return;
           }
-          actions.addEthAddress(msgParams, msg.result, accounts[0]);
+          dispatch(addEthAddress(msgParams, msg.result, accounts[0]));
         }
       );
     } catch (err) {
       Alert('Failed signing message: ', err);
     }
   };
-  const cashOut = (customAmount = 0) =>
-    actions.cashOutCall(
-      { time: new Date(), errorHandler: Alert },
-      user,
-      accounts,
-      customAmount
-    );
+  const cashOut = async (customAmount = 0) => {
+    try {
+      // TODO how do we track the progress of this transaction
+      await dispatch(
+        cashOutCall(
+          { time: new Date(), errorHandler: Alert },
+          user,
+          accounts,
+          customAmount
+        )
+      );
+      dispatch(hideModal());
+    } catch (err) {
+      Alert(err);
+    }
+  };
+
   const CashOutHandler = () => {
-    const [useCustomAmt, toggleCustomAmt] = useState(false);
-    const [customAmount, setCustomAmount] = useState(0);
+    const canClaim = user.balance - (user.airdroppedTokens || 0);
+    const [amount, setAmount] = useState(canClaim);
     return (
       <Fragment>
-        <Button mr={'auto'} mt={4} onClick={() => cashOut(customAmount)}>
-          Claim {!useCustomAmt ? 'all redeemeable' : customAmount} Relevant Coins.
-        </Button>
         {ALLOW_CUSTOM_CASHOUT && (
           <Fragment>
-            <Button mr={'auto'} mt={1} onClick={() => toggleCustomAmt(!useCustomAmt)}>
-              Toggle custom amt
-            </Button>
             <Input
               placeholder="Claiming all tokens 😎"
-              disabled={useCustomAmt}
-              onChange={({ target: { value } }) => setCustomAmount(value)}
-              value={customAmount}
+              onChange={({ target: { value } }) => setAmount(value)}
+              value={amount}
             />
           </Fragment>
         )}
+        <Button mr={'auto'} mt={4} onClick={() => cashOut(amount)}>
+          Claim {amount} Relevant Coins
+        </Button>
       </Fragment>
     );
   };
 
   return (
-    <Modal
-      visible={modal === 'cashOut'}
-      close={actions.hideModal}
-      title="Claim Your Relevant Coins"
-    >
+    <Modal name="cashOut" title="Claim Your Relevant Coins">
       <View>
         <BodyText>Transfer Coins to your Ethereum Wallet</BodyText>
         <Web3Warning

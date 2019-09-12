@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components/primitives';
 import { View, Header, Touchable, CloseX } from 'modules/styled/uni';
 import { colors, layout } from 'app/styles';
-// import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import { hideModal } from 'modules/navigation/navigation.actions';
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 const DEFAULT_WIDTH = 95;
 const DEFAULT_PADDING = 6;
@@ -40,56 +42,46 @@ const Modal = styled(View)`
   max-width: 100vw;
 `;
 
-const ModalComponent = props => {
-  const {
-    close,
-    footer,
-    children,
-    hideX,
-    visible,
-    maxWidth,
-    padding,
-    header,
-    title
-  } = props;
+ModalComponent.propTypes = {
+  header: PropTypes.object,
+  title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+  hideX: PropTypes.bool,
+  children: PropTypes.node,
+  footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  maxWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
+  padding: PropTypes.number,
+  close: PropTypes.func
+};
 
-  const escFunction = e => {
-    e.keyCode === 27 && visible ? close() : null;
-  };
-  const targetElement = useRef(null);
+function ModalComponent(props) {
+  const { footer, children, hideX, maxWidth, padding, header, title } = props;
+
+  const dispatch = useDispatch();
+  const close = props.close || (() => dispatch(hideModal()));
+
+  const modalElement = useRef(null);
 
   const headerEl = header || title;
-  if (!visible) return null;
   const footerEl = typeof footer === 'function' ? footer(props) : footer;
 
-  // TODO work on locking scroll:
-  // useEffect(() => {
-  //   disableBodyScroll(this.targetElement, {
-  //     allowTouchMove: el => {
-  //       while (el && el !== document.body) {
-  //         if (el.getAttribute('body-scroll-lock-ignore') !== null) {
-  //           return true;
-  //         }
-  //         el = el.parentNode;
-  //       }
-  //     },
-  //     allowTouchMove: el => {
-  //       console.log(el, el.getAttribute('ignoreScrollLock'));
-  //       return el.getAttribute('ignoreScrollLock') !== null;
-  //     }
-  //   });
-  //   return clearAllBodyScrollLocks();
-  // }, []);
+  useEffect(() => {
+    const el = modalElement.current;
+    disableBodyScroll(el);
+    return () => enableBodyScroll(el);
+  }, [modalElement]);
+
+  const closeModal = useCallback(() => close(), [close]);
 
   useEffect(() => {
+    const escFunction = e => (e.keyCode === 27 ? closeModal() : null);
     document.addEventListener('keydown', escFunction, false);
     return () => document.removeEventListener('keydown', escFunction, false);
-  }, []);
+  }, [closeModal]);
 
   const p = padding || [DEFAULT_PADDING, '6 3'];
 
   return (
-    <ModalParent onClick={close} ref={targetElement}>
+    <ModalParent onClick={closeModal} ref={modalElement}>
       <ModalScroll ignoreScrollLock>
         <Modal
           ignoreScrollLock
@@ -103,7 +95,7 @@ const ModalComponent = props => {
           onClick={e => e.stopPropagation()}
         >
           {hideX ? null : (
-            <Touchable onClick={() => close()}>
+            <Touchable onClick={closeModal}>
               <CloseX
                 w={2.5}
                 h={2.5}
@@ -125,21 +117,13 @@ const ModalComponent = props => {
       </ModalScroll>
     </ModalParent>
   );
-};
+}
 
-ModalComponent.propTypes = {
-  header: PropTypes.object,
-  title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
-  visible: PropTypes.bool,
-  hideX: PropTypes.bool,
-  close: PropTypes.func,
-  children: PropTypes.node,
-  footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  maxWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
-  padding: PropTypes.number
-};
-
-export default props =>
-  props.visible && document
+export default props => {
+  const modal = useSelector(state => state.navigation.modal);
+  const { name } = props;
+  const visible = name && name === modal;
+  return visible && document
     ? ReactDOM.createPortal(<ModalComponent {...props} />, document.body)
     : null;
+};

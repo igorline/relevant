@@ -12,7 +12,7 @@ import {
 
 require('dotenv').config({ silent: true });
 
-const devRewardsAddress = '0xffcf8fdee72ac11b5c542428b35eef5769c409f0';
+const devRewardsAddress = '0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0';
 
 describe('ethRewards', () => {
   let instance;
@@ -36,7 +36,7 @@ describe('ethRewards', () => {
     test('should mint tokens', async () => {
       await mintRewardTokens();
       await allocateRewards((10 * 10 ** 18).toString());
-      await allocateAirdrops(100);
+      await allocateAirdrops((10 * 10 ** 18).toString());
     });
 
     test('should get balance of dev account', async () => {

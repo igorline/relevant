@@ -6,11 +6,12 @@ import {
   connectAccount,
   updateAuthUser
 } from 'modules/auth/auth.actions';
-import { formatBalanceWrite } from 'app/utils/eth';
+// import { updateUserTokenBalance } from 'modules/user/user.actions';
+import { formatBalanceRead } from 'app/utils/eth';
 import { CASH_OUT } from 'core/actionTypes';
 
 const NO_ETH_ADDRESS = 'NO_ETH_ADDRESS';
-const decimals = 18;
+// const decimals = 18;
 
 // TODO -- Replace Claiming tokens msg with toast with short-lived, success-themed toast
 export function* handleRequest({
@@ -34,12 +35,17 @@ export function* handleRequest({
       });
       yield put(updateAuthUser(result));
       const { sig, amount } = result.cashOut || user.cashOut;
-      yield meta.errorHandler.alert(`Claiming ${amount} tokens 😄`);
+      yield meta.errorHandler.alert(
+        `Claiming ${parseFloat(formatBalanceRead(amount))} tokens 😄`,
+        'success'
+      );
       yield put(
         actions.methods
           .claimTokens({ at: tokenAddress, from: accounts[0] })
-          .send(formatBalanceWrite(amount, decimals), sig)
+          .send(amount, sig)
       );
+      // TODO how do we track progress of transaction and update balance after it executes
+      // yield put(updateUserTokenBalance());
     } catch (error) {
       yield put(cashOutFailure({ args: [user, accounts], ...meta }, error));
     }

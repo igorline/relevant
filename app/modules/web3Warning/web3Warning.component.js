@@ -23,7 +23,7 @@ export default function Web3Warning({ connectAddress, user, Component = null }) 
 
   const { bg = DEFAULT_BG, bc = DEFAULT_BORDER_C } = warning;
 
-  const onClick = () => {
+  const onClickCreator = () => {
     switch (warning.buttonAction) {
       case 'openMetamask':
         return () => window.open('https://metamask.io/', '_blank');
@@ -33,6 +33,7 @@ export default function Web3Warning({ connectAddress, user, Component = null }) 
         return null;
     }
   };
+  const onClick = onClickCreator();
 
   return (
     <Fragment>
@@ -41,7 +42,7 @@ export default function Web3Warning({ connectAddress, user, Component = null }) 
         <BodyText mt={1}>{warning.message}</BodyText>
       </View>
       {onClick && (
-        <Button mr={'auto'} mt={4} onClick={onClick}>
+        <Button disabled={warning.disabled} mr={'auto'} mt={4} onClick={onClick}>
           {warning.buttonText}
         </Button>
       )}
