@@ -49,11 +49,11 @@ describe('ethRewards', () => {
       const beforeTokens = await getBalance(owner);
 
       const testAmount = 10;
-      const signature = await sign(owner, testAmount);
-      expect(signature).toBeTruthy();
+      const { sig } = await sign(owner, testAmount);
+      expect(sig).toBeTruthy();
 
       const bn = (testAmount * 10 ** 18).toString();
-      const r = await sendTx({ method: 'claimTokens', args: [bn, signature] });
+      const r = await sendTx({ method: 'claimTokens', args: [bn, sig] });
       expect(r.status).toBe(1);
 
       const afterTokens = await getBalance(owner);

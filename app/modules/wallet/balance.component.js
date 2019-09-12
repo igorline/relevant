@@ -40,6 +40,7 @@ export function Balance({ isWeb }) {
   const stakingPower = user.balance
     ? Math.round(100 * (1 - lockedTokens / user.balance))
     : 0;
+
   return (
     <View m={['4 4 2 4', '2 2 0 2']}>
       {!screenSize ? (

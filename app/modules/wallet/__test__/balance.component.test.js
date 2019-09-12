@@ -3,30 +3,38 @@ import renderer from 'react-test-renderer';
 import { Balance } from 'modules/wallet/balance.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
-import { user } from 'app/mockdata';
+
+jest.mock('modules/contract/contract.hooks', () => {
+  return {
+    useTokenContract: () => null,
+    useBalance: () => ({ phase: 'SUCCESS', value: 10 })
+  };
+});
+
+jest.mock('react-redux', () => {
+  const { user } = require('app/mockdata');
+  const state = {
+    auth: { user: user.user1 },
+    navigation: { screenSize: 0 }
+  };
+
+  return {
+    useDispatch: () => {},
+    useSelector: fn => fn(state)
+  };
+});
 
 const props = {
-  user: user.user1,
-  contract: {},
-  actions: {},
-  wallet: {},
-  isWeb: true,
-
-  // web3 props
-  web3Status: {},
-  web3Actions: {
-    init: () => null
-  },
-  cacheEvent: () => null
+  isWeb: true
 };
 
 test('Snapshot Balance Web', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <Balance {...props} />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <Balance {...props} />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });
