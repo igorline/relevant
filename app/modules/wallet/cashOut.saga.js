@@ -39,11 +39,12 @@ export function* handleRequest({
         `Claiming ${parseFloat(formatBalanceRead(amount))} tokens 😄`,
         'success'
       );
-      yield put(
+      const tx = yield put(
         actions.methods
           .claimTokens({ at: tokenAddress, from: accounts[0] })
           .send(amount, sig)
       );
+      console.log('tx', tx); // eslint-disable-line
       // TODO how do we track progress of transaction and update balance after it executes
       // yield put(updateUserTokenBalance());
     } catch (error) {
@@ -55,7 +56,7 @@ export function* handleFailure({ payload: { error }, meta }) {
   if (error === NO_ETH_ADDRESS) {
     // It should not be possible to get here
     yield meta.errorHandler.alert(
-      'Looks like your account was discconected. Try again with metamask enabled 😄'
+      'Looks like your account was disconnected. Try again with metamask enabled 😄'
     );
     yield put(connectAccount(meta.args.accounts));
   } else {

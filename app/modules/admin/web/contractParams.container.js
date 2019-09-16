@@ -13,7 +13,7 @@ import {
   NumericalValue
 } from 'modules/styled/uni';
 import { contractPropTypes } from 'modules/contract/contract.container';
-import { useTokenContract, useEthActions } from 'modules/contract/contract.hooks';
+import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
 
@@ -68,10 +68,7 @@ ParamRow.propTypes = {
 
 const ContractParams = () => {
   const [accounts, { userBalance, methodCache }] = useTokenContract();
-
-  const {
-    Relevant: { cacheMethod, cacheSend }
-  } = useEthActions();
+  const { cacheMethod, cacheSend } = useRelevantActions();
 
   useEffect(() => {
     readableMethods.forEach(method => cacheMethod(method));

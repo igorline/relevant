@@ -1,3 +1,5 @@
+import { CASHOUT_LIMIT } from 'server/config/globalConstants';
+
 export const metamask = {
   id: 1,
   title: 'Please download a Web3 wallet',
@@ -32,7 +34,15 @@ export const account = (ethAddress = '0x..') => ({
   message: `Your connected wallet address is different from the address linked to your Relevant account. Please select account ${ethAddress} in Metamask or connect your current account number to Relevant`,
   buttonText: 'Connect Current Accounts to Relevant',
   buttonAction: 'connectAddress',
-  // disabled: false,
   bg: 'rgba(255, 159, 0, 0.02)',
   bc: '#f7931a'
 });
+
+export const balance = {
+  id: 5,
+  title: 'Your balance is too low',
+  message: `Your current balance is too low, you need to earn more than ${CASHOUT_LIMIT} coins in order to be able to cash out.`,
+  disabled: true,
+  bg: 'rgba(255, 159, 0, 0.02)',
+  bc: '#f7931a'
+};
