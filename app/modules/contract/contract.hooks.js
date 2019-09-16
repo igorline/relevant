@@ -4,74 +4,74 @@ import { getProvider, getMetamask } from 'app/utils/eth';
 import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
 import { actions as tokenActions, tokenAddress } from 'core/contracts';
-import { useEthState } from './contract.selectors';
+import { useWeb3State, useRelevantState } from './contract.selectors';
 
 const _web3 = getProvider();
 const metamask = getMetamask();
 
-export const useEthActions = () => {
+export const useWeb3Actions = () => {
   const dispatch = useDispatch();
   return {
-    web3: {
-      init: useCallback(web3Instance => dispatch(_web3Actions.init.init(web3Instance)), [
-        dispatch
-      ]),
-      network: useCallback(
-        () => bindActionCreators({ ..._web3Actions.network, dispatch }),
-        [dispatch]
-      ),
-      accounts: useCallback(
-        () => bindActionCreators({ ..._web3Actions.accounts, dispatch }),
-        [dispatch]
-      )
-    },
-    Relevant: {
-      cacheEvent: useCallback(
-        event => {
-          dispatch(tokenActions.events[event].get({ at: tokenAddress }));
-          dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
-        },
-        [dispatch]
-      ),
-      cacheMethod: useCallback(
-        (method, args) => {
-          if (args)
-            dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
-          else dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
-        },
-        [dispatch]
-      ),
-      cacheSend: useCallback(
-        (method, options, ...args) => {
-          if (args) {
-            dispatch(
-              tokenActions.methods[method]({
-                at: tokenAddress,
-                ...options
-              }).send(...args)
-            );
-          } else {
-            dispatch(
-              tokenActions.methods[method]({
-                at: tokenAddress,
-                ...options
-              }).send()
-            );
-          }
-        },
-        [dispatch]
-      )
-    }
+    init: useCallback(web3Instance => dispatch(_web3Actions.init.init(web3Instance)), [
+      dispatch
+    ]),
+    network: useCallback(
+      () => bindActionCreators({ ..._web3Actions.network, dispatch }),
+      [dispatch]
+    ),
+    accounts: useCallback(
+      () => bindActionCreators({ ..._web3Actions.accounts, dispatch }),
+      [dispatch]
+    )
+  };
+};
+
+export const useRelevantActions = () => {
+  const dispatch = useDispatch();
+  return {
+    cacheEvent: useCallback(
+      event => {
+        dispatch(tokenActions.events[event].get({ at: tokenAddress }));
+        dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
+      },
+      [dispatch]
+    ),
+    cacheMethod: useCallback(
+      (method, args) => {
+        if (args) dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
+        else dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
+      },
+      [dispatch]
+    ),
+    cacheSend: useCallback(
+      (method, options, ...args) => {
+        if (args) {
+          dispatch(
+            tokenActions.methods[method]({
+              at: tokenAddress,
+              ...options
+            }).send(...args)
+          );
+        } else {
+          dispatch(
+            tokenActions.methods[method]({
+              at: tokenAddress,
+              ...options
+            }).send()
+          );
+        }
+      },
+      [dispatch]
+    )
   };
 };
 
 export const useWeb3 = () => {
-  const { web3 } = useEthState();
-  const ethActions = useEthActions();
-  const initWeb3 = ethActions.web3.init;
+  const web3 = useWeb3State();
+  const { init } = useWeb3Actions();
   useEffect(() => {
-    if (!web3.isInitialized) initWeb3(_web3);
-  }, [web3.status, web3.isInitialized, initWeb3]);
+    if (!web3.isInitialized) init(_web3);
+  }, [web3.status, web3.isInitialized, init]);
 
   return [web3.accounts, web3.isInitialized, web3.networkId];
 };
@@ -98,13 +98,9 @@ export const useMetamask = () => {
 };
 
 export const useBalance = () => {
-  const {
-    web3: { accounts },
-    Relevant: { userBalance }
-  } = useEthState();
-  const {
-    Relevant: { cacheMethod }
-  } = useEthActions();
+  const { accounts } = useWeb3State();
+  const { userBalance } = useRelevantState();
+  const { cacheMethod } = useRelevantActions();
   const haveBalance = !!userBalance;
   useEffect(() => {
     if (accounts && accounts.length && !haveBalance) {
@@ -116,9 +112,7 @@ export const useBalance = () => {
 };
 
 export const useEventSubscription = () => {
-  const {
-    Relevant: { cacheEvent }
-  } = useEthActions();
+  const { cacheEvent } = useRelevantActions();
   useEffect(() => {
     cacheEvent('Released');
     return () => {};
@@ -127,11 +121,12 @@ export const useEventSubscription = () => {
 
 // Rerturns [Accounts, Relevant State, Relevant Actions]
 export const useTokenContract = () => {
-  const ethActions = useEthActions();
-  const ethState = useEthState();
+  const relevantState = useRelevantState();
+  const web3 = useWeb3State();
+  const relevantActions = useRelevantActions();
   useWeb3();
   useMetamask();
   useBalance();
   // useEventSubscription(ethActions);
-  return [ethState.web3.accounts, ethState.Relevant, ethActions.Relevant];
+  return [web3.accounts, relevantState, relevantActions];
 };
