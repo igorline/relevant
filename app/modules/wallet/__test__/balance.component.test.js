@@ -4,13 +4,6 @@ import { Balance } from 'modules/wallet/balance.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('modules/contract/contract.hooks', () => {
-  return {
-    useTokenContract: () => null,
-    useBalance: () => ({ phase: 'SUCCESS', value: 10 })
-  };
-});
-
 jest.mock('react-redux', () => {
   const { user } = require('app/mockdata');
   const state = {
