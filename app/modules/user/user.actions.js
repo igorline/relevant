@@ -181,18 +181,3 @@ export function getBlocked() {
       })
       .catch(null);
 }
-
-export function updateUserTokenBalance() {
-  return async dispatch => {
-    try {
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/updateUserTokenBalance'
-      });
-      return dispatch(updateLocalUser(res));
-    } catch (err) {
-      return false;
-    }
-  };
-}

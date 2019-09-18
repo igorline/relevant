@@ -35,7 +35,8 @@ export const useRelevantState = () =>
     userBalance: selectUserBalance(state, tokenAddress),
     RelevantToken: state.RelevantToken,
     methodCache: {
-      select: (method, args = []) =>
+      select: (method, ...args) =>
         selectors.methods[method]({ at: tokenAddress })(state, ...args)
-    }
+    },
+    eventCache: event => selectors.events[event]
   }));
