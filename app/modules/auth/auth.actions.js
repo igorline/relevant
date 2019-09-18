@@ -7,6 +7,7 @@ import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import { setUserMemberships } from 'modules/community/community.actions';
 
 const Alert = utils.alert.Alert();
+
 let PushNotification;
 let userDefaults;
 
@@ -693,56 +694,6 @@ export function twitterAuth(profile, invite) {
       Alert.alert(error.message);
       return false;
     }
-  };
-}
-
-export function addEthAddress(msg, sig, acc) {
-  return async dispatch => {
-    try {
-      const result = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/ethAddress',
-        body: JSON.stringify({ msg, sig, acc })
-      });
-      dispatch(updateAuthUser(result));
-      return true;
-    } catch (err) {
-      Alert.alert(err.message);
-      return false;
-    }
-  };
-}
-
-export function connectAccount() {
-  return {
-    type: types.CONNECT_ACCOUNT.REQUEST
-  };
-}
-
-export function connectAccountFailure(error, msg) {
-  return {
-    type: types.CONNECT_ACCOUNT.FAILURE,
-    payload: { error },
-    meta: { msg }
-  };
-}
-
-export function cashOutCall(meta, user, accounts, customAmount = 0) {
-  return {
-    type: types.CASH_OUT.REQUEST,
-    payload: {
-      args: [user, accounts, customAmount]
-    },
-    meta
-  };
-}
-
-export function cashOutFailure(meta, error) {
-  return {
-    type: types.CASH_OUT.FAILURE,
-    payload: { error },
-    meta
   };
 }
 

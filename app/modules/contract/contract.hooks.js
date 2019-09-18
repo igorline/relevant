@@ -4,8 +4,10 @@ import { getProvider, getMetamask } from 'app/utils/eth';
 import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
 import { actions as tokenActions, tokenAddress } from 'core/contracts';
+import { alert } from 'app/utils';
 import { useWeb3State, useRelevantState } from './contract.selectors';
 
+const Alert = alert.Alert();
 const _web3 = getProvider();
 const metamask = getMetamask();
 
@@ -136,4 +138,30 @@ export const useTokenContract = () => {
   useBalance();
   // useEventSubscription(ethActions);
   return [web3.accounts, relevantState, relevantActions];
+};
+
+export const useTxState = ({ tx, method, clearTx }) => {
+  const { methodCache } = useRelevantState();
+  if (!tx) return null;
+
+  const txState = methodCache.select(method, ...tx.payload.args);
+  const txConfirmed = methodCache.select(
+    'claimTokens',
+    ...tx.payload.args,
+    'confirmations'
+  );
+
+  if (txState && txState.phase === 'ERROR') {
+    Alert.alert(txState.value.get('message'));
+    clearTx();
+    return 'error';
+  }
+
+  if (txConfirmed && txConfirmed.value) {
+    Alert.alert('Transaction Completed!', 'success');
+    clearTx();
+    return 'success';
+  }
+
+  return 'pending';
 };
