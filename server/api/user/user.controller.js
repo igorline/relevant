@@ -778,7 +778,6 @@ exports.cashOut = async (req, res, next) => {
     const { user, params } = req;
     if (!user) throw new Error('missing user');
     if (!user.ethAddress[0]) throw new Error('No Ethereum address connected');
-    let amount = user.balance;
     const address = user.ethAddress[0];
 
     // if the nonce is the same as last time, resend last signature
@@ -789,9 +788,11 @@ exports.cashOut = async (req, res, next) => {
       return res.status(200).json(user);
     }
 
-    if (params.customAmount && params.customAmount > 0) {
-      amount = params.customAmount;
-    }
+    const canClaim = user.balance - (user.airdroppedTokens || 0);
+    const amount = params.customAmount || canClaim;
+
+    if (amount > canClaim) throw new Error('You con not claim this many coins.');
+    if (amount <= 0) throw new Error('You do not have enough coins to claim.');
 
     // if (amount < 100) throw new Error('Balance is too small to withdraw');
     const allocatedRewards = await ethUtils.getParam('allocatedRewards');
@@ -801,12 +802,7 @@ exports.cashOut = async (req, res, next) => {
         'There are not enough funds allocated in the contract at the moment'
       );
     }
-    if (user.balance < amount) {
-      throw new Error('Your balance is too low');
-    }
-    // amount = Number.parseFloat(amount).toFixed(0);
 
-    // Log cashOut data before mutating
     logCashOut(user, amount, next);
 
     user.balance -= amount;
