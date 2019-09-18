@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as authActions from 'modules/auth/auth.actions';
 import * as earningsActions from 'modules/wallet/earnings.actions';
 import Earning from 'modules/wallet/earning.component';
-import CashOutModal from 'modules/wallet/web/cashOutModal.component';
 import BalanceComponent from 'modules/wallet/balance.component';
 import { View } from 'modules/styled/uni';
 import InfScroll from 'modules/listview/web/infScroll.component';
@@ -40,7 +39,6 @@ class WalletContainer extends Component {
   renderHeader = () => (
     <View>
       <BalanceComponent isWeb />
-      <CashOutModal />
     </View>
   );
 

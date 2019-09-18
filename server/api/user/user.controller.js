@@ -17,7 +17,7 @@ import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 import { logCashOut } from '../../utils/cashOut';
 
-// User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
+User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
 // .then(u => u);
