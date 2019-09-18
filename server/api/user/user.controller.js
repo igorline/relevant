@@ -708,7 +708,7 @@ exports.blocked = async (req, res, next) => {
 exports.updateUserTokenBalance = async (req, res, next) => {
   try {
     const { user } = req;
-    if (!user.ethAddress || !user.ethAddress.legnth) {
+    if (!user.ethAddress || !user.ethAddress.length) {
       throw new Error('missing connected Ethereum address');
     }
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
@@ -786,7 +786,6 @@ exports.cashOut = async (req, res, next) => {
 
     // Prioritize last withdrawal attempt
     if (user.cashOut && user.cashOut.nonce === nonce) {
-      amount = user.cashOut.amount;
       return res.status(200).json(user);
     }
 
@@ -796,9 +795,6 @@ exports.cashOut = async (req, res, next) => {
 
     // if (amount < 100) throw new Error('Balance is too small to withdraw');
     const allocatedRewards = await ethUtils.getParam('allocatedRewards');
-
-    // eslint-disable-next-line no-console
-    console.log({ allocatedRewards, amount });
 
     if (allocatedRewards < amount) {
       throw new Error(

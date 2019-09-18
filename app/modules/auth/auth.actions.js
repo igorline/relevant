@@ -771,3 +771,18 @@ export function redeemInvite(invitecode) {
     }
   };
 }
+
+export function updateUserTokenBalance() {
+  return async dispatch => {
+    try {
+      const res = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/updateUserTokenBalance'
+      });
+      dispatch(updateAuthUser(res));
+    } catch (err) {
+      Alert.alert(err.message);
+    }
+  };
+}

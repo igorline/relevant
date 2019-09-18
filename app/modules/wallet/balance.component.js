@@ -13,10 +13,10 @@ import {
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_LIMIT } from 'server/config/globalConstants';
-import { parseBN } from 'app/utils/eth';
+// import { parseBN } from 'app/utils/eth';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { showModal } from 'modules/navigation/navigation.actions';
-import { useTokenContract, useBalance } from 'modules/contract/contract.hooks';
+// import { useTokenContract } from 'modules/contract/contract.hooks';
 
 Balance.propTypes = {
   isWeb: PropTypes.bool
@@ -24,18 +24,18 @@ Balance.propTypes = {
 
 export function Balance({ isWeb }) {
   // Temporarily disable - don't want to trigger metamask popup here
-  useTokenContract();
+  // useTokenContract();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
   const screenSize = useSelector(state => state.navigation.screenSize);
 
-  const userBalance = useBalance();
+  // const userBalance = useBalance();
 
   if (!user) return null;
-  const metaMaskTokens =
-    userBalance && userBalance.phase === 'SUCCESS'
-      ? parseBN(userBalance.value)
-      : user.tokenBalance;
+  const metaMaskTokens = user.tokenBalance;
+  // userBalance && userBalance.phase === 'SUCCESS'
+  // ? parseBN(userBalance.value)
+  // : user.tokenBalance;
   const { airdropTokens, lockedTokens } = user;
   const stakingPower = user.balance
     ? Math.round(100 * (1 - lockedTokens / user.balance))

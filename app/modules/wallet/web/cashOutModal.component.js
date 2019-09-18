@@ -10,29 +10,64 @@ import {
   useWeb3,
   useMetamask,
   useBalance,
-  useRelevantActions
+  useRelevantActions,
+  useTokenContract
 } from 'modules/contract/contract.hooks';
 import { useRelevantState } from 'modules/contract/contract.selectors';
 import { useCurrentWarning } from 'modules/web3Warning/web3Warning.hooks';
 import { getProvider, generateSalt, parseBN } from 'app/utils/eth';
 import { ALLOW_CUSTOM_CASHOUT } from 'core/config';
-import { cashOutCall, addEthAddress } from 'modules/auth/auth.actions';
+import {
+  addEthAddress,
+  // cashOutFailure,
+  updateUserTokenBalance,
+  updateAuthUser
+} from 'modules/auth/auth.actions';
 import { hideModal } from 'modules/navigation/navigation.actions'; // eslint-disable-line
+import styled from 'styled-components/primitives';
+import { request as apiRequest } from 'app/utils/api';
+import { actions, tokenAddress } from 'core/contracts';
+import { colors } from 'styles';
+import { ActivityIndicator } from 'react-native-web';
 
 const Alert = alert.Alert();
 const web3 = getProvider();
+
+const TxProgress = styled(View)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: ${colors.modalBackground};
+`;
 
 export default function AddEthAddress() {
   const [accounts, , networkId] = useWeb3();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
-  // const ethState = useEthState();
-  // console.log(ethState);
+  const { userNonce } = useRelevantState();
+  const nonce = userNonce && userNonce.phase === 'SUCCESS' && parseBN(userNonce.value);
+  const unclaimedSig = user.cashOut && user.cashOut.nonce === nonce && user.cashOut;
+  const { cacheMethod } = useRelevantActions();
+  useTokenContract();
+  const canClaim = user.balance - (user.airdroppedTokens || 0);
+
+  const account = accounts && accounts[0];
 
   useBalance();
   useMetamask();
+  useEffect(() => {
+    account && cacheMethod('nonceOf', account);
+  }, [account, cacheMethod]);
 
-  const warning = useCurrentWarning(accounts, user, networkId);
+  const warning = useCurrentWarning({
+    accounts,
+    user,
+    networkId,
+    unclaimedSig,
+    canClaim
+  });
 
   const connectAddress = async () => {
     try {
@@ -55,14 +90,14 @@ export default function AddEthAddress() {
             const error = err || msg.error;
             // eslint-disable-next-line no-console
             console.error('Error: ', error);
-            Alert('Error: ', error);
+            Alert.alert('Error: ', error);
             return;
           }
           dispatch(addEthAddress(msgParams, msg.result, accounts[0]));
         }
       );
     } catch (err) {
-      Alert('Failed signing message: ', err);
+      Alert.alert('Failed signing message: ', err);
     }
   };
 
@@ -73,7 +108,11 @@ export default function AddEthAddress() {
         {warning ? (
           <Web3Warning connectAddress={connectAddress} warning={warning} />
         ) : (
-          <CashOutHandler user={user} accounts={accounts} />
+          <CashOutHandler
+            canClaim={canClaim}
+            account={account}
+            unclaimedSig={unclaimedSig}
+          />
         )}
       </View>
     </Modal>
@@ -81,47 +120,39 @@ export default function AddEthAddress() {
 }
 
 CashOutHandler.propTypes = {
-  user: PropTypes.object,
-  accounts: PropTypes.array
+  canClaim: PropTypes.number,
+  account: PropTypes.string,
+  unclaimedSig: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
 };
 
-function CashOutHandler({ user, accounts }) {
-  const dispatch = useDispatch();
-  const { cacheMethod } = useRelevantActions();
-
-  const canClaim = user.balance - (user.airdroppedTokens || 0);
+function CashOutHandler({ canClaim, account, unclaimedSig }) {
+  const [currentTx, setCurrentTx] = useState();
   const [amount, setAmount] = useState(canClaim);
-  const { userNonce } = useRelevantState();
-  const nonce = userNonce && userNonce.phase === 'SUCCESS' && parseBN(userNonce.value);
-
-  useEffect(() => {
-    cacheMethod('nonceOf', accounts[0]);
-  }, [accounts, cacheMethod]);
+  const dispatch = useDispatch();
 
   const cashOut = async (customAmount = 0) => {
     try {
-      // TODO how do we track the progress of this transaction
-      await dispatch(
-        cashOutCall(
-          { time: new Date(), errorHandler: Alert },
-          user,
-          accounts,
-          customAmount
-        )
+      const result = await apiRequest({
+        method: 'POST',
+        endpoint: 'user',
+        path: '/cashOut',
+        params: { customAmount }
+      });
+      dispatch(updateAuthUser(result));
+      const { amount: amnt, sig } = result.cashOut;
+
+      const tx = dispatch(
+        actions.methods.claimTokens({ at: tokenAddress, from: account }).send(amnt, sig)
       );
+      setCurrentTx(tx);
     } catch (err) {
-      Alert(err);
+      Alert.alert(err);
     }
   };
 
-  const { methodCache } = useRelevantState();
-  const { sig, amount: amt } = user.cashOut;
-
-  const CashoutTx = methodCache.select('claimTokens', [amt, sig]);
-  console.log(CashoutTx); // eslint-disable-line
-
-  const unclaimedSig = user.cashOut && user.cashOut.nonce === nonce;
-  const cashoutAmount = unclaimedSig ? user.cashOut.amount / 1e18 : amount;
+  const txStatus = useTxState(currentTx, setCurrentTx);
+  const cashoutAmount = unclaimedSig && !currentTx ? unclaimedSig.amount / 1e18 : amount;
+  const validateAmount = value => (value < 0 ? 0 : value > canClaim ? canClaim : value);
 
   return (
     <Fragment>
@@ -131,13 +162,48 @@ function CashOutHandler({ user, accounts }) {
           placeholder="Claiming all coins 😎"
           max={canClaim}
           min={0}
-          onChange={({ target: { value } }) => setAmount(value)}
+          onChange={({ target: { value } }) => setAmount(validateAmount(value))}
           value={amount}
         />
       )}
       <Button mr={'auto'} mt={4} onClick={() => cashOut(cashoutAmount)}>
         Claim {cashoutAmount} Relevant Coins
       </Button>
+      {txStatus === 'pending' && (
+        <TxProgress align="center" justify={'center'}>
+          <ActivityIndicator />
+          <BodyText mt={2}>Processing Transaction</BodyText>
+        </TxProgress>
+      )}
     </Fragment>
   );
+}
+
+function useTxState(tx, setCurrentTx) {
+  const dispatch = useDispatch();
+  const { methodCache } = useRelevantState();
+  if (!tx) return null;
+
+  const cashoutTx = methodCache.select('claimTokens', ...tx.payload.args);
+  const cashoutConfirm = methodCache.select(
+    'claimTokens',
+    ...tx.payload.args,
+    'confirmations'
+  );
+
+  if (cashoutTx && cashoutTx.phase === 'ERROR') {
+    Alert.alert(cashoutTx.value.get('message'));
+    setCurrentTx(null);
+    return 'error';
+  }
+
+  if (cashoutConfirm && cashoutConfirm.value) {
+    Alert.alert('Transaction Completed!', 'success');
+    dispatch(updateUserTokenBalance());
+    setCurrentTx(null);
+    dispatch(hideModal());
+    return 'success';
+  }
+
+  return 'pending';
 }

@@ -29,7 +29,13 @@ export const useWeb3Actions = () => {
 export const useRelevantActions = () => {
   const dispatch = useDispatch();
   return {
-    cacheEvent: useCallback(
+    getEvent: useCallback(
+      event => {
+        dispatch(tokenActions.events[event].get({ at: tokenAddress }));
+      },
+      [dispatch]
+    ),
+    subscribeToEvent: useCallback(
       event => {
         dispatch(tokenActions.events[event].get({ at: tokenAddress }));
         dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
@@ -67,6 +73,7 @@ export const useRelevantActions = () => {
 };
 
 export const useWeb3 = () => {
+  useMetamask();
   const web3 = useWeb3State();
   const { init } = useWeb3Actions();
   useEffect(() => {
@@ -100,23 +107,24 @@ export const useMetamask = () => {
 export const useBalance = () => {
   const { accounts } = useWeb3State();
   const { userBalance } = useRelevantState();
-  const { cacheMethod } = useRelevantActions();
+  const { cacheMethod, subscribeToEvent } = useRelevantActions();
   const haveBalance = !!userBalance;
+
   useEffect(() => {
+    subscribeToEvent('Transfer');
     if (accounts && accounts.length && !haveBalance) {
       cacheMethod('balanceOf', accounts[0]);
     }
-  }, [accounts, haveBalance, cacheMethod]);
+  }, [accounts, haveBalance, cacheMethod, subscribeToEvent]);
 
   return userBalance;
 };
 
 export const useEventSubscription = () => {
-  const { cacheEvent } = useRelevantActions();
+  const { subscribeToEvent } = useRelevantActions();
   useEffect(() => {
-    cacheEvent('Released');
-    return () => {};
-  }, [cacheEvent]);
+    subscribeToEvent('Released');
+  }, [subscribeToEvent]);
 };
 
 // Rerturns [Accounts, Relevant State, Relevant Actions]
@@ -125,7 +133,6 @@ export const useTokenContract = () => {
   const web3 = useWeb3State();
   const relevantActions = useRelevantActions();
   useWeb3();
-  useMetamask();
   useBalance();
   // useEventSubscription(ethActions);
   return [web3.accounts, relevantState, relevantActions];

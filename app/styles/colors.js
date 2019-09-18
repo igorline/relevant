@@ -2,7 +2,7 @@ const lightTheme = true;
 // const darkTheme = false;
 
 const gs = n => `hsl(0, 0%, ${n}%)`;
-const gsa = (n, a) => `hsl(0, 0%, ${n}%, ${a})`;
+const gsa = (n, a) => `hsla(0, 0%, ${n}%, ${a})`;
 
 export const blue = lightTheme ? '#0000ff' : '#0088ff';
 export const grey = lightTheme ? gs(50) : gs(50);

@@ -5,8 +5,8 @@ import {
   cashOutFailure,
   connectAccount,
   updateAuthUser
+  // updateUserTokenBalance
 } from 'modules/auth/auth.actions';
-// import { updateUserTokenBalance } from 'modules/user/user.actions';
 import { formatBalanceRead } from 'app/utils/eth';
 import { CASH_OUT } from 'core/actionTypes';
 
@@ -35,6 +35,7 @@ export function* handleRequest({
       });
       yield put(updateAuthUser(result));
       const { sig, amount } = result.cashOut || user.cashOut;
+      // console.log(result);
       yield meta.errorHandler.alert(
         `Claiming ${parseFloat(formatBalanceRead(amount))} tokens 😄`,
         'success'
