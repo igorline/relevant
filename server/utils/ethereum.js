@@ -88,7 +88,7 @@ export async function getGasPrice() {
 export async function sendTx({ method, args, overWritePending }) {
   try {
     const gasPrice = await getGasPrice();
-    const nonce = ethers.getTransactionCount(wallet.address);
+    const nonce = provider.getTransactionCount(wallet.address);
     console.log('current nonce', nonce); // eslint-disable-line
     const optNonce = overWritePending ? { nonce } : {};
     const options = {
