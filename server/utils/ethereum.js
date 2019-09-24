@@ -15,6 +15,12 @@ let web3;
 let initialized = false;
 let wallet;
 
+const pendingTx = {};
+
+// process.on('exit', () => {
+//   console.log('Pending Transactions: ', pendingTx);
+// });
+
 export const isInitialized = () => initialized;
 export const getWeb3 = () => web3;
 
@@ -79,18 +85,25 @@ export async function getGasPrice() {
 }
 
 // SECURITY - this function should never by exposed via any APIs!
-export async function sendTx({ method, args }) {
+export async function sendTx({ method, args, overWritePending }) {
   try {
     const gasPrice = await getGasPrice();
+    const nonce = ethers.getTransactionCount(wallet.address);
+    console.log('current nonce', nonce); // eslint-disable-line
+    const optNonce = overWritePending ? { nonce } : {};
     const options = {
       gasPrice: gasPrice * 1e8,
-      gasLimit: 6e6
+      gasLimit: 6e6,
+      ...optNonce
     };
     const tx = await instance[method](...args, options);
-    const r = await tx.wait();
-    console.log('status:', r.status); // eslint-disable-line
-    console.log(`gas used by ${method}: ${r.gasUsed}`); // eslint-disable-line
-    return r;
+    console.log(tx); // eslint-disable-line
+    pendingTx[method] = tx;
+    const result = await tx.wait();
+    delete pendingTx[method];
+    console.log('status:', result.status); // eslint-disable-line
+    console.log(`gas used by ${method}: ${result.gasUsed}`); // eslint-disable-line
+    return result;
   } catch (err) {
     throw err;
   }
@@ -104,7 +117,7 @@ export async function mintRewardTokens() {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast();
   if (lastMint.toNumber() === 0) return null;
-  return sendTx({ method: 'releaseTokens', args: [] });
+  return sendTx({ method: 'releaseTokens', args: [], overWritePending: true });
 }
 
 export async function allocateRewards(_amount) {
