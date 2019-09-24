@@ -81,17 +81,17 @@ export async function getParam(param, opt) {
 export async function getGasPrice() {
   const gasPrice = await request('https://ethgasstation.info/json/ethgasAPI.json');
   const price = JSON.parse(gasPrice);
-  console.log('gas price', price.average); // eslint-disable-line
-  return price.average;
+  console.log('gas price', price.fast); // eslint-disable-line
+  return price.fast;
 }
 
 // SECURITY - this function should never by exposed via any APIs!
-export async function sendTx({ method, args, overWritePending }) {
+export async function sendTx({ method, args, cancelPendingTx }) {
   try {
     const gasPrice = await getGasPrice();
     const nonce = await provider.getTransactionCount(wallet.address);
     console.log('current nonce', nonce); // eslint-disable-line
-    const optNonce = overWritePending ? { nonce } : {};
+    const optNonce = cancelPendingTx ? { nonce } : {};
     const options = {
       gasPrice: gasPrice * 1e8,
       gasLimit: 6e6,
