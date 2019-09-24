@@ -17,9 +17,10 @@ let wallet;
 
 const pendingTx = {};
 
-// process.on('exit', () => {
-//   console.log('Pending Transactions: ', pendingTx);
-// });
+process.on('exit', () => {
+  // eslint-disable-next-line
+  console.log('Un-executed Pending Transactions: ', pendingTx);
+});
 
 export const isInitialized = () => initialized;
 export const getWeb3 = () => web3;
@@ -88,7 +89,7 @@ export async function getGasPrice() {
 export async function sendTx({ method, args, overWritePending }) {
   try {
     const gasPrice = await getGasPrice();
-    const nonce = provider.getTransactionCount(wallet.address);
+    const nonce = await provider.getTransactionCount(wallet.address);
     console.log('current nonce', nonce); // eslint-disable-line
     const optNonce = overWritePending ? { nonce } : {};
     const options = {
@@ -97,7 +98,6 @@ export async function sendTx({ method, args, overWritePending }) {
       ...optNonce
     };
     const tx = await instance[method](...args, options);
-    console.log(tx); // eslint-disable-line
     pendingTx[method] = tx;
     const result = await tx.wait();
     delete pendingTx[method];
