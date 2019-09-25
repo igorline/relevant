@@ -144,27 +144,27 @@ class CreatePostHeaderRight extends Component {
     this.image = null;
 
     if (!props.allTags.length) {
-      Alert.alert('Please select at lest one tag');
+      Alert.alert('Please select at least one tag');
       return;
     }
 
     this.setState({ creatingPost: true });
     if (props.urlPreview && props.urlPreview.image && !props.nativeImage) {
       utils.s3
-      .toS3Advanced(props.urlPreview.image)
-      .then(results => {
-        if (results.success) {
-          this.image = results.url;
-          this.uploadPost();
-        } else {
-          Alert.alert('Error uploading image, please try again');
+        .toS3Advanced(props.urlPreview.image)
+        .then(results => {
+          if (results.success) {
+            this.image = results.url;
+            this.uploadPost();
+          } else {
+            Alert.alert('Error uploading image, please try again');
+            this.setState({ creatingPost: false });
+          }
+        })
+        .catch(err => {
+          Alert.alert('Error uploading image: ', err.message);
           this.setState({ creatingPost: false });
-        }
-      })
-      .catch(err => {
-        Alert.alert('Error uploading image: ', err.message);
-        this.setState({ creatingPost: false });
-      });
+        });
     } else {
       this.image =
         props.urlPreview && props.urlPreview.image
