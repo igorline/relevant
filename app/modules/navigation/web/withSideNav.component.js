@@ -59,9 +59,10 @@ class WithSideNav extends Component {
         ) : null}
         {promptType ? (
           <View
-            position="fixed"
+            position="sticky"
             zIndex="200"
             style={{
+              top: 0,
               right: 0,
               left: 0,
               minHeight: layout.BANNER_PROMPT_HEIGHT
