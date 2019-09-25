@@ -15,8 +15,8 @@ import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 
-// User.find({ handle: 'thisben' }, '+email').then(console.log)
-// User.findOneAndUpdate({ handle: 'thisben' }, { email: 'thisben@tutanota.com' }).exec();
+// User.findOneAndUpdate({ handle: 'jennifar' }, { banned: true }).then(console.log);
+// User.findOne({ handle: 'jennifar' }).then(console.log);
 
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
@@ -157,10 +157,10 @@ exports.webOnboard = (req, res, next) => {
     { $set: { [path]: true } },
     { projection: 'webOnboard', new: true }
   )
-  .then(newUser => {
-    res.status(200).json(newUser);
-  })
-  .catch(next);
+    .then(newUser => {
+      res.status(200).json(newUser);
+    })
+    .catch(next);
 };
 
 exports.onboarding = (req, res, next) => {
@@ -171,10 +171,10 @@ exports.onboarding = (req, res, next) => {
     { onboarding: step },
     { projection: 'onboarding', new: true }
   )
-  .then(newUser => {
-    res.status(200).json(newUser);
-  })
-  .catch(next);
+    .then(newUser => {
+      res.status(200).json(newUser);
+    })
+    .catch(next);
 };
 
 /**
@@ -235,12 +235,12 @@ exports.search = (req, res, next) => {
     $and: [{ $or: [{ name }, { handle: name }] }, { handle: { $nin: blocked } }]
   };
   User.find(query, 'handle name image')
-  .sort({ handle: 1 })
-  .limit(parseInt(limit, 10))
-  .then(users => {
-    res.json(200, users);
-  })
-  .catch(next);
+    .sort({ handle: 1 })
+    .limit(parseInt(limit, 10))
+    .then(users => {
+      res.json(200, users);
+    })
+    .catch(next);
 };
 
 /**
@@ -256,11 +256,11 @@ exports.index = (req, res, next) => {
   }
 
   User.find(query, '-salt -hashedPassword')
-  .sort({ rank: -1 })
-  .then(users => {
-    res.status(200).json(users);
-  })
-  .catch(next);
+    .sort({ rank: -1 })
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(next);
 };
 
 exports.checkUser = async (req, res, next) => {
@@ -316,13 +316,13 @@ exports.testData = async (req, res, next) => {
       query,
       'pagerank level community communityId pagerankRaw'
     )
-    .limit(limit)
-    .skip(skip)
-    // .sort(sort)
-    .populate({
-      path: 'user',
-      select: 'handle name votePower image bio'
-    });
+      .limit(limit)
+      .skip(skip)
+      // .sort(sort)
+      .populate({
+        path: 'user',
+        select: 'handle name votePower image bio'
+      });
 
     return res.status(200).json(rel);
   } catch (err) {
@@ -356,13 +356,13 @@ exports.list = async (req, res, next) => {
     }
 
     const rel = await Relevance.find(query)
-    .limit(limit)
-    .skip(skip)
-    .sort(sort)
-    .populate({
-      path: 'user',
-      select: 'handle name votePower image bio'
-    });
+      .limit(limit)
+      .skip(skip)
+      .sort(sort)
+      .populate({
+        path: 'user',
+        select: 'handle name votePower image bio'
+      });
 
     const users = rel.map(r => {
       r = r.toObject();
@@ -472,8 +472,8 @@ exports.show = async function show(req, res, next) {
 
     // topic relevance
     const relevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
-    .sort('-relevance')
-    .limit(5);
+      .sort('-relevance')
+      .limit(5);
     const userObj = user.toObject();
     userObj.topTags = relevance || [];
 

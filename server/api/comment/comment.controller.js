@@ -55,6 +55,7 @@ exports.index = async req => {
 
 exports.create = async (req, res, next) => {
   let user = req.user._id;
+
   const { community, communityId } = req.communityMember;
   const { linkParent, text: body, repost = false, metaPost } = req.body;
   let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
@@ -87,6 +88,12 @@ exports.create = async (req, res, next) => {
   try {
     let comment = new Post(commentObj);
     user = await User.findOne({ _id: user });
+
+    if (user.banned) {
+      throw new Error(
+        'You are temporarily blocked from making comments, if you think this is an error, please reach out to info@relevant.community'
+      );
+    }
 
     parentPost = await Post.findOne({ _id: parentPost });
     parentComment = await Post.findOne({ _id: parentComment });
