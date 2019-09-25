@@ -154,7 +154,8 @@ const UserSchema = new Schema(
     legacyAirdrop: { type: Number, default: 0 },
 
     version: String,
-    community: String
+    community: String,
+    banned: Boolean
   },
   {
     toJSON: { virtuals: true },
@@ -178,14 +179,14 @@ UserSchema.virtual('relevance', {
 });
 
 UserSchema.virtual('password')
-.set(function setPassword(password) {
-  this._password = password;
-  this.salt = this.makeSalt();
-  this.hashedPassword = this.encryptPassword(password);
-})
-.get(function getPassword() {
-  return this._password;
-});
+  .set(function setPassword(password) {
+    this._password = password;
+    this.salt = this.makeSalt();
+    this.hashedPassword = this.encryptPassword(password);
+  })
+  .get(function getPassword() {
+    return this._password;
+  });
 
 // Public profile information
 UserSchema.virtual('profile').get(function getProfile() {
@@ -268,8 +269,8 @@ UserSchema.pre('save', async function preSave(next) {
 UserSchema.pre('remove', async function preRemove(next) {
   try {
     await this.model('CommunityMember')
-    .deleteMany({ user: this._id })
-    .exec();
+      .deleteMany({ user: this._id })
+      .exec();
     next();
   } catch (err) {
     next(err);
@@ -335,16 +336,16 @@ UserSchema.methods = {
   // get following and followers
   getSubscriptions: function getSubscriptions() {
     return this.model('Subscription')
-    .countDocuments({ follower: this._id })
-    .then(following => {
-      this.following = following;
-      return this.model('Subscription').countDocuments({ following: this._id });
-    })
-    .then(followers => {
-      this.followers = followers;
-      return this;
-    })
-    .catch(() => this);
+      .countDocuments({ follower: this._id })
+      .then(following => {
+        this.following = following;
+        return this.model('Subscription').countDocuments({ following: this._id });
+      })
+      .then(followers => {
+        this.followers = followers;
+        return this;
+      })
+      .catch(() => this);
   }
 };
 
@@ -418,12 +419,12 @@ UserSchema.methods.addReward = async function addReward({ type, user, extraRewar
 
     // TODO - update this and tie it to smart contract
     await this.model('Treasury')
-    .findOneAndUpdate(
-      {},
-      { $inc: { balance: -airdropTokens } },
-      { new: true, upsert: true }
-    )
-    .exec();
+      .findOneAndUpdate(
+        {},
+        { $inc: { balance: -airdropTokens } },
+        { new: true, upsert: true }
+      )
+      .exec();
 
     this.balance += airdropTokens;
     this.airdropTokens += airdropTokens;
@@ -453,12 +454,12 @@ UserSchema.methods.initialCoins = async function initialCoins(invite) {
     if (!airdropTokens) return this;
     // TODO - update this and tie it to smart contract
     await this.model('Treasury')
-    .findOneAndUpdate(
-      {},
-      { $inc: { balance: -airdropTokens } },
-      { new: true, upsert: true }
-    )
-    .exec();
+      .findOneAndUpdate(
+        {},
+        { $inc: { balance: -airdropTokens } },
+        { new: true, upsert: true }
+      )
+      .exec();
 
     this.balance += airdropTokens;
     this.airdropTokens += airdropTokens;

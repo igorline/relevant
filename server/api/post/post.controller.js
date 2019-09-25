@@ -666,6 +666,12 @@ exports.create = async (req, res, next) => {
     const { user } = req;
     const { community, communityId } = req.communityMember;
 
+    if (user.banned) {
+      throw new Error(
+        'You are temporarily blocked from making new posts, if you think this is an error, please reach out to info@relevant.community'
+      );
+    }
+
     const { channel, body } = req.body;
     // TODO rate limiting?
     // current rate limiting is 5s via invest
