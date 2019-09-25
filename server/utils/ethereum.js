@@ -16,6 +16,7 @@ let initialized = false;
 let wallet;
 
 const pendingTx = {};
+const GAS_SPEED = process.env.GAS_SPEED || 'average';
 
 process.on('exit', () => {
   // eslint-disable-next-line
@@ -81,8 +82,8 @@ export async function getParam(param, opt) {
 export async function getGasPrice() {
   const gasPrice = await request('https://ethgasstation.info/json/ethgasAPI.json');
   const price = JSON.parse(gasPrice);
-  console.log('gas price', price.fast); // eslint-disable-line
-  return price.fast;
+  console.log('gas price', price[GAS_SPEED]); // eslint-disable-line
+  return price[GAS_SPEED];
 }
 
 // SECURITY - this function should never by exposed via any APIs!
@@ -117,7 +118,7 @@ export async function mintRewardTokens() {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast();
   if (lastMint.toNumber() === 0) return null;
-  return sendTx({ method: 'releaseTokens', args: [], overWritePending: true });
+  return sendTx({ method: 'releaseTokens', args: [], cancelPendingTx: true });
 }
 
 export async function allocateRewards(_amount) {
