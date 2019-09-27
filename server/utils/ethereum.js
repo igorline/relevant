@@ -92,16 +92,18 @@ export async function getGasPrice(gasSpeed) {
 export async function sendTx({ method, args, cancelPendingTx }) {
   try {
     const nonce = await wallet.getTransactionCount();
-    const pending = await wallet.getTransactionCount(wallet.address, 'pending');
+    const pending = await wallet.getTransactionCount('pending');
     console.log('current nonce', nonce, 'pending nonce:', pending); // eslint-disable-line
     const speed = pending > nonce && cancelPendingTx ? 'fast' : null;
     const gasPrice = await getGasPrice(speed);
     const optNonce = cancelPendingTx ? { nonce } : {};
+
     const options = {
       gasPrice: gasPrice * 1e8,
       gasLimit: 6e6,
       ...optNonce
     };
+
     const tx = await instance[method](...args, options);
     pendingTx[method] = tx;
     const result = await tx.wait();
