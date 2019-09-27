@@ -294,6 +294,7 @@ exports[`Snapshot other users Profile 1`] = `
           user={
             Object {
               "_id": "a00000000000000000000000",
+              "airdropTokens": 111,
               "balance": 111,
               "bio": "hi i'm alice!",
               "email": "alice@alice.com",
@@ -788,6 +789,7 @@ exports[`Snapshot own Profile 1`] = `
           user={
             Object {
               "_id": "a00000000000000000000000",
+              "airdropTokens": 111,
               "balance": 111,
               "bio": "hi i'm alice!",
               "email": "alice@alice.com",
