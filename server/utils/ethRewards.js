@@ -11,6 +11,7 @@ import { SHARE_DECAY, MINIMUM_RANK, TOKEN_DECIMALS } from '../config/globalConst
 import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
 import computePageRank from './pagerankCompute';
+import { runAudit } from './tokenAudit';
 
 const queue = require('queue');
 
@@ -92,6 +93,7 @@ exports.rewards = async () => {
     );
 
     computingRewards = false;
+    await runAudit();
     return { payoutData, totalDistributedRewards };
   } catch (err) {
     console.log('rewards error', err);
@@ -222,13 +224,20 @@ async function distributeUserRewards(posts, _community) {
   let distributedRewards = 0;
 
   const updatedUsers = posts.map(async post => {
-    const votes = await Invest.find({ post: post.post });
+    const votes = await Invest.find({ post: post.post, communityId: post.communityId });
 
     // compute total vote shares
-    let totalShares = 0;
-    votes.forEach(vote => {
-      totalShares += vote.shares;
-    });
+    const totalShares = votes.reduce((a, v) => a + v.shares, 0);
+
+    if (totalShares !== post.shares) {
+      console.log('post:', post.post);
+      console.log(
+        'ERROR: shares mismatch, investShares:',
+        totalShares,
+        'postShares:',
+        post.shares
+      );
+    }
 
     if (totalShares === 0) return null;
 

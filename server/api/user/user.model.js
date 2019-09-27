@@ -415,7 +415,7 @@ UserSchema.methods.updateMeta = async function updateMeta() {
 UserSchema.methods.addReward = async function addReward({ type, user, extraRewards }) {
   try {
     const amount = getRewardForType(type) + (extraRewards || 0);
-    const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
+    const airdropTokens = Math.min(amount, MAX_AIRDROP - this.airdropTokens);
 
     // TODO - update this and tie it to smart contract
     await this.model('Treasury')
