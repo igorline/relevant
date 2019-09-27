@@ -417,6 +417,8 @@ UserSchema.methods.addReward = async function addReward({ type, user, extraRewar
     const amount = getRewardForType(type) + (extraRewards || 0);
     const airdropTokens = Math.min(amount, MAX_AIRDROP - this.airdropTokens);
 
+    if (airdropTokens <= 0) return this;
+
     // TODO - update this and tie it to smart contract
     await this.model('Treasury')
       .findOneAndUpdate(
