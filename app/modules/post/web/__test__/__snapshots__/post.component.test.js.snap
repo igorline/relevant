@@ -33,6 +33,7 @@ exports[`Snapshot Post Web 1`] = `
         "domain": "link.domain1",
         "embeddedUser": Object {
           "_id": "b00000000000000000000000",
+          "airdropTokens": 222,
           "balance": 222,
           "bio": "sup bro!",
           "email": "bob@bob.com",
@@ -85,6 +86,7 @@ exports[`Snapshot Post Web 1`] = `
         "domain": "link.domain1",
         "embeddedUser": Object {
           "_id": "b00000000000000000000000",
+          "airdropTokens": 222,
           "balance": 222,
           "bio": "sup bro!",
           "email": "bob@bob.com",

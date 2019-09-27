@@ -5,7 +5,7 @@ Object {
   "author": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
-    "airdropTokens": 0,
+    "airdropTokens": 222,
     "balance": 222,
     "bio": "sup bro!",
     "blocked": Array [],
@@ -173,7 +173,7 @@ Object {
   "author": Object {
     "__v": 0,
     "_id": "[SANITIZED]",
-    "airdropTokens": 0,
+    "airdropTokens": 222,
     "balance": 222,
     "bio": "sup bro!",
     "blocked": Array [],
