@@ -167,7 +167,7 @@ export const StaticButton = styled(View)`
   ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
 `;
 
-const ButtonText = styled.Text`
+export const ButtonText = styled.Text`
   ${layout.buttonFont}
 `;
 
@@ -201,6 +201,22 @@ export function HoverButton({ children, onPress, ...rest }) {
 }
 
 export const Button = HoverButton;
+
+ButtonWithIcon.propTypes = {
+  text: PropTypes.text,
+  image: PropTypes.node
+};
+
+export function ButtonWithIcon({ text, image, ...rest }) {
+  return (
+    <Button {...rest}>
+      <View fdirection="row" align="center">
+        {image}
+        <ButtonText>{text}</ButtonText>
+      </View>
+    </Button>
+  );
+}
 
 export const ViewButton = styled(View)`
   ${layout.button}
