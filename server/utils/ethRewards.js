@@ -305,7 +305,7 @@ async function distributeUserRewards(posts, _community) {
   console.log('total distributed rewards for', community, distributedRewards);
   console.log('\x1b[32m', payouts);
   console.log('\x1b[0m');
-  return { payouts, distributedRewards };
+  return { payouts, distributedRewards: distributedRewards.toPrecision(12) };
 }
 
 async function sendNotification(props) {
