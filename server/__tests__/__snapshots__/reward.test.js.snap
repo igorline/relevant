@@ -10,7 +10,7 @@ Object {
   "community": "relevant",
   "communityId": "c00000000000000000000001",
   "createdAt": "[SANITIZED]",
-  "earned": 2.3e-16,
+  "earned": 200.00000000000003,
   "endBalance": 0,
   "estimatedPostPayout": 0,
   "legacyAirdrop": 0,
@@ -44,7 +44,7 @@ Object {
   "createdAt": "[SANITIZED]",
   "earned": 0,
   "endBalance": 0,
-  "estimatedPostPayout": 2.692307692307693e-16,
+  "estimatedPostPayout": 300.00000000000006,
   "legacyAirdrop": 0,
   "legacyTokens": 0,
   "payoutTime": "[SANITIZED]",
@@ -70,7 +70,7 @@ Object {
   "_id": "[SANITIZED]",
   "byUsers": Array [],
   "byUsersHandle": Array [],
-  "coin": 2.3e-16,
+  "coin": 200.00000000000003,
   "coinType": "eth",
   "createdAt": "[SANITIZED]",
   "forUser": "a00000000000000000000000",
@@ -79,7 +79,7 @@ Object {
   "post": "000000000000000000000003",
   "read": false,
   "source": "post",
-  "text": "You earned 0T coins from upvoting this post",
+  "text": "You earned 200 coins from upvoting this post",
   "type": "reward",
   "updatedAt": "[SANITIZED]",
 }
@@ -90,14 +90,20 @@ Object {
   "payoutData": Object {
     "crypto": Object {
       "community": "crypto",
-      "distributedRewards": 269,
+      "distributedRewards": "6.00000000000e+20",
       "payouts": Object {
-        "b00000000000000000000000": 269,
+        "b00000000000000000000000": 600000000000000100000,
         "c00000000000000000000000": 0,
       },
       "postPayouts": Array [
         Object {
-          "payout": 269.2307692307693,
+          "payout": 300000000000000070000,
+          "payoutShare": 0.05,
+          "rank": 100,
+          "title": "000000000000000000000003",
+        },
+        Object {
+          "payout": 300000000000000070000,
           "payoutShare": 0.05,
           "rank": 100,
           "title": "000000000000000000000005",
@@ -112,21 +118,21 @@ Object {
     },
     "relevant": Object {
       "community": "relevant",
-      "distributedRewards": 459,
+      "distributedRewards": "4.00000000000e+20",
       "payouts": Object {
-        "a00000000000000000000000": 230,
-        "b00000000000000000000000": 145,
-        "c00000000000000000000000": 84,
+        "a00000000000000000000000": 200000000000000030000,
+        "b00000000000000000000000": 126491106406735200000,
+        "c00000000000000000000000": 73508893593264850000,
       },
       "postPayouts": Array [
         Object {
-          "payout": 230.76923076923077,
+          "payout": 200000000000000030000,
           "payoutShare": 0.05,
           "rank": 66.91,
           "title": "000000000000000000000003",
         },
         Object {
-          "payout": 230.76923076923077,
+          "payout": 200000000000000030000,
           "payoutShare": 0.05,
           "rank": 100,
           "title": "000000000000000000000004",
@@ -134,7 +140,7 @@ Object {
       ],
     },
   },
-  "totalDistributedRewards": 728,
+  "totalDistributedRewards": "04.00000000000e+206.00000000000e+20",
 }
 `;
 

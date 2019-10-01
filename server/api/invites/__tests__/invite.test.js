@@ -15,7 +15,8 @@ import {
   EMAIL_REWARD,
   REFERRAL_REWARD,
   newUserCoins,
-  PUBLIC_LINK_REWARD
+  PUBLIC_LINK_REWARD,
+  MAX_AIRDROP
 } from 'server/config/globalConstants';
 import { user2, user3 } from 'app/mockdata/user';
 import computePageRank from 'server/utils/pagerankCompute';
@@ -31,10 +32,10 @@ describe('CreatePost', () => {
     relevant,
     communityMember,
     res,
-    req,
     communityId,
     invite,
-    inviteWithEmail
+    inviteWithEmail,
+    aliceInitialAirdrop
   } = {};
   const next = console.log; // eslint-disable-line
   let newUser;
@@ -42,13 +43,10 @@ describe('CreatePost', () => {
   beforeAll(async () => {
     ({ relevant } = getCommunities());
     ({ alice, bob } = getUsers());
+    aliceInitialAirdrop = alice.airdropTokens;
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
-    req = {
-      user: alice,
-      body: referral,
-      communityMember
-    };
+
     // need to run this to give inital rank to admin
     await computePageRank({ community: relevant.slug, communityId });
   });
@@ -59,6 +57,11 @@ describe('CreatePost', () => {
 
   describe('api/invite/create', () => {
     test('create invite', async () => {
+      const req = {
+        user: alice,
+        body: referral,
+        communityMember
+      };
       await create(req, res, next);
       let apiRes = toObject(res.json.mock.calls[0][0]);
       invite = apiRes.invite[0];
@@ -68,7 +71,11 @@ describe('CreatePost', () => {
     });
 
     test('create invite with email', async () => {
-      req = { ...req, body: referralWithEmail };
+      const req = {
+        user: alice,
+        communityMember,
+        body: referralWithEmail
+      };
       await create(req, res, next);
       const apiRes = toObject(res.json.mock.calls[0][0]);
       inviteWithEmail = apiRes.invite[0];
@@ -84,7 +91,7 @@ describe('CreatePost', () => {
     });
 
     test('should create new user with referral', async () => {
-      req = { body: { user: user2, invitecode: invite.code } };
+      const req = { body: { user: user2, invitecode: invite.code } };
       await createUser(req, res, next);
       const apiRes = toObject(res.json.mock.calls[0][0]);
       apiRes.user.relevance.pagerank =
@@ -97,7 +104,7 @@ describe('CreatePost', () => {
     });
 
     test('should create new user with email referral', async () => {
-      req = { body: { user: user3, invitecode: inviteWithEmail.code } };
+      const req = { body: { user: user3, invitecode: inviteWithEmail.code } };
       await createUser(req, res, next);
       const apiRes = toObject(res.json.mock.calls[0][0]);
       expect(apiRes.user.balance).toBe(REFERRAL_REWARD + newUserCoins(apiRes.user));
@@ -110,7 +117,7 @@ describe('CreatePost', () => {
         { redeemed: false },
         { upsert: false }
       );
-      req = {};
+      const req = {};
       const twitterAuth = 'xxxx';
       await handleTwitterAuth({
         req,
@@ -137,7 +144,7 @@ describe('CreatePost', () => {
       expect(invitee.balance).toBe(REFERRAL_REWARD);
       expect(inviter.balance).toBe(alice.balance + 3 * REFERRAL_REWARD);
 
-      expect(inviter.airdropTokens).toBe(3 * REFERRAL_REWARD);
+      expect(inviter.airdropTokens).toBe(3 * REFERRAL_REWARD + aliceInitialAirdrop);
       expect(invitee.airdropTokens).toBe(REFERRAL_REWARD);
 
       expect(inviter.referralTokens).toBe(3 * REFERRAL_REWARD);
@@ -161,7 +168,9 @@ describe('CreatePost', () => {
 
   describe('public link', () => {
     test('should be able to get reward for public link', async () => {
-      req = { body: { user: { ...user2, name: 'bobby' }, invitecode: alice.handle } };
+      const req = {
+        body: { user: { ...user2, name: 'bobby' }, invitecode: alice.handle }
+      };
       await createUser(req, res, next);
       const invitee = toObject(res.json.mock.calls[0][0].user);
 
@@ -187,7 +196,7 @@ describe('CreatePost', () => {
   describe('admin invite', () => {
     test('create admin invite', async () => {
       alice.role = 'admin';
-      req = {
+      const req = {
         user: alice,
         body: adminReferral,
         communityMember
@@ -200,7 +209,7 @@ describe('CreatePost', () => {
     });
 
     test('should be able to redeem admin invite', async () => {
-      req = {
+      const req = {
         user: bob,
         body: {
           invitecode: invite.code
@@ -215,6 +224,27 @@ describe('CreatePost', () => {
         user: bob._id
       });
       expect(bobMember.role).toBe('admin');
+    });
+  });
+
+  describe('max airdrop', () => {
+    test('should not be able to get more than MAX_AIRDOP', async () => {
+      const req = {
+        user: alice,
+        body: referral,
+        communityMember
+      };
+      await create(req, res, next);
+      const apiRes = toObject(res.json.mock.calls[0][0]);
+      const testInvite = apiRes.invite[0];
+      alice.airdropTokens = MAX_AIRDROP;
+      await alice.save();
+      const req2 = {
+        body: { user: { ...user2, name: 'testing' }, invitecode: testInvite.code }
+      };
+      await createUser(req2, res, next);
+      const updatedAlice = await User.findOne({ _id: alice._id });
+      expect(updatedAlice.airdropTokens).toBe(MAX_AIRDROP);
     });
   });
 });

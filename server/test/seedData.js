@@ -47,6 +47,8 @@ async function setupPosts() {
   let link1 = new Post(linkPost1);
   await link1.save();
   link1 = await link1.addPostData();
+  // cross-post link1 to crypto community
+  await link1.addPostData({ ...linkPost1, ...linkPost1.altCommunity });
 
   let link2 = new Post(linkPost2);
   await link2.save();

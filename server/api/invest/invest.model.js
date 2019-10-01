@@ -90,21 +90,23 @@ InvestSchema.methods.placeBet = async function placeBet({
   canBet({ user, post, stakedTokens });
 
   const shares = computeShares({ post, stakedTokens });
+  const postData = await this.model('PostData').findOne({ post: post._id, communityId });
 
   // eslint-disable-next-line
   console.log(user.handle, 'got', shares, 'for', stakedTokens, 'staked tokens');
 
   user.lockedTokens += stakedTokens;
 
-  post.data.shares += shares;
-  post.data.balance += stakedTokens;
-  post.data.totalShares += stakedTokens;
+  postData.shares += shares;
+  postData.balance += stakedTokens;
+  postData.totalShares += stakedTokens;
 
   const communityInstance = await this.model('Community').findOne({ _id: communityId });
-  post.data.expectedPayout = computePostPayout(post.data, communityInstance);
+  postData.expectedPayout = computePostPayout(post.data, communityInstance);
 
   await user.save();
-  await post.data.save();
+  await postData.save();
+  post.data = postData;
 
   vote.shares += shares;
   vote.stakedTokens += stakedTokens;

@@ -47,12 +47,13 @@ export const post2 = {
   parentComment: '000000000000000000000001',
   type: 'comment',
   community: 'relevant',
+  communityId: 'c00000000000000000000001',
   domain: 'link.domain2'
 };
 
 export const linkPost1 = {
   _id: '000000000000000000000003',
-  title: 'An Awesome Link #1',
+  title: 'An Awesome Link #1 posted in both relevant and crypto',
   tags: ['tag31', 'tag32'],
   postDate: new Date(),
   payoutTime: new Date(),
@@ -61,6 +62,10 @@ export const linkPost1 = {
   type: 'link',
   community: 'relevant',
   communityId: 'c00000000000000000000001',
+  altCommunity: {
+    community: 'crypto',
+    communityId: 'c00000000000000000000002'
+  },
   hidden: false,
   domain: 'link.domain3'
 };
@@ -76,13 +81,14 @@ export const linkPost2 = {
   type: 'link',
   community: 'relevant',
   communityId: 'c00000000000000000000001',
+
   hidden: false,
   domain: 'link.domain4'
 };
 
 export const linkPost3 = {
   _id: '000000000000000000000005',
-  title: 'An Awesome Link #3',
+  title: 'An Awesome Link #3 posted in crypto',
   tags: ['tag51', 'tag52'],
   postDate: new Date(),
   payoutTime: new Date(),

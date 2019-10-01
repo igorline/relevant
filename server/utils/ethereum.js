@@ -15,6 +15,14 @@ let web3;
 let initialized = false;
 let wallet;
 
+const pendingTx = {};
+const GAS_SPEED = process.env.GAS_SPEED || 'average';
+
+process.on('beforeExit', () => {
+  // eslint-disable-next-line
+  console.log('Un-executed Pending Transactions: ', pendingTx);
+});
+
 export const isInitialized = () => initialized;
 export const getWeb3 = () => web3;
 
@@ -72,26 +80,38 @@ export async function getParam(param, opt) {
   return value;
 }
 
-export async function getGasPrice() {
+export async function getGasPrice(gasSpeed) {
+  const speed = gasSpeed || GAS_SPEED;
   const gasPrice = await request('https://ethgasstation.info/json/ethgasAPI.json');
   const price = JSON.parse(gasPrice);
-  console.log('gas price', price.average); // eslint-disable-line
-  return price.average;
+  console.log(price); // eslint-disable-line
+  console.log('gas price', price[speed]); // eslint-disable-line
+  return price[speed];
 }
 
 // SECURITY - this function should never by exposed via any APIs!
-export async function sendTx({ method, args }) {
+export async function sendTx({ method, args, cancelPendingTx }) {
   try {
-    const gasPrice = await getGasPrice();
+    const nonce = await wallet.getTransactionCount();
+    const pending = await wallet.getTransactionCount('pending');
+    console.log('current nonce', nonce, 'pending nonce:', pending); // eslint-disable-line
+    const speed = pending > nonce && cancelPendingTx ? 'fast' : null;
+    const gasPrice = await getGasPrice(speed);
+    const optNonce = cancelPendingTx ? { nonce } : {};
+
     const options = {
       gasPrice: gasPrice * 1e8,
-      gasLimit: 6e6
+      gasLimit: 6e6,
+      ...optNonce
     };
+
     const tx = await instance[method](...args, options);
-    const r = await tx.wait();
-    console.log('status:', r.status); // eslint-disable-line
-    console.log(`gas used by ${method}: ${r.gasUsed}`); // eslint-disable-line
-    return r;
+    pendingTx[method] = tx;
+    const result = await tx.wait();
+    delete pendingTx[method];
+    console.log('status:', result.status); // eslint-disable-line
+    console.log(`gas used by ${method}: ${result.gasUsed}`); // eslint-disable-line
+    return result;
   } catch (err) {
     throw err;
   }
@@ -105,7 +125,7 @@ export async function mintRewardTokens() {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast();
   if (lastMint.toNumber() === 0) return null;
-  return sendTx({ method: 'releaseTokens', args: [] });
+  return sendTx({ method: 'releaseTokens', args: [], cancelPendingTx: true });
 }
 
 export async function allocateRewards(_amount) {
