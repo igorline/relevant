@@ -36,7 +36,7 @@ export const crypto = {
   // postCount: 10,
   // topPostShares: 3000,
   // currentShares: 600,
-  rewardFund: 10000,
+  rewardFund: 10000 * 1e18,
   // currentPosts: 0,
   topics: [
     'governance',

@@ -154,7 +154,8 @@ const UserSchema = new Schema(
     legacyAirdrop: { type: Number, default: 0 },
 
     version: String,
-    community: String
+    community: String,
+    banned: Boolean
   },
   {
     toJSON: { virtuals: true },
@@ -414,7 +415,9 @@ UserSchema.methods.updateMeta = async function updateMeta() {
 UserSchema.methods.addReward = async function addReward({ type, user, extraRewards }) {
   try {
     const amount = getRewardForType(type) + (extraRewards || 0);
-    const airdropTokens = Math.min(amount, MAX_AIRDROP - amount);
+    const airdropTokens = Math.min(amount, MAX_AIRDROP - this.airdropTokens);
+
+    if (airdropTokens <= 0) return this;
 
     // TODO - update this and tie it to smart contract
     await this.model('Treasury')

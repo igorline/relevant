@@ -367,23 +367,23 @@ async function updatePostData(community) {
     type: { $in: ['post', 'repost'] },
     community
   })
-  .populate({
-    path: 'data',
-    match: { community },
-    select: 'isInFeed type repost relevance pagerank'
-  })
-  .populate({
-    path: 'parentPost',
-    populate: [
-      {
-        path: 'data',
-        match: { community }
-      },
-      {
-        path: 'metaPost'
-      }
-    ]
-  });
+    .populate({
+      path: 'data',
+      match: { community },
+      select: 'isInFeed type repost relevance pagerank'
+    })
+    .populate({
+      path: 'parentPost',
+      populate: [
+        {
+          path: 'data',
+          match: { community }
+        },
+        {
+          path: 'metaPost'
+        }
+      ]
+    });
   console.log('notHidden', notHidden.length);
 
   notHidden.forEach((p, i) => {
@@ -623,9 +623,9 @@ async function restoreRewards() {
     status: 'paidout',
     createdAt: { $gt: launchDate }
   })
-  .populate('user')
-  .populate('post')
-  .sort('createdAt');
+    .populate('user')
+    .populate('post')
+    .sort('createdAt');
   rewards.forEach(async r => {
     // r.user.balance += r.earned;
     // await r.user.save();

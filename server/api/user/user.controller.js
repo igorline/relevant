@@ -18,6 +18,8 @@ import * as ethUtils from '../../utils/ethereum';
 import { logCashOut } from '../../utils/cashOut';
 
 // User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
+// User.findOneAndUpdate({ handle: 'jennifar' }, { banned: true }).then(console.log);
+// User.findOne({ handle: 'jennifar' }).then(console.log);
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
 // .then(u => u);
