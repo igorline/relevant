@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { mixins, layout, fonts, colors, sizing } from 'app/styles';
-import Textarea from 'react-textarea-autosize';
+import TextareaAutosize from 'react-textarea-autosize';
+import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete';
 
 export const StyledNavLink = styled(NavLink)`
   ${fonts.header};
@@ -165,7 +166,22 @@ export const Input = styled.input`
   }
 `;
 
-export const StyledTextarea = styled(Textarea)`
+export const StyledTextareaAutocomplete = styled(ReactTextareaAutocomplete)`
+  ${fonts.bodyStyle}
+  ${mixins.border}
+  ${mixins.flex}
+  ${layout.universalBorder()}
+  padding: ${sizing(2)} ${sizing(2)};
+  ${mixins.padding}
+  ${mixins.margin}
+  min-width: 0;
+  &: focus {
+    min-height: ${sizing(8)};
+    outline: 1px solid ${colors.blue};
+  }
+`;
+
+export const StyledTextarea = styled(TextareaAutosize)`
   ${fonts.bodyStyle}
   ${mixins.border}
   ${mixins.flex}
