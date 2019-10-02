@@ -194,10 +194,8 @@ function CommentForm({
         >
           <StyledTextareaAutocomplete
             containerStyle={{
-              display: 'flex',
-              flex: 1,
-              flexDirection: 'column',
-              height: !focused ? '50px' : 'auto'
+              display: 'block',
+              width: '100%'
             }}
             listStyle={{
               display: 'flex',
@@ -205,6 +203,7 @@ function CommentForm({
               listStyleType: 'none',
               padding: 0
             }}
+            style={{ width: '100%' }}
             innerRef={c => (textArea.current = c)}
             rows={2}
             placeholder="Enter comment..."
