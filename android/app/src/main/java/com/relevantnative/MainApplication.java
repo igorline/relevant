@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.meedan.ShareMenuPackage;
 import com.horcrux.svg.SvgPackage;
 import io.bankify.emojicompat.RNEmojiCompatTextPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -11,7 +12,6 @@ import com.goldenowl.twittersignin.TwitterSigninPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.alinz.rnsk.RNSKPackage;
-import com.meedan.ShareMenuPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
 import cl.json.RNSharePackage;
 import com.github.yamill.orientation.OrientationPackage;
@@ -27,6 +27,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.RNFetchBlob.RNFetchBlobPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new ShareMenuPackage(),
             new SvgPackage(),
             new RNEmojiCompatTextPackage(MainApplication.this),
             new RNGestureHandlerPackage(),
@@ -56,7 +58,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactVideoPackage(),
             new VectorIconsPackage(),
             new RNSKPackage(),
-            new ShareMenuPackage(),
+            // new ShareMenuPackage(),
             new SharePackage(),
             new RNSharePackage(),
             new OrientationPackage(),
@@ -66,7 +68,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativeContacts(),
             new RNBottomSheetPackage(),
             new RNFetchBlobPackage(),
-            new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG) // Add/change this line.
+            new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG), // Add/change this line.
+            new ReactNativePushNotificationPackage()
         );
     }
 

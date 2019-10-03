@@ -83,7 +83,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         return browserAlerts.alert(err.message);
       }
     },
-    [dispatch, post, auth, vote, processingVote, setProcessingVote]
+    [auth.isAuthenticated, auth.user, processingVote, dispatch, post, horizontal]
   );
 
   if (!post || post === 'notFound') return null;
@@ -181,12 +181,12 @@ function RankEl({ horizontal, postRank, color, post }) {
           style={{ opacity: 0.5, transform: [{ translateY: 0.5 }] }}
           resizeMode={'contain'}
           resizeMethod={'resize'}
-          mr={0.15}
-          // bg={'orange'}
+          mr={0.2}
           source={require('app/public/img/r.png')}
         />
         <SmallText
-          // h={1.9}
+          // style={{ textAlignVertical: 'bottom', includeFontPadding: false }}
+          h={1.75}
           // bg={'pink'}
           // inline={1}
           c={color || colors.secondaryText}

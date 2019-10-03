@@ -1,4 +1,6 @@
 rootProject.name = 'relevantNative'
+include ':react-native-share-menu'
+project(':react-native-share-menu').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-share-menu/android')
 include ':react-native-svg'
 project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 include ':react-native-emoji-compat-text'
