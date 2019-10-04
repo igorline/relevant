@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button, View, StyledTextareaAutocomplete, Form } from 'modules/styled/web';
+import { Button, View, StyledTextareaAutocomplete } from 'modules/styled/web';
 import { alert, text } from 'app/utils';
 import { colors, sizing } from 'app/styles';
 import UAvatar from 'modules/user/UAvatar.component';
@@ -10,26 +10,8 @@ import { Spacer } from 'modules/styled/uni';
 import { withRouter } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import { searchUser } from 'modules/user/user.actions';
-import Avatar from 'modules/user/avatarbox.component';
-
-const UserSelect = styled(View)`
-  cursor: pointer;
-  &:hover {
-    background: ${colors.lightGrey};
-  }
-`;
-
-Item.propTypes = {
-  entity: PropTypes.object
-};
-
-function Item({ entity: { user } }) {
-  return (
-    <UserSelect p={'1 2 1 1'}>
-      <Avatar user={user} noLink />
-    </UserSelect>
-  );
-}
+import AvatarBox from 'modules/user/avatarbox.component';
+import { createComment, updateComment } from 'modules/comment/comment.actions';
 
 const AvatarContainer = styled(View)`
   position: absolute;
@@ -38,18 +20,13 @@ const AvatarContainer = styled(View)`
   z-index: 10;
 `;
 
-CommentForm.propTypes = {
+CommentFormComponent.propTypes = {
   edit: PropTypes.bool,
   comment: PropTypes.object,
-  auth: PropTypes.object,
-  actions: PropTypes.object,
   cancel: PropTypes.func,
-  updatePosition: PropTypes.func,
-  text: PropTypes.string,
-  isReply: PropTypes.bool,
+  buttonText: PropTypes.string,
   parentPost: PropTypes.object,
   parentComment: PropTypes.object,
-  className: PropTypes.string,
   nestingLevel: PropTypes.number,
   additionalNesting: PropTypes.number,
   autoFocus: PropTypes.bool,
@@ -57,33 +34,30 @@ CommentForm.propTypes = {
   screenSize: PropTypes.number
 };
 
-function CommentForm({
+export function CommentFormComponent({
   comment,
   edit,
   cancel,
-  auth,
-  isReply,
-  className,
   nestingLevel,
   additionalNesting,
   autoFocus,
-  screenSize,
   parentComment,
   parentPost,
   history,
-  actions,
-  text: buttonText,
-  ...rest
+  buttonText,
+  ...styleProps
 }) {
+  const auth = useSelector(state => state.auth);
+  const screenSize = useSelector(state => state.navigation.screenSize);
+
   const [focused, setFocused] = useState(false);
   const dispatch = useDispatch();
 
   const initalText = edit ? comment.body : '';
   const [commentText, setCommentText] = useState(initalText);
-  // const search = useSelector(state => state.user.search);
 
   const textArea = useRef();
-  if (edit && textArea.current) textArea.current.focus();
+  const rta = useRef();
 
   const handleChange = e => setCommentText(e.target.value);
 
@@ -93,7 +67,7 @@ function CommentForm({
   //  }
   // }
 
-  async function createComment() {
+  async function _createComment() {
     if (!auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -105,45 +79,42 @@ function CommentForm({
 
     const commentObj = {
       parentPost: parentPost._id,
-      parentComment: isReply && parentComment ? parentComment._id : null,
+      parentComment: parentComment ? parentComment._id : null,
       linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: commentText.trim(),
       tags,
       mentions,
-      user: auth.user._id,
       metaPost: parentPost.metaPost
     };
-    setCommentText('');
 
-    return actions.createComment(commentObj).then(newComment => {
-      if (!newComment) {
-        setCommentText('newComment');
-        if (textArea.current) textArea.current.focus();
-      } else {
-        history.push(
-          `/${newComment.community}/post/${newComment.parentPost}/${newComment._id}`
-        );
-      }
-    });
+    setCommentText('');
+    const newComment = await dispatch(createComment(commentObj));
+    if (!newComment) {
+      setCommentText(commentText);
+      if (textArea.current) textArea.current.focus();
+      return null;
+    }
+    _cancel();
+    return history.push(
+      `/${newComment.community}/post/${newComment.parentPost}/${newComment._id}`
+    );
   }
 
-  async function updateComment() {
+  async function _updateComment() {
     if (comment.body === commentText) {
-      return cancel();
+      return _cancel();
     }
     const { mentions } = getMentionsAndTags();
     const originalText = comment.body;
     comment.body = commentText;
     comment.mentions = mentions;
 
-    return actions.updateComment(comment).then(results => {
-      if (results) {
-        cancel();
-      } else {
-        comment.body = originalText;
-        alert.browserAlerts.alert('Error updating comment');
-      }
-    });
+    const newComment = await dispatch(updateComment(comment));
+    if (newComment) return _cancel();
+
+    comment.body = originalText;
+    alert.browserAlerts.alert('Error updating comment');
+    return null;
   }
 
   function getMentionsAndTags() {
@@ -153,25 +124,27 @@ function CommentForm({
     return { mentions, tags };
   }
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (edit) return updateComment();
-    return createComment();
+  function _cancel() {
+    setCommentText('');
+    cancel && cancel();
+  }
+
+  const handleSubmit = () => {
+    // e.preventDefault();
+    if (edit) return _updateComment();
+    return _createComment();
   };
 
   if (!auth.isAuthenticated) return null;
-  let backgroundColor = 'transparent';
-  let paddingTop = 0;
-  if (isReply && focused) {
-    paddingTop = 4;
-    backgroundColor = colors.secondaryBG;
-  }
+
+  const backgroundColor = !edit && focused ? colors.secondaryBG : 'transparent';
+  const paddingTop = !edit && focused ? 4 : 0;
 
   return (
     <Spacer
       fdirection="row"
       grow={1}
-      {...rest}
+      {...styleProps}
       pt={paddingTop}
       bg={backgroundColor}
       nestingLevel={screenSize ? 0 : nestingLevel}
@@ -181,11 +154,11 @@ function CommentForm({
       <View fdirection="column" flex={1} style={{ position: 'relative' }}>
         {focused ? null : (
           <AvatarContainer p={2}>
-            <UAvatar user={auth.user} size={3} />
+            <UAvatar user={auth.user} size={3} noLink />
           </AvatarContainer>
         )}
-        <Form
-          onSubmit={handleSubmit}
+        <View
+          // onSubmit={handleSubmit}
           fdirection="row"
           justify-="space-between"
           align="flex-start"
@@ -194,8 +167,8 @@ function CommentForm({
         >
           <StyledTextareaAutocomplete
             containerStyle={{
-              display: 'block',
-              width: '100%'
+              display: 'flex',
+              flex: 'auto'
             }}
             listStyle={{
               display: 'flex',
@@ -203,8 +176,9 @@ function CommentForm({
               listStyleType: 'none',
               padding: 0
             }}
-            style={{ width: '100%' }}
+            style={{ flex: 'auto' }}
             innerRef={c => (textArea.current = c)}
+            ref={c => (rta.current = c)}
             rows={2}
             placeholder="Enter comment..."
             value={commentText}
@@ -212,9 +186,15 @@ function CommentForm({
             onChange={handleChange}
             m={0}
             flex={1}
-            autoFocus={autoFocus}
+            autoFocus={!!autoFocus}
             pl={focused ? 2 : 6}
-            onFocus={() => setFocused(true)}
+            onFocus={() => {
+              setFocused(true);
+              setTimeout(() => {
+                const p = rta.current.getCaretPosition();
+                if (p === 0) rta.current.setCaretPosition(commentText.length);
+              });
+            }}
             // bug with autocomplete
             // https://github.com/webscopeio/react-textarea-autocomplete/issues/178
             onBlur={e => e.type === 'blur' && setFocused(false)}
@@ -234,17 +214,18 @@ function CommentForm({
               }
             }}
           />
-        </Form>
+        </View>
         {focused || commentText ? (
           <View justify="flex-end" fdirection="row">
             <Button
-              onMouseDown={cancel}
-              onTouchStart={cancel}
+              onMouseDown={_cancel}
+              onTouchStart={_cancel}
               bg="transparent"
               c={colors.secondaryText}
               disabled={!auth.isAuthenticated}
               p={[null, '0 4']}
               minwidth={1}
+              mr={1}
             >
               Cancel
             </Button>
@@ -264,4 +245,23 @@ function CommentForm({
   );
 }
 
-export default withRouter(CommentForm);
+const UserSelect = styled(View)`
+  cursor: pointer;
+  &:hover {
+    background: ${colors.lightGrey};
+  }
+`;
+
+Item.propTypes = {
+  entity: { user: PropTypes.object }
+};
+
+function Item({ entity }) {
+  return (
+    <UserSelect p={'1 2 1 1'}>
+      <AvatarBox user={entity.user} noLink />
+    </UserSelect>
+  );
+}
+
+export default withRouter(CommentFormComponent);

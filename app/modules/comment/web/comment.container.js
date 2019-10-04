@@ -61,13 +61,11 @@ class Comments extends Component {
     return (
       <div>
         <CommentForm
-          {...this.props}
           nestingLevel={0}
           additionalNesting={screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS}
-          text={'Comment'}
+          buttonText={'Comment'}
           parentPost={post}
           p={['0 4 4 4', '4 2 2 2']}
-          isReply
         />
         {children.length !== 0 ? (
           <div>

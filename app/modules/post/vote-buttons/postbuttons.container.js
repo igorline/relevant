@@ -14,7 +14,9 @@ import { vote as voteAction } from '../invest.actions';
 
 let Analytics;
 let ReactGA;
+let Platform;
 if (process.env.WEB !== 'true') {
+  Platform = require('react-native').Platform;
   Analytics = require('react-native-firebase-analytics');
 } else {
   ReactGA = require('react-ga').default;
@@ -185,13 +187,9 @@ function RankEl({ horizontal, postRank, color, post }) {
           source={require('app/public/img/r.png')}
         />
         <SmallText
-          // style={{ textAlignVertical: 'bottom', includeFontPadding: false }}
-          h={1.75}
-          // bg={'pink'}
-          // inline={1}
+          // weird spacing discrepant between android and ios
+          h={Platform && Platform.OS === 'android' ? 1.7 : 2}
           c={color || colors.secondaryText}
-          // fs={1.75}
-          // lh={1.75}
         >
           {postRank || 0}
         </SmallText>

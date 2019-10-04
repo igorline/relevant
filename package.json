@@ -271,7 +271,7 @@
     "react-native-twitter-signin": "git+https://github.com/balasan/react-native-twitter-signin.git",
     "react-test-renderer": "^16.8.6",
     "redux-logger": "^3.0.6",
-    "redux-mock-store": "^1.0.2",
+    "redux-mock-store": "^1.5.3",
     "schedule": "^0.5.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
