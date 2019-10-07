@@ -14,7 +14,9 @@ import { vote as voteAction } from '../invest.actions';
 
 let Analytics;
 let ReactGA;
+let Platform;
 if (process.env.WEB !== 'true') {
+  Platform = require('react-native').Platform;
   Analytics = require('react-native-firebase-analytics');
 } else {
   ReactGA = require('react-ga').default;
@@ -83,7 +85,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         return browserAlerts.alert(err.message);
       }
     },
-    [dispatch, post, auth, vote, processingVote, setProcessingVote]
+    [auth.isAuthenticated, auth.user, processingVote, dispatch, post, horizontal]
   );
 
   if (!post || post === 'notFound') return null;
@@ -181,17 +183,13 @@ function RankEl({ horizontal, postRank, color, post }) {
           style={{ opacity: 0.5, transform: [{ translateY: 0.5 }] }}
           resizeMode={'contain'}
           resizeMethod={'resize'}
-          mr={0.15}
-          // bg={'orange'}
+          mr={0.2}
           source={require('app/public/img/r.png')}
         />
         <SmallText
-          // h={1.9}
-          // bg={'pink'}
-          // inline={1}
+          // weird spacing discrepant between android and ios
+          h={Platform && Platform.OS === 'android' ? 1.7 : 2}
           c={color || colors.secondaryText}
-          // fs={1.75}
-          // lh={1.75}
         >
           {postRank || 0}
         </SmallText>

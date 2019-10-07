@@ -125,7 +125,8 @@ class Comment extends Component {
       inMainFeed,
       history,
       screenSize,
-      additionalNesting
+      additionalNesting,
+      parentPost
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -258,11 +259,11 @@ class Comment extends Component {
                 <View mt={2}>
                   <CommentForm
                     edit
-                    p={[0, 2]}
+                    p={['0 0 4 0', 2]}
+                    parentPost={parentPost}
                     comment={comment}
-                    text={'Update'}
+                    buttonText={'Update'}
                     cancel={this.cancel}
-                    {...this.props}
                     nestingLevel={nestingLevel}
                     additionalNesting={additionalNesting}
                     autoFocus
@@ -282,11 +283,10 @@ class Comment extends Component {
 
         {isActive && !editing && (
           <CommentForm
-            isReply
+            parentPost={parentPost}
             nestingLevel={nestingLevel}
             p={[4, 2]}
-            text={'Comment'}
-            {...this.props}
+            buttonText={'Comment'}
             additionalNesting={
               additionalNesting +
               (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)
