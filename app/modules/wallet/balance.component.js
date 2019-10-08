@@ -79,10 +79,17 @@ export function Balance({ isWeb }) {
         {accountDetail.map(
           detail =>
             (!!detail.value || !detail.alwayShow) && (
-              <SecondaryText mr={2} key={detail.text}>
-                {detail.tip && <Tooltip name={detail.text} data={{ text: detail.tip }} />}
-                {detail.text}: {abbreviateNumber(detail.value)}
-              </SecondaryText>
+              <View>
+                {detail.tip && (
+                  <Tooltip
+                    name={detail.text.replace(' ', '')}
+                    data={{ text: detail.tip }}
+                  />
+                )}
+                <SecondaryText mr={2} key={detail.text}>
+                  {detail.text}: {abbreviateNumber(detail.value)}
+                </SecondaryText>
+              </View>
             )
         )}
       </View>
