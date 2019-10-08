@@ -6,7 +6,7 @@ import loadable from '@loadable/component';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import routes from 'modules/_app/web/routes'; // eslint-disable-line
 import queryString from 'query-string';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';
@@ -235,31 +235,30 @@ class App extends Component {
   }
 
   renderModal() {
-    const { location, history } = this.props; // eslint-disable-line
-    let { globalModal } = this.props;
-    const { hash } = location;
-    let hashModal;
-    if (hash) {
-      hashModal = hash.substring(1);
-    }
+    const {
+      location: { hash },
+      // history,
+      globalModal
+    } = this.props;
+    const name = globalModal || (hash && hash.substring(1));
+
     // if (!hash && globalModal) {
     //   history.push(location.pathname + `#${globalModal}`);
     // }
-    if (hashModal) {
-      globalModal = hashModal;
-    }
-    if (!globalModal) return null;
-    globalModal = modals[globalModal] || globalModal;
+    // if (hashModal) {
+    //   globalModal = hashModal;
+    // }
 
-    if (typeof globalModal === 'string') return null;
-    const { Body, redirect } = globalModal;
-    const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    const modalData = modals[name] || name;
+    if (typeof modalData === 'string') return null;
+
+    const { Body, redirect, bodyProps = {} } = modalData;
     const close = () => {
       this.props.actions.hideModal();
       this.closeModal(redirect);
     };
     return (
-      <Modal {...globalModal} close={close} visible>
+      <Modal {...globalModal} close={close} name={name}>
         <Body {...bodyProps} close={close} />
       </Modal>
     );
@@ -300,7 +299,7 @@ class App extends Component {
           <DownvoteAnimation />
         </div>
         {this.renderModal()}
-        <CreatePostModal visible={globalModal === 'newpost'} />
+        <CreatePostModal name={'newpost'} />
         <ToastContainer />
         <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
           {renderRoutes(this.props.route.routes)}

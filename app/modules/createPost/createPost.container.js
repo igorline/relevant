@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import RichText from 'modules/text/web/richText.component';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import ReactGA from 'react-ga';
 import { colors, sizing } from 'styles';
 

@@ -31,6 +31,7 @@ export function Bet() {
   );
   const earning = earnigns.find(e => e.post === post._id);
   const title = earning ? 'Increase Your Bet' : 'Bet on the Relevance of this Post';
+  const [amount, setAmount] = useState(defaultAmount);
 
   if (!user) return null;
 
@@ -39,7 +40,6 @@ export function Bet() {
   const maxBet = totalBalance - user.lockedTokens;
 
   const defaultAmount = Math.max(maxBet * VOTE_COST_RATIO, 0);
-  const [amount, setAmount] = useState(defaultAmount);
 
   const plusAmount = () =>
     setAmount(a => {
@@ -151,7 +151,7 @@ function PotentialRewards({ post, amount, earning }) {
 
   useEffect(() => {
     dispatch(getPostInvestments(post._id));
-  }, []);
+  }, [dispatch, post._id]);
 
   const existingShares = earning ? earning.shares : 0;
   const existingStake = earning ? earning.stakedTokens : 0;
@@ -160,8 +160,8 @@ function PotentialRewards({ post, amount, earning }) {
   const users = bets > 1 ? 'users' : 'user';
   const invText = investments.length
     ? `${bets} ${users} bet a total of ${toFixed(
-      post.data.totalShares - existingStake
-    )} coins on this post`
+        post.data.totalShares - existingStake
+      )} coins on this post`
     : 'You are the first to bet on this post!';
 
   const shares = computeShares({ post, stakedTokens: amount });

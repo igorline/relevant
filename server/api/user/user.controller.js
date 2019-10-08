@@ -1,12 +1,13 @@
 import crypto from 'crypto-promise';
 import uuid from 'uuid/v4';
 import sigUtil from 'eth-sig-util';
-import merge from 'lodash.merge';
+import merge from 'lodash/merge';
 import url from 'url';
+// eslint-disable-next-line import/named
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import mail from 'server/config/mail';
-import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
+import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import CommunityMember from '../community/community.member.model';
@@ -14,10 +15,11 @@ import Relevance from '../relevance/relevance.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
+import { logCashOut } from '../../utils/cashOut';
 
-// User.find({ handle: 'thisben' }, '+email').then(console.log)
-// User.findOneAndUpdate({ handle: 'thisben' }, { email: 'thisben@tutanota.com' }).exec();
-
+// User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
+// User.findOneAndUpdate({ handle: 'jennifar' }, { banned: true }).then(console.log);
+// User.findOne({ handle: 'jennifar' }).then(console.log);
 // const TwitterWorker = require('../../utils/twitterWorker');
 // User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
 // .then(u => u);
@@ -157,10 +159,10 @@ exports.webOnboard = (req, res, next) => {
     { $set: { [path]: true } },
     { projection: 'webOnboard', new: true }
   )
-  .then(newUser => {
-    res.status(200).json(newUser);
-  })
-  .catch(next);
+    .then(newUser => {
+      res.status(200).json(newUser);
+    })
+    .catch(next);
 };
 
 exports.onboarding = (req, res, next) => {
@@ -171,10 +173,10 @@ exports.onboarding = (req, res, next) => {
     { onboarding: step },
     { projection: 'onboarding', new: true }
   )
-  .then(newUser => {
-    res.status(200).json(newUser);
-  })
-  .catch(next);
+    .then(newUser => {
+      res.status(200).json(newUser);
+    })
+    .catch(next);
 };
 
 /**
@@ -235,12 +237,12 @@ exports.search = (req, res, next) => {
     $and: [{ $or: [{ name }, { handle: name }] }, { handle: { $nin: blocked } }]
   };
   User.find(query, 'handle name image')
-  .sort({ handle: 1 })
-  .limit(parseInt(limit, 10))
-  .then(users => {
-    res.json(200, users);
-  })
-  .catch(next);
+    .sort({ handle: 1 })
+    .limit(parseInt(limit, 10))
+    .then(users => {
+      res.json(200, users);
+    })
+    .catch(next);
 };
 
 /**
@@ -256,11 +258,11 @@ exports.index = (req, res, next) => {
   }
 
   User.find(query, '-salt -hashedPassword')
-  .sort({ rank: -1 })
-  .then(users => {
-    res.status(200).json(users);
-  })
-  .catch(next);
+    .sort({ rank: -1 })
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(next);
 };
 
 exports.checkUser = async (req, res, next) => {
@@ -316,13 +318,13 @@ exports.testData = async (req, res, next) => {
       query,
       'pagerank level community communityId pagerankRaw'
     )
-    .limit(limit)
-    .skip(skip)
-    // .sort(sort)
-    .populate({
-      path: 'user',
-      select: 'handle name votePower image bio'
-    });
+      .limit(limit)
+      .skip(skip)
+      // .sort(sort)
+      .populate({
+        path: 'user',
+        select: 'handle name votePower image bio'
+      });
 
     return res.status(200).json(rel);
   } catch (err) {
@@ -356,13 +358,13 @@ exports.list = async (req, res, next) => {
     }
 
     const rel = await Relevance.find(query)
-    .limit(limit)
-    .skip(skip)
-    .sort(sort)
-    .populate({
-      path: 'user',
-      select: 'handle name votePower image bio'
-    });
+      .limit(limit)
+      .skip(skip)
+      .sort(sort)
+      .populate({
+        path: 'user',
+        select: 'handle name votePower image bio'
+      });
 
     const users = rel.map(r => {
       r = r.toObject();
@@ -472,8 +474,8 @@ exports.show = async function show(req, res, next) {
 
     // topic relevance
     const relevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
-    .sort('-relevance')
-    .limit(5);
+      .sort('-relevance')
+      .limit(5);
     const userObj = user.toObject();
     userObj.topTags = relevance || [];
 
@@ -708,7 +710,7 @@ exports.blocked = async (req, res, next) => {
 exports.updateUserTokenBalance = async (req, res, next) => {
   try {
     const { user } = req;
-    if (!user.ethAddress || !user.ethAddress.legnth) {
+    if (!user.ethAddress || !user.ethAddress.length) {
       throw new Error('missing connected Ethereum address');
     }
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
@@ -775,44 +777,54 @@ exports.ethAddress = async (req, res, next) => {
 
 exports.cashOut = async (req, res, next) => {
   try {
-    const { user } = req;
+    const {
+      user,
+      body: { customAmount }
+    } = req;
     if (!user) throw new Error('missing user');
+    if (!customAmount) throw new Error('Missing amount');
+
     if (!user.ethAddress[0]) throw new Error('No Ethereum address connected');
-    let amount = user.balance;
     const address = user.ethAddress[0];
 
     // if the nonce is the same as last time, resend last signature
     const nonce = await ethUtils.getNonce(address);
+
+    // Prioritize last withdrawal attempt
     if (user.cashOut && user.cashOut.nonce === nonce) {
-      amount = user.cashOut.amount;
-      // return res.status(200).json(user);
+      return res.status(200).json(user);
     }
 
-    if (amount < 100) throw new Error('Balance is too small to withdraw');
-    const allocatedRewards = await ethUtils.getParam('allocatedRewards');
+    // Temp - let global admins cash out more
+    const maxClaim = user.role === 'admin' ? 1000 * 1e6 : CASHOUT_MAX - user.cashedOut;
 
-    // eslint-disable-next-line no-console
-    console.log({ allocatedRewards, amount });
+    const canClaim = Math.min(maxClaim, user.balance - (user.airdroppedTokens || 0));
+    const amount = customAmount;
+
+    if (amount > maxClaim)
+      throw new Error(`You cannot claim more than ${maxClaim} coins at this time.`);
+
+    if (amount > canClaim) throw new Error('You con not claim this many coins.');
+    if (amount <= 0) throw new Error('You do not have enough coins to claim.');
+
+    // if (amount < 100) throw new Error('Balance is too small to withdraw');
+    const allocatedRewards = await ethUtils.getParam('allocatedRewards');
 
     if (allocatedRewards < amount) {
       throw new Error(
         'There are not enough funds allocated in the contract at the moment'
       );
     }
-    /*
-      TODO -- Consider persisting balances/cachOut attempts
-       or migrating to immutable data structures
-    */
 
-    amount = Number.parseFloat(amount).toFixed(0);
-    // make sure we subtract claim amount from balance
+    logCashOut(user, amount, next);
+
     user.balance -= amount;
+    user.cashedOut += amount;
     await user.save();
 
-    const sig = await ethUtils.sign(address, amount);
+    const { sig, amount: bnAmount } = await ethUtils.sign(address, amount);
     user.nonce = nonce;
-    user.cashOut = { sig, amount, nonce };
-    // console.log('user', user);
+    user.cashOut = { sig, amount: bnAmount, nonce };
     await user.save();
     return res.status(200).json(user);
   } catch (err) {

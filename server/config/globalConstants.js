@@ -27,9 +27,12 @@ export const PUBLIC_LINK_REWARD = 5; // amount of tokens you get for public refe
 export const REFERRAL_REWARD = 20; // amount of tokens awarded both the referrer and referee
 export const TWITTER_REWARD = 20; // amount of tokens awarded for connecting twitter
 export const EMAIL_REWARD = 20; // amount of tokens awarded for connecting email
-export const CASHOUT_LIMIT = 100; // amount of tokens one needs to earn to cash out
-export const REDDIT_REWARD = 20;
 
+// TODO: Deprecate CASHOUT_LIMIT
+export const CASHOUT_LIMIT = 0; // amount of tokens one needs to earn to cash out
+export const CASHOUT_MAX = 1000;
+
+export const REDDIT_REWARD = 5;
 export const TOKEN_DECIMALS = 1e18;
 
 export const totalAllowedInvites = pagerank => {

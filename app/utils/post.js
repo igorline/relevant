@@ -1,4 +1,4 @@
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { SLOPE, EXPONENT } from 'server/config/globalConstants';
 
 export const URL_REGEX = new RegExp(

@@ -18,15 +18,14 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   // routes.user = require(userApi);
 } else {
   // Desktop ONLY!!!
-  // the if statment doesn't work anymore - user reat-native field in package.json
-  // prevent react native from loading these modules
+  // use react-native field in package.json
+  // this will prevent react native from loading these modules
   const postApi = '../../server/api/post/post.controller';
   const userApi = '../../server/api/user/user.controller';
   const commentsApi = '../../server/api/comment/comment.controller';
   const feedApi = '../../server/api/communityFeed/communityFeed.controller';
   const communityApi = '../../server/api/community/community.controller';
 
-  // post = require(postApi);
   routes.comment = require(commentsApi) || {}; // eslint-disable-line
   routes.communityFeed = require(feedApi) || {}; // eslint-disable-line
   routes.post = require(postApi) || {}; // eslint-disable-line
@@ -37,9 +36,9 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
 export const queryParams = params => {
   if (!params) return '';
   const paramString = Object.keys(params)
-  .filter(p => params[p])
-  .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-  .join('&');
+    .filter(p => params[p])
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
   if (paramString && paramString.length) return '?' + paramString;
   return '';
 };

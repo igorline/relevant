@@ -160,28 +160,29 @@ export const StaticButton = styled(View)`
   ${mixins.margin}
   ${mixins.background}
   ${mixins.padding}
-  ${mixins.color}
   ${mixins.border}
   ${mixins.borderRadius}
   ${p => (p.hover && !p.active && !p.disabled ? layout.activeButtonShadow : '')}
   ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
 `;
 
-const ButtonText = styled.Text`
+export const ButtonText = styled.Text`
   ${layout.buttonFont}
+  ${mixins.color}
 `;
 
 HoverButton.propTypes = {
   children: PropTypes.node,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  onClick: PropTypes.func
 };
 
-export function HoverButton({ children, onPress, ...rest }) {
+export function HoverButton({ children, onPress, onClick, ...rest }) {
   const [hover, setHover] = useState(0);
   const [active, setActive] = useState(0);
-  const renderString = !children.$$typeof;
+  const renderString = !children || !children.$$typeof;
   return (
-    <Touchable onPress={onPress}>
+    <Touchable onPress={onPress} onClick={onClick}>
       <StaticButton
         hover={hover}
         active={active}
@@ -194,13 +195,29 @@ export function HoverButton({ children, onPress, ...rest }) {
         }}
         {...rest}
       >
-        {renderString ? <ButtonText>{children}</ButtonText> : children}
+        {renderString ? <ButtonText {...rest}>{children}</ButtonText> : children}
       </StaticButton>
     </Touchable>
   );
 }
 
 export const Button = HoverButton;
+
+ButtonWithIcon.propTypes = {
+  text: PropTypes.text,
+  image: PropTypes.node
+};
+
+export function ButtonWithIcon({ text, image, ...rest }) {
+  return (
+    <Button {...rest}>
+      <View fdirection="row" align="center">
+        {image}
+        <ButtonText>{text}</ButtonText>
+      </View>
+    </Button>
+  );
+}
 
 export const ViewButton = styled(View)`
   ${layout.button}
@@ -267,4 +284,8 @@ export const CloseX = styled(Image)`
   ${p => (p.right ? `right: ${size(p.right)};` : null)}
   cursor: pointer;
   z-index: 10;
+`;
+
+export const Warning = styled(SmallText)`
+  color: ${colors.warning};
 `;

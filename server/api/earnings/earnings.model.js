@@ -21,7 +21,16 @@ const EarningsSchema = new Schema(
     status: String,
     type: { type: String, default: 'coins' },
     community: { type: String },
-    communityId: { type: Schema.Types.ObjectId, ref: 'Community' }
+    communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+    cashOutAttempt: { type: Schema.Types.Boolean, default: false },
+    cashOutAmt: { type: Number, default: 0 },
+    prevBalance: { type: Number, default: 0 },
+    endBalance: { type: Number, default: 0 },
+    totalPreviousPaidout: { type: Number, default: 0 },
+    legacyAirdrop: { type: Number, default: 0 },
+    legacyTokens: { type: Number, default: 0 },
+    referralTokens: { type: Number, default: 0 },
+    airdropTokens: { type: Number, default: 0 }
   },
   {
     timestamps: true
@@ -36,7 +45,7 @@ EarningsSchema.index({ user: 1, post: 1 });
 EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(earning) {
   try {
     const updatedEarning = await this.findOneAndUpdate(
-      { user: earning.user, post: earning.post },
+      { user: earning.user, post: earning.post, communityId: earning.communityId },
       { ...earning },
       { new: true, upsert: true }
     );

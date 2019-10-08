@@ -2,7 +2,7 @@ const lightTheme = true;
 // const darkTheme = false;
 
 const gs = n => `hsl(0, 0%, ${n}%)`;
-const gsa = (n, a) => `hsl(0, 0%, ${n}%, ${a})`;
+const gsa = (n, a) => `hsla(0, 0%, ${n}%, ${a})`;
 
 export const blue = lightTheme ? '#0000ff' : '#0088ff';
 export const grey = lightTheme ? gs(50) : gs(50);
@@ -17,6 +17,12 @@ export const modalBackground = lightTheme ? gsa(100, 0.7) : gsa(0, 0.7);
 export const green = '#7ED321';
 export const red = '#D0021B';
 export const gold = '#FFC864';
+
+export const error = 'hsl(0, 66%, 45%)';
+export const errorA = 'hsla(33, 66%, 45%, .05)';
+export const warning = 'hsl(33, 93%,54%)';
+export const warningA = 'hsla(33, 93%, 54%, .05)';
+
 export const twitterBlue = '#00aced';
 
 // mobile post diver

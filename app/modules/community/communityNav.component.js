@@ -10,7 +10,7 @@ import { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import CommunityListItem from 'modules/community/communityListItem.component';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { View, BodyText } from 'modules/styled/uni';
 import { SIDE_NAV_PADDING } from 'styles/layout';
 

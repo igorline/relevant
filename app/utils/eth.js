@@ -8,6 +8,27 @@ let metamask;
 
 const defaultOptions = { rpcUrl: getRpcUrl(), metamask: null };
 
+export function truncateAddress(address) {
+  return address.slice(0, 6) + '...' + address.slice(address.length - 4, address.length);
+}
+
+export function getNetworkName(id) {
+  switch (parseInt(id, 10)) {
+    case 1:
+      return 'Mainnet';
+    case 4:
+      return 'Rinkeby';
+    case 3:
+      return 'Ropsten';
+    case 5:
+      return 'Goerli';
+    case 42:
+      return 'Kovan';
+    default:
+      return 'Unknown';
+  }
+}
+
 export function getMetamask() {
   return metamask || initMetamask();
 }

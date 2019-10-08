@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { userProps } from 'app/utils/propValidation';
 import { numbers } from 'app/utils';
 import { colors } from 'app/styles';

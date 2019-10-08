@@ -11,7 +11,8 @@ const mongooseOpts = {
   reconnectInterval: 1000,
   useCreateIndex: true,
   useNewUrlParser: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useUnifiedTopology: true
 };
 
 process.env.SESSION_SECRET = 'test-secret';

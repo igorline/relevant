@@ -332,6 +332,7 @@ exports[`Snapshot SplashComponent 1`] = `
             <div
               className="css-text-901oao"
               dir="auto"
+              mr={4}
               style={
                 Object {
                   "color": "rgba(255,255,255,1.00)",
@@ -404,6 +405,7 @@ exports[`Snapshot SplashComponent 1`] = `
             <div
               className="css-text-901oao"
               dir="auto"
+              mr={0}
               style={
                 Object {
                   "color": "rgba(255,255,255,1.00)",
