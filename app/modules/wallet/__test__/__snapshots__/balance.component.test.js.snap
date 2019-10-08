@@ -55,10 +55,10 @@ exports[`Snapshot Balance Web 1`] = `
         }
       }
     >
-      These are tokens you earned as rewards. Once you have more than
+      These are coins you earned as rewards. You can transfer up to 
+      1000
        
-      100
-      , you can transfer them to your Ethereum account.
+      coins to your Ethereum account (this limit will be increased as the network grows).
     </div>
   </div>
   <div
@@ -141,7 +141,7 @@ exports[`Snapshot Balance Web 1`] = `
           }
         }
       >
-        0x627306090abaB3A6e1400e9345bC60c78a8BEf57
+        0x6273...Ef57
       </div>
     </div>
     <div
@@ -256,6 +256,11 @@ exports[`Snapshot Balance Web 1`] = `
     className="css-view-1dbjc4n"
     style={
       Object {
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxLines": "multiple",
+        "WebkitBoxOrient": "horizontal",
+        "WebkitFlexDirection": "row",
+        "WebkitFlexWrap": "wrap",
         "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
@@ -269,6 +274,10 @@ exports[`Snapshot Balance Web 1`] = `
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
         "display": "flex",
+        "flexDirection": "row",
+        "flexWrap": "wrap",
+        "msFlexDirection": "row",
+        "msFlexWrap": "wrap",
         "paddingBottom": "1rem",
         "paddingLeft": "1rem",
         "paddingRight": "1rem",
@@ -278,24 +287,273 @@ exports[`Snapshot Balance Web 1`] = `
     }
   >
     <div
-      className="css-text-901oao"
-      dir="auto"
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "color": "rgba(128,128,128,1.00)",
           "display": "flex",
-          "fontFamily": "HelveticaNeue",
-          "fontSize": "0.75rem",
-          "lineHeight": "1.0499999999999998rem",
           "position": "relative",
         }
       }
     >
-      Unclaimed REL: 111
-      
-         Airdrop Coins: 111
-      
-         Staking Power: 100%
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-focusable={true}
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"You can transfer these coins to your Ethereum wallet.\\"}}"
+        dir="auto"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        style={
+          Object {
+            "bottom": "0px",
+            "cursor": "pointer",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+        tabIndex="0"
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Unclaimed Coins
+        : 
+        0
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-focusable={true}
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are the coins located in your connected Ethereum wallet.\\"}}"
+        dir="auto"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        style={
+          Object {
+            "bottom": "0px",
+            "cursor": "pointer",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+        tabIndex="0"
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Metamask Coins
+        : 
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-focusable={true}
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are coins you got for referrals and verifying social accounts.\\\\nYou cannot transfer these coins to Metamask.\\"}}"
+        dir="auto"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        style={
+          Object {
+            "bottom": "0px",
+            "cursor": "pointer",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+        tabIndex="0"
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Airdrop Coins
+        : 
+        111
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-focusable={true}
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are coins that you are currently betting on posts.\\\\nThey get unlocked once the bets expire.\\"}}"
+        dir="auto"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        style={
+          Object {
+            "bottom": "0px",
+            "cursor": "pointer",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+        tabIndex="0"
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Locked Tokens Coins
+        : 
+        0
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-focusable={true}
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"This is the ratio between unlocked and locked coins.\\"}}"
+        dir="auto"
+        onClick={[Function]}
+        onKeyDown={[Function]}
+        style={
+          Object {
+            "bottom": "0px",
+            "cursor": "pointer",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+        tabIndex="0"
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Staking Power
+        : 
+        100%
+      </div>
     </div>
   </div>
   <div
@@ -362,24 +620,19 @@ exports[`Snapshot Balance Web 1`] = `
     </div>
     <div
       className="css-text-901oao"
-      data-focusable={true}
       dir="auto"
-      onClick={[Function]}
-      onKeyDown={[Function]}
       style={
         Object {
-          "cursor": "pointer",
           "display": "flex",
           "position": "relative",
         }
       }
-      tabIndex="0"
     >
       <div
         className="css-view-1dbjc4n"
         data-event-off="click"
         data-for="mainTooltip"
-        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Once you earn more than 100 tokens you\\\\ncan transfer them to your Metamask wallet\\\\n(temporarily disabled)\\"}}"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"You can transfer up to 1000 coins to your your Metamask wallet.\\\\n(You cannot transfer coins you got for refferrals and verifying social accounts.)\\"}}"
         style={
           Object {
             "WebkitFlexBasis": "auto",
