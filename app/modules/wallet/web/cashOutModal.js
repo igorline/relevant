@@ -7,7 +7,8 @@ import {
   BodyText,
   Title,
   SecondaryText,
-  Warning
+  Warning,
+  Text
 } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
 import Web3Warning from 'modules/wallet/web/web3Warning/web3Warning.component';
@@ -24,10 +25,11 @@ import { parseBN } from 'app/utils/eth';
 import { cashOutCall, connectAddress } from 'modules/wallet/wallet.actions';
 import { hideModal } from 'modules/navigation/navigation.actions'; // eslint-disable-line
 import styled from 'styled-components/primitives';
-import { colors } from 'styles';
+import { colors, sizing } from 'styles';
 import { ActivityIndicator } from 'react-native-web';
 import { CASHOUT_MAX } from 'server/config/globalConstants';
 import Tooltip from 'modules/tooltip/tooltip.component';
+import { usePrice } from 'modules/wallet/price.context';
 import { CashoutFooter } from './cashoutFooter';
 
 const TxProgress = styled(View)`
@@ -101,6 +103,9 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
   const [amount, setAmount] = useState(initAmnt);
   const dispatch = useDispatch();
 
+  const usdAmount = usePrice(amount, 'number');
+  const maxUSD = usePrice(maxClaim);
+
   useEffect(() => {
     if (unclaimedSig) setAmount(unclaimedSig.amount / 1e18);
   }, [unclaimedSig]);
@@ -129,20 +134,30 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
         </Warning>
       )}{' '}
       <View fdirection={'row'}>
-        <Input
-          mt={'0'}
-          flex={1}
-          type="number"
-          onChange={({ target: { value } }) =>
-            unclaimedSig ? amount : setAmount(validateAmount(value))
-          }
-          value={amount}
-          h={6}
-          mr={1}
-          fs={amount ? 4 : 2}
-          p={'0 1.5 0 1.5'}
-          fw={'bold'}
-        />
+        <View flex={1} mr={1}>
+          <Input
+            mt={'0'}
+            flex={1}
+            type="number"
+            onChange={({ target: { value } }) =>
+              unclaimedSig ? amount : setAmount(validateAmount(value))
+            }
+            value={amount}
+            h={6}
+            fs={amount ? 4 : 2}
+            p={'0 1.5 0 1.5'}
+            fw={'bold'}
+          />
+          <Text
+            h={6}
+            style={{ right: sizing(1), bottom: sizing(0) }}
+            position="absolute"
+            // fw={'bold'}
+            fs={4}
+          >
+            {'$' + usdAmount}
+          </Text>
+        </View>
         <Button
           disabled={!amount || amount === ''}
           h={7}
@@ -159,7 +174,8 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
               text: 'This is the maximum amount of coins you can claim at this time.'
             }}
           />
-          Maximum claim: {maxClaim} Coins
+          Maximum claim: {maxClaim}
+          {maxUSD} Coins
         </SecondaryText>
         <SecondaryText mt={1}>
           <Tooltip data={{ text: 'Total unclaimed coins.' }} />

@@ -25,6 +25,8 @@ import * as modals from 'modules/ui/modals';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
 import CreatePostModal from 'modules/createPost/web/createPost.modal';
+import { PriceProvider } from 'modules/wallet/price.context';
+import styled from 'styled-components';
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/upvoteAnimation.component')
@@ -32,6 +34,13 @@ const UpvoteAnimation = loadable(() =>
 const DownvoteAnimation = loadable(() =>
   import('modules/animation/downvoteAnimation.component')
 );
+
+const AnimationContainer = styled.div`
+  pointer-events: none;
+  top: '0',
+  left: '0',
+  zIndex: '10000'
+`;
 
 let ReactPixel;
 
@@ -287,23 +296,19 @@ class App extends Component {
         />
         {/*        <CustomTooltip id="tooltip" multiline />
          */}
-        <div
-          pointerEvents={'none'}
-          style={{
-            top: '0',
-            left: '0',
-            zIndex: '10000'
-          }}
-        >
+        <AnimationContainer>
           <UpvoteAnimation />
           <DownvoteAnimation />
-        </div>
-        {this.renderModal()}
-        <CreatePostModal name={'newpost'} />
-        <ToastContainer />
-        <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
-          {renderRoutes(this.props.route.routes)}
-        </div>
+        </AnimationContainer>
+
+        <PriceProvider>
+          {this.renderModal()}
+          <CreatePostModal name={'newpost'} />
+          <ToastContainer />
+          <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+            {renderRoutes(this.props.route.routes)}
+          </div>
+        </PriceProvider>
       </div>
     );
   }

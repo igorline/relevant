@@ -8,6 +8,9 @@ module.exports = {
   entry: {
     app: ['./index.web.js', 'whatwg-fetch', 'webpack-hot-middleware/client?quiet=true']
   },
+  devServer: {
+    clientLogLevel: 'none'
+  },
   output: {
     path: path.join(__dirname, '/app/public/dist/'),
     filename: 'bundle.js',

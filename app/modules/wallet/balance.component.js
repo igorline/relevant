@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { truncateAddress } from 'app/utils/eth';
+import { usePrice } from 'modules/wallet/price.context';
 
 import {
   View,
@@ -32,6 +33,7 @@ export function Balance({ isWeb }) {
   const screenSize = useSelector(state => state.navigation.screenSize);
 
   // const userBalance = useBalance();
+  const maxUSD = usePrice(CASHOUT_MAX);
 
   if (!user) return null;
   const metaMaskTokens = user.tokenBalance;
@@ -59,9 +61,9 @@ export function Balance({ isWeb }) {
         <View>
           <Header>Relevant Tokens</Header>
           <BodyText mt={2}>
-            These are coins you earned as rewards. You can transfer up to {CASHOUT_MAX}{' '}
-            coins to your Ethereum account (this limit will be increased as the network
-            grows).
+            These are coins you earned as rewards. You can transfer up to {CASHOUT_MAX}
+            {maxUSD} coins to your Ethereum account (this limit will be increased as the
+            network grows).
           </BodyText>
         </View>
       ) : null}
@@ -71,7 +73,7 @@ export function Balance({ isWeb }) {
           <SecondaryText mb={0.5}>{truncateAddress(user.ethAddress[0])}</SecondaryText>
         </View>
         <View fdirection="row" align="center" display="flex" mt={2}>
-          <CoinStat fs={4.5} lh={5} size={5} user={user} align="center" />
+          <CoinStat fs={4.5} lh={5} size={5} user={user} align="center" showPrice />
         </View>
       </View>
 
