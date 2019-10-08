@@ -9,6 +9,7 @@ Object {
   "bio": "",
   "blocked": Array [],
   "blockedBy": Array [],
+  "cashedOut": 0,
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",

@@ -12,7 +12,7 @@ export function cashOutCall(customAmount = 0, account) {
         method: 'POST',
         endpoint: 'user',
         path: '/cashOut',
-        params: { customAmount }
+        body: { customAmount }
       });
       dispatch(updateAuthUser(result));
       const { amount: amnt, sig } = result.cashOut;
@@ -23,7 +23,7 @@ export function cashOutCall(customAmount = 0, account) {
       Alert.alert(`Claiming ${parseFloat(formatBalanceRead(amnt))} tokens 😄`, 'success');
       return tx;
     } catch (err) {
-      return Alert.alert(err);
+      return Alert.alert(err.message, 'error');
     }
   };
 }
@@ -56,7 +56,7 @@ export function connectAddress(account) {
         }
       );
     } catch (err) {
-      Alert.alert('Failed signing message: ', err);
+      Alert.alert('Failed signing message: ' + err.messate, 'error');
     }
   };
 }
@@ -73,7 +73,7 @@ export function addEthAddress(msg, sig, acc) {
       dispatch(updateAuthUser(result));
       return true;
     } catch (err) {
-      Alert.alert(err.message);
+      Alert.alert(err.message, 'error');
       return false;
     }
   };

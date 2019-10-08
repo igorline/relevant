@@ -17,6 +17,12 @@ export const modalBackground = lightTheme ? gsa(100, 0.7) : gsa(0, 0.7);
 export const green = '#7ED321';
 export const red = '#D0021B';
 export const gold = '#FFC864';
+
+export const error = 'hsl(0, 66%, 45%)';
+export const errorA = 'hsla(33, 66%, 45%, .05)';
+export const warning = 'hsl(33, 93%,54%)';
+export const warningA = 'hsla(33, 93%, 54%, .05)';
+
 export const twitterBlue = '#00aced';
 
 // mobile post diver

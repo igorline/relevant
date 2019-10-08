@@ -7,7 +7,7 @@ import url from 'url';
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import mail from 'server/config/mail';
-import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
+import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
 import CommunityMember from '../community/community.member.model';
@@ -777,8 +777,13 @@ exports.ethAddress = async (req, res, next) => {
 
 exports.cashOut = async (req, res, next) => {
   try {
-    const { user, params } = req;
+    const {
+      user,
+      body: { customAmount }
+    } = req;
     if (!user) throw new Error('missing user');
+    if (!customAmount) throw new Error('Missing amount');
+
     if (!user.ethAddress[0]) throw new Error('No Ethereum address connected');
     const address = user.ethAddress[0];
 
@@ -790,8 +795,14 @@ exports.cashOut = async (req, res, next) => {
       return res.status(200).json(user);
     }
 
-    const canClaim = user.balance - (user.airdroppedTokens || 0);
-    const amount = params.customAmount || canClaim;
+    // Temp - let global admins cash out more
+    const maxClaim = user.role === 'admin' ? 1000 * 1e6 : CASHOUT_MAX - user.cashedOut;
+
+    const canClaim = Math.min(maxClaim, user.balance - (user.airdroppedTokens || 0));
+    const amount = customAmount;
+
+    if (amount > maxClaim)
+      throw new Error(`You cannot claim more than ${maxClaim} coins at this time.`);
 
     if (amount > canClaim) throw new Error('You con not claim this many coins.');
     if (amount <= 0) throw new Error('You do not have enough coins to claim.');
@@ -808,6 +819,7 @@ exports.cashOut = async (req, res, next) => {
     logCashOut(user, amount, next);
 
     user.balance -= amount;
+    user.cashedOut += amount;
     await user.save();
 
     const { sig, amount: bnAmount } = await ethUtils.sign(address, amount);

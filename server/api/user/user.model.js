@@ -140,6 +140,7 @@ const UserSchema = new Schema(
     lastTweetId: { type: Number },
 
     tokenBalance: { type: Number, default: 0 },
+    cashedOut: { type: Number, default: 0 },
     ethAddress: [String],
 
     // eth cash out

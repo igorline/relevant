@@ -152,6 +152,8 @@ export const NumericalValue = styled(Text)`
 export const Input = styled.input`
   padding: ${sizing(2)} ${sizing(2)};
   margin-top: ${sizing(1)};  ${fonts.bodyStyle}
+  ${mixins.font}
+  ${mixins.flex}
   ${mixins.border}
   ${layout.universalBorder()}
   ${mixins.padding}

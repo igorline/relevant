@@ -14,7 +14,7 @@ import SignupEmail from 'modules/auth/web/signupEmail';
 import SetHandle from 'modules/auth/web/handle.component';
 import ConfirmEmail from 'modules/auth/web/confirmEmail.component';
 import BetBody from 'modules/post/bet';
-import CashOutModal from 'modules/wallet/web/cashOutModal.component';
+import CashOutModal from 'modules/wallet/web/cashOutModal';
 
 export const cashOut = {
   // title: 'Place Your Bet',

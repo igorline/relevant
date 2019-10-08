@@ -38,6 +38,7 @@ export function percentChange(user) {
 }
 
 export function abbreviateNumber(num, _fixed) {
+  if (typeof num !== 'number') return num;
   let fixed = 0;
 
   if (typeof _fixed === 'number') fixed = _fixed;

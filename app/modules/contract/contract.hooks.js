@@ -9,7 +9,6 @@ import { useWeb3State, useRelevantState } from './contract.selectors';
 
 const Alert = alert.Alert();
 const _web3 = getProvider();
-const metamask = getMetamask();
 
 export const useWeb3Actions = () => {
   const dispatch = useDispatch();
@@ -90,9 +89,17 @@ export const useWeb3 = () => {
 // But we need to consider the case where we start out with no metamask and then enable metamask.
 export const useMetamask = () => {
   const dispatch = useDispatch();
+  const metamask = getMetamask();
+
   useEffect(() => {
-    if (!metamask) return null;
+    if (!metamask) return () => {};
+    try {
+      metamask.enable();
+    } catch (err) {
+      return () => {};
+    }
     metamask.autoRefreshOnNetworkChange = false;
+
     const getAccounts = _accounts =>
       dispatch(_web3Actions.accounts.getSuccess(_accounts));
     const getNetworkId = () => dispatch(_web3Actions.network.getId());
@@ -103,7 +110,8 @@ export const useMetamask = () => {
       metamask.off('accountsChanged', getAccounts);
       metamask.off('networkChanged', getNetworkId);
     };
-  }, [dispatch]);
+  }, [dispatch, metamask]);
+  return metamask;
 };
 
 export const useBalance = () => {

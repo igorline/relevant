@@ -2,7 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
-import { numbers } from 'app/utils';
+import { abbreviateNumber } from 'app/utils/numbers';
+import { truncateAddress } from 'app/utils/eth';
+
 import {
   View,
   BodyText,
@@ -12,7 +14,7 @@ import {
   LinkFont
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
-import { CASHOUT_LIMIT } from 'server/config/globalConstants';
+import { CASHOUT_MAX } from 'server/config/globalConstants';
 // import { parseBN } from 'app/utils/eth';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { showModal } from 'modules/navigation/navigation.actions';
@@ -41,41 +43,50 @@ export function Balance({ isWeb }) {
     ? Math.round(100 * (1 - lockedTokens / user.balance))
     : 0;
 
+  const unclaimed = user.balance - user.airdropTokens;
+
+  const accountDetail = getAccountDetail({
+    unclaimed,
+    metaMaskTokens,
+    airdropTokens,
+    lockedTokens,
+    stakingPower
+  });
+
   return (
     <View m={['4 4 2 4', '2 2 0 2']}>
       {!screenSize ? (
         <View>
           <Header>Relevant Tokens</Header>
           <BodyText mt={2}>
-            These are tokens you earned as rewards. Once you have more than{' '}
-            {CASHOUT_LIMIT}, you can transfer them to your Ethereum account.
+            These are coins you earned as rewards. You can transfer up to {CASHOUT_MAX}{' '}
+            coins to your Ethereum account (this limit will be increased as the network
+            grows).
           </BodyText>
         </View>
       ) : null}
       <View br bl bt p="2" mt={2}>
         <View fdirection="row" justify="space-between" wrap>
           <BodyText mb={0.5}>Account Balance</BodyText>
-          <SecondaryText mb={0.5}>{user.ethAddress[0]}</SecondaryText>
+          <SecondaryText mb={0.5}>{truncateAddress(user.ethAddress[0])}</SecondaryText>
         </View>
         <View fdirection="row" align="center" display="flex" mt={2}>
           <CoinStat fs={4.5} lh={5} size={5} user={user} align="center" />
         </View>
       </View>
-      <View border={1} p="2">
-        <SecondaryText>
-          {`Unclaimed REL: ${numbers.abbreviateNumber(user.balance)}`}
-          {metaMaskTokens
-            ? `   Metamask: ${numbers.abbreviateNumber(metaMaskTokens)}`
-            : ''}
-          {airdropTokens
-            ? `   Airdrop Coins: ${numbers.abbreviateNumber(airdropTokens)}`
-            : ''}
-          {lockedTokens
-            ? `   Locked Coins: ${numbers.abbreviateNumber(lockedTokens)}`
-            : ''}
-          {stakingPower ? `   Staking Power: ${stakingPower}%` : ''}
-        </SecondaryText>
+
+      <View fdirection="row" wrap border={1} p="2">
+        {accountDetail.map(
+          detail =>
+            (!!detail.value || !detail.alwayShow) && (
+              <SecondaryText mr={2} key={detail.text}>
+                {detail.tip && <Tooltip name={detail.text} data={{ text: detail.tip }} />}
+                {detail.text}: {abbreviateNumber(detail.value)}
+              </SecondaryText>
+            )
+        )}
       </View>
+
       {isWeb ? (
         <View fdirection="row" mt={2} align="center">
           <Touchable onClick={() => dispatch(showModal('cashOut'))} td={'underline'}>
@@ -86,7 +97,7 @@ export function Balance({ isWeb }) {
           <Tooltip
             info
             data={{
-              text: `Once you earn more than ${CASHOUT_LIMIT} tokens you\ncan transfer them to your Metamask wallet\n(temporarily disabled)`
+              text: `You can transfer up to ${CASHOUT_MAX} coins to your your Metamask wallet.\n(You cannot transfer coins you got for refferrals and verifying social accounts.)`
             }}
           />
         </View>
@@ -100,6 +111,47 @@ export function Balance({ isWeb }) {
       ) : null}
     </View>
   );
+}
+
+function getAccountDetail({
+  unclaimed,
+  metaMaskTokens,
+  airdropTokens,
+  lockedTokens,
+  stakingPower
+}) {
+  return [
+    {
+      text: 'Unclaimed Coins',
+      value: Math.max(unclaimed, 0),
+      tip: 'You can transfer these coins to your Ethereum wallet.'
+    },
+    {
+      text: 'Metamask Coins',
+      value: metaMaskTokens,
+      tip: 'These are the coins located in your connected Ethereum wallet.'
+    },
+    {
+      text: 'Airdrop Coins',
+      value: airdropTokens,
+      tip:
+        'These are coins you got for referrals and verifying social accounts.\nYou cannot transfer these coins to Metamask.',
+      alwaysShow: true
+    },
+    {
+      text: 'Locked Tokens Coins',
+      value: lockedTokens,
+      tip:
+        'These are coins that you are currently betting on posts.\nThey get unlocked once the bets expire.'
+    },
+    {
+      text: 'Staking Power',
+      value: stakingPower + '%',
+      tip: 'This is the ratio between unlocked and locked coins.',
+      alwaysShow: true,
+      stringValue: true
+    }
+  ];
 }
 
 export default Balance;

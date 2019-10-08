@@ -285,3 +285,7 @@ export const CloseX = styled(Image)`
   cursor: pointer;
   z-index: 10;
 `;
+
+export const Warning = styled(SmallText)`
+  color: ${colors.warning};
+`;
