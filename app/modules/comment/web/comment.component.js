@@ -221,9 +221,7 @@ class Comment extends Component {
           m={['0 3 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
           fdirection="column"
         >
-          {!hideBorder && nestingLevel > 0 && (
-            <Divider className="divider" ml={borderMargin} />
-          )}
+          {!hideBorder && nestingLevel > 0 && <Divider ml={borderMargin} />}
           <View fdirection="row" mt={4}>
             {!hidePostButtons && !screenSize ? (
               <View w={layout.POST_BUTTONS_WIDTH}>

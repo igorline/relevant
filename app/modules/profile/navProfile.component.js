@@ -100,6 +100,7 @@ export class NavProfile extends Component {
                   <CoinStat
                     user={user}
                     isOwner={true}
+                    // showPrice
                     align="center"
                     data-for="mainTooltip"
                     data-tip={JSON.stringify({
@@ -112,12 +113,13 @@ export class NavProfile extends Component {
                   />
                 </ULink>
               </View>
-              <View fdirection={'row'} align={'baseline'} color={colors.grey} mt={2}>
+              <View fdirection={'row'} align={'center'} color={colors.grey} mt={2}>
                 <SecondaryText fs={1.5}>Pending Rewards: </SecondaryText>
                 <CoinStat
                   size={1.5}
                   mr={1.5}
                   fs={1.5}
+                  showPrice
                   secondary
                   c={colors.black}
                   amount={pendingPayouts}

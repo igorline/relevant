@@ -57,8 +57,8 @@ exports[`Snapshot Balance Web 1`] = `
     >
       These are coins you earned as rewards. You can transfer up to 
       1000
-       
-      coins to your Ethereum account (this limit will be increased as the network grows).
+      
+       coins to your Ethereum account (this limit will be increased as the network grows).
     </div>
   </div>
   <div
@@ -248,6 +248,7 @@ exports[`Snapshot Balance Web 1`] = `
         >
           
           111
+          
         </div>
       </div>
     </div>
@@ -298,16 +299,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         data-event-off="click"
-        data-focusable={true}
         data-for="mainTooltip"
         data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"You can transfer these coins to your Ethereum wallet.\\"}}"
         dir="auto"
-        onClick={[Function]}
-        onKeyDown={[Function]}
         style={
           Object {
             "bottom": "0px",
-            "cursor": "pointer",
             "left": "0px",
             "overflowX": "hidden",
             "overflowY": "hidden",
@@ -317,7 +314,6 @@ exports[`Snapshot Balance Web 1`] = `
             "zIndex": 1,
           }
         }
-        tabIndex="0"
       />
       <div
         className="css-text-901oao"
@@ -352,16 +348,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         data-event-off="click"
-        data-focusable={true}
         data-for="mainTooltip"
         data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are the coins located in your connected Ethereum wallet.\\"}}"
         dir="auto"
-        onClick={[Function]}
-        onKeyDown={[Function]}
         style={
           Object {
             "bottom": "0px",
-            "cursor": "pointer",
             "left": "0px",
             "overflowX": "hidden",
             "overflowY": "hidden",
@@ -371,7 +363,6 @@ exports[`Snapshot Balance Web 1`] = `
             "zIndex": 1,
           }
         }
-        tabIndex="0"
       />
       <div
         className="css-text-901oao"
@@ -405,16 +396,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         data-event-off="click"
-        data-focusable={true}
         data-for="mainTooltip"
         data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are coins you got for referrals and verifying social accounts.\\\\nYou cannot transfer these coins to Metamask.\\"}}"
         dir="auto"
-        onClick={[Function]}
-        onKeyDown={[Function]}
         style={
           Object {
             "bottom": "0px",
-            "cursor": "pointer",
             "left": "0px",
             "overflowX": "hidden",
             "overflowY": "hidden",
@@ -424,7 +411,6 @@ exports[`Snapshot Balance Web 1`] = `
             "zIndex": 1,
           }
         }
-        tabIndex="0"
       />
       <div
         className="css-text-901oao"
@@ -459,16 +445,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         data-event-off="click"
-        data-focusable={true}
         data-for="mainTooltip"
         data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are coins that you are currently betting on posts.\\\\nThey get unlocked once the bets expire.\\"}}"
         dir="auto"
-        onClick={[Function]}
-        onKeyDown={[Function]}
         style={
           Object {
             "bottom": "0px",
-            "cursor": "pointer",
             "left": "0px",
             "overflowX": "hidden",
             "overflowY": "hidden",
@@ -478,7 +460,6 @@ exports[`Snapshot Balance Web 1`] = `
             "zIndex": 1,
           }
         }
-        tabIndex="0"
       />
       <div
         className="css-text-901oao"
@@ -513,16 +494,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         data-event-off="click"
-        data-focusable={true}
         data-for="mainTooltip"
         data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"This is the ratio between unlocked and locked coins.\\"}}"
         dir="auto"
-        onClick={[Function]}
-        onKeyDown={[Function]}
         style={
           Object {
             "bottom": "0px",
-            "cursor": "pointer",
             "left": "0px",
             "overflowX": "hidden",
             "overflowY": "hidden",
@@ -532,7 +509,6 @@ exports[`Snapshot Balance Web 1`] = `
             "zIndex": 1,
           }
         }
-        tabIndex="0"
       />
       <div
         className="css-text-901oao"
