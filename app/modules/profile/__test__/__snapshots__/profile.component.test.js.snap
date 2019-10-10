@@ -305,6 +305,11 @@ exports[`Snapshot other users Profile 1`] = `
               "image": "alice-pic.jpg",
               "lockedTokens": 0,
               "name": "Alice",
+              "notificationSettings": Object {
+                "bet": Object {
+                  "manual": true,
+                },
+              },
               "password": "test",
               "relevance": Object {
                 "pagerank": 11,
@@ -801,6 +806,11 @@ exports[`Snapshot own Profile 1`] = `
               "image": "alice-pic.jpg",
               "lockedTokens": 0,
               "name": "Alice",
+              "notificationSettings": Object {
+                "bet": Object {
+                  "manual": true,
+                },
+              },
               "password": "test",
               "relevance": Object {
                 "pagerank": 11,

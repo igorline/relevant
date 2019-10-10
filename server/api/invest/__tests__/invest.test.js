@@ -42,12 +42,14 @@ describe('ethRewards', () => {
   });
 
   describe('Invest', () => {
-    test('should create invest', async () => {
+    test('should create invest without bet', async () => {
       await create(req, res, next);
       let apiRes = toObject(res.json.mock.calls[0][0]);
       voteId = apiRes.investment._id;
       apiRes = sanitize(apiRes, 'rankChange');
       expect(apiRes).toMatchSnapshot();
+      expect(apiRes.investment.shares).toBe(0);
+      expect(apiRes.investment.stakedTokens).toBe(0);
     });
 
     test('rank should update', async () => {
@@ -83,6 +85,18 @@ describe('ethRewards', () => {
 
       const removedVote = await Invest.findOne({ _id: voteId });
       expect(removedVote).toBe(null);
+    });
+  });
+
+  describe('AutoBet', () => {
+    test('should create invest with bet', async () => {
+      alice.notificationSettings.bet.manual = false;
+      await alice.save();
+      req.user = alice;
+      await create(req, res, next);
+      const apiRes = toObject(res.json.mock.calls[0][0]);
+      expect(apiRes.investment.shares).not.toBe(0);
+      expect(apiRes.investment.stakedTokens).not.toBe(0);
     });
   });
 });

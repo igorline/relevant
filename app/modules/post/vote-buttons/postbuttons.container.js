@@ -3,20 +3,17 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { getPostType } from 'app/utils/post';
-import { View, Image, SmallText } from 'modules/styled/uni';
-import { colors } from 'app/styles';
+import { View } from 'modules/styled/uni';
 import { triggerAnimation } from 'modules/animation/animation.actions';
 import { useCommunity } from 'modules/community/community.selectors';
-import Tooltip from 'modules/tooltip/tooltip.component';
 import { CenterButton } from './center-button';
 import PostButton from './postbutton';
 import { vote as voteAction } from '../invest.actions';
+import PostRank from './postrank';
 
 let Analytics;
 let ReactGA;
-let Platform;
 if (process.env.WEB !== 'true') {
-  Platform = require('react-native').Platform;
   Analytics = require('react-native-firebase-analytics');
 } else {
   ReactGA = require('react-ga').default;
@@ -42,81 +39,42 @@ export default function PostButtons({ post, auth, color, horizontal }) {
   const investButton = useRef();
   const [processingVote, setProcessingVote] = useState(false);
   const community = useCommunity();
+  const { user } = auth;
 
   const castVote = useCallback(
     async (e, vote, amount) => {
       try {
-        const type = amount > 0 ? 'upvote' : 'downvote';
-        setProcessingVote(true);
         e.preventDefault();
         e.stopPropagation();
-        if (!auth.isAuthenticated) {
+        if (processingVote) return;
+
+        const type = amount > 0 ? 'upvote' : 'downvote';
+        if (!auth.isAuthenticated)
           throw new Error(`You must be logged in to ${type} posts`);
-        }
-        if (processingVote) return null;
 
-        const res = await dispatch(voteAction(amount, post, auth.user, vote));
-        if (!res || res.undoInvest) return setProcessingVote(false);
+        setProcessingVote(true);
+        const res = await dispatch(voteAction(amount, post, user, vote));
+        setProcessingVote(false);
+        if (!res || res.undoInvest) return;
 
-        const startRank = post.data ? post.data.pagerank : 0;
-        const total = startRank + res.rankChange + 1;
-        const upvoteAmount = Math.round(total) - Math.round(startRank);
-
-        investButton.current.measureInWindow((x, y, w, h) => {
-          const parent = { x, y, w, h };
-          if (x + y + w + h === 0) return;
-          const action = triggerAnimation(type, {
-            parent,
-            amount: upvoteAmount,
-            horizontal
-          });
-          dispatch(action);
-        });
-
-        Analytics && Analytics.logEvent(type);
-        ReactGA &&
-          ReactGA.event({
-            category: 'User',
-            action: `${type}ed a post`
-          });
-        return setProcessingVote(false);
+        const rankChange = computeRankChange({ post, rankChange: res.rankChange });
+        const el = investButton;
+        const params = { amount: rankChange, horizontal };
+        launchAnimation({ type, params, el, dispatch });
+        runAnalytics(type);
       } catch (err) {
         setProcessingVote(false);
-        return browserAlerts.alert(err.message);
+        browserAlerts.alert(err.message);
       }
     },
-    [auth.isAuthenticated, auth.user, processingVote, dispatch, post, horizontal]
+    [auth.isAuthenticated, user, processingVote, dispatch, post, horizontal]
   );
 
   if (!post || post === 'notFound') return null;
 
-  const ownPost = auth.user && auth.user._id === post.user;
-  const vote = ownPost ? true : post.myVote;
-  const votedUp = vote && vote.amount > 0;
-  const votedDown = vote && vote.amount < 0;
-
-  const postRank = post.data
-    ? Math.round(post.data.pagerank) + post.data.upVotes - post.data.downVotes
-    : 0;
-
-  const now = new Date();
-  const bettingEnabled = community && community.betEnabled;
-  const canBet =
-    bettingEnabled &&
-    post.data.eligibleForReward &&
-    now.getTime() < new Date(post.data.payoutTime).getTime();
-
-  const postType = getPostType({ post });
-  const tipText =
-    postType === 'link'
-      ? 'Upvote articles that are worth reading, downvote spam.'
-      : `Upvote quality ${postType}s and downvote spam`;
-
-  const tooltipData = {
-    text: tipText,
-    position: 'right',
-    desktopOnly: true
-  };
+  const canBet = getCanBet({ post, community, user });
+  const tooltipData = getTooltipData(post);
+  const voteStatus = getVoteStatus(user, post);
 
   return (
     <View
@@ -130,70 +88,85 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         tooltipData={tooltipData}
         key={`${post.id}-up`}
         imageSet="UPVOTE"
-        isActive={votedUp}
+        isActive={voteStatus.up}
         alt="upvote"
         color={color}
-        onPress={e => castVote(e, vote, 1)}
+        onPress={e => castVote(e, voteStatus.vote, 1)}
       />
       {canBet ? (
-        <CenterButton horizontal={horizontal} votedUp={votedUp} post={post} />
+        <CenterButton horizontal={horizontal} votedUp={voteStatus.up} post={post} />
       ) : (
-        <RankEl horizontal={horizontal} postRank={postRank} color={color} post={post} />
+        <PostRank horizontal={horizontal} color={color} post={post} />
       )}
       <PostButton
         tooltipData={tooltipData}
         key={`${post.id}-down`}
         imageSet="DOWNVOTE"
-        isActive={votedDown}
+        isActive={voteStatus.down}
         alt="downvote"
         color={color}
-        onPress={e => castVote(e, vote, -1)}
+        onPress={e => castVote(e, voteStatus.vote, -1)}
       />
     </View>
   );
 }
 
-RankEl.propTypes = {
-  horizontal: PropTypes.bool,
-  postRank: PropTypes.number,
-  color: PropTypes.string,
-  post: PropTypes.object
-};
+function getVoteStatus(user, post) {
+  const ownPost = user && user._id === post.user;
+  const vote = ownPost ? true : post.myVote;
+  return {
+    vote,
+    up: vote && vote.amount > 0,
+    down: vote && vote.amount < 0
+  };
+}
 
-function RankEl({ horizontal, postRank, color, post }) {
-  const type = getPostType({ post });
+function getTooltipData(post) {
+  const postType = getPostType({ post });
   const tipText =
-    type === 'link'
-      ? "This is the article's reputation score"
-      : `This is the ${type}'s reputation scroe`;
-  const tooltipData = { text: tipText, position: 'right' };
+    postType === 'link'
+      ? 'Upvote articles that are worth reading, downvote spam.'
+      : `Upvote quality ${postType}s and downvote spam`;
 
+  return {
+    text: tipText,
+    position: 'right',
+    desktopOnly: true
+  };
+}
+
+function getCanBet({ post, community, user }) {
+  const now = new Date();
+  const bettingEnabled = community && community.betEnabled;
+  const manualBet = user && user.notificationSettings.bet.manual;
   return (
-    <View
-      h={horizontal ? 2 : 4}
-      minwidth={horizontal ? 8 : null}
-      justify={'center'}
-      align={'center'}
-    >
-      <Tooltip name="vote" data={tooltipData} />
-      <View m={horizontal ? '0 1' : null} fdirection={'row'} align={'baseline'}>
-        <Image
-          h={1.2}
-          w={1.2}
-          style={{ opacity: 0.5, transform: [{ translateY: 0.5 }] }}
-          resizeMode={'contain'}
-          resizeMethod={'resize'}
-          mr={0.2}
-          source={require('app/public/img/r.png')}
-        />
-        <SmallText
-          // weird spacing discrepant between android and ios
-          h={Platform && Platform.OS === 'android' ? 1.7 : 2}
-          c={color || colors.secondaryText}
-        >
-          {postRank || 0}
-        </SmallText>
-      </View>
-    </View>
+    manualBet &&
+    bettingEnabled &&
+    post.data.eligibleForReward &&
+    now.getTime() < new Date(post.data.payoutTime).getTime()
   );
+}
+
+function computeRankChange({ post, rankChange }) {
+  const startRank = post.data ? post.data.pagerank : 0;
+  const total = startRank + rankChange + 1;
+  return Math.round(total) - Math.round(startRank);
+}
+
+function launchAnimation({ type, params, el, dispatch }) {
+  el.current.measureInWindow((x, y, w, h) => {
+    const parent = { x, y, w, h };
+    if (x + y + w + h === 0) return;
+    const action = triggerAnimation(type, { parent, ...params });
+    dispatch(action);
+  });
+}
+
+function runAnalytics(type) {
+  Analytics && Analytics.logEvent(type);
+  ReactGA &&
+    ReactGA.event({
+      category: 'User',
+      action: `${type}ed a post`
+    });
 }

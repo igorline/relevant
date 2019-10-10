@@ -24,7 +24,7 @@ export const cashOut = {
 export const investModal = {
   // title: 'Place Your Bet',
   Body: BetBody,
-  maxWidth: [48, 40]
+  maxWidth: [52, 40]
   // padding: 2,
 };
 

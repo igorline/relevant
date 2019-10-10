@@ -12,7 +12,8 @@ export const user1 = {
   airdropTokens: 111,
   lockedTokens: 0,
   password: 'test',
-  ethAddress: [keys[0].address]
+  ethAddress: [keys[0].address],
+  notificationSettings: { bet: { manual: true } }
 };
 
 export const user2 = {
@@ -27,7 +28,8 @@ export const user2 = {
   airdropTokens: 222,
   lockedTokens: 0,
   password: 'test',
-  ethAddress: [keys[1].address]
+  ethAddress: [keys[1].address],
+  notificationSettings: { bet: { manual: true } }
 };
 
 export const user3 = {
@@ -42,7 +44,8 @@ export const user3 = {
   airdropTokens: 333,
   lockedTokens: 0,
   password: 'test',
-  ethAddress: [keys[2].address]
+  ethAddress: [keys[2].address],
+  notificationSettings: { bet: { manual: true } }
 };
 
 export const allUsers = [user1, user2, user3];

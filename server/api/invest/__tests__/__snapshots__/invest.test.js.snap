@@ -25,7 +25,7 @@ Object {
 }
 `;
 
-exports[`ethRewards Invest should create invest 1`] = `
+exports[`ethRewards Invest should create invest without bet 1`] = `
 Object {
   "investment": Object {
     "__v": 0,

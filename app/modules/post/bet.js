@@ -8,7 +8,8 @@ import {
   SecondaryText,
   LinkFont,
   SmallText,
-  Header
+  Header,
+  Divider
 } from 'modules/styled/uni';
 import { getTimestamp, abbreviateNumber as toFixed } from 'utils/numbers';
 import { colors } from 'styles';
@@ -21,25 +22,40 @@ import { computePostPayout } from 'app/utils/rewards';
 import { useCommunity } from 'modules/community/community.selectors';
 import { PieChart } from 'modules/stats/piechart';
 import Tooltip from 'modules/tooltip/tooltip.component';
+import { exchangeLink } from 'modules/wallet/price.context';
+import ULink from 'modules/navigation/ULink.component';
+import { NotificationToggle } from 'modules/profile/settings/settings.toggle';
 
-export function Bet() {
+export function BetContainer() {
+  const user = useSelector(state => state.auth.user) || {};
+  const post = useSelector(state => state.posts.posts[state.navigation.modalData.postId]);
+  if (!user || !post) return null;
+  return <Bet user={user} post={post} />;
+}
+
+Bet.propTypes = {
+  user: PropTypes.object,
+  post: PropTypes.object
+};
+
+function Bet({ user, post }) {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.auth.user);
-  const post = useSelector(state => state.navigation.modalData);
-  const earnigns = useSelector(state =>
-    state.earnings.pending.map(e => state.earnings.entities[e])
+  const earning = useSelector(state =>
+    state.earnings.pending
+      .map(e => state.earnings.entities[e])
+      .find(ee => ee.post === post._id)
   );
-  const earning = earnigns.find(e => e.post === post._id);
+
   const title = earning ? 'Increase Your Bet' : 'Bet on the Relevance of this Post';
-  const [amount, setAmount] = useState(defaultAmount);
 
-  if (!user) return null;
-
-  const time = getTimestamp(post.data.payoutTime).toLowerCase();
   const totalBalance = user.balance + user.tokenBalance;
   const maxBet = totalBalance - user.lockedTokens;
-
   const defaultAmount = Math.max(maxBet * VOTE_COST_RATIO, 0);
+  const [amount, setAmount] = useState(defaultAmount);
+
+  if (!user || !post) return null;
+
+  const time = getTimestamp(post.data.payoutTime).toLowerCase();
 
   const plusAmount = () =>
     setAmount(a => {
@@ -71,20 +87,19 @@ export function Bet() {
 
   const tooltipData = {
     text:
-      "Do you think this post will be relevant?\nThe more you bet, the more you'll earn.\n\nBut use your coins wisely, only posts that\nachieve a high Reputation score get payouts."
+      'Posts that get upvoted by lots of users with high Reputation get payouts.\n\nBet more coins and bet early in order to win the biggest portion of the payout.'
   };
 
   return (
     <View>
       <Header inline={1} mr={2}>
-        {title}
+        {title} <Tooltip inline={1} name={'betInfo'} data={tooltipData} info />
       </Header>
 
       <View fdirection={'row'} align={'baseline'}>
         <SmallText mt={1} mr={1}>
           Payout: {time}
         </SmallText>
-        <Tooltip name={'betInfo'} data={tooltipData} info />
       </View>
 
       <View mt={4} fdirection="row" justify="space-between" align={'center'}>
@@ -110,10 +125,15 @@ export function Bet() {
         <SecondaryText alignself={'center'} mt={0.5}>
           Available Coins: <SmallCoinStat amount={maxBet - amount} />
         </SecondaryText>
+        <SecondaryText alignself={'center'} mt={0.5}>
+          <ULink to={exchangeLink()} external target="_blank">
+            Get more coins
+          </ULink>
+        </SecondaryText>
       </View>
 
       <View mt={4}>
-        <PotentialRewards post={post} amount={amount} earning={earning} />
+        <PotentialRewards maxBet={maxBet} post={post} amount={amount} earning={earning} />
       </View>
 
       <HoverButton mt={3} onPress={placeBet}>
@@ -123,6 +143,19 @@ export function Bet() {
       <SmallText mt={2}>
         *You get your coins back once the betting round ends, win or lose.
       </SmallText>
+
+      <Divider mt={2} />
+
+      <NotificationToggle
+        notification={user.notificationSettings.bet.manual}
+        parent={'bet'}
+        label={'manual'}
+        togglePosition={'right'}
+        DescriptionComponent={SmallText}
+        text={{
+          description: "Don't like betting?\nYou can disable the manual betting mode."
+        }}
+      />
 
       {/*      <SmallText mt={2}>
         If this post ranks highly you will win some coins, either way you allways get your
@@ -135,10 +168,11 @@ export function Bet() {
 PotentialRewards.propTypes = {
   post: PropTypes.object,
   earning: PropTypes.object,
-  amount: PropTypes.number
+  amount: PropTypes.number,
+  maxBet: PropTypes.number
 };
 
-function PotentialRewards({ post, amount, earning }) {
+function PotentialRewards({ post, amount, earning, maxBet }) {
   const community = useCommunity();
 
   const investments = useSelector(state =>
@@ -158,7 +192,7 @@ function PotentialRewards({ post, amount, earning }) {
 
   const bets = investments.length;
   const users = bets > 1 ? 'users' : 'user';
-  const invText = investments.length
+  const invText = bets
     ? `${bets} ${users} bet a total of ${toFixed(
         post.data.totalShares - existingStake
       )} coins on this post`
@@ -166,14 +200,16 @@ function PotentialRewards({ post, amount, earning }) {
 
   const shares = computeShares({ post, stakedTokens: amount });
   const postRewards = computePostPayout(post.data, community);
-  const shareOfRewards = (shares + existingShares) / (post.data.shares + shares);
+  const shareOfRewards = !bets
+    ? amount / maxBet
+    : (shares + existingShares) / (post.data.shares + shares);
   const shareOfRewardsPercent = shareOfRewards * 100;
   const potentialRewards = postRewards * shareOfRewards;
-  const showPie = shareOfRewards !== 1;
+  // const showPie = shareOfRewards !== 1;
 
-  const shareEl = showPie && (
+  const shareEl = (
     <SmallText inline={1}>
-      {' ( '}
+      {'  '}
       <Text style={{ top: 2 }} inline={1} mb={-0.5}>
         <PieChart
           w={'12px'}
@@ -183,7 +219,7 @@ function PotentialRewards({ post, amount, earning }) {
           color={colors.blue}
         />
       </Text>{' '}
-      {toFixed(shareOfRewardsPercent)}% )
+      {toFixed(shareOfRewardsPercent)}%
     </SmallText>
   );
 
@@ -192,7 +228,7 @@ function PotentialRewards({ post, amount, earning }) {
       <SmallText>{invText}</SmallText>
       {potentialRewards > 0 && (
         <SmallText inline={1} mt={0.25}>
-          Your estimated rewards: <SmallCoinStat amount={potentialRewards} />
+          Your estimated rewards: <SmallCoinStat showPrice amount={potentialRewards} />
           {shareEl}
         </SmallText>
       )}
@@ -228,10 +264,18 @@ SmallCoinStat.propTypes = {
   amount: PropTypes.number
 };
 
-function SmallCoinStat({ amount }) {
+function SmallCoinStat({ amount, ...rest }) {
   return (
-    <CoinStat size={1.5} fs={1.5} secondary c={colors.black} inline={1} amount={amount} />
+    <CoinStat
+      size={1.5}
+      fs={1.5}
+      secondary
+      c={colors.black}
+      inline={1}
+      amount={amount}
+      {...rest}
+    />
   );
 }
 
-export default Bet;
+export default BetContainer;

@@ -44,6 +44,11 @@ exports[`Snapshot Post Web 1`] = `
           "image": "bob-pic.jpg",
           "lockedTokens": 0,
           "name": "Bob",
+          "notificationSettings": Object {
+            "bet": Object {
+              "manual": true,
+            },
+          },
           "password": "test",
           "relevance": Object {
             "pagerank": 22,
@@ -97,6 +102,11 @@ exports[`Snapshot Post Web 1`] = `
           "image": "bob-pic.jpg",
           "lockedTokens": 0,
           "name": "Bob",
+          "notificationSettings": Object {
+            "bet": Object {
+              "manual": true,
+            },
+          },
           "password": "test",
           "relevance": Object {
             "pagerank": 22,

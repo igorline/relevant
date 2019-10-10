@@ -17,6 +17,22 @@ import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 import { logCashOut } from '../../utils/cashOut';
 
+// async function getUserEmails(_users) {
+//   const users = await User.find({ handle: { $in: _users } }, '+email');
+//   users.map(u => console.log(u.handle, u.email));
+// }
+// getUserEmails([
+//   'JoannaPope',
+//   'commune_mist',
+//   'charlixcx',
+//   'clubinternet',
+//   'Druss',
+//   'mrcni',
+//   'bamboo',
+//   'mat',
+//   'darkmatter',
+// ]);
+
 // User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
 // User.findOneAndUpdate({ handle: 'jennifar' }, { banned: true }).then(console.log);
 // User.findOne({ handle: 'jennifar' }).then(console.log);
