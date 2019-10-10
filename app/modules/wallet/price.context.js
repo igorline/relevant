@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 import { getTokenReserves } from '@uniswap/sdk';
 import { abbreviateNumber } from 'utils/numbers';
 
-const TOKEN_ADDRESS = '0x4946fcea7c692606e8908002e55a582af44ac121';
+const { TOKEN_ADDRESS } = process.env;
 const UPDATE_INTERVAL = 1 * 60 * 1000;
 
 export const PriceContext = React.createContext(0);
+
+export function exchangeLink() {
+  return `https://uniswap.exchange/swap?theme=dark&outputCurrency=${TOKEN_ADDRESS}`;
+}
 
 export function usePrice(amount, type) {
   const { price } = useContext(PriceContext);
@@ -31,6 +35,7 @@ export function PriceProvider({ children }) {
     let didCancel = false;
     const fetchData = async () => {
       dispatch({ type: 'FETCH_PRICE_INIT' });
+      if (!TOKEN_ADDRESS) return;
       try {
         const tokenPrice = await getTokenReserves(TOKEN_ADDRESS);
         const res = await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/');

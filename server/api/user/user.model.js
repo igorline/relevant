@@ -48,32 +48,14 @@ const UserSchema = new Schema(
     twitter: { type: Object, select: false },
     reddit: { type: Object, select: false },
     notificationSettings: {
+      bet: { manual: { type: Boolean, default: false } },
       email: {
-        digest: {
-          type: Boolean,
-          default: true
-        },
-        general: {
-          type: Boolean,
-          default: false
-        },
-        personal: {
-          type: Boolean,
-          default: true
-        }
+        digest: { type: Boolean, default: true },
+        general: { type: Boolean, default: false },
+        personal: { type: Boolean, default: true }
       },
-      mobile: {
-        all: {
-          type: Boolean,
-          default: false
-        }
-      },
-      desktop: {
-        all: {
-          type: Boolean,
-          default: false
-        }
-      }
+      mobile: { all: { type: Boolean, default: false } },
+      desktop: { all: { type: Boolean, default: false } }
     },
     desktopSubscriptions: [],
     redditId: String,

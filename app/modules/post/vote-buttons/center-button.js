@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -40,7 +40,7 @@ export function CenterButton({ post, votedUp, horizontal }) {
   const { payoutTime } = post.data;
 
   const dispatch = useDispatch();
-  const openBetModal = () => dispatch(showModal('investModal', post));
+  const openBetModal = () => dispatch(showModal('investModal', { postId: post._id }));
 
   const timer = (
     <View w={CENTER_BUTTON_SIZE} h={CENTER_BUTTON_SIZE}>
@@ -128,20 +128,20 @@ Timer.propTypes = {
 };
 
 export function Timer({ payoutTime, post }) {
-  const updateTimerParams = () => {
+  const updateTimerParams = useCallback(() => {
     const now = new Date();
     const payoutDate = new Date(payoutTime);
     const percent = 100 - (100 * (payoutDate.getTime() - now.getTime())) / PAYOUT_TIME;
     const text = timeLeft({ _date: payoutTime, index: 1 });
     return { percent, text };
-  };
+  }, [payoutTime]);
 
   const [timer, updateTimer] = useState(updateTimerParams);
 
   useEffect(() => {
     const id = setInterval(() => updateTimer(updateTimerParams), 10000);
     return () => clearInterval(id);
-  }, [payoutTime]);
+  }, [payoutTime, updateTimerParams]);
 
   const timeLelft = getTimestamp(post.data.payoutTime, true).toLowerCase();
 

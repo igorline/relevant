@@ -59,7 +59,6 @@ export function Balance({ isWeb }) {
     <View m={['4 4 2 4', '2 2 0 2']}>
       {!screenSize ? (
         <View>
-          <Header>Relevant Tokens</Header>
           <BodyText mt={2}>
             These are coins you earned as rewards. You can transfer up to {CASHOUT_MAX}
             {maxUSD} coins to your Ethereum account (this limit will be increased as the

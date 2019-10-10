@@ -17,7 +17,7 @@ import DiscoverComponent from 'modules/discover/mobile/discover.container';
 import SinglePost from 'modules/post/mobile/singlePost.container';
 import Blocked from 'modules/profile/mobile/blocked.container';
 import Invites from 'modules/invites/mobile/invites.container';
-import Notifications from 'modules/profile/mobile/notifications.container';
+import Settings from 'modules/profile/mobile/settings.container';
 import GetTokens from 'modules/getTokens/mobile/getTokens.container';
 import VoterList from 'modules/post/mobile/voterList.container';
 import Wallet from 'modules/wallet/mobile/wallet.container';
@@ -29,7 +29,7 @@ import CommunityMembers from 'modules/community/mobile/communityMembers.componen
 
 export const DefaultStack = {
   notifications: {
-    screen: Notifications,
+    screen: Settings,
     path: 'user/profile/:id/settings'
   },
   profile: {

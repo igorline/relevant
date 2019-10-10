@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import loadable from '@loadable/component';
@@ -72,15 +72,15 @@ class App extends Component {
     authType: null
   };
 
-  componentWillMount() {
-    const { auth, history, actions, location } = this.props;
-    const { community } = auth;
-    if (community && location.pathname === '/') {
-      history.replace(`/${community}/new`);
-    }
-    // TODO don't need this if api is middleware
-    if (community) actions.setCommunity(community);
-  }
+  // componentWillMount() {
+  //   const { auth, history, actions, location } = this.props;
+  //   const { community } = auth;
+  //   if (community && location.pathname === '/') {
+  //     history.replace(`/${community}/new`);
+  //   }
+  //   // TODO don't need this if api is middleware
+  //   if (community) actions.setCommunity(community);
+  // }
 
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
@@ -245,30 +245,40 @@ class App extends Component {
 
   renderModal() {
     const {
-      location: { hash },
+      // location,
       // history,
       globalModal
+      // modalData
     } = this.props;
-    const name = globalModal || (hash && hash.substring(1));
 
-    // if (!hash && globalModal) {
-    //   history.push(location.pathname + `#${globalModal}`);
+    // const { modal, modalParams } = queryString.parse(location.search);
+    // if (!modal && globalModal) {
+    //   history.push(
+    //     location.pathname +
+    //       `${
+    //         location.search ? location.search + '&' : '?'
+    //       }modal=${globalModal}&modalParams=${JSON.stringify(modalData || null)}`
+    //   );
     // }
-    // if (hashModal) {
-    //   globalModal = hashModal;
+
+    // if (!globalModal && modal) {
+    //   const params = modalParams ? JSON.parse(modalParams) : null;
+    //   this.props.actions.showModal(modal, params);
+    //   return null;
     // }
+    // if (typeof modalData === 'string') return null;
 
-    const modalData = modals[name] || name;
-    if (typeof modalData === 'string') return null;
+    const modalEl = modals[globalModal];
+    if (!modalEl) return null;
 
-    const { Body, redirect, bodyProps = {} } = modalData;
+    const { Body, redirect, ...rest } = modalEl;
     const close = () => {
       this.props.actions.hideModal();
       this.closeModal(redirect);
     };
     return (
-      <Modal {...globalModal} close={close} name={name}>
-        <Body {...bodyProps} close={close} />
+      <Modal {...globalModal} {...rest} close={close} name={globalModal}>
+        <Body close={close} />
       </Modal>
     );
   }
@@ -302,12 +312,14 @@ class App extends Component {
         </AnimationContainer>
 
         <PriceProvider>
-          {this.renderModal()}
-          <CreatePostModal name={'newpost'} />
-          <ToastContainer />
-          <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
-            {renderRoutes(this.props.route.routes)}
-          </div>
+          <Fragment>
+            {this.renderModal()}
+            <CreatePostModal name={'newpost'} />
+            <ToastContainer />
+            <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+              {renderRoutes(this.props.route.routes)}
+            </div>
+          </Fragment>
         </PriceProvider>
       </div>
     );
@@ -319,6 +331,7 @@ const mapStateToProps = state => ({
   auth: state.auth,
   activeCommunity: state.community.active,
   navigation: state.navigation,
+  // modalData: state.navigation.modalData,
   globalModal: state.navigation.modal
 });
 
