@@ -26,22 +26,6 @@ exports[`Snapshot Balance Web 1`] = `
     <div
       className="css-text-901oao"
       dir="auto"
-      style={
-        Object {
-          "color": "rgba(0,0,0,1.00)",
-          "display": "flex",
-          "fontFamily": "HelveticaNeue-Bold",
-          "fontSize": "1.5rem",
-          "lineHeight": "2.0999999999999996rem",
-          "position": "relative",
-        }
-      }
-    >
-      Relevant Tokens
-    </div>
-    <div
-      className="css-text-901oao"
-      dir="auto"
       mt={2}
       style={
         Object {
@@ -614,12 +598,12 @@ exports[`Snapshot Balance Web 1`] = `
             "WebkitFlexBasis": "auto",
             "display": "flex",
             "flexBasis": "auto",
-            "height": "0.75rem",
+            "height": "0.85rem",
             "msFlexPreferredSize": "auto",
             "overflowX": "hidden",
             "overflowY": "hidden",
             "position": "relative",
-            "width": "0.75rem",
+            "width": "0.85rem",
             "zIndex": 0,
           }
         }

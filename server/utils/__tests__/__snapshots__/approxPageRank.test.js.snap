@@ -32,6 +32,9 @@ Object {
     "messages": 0,
     "name": "Bob",
     "notificationSettings": Object {
+      "bet": Object {
+        "manual": true,
+      },
       "desktop": Object {
         "all": false,
       },
@@ -201,6 +204,9 @@ Object {
     "messages": 0,
     "name": "Bob",
     "notificationSettings": Object {
+      "bet": Object {
+        "manual": true,
+      },
       "desktop": Object {
         "all": false,
       },
