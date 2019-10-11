@@ -1,4 +1,4 @@
-import BetBody from 'modules/post/bet';
+import BetBody from 'modules/post/bet/bet';
 
 export const investModal = {
   // title: 'Place Your Bet',

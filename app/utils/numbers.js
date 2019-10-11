@@ -117,3 +117,21 @@ export function timeLeft({ _date, index }) {
   if (index) return data[index - 1];
   return data.join(':');
 }
+
+export function timeLeftTick(_date) {
+  const now = new Date();
+  const date = new Date(_date);
+  const seconds = Math.round((date.getTime() - now.getTime()) / 1000);
+
+  const d = Math.round(seconds / (3600 * 24));
+  const h = Math.round((seconds % 24) / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+  const s = seconds % 60;
+  const abr = [` day${d > 1 ? 's' : ''} `, ':', ':', ''];
+  const fmtT = t => (t < 10 ? '0' + t : t || '00');
+  const data = [d, fmtT(h), fmtT(m), fmtT(s)]
+    .map((t, i) => (t ? t + abr[i] : null))
+    .filter(t => t);
+
+  return data.join('');
+}

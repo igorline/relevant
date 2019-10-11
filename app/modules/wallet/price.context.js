@@ -12,6 +12,10 @@ export function exchangeLink() {
   return `https://uniswap.exchange/swap?theme=dark&outputCurrency=${TOKEN_ADDRESS}`;
 }
 
+export function tokenEnabled() {
+  return !!TOKEN_ADDRESS;
+}
+
 export function usePrice(amount, type) {
   const { price } = useContext(PriceContext);
   if (!price) return '';

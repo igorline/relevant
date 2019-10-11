@@ -13,7 +13,7 @@ import SignupSocial from 'modules/auth/web/signupSocial';
 import SignupEmail from 'modules/auth/web/signupEmail';
 import SetHandle from 'modules/auth/web/handle.component';
 import ConfirmEmail from 'modules/auth/web/confirmEmail.component';
-import BetBody from 'modules/post/bet';
+import BetBody from 'modules/post/bet/bet';
 import CashOutModal from 'modules/wallet/web/cashOutModal';
 
 export const cashOut = {

@@ -88,12 +88,13 @@ export function BetButton({ size, openBetModal, post }) {
       <Tooltip data={tooltipData} name="betButton" globalEventOff={'click'}>
         <HoverButton
           w={size}
-          h={size}
+          h={size * 0.8}
           minwidth={'0'}
           bradius={size / 2}
           onPress={openBetModal}
           bg={earning ? 'transparent' : colors.gold}
           p={'0 0'}
+          c={colors.white}
           // bc={colors.gold}
           // bw={1}
           // border //= {!earning}
