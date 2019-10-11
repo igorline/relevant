@@ -35,9 +35,6 @@ if (IS_CLIENT) {
   routes.community = require(communityApi) || {}; // eslint-disable-line
 }
 
-// Deprecated remove from code
-export const setCommunity = () => {};
-
 export const request = options => (dispatch, getState) => _request(options, getState);
 
 /**

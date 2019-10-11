@@ -41,7 +41,6 @@ export function setCommunityMembers(slug, members) {
 // currently in auth, should move to community
 // export function setCommunity(community) {
 //   return dispatch => {
-//     api.setCommunity(community);
 //     return dispatch({
 //       type: types.SET_COMMUNITY,
 //       payload: community

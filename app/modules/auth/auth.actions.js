@@ -42,7 +42,6 @@ const reqOptions = async () => {
 
 export function setCommunity(community) {
   return dispatch => {
-    api.setCommunity(community);
     dispatch({
       type: types.SET_COMMUNITY,
       payload: community
