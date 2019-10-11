@@ -1,10 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import ULink from 'modules/navigation/ULink.component';
-import { Alert } from 'app/utils/alert';
-import { View, BodyText, Text } from 'modules/styled/uni';
-import { colors } from 'app/styles';
 import { storage } from 'utils';
+import {
+  enableDesktopNotifications,
+  hideBannerPrompt
+} from 'modules/activity/activity.actions';
+import { enableMobileNotifications } from 'modules/auth/auth.actions';
+import MobileAlert from './mobile.banner';
+import Banner from './banner.component';
 
 const TEXT_DEFAULTS = {
   messageText: 'Enable notifications and get alerted when people respond',
@@ -19,76 +23,57 @@ const MESSAGE_TEXT_DEFAULTS = {
   createPost: 'Get notified when someone replies to your post'
 };
 
-class PushNotification extends Component {
-  handleClick = () => {
-    this.props.actions.enableDesktopNotifications();
-  };
-
-  handleClickMobile = () => {
-    const { actions, user } = this.props;
-    actions.enableMobileNotifications(user);
-  };
-
-  handleDismiss = () => {
-    const { actions } = this.props;
-    actions.hideBannerPrompt();
-    this.dismiss();
-  };
-
-  dismiss = () => {
-    const now = new Date().getTime();
-    storage.set('pushDismissed', now);
-  };
-
-  render() {
-    const { type, messageText, actionText, dismissText, isMobile, actions } = this.props;
-    if (isMobile) {
-      Alert(true).alert(
-        'Stay up to date',
-        messageText || MESSAGE_TEXT_DEFAULTS[type],
-        [
-          {
-            text: actionText || 'Ok',
-            onPress: this.handleClickMobile
-          },
-          {
-            text: dismissText || 'Not now',
-            onPress: this.dismiss,
-            style: 'cancel'
-          }
-        ],
-        { cancelable: false }
-      );
-      actions.hideBannerPrompt();
-      return null;
-    }
-    return (
-      <View fdirection="row" justify="space-between" align="center">
-        <BodyText c={colors.black} inline={1}>
-          {messageText || MESSAGE_TEXT_DEFAULTS[type] || TEXT_DEFAULTS.messageText}
-          {': '}
-          <ULink to="#">
-            <Text inline={1} onClick={this.handleClick}>
-              {actionText || TEXT_DEFAULTS.actionText}
-            </Text>
-          </ULink>
-        </BodyText>
-        <ULink onClick={this.handleDismiss} to="#" c={colors.black}>
-          {dismissText || TEXT_DEFAULTS.dismissText}
-        </ULink>
-      </View>
-    );
-  }
-}
-
 PushNotification.propTypes = {
-  actions: PropTypes.object,
   messageText: PropTypes.string,
   actionText: PropTypes.string,
   dismissText: PropTypes.string,
   isMobile: PropTypes.bool,
-  user: PropTypes.object,
   type: PropTypes.string
 };
+
+function PushNotification({
+  messageText = TEXT_DEFAULTS.messageText,
+  actionText = TEXT_DEFAULTS.actionText,
+  dismissText = TEXT_DEFAULTS.dismissText,
+  isMobile,
+  type
+}) {
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
+
+  const handleClick = () => dispatch(enableDesktopNotifications());
+  const handleClickMobile = () => dispatch(enableMobileNotifications(user));
+
+  const handleDismiss = () => {
+    dispatch(hideBannerPrompt());
+    const now = new Date().getTime();
+    storage.set('pushDismissed', now);
+  };
+
+  const mainText = messageText || MESSAGE_TEXT_DEFAULTS[type];
+
+  if (isMobile) {
+    MobileAlert({
+      title: 'Stay up to date',
+      messageText: mainText,
+      actionText,
+      dismissText,
+      onDismiss: handleDismiss,
+      onClick: handleClickMobile
+    });
+    dispatch(hideBannerPrompt());
+    return null;
+  }
+
+  return (
+    <Banner
+      onClick={handleClick}
+      onDismiss={handleDismiss}
+      messageText={mainText + ': '}
+      dismissText={dismissText}
+      actionText={actionText}
+    />
+  );
+}
 
 export default PushNotification;

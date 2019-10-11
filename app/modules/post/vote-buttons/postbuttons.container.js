@@ -46,6 +46,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
   const community = useCommunity();
   const { user } = auth;
   const canBet = getCanBet({ post, community, user });
+  const displayBetPrompt = showBetPrompt({ post, community, user });
 
   const castVote = useCallback(
     async (e, vote, amount) => {
@@ -59,7 +60,9 @@ export default function PostButtons({ post, auth, color, horizontal }) {
           throw new Error(`You must be logged in to ${type} posts`);
 
         setProcessingVote(true);
-        const res = await dispatch(voteAction(amount, post, user, vote));
+        const res = await dispatch(
+          voteAction({ amount, post, user, vote, displayBetPrompt })
+        );
         setProcessingVote(false);
         if (!res || res.undoInvest) return;
 
@@ -75,7 +78,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         browserAlerts.alert(err.message);
       }
     },
-    [canBet, auth.isAuthenticated, user, processingVote, dispatch, post, horizontal]
+    [processingVote, auth.isAuthenticated, dispatch, post, user, displayBetPrompt, canBet, horizontal]
   );
 
   if (!post || post === 'notFound') return null;
@@ -153,6 +156,19 @@ function getTooltipData(post) {
 
 function showBetModal({ canBet, dispatch, postId }) {
   setTimeout(() => canBet && dispatch(showModal('investModal', { postId })), 1000);
+}
+
+function showBetPrompt({ post, community, user }) {
+  if (!post) return false;
+  const now = new Date();
+  const bettingEnabled = community && community.betEnabled;
+  const manualBet = user && user.notificationSettings.bet.manual;
+  return (
+    !manualBet &&
+    bettingEnabled &&
+    post.data.eligibleForReward &&
+    now.getTime() < new Date(post.data.payoutTime).getTime()
+  );
 }
 
 function getCanBet({ post, community, user }) {

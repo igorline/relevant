@@ -3,14 +3,16 @@ import * as errorActions from 'modules/ui/error.actions';
 import { api, storage } from 'app/utils';
 import { initPushNotifications } from 'app/utils/notifications';
 import { updateNotificationSettings } from 'modules/auth/auth.actions';
+import {
+  SHOW_DESKTOP_PROMPT_AFTER_DAYS,
+  SHOW_MOBILE_PROMPT_AFTER_DAYS,
+  SHOW_BET_PROMPT_AFTER_DAYS
+} from './notificationTimes';
 
 let PushNotification;
 if (process.env.WEB !== 'true') {
   PushNotification = require('react-native-push-notification');
 }
-
-const SHOW_DESKTOP_PROMPT_AFTER_DAYS = 14;
-const SHOW_MOBILE_PROMPT_AFTER_DAYS = 14;
 
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
@@ -151,6 +153,15 @@ export function enableDesktopNotifications() {
     }
   };
 }
+
+export const showBetPrompt = async dispatch => {
+  const isDismissed = await storage.isDismissed(
+    'betDismissed',
+    SHOW_BET_PROMPT_AFTER_DAYS
+  );
+  if (!isDismissed) return dispatch(showBannerPrompt('bet'));
+  return false;
+};
 
 export const showPushNotificationPrompt = (promptProps = {}) => async dispatch => {
   if (process.env.BROWSER === true) {

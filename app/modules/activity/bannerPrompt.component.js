@@ -11,32 +11,33 @@ import { colors } from 'app/styles';
 import { enableMobileNotifications } from 'modules/auth/auth.actions';
 import { View } from 'modules/styled/uni';
 import PushNotification from 'modules/activity/pushNotificationPrompt.component';
+import BetNotification from 'modules/activity/bet.banner';
 
 const PROMPT_TYPES = {
-  push: PushNotification
+  push: PushNotification,
+  bet: BetNotification
 };
 
 class BannerPrompt extends Component {
   render() {
     const { notif } = this.props;
-    if (!notif.promptType) {
-      return null;
-    }
+    if (!notif.promptType) return null;
+
     const Notification = PROMPT_TYPES[notif.promptType];
-    if (!Notification) {
-      return null;
-    }
+    if (!Notification) return null;
+
     const { promptProps } = notif;
-    let viewProps = {};
-    if (process.env.WEB === 'true') {
-      viewProps = {
-        fdirection: 'column',
-        justify: 'center',
-        flex: 1,
-        bg: colors.green,
-        p: ['0 4', '0 2']
-      };
-    }
+    const viewProps =
+      process.env.WEB === 'true'
+        ? {
+            fdirection: 'column',
+            justify: 'center',
+            flex: 1,
+            bg: colors.green,
+            p: ['0 4', '0 2']
+          }
+        : {};
+
     return (
       <View {...viewProps}>
         <Notification {...this.props} {...promptProps} />

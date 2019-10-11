@@ -10,7 +10,10 @@ import {
 } from 'core/actionTypes';
 import { api, alert } from 'app/utils';
 import { setPostsSimple } from 'modules/post/post.actions';
-import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
+import {
+  showPushNotificationPrompt,
+  showBetPrompt
+} from 'modules/activity/activity.actions';
 
 const Alert = alert.Alert();
 
@@ -83,7 +86,7 @@ export function setUsers(users) {
 }
 
 // optimistic ui
-export function vote(amount, post, user, undo) {
+export function vote({ amount, post, user, vote: undo, displayBetPrompt }) {
   return async dispatch => {
     try {
       if (undo) dispatch(undoPostVote(post._id));
@@ -104,11 +107,12 @@ export function vote(amount, post, user, undo) {
       else dispatch(updatePostVote(res.investment));
       const isComment = !!post.parentPost;
       if (amount > 0) {
-        dispatch(
+        const showingPushBanner = await dispatch(
           showPushNotificationPrompt({
             type: isComment ? 'upvoteComment' : 'upvotePost'
           })
         );
+        if (!showingPushBanner && displayBetPrompt) dispatch(showBetPrompt);
       }
       return res;
     } catch (error) {
