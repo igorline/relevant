@@ -306,8 +306,8 @@ export function getPosts(skip, tags, sort, limit, community) {
         dispatch(setTopic(data, type, skip, topic));
       } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
-    } catch (error) {
-      dispatch(errorActions.setError('discover', true, error.message));
+    } catch (err) {
+      dispatch(errorActions.setError('discover', true, err.message));
     }
   };
 }

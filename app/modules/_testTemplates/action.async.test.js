@@ -21,7 +21,7 @@ describe('async actions', () => {
 
   const queryString = queryParams(params);
 
-  it('creates SET_POSTS when getting posts has been done', () => {
+  it('creates SET_POSTS when getting posts has been done', async () => {
     fetchMock.getOnce(`${process.env.API_SERVER}/api/communityFeed${queryString}`, {
       body: [
         {
@@ -77,11 +77,9 @@ describe('async actions', () => {
       { type: types.SET_ERROR, payload: { type: 'discover', bool: false } }
     ];
 
-    const store = mockStore({ posts: [], auth: {} });
+    const store = mockStore({ posts: [], auth: {}, community: 'relevant' });
 
-    return store.dispatch(actions.getPosts(skip, null, sort, limit)).then(() => {
-      // return of async actions
-      expect(store.getActions()).toEqual(expectedActions);
-    });
+    await store.dispatch(actions.getPosts(skip, null, sort, limit));
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });
