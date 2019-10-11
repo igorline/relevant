@@ -1,6 +1,3 @@
-process.env.WEB = 'true';
-delete process.env.BROWSER;
-
 module.exports = {
   rootDir: './',
   displayName: 'Server',
