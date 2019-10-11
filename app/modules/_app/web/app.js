@@ -68,19 +68,15 @@ class App extends Component {
     navigation: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    const { history } = props;
+    history.listen(loc => this.updateCommunity(loc));
+  }
+
   state = {
     authType: null
   };
-
-  // componentWillMount() {
-  //   const { auth, history, actions, location } = this.props;
-  //   const { community } = auth;
-  //   if (community && location.pathname === '/') {
-  //     history.replace(`/${community}/new`);
-  //   }
-  //   // TODO don't need this if api is middleware
-  //   if (community) actions.setCommunity(community);
-  // }
 
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
@@ -115,6 +111,21 @@ class App extends Component {
 
     // TODO do this after a timeout
     window.addEventListener('focus', () => this.reloadTabs());
+  }
+
+  updateCommunity(location) {
+    const { actions, auth } = this.props;
+
+    const route = matchRoutes(routes, location.pathname);
+    const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
+
+    if (
+      newCommunity &&
+      newCommunity !== auth.community &&
+      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
+    ) {
+      actions.setCommunity(newCommunity);
+    }
   }
 
   initAnalytics = ({ location, history }) => {
@@ -194,17 +205,6 @@ class App extends Component {
 
   componentDidUpdate(prevProps) {
     const { actions, auth, location } = this.props;
-
-    const route = matchRoutes(routes, location.pathname);
-    const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
-
-    if (
-      newCommunity &&
-      newCommunity !== auth.community &&
-      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
-    ) {
-      actions.setCommunity(newCommunity);
-    }
 
     if (location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);

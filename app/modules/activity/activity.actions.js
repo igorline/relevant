@@ -58,14 +58,15 @@ export function getActivity(skip) {
   return async dispatch => {
     try {
       const type = 'personal';
-
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'notification',
-        path: '/',
-        auth: true,
-        query: { skip }
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'notification',
+          path: '/',
+          auth: true,
+          query: { skip }
+        })
+      );
       dispatch(setActivity(res, type, skip));
       dispatch(errorActions.setError('activity', false));
     } catch (err) {
@@ -77,42 +78,44 @@ export function getActivity(skip) {
 export function markRead() {
   return dispatch =>
     storage
-    .getToken()
-    .then(tk =>
-      fetch(`${apiServer}/markread`, {
-        ...reqOptions(tk),
-        method: 'PUT'
+      .getToken()
+      .then(tk =>
+        fetch(`${apiServer}/markread`, {
+          ...reqOptions(tk),
+          method: 'PUT'
+        })
+      )
+      .then(() => {
+        dispatch(clearCount());
       })
-    )
-    .then(() => {
-      dispatch(clearCount());
-    })
-    .catch(null);
+      .catch(null);
 }
 
 export function createNotification(obj) {
   return () =>
     storage
-    .getToken()
-    .then(tk =>
-      fetch(`${apiServer}`, {
-        ...reqOptions(tk),
-        method: 'POST',
-        body: JSON.stringify(obj)
-      })
-    )
-    .catch(null);
+      .getToken()
+      .then(tk =>
+        fetch(`${apiServer}`, {
+          ...reqOptions(tk),
+          method: 'POST',
+          body: JSON.stringify(obj)
+        })
+      )
+      .catch(null);
 }
 
 export function getNotificationCount() {
   return async dispatch => {
     try {
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'notification',
-        path: '/unread',
-        auth: true
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'notification',
+          path: '/unread',
+          auth: true
+        })
+      );
       dispatch(setCount(res.unread));
     } catch (err) {} // eslint-disable-line
   };

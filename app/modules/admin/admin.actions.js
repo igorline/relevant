@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
-import * as utils from 'app/utils';
+import { alert, api } from 'app/utils';
 
-const Alert = utils.alert.Alert();
+const Alert = alert.Alert();
 const API = process.env.API_SERVER + '/api';
 
 const inviteSchema = new schema.Entity(
@@ -71,11 +71,13 @@ export function setInviteCount(count) {
 export function getInviteCount() {
   return async dispatch => {
     try {
-      const count = await utils.api.request({
-        method: 'GET',
-        endpoint: 'invites',
-        path: '/count'
-      });
+      const count = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'invites',
+          path: '/count'
+        })
+      );
 
       dispatch(setInviteCount(count));
     } catch (err) {
@@ -87,15 +89,14 @@ export function getInviteCount() {
 export function getInvites(skip, limit, community) {
   return async dispatch => {
     try {
-      const responseJSON = await utils.api.request({
-        method: 'GET',
-        query: {
-          skip,
-          limit
-        },
-        endpoint: 'invites',
-        path: ''
-      });
+      const responseJSON = await dispatch(
+        api.request({
+          method: 'GET',
+          query: { skip, limit },
+          endpoint: 'invites',
+          path: ''
+        })
+      );
       const data = normalize(
         {
           invites: responseJSON
@@ -115,12 +116,14 @@ export function getInvites(skip, limit, community) {
 export function createInvite(invite) {
   return async dispatch => {
     try {
-      const res = await utils.api.request({
-        method: 'POST',
-        endpoint: 'invites',
-        path: '/',
-        body: JSON.stringify(invite)
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'invites',
+          path: '/',
+          body: JSON.stringify(invite)
+        })
+      );
       dispatch(updateInvite(res.invite[0]));
       dispatch(setInviteCount(res.count));
       return res;
@@ -135,12 +138,12 @@ export function createInvite(invite) {
 //   return async dispatch =>
 //     fetch(API + '/invites/email', {
 //       method: 'POST',
-//       ...(await utils.api.reqOptions()),
+//       ...(await api.reqOptions()),
 //       body: JSON.stringify({
 //         inviteId: id
 //       })
 //     })
-//     .then(utils.api.handleErrors)
+//     .then(api.handleErrors)
 //     .then(response => response.json())
 //     .then(responseJSON => {
 //       dispatch(updateInvite(responseJSON));
@@ -155,12 +158,12 @@ export function createInvite(invite) {
 //   return async dispatch =>
 //     fetch(API + '/invites', {
 //       method: 'PUT',
-//       ...(await utils.api.reqOptions()),
+//       ...(await api.reqOptions()),
 //       body: JSON.stringify({
 //         code
 //       })
 //     })
-//     .then(utils.api.handleErrors)
+//     .then(api.handleErrors)
 //     .then(response => response.json())
 //     .then(responseJSON => {
 //       dispatch(updateInvite(responseJSON));
@@ -177,81 +180,81 @@ export function destroy(invite) {
   return async dispatch =>
     fetch(API + '/invites/' + invite._id, {
       method: 'DELETE',
-      ...(await utils.api.reqOptions())
+      ...(await api.reqOptions())
     })
-    .then(utils.api.handleErrors)
-    .then(() => {
-      Alert.alert('removed item');
-      dispatch(destroyInvite(invite));
-    })
-    .catch(error => {
-      Alert.alert(error.message);
-      console.log('invites error', error);
-    });
+      .then(api.handleErrors)
+      .then(() => {
+        Alert.alert('removed item');
+        dispatch(destroyInvite(invite));
+      })
+      .catch(error => {
+        Alert.alert(error.message);
+        console.log('invites error', error);
+      });
 }
 
 export function getWaitlist() {
   return async dispatch =>
     fetch(API + '/list', {
       method: 'GET',
-      ...(await utils.api.reqOptions())
+      ...(await api.reqOptions())
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      const data = normalize(
-        {
-          wait: responseJSON
-        },
-        {
-          wait: [listSchema]
-        }
-      );
-      dispatch(setWaitlist(data));
-    })
-    .catch(error => {
-      console.log('invites error', error);
-    });
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        const data = normalize(
+          {
+            wait: responseJSON
+          },
+          {
+            wait: [listSchema]
+          }
+        );
+        dispatch(setWaitlist(data));
+      })
+      .catch(error => {
+        console.log('invites error', error);
+      });
 }
 
 export function inviteFromWaitlist(invites) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/list/', {
       method: 'PUT',
-      ...(await utils.api.reqOptions()),
+      ...(await api.reqOptions()),
       body: JSON.stringify(invites)
     })
-    .then(utils.api.handleErrors)
-    // .then(response => response.json())
-    .then(() => {
-      Alert.alert('users have been invited!');
-      dispatch(deleteWaitlistUsers(invites));
-      return true;
-    })
-    .catch(err => {
-      Alert.alert(err.message);
-      console.log(err);
-      return false;
-    });
+      .then(api.handleErrors)
+      // .then(response => response.json())
+      .then(() => {
+        Alert.alert('users have been invited!');
+        dispatch(deleteWaitlistUsers(invites));
+        return true;
+      })
+      .catch(err => {
+        Alert.alert(err.message);
+        console.log(err);
+        return false;
+      });
 }
 
 export function signupForMailingList(user) {
   return async () =>
     fetch(process.env.API_SERVER + '/api/list/', {
       method: 'POST',
-      ...(await utils.api.reqOptions()),
+      ...(await api.reqOptions()),
       body: JSON.stringify(user)
     })
-    .then(utils.api.handleErrors)
-    .then(() => {
-      Alert.alert("You've been added to the waitlist.", 'success');
-      return true;
-    })
-    .catch(err => {
-      Alert.alert(err.message);
-      console.log(err);
-      return false;
-    });
+      .then(api.handleErrors)
+      .then(() => {
+        Alert.alert("You've been added to the waitlist.", 'success');
+        return true;
+      })
+      .catch(err => {
+        Alert.alert(err.message);
+        console.log(err);
+        return false;
+      });
 }
 
 export function setDownvotes(data) {
@@ -263,29 +266,32 @@ export function setDownvotes(data) {
 
 export function getDownvotes(skip, limit) {
   return dispatch =>
-    utils.api
-    .request({
-      method: 'GET',
-      query: {
-        skip,
-        limit
-      },
-      endpoint: 'invest',
-      path: '/downvotes'
-    })
-    .then(res => dispatch(setDownvotes(res)))
-    .catch(err => Alert.alert(err.message));
+    dispatch(
+      api.request({
+        method: 'GET',
+        query: {
+          skip,
+          limit
+        },
+        endpoint: 'invest',
+        path: '/downvotes'
+      })
+    )
+      .then(res => dispatch(setDownvotes(res)))
+      .catch(err => Alert.alert(err.message));
 }
 
 export function sendEmail(email) {
-  return async () => {
+  return async dispatch => {
     try {
-      await utils.api.request({
-        method: 'PUT',
-        endpoint: 'email',
-        path: '/',
-        body: JSON.stringify(email)
-      });
+      await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'email',
+          path: '/',
+          body: JSON.stringify(email)
+        })
+      );
       Alert.alert('Email has been sent');
       return true;
     } catch (error) {
@@ -295,14 +301,16 @@ export function sendEmail(email) {
 }
 
 export function saveEmail(email) {
-  return async () => {
+  return async dispatch => {
     try {
-      await utils.api.request({
-        method: 'PUT',
-        endpoint: 'email',
-        path: '/save',
-        body: JSON.stringify(email)
-      });
+      await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'email',
+          path: '/save',
+          body: JSON.stringify(email)
+        })
+      );
       Alert.alert('Email has been saved');
       return true;
     } catch (error) {
@@ -312,13 +320,15 @@ export function saveEmail(email) {
 }
 
 export function loadEmail() {
-  return async () => {
+  return async dispatch => {
     try {
-      const responseJSON = await utils.api.request({
-        method: 'GET',
-        endpoint: 'email',
-        path: '/load'
-      });
+      const responseJSON = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'email',
+          path: '/load'
+        })
+      );
       return responseJSON;
     } catch (error) {
       return false;
@@ -331,7 +341,7 @@ export function deleteWaitlistUser(user) {
     try {
       const result = await fetch(API + '/list/' + user._id, {
         method: 'DELETE',
-        ...(await utils.api.reqOptions())
+        ...(await api.reqOptions())
       });
       // console.log(result)
       if (result) {
@@ -344,14 +354,16 @@ export function deleteWaitlistUser(user) {
 }
 
 export function sendPostNotification(post) {
-  return async () => {
+  return async dispatch => {
     try {
-      await utils.api.request({
-        method: 'POST',
-        endpoint: 'post',
-        path: '/sendPostNotification',
-        body: JSON.stringify(post)
-      });
+      await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'post',
+          path: '/sendPostNotification',
+          body: JSON.stringify(post)
+        })
+      );
       return Alert.alert('Notification sent!');
     } catch (error) {
       return false;
@@ -363,10 +375,10 @@ export function sendPostNotification(post) {
 //   return async dispatch =>
 //   fetch(API + '/list/' + user._id, {
 //     method: 'PUT',
-//     ...await utils.api.reqOptions(),
+//     ...await api.reqOptions(),
 //     body: JSON.stringify({ user })
 //   })
-//   .then(utils.api.handleErrors)
+//   .then(api.handleErrors)
 //   .then((response) => response.json())
 //   .then((responseJSON) => {
 //     dispatch(updateWaitlist(responseJSON));

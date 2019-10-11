@@ -36,11 +36,13 @@ export function parseStats(data) {
 export function getAllStats() {
   return async dispatch => {
     try {
-      const responseJSON = await api.request({
-        method: 'GET',
-        endpoint: 'statistics',
-        path: '/all'
-      });
+      const responseJSON = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'statistics',
+          path: '/all'
+        })
+      );
       return dispatch(parseStats(responseJSON));
     } catch (err) {
       return null;
@@ -53,11 +55,13 @@ export function getStats(id) {
   const past = new Date(present - 1000 * 60 * 60 * 1);
   return async dispatch => {
     try {
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'statistics',
-        path: `/change/${id}?startTime=${past}'&endTime=${present}`
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'statistics',
+          path: `/change/${id}?startTime=${past}'&endTime=${present}`
+        })
+      );
       return dispatch(addStats({ user: id, data: res }));
     } catch (err) {
       return null;

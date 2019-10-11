@@ -88,16 +88,18 @@ export function vote(amount, post, user, undo) {
     try {
       if (undo) dispatch(undoPostVote(post._id));
       else dispatch(updatePostVote({ post: post._id, amount }));
-      const res = await api.request({
-        method: 'POST',
-        endpoint: 'invest',
-        path: '/',
-        body: JSON.stringify({
-          investor: user._id,
-          amount,
-          post
+      const res = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'invest',
+          path: '/',
+          body: JSON.stringify({
+            investor: user._id,
+            amount,
+            post
+          })
         })
-      });
+      );
       if (res.undoInvest) dispatch(undoPostVote(post._id));
       else dispatch(updatePostVote(res.investment));
       const isComment = !!post.parentPost;
@@ -121,12 +123,14 @@ export function getInvestments(userId, skip, limit) {
   return async dispatch => {
     try {
       dispatch(loadingInvestments());
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'invest',
-        path: '/' + userId,
-        query: { skip, limit }
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'invest',
+          path: '/' + userId,
+          query: { skip, limit }
+        })
+      );
       const data = normalize({ investments: res }, { investments: [investmentSchema] });
       dispatch(setPostsSimple(data));
       dispatch(setInvestments(data, userId, skip));
@@ -147,12 +151,14 @@ export function getPostInvestments(postId, limit, skip) {
   return async dispatch => {
     try {
       dispatch(loadingPostInvestments(postId));
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'invest',
-        query: { skip, limit },
-        path: `/post/${postId}`
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'invest',
+          query: { skip, limit },
+          path: `/post/${postId}`
+        })
+      );
       const data = normalize({ investments: res }, { investments: [investmentSchema] });
       dispatch(setUsers(data.entities.users));
       dispatch(setPostInvestments(data, postId, skip));
@@ -165,15 +171,17 @@ export function getPostInvestments(postId, limit, skip) {
 export function bet({ postId, stakedTokens }) {
   return async dispatch => {
     try {
-      const res = await api.request({
-        method: 'POST',
-        endpoint: 'invest',
-        path: '/bet',
-        body: JSON.stringify({
-          postId,
-          stakedTokens
+      const res = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'invest',
+          path: '/bet',
+          body: JSON.stringify({
+            postId,
+            stakedTokens
+          })
         })
-      });
+      );
       return dispatch(updatePostVote(res));
     } catch (err) {
       return Alert.alert(err.message);

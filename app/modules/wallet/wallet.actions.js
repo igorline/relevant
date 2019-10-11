@@ -8,12 +8,14 @@ const Alert = alert.Alert();
 export function cashOutCall(customAmount = 0, account) {
   return async dispatch => {
     try {
-      const result = await api.request({
-        method: 'POST',
-        endpoint: 'user',
-        path: '/cashOut',
-        body: { customAmount }
-      });
+      const result = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'user',
+          path: '/cashOut',
+          body: { customAmount }
+        })
+      );
       dispatch(updateAuthUser(result));
       const { amount: amnt, sig } = result.cashOut;
 
@@ -64,12 +66,14 @@ export function connectAddress(account) {
 export function addEthAddress(msg, sig, acc) {
   return async dispatch => {
     try {
-      const result = await api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/ethAddress',
-        body: JSON.stringify({ msg, sig, acc })
-      });
+      const result = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/ethAddress',
+          body: JSON.stringify({ msg, sig, acc })
+        })
+      );
       dispatch(updateAuthUser(result));
       return true;
     } catch (err) {

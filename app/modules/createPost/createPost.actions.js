@@ -28,11 +28,13 @@ export function clearCreatePost() {
 export function submitPost(post) {
   return async dispatch => {
     try {
-      await api.request({
-        method: 'POST',
-        endpoint: 'post',
-        body: JSON.stringify(post)
-      });
+      await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'post',
+          body: JSON.stringify(post)
+        })
+      );
       dispatch(
         showPushNotificationPrompt({
           type: 'createPost'
@@ -55,7 +57,7 @@ export function generatePreviewServer(link) {
         encodeURIComponent(link),
       { method: 'GET' }
     )
-    .then(response => response.json())
-    .then(responseJSON => responseJSON)
-    .catch(Alert);
+      .then(response => response.json())
+      .then(responseJSON => responseJSON)
+      .catch(Alert);
 }

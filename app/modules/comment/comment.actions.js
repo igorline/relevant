@@ -49,12 +49,14 @@ function filterComments(comments) {
 export function createComment(commentObj) {
   return async dispatch => {
     try {
-      const comment = await api.request({
-        method: 'POST',
-        endpoint: 'comment',
-        path: '/',
-        body: JSON.stringify(commentObj)
-      });
+      const comment = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: 'comment',
+          path: '/',
+          body: JSON.stringify(commentObj)
+        })
+      );
       const { parentComment, parentPost } = comment;
       const parentId = parentComment || parentPost;
       dispatch(addComment(parentId, comment));
@@ -76,11 +78,13 @@ export function getComments(post, skip, limit) {
       if (!skip) skip = 0;
       if (!limit) limit = 0;
 
-      const responseJSON = await api.request({
-        method: 'GET',
-        endpoint: 'comment',
-        query: { post, skip, limit }
-      });
+      const responseJSON = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'comment',
+          query: { post, skip, limit }
+        })
+      );
 
       dispatch(setError('comments', false));
       const childComments = filterComments(responseJSON.data);
@@ -94,24 +98,27 @@ export function getComments(post, skip, limit) {
 
 export function updateComment(comment) {
   return dispatch =>
-    api
-    .request({
-      method: 'PUT',
-      endpoint: 'comment',
-      body: JSON.stringify(comment)
-    })
-    .then(res => dispatch(updatePost(res)))
-    .catch(error => Alert.alert(error.message));
+    dispatch(
+      api.request({
+        method: 'PUT',
+        endpoint: 'comment',
+        body: JSON.stringify(comment)
+      })
+    )
+      .then(res => dispatch(updatePost(res)))
+      .catch(error => Alert.alert(error.message));
 }
 
 export function deleteComment(id) {
   return async dispatch => {
     try {
-      await api.request({
-        method: 'DELETE',
-        endpoint: 'comment',
-        path: '/' + id
-      });
+      await dispatch(
+        api.request({
+          method: 'DELETE',
+          endpoint: 'comment',
+          path: '/' + id
+        })
+      );
       return dispatch(removePost(id));
     } catch (err) {
       return Alert.alert(err.message);

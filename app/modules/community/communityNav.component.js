@@ -46,13 +46,9 @@ export class Community extends Component {
         to={'/' + community.slug + '/new'}
         onPress={() => {
           actions.resetTabs();
-          // actions.goToTab('discover');
           requestAnimationFrame(() => {
             actions.setCommunity(community.slug);
           });
-        }}
-        onClick={() => {
-          actions.setCommunity(community.slug);
         }}
       >
         <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
