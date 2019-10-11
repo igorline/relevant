@@ -7,7 +7,7 @@ const IS_CLIENT = !IS_SERVER;
 // TODO this should be somewhere else!
 export const env = () => {
   if (process.env.WEB !== 'true') {
-    // require('../publicenv');
+    require('../publicenv');
     return process.env;
   }
   return process.env;
