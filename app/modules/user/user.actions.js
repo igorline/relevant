@@ -69,12 +69,14 @@ export function searchUser(userName) {
   const limit = 50;
   return async dispatch => {
     try {
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/search',
-        query: { limit, search: userName }
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'user',
+          path: '/search',
+          query: { limit, search: userName }
+        })
+      );
       dispatch(setUserSearch(res));
       return res;
     } catch (err) {
@@ -88,11 +90,13 @@ export function getSelectedUser(userName) {
   return async dispatch => {
     try {
       dispatch(getUserLoading());
-      const user = await api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/user/' + userName
-      });
+      const user = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'user',
+          path: '/user/' + userName
+        })
+      );
       dispatch(setSelectedUserData(user));
       dispatch(errorActions.setError('profile', false));
       return true;

@@ -51,9 +51,9 @@ export class Community extends Component {
             actions.setCommunity(community.slug);
           });
         }}
-        onClick={() => {
-          actions.setCommunity(community.slug);
-        }}
+        // onClick={() => {
+        //   actions.setCommunity(community.slug);
+        // }}
       >
         <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
       </ULink>

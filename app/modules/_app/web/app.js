@@ -192,8 +192,8 @@ class App extends Component {
     return null;
   };
 
-  componentDidUpdate(prevProps) {
-    const { actions, auth, location } = this.props;
+  componentWillUpdate(nextProps) {
+    const { actions, location, auth } = nextProps;
 
     const route = matchRoutes(routes, location.pathname);
     const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
@@ -205,6 +205,10 @@ class App extends Component {
     ) {
       actions.setCommunity(newCommunity);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { actions, auth, location } = this.props;
 
     if (location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);

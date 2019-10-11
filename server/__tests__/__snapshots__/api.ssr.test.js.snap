@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`server-side request generate correct fetch request 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Object {
+        "body": Object {
+          "data": "some data",
+        },
+        "params": Object {
+          "_id": "123",
+        },
+        "query": Object {
+          "community": "relevant",
+          "search": "user",
+        },
+        "user": undefined,
+      },
+      null,
+      [Function],
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Object {
+        "body": Object {
+          "data": "some data",
+        },
+        "params": Object {
+          "_id": "123",
+        },
+        "query": Object {
+          "community": "relevant",
+          "search": "user",
+        },
+        "user": undefined,
+      },
+    },
+  ],
+}
+`;
