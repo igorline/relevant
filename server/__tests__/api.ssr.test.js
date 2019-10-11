@@ -1,4 +1,6 @@
 delete process.env.BROWSER;
+process.env.API_SERVER = 'https://relevant.community';
+
 const { _request } = require('utils/api');
 
 jest.mock('../../server/api/user/user.controller', () => {
