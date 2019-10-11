@@ -149,8 +149,8 @@ export async function cleanupData() {
       try {
         clearFeed.push(
           Feed.findOne({ user: user._id })
-          .remove()
-          .exec()
+            .remove()
+            .exec()
         );
         user = await User.findOne({ _id: user._id });
         return user && user.remove();
@@ -177,12 +177,12 @@ export async function cleanupData() {
   const clearPosts = posts.map(async post => post.remove());
   const clearEarnings =
     Earnings.find({ user: { $in: dummies } })
-    .remove()
-    .exec() || null;
+      .remove()
+      .exec() || null;
   const clearRelevance =
     Relevance.find({ user: { $in: dummies } })
-    .remove()
-    .exec() || null;
+      .remove()
+      .exec() || null;
 
   let clearCommunity = await Community.find({
     slug: { $in: ['test_community1', 'test_community2', 'test_community3'] }
