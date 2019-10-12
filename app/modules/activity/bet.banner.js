@@ -8,6 +8,8 @@ import MobileAlert from './mobile.banner';
 import Banner from './banner.component';
 
 const TEXT = {
+  mobileText:
+    'When you upvote a post you are automatically betting some coins on it. You can customize bet amounts if you enable manual betting.',
   messageText:
     'When you upvote a post you are automatically betting some coins on it. To customize bet amounts, ',
   actionText: 'enable manual betting.',
@@ -19,7 +21,7 @@ PushNotification.propTypes = {
 };
 
 function PushNotification({ isMobile }) {
-  const { messageText, actionText, dismissText } = TEXT;
+  const { messageText, actionText, dismissText, mobileText } = TEXT;
   const dispatch = useDispatch();
 
   const onClick = () => {
@@ -34,10 +36,10 @@ function PushNotification({ isMobile }) {
 
   if (isMobile) {
     MobileAlert({
-      title: 'Stay up to date',
-      messageText,
-      actionText,
-      dismissText,
+      title: 'Enable manual betting?',
+      messageText: mobileText,
+      actionText: 'Enable',
+      // dismissText,
       onDismiss: handleDismiss,
       onClick
     });

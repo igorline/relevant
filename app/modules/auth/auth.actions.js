@@ -242,9 +242,9 @@ export function removeDeviceToken(auth) {
   };
 }
 
-export function enableMobileNotifications(user) {
+export function enableMobileNotifications(user, checkIfEnbaled) {
   return dispatch => {
-    if (!user.notificationSettings.mobile.all) return;
+    if (!user.notificationSettings.mobile.all && checkIfEnbaled) return;
     if (!PushNotification) return;
     configurePushNotifications(dispatch);
     registerPushNotification({ dispatch, user });
@@ -325,7 +325,8 @@ export function getUser(callback) {
         })
       );
       setupUser(user, dispatch);
-      dispatch(enableMobileNotifications(user));
+      const checkIfEnabled = true;
+      dispatch(enableMobileNotifications(user, checkIfEnabled));
       if (user.memberships) {
         dispatch(setUserMemberships(user.memberships));
       }

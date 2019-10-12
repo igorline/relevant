@@ -41,8 +41,8 @@ function PushNotification({
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
 
-  const handleClick = () => dispatch(enableDesktopNotifications());
-  const handleClickMobile = () => dispatch(enableMobileNotifications(user));
+  const handleClick = async () => dispatch(enableDesktopNotifications());
+  const handleClickMobile = async () => dispatch(enableMobileNotifications(user));
 
   const handleDismiss = () => {
     dispatch(hideBannerPrompt());
@@ -56,7 +56,7 @@ function PushNotification({
     MobileAlert({
       title: 'Stay up to date',
       messageText: mainText,
-      actionText,
+      actionText: 'Enable',
       dismissText,
       onDismiss: handleDismiss,
       onClick: handleClickMobile

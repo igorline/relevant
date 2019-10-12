@@ -11,7 +11,7 @@ MobileAlert.propTypes = {
 };
 
 export default function MobileAlert({
-  mainText,
+  messageText,
   actionText,
   dismissText,
   onDismiss,
@@ -19,8 +19,8 @@ export default function MobileAlert({
   title
 }) {
   return Alert(true).alert(
-    title || mainText,
-    title ? mainText : null,
+    title || messageText,
+    title ? messageText : null,
     [
       {
         text: actionText || 'Ok',

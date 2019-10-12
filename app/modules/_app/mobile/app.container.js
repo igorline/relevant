@@ -264,7 +264,7 @@ class Application extends Component {
     return (
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <AppContainer navigation={this.props.navigation} />
-        <BannerPrompt />
+        <BannerPrompt isMobile />
         {this.renderModal()}
         <Tooltip />
         <InvestAnimation />

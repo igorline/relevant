@@ -106,7 +106,7 @@ export function vote({ amount, post, user, vote: undo, displayBetPrompt }) {
       if (res.undoInvest) dispatch(undoPostVote(post._id));
       else dispatch(updatePostVote(res.investment));
       const isComment = !!post.parentPost;
-      if (amount > 0) {
+      if (amount > 0 && !undo) {
         const showingPushBanner = await dispatch(
           showPushNotificationPrompt({
             type: isComment ? 'upvoteComment' : 'upvotePost'
