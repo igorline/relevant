@@ -236,9 +236,9 @@ export function removeDeviceToken(auth) {
   };
 }
 
-export function enableMobileNotifications(user) {
+export function enableMobileNotifications(user, checkSettings) {
   return dispatch => {
-    if (!user.notificationSettings.mobile.all) return;
+    if (checkSettings && !user.notificationSettings.mobile.all) return;
     if (!PushNotification) return;
     configurePushNotifications(dispatch);
     registerPushNotification({ dispatch, user });
@@ -317,7 +317,8 @@ export function getUser(callback) {
         path: '/me'
       });
       setupUser(user, dispatch);
-      dispatch(enableMobileNotifications(user));
+      const checkSettings = true;
+      dispatch(enableMobileNotifications(user, checkSettings));
       if (user.memberships) {
         dispatch(setUserMemberships(user.memberships));
       }
@@ -340,12 +341,12 @@ export function setOnboardingStep(step) {
       method: 'GET',
       ...(await reqOptions())
     })
-    .then(response => response.json())
-    .then(responseJSON => {
-      dispatch(updateAuthUser(responseJSON));
-      return true;
-    })
-    .catch(() => false);
+      .then(response => response.json())
+      .then(responseJSON => {
+        dispatch(updateAuthUser(responseJSON));
+        return true;
+      })
+      .catch(() => false);
 }
 
 export function webOnboard(step) {
@@ -407,18 +408,16 @@ export function userOnline(user, token) {
         }
       }
     )
-    .then(response => response.json())
-    .catch(() => {
-      // Handle error?
-    });
+      .then(response => response.json())
+      .catch(() => {
+        // Handle error?
+      });
 }
 
 export function checkUser(string, type, omitSelf = false) {
   return () =>
     fetch(
-      `${
-        process.env.API_SERVER
-      }/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
+      `${process.env.API_SERVER}/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
       {
         credentials: 'include',
         method: 'GET',
@@ -428,11 +427,11 @@ export function checkUser(string, type, omitSelf = false) {
         }
       }
     )
-    .then(response => response.json())
-    .then(responseJSON => responseJSON)
-    .catch(error => {
-      Alert.alert(error.message);
-    });
+      .then(response => response.json())
+      .then(responseJSON => responseJSON)
+      .catch(error => {
+        Alert.alert(error.message);
+      });
 }
 
 export function createUser(user, invitecode) {
@@ -446,42 +445,42 @@ export function createUser(user, invitecode) {
       },
       body: JSON.stringify({ user, invitecode })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      if (responseJSON.token) {
-        return utils.storage.setToken(responseJSON.token).then(() => {
-          ReactGA &&
+      .then(utils.api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        if (responseJSON.token) {
+          return utils.storage.setToken(responseJSON.token).then(() => {
+            ReactGA &&
               ReactGA.event({
                 category: 'User',
                 action: 'Created an Account'
               });
-          TwitterCT && TwitterCT.signUp();
-          ReactPixel && ReactPixel.track('CompleteRegistration');
-          Analytics && Analytics.logEvent('Created an Account');
-          dispatch(loginUserSuccess(responseJSON.token));
-          dispatch(getUser());
-          return true;
-        });
-      }
-      if (responseJSON.errors) {
-        const { errors } = responseJSON;
-        let message = '';
-        Object.keys(errors).forEach(key => {
-          if (errors[key].message) message += errors[key].message;
-        });
-        Alert.alert(message);
+            TwitterCT && TwitterCT.signUp();
+            ReactPixel && ReactPixel.track('CompleteRegistration');
+            Analytics && Analytics.logEvent('Created an Account');
+            dispatch(loginUserSuccess(responseJSON.token));
+            dispatch(getUser());
+            return true;
+          });
+        }
+        if (responseJSON.errors) {
+          const { errors } = responseJSON;
+          let message = '';
+          Object.keys(errors).forEach(key => {
+            if (errors[key].message) message += errors[key].message;
+          });
+          Alert.alert(message);
+          return false;
+        }
         return false;
-      }
-      return false;
-    })
-    .catch(error => {
-      if (error.message.match('invitation code')) {
-        dispatch(updateInvite(null));
-      }
-      Alert.alert(error.message);
-      return false;
-    });
+      })
+      .catch(error => {
+        if (error.message.match('invitation code')) {
+          dispatch(updateInvite(null));
+        }
+        Alert.alert(error.message);
+        return false;
+      });
 }
 
 export function updateHandle(user) {
@@ -514,19 +513,19 @@ export function sendConfirmation() {
       method: 'GET',
       ...(await reqOptions())
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      Alert.alert(
-        'A confirmation email has been sent to ' + responseJSON.email,
-        'success'
-      );
-      return true;
-    })
-    .catch(err => {
-      Alert.alert('Error sending email, please try again ', err.message);
-      return false;
-    });
+      .then(utils.api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        Alert.alert(
+          'A confirmation email has been sent to ' + responseJSON.email,
+          'success'
+        );
+        return true;
+      })
+      .catch(err => {
+        Alert.alert('Error sending email, please try again ', err.message);
+        return false;
+      });
 }
 
 export function forgotPassword(user, query) {
@@ -536,13 +535,13 @@ export function forgotPassword(user, query) {
       ...(await reqOptions()),
       body: JSON.stringify({ user })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => responseJSON)
-    .catch(err => {
-      Alert.alert(err.message);
-      return false;
-    });
+      .then(utils.api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => responseJSON)
+      .catch(err => {
+        Alert.alert(err.message);
+        return false;
+      });
 }
 
 export function resetPassword(password, token) {
@@ -552,16 +551,16 @@ export function resetPassword(password, token) {
       ...(await reqOptions()),
       body: JSON.stringify({ password, token })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(() => {
-      Alert.alert('Your password has been updated! Try loggin in.', 'success');
-      return true;
-    })
-    .catch(err => {
-      Alert.alert(err.message);
-      return false;
-    });
+      .then(utils.api.handleErrors)
+      .then(response => response.json())
+      .then(() => {
+        Alert.alert('Your password has been updated! Try loggin in.', 'success');
+        return true;
+      })
+      .catch(err => {
+        Alert.alert(err.message);
+        return false;
+      });
 }
 
 export function confirmEmail(user, code) {
@@ -571,17 +570,17 @@ export function confirmEmail(user, code) {
       ...(await reqOptions()),
       body: JSON.stringify({ user, code })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      Alert.alert('Your email has been confirmed');
-      dispatch(updateAuthUser(responseJSON));
-      return true;
-    })
-    .catch(err => {
-      Alert.alert(err.message);
-      return false;
-    });
+      .then(utils.api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        Alert.alert('Your email has been confirmed');
+        dispatch(updateAuthUser(responseJSON));
+        return true;
+      })
+      .catch(err => {
+        Alert.alert(err.message);
+        return false;
+      });
 }
 
 export function setStats(stats) {
