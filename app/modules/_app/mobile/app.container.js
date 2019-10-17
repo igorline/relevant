@@ -33,7 +33,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 
-import BannerPrompt from 'modules/activity/bannerPrompt.component';
+import BannerPrompt from 'modules/bannerPrompt/banner.container';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';

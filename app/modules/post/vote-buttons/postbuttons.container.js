@@ -66,7 +66,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         setProcessingVote(false);
         if (!res || res.undoInvest) return;
 
-        type === 'upvote' && showBetModal({ dispatch, canBet, postId: post._id });
+        type === 'upvote' && canBet && showBetModal({ dispatch, postId: post._id });
 
         const rankChange = computeRankChange({ post, rankChange: res.rankChange });
         const el = investButton;
@@ -78,7 +78,16 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         browserAlerts.alert(err.message);
       }
     },
-    [processingVote, auth.isAuthenticated, dispatch, post, user, displayBetPrompt, canBet, horizontal]
+    [
+      processingVote,
+      auth.isAuthenticated,
+      dispatch,
+      post,
+      user,
+      displayBetPrompt,
+      canBet,
+      horizontal
+    ]
   );
 
   if (!post || post === 'notFound') return null;
@@ -154,8 +163,8 @@ function getTooltipData(post) {
   };
 }
 
-function showBetModal({ canBet, dispatch, postId }) {
-  setTimeout(() => canBet && dispatch(showModal('investModal', { postId })), 1000);
+function showBetModal({ dispatch, postId }) {
+  setTimeout(() => dispatch(showModal('investModal', { postId })), 1000);
 }
 
 function showBetPrompt({ post, community, user }) {

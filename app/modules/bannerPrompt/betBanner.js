@@ -1,11 +1,11 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
 import { storage } from 'utils';
 import { hideBannerPrompt } from 'modules/activity/activity.actions';
 import { updateNotificationSettings } from 'modules/auth/auth.actions';
-import MobileAlert from './mobile.banner';
-import Banner from './banner.component';
+import { isNative } from 'styles';
+import MobileAlert from './banner.mobile';
+import Banner from './banner.desktop';
 
 const TEXT = {
   mobileText:
@@ -16,11 +16,7 @@ const TEXT = {
   dismissText: 'Dismiss'
 };
 
-PushNotification.propTypes = {
-  isMobile: PropTypes.bool
-};
-
-function PushNotification({ isMobile }) {
+function PushNotification() {
   const { messageText, actionText, dismissText, mobileText } = TEXT;
   const dispatch = useDispatch();
 
@@ -28,17 +24,18 @@ function PushNotification({ isMobile }) {
     dispatch(updateNotificationSettings({ bet: { manual: true } }));
     dispatch(hideBannerPrompt());
   };
+
   const handleDismiss = () => {
     dispatch(hideBannerPrompt());
     const now = new Date().getTime();
-    storage.set('pushDismissed', now);
+    storage.set('betDismissed', now);
   };
 
-  if (isMobile) {
+  if (isNative) {
     MobileAlert({
       title: 'Enable manual betting?',
       messageText: mobileText,
-      actionText: 'Enable',
+      // actionText: 'Enable',
       // dismissText,
       onDismiss: handleDismiss,
       onClick

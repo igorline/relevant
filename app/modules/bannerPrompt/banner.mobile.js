@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { Alert } from 'app/utils/alert';
 
+const { alert } = Alert();
+
 MobileAlert.propTypes = {
   messageText: PropTypes.string,
   actionText: PropTypes.string,
@@ -18,18 +20,18 @@ export default function MobileAlert({
   onClick,
   title
 }) {
-  return Alert(true).alert(
+  return alert(
     title || messageText,
     title ? messageText : null,
     [
       {
-        text: actionText || 'Ok',
-        onPress: onClick
+        text: dismissText || 'Not Now',
+        onPress: onDismiss
+        // style: 'cancel'
       },
       {
-        text: dismissText || 'Not now',
-        onPress: onDismiss,
-        style: 'cancel'
+        text: actionText || 'Enable',
+        onPress: onClick
       }
     ],
     { cancelable: false }

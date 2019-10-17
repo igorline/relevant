@@ -6,13 +6,14 @@ import {
   enableDesktopNotifications,
   hideBannerPrompt
 } from 'modules/activity/activity.actions';
+import { isNative } from 'styles';
 import { enableMobileNotifications } from 'modules/auth/auth.actions';
-import MobileAlert from './mobile.banner';
-import Banner from './banner.component';
+import MobileAlert from './banner.mobile';
+import Banner from './banner.desktop';
 
 const TEXT_DEFAULTS = {
   messageText: 'Enable notifications and get alerted when people respond',
-  actionText: 'enable desktop notifications',
+  actionText: 'Enable',
   dismissText: 'Dismiss'
 };
 
@@ -27,7 +28,6 @@ PushNotification.propTypes = {
   messageText: PropTypes.string,
   actionText: PropTypes.string,
   dismissText: PropTypes.string,
-  isMobile: PropTypes.bool,
   type: PropTypes.string
 };
 
@@ -35,7 +35,6 @@ function PushNotification({
   messageText = TEXT_DEFAULTS.messageText,
   actionText = TEXT_DEFAULTS.actionText,
   dismissText = TEXT_DEFAULTS.dismissText,
-  isMobile,
   type
 }) {
   const user = useSelector(state => state.auth.user);
@@ -52,12 +51,12 @@ function PushNotification({
 
   const mainText = messageText || MESSAGE_TEXT_DEFAULTS[type];
 
-  if (isMobile) {
+  if (isNative) {
     MobileAlert({
       title: 'Stay up to date',
       messageText: mainText,
-      actionText: 'Enable',
-      dismissText,
+      // actionText: 'Enable',
+      // dismissText,
       onDismiss: handleDismiss,
       onClick: handleClickMobile
     });
