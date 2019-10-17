@@ -7,7 +7,7 @@ import { setCommunity } from 'modules/auth/auth.actions';
 import { withRouter } from 'react-router-dom';
 import loadable from '@loadable/component';
 
-const Modal = loadable(() => import('modules/ui/web/modal'));
+const Modal = loadable(() => import('modules/ui/modals/modal.component'));
 const CreatePost = loadable(() => import('modules/createPost/createPost.container'));
 const ModalHeader = loadable(() =>
   import('modules/createPost/web/createPostModal.header')
@@ -21,7 +21,7 @@ CreatePostModal.propTypes = {
 function CreatePostModal(props) {
   const { name, actions } = props;
   return (
-    <Modal name={name} header={<ModalHeader {...props} />}>
+    <Modal name={name} header={<ModalHeader />}>
       <CreatePost modal close={actions.hideModal} />
     </Modal>
   );

@@ -15,16 +15,15 @@ import { withRouter } from 'react-router-dom';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
-import Modal from 'modules/ui/web/modal';
+import Modal from 'modules/ui/modals/modal.container';
 import { GlobalStyle } from 'app/styles';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import SmartBanner from 'react-smartbanner';
 import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
-import * as modals from 'modules/ui/modals';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
-import CreatePostModal from 'modules/createPost/web/createPost.modal';
+// import CreatePostModal from 'modules/createPost/web/createPost.modal';
 import { PriceProvider } from 'modules/wallet/price.context';
 import styled from 'styled-components';
 
@@ -43,8 +42,7 @@ const AnimationContainer = styled.div`
 `;
 
 let ReactPixel;
-
-const DEV_MODE = process.env.NODE_ENV === 'development';
+// const DEV_MODE = process.env.NODE_ENV === 'development';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -60,10 +58,8 @@ class App extends Component {
     match: PropTypes.object,
     location: PropTypes.object,
     user: PropTypes.object,
-    children: PropTypes.node,
     history: PropTypes.object,
     route: PropTypes.object,
-    activeCommunity: PropTypes.string,
     globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     navigation: PropTypes.object
   };
@@ -145,7 +141,7 @@ class App extends Component {
       ReactPixel.pageView();
 
       // eslint-disable-next-line
-      Intercom('update');
+      // Intercom('update');
     });
   };
 
@@ -193,13 +189,13 @@ class App extends Component {
 
     if (screenSize) return null;
     // eslint-disable-next-line
-    Intercom('boot', {
-      alignment: screenSize ? 'left' : 'right',
-      app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
-      name: `${auth.user.name} @${auth.user.handle}`, // Full name
-      email: auth.user.email, // Email address
-      created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
-    });
+    // Intercom('boot', {
+    //   alignment: screenSize ? 'left' : 'right',
+    //   app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
+    //   name: `${auth.user.name} @${auth.user.handle}`, // Full name
+    //   email: auth.user.email, // Email address
+    //   created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
+    // });
     return null;
   };
 
@@ -229,58 +225,6 @@ class App extends Component {
     ) {
       this.handleUserLogin();
     }
-  }
-
-  closeModal(redirect) {
-    const { history, location } = this.props;
-    const queryParams = queryString.parse(location.search);
-    if (queryParams.redirect) {
-      history.push(queryParams.redirect);
-    } else if (redirect) {
-      history.push(redirect);
-    } else {
-      history.push(location.pathname);
-    }
-  }
-
-  renderModal() {
-    const {
-      // location,
-      // history,
-      globalModal
-      // modalData
-    } = this.props;
-
-    // const { modal, modalParams } = queryString.parse(location.search);
-    // if (!modal && globalModal) {
-    //   history.push(
-    //     location.pathname +
-    //       `${
-    //         location.search ? location.search + '&' : '?'
-    //       }modal=${globalModal}&modalParams=${JSON.stringify(modalData || null)}`
-    //   );
-    // }
-
-    // if (!globalModal && modal) {
-    //   const params = modalParams ? JSON.parse(modalParams) : null;
-    //   this.props.actions.showModal(modal, params);
-    //   return null;
-    // }
-    // if (typeof modalData === 'string') return null;
-
-    const modalEl = modals[globalModal];
-    if (!modalEl) return null;
-
-    const { Body, redirect, ...rest } = modalEl;
-    const close = () => {
-      this.props.actions.hideModal();
-      this.closeModal(redirect);
-    };
-    return (
-      <Modal {...globalModal} {...rest} close={close} name={globalModal}>
-        <Body close={close} />
-      </Modal>
-    );
   }
 
   render() {
@@ -313,8 +257,9 @@ class App extends Component {
 
         <PriceProvider>
           <Fragment>
-            {this.renderModal()}
-            <CreatePostModal name={'newpost'} />
+            <Modal />
+            {/*            <CreatePostModal name={'newpost'} />
+             */}
             <ToastContainer />
             <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
               {renderRoutes(this.props.route.routes)}
@@ -329,9 +274,8 @@ class App extends Component {
 const mapStateToProps = state => ({
   user: state.auth.user,
   auth: state.auth,
-  activeCommunity: state.community.active,
   navigation: state.navigation,
-  // modalData: state.navigation.modalData,
+  modalData: state.navigation.modalData,
   globalModal: state.navigation.modal
 });
 

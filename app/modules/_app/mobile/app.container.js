@@ -40,7 +40,7 @@ import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
-import * as modals from 'modules/ui/mobile/modals';
+import * as modals from 'modules/ui/modals/mobile.lookup';
 
 // Setting default styles for all Text components.
 const customTextProps = {
