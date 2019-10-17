@@ -1,6 +1,10 @@
 // TODO - move this stuff to setup file?
 require('./publicenv.js');
 
+process.env.WEB = 'true';
+process.env.BROWSER = true;
+process.env.NETWORK_NUMBER = 99;
+
 module.exports = {
   displayName: 'App',
   rootDir: '../',
