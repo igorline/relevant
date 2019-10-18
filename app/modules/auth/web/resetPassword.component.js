@@ -34,7 +34,7 @@ class ResetPassword extends Component {
       exact: true
     };
     const match = matchPath(location.pathname, route);
-    this.token = match.params.token;
+    this.token = match && match.params && match.params.token;
   }
 
   submit = vals => {

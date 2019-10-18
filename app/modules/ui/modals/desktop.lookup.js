@@ -87,7 +87,6 @@ export const communityMembers = {
 export const resetPassword = {
   title: 'Reset Password',
   Body: ResetPassword,
-  footer: () => {},
   redirect: '/user/login'
 };
 

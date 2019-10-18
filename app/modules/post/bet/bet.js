@@ -92,6 +92,18 @@ function Bet({ user, post }) {
       'Posts that get upvoted by lots of users with high Reputation get payouts.\n\nBet more coins and bet early in order to win the biggest portion of the payout.'
   };
 
+  // const renderNoCoin = () => (
+  //   <Overlay flex={1} align={'center'} justify={'center'} bc={'hsla(0,0%, 100%, .9)'}>
+  //     <BodyText>You don't have any Relevant Coins</BodyText>
+  //     <BodyText mt={2}>
+  //       You can get some{' '}
+  //       <ULink to={exchangeLink()} external target="_blank">
+  //         here
+  //       </ULink>
+  //     </BodyText>
+  //   </Overlay>
+  // );
+
   return (
     <View>
       <Header inline={1} mr={2}>
@@ -118,8 +130,7 @@ function Bet({ user, post }) {
         </View>
         <CircleButton onPress={plusAmount}>+</CircleButton>
       </View>
-
-      <View mt={2}>
+      <View flex={1} mt={2}>
         <View h={0.5} fdirection={'row'}>
           <View w={`${power}%`} bg={colors.blue} />
           <View w={`${100 - power}%`} bg={colors.lightBorder} />
@@ -138,7 +149,7 @@ function Bet({ user, post }) {
         </View>
       </View>
 
-      <View mt={4}>
+      <View mt={6}>
         <BetStats maxBet={maxBet} post={post} amount={amount} earning={earning} />
       </View>
 

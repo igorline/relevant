@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { showModal, hideModal } from 'modules/navigation/navigation.actions';
@@ -17,26 +17,34 @@ const isBrowser = process.env.BROWSER === true;
 function ModalContainer({ location, history }) {
   const dispatch = useDispatch();
   const { modal: currentModal, modalData } = useSelector(state => state.navigation);
+  const urlParams = queryString.parse(location.search);
+  const { modal, modalParams } = urlParams;
 
-  const { modal, modalParams } = queryString.parse(location.search);
-  if (!modal && currentModal) {
-    history.push(
-      location.pathname +
-        `${
-          location.search ? location.search + '&' : '?'
-        }modal=${currentModal}&modalParams=${JSON.stringify(modalData || null)}`
-    );
-  }
+  useEffect(() => {
+    if ((!modal && currentModal) || (modal && currentModal && modal !== currentModal)) {
+      // const paramString = modalData ? `&modalParams=${JSON.stringify(modalData)}` : '';
+      // const prefix = location.search ? location.search + '&' : '?';
+      // const qString = `${prefix}modal=${currentModal}${paramString}`;
+      const qString = queryString.stringify({
+        ...urlParams,
+        modal: currentModal,
+        modalParams: modalData
+      });
+      history.push({ search: qString });
+    }
+  }, [currentModal]); // eslint-disable-line
 
-  if (!currentModal && modal && isBrowser) {
-    const params = modalParams ? JSON.parse(modalParams) : null;
-    dispatch(showModal(modal, params));
-    return null;
-  }
+  useEffect(() => {
+    if (!currentModal && modal && isBrowser) {
+      const params = modalParams ? JSON.parse(modalParams) : null;
+      dispatch(showModal(modal, params));
+    }
+    if (currentModal && !modal) dispatch(hideModal());
+  }, [modal]); // eslint-disable-line
 
-  if (typeof modalData === 'string') return null;
+  if (!isBrowser) return null;
 
-  const modalEl = modals[currentModal];
+  const modalEl = !!currentModal && modals[modal];
   if (!modalEl) return null;
 
   const { Body, redirect, ...rest } = modalEl;

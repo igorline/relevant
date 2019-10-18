@@ -15,7 +15,7 @@ import { withRouter } from 'react-router-dom';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
-import Modal from 'modules/ui/modals/modal.container';
+import ModalContainer from 'modules/ui/modals/modal.container';
 import { GlobalStyle } from 'app/styles';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import SmartBanner from 'react-smartbanner';
@@ -23,7 +23,6 @@ import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
-// import CreatePostModal from 'modules/createPost/web/createPost.modal';
 import { PriceProvider } from 'modules/wallet/price.context';
 import styled from 'styled-components';
 
@@ -257,9 +256,7 @@ class App extends Component {
 
         <PriceProvider>
           <Fragment>
-            <Modal />
-            {/*            <CreatePostModal name={'newpost'} />
-             */}
+            <ModalContainer />
             <ToastContainer />
             <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
               {renderRoutes(this.props.route.routes)}
@@ -275,7 +272,6 @@ const mapStateToProps = state => ({
   user: state.auth.user,
   auth: state.auth,
   navigation: state.navigation,
-  modalData: state.navigation.modalData,
   globalModal: state.navigation.modal
 });
 
