@@ -36,6 +36,8 @@
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
   },
   "dependencies": {
+    "@aragon/api": "^2.0.0-beta.7",
+    "@aragon/wrapper": "^5.0.0-rc.17",
     "@babel/core": "^7.4.5",
     "@loadable/component": "^5.10.1",
     "@loadable/server": "^5.9.0",
