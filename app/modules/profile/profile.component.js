@@ -10,6 +10,7 @@ import { View, Header, AltLink, BodyText, Text } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 import { css } from 'styled-components/primitives';
 import Percent from 'modules/stats/percent.component';
+// import queryString from 'query-string';
 
 const SettingsImage = require('app/public/img/settings.svg');
 const InviteImage = require('app/public/img/invite.svg');
@@ -43,8 +44,6 @@ class Profile extends Component {
         history.push({ search: searchString });
       }
       actions.showModal('settings');
-    } else {
-      actions.hideModal();
     }
   }
 

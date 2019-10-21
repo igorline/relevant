@@ -6,7 +6,7 @@ import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { colors, layout } from 'app/styles';
 import { View } from 'modules/styled/uni';
-import BannerPrompt from 'modules/activity/bannerPrompt.component';
+import BannerPrompt from 'modules/bannerPrompt/banner.container';
 import SplashComponent from 'modules/web_splash/splash.component';
 import { slide as Menu } from 'react-burger-menu';
 import {
@@ -15,8 +15,6 @@ import {
   hideModal
 } from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';
-import Modal from 'modules/ui/web/modal';
-import SettingsComponent from 'modules/admin/web/communityAdminForm.component';
 import { getCommunities } from 'modules/community/community.actions';
 
 class WithSideNav extends Component {
@@ -94,9 +92,6 @@ class WithSideNav extends Component {
           <View display="flex" flex={1}>
             {renderRoutes(route.routes)}
           </View>
-          <Modal name="communitySettings" title="Community Settings">
-            <SettingsComponent />
-          </Modal>
         </View>
       </View>
     );

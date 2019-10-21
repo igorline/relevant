@@ -33,14 +33,14 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 
-import BannerPrompt from 'modules/activity/bannerPrompt.component';
+import BannerPrompt from 'modules/bannerPrompt/banner.container';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
-import * as modals from 'modules/ui/mobile/modals';
+import * as modals from 'modules/ui/modals/mobile.lookup';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -264,7 +264,7 @@ class Application extends Component {
     return (
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <AppContainer navigation={this.props.navigation} />
-        <BannerPrompt />
+        <BannerPrompt isMobile />
         {this.renderModal()}
         <Tooltip />
         <InvestAnimation />

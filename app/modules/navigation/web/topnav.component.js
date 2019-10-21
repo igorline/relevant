@@ -98,9 +98,7 @@ class TopNav extends Component {
 
   toggleLogin = () => {
     const { location, history } = this.props;
-    history.push({
-      search: `?redirect=${location.pathname}`
-    });
+    history.push({ search: `?redirect=${location.pathname}` });
     this.props.actions.showModal('login');
   };
 

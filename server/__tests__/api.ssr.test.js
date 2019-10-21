@@ -1,4 +1,3 @@
-delete process.env.BROWSER;
 const { _request } = require('utils/api');
 
 jest.mock('../../server/api/user/user.controller', () => {

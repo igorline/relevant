@@ -11,6 +11,9 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const mockStore = configureMockStore([thunk]);
 
+process.env.WEB = 'true';
+process.env.BROWSER = true;
+
 export function withRenderer({ state, Component, props, options = {} }) {
   const store = mockStore(state);
   return renderer.create(

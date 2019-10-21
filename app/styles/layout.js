@@ -28,7 +28,7 @@ export const MAX_POST_WIDTH = 120;
 
 export const DESKTOP_PADDING = 4;
 
-export const BANNER_PROMPT_HEIGHT = sizing(5);
+export const BANNER_PROMPT_HEIGHT = size([5, 7]);
 
 export const headerHeight = sizing(10);
 export const mainHeaderHeight = sizing(10);
