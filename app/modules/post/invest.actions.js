@@ -1,5 +1,13 @@
 import { normalize, schema } from 'normalizr';
-import * as types from 'core/actionTypes';
+import {
+  UPDATE_POST_INVESTMENTS,
+  UNDO_POST_INVESTMENT,
+  SET_POST_INVESTMENTS,
+  SET_INVESTMENTS,
+  LOADING_INVESTMENTS,
+  SET_USERS,
+  LOADING_POST_INVESTMENTS
+} from 'core/actionTypes';
 import { api, alert } from 'app/utils';
 import { setPostsSimple } from 'modules/post/post.actions';
 import { showPushNotificationPrompt } from 'modules/activity/activity.actions';
@@ -27,21 +35,21 @@ const investmentSchema = new schema.Entity(
 
 export function updatePostVote(voteObj) {
   return {
-    type: types.UPDATE_POST_INVESTMENTS,
+    type: UPDATE_POST_INVESTMENTS,
     payload: voteObj
   };
 }
 
 export function undoPostVote(post) {
   return {
-    type: types.UNDO_POST_INVESTMENT,
+    type: UNDO_POST_INVESTMENT,
     payload: post
   };
 }
 
 export function setInvestments(investments, userId, index) {
   return {
-    type: 'SET_INVESTMENTS',
+    type: SET_INVESTMENTS,
     payload: {
       investments,
       userId,
@@ -52,24 +60,24 @@ export function setInvestments(investments, userId, index) {
 
 export function loadingInvestments() {
   return {
-    type: types.LOADING_INVESTMENTS
+    type: LOADING_INVESTMENTS
   };
 }
 
 export function setPostInvestments(data, postId, skip) {
   return {
-    type: types.SET_POST_INVESTMENTS,
+    type: SET_POST_INVESTMENTS,
     payload: {
       postId,
       data,
-      index: skip
+      index: skip || 0
     }
   };
 }
 
 export function setUsers(users) {
   return {
-    type: types.SET_USERS,
+    type: SET_USERS,
     payload: users
   };
 }
@@ -91,7 +99,7 @@ export function vote(amount, post, user, undo) {
         })
       });
       if (res.undoInvest) dispatch(undoPostVote(post._id));
-      else dispatch(updatePostVote({ post: post._id, amount }));
+      else dispatch(updatePostVote(res.investment));
       const isComment = !!post.parentPost;
       if (amount > 0) {
         dispatch(
@@ -130,7 +138,7 @@ export function getInvestments(userId, skip, limit) {
 
 export function loadingPostInvestments(postId) {
   return {
-    type: types.LOADING_POST_INVESTMENTS,
+    type: LOADING_POST_INVESTMENTS,
     payload: postId
   };
 }
@@ -150,6 +158,25 @@ export function getPostInvestments(postId, limit, skip) {
       dispatch(setPostInvestments(data, postId, skip));
     } catch (err) {
       // console.warn(err);
+    }
+  };
+}
+
+export function bet({ postId, stakedTokens }) {
+  return async dispatch => {
+    try {
+      const res = await api.request({
+        method: 'POST',
+        endpoint: 'invest',
+        path: '/bet',
+        body: JSON.stringify({
+          postId,
+          stakedTokens
+        })
+      });
+      return dispatch(updatePostVote(res));
+    } catch (err) {
+      return Alert.alert(err.message);
     }
   };
 }

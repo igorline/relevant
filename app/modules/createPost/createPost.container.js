@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import RichText from 'modules/text/web/richText.component';
 import get from 'lodash.get';
 import ReactGA from 'react-ga';
+import { colors, sizing } from 'styles';
 
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as userActions from 'modules/user/user.actions';
@@ -14,9 +15,8 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text } from 'app/utils';
 
-import { View, Button, Divider, BodyText } from 'modules/styled/uni';
+import { View, Button, Divider, BodyText, LinkFont, SmallText } from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
-import { colors, sizing } from 'app/styles';
 
 import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
@@ -28,9 +28,10 @@ const urlPlaceholder = "What's relevant?  Paste article URL.";
 const textPlaceholder =
   'Add your commentary, opinion, summary or a relevant quote from the article';
 
-const PasteTextFromLink = styled(View)`
+const PasteTextFromLink = styled(SmallText)`
+  position: absolute;
   right: ${sizing(1.5)};
-  top: ${sizing(-3)};
+  bottom: ${sizing(1.5)};
 `;
 
 class CreatePostContainer extends Component {
@@ -329,11 +330,11 @@ class CreatePostContainer extends Component {
           post={this.state.urlPreview}
           link={this.state.linkPreview}
         />
-        <View display="flex" justify="flex-end" fdirection="row">
+        <SmallText display="flex" justify="flex-end" fdirection="row">
           <a onClick={this.clearUrl.bind(this)} className="removeUrl">
             remove url
           </a>
-        </View>
+        </SmallText>
       </div>
     );
   }
@@ -385,7 +386,7 @@ class CreatePostContainer extends Component {
               }
             }}
           />
-          <PasteTextFromLink display="flex" fdirection="row" justify="flex-end">
+          <PasteTextFromLink c={colors.blue}>
             {this.state.urlPreview &&
               this.state.body === '' &&
               this.state.urlPreview.description && (
@@ -447,16 +448,15 @@ class CreatePostContainer extends Component {
               <BodyText ml={0.5}>This is a chat channel</BodyText>
             </View>
           )}
-          <View fdirection="row" flex={1} justify="flex-end">
-            <Button c={colors.black} bg={colors.white} onClick={this.clearPost}>
+          <View fdirection="row" flex={1} justify="flex-end" align="center">
+            <LinkFont mr={3} onClick={this.clearPost}>
               Clear
-            </Button>
+            </LinkFont>
 
             <Button
               onClick={() => !submitDisabled && this.createPost()}
               disabled={submitDisabled}
               ml={2}
-              bb={1}
             >
               {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
             </Button>

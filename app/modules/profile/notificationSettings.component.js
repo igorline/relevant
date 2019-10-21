@@ -46,7 +46,7 @@ const NOTIFICATION_DETAILS = {
 };
 
 const NotificationToggle = ({ parent, label, notification, onChange }) => {
-  const details = NOTIFICATION_DETAILS[parent][label];
+  const details = NOTIFICATION_DETAILS[parent] && NOTIFICATION_DETAILS[parent][label];
   if (!details) return null;
   return (
     <View fdirection="row" mt={3}>

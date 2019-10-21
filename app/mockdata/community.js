@@ -16,7 +16,8 @@ export const relevant = {
   rewardFund: 0,
   currentPosts: 0,
   topics: ['technology', 'society', 'culture', 'politics', 'altwoke'],
-  channels: []
+  channels: [],
+  betEnabled: true
 };
 
 export const crypto = {
@@ -35,7 +36,7 @@ export const crypto = {
   // postCount: 10,
   // topPostShares: 3000,
   // currentShares: 600,
-  rewardFund: 10000,
+  rewardFund: 10000 * 1e18,
   // currentPosts: 0,
   topics: [
     'governance',
@@ -47,7 +48,8 @@ export const crypto = {
     'reputation',
     'curation markets'
   ],
-  channels: []
+  channels: [],
+  betEnabled: true
 };
 
 export const bandNew = {

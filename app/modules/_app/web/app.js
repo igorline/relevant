@@ -27,7 +27,10 @@ import { ToastContainer } from 'react-toastify';
 import CreatePostModal from 'modules/createPost/web/createPost.modal';
 
 const UpvoteAnimation = loadable(() =>
-  import('modules/animation/mobile/upvoteAnimation.component')
+  import('modules/animation/upvoteAnimation.component')
+);
+const DownvoteAnimation = loadable(() =>
+  import('modules/animation/downvoteAnimation.component')
 );
 
 let ReactPixel;
@@ -263,7 +266,8 @@ class App extends Component {
   }
 
   render() {
-    const { globalModal } = this.props;
+    const { globalModal, navigation } = this.props;
+    const { screenSize } = navigation;
 
     return (
       <div>
@@ -275,7 +279,13 @@ class App extends Component {
           position={'top'}
           // force={'ios'}
         />
-        <TextTooltip type={'dark'} scrollHide id="mainTooltip" multiline />
+        <TextTooltip
+          globalEventOff="click"
+          type={'dark'}
+          scrollHide
+          id="mainTooltip"
+          multiline
+        />
         {/*        <CustomTooltip id="tooltip" multiline />
          */}
         <div
@@ -287,26 +297,14 @@ class App extends Component {
           }}
         >
           <UpvoteAnimation />
+          <DownvoteAnimation />
         </div>
-
-        {/* TODO - separate modal
-        <EthTools>
-          <div style={{ display: 'flex', width: '100%' }}>{children}</div>
-          <Eth.Consumer>
-            {wallet => (
-              <AddEthAddress
-                connectAccount={connectAccount}
-                closeModal={this.closeModal.bind(this)}
-                {...this.props}
-                {...wallet}
-              />
-            )}
-          </Eth.Consumer>
-        </EthTools> */}
         {this.renderModal()}
         <CreatePostModal visible={globalModal === 'newpost'} />
         <ToastContainer />
-        {renderRoutes(this.props.route.routes)}
+        <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+          {renderRoutes(this.props.route.routes)}
+        </div>
       </div>
     );
   }

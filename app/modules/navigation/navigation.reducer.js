@@ -25,7 +25,8 @@ const initialState = {
   modal: null,
   sideNavIsOpen: false,
   width: null,
-  screenSize: 0
+  screenSize: 0,
+  modalData: null
 };
 
 function navigationState(state = initialState, action) {
@@ -51,14 +52,16 @@ function navigationState(state = initialState, action) {
     case SHOW_MODAL: {
       return {
         ...state,
-        modal: action.payload
+        modal: action.payload.modal,
+        modalData: action.payload.data
       };
     }
 
     case HIDE_MODAL: {
       return {
         ...state,
-        modal: null
+        modal: null,
+        modalData: null
       };
     }
 

@@ -81,17 +81,23 @@ describe('ethRewards', () => {
 
   describe('computeApproxPageRank', () => {
     test('should upvote and undo', async () => {
-      await testCompute(0.5);
+      await testCompute({ amount: 0.5, hasAuthor: true });
     });
   });
 
   describe('computeApproxPageRank', () => {
     test('should downvote and undo', async () => {
-      await testCompute(-0.5);
+      await testCompute({ amount: -0.5, hasAuthor: true });
     });
   });
 
-  async function testCompute(amount) {
+  describe('computeApproxPageRank', () => {
+    test('should upvote and undo with no author', async () => {
+      await testCompute({ amount: -1, hasAuthor: false });
+    });
+  });
+
+  async function testCompute({ amount, hasAuthor }) {
     const relevantVote = {
       relevanceToAdd: 10,
       community: relevant.slug,
@@ -105,14 +111,14 @@ describe('ethRewards', () => {
     bob.relevance = await Relevance.findOne({ user: bob._id, communityId, global: true });
     const startAuthorRank = bob.relevance.pagerank;
 
-    let investment = new Invest({
+    let vote = new Invest({
       ...relevantVote,
       investor: alice._id,
-      author: bob._id,
+      author: hasAuthor ? bob._id : null,
       post: postI1._id,
       ownPost: false
     });
-    investment = await investment.save();
+    vote = await vote.save();
 
     alice.relevance = await Relevance.findOne({
       user: alice._id,
@@ -122,37 +128,42 @@ describe('ethRewards', () => {
 
     let result = await computeApproxPageRank({
       user: alice,
-      author: bob,
+      author: hasAuthor ? bob : null,
       communityId,
       post: postI1,
-      investment
+      vote
     });
 
     const { author, post } = result;
 
     const authorSan = sanitize(toObject(author), 'hashedPassword lastVote salt');
     const postSan = sanitize(toObject(post));
-    authorSan.relevance.pagerank = Math.round(authorSan.relevance.pagerank * 100) / 100;
-    authorSan.relevance.pagerankRaw =
-      Math.round(authorSan.relevance.pagerankRaw * 1000) / 1000;
+    if (hasAuthor) {
+      authorSan.relevance.pagerank = Math.round(authorSan.relevance.pagerank * 100) / 100;
+      authorSan.relevance.pagerankRaw =
+        Math.round(authorSan.relevance.pagerankRaw * 1000) / 1000;
+    }
+
     postSan.data.pagerank = Math.round(postSan.data.pagerank * 100) / 100;
     postSan.data.pagerankRaw = Math.round(postSan.data.pagerankRaw * 1000) / 1000;
     postSan.data.pagerankRawNeg = Math.round(postSan.data.pagerankRawNeg * 1000) / 1000;
 
     expect({ post: postSan, author: authorSan }).toMatchSnapshot();
 
-    await investment.remove();
+    await vote.remove();
     result = await computeApproxPageRank({
       user: alice,
       author,
       communityId,
       post,
-      investment,
+      vote,
       undoInvest: true
     });
 
     pagerank = result.post.data.pagerank;
     expect(pagerank).toBeCloseTo(startPagerank, 2);
-    expect(result.author.relevance.pagerank).toBeCloseTo(startAuthorRank, 2);
+    if (hasAuthor) {
+      expect(result.author.relevance.pagerank).toBeCloseTo(startAuthorRank, 2);
+    }
   }
 });

@@ -30,8 +30,10 @@ let extractor =
     ? new ChunkExtractor({ statsFile, entrypoints: 'app' })
     : null;
 
-export function createInitialState(req) {
+export function createInitialState(req, res) {
   const cachedCommunity = req.user ? req.user.community : null;
+
+  if (cachedCommunity && req.url === '/') return res.redirect(`/${cachedCommunity}/new`);
 
   const userAgent = req.headers['user-agent']
     ? useragent.parse(req.headers['user-agent'])
@@ -59,7 +61,7 @@ export const initStore = compose(
 );
 
 export default async function handleRender(req, res) {
-  const store = initStore(req);
+  const store = initStore(req, res);
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));

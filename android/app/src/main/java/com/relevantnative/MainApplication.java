@@ -4,8 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import io.bankify.emojicompat.RNEmojiCompatTextPackage;
 import com.horcrux.svg.SvgPackage;
+import io.bankify.emojicompat.RNEmojiCompatTextPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.goldenowl.twittersignin.TwitterSigninPackage;
 import com.brentvatne.react.ReactVideoPackage;
@@ -14,7 +14,6 @@ import com.github.alinz.rnsk.RNSKPackage;
 import com.meedan.ShareMenuPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
 import cl.json.RNSharePackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.github.yamill.orientation.OrientationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -50,8 +49,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-            new RNEmojiCompatTextPackage(MainApplication.this),
             new SvgPackage(),
+            new RNEmojiCompatTextPackage(MainApplication.this),
             new RNGestureHandlerPackage(),
             new TwitterSigninPackage(),
             new ReactVideoPackage(),
@@ -60,7 +59,6 @@ public class MainApplication extends Application implements ReactApplication {
             new ShareMenuPackage(),
             new SharePackage(),
             new RNSharePackage(),
-            new ReactNativePushNotificationPackage(),
             new OrientationPackage(),
             new LinearGradientPackage(),
             new ImagePickerPackage(),

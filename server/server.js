@@ -127,7 +127,7 @@ if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'nati
   require('./queue');
 }
 
-require('./utils/updateDB-Community0.3.0');
+require('./utils/tokenAudit');
 require('./utils/ethereum').init();
 
 exports.app = app;

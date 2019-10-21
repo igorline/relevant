@@ -6,8 +6,6 @@ import {
   StatusBar,
   FlatList,
   Keyboard
-  // TouchableOpacity,
-  // Text
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { IphoneX } from 'app/styles/global';
@@ -16,8 +14,7 @@ import CommentInput from 'modules/comment/mobile/commentInput.component';
 import UserSearchComponent from 'modules/createPost/mobile/userSearch.component';
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import { View, MobileDivider, Divider } from 'modules/styled/uni';
-import PostButtons from 'modules/post/mobile/postButtons.component';
-// import Avatar from 'modules/user/UAvatar.component';
+import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import Post from './post.component';
 
 const inputOffset = IphoneX ? 59 + 33 : 59;
@@ -140,7 +137,7 @@ class SinglePostComponent extends Component {
   }
 
   scrollToComment(index) {
-    if (typeof index !== 'number') return;
+    if (typeof index !== 'number' || index < 0) return;
     this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
     const scroll = () => {
       this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
@@ -196,29 +193,29 @@ class SinglePostComponent extends Component {
     return relatedEl;
   }
 
-  repostUrl = () => {
-    const { link = {}, actions } = this.props;
-    actions.setCreatePostState({
-      postBody: '',
-      component: 'createPost',
-      nativeImage: true,
-      postUrl: link.url,
-      postImage: link.image,
-      urlPreview: {
-        image: link.image,
-        title: link.title ? link.title : 'Untitled',
-        description: link.description
-      }
-    });
-    actions.push({
-      key: 'createPost',
-      back: true,
-      title: 'Add Commentary',
-      next: 'Next',
-      direction: 'vertical',
-      left: 'Cancel'
-    });
-  };
+  // repostUrl = () => {
+  //   const { link = {}, actions } = this.props;
+  //   actions.setCreatePostState({
+  //     postBody: '',
+  //     component: 'createPost',
+  //     nativeImage: true,
+  //     postUrl: link.url,
+  //     postImage: link.image,
+  //     urlPreview: {
+  //       image: link.image,
+  //       title: link.title ? link.title : 'Untitled',
+  //       description: link.description
+  //     }
+  //   });
+  //   actions.push({
+  //     key: 'createPost',
+  //     back: true,
+  //     title: 'Add Commentary',
+  //     next: 'Next',
+  //     direction: 'vertical',
+  //     left: 'Cancel'
+  //   });
+  // };
 
   renderHeader() {
     const { post, link, actions, navigation } = this.props;
@@ -289,17 +286,20 @@ class SinglePostComponent extends Component {
           nestingLevel={nestingLevel}
           user={user}
           renderButtons={() => (
-            <PostButtons
-              isComment
-              parentPost={post}
-              post={comment}
-              actions={actions}
-              auth={auth}
-              navigation={navigation}
-              // myPostInv={myPostInv[comment._id]}
-              setupReply={setupReply}
-              focusInput={focusInput}
-            />
+            <View m={'2 0'}>
+              <ButtonContainer
+                horizontal
+                isComment
+                parentPost={post}
+                post={comment}
+                actions={actions}
+                auth={auth}
+                navigation={navigation}
+                // myPostInv={myPostInv[comment._id]}
+                setupReply={setupReply}
+                focusInput={focusInput}
+              />
+            </View>
           )}
         />
       </View>

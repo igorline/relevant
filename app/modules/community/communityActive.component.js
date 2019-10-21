@@ -6,6 +6,7 @@ import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
 import { View, CommunityLink, SecondaryText, BodyText } from 'modules/styled/uni';
 import { Linkify } from 'app/utils/text';
+import { SIDE_NAV_PADDING } from 'styles/layout';
 
 class CommunityActive extends Component {
   static propTypes = {
@@ -63,9 +64,9 @@ class CommunityActive extends Component {
     const sort = get(view, 'discover.sort') || 'new';
     return (
       <View bg={colors.white} mr={'1px'}>
-        <View mt={[4, 2]} />
+        <View mt={[SIDE_NAV_PADDING, 2]} />
         {children}
-        <View bb p={['0 4 4 4', '0 2 4 2']}>
+        <View bb p={[`0 ${SIDE_NAV_PADDING} 4 ${SIDE_NAV_PADDING}`, '0 2 4 2']}>
           <View m={'0.5 0 0 5.5'}>
             {topics.map(topic => (
               <ULink
@@ -84,13 +85,13 @@ class CommunityActive extends Component {
             ))}
           </View>
 
-          <View mt={[3, 2]}>
+          <View mt={[SIDE_NAV_PADDING, 2]}>
             <BodyText>
               <Linkify>{community.description}</Linkify>
             </BodyText>
           </View>
 
-          <View mt={3} mb={2} fdirection="row" justify="space-between">
+          <View mt={SIDE_NAV_PADDING} mb={2} fdirection="row" justify="space-between">
             <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
             <ULink to="#" onPress={viewCommunityMembers} onClick={viewCommunityMembers}>
               <CommunityLink c={colors.blue}>See All</CommunityLink>
@@ -102,7 +103,6 @@ class CommunityActive extends Component {
               <UAvatar
                 key={member._id}
                 user={member.embeddedUser}
-                size={4}
                 actions={actions}
                 m={'0 1 1 0'}
               />

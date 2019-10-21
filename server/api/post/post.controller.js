@@ -38,8 +38,8 @@ async function findRelatedPosts(metaId) {
       { $text: { $search: search }, _id: { $ne: metaId } },
       { score: { $meta: 'textScore' } }
     )
-    .sort({ score: { $meta: 'textScore' } })
-    .limit(5);
+      .sort({ score: { $meta: 'textScore' } })
+      .limit(5);
     return posts;
   } catch (err) {
     throw new Error(err);
@@ -51,35 +51,35 @@ exports.flagged = async (req, res, next) => {
     const { community, limit, skip } = req.query;
 
     const posts = await Post.find({ flagged: true })
-    .populate([
-      {
-        path: 'metaPost'
-      },
-      {
-        path: 'parentPost',
-        populate: 'metaPost'
-      },
-      {
-        path: 'post',
-        populate: [
-          {
-            path: 'commentary',
-            match: {
-              repost: { $exists: false },
-              $or: [{ hidden: { $ne: true } }]
+      .populate([
+        {
+          path: 'metaPost'
+        },
+        {
+          path: 'parentPost',
+          populate: 'metaPost'
+        },
+        {
+          path: 'post',
+          populate: [
+            {
+              path: 'commentary',
+              match: {
+                repost: { $exists: false },
+                $or: [{ hidden: { $ne: true } }]
+              }
+            },
+            {
+              path: 'embeddedUser.relevance',
+              match: { community, global: true },
+              select: 'pagerank'
             }
-          },
-          {
-            path: 'embeddedUser.relevance',
-            match: { community, global: true },
-            select: 'pagerank'
-          }
-        ]
-      }
-    ])
-    .skip(parseInt(skip, 10))
-    .limit(parseInt(limit, 10))
-    .sort('-createdAt');
+          ]
+        }
+      ])
+      .skip(parseInt(skip, 10))
+      .limit(parseInt(limit, 10))
+      .sort('-createdAt');
 
     res.status(200).json(posts);
   } catch (err) {
@@ -94,30 +94,30 @@ exports.topPosts = async (req, res, next) => {
     const now = new Date();
     now.setDate(now.getDate() - 7);
     posts = await PostData.find({ createdAt: { $gt: now }, isInFeed: true })
-    .populate({
-      path: 'post',
-      populate: [
-        // {
-        //   path: 'commentary',
-        //   match: {
-        //     // TODO implement intra-community commentary
-        //     // community,
-        //     // TODO - we should probably sort the non-community commentary
-        //     // with some randomness on client side
-        //     repost: { $exists: false },
-        //     $or: [{ hidden: { $ne: true } }]
-        //   }
-        // },
-        // {
-        //   path: 'embeddedUser.relevance',
-        //   match: { community, global: true },
-        //   select: 'pagerank'
-        // },
-        { path: 'metaPost' }
-      ]
-    })
-    .sort('-pagerank')
-    .limit(20);
+      .populate({
+        path: 'post',
+        populate: [
+          // {
+          //   path: 'commentary',
+          //   match: {
+          //     // TODO implement intra-community commentary
+          //     // community,
+          //     // TODO - we should probably sort the non-community commentary
+          //     // with some randomness on client side
+          //     repost: { $exists: false },
+          //     $or: [{ hidden: { $ne: true } }]
+          //   }
+          // },
+          // {
+          //   path: 'embeddedUser.relevance',
+          //   match: { community, global: true },
+          //   select: 'pagerank'
+          // },
+          { path: 'metaPost' }
+        ]
+      })
+      .sort('-pagerank')
+      .limit(20);
 
     // TODO do this on frontend?
     posts = posts.filter(d => d.post);
@@ -137,9 +137,7 @@ exports.sendPostNotification = async (req, res, next) => {
     const post = req.body;
     const users = await User.find({});
 
-    const alert = `In case you missed this top-ranked post from @${post.user}: ${
-      post.title
-    }`;
+    const alert = `In case you missed this top-ranked post from @${post.user}: ${post.title}`;
 
     // TODO - optimize this or put in queue so we don't create a bottle neck;
     const finished = users.map(async user => {
@@ -283,61 +281,61 @@ exports.userPosts = async (req, res, next) => {
       : [];
 
     const posts = await Post.find(query)
-    .populate({
-      path: 'repost.post',
-      populate: [
-        {
-          path: 'embeddedUser.relevance',
-          select: 'pagerank',
-          match: { communityId, global: true }
-        },
-        {
-          path: 'metaPost'
-        },
+      .populate({
+        path: 'repost.post',
+        populate: [
+          {
+            path: 'embeddedUser.relevance',
+            select: 'pagerank',
+            match: { communityId, global: true }
+          },
+          {
+            path: 'metaPost'
+          },
+          {
+            path: 'data',
+            match: { communityId }
+          }
+        ]
+      })
+      .populate({
+        path: 'parentPost',
+        populate: [
+          {
+            path: 'data',
+            match: { communityId }
+          },
+          { path: 'metaPost' },
+          ...myVote
+        ]
+      })
+      .populate({
+        path: 'parentComment',
+        populate: [
+          {
+            path: 'data',
+            match: { communityId }
+          },
+          { path: 'metaPost' },
+          ...myVote
+        ]
+      })
+      .populate({ path: 'metaPost ' })
+      .populate({
+        path: 'embeddedUser.relevance',
+        select: 'pagerank',
+        match: { communityId, global: true }
+      })
+      .populate([
         {
           path: 'data',
           match: { communityId }
-        }
-      ]
-    })
-    .populate({
-      path: 'parentPost',
-      populate: [
-        {
-          path: 'data',
-          match: { communityId }
         },
-        { path: 'metaPost' },
         ...myVote
-      ]
-    })
-    .populate({
-      path: 'parentComment',
-      populate: [
-        {
-          path: 'data',
-          match: { communityId }
-        },
-        { path: 'metaPost' },
-        ...myVote
-      ]
-    })
-    .populate({ path: 'metaPost ' })
-    .populate({
-      path: 'embeddedUser.relevance',
-      select: 'pagerank',
-      match: { communityId, global: true }
-    })
-    .populate([
-      {
-        path: 'data',
-        match: { communityId }
-      },
-      ...myVote
-    ])
-    .limit(limit)
-    .skip(skip)
-    .sort(sortQuery);
+      ])
+      .limit(limit)
+      .skip(skip)
+      .sort(sortQuery);
 
     return res.status(200).json(posts);
   } catch (err) {
@@ -367,9 +365,16 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
       'User-Agent':
         'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot'
     };
-    const noFb = uri.match('apple.news') || uri.match('bloomberg.com');
+    const relevantHeader = {
+      'User-Agent':
+        'This is a user request for article matadata for Relevant Community (https://relevant.community | info@relevant.community)'
+    };
+    const noFb =
+      uri.match('apple.news') ||
+      uri.match('bloomberg.com') ||
+      uri.match('washingtonpost.com');
 
-    if (noFb) return {};
+    if (noFb) return relevantHeader;
     return fbHeader;
   }
 
@@ -616,9 +621,7 @@ async function processSubscriptions(newPost, communityId) {
             { read: true },
             { multi: true }
           );
-          const alert = `There is a new post from ${author.name} in the ${
-            cObj.name
-          } community`;
+          const alert = `There is a new post from ${author.name} in the ${cObj.name} community`;
 
           const payload = {
             fromUser: author,
@@ -662,6 +665,12 @@ exports.create = async (req, res, next) => {
   try {
     const { user } = req;
     const { community, communityId } = req.communityMember;
+
+    if (user.banned) {
+      throw new Error(
+        'You are temporarily blocked from making new posts, if you think this is an error, please reach out to info@relevant.community'
+      );
+    }
 
     const { channel, body } = req.body;
     // TODO rate limiting?
