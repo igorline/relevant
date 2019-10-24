@@ -189,189 +189,29 @@ exports[`Snapshot other users Profile 1`] = `
           Alice
         </div>
         <div
-          className="css-view-1dbjc4n"
-          style={
-            Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "horizontal",
-              "WebkitFlexDirection": "row",
-              "alignItems": "baseline",
-              "display": "flex",
-              "flexDirection": "row",
-              "marginRight": "1rem",
-              "msFlexAlign": "baseline",
-              "msFlexDirection": "row",
-              "position": "relative",
-            }
-          }
-        >
-          <div
-            className="css-view-1dbjc4n"
-            style={
-              Object {
-                "WebkitFlexBasis": "auto",
-                "bottom": "-1px",
-                "display": "flex",
-                "flexBasis": "auto",
-                "height": "0.875rem",
-                "marginRight": "0.0875rem",
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
-                "position": "relative",
-                "width": "0.875rem",
-                "zIndex": 0,
-              }
-            }
-          >
-            <div
-              className="css-view-1dbjc4n"
-              style={
-                Object {
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"r-emoji.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "contain",
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-            <img
-              alt=""
-              className="css-accessibilityImage-9pa8cd"
-              draggable={false}
-              src="r-emoji.png"
-            />
-          </div>
-          <div
-            className="css-text-901oao"
-            dir="auto"
-            inline={0}
-            style={
-              Object {
-                "color": "rgba(0,0,0,1.00)",
-                "display": "flex",
-                "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "0.875rem",
-                "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
-              }
-            }
-          >
-            11
-          </div>
-        </div>
-        <div
-          align="baseline"
           className="css-text-901oao"
           dir="auto"
-          mr={2}
           style={
             Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "alignItems": "baseline",
-              "color": "rgba(0,0,0,1.00)",
               "display": "flex",
-              "fontFamily": "HelveticaNeue-CondensedBold",
-              "fontSize": "0.875rem",
-              "lineHeight": "1.2249999999999999rem",
-              "marginRight": "1rem",
-              "msFlexAlign": "baseline",
               "position": "relative",
-            }
-          }
-          user={
-            Object {
-              "_id": "a00000000000000000000000",
-              "airdropTokens": 111,
-              "balance": 111,
-              "bio": "hi i'm alice!",
-              "email": "alice@alice.com",
-              "ethAddress": Array [
-                "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-              ],
-              "handle": "alice",
-              "image": "alice-pic.jpg",
-              "lockedTokens": 0,
-              "name": "Alice",
-              "notificationSettings": Object {
-                "bet": Object {
-                  "manual": true,
-                },
-              },
-              "password": "test",
-              "relevance": Object {
-                "pagerank": 11,
-              },
             }
           }
         >
           <span
-            c="#7ED321"
+            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            fs={1.75}
+            inline={1}
+            pr={1.5}
             style={
               Object {
-                "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-                "color": "rgba(126,211,33,1.00)",
-                "display": "flex",
-                "fontSize": "0.875rem",
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
+                "alignItems": "baseline",
+                "msFlexAlign": "baseline",
+                "paddingRight": "0.75rem",
                 "position": "relative",
-                "textDecorationColor": "rgba(126,211,33,1.00)",
-              }
-            }
-          >
-            ▲ 
-          </span>
-          0
-          %
-        </div>
-        <div
-          className="css-view-1dbjc4n"
-          style={
-            Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "horizontal",
-              "WebkitFlexDirection": "row",
-              "alignItems": "baseline",
-              "display": "flex",
-              "flexDirection": "row",
-              "marginRight": "0.75rem",
-              "msFlexAlign": "baseline",
-              "msFlexDirection": "row",
-              "position": "relative",
-            }
-          }
-        >
-          <div
-            className="css-view-1dbjc4n"
-            style={
-              Object {
-                "WebkitFlexBasis": "auto",
-                "bottom": "-1px",
-                "display": "flex",
-                "flexBasis": "auto",
-                "height": "0.875rem",
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
-                "position": "relative",
-                "width": "0.9187500000000001rem",
-                "zIndex": 0,
               }
             }
           >
@@ -379,50 +219,217 @@ exports[`Snapshot other users Profile 1`] = `
               className="css-view-1dbjc4n"
               style={
                 Object {
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"relevantcoin.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "contain",
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
+                  "WebkitFlexBasis": "auto",
+                  "bottom": "-1px",
+                  "display": "inline-flex",
+                  "flexBasis": "auto",
+                  "height": "0.875rem",
+                  "msFlexPreferredSize": "auto",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
+                  "position": "relative",
+                  "width": "0.875rem",
+                  "zIndex": 0,
                 }
               }
-            />
-            <img
-              alt=""
-              className="css-accessibilityImage-9pa8cd"
-              draggable={false}
-              src="relevantcoin.png"
-            />
-          </div>
-          <div
-            className="css-text-901oao"
+            >
+              <div
+                className="css-view-1dbjc4n"
+                style={
+                  Object {
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"r-emoji.png\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "contain",
+                    "bottom": "0px",
+                    "display": "inline-flex",
+                    "height": "100%",
+                    "left": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                className="css-accessibilityImage-9pa8cd"
+                draggable={false}
+                src="r-emoji.png"
+              />
+            </div>
+             
+            <span
+              className="css-text-901oao css-textHasAncestor-16my406"
+              dir="auto"
+              inline={1}
+              style={
+                Object {
+                  "color": "rgba(0,0,0,1.00)",
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "position": "relative",
+                }
+              }
+            >
+              11
+            </span>
+          </span>
+            
+          <span
+            align="baseline"
+            className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            inline={0}
-            ml={0.4375}
+            mr={2}
             style={
               Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
+                "alignItems": "baseline",
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue-CondensedBold",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "marginLeft": "0.21875rem",
+                "marginRight": "1rem",
+                "msFlexAlign": "baseline",
+                "position": "relative",
+              }
+            }
+            user={
+              Object {
+                "_id": "a00000000000000000000000",
+                "airdropTokens": 111,
+                "balance": 111,
+                "bio": "hi i'm alice!",
+                "email": "alice@alice.com",
+                "ethAddress": Array [
+                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                ],
+                "handle": "alice",
+                "image": "alice-pic.jpg",
+                "lockedTokens": 0,
+                "name": "Alice",
+                "notificationSettings": Object {
+                  "bet": Object {
+                    "manual": true,
+                  },
+                },
+                "password": "test",
+                "relevance": Object {
+                  "pagerank": 11,
+                },
+              }
+            }
+          >
+            <span
+              c="#7ED321"
+              className="css-text-901oao css-textHasAncestor-16my406"
+              dir="auto"
+              fs={1.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
+                  "color": "rgba(126,211,33,1.00)",
+                  "display": "flex",
+                  "fontSize": "0.875rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(126,211,33,1.00)",
+                }
+              }
+            >
+              ▲ 
+            </span>
+            0
+            %
+          </span>
+             
+          <span
+            align="baseline"
+            className="css-text-901oao css-textHasAncestor-16my406"
+            dir="auto"
+            inline={1}
+            mr={0}
+            style={
+              Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
+                "alignItems": "baseline",
+                "msFlexAlign": "baseline",
                 "position": "relative",
               }
             }
           >
-            
-            111
-            
-          </div>
+            <div
+              className="css-view-1dbjc4n"
+              style={
+                Object {
+                  "WebkitFlexBasis": "auto",
+                  "bottom": "-1px",
+                  "display": "inline-flex",
+                  "flexBasis": "auto",
+                  "height": "0.875rem",
+                  "msFlexPreferredSize": "auto",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
+                  "position": "relative",
+                  "width": "0.9187500000000001rem",
+                  "zIndex": 0,
+                }
+              }
+            >
+              <div
+                className="css-view-1dbjc4n"
+                style={
+                  Object {
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"relevantcoin.png\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "contain",
+                    "bottom": "0px",
+                    "display": "inline-flex",
+                    "height": "100%",
+                    "left": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                className="css-accessibilityImage-9pa8cd"
+                draggable={false}
+                src="relevantcoin.png"
+              />
+            </div>
+            <span
+              className="css-text-901oao css-textHasAncestor-16my406"
+              dir="auto"
+              inline={1}
+              ml={0}
+              style={
+                Object {
+                  "color": "rgba(0,0,0,1.00)",
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "position": "relative",
+                }
+              }
+            >
+               
+              111
+              
+            </span>
+          </span>
         </div>
       </div>
       <div
@@ -690,189 +697,29 @@ exports[`Snapshot own Profile 1`] = `
           Alice
         </div>
         <div
-          className="css-view-1dbjc4n"
-          style={
-            Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "horizontal",
-              "WebkitFlexDirection": "row",
-              "alignItems": "baseline",
-              "display": "flex",
-              "flexDirection": "row",
-              "marginRight": "1rem",
-              "msFlexAlign": "baseline",
-              "msFlexDirection": "row",
-              "position": "relative",
-            }
-          }
-        >
-          <div
-            className="css-view-1dbjc4n"
-            style={
-              Object {
-                "WebkitFlexBasis": "auto",
-                "bottom": "-1px",
-                "display": "flex",
-                "flexBasis": "auto",
-                "height": "0.875rem",
-                "marginRight": "0.0875rem",
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
-                "position": "relative",
-                "width": "0.875rem",
-                "zIndex": 0,
-              }
-            }
-          >
-            <div
-              className="css-view-1dbjc4n"
-              style={
-                Object {
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"r-emoji.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "contain",
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
-                }
-              }
-            />
-            <img
-              alt=""
-              className="css-accessibilityImage-9pa8cd"
-              draggable={false}
-              src="r-emoji.png"
-            />
-          </div>
-          <div
-            className="css-text-901oao"
-            dir="auto"
-            inline={0}
-            style={
-              Object {
-                "color": "rgba(0,0,0,1.00)",
-                "display": "flex",
-                "fontFamily": "HelveticaNeue-CondensedBold",
-                "fontSize": "0.875rem",
-                "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
-              }
-            }
-          >
-            11
-          </div>
-        </div>
-        <div
-          align="baseline"
           className="css-text-901oao"
           dir="auto"
-          mr={2}
           style={
             Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "alignItems": "baseline",
-              "color": "rgba(0,0,0,1.00)",
               "display": "flex",
-              "fontFamily": "HelveticaNeue-CondensedBold",
-              "fontSize": "0.875rem",
-              "lineHeight": "1.2249999999999999rem",
-              "marginRight": "1rem",
-              "msFlexAlign": "baseline",
               "position": "relative",
-            }
-          }
-          user={
-            Object {
-              "_id": "a00000000000000000000000",
-              "airdropTokens": 111,
-              "balance": 111,
-              "bio": "hi i'm alice!",
-              "email": "alice@alice.com",
-              "ethAddress": Array [
-                "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-              ],
-              "handle": "alice",
-              "image": "alice-pic.jpg",
-              "lockedTokens": 0,
-              "name": "Alice",
-              "notificationSettings": Object {
-                "bet": Object {
-                  "manual": true,
-                },
-              },
-              "password": "test",
-              "relevance": Object {
-                "pagerank": 11,
-              },
             }
           }
         >
           <span
-            c="#7ED321"
+            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            fs={1.75}
+            inline={1}
+            pr={1.5}
             style={
               Object {
-                "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-                "color": "rgba(126,211,33,1.00)",
-                "display": "flex",
-                "fontSize": "0.875rem",
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
+                "alignItems": "baseline",
+                "msFlexAlign": "baseline",
+                "paddingRight": "0.75rem",
                 "position": "relative",
-                "textDecorationColor": "rgba(126,211,33,1.00)",
-              }
-            }
-          >
-            ▲ 
-          </span>
-          0
-          %
-        </div>
-        <div
-          className="css-view-1dbjc4n"
-          style={
-            Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "horizontal",
-              "WebkitFlexDirection": "row",
-              "alignItems": "baseline",
-              "display": "flex",
-              "flexDirection": "row",
-              "marginRight": "0.75rem",
-              "msFlexAlign": "baseline",
-              "msFlexDirection": "row",
-              "position": "relative",
-            }
-          }
-        >
-          <div
-            className="css-view-1dbjc4n"
-            style={
-              Object {
-                "WebkitFlexBasis": "auto",
-                "bottom": "-1px",
-                "display": "flex",
-                "flexBasis": "auto",
-                "height": "0.875rem",
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
-                "position": "relative",
-                "width": "0.9187500000000001rem",
-                "zIndex": 0,
               }
             }
           >
@@ -880,50 +727,217 @@ exports[`Snapshot own Profile 1`] = `
               className="css-view-1dbjc4n"
               style={
                 Object {
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"relevantcoin.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "contain",
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
+                  "WebkitFlexBasis": "auto",
+                  "bottom": "-1px",
+                  "display": "inline-flex",
+                  "flexBasis": "auto",
+                  "height": "0.875rem",
+                  "msFlexPreferredSize": "auto",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
+                  "position": "relative",
+                  "width": "0.875rem",
+                  "zIndex": 0,
                 }
               }
-            />
-            <img
-              alt=""
-              className="css-accessibilityImage-9pa8cd"
-              draggable={false}
-              src="relevantcoin.png"
-            />
-          </div>
-          <div
-            className="css-text-901oao"
+            >
+              <div
+                className="css-view-1dbjc4n"
+                style={
+                  Object {
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"r-emoji.png\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "contain",
+                    "bottom": "0px",
+                    "display": "inline-flex",
+                    "height": "100%",
+                    "left": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                className="css-accessibilityImage-9pa8cd"
+                draggable={false}
+                src="r-emoji.png"
+              />
+            </div>
+             
+            <span
+              className="css-text-901oao css-textHasAncestor-16my406"
+              dir="auto"
+              inline={1}
+              style={
+                Object {
+                  "color": "rgba(0,0,0,1.00)",
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "position": "relative",
+                }
+              }
+            >
+              11
+            </span>
+          </span>
+            
+          <span
+            align="baseline"
+            className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            inline={0}
-            ml={0.4375}
+            mr={2}
             style={
               Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
+                "alignItems": "baseline",
                 "color": "rgba(0,0,0,1.00)",
                 "display": "flex",
                 "fontFamily": "HelveticaNeue-CondensedBold",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "marginLeft": "0.21875rem",
+                "marginRight": "1rem",
+                "msFlexAlign": "baseline",
+                "position": "relative",
+              }
+            }
+            user={
+              Object {
+                "_id": "a00000000000000000000000",
+                "airdropTokens": 111,
+                "balance": 111,
+                "bio": "hi i'm alice!",
+                "email": "alice@alice.com",
+                "ethAddress": Array [
+                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
+                ],
+                "handle": "alice",
+                "image": "alice-pic.jpg",
+                "lockedTokens": 0,
+                "name": "Alice",
+                "notificationSettings": Object {
+                  "bet": Object {
+                    "manual": true,
+                  },
+                },
+                "password": "test",
+                "relevance": Object {
+                  "pagerank": 11,
+                },
+              }
+            }
+          >
+            <span
+              c="#7ED321"
+              className="css-text-901oao css-textHasAncestor-16my406"
+              dir="auto"
+              fs={1.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
+                  "color": "rgba(126,211,33,1.00)",
+                  "display": "flex",
+                  "fontSize": "0.875rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(126,211,33,1.00)",
+                }
+              }
+            >
+              ▲ 
+            </span>
+            0
+            %
+          </span>
+             
+          <span
+            align="baseline"
+            className="css-text-901oao css-textHasAncestor-16my406"
+            dir="auto"
+            inline={1}
+            mr={0}
+            style={
+              Object {
+                "WebkitAlignItems": "baseline",
+                "WebkitBoxAlign": "baseline",
+                "alignItems": "baseline",
+                "msFlexAlign": "baseline",
                 "position": "relative",
               }
             }
           >
-            
-            111
-            
-          </div>
+            <div
+              className="css-view-1dbjc4n"
+              style={
+                Object {
+                  "WebkitFlexBasis": "auto",
+                  "bottom": "-1px",
+                  "display": "inline-flex",
+                  "flexBasis": "auto",
+                  "height": "0.875rem",
+                  "msFlexPreferredSize": "auto",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
+                  "position": "relative",
+                  "width": "0.9187500000000001rem",
+                  "zIndex": 0,
+                }
+              }
+            >
+              <div
+                className="css-view-1dbjc4n"
+                style={
+                  Object {
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"relevantcoin.png\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "contain",
+                    "bottom": "0px",
+                    "display": "inline-flex",
+                    "height": "100%",
+                    "left": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                className="css-accessibilityImage-9pa8cd"
+                draggable={false}
+                src="relevantcoin.png"
+              />
+            </div>
+            <span
+              className="css-text-901oao css-textHasAncestor-16my406"
+              dir="auto"
+              inline={1}
+              ml={0}
+              style={
+                Object {
+                  "color": "rgba(0,0,0,1.00)",
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "position": "relative",
+                }
+              }
+            >
+               
+              111
+              
+            </span>
+          </span>
         </div>
       </div>
       <a

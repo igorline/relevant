@@ -22,7 +22,7 @@ describe('async actions', () => {
   const queryString = queryParams(params);
 
   it('creates SET_POSTS when getting posts has been done', async () => {
-    fetchMock.getOnce(`${process.env.API_SERVER}/api/communityFeed${queryString}`, {
+    fetchMock.getOnce(`/api/communityFeed${queryString}`, {
       body: [
         {
           _id: 'parent1',

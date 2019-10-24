@@ -29,12 +29,7 @@ export default function RStat(props) {
           resizeMode={'contain'}
           inline={1}
         />{' '}
-        <NumericalValue
-          inline={inline ? 1 : 0}
-          lh={lh}
-          c={color}
-          style={{ extraFontPadding: false }}
-        >
+        <NumericalValue inline={inline ? 1 : 0} lh={lh} c={color}>
           {abbreviateNumber(pagerank) || 0}
         </NumericalValue>
       </Text>
