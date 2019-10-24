@@ -2,16 +2,10 @@ import React from 'react';
 import { Animated } from 'react-native';
 import { mediumScreenWidth, smallScreenWidth } from 'app/styles/screens';
 
-let NativeAnimatedModule = null;
-if (process.env.WEB !== 'true') {
-  // eslint-disable-next-line
-  NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
-}
-
 export function transtionConfig() {
   return {
     timing: Animated.spring,
-    useNativeDriver: NativeAnimatedModule || false,
+    useNativeDriver: true,
     speed: 20,
     bounciness: 0,
     overshootClamping: true

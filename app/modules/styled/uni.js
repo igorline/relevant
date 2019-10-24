@@ -182,7 +182,7 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
   const [active, setActive] = useState(0);
   const renderString = !children || !children.$$typeof;
   return (
-    <Touchable onPress={onPress} onClick={onClick}>
+    <Touchable onClick={onClick} onPress={onPress}>
       <StaticButton
         hover={hover}
         active={active}

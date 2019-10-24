@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  WebView,
   View,
   Image,
   TouchableHighlight,
@@ -14,6 +13,7 @@ import {
   ActionSheetIOS,
   Linking
 } from 'react-native';
+import WebView from 'react-native-webview';
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 

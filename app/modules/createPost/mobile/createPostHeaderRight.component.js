@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import PropTypes from 'prop-types';
-import Analytics from 'react-native-firebase-analytics';
+import { analytics } from 'react-native-firebase';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -12,8 +12,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as utils from 'app/utils';
 import { globalStyles, mainPadding } from 'app/styles/global';
 
-// eslint-disable-next-line
-const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
+const Analytics = analytics();
 
 let styles;
 

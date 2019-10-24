@@ -17,7 +17,7 @@ let ReactPixel;
 let TwitterCT;
 
 if (process.env.WEB !== 'true') {
-  Analytics = require('react-native-firebase-analytics');
+  Analytics = require('react-native-firebase').analytics();
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
   PushNotification = require('react-native-push-notification');
 } else {

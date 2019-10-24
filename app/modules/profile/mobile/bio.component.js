@@ -59,6 +59,7 @@ class Bio extends Component {
         }
         toggleFunction={() => {
           this.bio = null;
+          this.props.scrollTo(0);
           this.setState({ editing: false });
         }}
         saveEditFunction={this.updateBio}

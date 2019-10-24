@@ -14,7 +14,7 @@ import { colors } from 'styles';
 import { VOTE_COST_RATIO } from 'server/config/globalConstants';
 import CoinStat from 'modules/stats/coinStat.component';
 import { bet } from 'modules/post/invest.actions';
-import { hideModal } from 'modules/navigation/navigation.actions';
+import { hideModal, goToUrl } from 'modules/navigation/navigation.actions';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { exchangeLink, tokenEnabled } from 'modules/wallet/price.context';
 import ULink from 'modules/navigation/ULink.component';
@@ -85,6 +85,8 @@ function Bet({ user, post }) {
     dispatch(bet({ postId: post._id, stakedTokens: amount }));
   };
 
+  const exchageUrl = exchangeLink();
+
   const power = (100 * amount) / maxBet;
 
   const tooltipData = {
@@ -140,16 +142,23 @@ function Bet({ user, post }) {
             Available Coins: <SmallCoinStat amount={maxBet - amount} />
           </SecondaryText>
           {tokenEnabled() && (
-            <SecondaryText mt={0.5}>
-              <ULink to={exchangeLink()} external target="_blank">
+            <ULink to={exchageUrl} external target="_blank">
+              <SecondaryText
+                mt={0.5}
+                c={colors.blue}
+                onPress={() => {
+                  dispatch(goToUrl(exchageUrl));
+                  dispatch(hideModal());
+                }}
+              >
                 Get more coins
-              </ULink>
-            </SecondaryText>
+              </SecondaryText>
+            </ULink>
           )}
         </View>
       </View>
 
-      <View mt={6}>
+      <View mt={4}>
         <BetStats maxBet={maxBet} post={post} amount={amount} earning={earning} />
       </View>
 

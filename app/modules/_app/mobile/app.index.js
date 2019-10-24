@@ -5,10 +5,12 @@ import configureStore from 'app/core/mobile/configureStore';
 import AppContainer from 'modules/_app/mobile/app.container';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-import Analytics from 'react-native-firebase-analytics';
+import { analytics } from 'react-native-firebase';
 import { setTopLevelNavigator } from 'app/utils/nav';
 import SideNav from 'modules/navigation/mobile/sideNav.component';
 import { fullWidth } from 'app/styles/global';
+
+const Analytics = analytics();
 
 // gets the current screen from navigation state
 function getActiveRouteName(navigationState) {

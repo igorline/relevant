@@ -244,7 +244,7 @@ class DiscoverTabs extends Component {
       <View style={{ flex: 1 }}>
         <ScrollableTabView
           ref={c => (this.tabView = c)}
-          tabBarTextStyle={[styles.tabFont]}
+          tabBarTextStyle={styles.tabFont}
           tabBarActiveTextColor={blue}
           initialPage={this.initialTab}
           // initialPage={this.initialTab}

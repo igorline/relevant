@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import SafariView from 'react-native-safari-view';
 import { AppContainer, RootStack } from 'modules/_app/mobile/mainRouter';
-import Analytics from 'react-native-firebase-analytics';
+import { analytics } from 'react-native-firebase';
 
 // Animiations
 import InvestAnimation from 'modules/animation/mobile/investAnimation.component';
@@ -38,9 +38,16 @@ import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
+// import { PriceProvider } from 'modules/wallet/price.context';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
 import * as modals from 'modules/ui/modals/mobile.lookup';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+Ionicons.loadFont();
+
+const Analytics = analytics();
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -52,14 +59,11 @@ setCustomText(customTextProps);
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 
-// eslint-disable-next-line
-const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
-
 class Application extends Component {
   static propTypes = {
     actions: PropTypes.object,
     auth: PropTypes.object,
-    globalModal: PropTypes.object,
+    globalModal: PropTypes.string,
     navigation: PropTypes.object
   };
 
@@ -152,9 +156,12 @@ class Application extends Component {
   handleOpenURL = url => {
     const { actions, navigation, auth } = this.props;
 
-    const params = url.url.split(/\/\//)[1].split(/\/|\?/);
+    // TWitter callback
+    if (url.url.match('://callback')) return;
 
+    const params = url.url.split(/\/\//)[1].split(/\/|\?/);
     let newCommunity = params[1];
+
     newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
 
     // handle confirm email link
@@ -233,20 +240,20 @@ class Application extends Component {
   }
 
   renderModal() {
-    let { globalModal } = this.props;
+    const { globalModal } = this.props;
 
     if (!globalModal) return null;
-    globalModal = modals[globalModal] || globalModal;
+    const modalProps = modals[globalModal] || globalModal;
 
-    if (typeof globalModal === 'string') return null;
-    const { Body } = globalModal;
+    if (typeof modalProps === 'string') return null;
+    const { Body } = modalProps;
 
-    const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
+    const bodyProps = modalProps.bodyProps ? modalProps.bodyProps : {};
     const close = () => {
       this.props.actions.hideModal();
     };
     return (
-      <BottomSheet {...globalModal} close={close} visible>
+      <BottomSheet {...modalProps} close={close} visible>
         <Body {...bodyProps} close={close} />
       </BottomSheet>
     );

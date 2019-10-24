@@ -1,36 +1,24 @@
 package com.relevantnative;
 
+import com.microsoft.codepush.react.CodePush;
+import io.bankify.emojicompat.RNEmojiCompatTextPackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+
 import android.app.Application;
+import android.content.Context;
+import com.facebook.react.PackageList;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import com.meedan.ShareMenuPackage;
-import com.horcrux.svg.SvgPackage;
-import io.bankify.emojicompat.RNEmojiCompatTextPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.goldenowl.twittersignin.TwitterSigninPackage;
-import com.brentvatne.react.ReactVideoPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.github.alinz.rnsk.RNSKPackage;
-import com.alinz.parkerdan.shareextension.SharePackage;
-import cl.json.RNSharePackage;
-import com.github.yamill.orientation.OrientationPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.imagepicker.ImagePickerPackage;
-import com.evollu.react.fa.FIRAnalyticsPackage;
-import com.rt2zz.reactnativecontacts.ReactNativeContacts;
-import com.gnet.bottomsheet.RNBottomSheetPackage;
-import com.microsoft.codepush.react.CodePush;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
-import com.facebook.soloader.SoLoader;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
-import java.util.Arrays;
+import com.facebook.soloader.SoLoader;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.microsoft.codepush.react.CodePush;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -48,29 +36,12 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new ShareMenuPackage(),
-            new SvgPackage(),
-            new RNEmojiCompatTextPackage(MainApplication.this),
-            new RNGestureHandlerPackage(),
-            new TwitterSigninPackage(),
-            new ReactVideoPackage(),
-            new VectorIconsPackage(),
-            new RNSKPackage(),
-            // new ShareMenuPackage(),
-            new SharePackage(),
-            new RNSharePackage(),
-            new OrientationPackage(),
-            new LinearGradientPackage(),
-            new ImagePickerPackage(),
-            new FIRAnalyticsPackage(),
-            new ReactNativeContacts(),
-            new RNBottomSheetPackage(),
-            new RNFetchBlobPackage(),
-            new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG), // Add/change this line.
-            new ReactNativePushNotificationPackage()
-        );
+      @SuppressWarnings("UnnecessaryLocalVariable")
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      packages.add(new RNEmojiCompatTextPackage(MainApplication.this));
+      packages.add(new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG)); // Add/change this line.
+      packages.add(new RNFirebaseAnalyticsPackage());
+      return packages;
     }
 
     @Override
@@ -88,5 +59,31 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+  }
+  /**
+   * Loads Flipper in React Native templates.
+   *
+   * @param context
+   */
+  private static void initializeFlipper(Context context) {
+    if (BuildConfig.DEBUG) {
+      try {
+        /*
+         We use reflection here to pick up the class that initializes Flipper,
+        since Flipper library is not available in release mode
+        */
+        Class<?> aClass = Class.forName("com.facebook.flipper.ReactNativeFlipper");
+        aClass.getMethod("initializeFlipper", Context.class).invoke(null, context);
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
