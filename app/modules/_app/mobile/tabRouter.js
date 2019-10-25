@@ -27,6 +27,8 @@ import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import CommunityMembers from 'modules/community/mobile/communityMembers.component';
 
+import { StackViewTransitionConfigs } from 'react-navigation-stack';
+
 export const DefaultStack = {
   notifications: {
     screen: Settings,
@@ -144,6 +146,8 @@ const defaultStackSettings = {
   cardStyle: {
     elevation: 4
   },
+
+  transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
   defaultNavigationOptions: props => ({
     gesturesEnabled: true,

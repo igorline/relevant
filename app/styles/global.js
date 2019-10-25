@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 
-const fullWidth = Dimensions.get('screen').width;
-const fullHeight = Dimensions.get('screen').height;
+const fullWidth = Dimensions.get('window').width;
+const fullHeight = Dimensions.get('window').height;
 
 const smallScreen = fullWidth <= 320 || false;
 
