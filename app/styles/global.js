@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 
-const fullWidth = Dimensions.get('window').width;
-const fullHeight = Dimensions.get('window').height;
+const fullWidth = Dimensions.get('screen').width;
+const fullHeight = Dimensions.get('screen').height;
 
 const smallScreen = fullWidth <= 320 || false;
 
@@ -18,7 +18,7 @@ const IphoneHeader = 59;
 const AndroidHeader = 44;
 
 function isIphoneX() {
-  const dimen = Dimensions.get('window');
+  const dimen = Dimensions.get('screen');
   return (
     Platform.OS === 'ios' &&
     !Platform.isPad &&

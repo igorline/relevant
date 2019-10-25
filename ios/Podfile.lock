@@ -268,8 +268,6 @@ PODS:
     - React
   - react-native-safari-view (1.0.0):
     - React
-  - react-native-share-extension (1.2.1):
-    - React
   - react-native-twitter-signin (1.0.2):
     - React
     - TwitterKit
@@ -317,6 +315,8 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
+  - ReactNativeShareExtension (1.2.1):
+    - React
   - rn-fetch-blob (0.11.2):
     - React-Core
   - RNCPushNotificationIOS (1.0.2):
@@ -370,7 +370,6 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-orientation (from `../node_modules/react-native-orientation`)
   - react-native-safari-view (from `../node_modules/react-native-safari-view`)
-  - react-native-share-extension (from `../node_modules/react-native-share-extension`)
   - react-native-twitter-signin (from `../node_modules/react-native-twitter-signin`)
   - react-native-video (from `../node_modules/react-native-video`)
   - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
@@ -386,6 +385,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeShareExtension (from `../node_modules/react-native-share-extension/ReactNativeShareExtension.podspec`)
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
@@ -462,8 +462,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-orientation"
   react-native-safari-view:
     :path: "../node_modules/react-native-safari-view"
-  react-native-share-extension:
-    :path: "../node_modules/react-native-share-extension"
   react-native-twitter-signin:
     :path: "../node_modules/react-native-twitter-signin"
   react-native-video:
@@ -492,6 +490,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeShareExtension:
+    :podspec: "../node_modules/react-native-share-extension/ReactNativeShareExtension.podspec"
   rn-fetch-blob:
     :path: "../node_modules/rn-fetch-blob"
   RNCPushNotificationIOS:
@@ -549,7 +549,6 @@ SPEC CHECKSUMS:
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
   react-native-orientation: d4a97266b06ec8d45d74e626656a730ebbebbb6f
   react-native-safari-view: 955d7160d159241b8e9395d12d10ea0ef863dcdd
-  react-native-share-extension: ddd859533f2d014fee0b78ed13e421c9e331909d
   react-native-twitter-signin: 085bb0bb3fc4fd7b54e192bbf3fbc718a6228043
   react-native-video: 961749da457e73bf0b5565edfbaffc25abfb8974
   react-native-viewpager: 619fc2602b1d6ab81804519564afdbaad6b6915a
@@ -564,6 +563,7 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
+  ReactNativeShareExtension: c3dca25799599e4205c0a5176bc518f7eb54fead
   rn-fetch-blob: f525a73a78df9ed5d35e67ea65e79d53c15255bc
   RNCPushNotificationIOS: 7bcc4071d6f25c4d441cbef42a097462f4e30208
   RNFirebase: ac0de8b24c6f91ae9459575491ed6a77327619c6
@@ -577,6 +577,6 @@ SPEC CHECKSUMS:
   TwitterKit: a2e60ddcedbf54091eac6f27685ca7a87681e1d7
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: f2e4b4e29c7c648dad9c18fae3420e3da6d72d2e
+PODFILE CHECKSUM: 8d64f65f63ac9c3b44d05b0cd9f1aed3c3eac985
 
 COCOAPODS: 1.8.4

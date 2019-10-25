@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CodePush.h"
 #import "ReactNativeShareExtension.h"
-#import "RCTBundleURLProvider.h"
-#import "RCTRootView.h"
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
+#import <React/RCTLog.h>
+#import "CodePush.h"
 
-//@import Firebase;
+@import Firebase;
 
 
 @interface Relevant : ReactNativeShareExtension
@@ -42,7 +43,7 @@ RCT_EXPORT_MODULE();
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.backgroundColor = nil;
-//  [FIRApp configure];
+  [FIRApp configure];
 
   return rootView;
 }

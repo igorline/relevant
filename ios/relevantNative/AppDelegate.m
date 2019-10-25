@@ -88,11 +88,6 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
                                                    moduleName:@"relevantNative"
                                             initialProperties:nil];
 
-  // RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-  //                                                     moduleName:@"relevantNative"
-  //                                              initialProperties:nil
-  //                                                  launchOptions:launchOptions];
-
   for (NSString* family in [UIFont familyNames])
   {
     NSLog(@"%@", family);

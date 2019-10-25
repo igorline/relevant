@@ -106,22 +106,15 @@ class ShareContainer extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
   }
 
-  componentWillMount() {
-    const community = 'relevant';
-    this.props.actions.setCommunity(community);
-    storage
-    .getToken()
-    .then(tk => {
-      this.setState({ token: tk });
-      if (!tk) this.props.actions.replace('shareAuth');
-    })
-    .catch(() => {
-      // console.warn(e);
-    });
-  }
-
   async componentDidMount() {
     try {
+      const community = 'relevant';
+      this.props.actions.setCommunity(community);
+      const token = await storage.getToken();
+
+      this.setState({ token });
+      if (!token) this.props.actions.replace('shareAuth');
+
       const { actions } = this.props;
       const resp = await this.props.actions.getUser();
       const { auth } = this.props;
@@ -132,6 +125,7 @@ class ShareContainer extends Component {
     } catch (e) {
       // console.log('e', e);
     }
+
     try {
       const { actions } = this.props;
       const data = await ShareExtension.data();
