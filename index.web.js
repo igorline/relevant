@@ -17,10 +17,10 @@ const rootElement = document.getElementById('app');
 
 window.React = React; // For chrome dev tool support
 
-if (process.env.NODE_ENV === 'development') {
-  window.reduxDebug = debug;
-  window.reduxDebug.enable('*'); // this should be activated only on development env
-}
+// if (process.env.NODE_ENV === 'development') {
+// window.reduxDebug = debug;
+// window.reduxDebug.enable('*'); // this should be activated only on development env
+// }
 
 const initialState = window.__INITIAL_STATE__ || undefined;
 

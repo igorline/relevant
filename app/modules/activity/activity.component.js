@@ -15,6 +15,7 @@ import {
   InlineText
 } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
+import { MAX_POST_WIDTH } from 'styles/layout';
 
 export default class SingleActivity extends Component {
   static propTypes = {
@@ -29,10 +30,11 @@ export default class SingleActivity extends Component {
       createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
     }).isRequired,
     auth: PropTypes.shape({
+      community: PropTypes.string,
       user: PropTypes.object.isRequired
     }).isRequired,
     screenSize: PropTypes.number,
-    PostComponent: PropTypes.func,
+    PostComponent: PropTypes.object,
     navigation: PropTypes.object
   };
 
@@ -193,7 +195,7 @@ export default class SingleActivity extends Component {
     }
 
     return (
-      <View>
+      <View maxWidth={MAX_POST_WIDTH}>
         <View
           m={['4 4 0 4', '4 2 0 2']}
           fdirection="row"

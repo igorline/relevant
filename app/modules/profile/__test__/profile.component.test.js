@@ -4,6 +4,7 @@ import Profile from 'modules/profile/profile.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { auth } from 'app/mockdata';
+import { Linkify } from 'app/utils/text';
 
 const props = {
   user: auth.auth.user,
@@ -15,22 +16,22 @@ const props = {
 
 test('Snapshot own Profile', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <Profile {...props} isOwner />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <Profile {...props} isOwner bio={<Linkify>{props.user.bio}</Linkify>} />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 test('Snapshot other users Profile', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <Profile {...props} />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <Profile {...props} bio={<Linkify>{props.user.bio}</Linkify>} />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

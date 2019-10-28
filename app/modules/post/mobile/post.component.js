@@ -10,7 +10,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as investActions from 'modules/post/invest.actions';
 import PostInfo from 'modules/post/postinfo.mobile.component';
-import PostButtons from 'modules/post/mobile/postButtons.component';
+import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import { getTitle, getPostUrl } from 'app/utils/post';
 import { View } from 'modules/styled/uni';
 import Commentary from './commentary.component';
@@ -25,7 +25,6 @@ class Post extends PureComponent {
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
     navigation: PropTypes.object.isRequired, // eslint-disable-line
-    myPostInv: PropTypes.object,
     hideDivider: PropTypes.bool,
     preview: PropTypes.bool,
     noLink: PropTypes.bool
@@ -37,7 +36,6 @@ class Post extends PureComponent {
       commentary,
       auth,
       actions,
-      myPostInv,
       singlePost,
       hideDivider,
       preview,
@@ -62,9 +60,6 @@ class Post extends PureComponent {
     const isLinkPost = link && (link.url || link.image);
 
     const renderComment = (commentary && commentary.length) || (isLinkPost && post.body);
-    // TODO... need to filter out reposted?
-    // commentary = commentary.filter(p => p && p._id !== reposted);
-
     const commentaryEl = renderComment ? (
       <Commentary
         isReply
@@ -94,19 +89,18 @@ class Post extends PureComponent {
           link={link}
           title={title}
           postUrl={postUrl}
-          myPostInv={myPostInv}
           singlePost={singlePost}
           preview={preview}
           noLink={noLink}
         />
         {!preview && (
           <View m={2}>
-            <PostButtons
+            <ButtonContainer
+              horizontal
               post={post}
               actions={actions}
               auth={auth}
               link={link}
-              myPostInv={myPostInv[post._id]}
             />
           </View>
         )}
@@ -130,7 +124,6 @@ class Post extends PureComponent {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    myPostInv: state.investments.myPostInv,
     users: state.user.users
   };
 }

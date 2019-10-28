@@ -6,9 +6,9 @@ import {
   Dimensions,
   Image,
   TouchableWithoutFeedback,
-  ListView,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  FlatList
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Prompt from 'rn-prompt';
@@ -24,7 +24,6 @@ let styles;
 class Auth extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    // actions: PropTypes.object,
     // need this prop to pass to child components
     // eslint-disable-next-line
     navigation: PropTypes.object
@@ -32,12 +31,10 @@ class Auth extends Component {
 
   constructor(props, context) {
     super(props, context);
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.slides = [1, 2, 3, 4];
     this.state = {
       visibleHeight: Dimensions.get('window').height,
       xOffset: 0,
-      dataSource: ds.cloneWithRows(this.slides),
       currentIndex: 0
     };
     this.scrollToPage = this.scrollToPage.bind(this);
@@ -68,46 +65,10 @@ class Auth extends Component {
   }
 
   signup() {
-    // if (this.props.admin.currentInvite) {
     return this.props.navigation.navigate({
       routeName: 'twitterSignup',
       title: 'Signup'
     });
-    // }
-
-    // // Android
-    // if (Platform.OS === 'android') {
-    //   this.promptTitle = 'Enter invitation code';
-    //   this.setState({ promptVisible: true });
-    //   return null;
-    // }
-
-    // // IOS
-    // AlertIOS.prompt(
-    //   'Enter invitiation code',
-    //   'Relevant is an invitation-only community',
-    //   [
-    //     { text: 'Cancel',
-    //       onPress: () => null,
-    //       style: 'cancel'
-    //     },
-    //     { text: 'OK',
-    //       onPress: code => {
-    //         let action = this.props.actions.checkInviteCode(code);
-    //         action.then(invite => {
-    //           if (invite) {
-    //             this.props.actions.push({
-    //               key: 'twitterSignup',
-    //               title: 'Signup',
-    //               showBackButton: true,
-    //               back: true,
-    //               email: invite.email,
-    //               code: invite.code
-    //             }, 'auth');
-    //           }
-    //         });
-    //       } }
-    //   ]);
   }
 
   changeRow(event, changed) {
@@ -116,9 +77,8 @@ class Auth extends Component {
   }
 
   scrollToPage(index) {
-    const num = index * fullWidth;
     this.setState({ currentIndex: index });
-    this.listview.scrollTo({ x: num, animated: true });
+    this.listview.scrollToIndex({ index });
   }
 
   renderIndicator() {
@@ -142,7 +102,7 @@ class Auth extends Component {
     return indicator;
   }
 
-  renderRow(data, section, i) {
+  renderRow({ index }) {
     function sentance(text, special) {
       const words = text.split(/\s/);
       const l = words.length - 1;
@@ -166,11 +126,11 @@ class Auth extends Component {
       });
     }
 
-    switch (i) {
-      case '0':
+    switch (index) {
+      case 0:
         return (
           <View>
-            <View key={i} style={styles.authSlide}>
+            <View style={[styles.authSlide, { background: 'pink' }]}>
               {sentance(
                 'Curated by communities, not clicks',
 
@@ -183,30 +143,26 @@ class Auth extends Component {
             </View>
           </View>
         );
-      case '1':
+      case 1:
         return (
-          <View>
-            <View key={i} style={styles.authSlide}>
-              {sentance('Discover content that’s relevant to you', ['relevant', 'you'])}
-              <Text allowFontScaling={false} style={styles.slideText} />
-            </View>
+          <View style={styles.authSlide}>
+            {sentance('Discover content that’s relevant to you', ['relevant', 'you'])}
+            <Text allowFontScaling={false} style={styles.slideText} />
           </View>
         );
-      case '2':
+      case 2:
         return (
-          <View>
-            <View key={i} style={styles.authSlide}>
-              {sentance('Connect with thought leaders, build trust and earn rewards', [
-                'rewards',
-                'trust'
-              ])}
-              <Text allowFontScaling={false} style={styles.slideText} />
-            </View>
+          <View key={index} style={styles.authSlide}>
+            {sentance('Connect with thought leaders, build trust and earn rewards', [
+              'rewards',
+              'trust'
+            ])}
+            <Text allowFontScaling={false} style={styles.slideText} />
           </View>
         );
-      case '3':
+      case 3:
         return (
-          <View key={i} style={styles.authSlide}>
+          <View style={styles.authSlide}>
             {sentance(
               'Find your community and help us build a better information environment for all',
               ['Join', 'community', 'for', 'all']
@@ -215,7 +171,7 @@ class Auth extends Component {
           </View>
         );
       default:
-        return <View key={i} style={styles.authSlide} />;
+        return <View key={index} style={styles.authSlide} />;
     }
   }
 
@@ -226,7 +182,7 @@ class Auth extends Component {
 
     let intro = (
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <ListView
+        <FlatList
           horizontal
           scrollEnabled
           ref={c => {
@@ -236,8 +192,9 @@ class Auth extends Component {
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
           contentContainerStyle={styles.authSlidesParent}
-          renderRow={this.renderRow}
-          dataSource={this.state.dataSource}
+          renderItem={this.renderRow}
+          keyExtractor={(item, index) => index.toString()}
+          data={this.slides}
           onMomentumScrollEnd={this.onScrollEnd}
           pagingEnabled
         />
@@ -295,11 +252,7 @@ class Auth extends Component {
         ]}
       >
         <View style={styles.logoContainer}>
-          <Image
-            source={require('app/public/img/logo.png')}
-            // resizeMode={'contain'}
-            style={styles.authLogo}
-          />
+          <Image source={require('app/public/img/logo.png')} style={styles.authLogo} />
         </View>
         <View style={styles.authPadding}>
           <View style={styles.authDivider} />
@@ -314,22 +267,11 @@ class Auth extends Component {
           visible={this.state.promptVisible}
           onCancel={() => this.setState({ promptVisible: false })}
           onSubmit={() => {
-            // this.props.actions.checkInviteCode(code)
-            // .then(invite => {
-            //   if (invite) {
-            this.props.navigation.navigate(
-              {
-                key: 'twitterSignup',
-                title: 'Signup'
-              }
-              // {
-              //   email: invite.email,
-              //   code: invite.code
-              // },
-            );
-            // }
+            this.props.navigation.navigate({
+              key: 'twitterSignup',
+              title: 'Signup'
+            });
             this.setState({ promptVisible: false });
-            // });
           }}
         />
       </View>
@@ -361,7 +303,6 @@ const localStyles = StyleSheet.create({
   authSlidesParent: {
     marginTop: 20,
     flexDirection: 'row',
-    alignItems: 'flex-start',
     flexWrap: 'nowrap',
     justifyContent: 'flex-start'
   },
@@ -427,8 +368,7 @@ const localStyles = StyleSheet.create({
   },
   splashEmoji: {
     alignSelf: 'center',
-    fontSize: Platform.OS === 'android' ? 50 : 65,
-    fontFamily: Platform.OS === 'android' ? 'NotoColorEmoji' : 'Georgia'
+    fontSize: Platform.OS === 'android' ? 50 : 65
   }
 });
 

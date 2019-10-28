@@ -7,12 +7,12 @@ import { colors } from 'app/styles';
 
 const UserSelect = styled(View)`
   &:hover {
-    background: ${colors.darkLightGrey};
+    background: ${colors.lightGrey};
   }
   ${p =>
     p.selected
       ? `
-    background: ${colors.darkLightGrey};
+    background: ${colors.lightGrey};
   `
       : ''}
 `;

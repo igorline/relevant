@@ -18,7 +18,7 @@ const IphoneHeader = 59;
 const AndroidHeader = 44;
 
 function isIphoneX() {
-  const dimen = Dimensions.get('window');
+  const dimen = Dimensions.get('screen');
   return (
     Platform.OS === 'ios' &&
     !Platform.isPad &&

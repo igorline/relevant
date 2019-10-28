@@ -11,6 +11,7 @@ import {
   SecondaryText,
   Text
 } from 'modules/styled/uni';
+import { usePrice } from 'modules/wallet/price.context';
 
 const coinImage = require('app/public/img/relevantcoin.png');
 
@@ -30,6 +31,7 @@ function CoinStat(props) {
     inline,
     c,
     spaceBetween,
+    showPrice,
     ...rest
   } = props;
 
@@ -40,10 +42,12 @@ function CoinStat(props) {
     if (user.tokenBalance) tokens += user.tokenBalance;
   }
 
+  const usdValue = usePrice(tokens);
+
   if (isOwner && user.ethAddress && user.ethAddress[0] && wallet.connectedBalance) {
     tokens = wallet.connectedBalance + user.balance;
   }
-  const iconSize = size || 3;
+  const iconSize = typeof size === 'number' ? size : 3;
   const NumberStyle = secondary ? SecondaryText : NumericalValue;
   const imageMargin = align === 'center' ? 0 : sizing(-1, 'px');
   const Wrapper = inline ? Text : ImageWrapper;
@@ -76,6 +80,7 @@ function CoinStat(props) {
         <NumberStyle ml={spacer} fs={fs} lh={lh} inline={inline ? 1 : 0} c={c}>
           {inline ? ' ' : ''}
           {abbreviateNumber(tokens)}
+          {showPrice ? usdValue : ''}
         </NumberStyle>
       )}
     </Wrapper>
@@ -97,7 +102,8 @@ CoinStat.propTypes = {
   lineheight: PropTypes.string,
   c: PropTypes.string,
   noNumber: PropTypes.bool,
-  spaceBetween: PropTypes.number
+  spaceBetween: PropTypes.number,
+  showPrice: PropTypes.bool
 };
 
 export default props => (

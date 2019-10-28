@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { isValidElementType } from 'react-is';
 
 export const userProps = PropTypes.shape({
   handle: PropTypes.string,
@@ -27,3 +28,12 @@ export const authProps = PropTypes.shape({
   user: userProps,
   community: PropTypes.string
 });
+
+// eslint-disable-next-line consistent-return
+export function elementTypePropTypeChecker(props, propName, componentName) {
+  if (props[propName] && !isValidElementType(props[propName])) {
+    return new Error(
+      `Invalid prop '${propName}' supplied to '${componentName}': the prop is not a valid React component`
+    );
+  }
+}

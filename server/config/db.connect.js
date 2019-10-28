@@ -1,6 +1,8 @@
 /* eslint no-console: 0 */
 const mongoose = require('mongoose');
 
+mongoose.set('useCreateIndex', true);
+
 const db = mongoose.connection;
 
 const config = {

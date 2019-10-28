@@ -13,60 +13,49 @@ const Invest = require('../invest/invest.model');
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 // COMMENTS ARE USING POST SCHEMA
-exports.get = async (req, res, next) => {
-  try {
-    // TODO - pagination
-    // const limit = parseInt(req.query.limit, 10) || 10;
-    // const skip = parseInt(req.query.skip, 10) || 0;
+exports.index = async req => {
+  // TODO - pagination
+  // const limit = parseInt(req.query.limit, 10) || 10;
+  // const skip = parseInt(req.query.skip, 10) || 0;
+  const { user } = req;
+  const { community, post } = req.query;
+  if (!post) throw Error('missing parent post id');
 
-    const { community } = req.query;
-    const cObj = await Community.findOne({ slug: community }, '_id');
-    const communityId = cObj._id;
+  const cObj = await Community.findOne({ slug: community }, '_id');
+  const communityId = cObj._id;
 
-    let query = null;
-    let parentPost = null;
-    const id = req.user ? req.user._id : null;
+  const query = { parentPost: post, hidden: { $ne: true }, communityId };
 
-    if (req.query.post) {
-      parentPost = req.query.post;
-      query = { parentPost, hidden: { $ne: true }, communityId };
-    }
+  const myVote = user
+    ? [
+        {
+          path: 'myVote',
+          match: { investor: user._id, communityId }
+        }
+      ]
+    : [];
 
-    const total = await Post.countDocuments(query);
-
-    const comments = await Post.find(query)
-    .populate({
-      path: 'embeddedUser.relevance',
-      select: 'pagerank',
-      match: { communityId, global: true }
-    })
-    .populate({
-      path: 'data',
-      match: { communityId }
-    })
+  const comments = await Post.find(query)
+    .populate([
+      ...myVote,
+      {
+        path: 'embeddedUser.relevance',
+        select: 'pagerank',
+        match: { communityId, global: true }
+      },
+      {
+        path: 'data',
+        match: { communityId }
+      }
+    ])
     .sort({ pagerank: -1, createdAt: 1 });
 
-    const toSend = comments;
-    res.status(200).json({ data: toSend, total });
-
-    // TODO worker thread
-    if (id) {
-      const postIds = [];
-      comments.forEach(post => {
-        postIds.push(post._id || post);
-        if (post.repost && post.repost.post) {
-          postIds.push(post.repost.post._id);
-        }
-      });
-      Post.sendOutInvestInfo(postIds, id);
-    }
-  } catch (err) {
-    next(err);
-  }
+  return { data: comments.map(c => c.toObject()) };
 };
 
 exports.create = async (req, res, next) => {
   let user = req.user._id;
+
   const { community, communityId } = req.communityMember;
   const { linkParent, text: body, repost = false, metaPost } = req.body;
   let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
@@ -100,6 +89,12 @@ exports.create = async (req, res, next) => {
     let comment = new Post(commentObj);
     user = await User.findOne({ _id: user });
 
+    if (user.banned) {
+      throw new Error(
+        'You are temporarily blocked from making comments, if you think this is an error, please reach out to info@relevant.community'
+      );
+    }
+
     parentPost = await Post.findOne({ _id: parentPost });
     parentComment = await Post.findOne({ _id: parentComment });
 
@@ -111,16 +106,16 @@ exports.create = async (req, res, next) => {
     // this will also save the new comment
     comment = await Post.sendOutMentions(mentions, comment, user, comment);
 
-    await Invest.createVote({
-      post: comment,
-      user,
-      amount: 0,
-      relevanceToAdd: 0,
-      community,
-      communityId
-    });
+    // Do we need this?
+    // await Invest.createVote({
+    //   post: comment,
+    //   user,
+    //   amount: 0,
+    //   relevanceToAdd: 0,
+    //   community,
+    //   communityId,
+    // });
 
-    // TODO increase the post's relevance? **but only if its user's first comment!
     const updateTime = type === 'post' || false;
     await parentPost.updateRank({ communityId, updateTime });
 

@@ -30,8 +30,10 @@ let extractor =
     ? new ChunkExtractor({ statsFile, entrypoints: 'app' })
     : null;
 
-export function createInitialState(req) {
+export function createInitialState(req, res) {
   const cachedCommunity = req.user ? req.user.community : null;
+
+  if (cachedCommunity && req.url === '/') return res.redirect(`/${cachedCommunity}/new`);
 
   const userAgent = req.headers['user-agent']
     ? useragent.parse(req.headers['user-agent'])
@@ -41,6 +43,7 @@ export function createInitialState(req) {
 
   return {
     auth: {
+      user: req.user,
       confirmed: req.confirmed || (req.user && req.user.confirmed),
       // TODO - get this from req.user
       community: req.params.community || cachedCommunity
@@ -58,8 +61,7 @@ export const initStore = compose(
 );
 
 export default async function handleRender(req, res) {
-  const store = initStore(req);
-
+  const store = initStore(req, res);
   // TODO - get rid of this - need to convert util/api to middleware
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
@@ -74,16 +76,17 @@ export default async function handleRender(req, res) {
       app,
       fullUrl,
       rnWebStyles,
-      initialState: store.getState()
+      initialState: store.getState(),
+      req
     });
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage({ initialState: store.getState(), fullUrl }));
+    res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
   }
 }
 
-export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
+export function renderFullPage({ app, rnWebStyles, initialState, fullUrl, req }) {
   let cssStyleTags = '';
   let styledComponentsTags = '';
 
@@ -94,7 +97,7 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
     styledComponentsTags = sheet.getStyleTags();
     cssStyleTags = extractor.getStyleTags();
   }
-  const meta = fetchMeta(initialState);
+  const meta = fetchMeta({ initialState, req });
 
   const scriptTags = extractor.getScriptTags();
 
@@ -126,6 +129,7 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
         ${rnWebStyles}
         ${cssStyleTags}
         ${styledComponentsTags}
+        <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/uxuj5f7o';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();</script>
       </head>
       <body>
         <div id="app">${app}</div>
@@ -136,39 +140,53 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl }) {
   `;
 }
 
-export function fetchMeta(initialState) {
-  let title;
-  let description;
-  let image;
-  let url;
-  let post;
+export function fetchMeta({ initialState, req }) {
+  const defaultMeta = {
+    title: 'Relevant: The only social network built on trust.',
+    description: 'Find your community and join the discussion.',
+    image: 'https://relevant.community/img/fbImage.png',
+    url: 'https://relevant.community' + req.originalUrl,
+    type: 'summary_large_image'
+  };
 
-  let type = 'summary_large_image';
+  const { feed, postId, commentId } = req.params;
+  const postMeta = getPostMeta({ postId, commentId, initialState });
+  const communityMeta = getCommunityMeta({ initialState });
 
-  const { community } = initialState.auth;
+  Object.keys(postMeta).forEach(key => {
+    if (!postMeta[key]) delete postMeta[key];
+  });
 
-  if (initialState.posts.posts) {
-    const postId = Object.keys(initialState.posts.posts)[0];
-    post = postId ? initialState.posts.posts[postId] : null;
-    if (post) {
-      if (post.metaPost) {
-        post = initialState.posts.links[post.metaPost] || post;
-      }
-      title = post.title;
-      image = post.image;
-      description = post.body;
-      url = `https://relevant.community/${community}/post/${postId}`;
-      if (!image) type = 'summary';
-    }
-  }
+  if (postId) return { ...defaultMeta, ...communityMeta, ...postMeta };
+  if (feed) return { ...defaultMeta, ...communityMeta };
+  return defaultMeta;
+}
 
-  title = title || 'Relevant: Curated by Communities, Not Clicks.';
-  image = post
-    ? post.image || 'https://relevant.community/img/r-big.png'
-    : 'https://relevant.community/img/fbImage.png';
-  url = url || 'https://relevant.community/';
-  description = description || 'Find your community and join the discussion.';
-  return { title, description, image, url, type };
+function getPostMeta({ initialState, postId, commentId }) {
+  const { posts } = initialState;
+  if (!postId && !commentId) return {};
+  const post = posts.posts[postId];
+  const comment = posts.posts[commentId];
+  const userImage = comment ? comment.embeddedUser.image : null;
+  const userComment = comment ? `@${comment.embeddedUser.name}: ${comment.body}` : null;
+  if (!post) return {};
+  const linkData = post.metaPost ? posts.links[post.metaPost] : post;
+  const { title } = linkData;
+  const image = userImage || linkData.image || 'https://relevant.community/img/r-big.png';
+  const description = userComment || post.body || linkData.description;
+  const type = image && !userImage ? 'summary_large_image' : 'summary';
+  return { title, image, description, type };
+}
+
+function getCommunityMeta({ initialState }) {
+  const { auth, community: communityState } = initialState;
+  const community = communityState.communities[auth.community];
+  if (!community) return {};
+  const { description } = community;
+  const image = community.image || 'https://relevant.community/img/r-big.png';
+  const title = community.name;
+  const type = 'summary';
+  return { image, title, description, type };
 }
 
 export async function handleRouteData({ req, store }) {

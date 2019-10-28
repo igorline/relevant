@@ -17,6 +17,7 @@ router.get('/check/user', auth.currentUser(), controller.checkUser);
 
 router.post('/', controller.create);
 router.post('/cashOut', auth.isAuthenticated(), controller.cashOut);
+router.post('/cashOut/:customAmount', auth.isAuthenticated(), controller.cashOut);
 
 router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 router.put('/webonboard/:step', auth.isAuthenticated(), controller.webOnboard);

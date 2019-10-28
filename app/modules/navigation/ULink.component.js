@@ -5,7 +5,7 @@ import { colors, mixins } from 'app/styles';
 import { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { showModal } from 'modules/navigation/navigation.actions';
+import { showModal, goToUrl } from 'modules/navigation/navigation.actions';
 import { Alert } from 'app/utils/alert';
 // import TouchableOpacity from 'react-native';
 
@@ -101,6 +101,7 @@ export class ULinkComponent extends Component {
       type,
       hu,
       inline,
+      actions,
       ...rest
     } = this.props;
 
@@ -177,11 +178,13 @@ export class ULinkComponent extends Component {
       return <DisabledLinkView flex={1}>{children}</DisabledLinkView>;
     }
 
+    const pressHandler = external && !onPress ? () => actions.goToUrl(to) : () => null;
+
     return (
       <StyledLink
         // {...rest}
         to={to || '#'}
-        onPress={() => requestAnimationFrame(() => onPress())}
+        onPress={() => requestAnimationFrame(() => pressHandler())}
         // onPress={this.checkAuth(onPress)}
         // styles={styles || ''}
       >
@@ -217,7 +220,8 @@ export default connect(
   dispatch => ({
     actions: bindActionCreators(
       {
-        showModal
+        showModal,
+        goToUrl
       },
       dispatch
     )

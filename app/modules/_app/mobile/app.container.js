@@ -17,24 +17,37 @@ import { connect } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import SafariView from 'react-native-safari-view';
 import { AppContainer, RootStack } from 'modules/_app/mobile/mainRouter';
-import Analytics from 'react-native-firebase-analytics';
+import { analytics } from 'react-native-firebase';
 
 // Animiations
 import InvestAnimation from 'modules/animation/mobile/investAnimation.component';
 import HeartAnimation from 'modules/animation/mobile/heartAnimation.component';
-import UpvoteAnimation from 'modules/animation/mobile/upvoteAnimation.component';
-import IrrelevantAnimation from 'modules/animation/mobile/irrelevantAnimation.component';
+import UpvoteAnimation from 'modules/animation/upvoteAnimation.component';
+import DownvoteAnimation from 'modules/animation/downvoteAnimation.component';
 
 import * as authActions from 'modules/auth/auth.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
-import BannerPrompt from 'modules/activity/bannerPrompt.component';
+import { getEarnings } from 'modules/wallet/earnings.actions';
+import { getCommunities } from 'modules/community/community.actions';
+
+import BannerPrompt from 'modules/bannerPrompt/banner.container';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
+// import { PriceProvider } from 'modules/wallet/price.context';
+
+import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
+import * as modals from 'modules/ui/modals/mobile.lookup';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+Ionicons.loadFont();
+
+const Analytics = analytics();
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -46,14 +59,11 @@ setCustomText(customTextProps);
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 
-// eslint-disable-next-line
-const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
-
 class Application extends Component {
   static propTypes = {
     actions: PropTypes.object,
     auth: PropTypes.object,
-    // error: PropTypes.bool,
+    globalModal: PropTypes.string,
     navigation: PropTypes.object
   };
 
@@ -109,8 +119,10 @@ class Application extends Component {
       Analytics.setUserId(user._id);
       const { community } = user;
       if (community) actions.setCommunity(community);
+      actions.getEarnings('pending');
       return null;
     });
+    actions.getCommunities();
 
     PushNotification.setApplicationIconBadgeNumber(0);
     Linking.addEventListener('url', this.handleOpenURL);
@@ -144,9 +156,12 @@ class Application extends Component {
   handleOpenURL = url => {
     const { actions, navigation, auth } = this.props;
 
-    const params = url.url.split(/\/\//)[1].split(/\/|\?/);
+    // TWitter callback
+    if (url.url.match('://callback')) return;
 
+    const params = url.url.split(/\/\//)[1].split(/\/|\?/);
     let newCommunity = params[1];
+
     newCommunity = newCommunity && newCommunity.replace(/user|admin|info/, '');
 
     // handle confirm email link
@@ -224,6 +239,26 @@ class Application extends Component {
     return true;
   }
 
+  renderModal() {
+    const { globalModal } = this.props;
+
+    if (!globalModal) return null;
+    const modalProps = modals[globalModal] || globalModal;
+
+    if (typeof modalProps === 'string') return null;
+    const { Body } = modalProps;
+
+    const bodyProps = modalProps.bodyProps ? modalProps.bodyProps : {};
+    const close = () => {
+      this.props.actions.hideModal();
+    };
+    return (
+      <BottomSheet {...modalProps} close={close} visible>
+        <Body {...bodyProps} close={close} />
+      </BottomSheet>
+    );
+  }
+
   render() {
     let platformStyles = {};
     if (Platform.OS === 'android') {
@@ -236,11 +271,12 @@ class Application extends Component {
     return (
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <AppContainer navigation={this.props.navigation} />
-        <BannerPrompt />
+        <BannerPrompt isMobile />
+        {this.renderModal()}
         <Tooltip />
         <InvestAnimation />
         <HeartAnimation />
-        <IrrelevantAnimation />
+        <DownvoteAnimation />
         <UpvoteAnimation />
       </View>
     );
@@ -250,7 +286,8 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    error: state.error.universal
+    error: state.error.universal,
+    globalModal: state.navigation.modal
   };
 }
 
@@ -262,7 +299,9 @@ function mapDispatchToProps(dispatch) {
         ...notifActions,
         ...userActions,
         ...navigationActions,
-        ...tooltipActions
+        ...tooltipActions,
+        getEarnings,
+        getCommunities
       },
       dispatch
     )

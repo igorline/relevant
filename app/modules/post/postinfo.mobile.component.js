@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
 import Gradient from 'modules/post/gradient.component';
 import styled from 'styled-components/primitives';
@@ -53,11 +53,10 @@ export default function ImagePost(props) {
       fdirection={'row'}
     >
       <ULink
-        onPress={goToPost}
+        onPress={goToPost || (() => actions.goToUrl(post.url))}
         external
         to={post.url}
         target="_blank"
-        onPress={() => actions.goToUrl(post.url)}
         noLink={noLink}
         style={{ flex: 1 }}
       >

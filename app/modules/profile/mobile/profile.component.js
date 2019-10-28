@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Platform,
-  ActionSheetIOS,
-  TouchableOpacity
-} from 'react-native';
+import { Platform, ActionSheetIOS, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles, mainPadding, greyText } from 'app/styles/global';
-import { numbers } from 'app/utils';
-import Percent from 'modules/stats/mobile/percent.component';
-import StatRow from 'modules/stats/mobile/statRow.component';
-// import CoinStat from 'modules/stats/coinStat.component';
+import { View, Divider, Image } from 'modules/styled/uni';
+import { colors } from 'styles';
 import Bio from './bio.component';
+import ProfileStats from '../profile.stats';
 
 const defaultImg = require('app/public/img/default_user.jpg');
 
@@ -26,8 +16,6 @@ if (Platform.OS === 'android') {
   ActionSheet = RNBottomSheet;
   ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 }
-
-let styles;
 
 class ProfileComponent extends Component {
   static propTypes = {
@@ -102,104 +90,40 @@ class ProfileComponent extends Component {
   }
 
   render() {
-    const { user } = this.props;
-    let userImage = null;
-    let relevance = 0;
-    let balance = null;
-    let userImageEl = null;
+    const { user, isOwner } = this.props;
 
-    if (user) {
-      if (user.image) userImage = user.image;
-      if (user.relevance) relevance = user.relevance.pagerank || 0;
-      if (user) balance = (user.balance + user.tokenBalance).toFixed(0);
-    }
+    const userImage = user ? { uri: user.image } : defaultImg;
 
-    if (userImage) {
-      userImageEl = <Image source={{ uri: userImage }} style={styles.uploadAvatar} />;
-    } else {
-      userImageEl = <Image source={defaultImg} style={styles.uploadAvatar} />;
-    }
-
-    let optionsEl;
-
-    if (!this.props.isOwner) {
-      optionsEl = (
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            paddingVertical: 10,
-            paddingHorizontal: 15
-          }}
-          onPress={() => this.showActionSheet(user._id)}
-        >
-          <Icon name="ios-more" size={24} color={greyText} />
-        </TouchableOpacity>
-      );
-    }
-
-    const statEls = [
-      {
-        el: (
-          <TouchableOpacity
-            onPress={() => this.toggleTooltip()}
-            ref={c => (this.tooltipParent = c)}
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              alignItems: 'flex-end'
-            }}
-          >
-            <Image
-              resizeMode={'contain'}
-              style={[styles.r, { width: 24, height: 22 }]}
-              source={require('app/public/img/r.png')}
-            />
-            <Text style={[styles.largeNumber]}>
-              {numbers.abbreviateNumber(relevance)}{' '}
-            </Text>
-          </TouchableOpacity>
-        )
-      },
-      {
-        el: (
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
-            <Percent fontSize={25} user={user} />
-          </View>
-        )
-      },
-      {
-        el: (
-          <View style={styles.textRow}>
-            <Image
-              resizeMode={'contain'}
-              style={[styles.coin, { width: 23, height: 23 }]}
-              source={require('app/public/img/relevantcoin.png')}
-            />
-            <Text style={[styles.largeNumber]}>
-              {numbers.abbreviateNumber(balance) || 0}
-            </Text>
-          </View>
-        )
-      }
-    ];
+    const optionsEl = !isOwner && (
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          paddingVertical: 10,
+          paddingHorizontal: 15
+        }}
+        onPress={() => this.showActionSheet(user._id)}
+      >
+        <Icon name="ios-more" size={24} color={colors.black} />
+      </TouchableOpacity>
+    );
 
     return (
-      <View
-        style={[
-          {
-            padding: mainPadding,
-            paddingBottom: 0,
-            backgroundColor: 'white'
-          }
-        ]}
-      >
-        {userImageEl}
+      <View bg={'white'} p={'2 2 0 2'}>
+        <Image
+          resizeMode={'cover'}
+          alignSelf={'center'}
+          w={21}
+          h={21}
+          bradius={10.5}
+          source={userImage}
+        />
         {optionsEl}
 
-        <StatRow elements={statEls} />
+        <View m={'2 0'} fdirection="row" justify={'center'} align={'baseline'}>
+          <ProfileStats user={user} isOwner={isOwner} />
+        </View>
 
         {user.bio !== '' || this.props.isOwner ? (
           <Bio
@@ -209,30 +133,10 @@ class ProfileComponent extends Component {
             isOwner={this.props.isOwner}
           />
         ) : null}
-
-        <View style={[styles.break, { marginTop: 0, marginHorizontal: 0 }]} />
+        <Divider />
       </View>
     );
   }
 }
-
-const localStyles = StyleSheet.create({
-  uploadAvatar: {
-    height: 170,
-    width: 170,
-    borderRadius: 170 / 2,
-    resizeMode: 'cover',
-    alignSelf: 'center'
-  },
-  textRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    flex: 1,
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start'
-  }
-});
-
-styles = { ...globalStyles, ...localStyles };
 
 export default ProfileComponent;

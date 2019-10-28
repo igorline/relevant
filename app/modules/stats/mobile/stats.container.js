@@ -50,7 +50,7 @@ class StatsContainer extends Component {
       this.setState({ loading: false });
     }
     if (this.props.refresh !== next.refresh && this.list) {
-      this.list.scrollToOffset({ y: 0 });
+      this.list.scrollToOffset({ offset: 0 });
     }
   }
 

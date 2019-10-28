@@ -1,13 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { View, Title, Image } from 'modules/styled/uni';
 import { colors, fonts, sizing } from 'app/styles';
 import loadable from '@loadable/component';
 
 const Select = loadable(() => import('react-select'));
 
-export default function ModalHeader({ community, history }) {
-  const { communities, list, active } = community;
+ModalHeader.propTypes = {
+  history: PropTypes.object
+};
+
+function ModalHeader({ history }) {
+  const { communities, list, active } = useSelector(state => state.community);
+
   const com = list.map(id => communities[id]);
   const options = com.map(c => ({ label: c.name, value: c.slug }));
   const activeCommunity = com.find(c => c.slug === active);
@@ -39,11 +46,6 @@ export default function ModalHeader({ community, history }) {
     </View>
   );
 }
-
-ModalHeader.propTypes = {
-  community: PropTypes.object,
-  history: PropTypes.object
-};
 
 const customStyles = {
   menu: provided => ({
@@ -93,3 +95,5 @@ const customStyles = {
     };
   }
 };
+
+export default withRouter(ModalHeader);

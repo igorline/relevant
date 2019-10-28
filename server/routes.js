@@ -1,5 +1,6 @@
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import handleRender from './render';
+// eslint-disable-next-line import/named
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
 
@@ -58,7 +59,7 @@ module.exports = app => {
     return res.status(500).json({ message: err.message });
   });
 
-  app.get('/', (req, res) => res.redirect('/relevant/new'));
+  app.get('/', currentUser(), handleRender);
 
   BANNED_COMMUNITY_SLUGS.forEach(c => {
     app.get(`/${c}/*`, currentUser(), handleRender);
@@ -66,6 +67,9 @@ module.exports = app => {
   });
 
   app.get('/:community', currentUser(), handleRender);
-  app.get('/:community/*', currentUser(), handleRender);
+  app.get('/:community/post/:postId', currentUser(), handleRender);
+  app.get('/:community/post/:postId/:commentId', currentUser(), handleRender);
+  app.get('/:community/:feed', currentUser(), handleRender);
+  app.get('/:community/:feed/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
 };

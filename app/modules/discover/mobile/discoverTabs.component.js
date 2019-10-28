@@ -1,23 +1,25 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import { StyleSheet, View, Platform, StatusBar, Dimensions } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import Animated from 'react-native-reanimated';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { globalStyles, fullWidth, fullHeight, blue } from 'app/styles/global';
 import { getParentTags } from 'modules/tag/tag.actions';
-import { goToTopic } from 'modules/navigation/navigation.actions';
+import { goToTopic, registerGesture } from 'modules/navigation/navigation.actions';
 import Topics from 'modules/createPost/mobile/topics.component';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
-import { get } from 'lodash';
+import get from 'lodash/get';
+import { TabView, SceneMap } from 'react-native-tab-view';
 import DefaultTabBar from './discoverTabBar.component';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
-import { TabView, SceneMap } from 'react-native-tab-view';
 
 let styles;
-// const SUB_TITLE = 'Via Twitter';
 
 class DiscoverTabs extends Component {
   static propTypes = {
@@ -27,6 +29,9 @@ class DiscoverTabs extends Component {
     topics: PropTypes.bool,
     tags: PropTypes.object
   };
+
+  tabView = React.createRef();
+  position = new Animated.Value(0);
 
   constructor(props, context) {
     super(props, context);
@@ -62,7 +67,7 @@ class DiscoverTabs extends Component {
     this.loaded = false;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.topicId) {
       this.needsReload = new Date().getTime();
       requestAnimationFrame(() => {
@@ -74,19 +79,16 @@ class DiscoverTabs extends Component {
     }
   }
 
-  componentWillReceiveProps(next) {
-    const newSortUrlParam = get(next.navigation, 'state.params.sort');
-    const oldSortUrlParam = get(this.props.navigation, 'state.params.sort');
+  componentDidUpdate(prev) {
+    const { navigation, view } = this.props;
+    const newSortUrlParam = get(navigation, 'state.params.sort');
+    const oldSortUrlParam = get(prev.navigation, 'state.params.sort');
 
-    let tabId = next.view.discover.tab;
+    let tabId = view.discover.tab;
     if (newSortUrlParam && newSortUrlParam !== oldSortUrlParam) {
       tabId = this.state.routes.findIndex(r => r.key === newSortUrlParam);
     }
-    if (
-      tabId > -1 &&
-      tabId !== this.props.view.discover.tab &&
-      tabId !== this.state.index
-    ) {
+    if (tabId > -1 && tabId !== prev.view.discover.tab && tabId !== this.state.index) {
       this.tabView.goToPage(tabId);
     }
   }
@@ -213,7 +215,6 @@ class DiscoverTabs extends Component {
 
   render() {
     // const tabs = this.state.routes.map(route => this.renderScene(route));
-
     let topics = null;
     if (this.props.topics) {
       topics = (
@@ -244,10 +245,22 @@ class DiscoverTabs extends Component {
     // }
 
     // console.log(tabs);
+    // console.log(this.tabView);
+    // console.log('render pos', this.position);
+    // const drawer = getHandler('drawer');
 
     return (
       <View style={{ flex: 1 }}>
+        <PositionListener position={this.position} tabView={this.tabView} />
         <TabView
+          gestureHandlerProps={{
+            ref: this.tabView
+            // simultaneousHandlers: drawer
+            // onGestureEvent: console.log,
+            // onHandlerStateChange: console.log
+          }}
+          position={this.position}
+          // onSwipeStart={e => console.log('start', e)}
           navigationState={this.state}
           renderScene={this.renderScene}
           onIndexChange={index => this.setState({ index })}
@@ -256,7 +269,7 @@ class DiscoverTabs extends Component {
 
         {/*        <ScrollableTabView
           ref={c => (this.tabView = c)}
-          tabBarTextStyle={[styles.tabFont]}
+          tabBarTextStyle={styles.tabFont}
           tabBarActiveTextColor={blue}
           initialPage={this.initialTab}
           // initialPage={this.initialTab}
@@ -290,6 +303,28 @@ class DiscoverTabs extends Component {
   }
 }
 
+function PositionListener({ position, tabView }) {
+  const dispatch = useDispatch();
+  const g = useSelector(state => state.navigation.gestures);
+  const tabViewGesture = useSelector(state => state.navigation.gestures.tabView);
+  const active = tabViewGesture && tabViewGesture.active;
+  return (
+    <React.Fragment>
+      <Animated.Code
+        exec={Animated.onChange(
+          position,
+          Animated.call([position], ([value]) => {
+            const isActive = value > 0.0001;
+            dispatch(
+              registerGesture({ name: 'tabView', active: isActive, gesture: tabView })
+            );
+          })
+        )}
+      />
+    </React.Fragment>
+  );
+}
+
 const localStyles = StyleSheet.create({
   container: {
     flex: 1
@@ -312,7 +347,8 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         getParentTags,
-        goToTopic
+        goToTopic,
+        registerGesture
       },
       dispatch
     )

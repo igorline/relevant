@@ -16,19 +16,22 @@ import error from 'modules/ui/error.reducer';
 import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
 import { reducer as formReducer } from 'redux-form';
+// import { reducer as RelevantToken } from './contracts';
 
+// import { web3Reducers } from './web3.reducer';
 import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
-let drizzleReducers = {};
+let RelevantToken = {};
+let web3Reducers = {};
 
 if (process.env.WEB !== 'true') {
   // might need this form for conditional require
 } else {
   // block these imports in package.json in react-native field
-  const drizzle = require('drizzle');
-  drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
+  RelevantToken = require('./contracts').reducer;
+  web3Reducers = require('./web3.reducer').web3Reducers;
 }
 
 let communityState = {};
@@ -57,20 +60,22 @@ const createReducer = (asyncReducers = {}) =>
     admin,
     community,
     earnings,
-    ...drizzleReducers,
+    // ...drizzleReducers,
+    web3: web3Reducers,
+    ...RelevantToken,
     ...asyncReducers
   });
 
-let appReducer = createReducer();
+const appReducer = createReducer();
 
-export function injectAsyncReducer(store, name, asyncReducer) {
-  if (store.asyncReducers[name]) {
-    return;
-  }
-  store.asyncReducers[name] = asyncReducer;
-  appReducer = createReducer();
-  store.replaceReducer(createReducer(appReducer));
-}
+// export function injectAsyncReducer(store, name, asyncReducer) {
+//   if (store.asyncReducers[name]) {
+//     return;
+//   }
+//   store.asyncReducers[name] = asyncReducer;
+//   appReducer = createReducer();
+//   store.replaceReducer(createReducer(appReducer));
+// }
 
 const initialState = {
   posts: appReducer.posts,
@@ -117,5 +122,7 @@ const rootReducer = (state, action) => {
   }
   return appReducer(state, action);
 };
+
+export const _rootReducer = createReducer();
 
 export default rootReducer;

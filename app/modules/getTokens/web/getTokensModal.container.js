@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { sendConfirmation } from 'modules/auth/auth.actions';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';

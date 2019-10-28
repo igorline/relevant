@@ -1,12 +1,13 @@
 import * as types from 'core/actionTypes';
-import * as utils from 'app/utils';
+import { storage, api, alert } from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
 // eslint-disable-next-line
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 import { setUserMemberships } from 'modules/community/community.actions';
 
-const Alert = utils.alert.Alert();
+const Alert = alert.Alert();
+
 let PushNotification;
 let userDefaults;
 
@@ -16,7 +17,7 @@ let ReactPixel;
 let TwitterCT;
 
 if (process.env.WEB !== 'true') {
-  Analytics = require('react-native-firebase-analytics');
+  Analytics = require('react-native-firebase').analytics();
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
   PushNotification = require('react-native-push-notification');
 } else {
@@ -28,7 +29,7 @@ if (process.env.WEB !== 'true') {
 const APP_GROUP_ID = 'group.com.4real.relevant';
 
 const reqOptions = async () => {
-  const token = await utils.storage.getToken();
+  const token = await storage.getToken();
   return {
     credentials: 'include',
     headers: {
@@ -41,7 +42,6 @@ const reqOptions = async () => {
 
 export function setCommunity(community) {
   return dispatch => {
-    utils.api.setCommunity(community);
     dispatch({
       type: types.SET_COMMUNITY,
       payload: community
@@ -139,14 +139,16 @@ export function logout() {
 }
 
 export function cacheCommunity(community) {
-  return async () => {
+  return async dispatch => {
     try {
-      await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/updateCommunity',
-        body: JSON.stringify({ community })
-      });
+      await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/updateCommunity',
+          body: JSON.stringify({ community })
+        })
+      );
     } catch (err) {
       console.log(err); // eslint-disable-line
     }
@@ -155,7 +157,7 @@ export function cacheCommunity(community) {
 
 export function logoutAction(user) {
   return dispatch => {
-    utils.storage.removeToken().then(() => {
+    storage.removeToken().then(() => {
       // websocket message
       if (user && user._id) {
         dispatch({
@@ -178,12 +180,14 @@ export function setCurrentTooltip(step) {
 export function updateUser(user, preventLocalUpdate) {
   return async dispatch => {
     try {
-      const res = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/',
-        body: JSON.stringify(user)
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/',
+          body: JSON.stringify(user)
+        })
+      );
       if (!preventLocalUpdate) dispatch(updateAuthUser(res));
       return true;
     } catch (err) {
@@ -200,12 +204,14 @@ export function updateNotificationSettings(
 ) {
   return async dispatch => {
     try {
-      const res = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/notifications',
-        body: JSON.stringify({ notificationSettings, subscription, deviceTokens })
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/notifications',
+          body: JSON.stringify({ notificationSettings, subscription, deviceTokens })
+        })
+      );
       dispatch(updateAuthUser(res));
       return true;
     } catch (err) {
@@ -236,9 +242,9 @@ export function removeDeviceToken(auth) {
   };
 }
 
-export function enableMobileNotifications(user) {
+export function enableMobileNotifications(user, checkIfEnbaled) {
   return dispatch => {
-    if (!user.notificationSettings.mobile.all) return;
+    if (!user.notificationSettings.mobile.all && checkIfEnbaled) return;
     if (!PushNotification) return;
     configurePushNotifications(dispatch);
     registerPushNotification({ dispatch, user });
@@ -253,6 +259,7 @@ function configurePushNotifications(dispatch) {
       if (!userInteraction) return;
       if (data && data.postId) {
         const comment = data.comment ? { _id: data.comment } : null;
+        if (data.community) dispatch(setCommunity(data.community));
         dispatch(
           navigationActions.goToPost({
             _id: data.postId,
@@ -307,16 +314,19 @@ function setupUser(user, dispatch) {
 export function getUser(callback) {
   return async dispatch => {
     try {
-      const token = await utils.storage.getToken();
+      const token = await storage.getToken();
       if (!token) return null;
       dispatch(loginUserSuccess(token));
-      const user = await utils.api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/me'
-      });
+      const user = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'user',
+          path: '/me'
+        })
+      );
       setupUser(user, dispatch);
-      dispatch(enableMobileNotifications(user));
+      const checkIfEnabled = true;
+      dispatch(enableMobileNotifications(user, checkIfEnabled));
       if (user.memberships) {
         dispatch(setUserMemberships(user.memberships));
       }
@@ -339,23 +349,25 @@ export function setOnboardingStep(step) {
       method: 'GET',
       ...(await reqOptions())
     })
-    .then(response => response.json())
-    .then(responseJSON => {
-      dispatch(updateAuthUser(responseJSON));
-      return true;
-    })
-    .catch(() => false);
+      .then(response => response.json())
+      .then(responseJSON => {
+        dispatch(updateAuthUser(responseJSON));
+        return true;
+      })
+      .catch(() => false);
 }
 
 export function webOnboard(step) {
-  return async () => {
+  return async dispatch => {
     try {
-      await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/webonboard',
-        params: { step }
-      });
+      await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/webonboard',
+          params: { step }
+        })
+      );
       return true;
     } catch (err) {
       Alert.alert(err.message);
@@ -367,14 +379,16 @@ export function webOnboard(step) {
 export function loginUser(user) {
   return async dispatch => {
     try {
-      const responseJSON = await utils.api.request({
-        method: 'POST',
-        endpoint: '/auth',
-        path: '/local',
-        body: JSON.stringify(user)
-      });
+      const responseJSON = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: '/auth',
+          path: '/local',
+          body: JSON.stringify(user)
+        })
+      );
       if (responseJSON.token) {
-        await utils.storage.setToken(responseJSON.token);
+        await storage.setToken(responseJSON.token);
         dispatch(loginUserSuccess(responseJSON.token));
         dispatch(getUser());
         return true;
@@ -406,18 +420,16 @@ export function userOnline(user, token) {
         }
       }
     )
-    .then(response => response.json())
-    .catch(() => {
-      // Handle error?
-    });
+      .then(response => response.json())
+      .catch(() => {
+        // Handle error?
+      });
 }
 
 export function checkUser(string, type, omitSelf = false) {
   return () =>
     fetch(
-      `${
-        process.env.API_SERVER
-      }/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
+      `${process.env.API_SERVER}/api/user/check/user/?${type}=${string}&omitSelf=${omitSelf}`,
       {
         credentials: 'include',
         method: 'GET',
@@ -427,11 +439,11 @@ export function checkUser(string, type, omitSelf = false) {
         }
       }
     )
-    .then(response => response.json())
-    .then(responseJSON => responseJSON)
-    .catch(error => {
-      Alert.alert(error.message);
-    });
+      .then(response => response.json())
+      .then(responseJSON => responseJSON)
+      .catch(error => {
+        Alert.alert(error.message);
+      });
 }
 
 export function createUser(user, invitecode) {
@@ -445,53 +457,55 @@ export function createUser(user, invitecode) {
       },
       body: JSON.stringify({ user, invitecode })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      if (responseJSON.token) {
-        return utils.storage.setToken(responseJSON.token).then(() => {
-          ReactGA &&
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        if (responseJSON.token) {
+          return storage.setToken(responseJSON.token).then(() => {
+            ReactGA &&
               ReactGA.event({
                 category: 'User',
                 action: 'Created an Account'
               });
-          TwitterCT && TwitterCT.signUp();
-          ReactPixel && ReactPixel.track('CompleteRegistration');
-          Analytics && Analytics.logEvent('Created an Account');
-          dispatch(loginUserSuccess(responseJSON.token));
-          dispatch(getUser());
-          return true;
-        });
-      }
-      if (responseJSON.errors) {
-        const { errors } = responseJSON;
-        let message = '';
-        Object.keys(errors).forEach(key => {
-          if (errors[key].message) message += errors[key].message;
-        });
-        Alert.alert(message);
+            TwitterCT && TwitterCT.signUp();
+            ReactPixel && ReactPixel.track('CompleteRegistration');
+            Analytics && Analytics.logEvent('Created an Account');
+            dispatch(loginUserSuccess(responseJSON.token));
+            dispatch(getUser());
+            return true;
+          });
+        }
+        if (responseJSON.errors) {
+          const { errors } = responseJSON;
+          let message = '';
+          Object.keys(errors).forEach(key => {
+            if (errors[key].message) message += errors[key].message;
+          });
+          Alert.alert(message);
+          return false;
+        }
         return false;
-      }
-      return false;
-    })
-    .catch(error => {
-      if (error.message.match('invitation code')) {
-        dispatch(updateInvite(null));
-      }
-      Alert.alert(error.message);
-      return false;
-    });
+      })
+      .catch(error => {
+        if (error.message.match('invitation code')) {
+          dispatch(updateInvite(null));
+        }
+        Alert.alert(error.message);
+        return false;
+      });
 }
 
 export function updateHandle(user) {
   return async dispatch => {
     try {
-      const result = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/updateHandle',
-        body: JSON.stringify({ user })
-      });
+      const result = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/updateHandle',
+          body: JSON.stringify({ user })
+        })
+      );
       ReactGA &&
         ReactGA.event({
           category: 'User',
@@ -513,19 +527,19 @@ export function sendConfirmation() {
       method: 'GET',
       ...(await reqOptions())
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      Alert.alert(
-        'A confirmation email has been sent to ' + responseJSON.email,
-        'success'
-      );
-      return true;
-    })
-    .catch(err => {
-      Alert.alert('Error sending email, please try again ', err.message);
-      return false;
-    });
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        Alert.alert(
+          'A confirmation email has been sent to ' + responseJSON.email,
+          'success'
+        );
+        return true;
+      })
+      .catch(err => {
+        Alert.alert('Error sending email, please try again ', err.message);
+        return false;
+      });
 }
 
 export function forgotPassword(user, query) {
@@ -535,13 +549,13 @@ export function forgotPassword(user, query) {
       ...(await reqOptions()),
       body: JSON.stringify({ user })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => responseJSON)
-    .catch(err => {
-      Alert.alert(err.message);
-      return false;
-    });
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => responseJSON)
+      .catch(err => {
+        Alert.alert(err.message);
+        return false;
+      });
 }
 
 export function resetPassword(password, token) {
@@ -551,16 +565,16 @@ export function resetPassword(password, token) {
       ...(await reqOptions()),
       body: JSON.stringify({ password, token })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(() => {
-      Alert.alert('Your password has been updated! Try loggin in.', 'success');
-      return true;
-    })
-    .catch(err => {
-      Alert.alert(err.message);
-      return false;
-    });
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(() => {
+        Alert.alert('Your password has been updated! Try loggin in.', 'success');
+        return true;
+      })
+      .catch(err => {
+        Alert.alert(err.message);
+        return false;
+      });
 }
 
 export function confirmEmail(user, code) {
@@ -570,17 +584,17 @@ export function confirmEmail(user, code) {
       ...(await reqOptions()),
       body: JSON.stringify({ user, code })
     })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      Alert.alert('Your email has been confirmed');
-      dispatch(updateAuthUser(responseJSON));
-      return true;
-    })
-    .catch(err => {
-      Alert.alert(err.message);
-      return false;
-    });
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        Alert.alert('Your email has been confirmed');
+        dispatch(updateAuthUser(responseJSON));
+        return true;
+      })
+      .catch(err => {
+        Alert.alert(err.message);
+        return false;
+      });
 }
 
 export function setStats(stats) {
@@ -593,12 +607,14 @@ export function setStats(stats) {
 export function getChart(start, end) {
   return async dispatch => {
     try {
-      const chart = await utils.api.request({
-        method: 'GET',
-        endpoint: 'relevanceStats',
-        path: '/user',
-        query: { start, end }
-      });
+      const chart = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'relevanceStats',
+          path: '/user',
+          query: { start, end }
+        })
+      );
       dispatch(setStats({ chart }));
       dispatch(errorActions.setError('stats', false));
       return true;
@@ -612,11 +628,13 @@ export function getChart(start, end) {
 export function getStats(user) {
   return async dispatch => {
     try {
-      const stats = await utils.api.request({
-        method: 'GET',
-        endpoint: 'relevance',
-        path: `/user/${user._id}/stats`
-      });
+      const stats = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'relevance',
+          path: `/user/${user._id}/stats`
+        })
+      );
       dispatch(setStats(stats));
       dispatch(errorActions.setError('stats', false));
       return true;
@@ -630,12 +648,14 @@ export function getStats(user) {
 export function getRelChart(start, end) {
   return async dispatch => {
     try {
-      const relChart = await utils.api.request({
-        method: 'GET',
-        endpoint: 'statistics',
-        path: '/user',
-        query: { start, end }
-      });
+      const relChart = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'statistics',
+          path: '/user',
+          query: { start, end }
+        })
+      );
       dispatch(setStats({ relChart }));
       dispatch(errorActions.setError('stats', false));
       return true;
@@ -664,18 +684,20 @@ export function twitterAuth(profile, invite) {
   return async dispatch => {
     try {
       dispatch(setLoading(true));
-      const result = await utils.api.request({
-        method: 'POST',
-        endpoint: '/auth/',
-        path: 'twitter/login',
-        body: JSON.stringify({ profile, invite })
-      });
+      const result = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: '/auth/',
+          path: 'twitter/login',
+          body: JSON.stringify({ profile, invite })
+        })
+      );
       if (!result) {
         throw new Error('Twitter Auth failed');
       }
       dispatch(setLoading(false));
       if (result.user && result.user.role === 'temp') {
-        await utils.storage.setToken(result.token);
+        await storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
 
         dispatch(setPreUser(result.user));
@@ -683,7 +705,7 @@ export function twitterAuth(profile, invite) {
         return false;
       }
       if (result.token && result.user) {
-        await utils.storage.setToken(result.token);
+        await storage.setToken(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);
       }
@@ -692,41 +714,6 @@ export function twitterAuth(profile, invite) {
       dispatch(setTwitter(null));
       dispatch(setLoading(false));
       Alert.alert(error.message);
-      return false;
-    }
-  };
-}
-
-export function addEthAddress(msg, sig, acc) {
-  return async dispatch => {
-    try {
-      const result = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/ethAddress',
-        body: JSON.stringify({ msg, sig, acc })
-      });
-      dispatch(updateAuthUser(result));
-      return true;
-    } catch (err) {
-      Alert.alert(err.message);
-      return false;
-    }
-  };
-}
-
-export function cashOut() {
-  return async dispatch => {
-    try {
-      const result = await utils.api.request({
-        method: 'POST',
-        endpoint: 'user',
-        path: '/cashOut'
-      });
-      dispatch(updateAuthUser(result));
-      return result.cashOut;
-    } catch (err) {
-      Alert.alert(err.message);
       return false;
     }
   };
@@ -742,18 +729,37 @@ export function userToSocket(user) {
 export function redeemInvite(invitecode) {
   return async dispatch => {
     try {
-      const user = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'invites',
-        path: '/',
-        body: JSON.stringify({ invitecode })
-      });
+      const user = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'invites',
+          path: '/',
+          body: JSON.stringify({ invitecode })
+        })
+      );
       dispatch(setInviteCode(null));
       dispatch(updateAuthUser(user));
       Alert.alert('You are now a trusted admin of the community!', 'success');
     } catch (err) {
       dispatch(setInviteCode(null));
       // Alert.alert(err.message);
+    }
+  };
+}
+
+export function updateUserTokenBalance() {
+  return async dispatch => {
+    try {
+      const res = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'user',
+          path: '/updateUserTokenBalance'
+        })
+      );
+      dispatch(updateAuthUser(res));
+    } catch (err) {
+      Alert.alert(err.message);
     }
   };
 }

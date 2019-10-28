@@ -6,7 +6,7 @@ import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { colors, layout } from 'app/styles';
 import { View } from 'modules/styled/uni';
-import BannerPrompt from 'modules/activity/bannerPrompt.component';
+import BannerPrompt from 'modules/bannerPrompt/banner.container';
 import SplashComponent from 'modules/web_splash/splash.component';
 import { slide as Menu } from 'react-burger-menu';
 import {
@@ -15,10 +15,18 @@ import {
   hideModal
 } from 'modules/navigation/navigation.actions';
 import { bindActionCreators } from 'redux';
-import Modal from 'modules/ui/web/modal';
-import SettingsComponent from 'modules/admin/web/communityAdminForm.component';
+import { getCommunities } from 'modules/community/community.actions';
 
 class WithSideNav extends Component {
+  static propTypes = {
+    route: PropTypes.object,
+    isAuthenticated: PropTypes.bool,
+    navigation: PropTypes.object,
+    notif: PropTypes.object,
+    actions: PropTypes.object,
+    communities: PropTypes.array
+  };
+
   isMenuOpen = state => {
     if (state.isOpen) {
       this.props.actions.openWebSideNav();
@@ -28,8 +36,17 @@ class WithSideNav extends Component {
     return state.isOpen;
   };
 
+  static fetchData(dispatch) {
+    return dispatch(getCommunities());
+  }
+
+  componentDidMount() {
+    const { actions, communities } = this.props;
+    if (!communities.length) actions.getCommunities();
+  }
+
   render() {
-    const { isAuthenticated, navigation, notif, actions } = this.props;
+    const { isAuthenticated, navigation, notif, route } = this.props;
     const { sideNavIsOpen, screenSize } = navigation;
     const { promptType } = notif;
     const isDesktop = screenSize === 0;
@@ -40,9 +57,10 @@ class WithSideNav extends Component {
         ) : null}
         {promptType ? (
           <View
-            position="fixed"
+            position="sticky"
             zIndex="200"
             style={{
+              top: 0,
               right: 0,
               left: 0,
               minHeight: layout.BANNER_PROMPT_HEIGHT
@@ -72,30 +90,16 @@ class WithSideNav extends Component {
             </View>
           )}
           <View display="flex" flex={1}>
-            {renderRoutes(this.props.route.routes)}
+            {renderRoutes(route.routes)}
           </View>
-          <Modal
-            visible={navigation.modal === 'communitySettings'}
-            title="Community Settings"
-            close={actions.hideModal}
-          >
-            <SettingsComponent />
-          </Modal>
         </View>
       </View>
     );
   }
 }
 
-WithSideNav.propTypes = {
-  route: PropTypes.object,
-  isAuthenticated: PropTypes.bool,
-  navigation: PropTypes.object,
-  notif: PropTypes.object,
-  actions: PropTypes.object
-};
-
 const mapStateToProps = state => ({
+  communities: state.community.list,
   isAuthenticated: state.auth.isAuthenticated,
   navigation: state.navigation,
   notif: state.notif
@@ -106,7 +110,8 @@ const mapDispatchToProps = dispatch => ({
     {
       openWebSideNav,
       closeWebSideNav,
-      hideModal
+      hideModal,
+      getCommunities
     },
     dispatch
   )

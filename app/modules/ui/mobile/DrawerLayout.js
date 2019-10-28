@@ -9,6 +9,8 @@
 // that could be found when using the drawer component
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import invariant from 'invariant';
 import {
   Animated,
@@ -62,7 +64,8 @@ export type PropType = {
   overlayColor: string,
   drawerContainerStyle?: any,
   contentContainerStyle?: any,
-  onGestureRef?: Function
+  onGestureRef?: Function,
+  tabView: Object
 
   // Properties not yet supported
   // onDrawerSlide?: Function
@@ -83,14 +86,14 @@ export type DrawerMovementOptionType = {
   velocity?: number
 };
 
-export default class DrawerLayout extends Component<PropType, StateType> {
+class DrawerLayout extends Component<PropType, StateType> {
   static defaultProps = {
     drawerWidth: 200,
     drawerPosition: 'left',
     useNativeAnimations: true,
     drawerType: 'front',
     edgeWidth: 20,
-    minSwipeDistance: 3,
+    minSwipeDistance: 20,
     overlayColor: 'black',
     drawerLockMode: 'unlocked'
   };
@@ -217,7 +220,9 @@ export default class DrawerLayout extends Component<PropType, StateType> {
 
     this._onGestureEvent = Animated.event(
       [{ nativeEvent: { translationX: dragXValue, x: touchXValue } }],
-      { useNativeDriver: props.useNativeAnimations }
+      {
+        useNativeDriver: props.useNativeAnimations
+      }
     );
   };
 
@@ -231,6 +236,8 @@ export default class DrawerLayout extends Component<PropType, StateType> {
   };
 
   _openingHandlerStateChange = ({ nativeEvent }) => {
+    // const { tabView } = this.props;
+    // if (tabView && tabView.active) return;
     if (nativeEvent.oldState === State.ACTIVE) {
       this._handleRelease(nativeEvent);
     } else if (nativeEvent.state === State.ACTIVE) {
@@ -493,7 +500,13 @@ export default class DrawerLayout extends Component<PropType, StateType> {
   };
 
   render() {
-    const { drawerPosition, drawerLockMode, edgeWidth, minSwipeDistance } = this.props;
+    const {
+      drawerPosition,
+      drawerLockMode,
+      edgeWidth,
+      minSwipeDistance,
+      tabView
+    } = this.props;
 
     const fromLeft = drawerPosition === 'left';
 
@@ -509,12 +522,16 @@ export default class DrawerLayout extends Component<PropType, StateType> {
       ? { left: 0, width: this._drawerShown ? undefined : edgeWidth }
       : { right: 0, width: this._drawerShown ? undefined : edgeWidth };
 
+    const tabViewG = tabView && tabView.gesture;
+
     return (
       <PanGestureHandler
         ref={this._setPanGestureRef}
         hitSlop={hitSlop}
+        waitFor={tabView && tabView.active ? tabViewG : undefined}
+        simultaneousHandlers={tabViewG}
         activeOffsetX={gestureOrientation * minSwipeDistance}
-        failOffsetY={[-15, 15]}
+        failOffsetY={[-20, 20]}
         onGestureEvent={this._onGestureEvent}
         onHandlerStateChange={this._openingHandlerStateChange}
         enabled={drawerLockMode !== 'locked-closed' && drawerLockMode !== 'locked-open'}
@@ -548,3 +565,8 @@ const styles = StyleSheet.create({
     zIndex: 1000
   }
 });
+
+export default connect(
+  state => ({ tabView: state.navigation.gestures.tabView }),
+  () => ({})
+)(DrawerLayout);

@@ -9,6 +9,7 @@ Object {
   "bio": "",
   "blocked": Array [],
   "blockedBy": Array [],
+  "cashedOut": 0,
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",
@@ -28,6 +29,9 @@ Object {
   "messages": 0,
   "name": "Alice",
   "notificationSettings": Object {
+    "bet": Object {
+      "manual": false,
+    },
     "desktop": Object {
       "all": false,
     },

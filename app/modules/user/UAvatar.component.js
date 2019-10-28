@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
 import { Image, View } from 'modules/styled/uni';
+import { AVATAR_SIZE } from 'styles/layout';
 
 class UAvatar extends Component {
   static propTypes = {
@@ -9,7 +10,6 @@ class UAvatar extends Component {
     size: PropTypes.number,
     noLink: PropTypes.bool,
     m: PropTypes.string,
-    className: PropTypes.string,
     goToProfile: PropTypes.func,
     actions: PropTypes.object,
     style: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
@@ -23,19 +23,19 @@ class UAvatar extends Component {
     const image = user.image
       ? { uri: user.image }
       : require('app/public/img/default_user.jpg');
-    const imageSize = size || 4;
+    const imageSize = size || AVATAR_SIZE;
     const AvatarImage = (
       <Image source={image} h={imageSize} w={imageSize} bradius={imageSize / 2} />
     );
     if (this.props.noLink) {
       return (
-        <View style={this.props.style} className={this.props.className} m={m}>
+        <View style={this.props.style} m={m}>
           {AvatarImage}
         </View>
       );
     }
     return (
-      <View style={this.props.style} className={this.props.className} m={m}>
+      <View style={this.props.style} m={m}>
         <ULink
           onPress={() => (goToProfile ? goToProfile(user) : actions.goToProfile(user))}
           onClick={e => e.stopPropagation()}

@@ -11,7 +11,8 @@ const mongooseOpts = {
   reconnectInterval: 1000,
   useCreateIndex: true,
   useNewUrlParser: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useUnifiedTopology: true
 };
 
 process.env.SESSION_SECRET = 'test-secret';
@@ -29,8 +30,8 @@ beforeAll(async () => {
     if (mongoose.connection.host !== '127.0.0.1') {
       throw new Error('this is not a test db!');
     }
-    const clear = Object.keys(mongoose.connection.collections).map(i =>
-      mongoose.connection.collections[i].remove()
+    const clear = Object.values(mongoose.connection.collections).map(collection =>
+      collection.deleteMany()
     );
     return Promise.all(clear);
   }

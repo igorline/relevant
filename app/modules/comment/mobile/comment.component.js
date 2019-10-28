@@ -15,6 +15,7 @@ import { text as textUtil } from 'app/utils';
 import TextBody from 'modules/text/mobile/textBody.component';
 import PostInfo from 'modules/post/mobile/postInfo.component';
 import { View, Image } from 'modules/styled/uni';
+import { colors } from 'styles';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -158,7 +159,7 @@ class Comment extends Component {
     );
 
     const textBody = (
-      <View flex={1} mt={2} mb={1}>
+      <View mt={2} mb={1}>
         <TextBody
           {...this.props}
           style={styles.commentaryText}
@@ -177,7 +178,6 @@ class Comment extends Component {
         mr={2}
         mb={2}
         ml={nestingLevel ? 2 + nestingLevel * 3 - 3 : 2}
-        flex={1}
         fdirection={'row'}
       >
         {nestingLevel ? (
@@ -219,7 +219,8 @@ const localStyles = StyleSheet.create({
   commentaryText: {
     fontFamily: 'Georgia',
     fontSize: 36 / 2,
-    lineHeight: 54 / 2
+    lineHeight: 54 / 2,
+    color: colors.black
   }
 });
 

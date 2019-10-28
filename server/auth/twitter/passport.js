@@ -1,33 +1,12 @@
 import { handleAdminInvite } from 'server/api/invites/invite.controller';
 
 const passport = require('passport');
-// const CommunityMember = require('server/api/community/community.member.model').default;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const { promisify } = require('util');
 const config = require('../../config/config');
 const User = require('../../api/user/user.model');
 const Invite = require('../../api/invites/invite.model');
 const auth = require('../auth.service');
-
-// User.deleteOne({ handle: 'relevantfeed' }).exec();
-// CommunityMember.deleteOne({ 'embeddedUser.handle': 'relevantfeed' }).exec();
-
-// async function removeTwitterProfile() {
-//   try {
-//     const user = await User.findOne({ twitterHandle: 'relevantfeed' });
-//     user.twitter = null;
-//     user.twitterId = null;
-//     user.twitterHandle = null;
-//     user.twitterImage = null;
-//     user.twitterEmail = null;
-//     user.twitterAuthToken = null;
-//     user.twitterAuthSecret = null;
-//     await user.save();
-//   } catch (err) {
-//     // console.log(err);
-//   }
-// }
-// removeTwitterProfile();
 
 // Handles both login and signup via http POST request - native
 exports.nativeAuth = async (req, res, next) => {
@@ -78,15 +57,13 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
 
   let { user } = req;
 
-  const isConnectAccount = user || false;
-  const alreadyInUse =
-    isConnectAccount && (await isConnectedToDifferentUser({ user, profile }));
+  const connectedToUser = await isConnectedToDifferentUser({ user, profile });
 
-  if (alreadyInUse) {
+  if (connectedToUser) {
     throw new Error('A user with this twitter account already exists');
   }
 
-  if (!isConnectAccount) user = await User.findOne({ twitterId: profile.id });
+  if (!user) user = await User.findOne({ twitterId: profile.id });
 
   // check if we have someone with a matching email
   if (!user) {
@@ -187,15 +164,16 @@ export async function addTwitterProfile({ profile, twitterAuth, user }) {
 }
 
 async function isConnectedToDifferentUser({ user, profile }) {
-  return User.findOne({ twitterId: profile.id, _id: { $ne: user._id } });
+  if (!user) return null;
+  return User.findOne({ twitterId: profile.id, _id: { $ne: user._id.toString() } });
 }
 
 export async function addNewTwitterUser({ handle }) {
   const handleExists = await User.findOne({ handle });
   if (handleExists) {
     handle += Math.random()
-    .toString(36)
-    .substr(2, 3);
+      .toString(36)
+      .substr(2, 3);
   }
 
   const user = new User({

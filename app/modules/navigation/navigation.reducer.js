@@ -8,13 +8,15 @@ import {
   HIDE_MODAL,
   OPEN_WEB_SIDE_NAV,
   CLOSE_WEB_SIDE_NAV,
-  SET_WIDTH
+  SET_WIDTH,
+  REGISTER_GESTURE
 } from 'core/actionTypes';
 
 const initialState = {
   showTopics: false,
   reload: 0,
   scroll: false,
+  gestures: {},
   discover: {},
   stats: {},
   wallet: {},
@@ -25,7 +27,8 @@ const initialState = {
   modal: null,
   sideNavIsOpen: false,
   width: null,
-  screenSize: 0
+  screenSize: 0,
+  modalData: null
 };
 
 function navigationState(state = initialState, action) {
@@ -51,14 +54,16 @@ function navigationState(state = initialState, action) {
     case SHOW_MODAL: {
       return {
         ...state,
-        modal: action.payload
+        modal: action.payload.modal,
+        modalData: action.payload.data
       };
     }
 
     case HIDE_MODAL: {
       return {
         ...state,
-        modal: null
+        modal: null,
+        modalData: null
       };
     }
 
@@ -66,6 +71,16 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         scroll: action.payload
+      };
+    }
+
+    case REGISTER_GESTURE: {
+      return {
+        ...state,
+        gestures: {
+          ...state.gestures,
+          [action.payload.name]: action.payload
+        }
       };
     }
 

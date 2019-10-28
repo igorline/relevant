@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { LinkFont, Image, ViewButton } from 'modules/styled/uni';
 import { Form, View, Button } from 'modules/styled/web';
 import { bindActionCreators } from 'redux';
@@ -120,6 +120,7 @@ class LoginForm extends Component {
               <ULink
                 to={`/auth/twitter?redirect=${redirect}&invitecode=${invitecode}`}
                 external
+                rel="nofollow"
                 mr={[2, 0]}
                 mt={[0, 2]}
               >

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
 import { View, BodyText } from 'modules/styled/uni';
+import { elementTypePropTypeChecker } from 'utils/propValidation';
 
 export default class Earning extends Component {
   static propTypes = {
@@ -11,7 +12,7 @@ export default class Earning extends Component {
     month: PropTypes.string,
     payout: PropTypes.number,
     screenSize: PropTypes.number,
-    PostPreview: PropTypes.func
+    PostPreview: elementTypePropTypeChecker
   };
 
   render() {

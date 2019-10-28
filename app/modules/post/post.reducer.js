@@ -362,6 +362,34 @@ export default function post(state = initialState, action) {
       };
     }
 
+    case types.UNDO_POST_INVESTMENT: {
+      const postId = action.payload;
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [postId]: {
+            ...state.posts[postId],
+            myVote: null
+          }
+        }
+      };
+    }
+
+    case types.UPDATE_POST_INVESTMENTS: {
+      const postId = action.payload.post;
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [postId]: {
+            ...state.posts[postId],
+            myVote: action.payload
+          }
+        }
+      };
+    }
+
     // this wipes feed on login
     // case types.LOGIN_USER_SUCCESS: {
     //   return { ...initialState };

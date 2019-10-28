@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { s3 } from 'app/utils';
@@ -81,6 +81,24 @@ class CommunityAdminForm extends Component {
         validate: [required]
       },
       {
+        name: 'private',
+        label: 'Private',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
+        name: 'betEnabled',
+        label: 'Enable Betting',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
+        name: 'hidden',
+        label: 'Unlisted (anyone with link can still see and join the community)',
+        component: ReduxFormField,
+        type: 'checkbox'
+      },
+      {
         name: 'slug',
         label: 'Slug',
         component: ReduxFormField,
@@ -124,7 +142,7 @@ class CommunityAdminForm extends Component {
         name: 'admins',
         component: AsyncAdminField,
         type: 'text',
-        label: 'Moderators',
+        label: 'Moderators (Trusted Members)',
         validate: []
       }
     ];
@@ -167,8 +185,8 @@ const mapStateToProps = (state, ownProps) => {
   const adminMembers = get(community, 'admins', []);
   const admins = adminMembers.map(m => (m.embeddedUser ? m.embeddedUser.handle : m._id));
   const superAdmins = adminMembers
-  .filter(m => m.superAdmin)
-  .map(m => m.embeddedUser.handle);
+    .filter(m => m.superAdmin)
+    .map(m => m.embeddedUser.handle);
 
   const initialValues = { ...community, admins, superAdmins };
   return {

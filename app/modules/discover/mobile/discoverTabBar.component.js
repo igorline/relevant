@@ -10,7 +10,7 @@ class DefaultTabBar extends Component {
     activeTab: PropTypes.number,
     tabs: PropTypes.array,
     backgroundColor: PropTypes.string,
-    textStyle: PropTypes.array,
+    textStyle: PropTypes.object,
     tabStyle: PropTypes.object,
     renderTab: PropTypes.func,
     underlineStyle: PropTypes.object,
@@ -97,14 +97,14 @@ class DefaultTabBar extends Component {
           const outputRange = inputRange.map(i => (i === page ? 1 : 0));
 
           const textColor = this.nonNativeScroll
-          .interpolate({
-            inputRange,
-            outputRange
-          })
-          .interpolate({
-            inputRange: [0, 1],
-            outputRange: ['rgba(35, 31, 32, 1)', 'rgba(77, 78, 255, 1)']
-          });
+            .interpolate({
+              inputRange,
+              outputRange
+            })
+            .interpolate({
+              inputRange: [0, 1],
+              outputRange: ['rgba(35, 31, 32, 1)', 'rgba(77, 78, 255, 1)']
+            });
           const isTabActive = activeTab === page;
           const renderTab = this.props.renderTab || this.renderTab.bind(this);
           return renderTab(name, page, isTabActive, goToPage, textColor);

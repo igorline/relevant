@@ -11,6 +11,9 @@ server/test/mongoTestConfig.json
 #ios
 ios/Pods/
 
+#android
+*.hprof
+
 # Xcode
 #
 build/
@@ -29,7 +32,6 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
 
 # Android/IntelliJ
 #
@@ -50,6 +52,8 @@ buck-out/
 \.buckd/
 android/app/libs
 *.keystore
+!debug.keystore
+
 
 # fastlane
 #
@@ -64,5 +68,3 @@ android/app/libs
 
 # Bundle artifact
 *.jsbundle
-
-gradle.properties
