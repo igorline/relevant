@@ -54,7 +54,6 @@
     "babel-plugin-transform-remove-console": "^6.8.5",
     "body-parser": "^1.19.0",
     "body-scroll-lock": "^2.6.1",
-    "bonded-token": "^0.1.0",
     "cheerio": "^0.22.0",
     "cheerio-without-node-native": "^0.20.0",
     "composable-middleware": "^0.3.0",
@@ -294,7 +293,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "11.4.0"
+    "node": "^11.14.0"
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
   "directories": {
