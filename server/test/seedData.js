@@ -5,6 +5,7 @@ import Earnings from 'server/api/earnings/earnings.model'; // eslint-disable-lin
 import CommunityFeed from 'server/api/communityFeed/communityFeed.model'; // eslint-disable-line
 import Relevance from 'server/api/relevance/relevance.model'; // eslint-disable-line
 import Treasury from 'server/api/treasury/treasury.model'; // eslint-disable-line
+import Link from 'server/api/post/link.model'; // eslint-disable-line
 
 import Invest from 'server/api/invest/invest.model';
 import Community from 'server/api/community/community.model';
