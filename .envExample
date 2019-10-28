@@ -1,0 +1,52 @@
+NODE_ENV=development
+SESSION_SECRET='my secret'
+MONGO_URI=mongodb://localhost:27017/relevant
+TZ=utc
+
+# uncomment to seed the database
+#SEED_DB=true
+
+FACEBOOK_ID=123
+FACEBOOK_SECRET=123
+TWITTER_ID=123
+TWITTER_SECRET=123
+TWITTER_BEARER=123
+REDDIT_ID=123
+REDDIT_SECRET=123
+
+AWS_ACCESS_KEY=123
+AWS_SECRET_KEY=123
+
+S3_BUCKET=your-s3-bucket
+
+API_SERVER=http://localhost:3000
+
+MAILGUN_API_KEY=123
+MAILGUN_DOMAIN=mail.relevant.community
+
+ANDROID_KEY=android-push-notifications-key
+
+#gnache keys for testing
+TEST_ACCOUNT=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1
+TEST_KEY=4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d
+#gnache rpc
+TEST_RPC=http://localhost:9545
+
+#used for auth
+DOMAIN=http://127.0.0.1:3000
+
+BABEL_ENV = 'development_web'
+
+#web push notifications (disabled for dev)
+#VAPID_PUBLIC_KEY=123
+#VAPID_PRIVATE_KEY=123
+
+
+INFURA_NETWORK = 'local'
+NETWORK_NUMBER = 99
+INFURA_API_KEY = your infura api key
+INFURA_PROTOCOL = 'ws'
+RELEVANT_ENV = 'dev'
+GAS_SPEED='average'
+TOKEN_ADDRESS = 0xtokenAdre55
+

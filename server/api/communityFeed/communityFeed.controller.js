@@ -59,45 +59,45 @@ exports.index = async req => {
     : [];
 
   const feed = await PostData.find(query)
-  .sort(sortQuery)
-  .skip(skip)
-  .limit(limit)
-  .populate({
-    path: 'post',
-    populate: [
-      ...myVote,
-      {
-        path: 'commentary',
-        match: {
-          // TODO implement intra-community commentary
-          communityId,
-          type: 'post',
+    .sort(sortQuery)
+    .skip(skip)
+    .limit(limit)
+    .populate({
+      path: 'post',
+      populate: [
+        ...myVote,
+        {
+          path: 'commentary',
+          match: {
+            // TODO implement intra-community commentary
+            communityId,
+            type: 'post',
 
-          // TODO - we should probably sort the non-community commentary
-          // with some randomness on client side
-          // repost: { $exists: false },
-          user: { $nin: blocked },
-          hidden: { $ne: true }
+            // TODO - we should probably sort the non-community commentary
+            // with some randomness on client side
+            // repost: { $exists: false },
+            user: { $nin: blocked },
+            hidden: { $ne: true }
+          },
+          options: { sort: commentarySort },
+          populate: [
+            ...myVote,
+            { path: 'data' },
+            {
+              path: 'embeddedUser.relevance',
+              select: 'pagerank',
+              match: { communityId, global: true }
+            }
+          ]
         },
-        options: { sort: commentarySort },
-        populate: [
-          ...myVote,
-          { path: 'data' },
-          {
-            path: 'embeddedUser.relevance',
-            select: 'pagerank',
-            match: { communityId, global: true }
-          }
-        ]
-      },
-      { path: 'metaPost' },
-      {
-        path: 'embeddedUser.relevance',
-        select: 'pagerank',
-        match: { communityId, global: true }
-      }
-    ]
-  });
+        { path: 'metaPost' },
+        {
+          path: 'embeddedUser.relevance',
+          select: 'pagerank',
+          match: { communityId, global: true }
+        }
+      ]
+    });
 
   const posts = [];
   feed.forEach(async f => {

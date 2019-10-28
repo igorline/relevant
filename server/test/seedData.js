@@ -47,8 +47,10 @@ async function setupPosts() {
   let link1 = new Post(linkPost1);
   await link1.save();
   link1 = await link1.addPostData();
+
   // cross-post link1 to crypto community
   await link1.addPostData({ ...linkPost1, ...linkPost1.altCommunity });
+  link1.insertIntoFeed(linkPost1.communityId);
 
   let link2 = new Post(linkPost2);
   await link2.save();
@@ -70,6 +72,13 @@ async function setupPosts() {
   let postI1 = new Post(post1);
   await postI1.save();
   postI1 = await postI1.addPostData();
+
+  const addToFeed = [link1, link2, link3, link4, link5].map(async p => {
+    await p.upsertMetaPost(undefined, p.toObject());
+    return p.insertIntoFeed(p.communityId);
+  });
+
+  await Promise.all(addToFeed);
 
   postInstances = { postI1, link1, link2, link3, link4, link5 };
 }

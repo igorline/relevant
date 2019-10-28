@@ -5,8 +5,11 @@
   "scripts": {
     "startApp": "REACT_DEBUGGER=\"rndebugger-open --open --port 8081\" node node_modules/react-native/local-cli/cli.js start",
     "start": "node server/index.js",
+    "startDB": "mongod --fork --logpath /dev/null",
+    "stopDB": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
     "worker": "node server/worker.js",
     "dev": "nodemon server/index.js",
+    "devDB": "yarn startDB && nodemon server/index.js",
     "devServer": "NODE_ENV='native' nodemon server/index.js",
     "native": "NODE_ENV='native' nodemon server/index.js --max-old-space-size=4096",
     "build": "BABEL_ENV='development_web' webpack --config ./webpack.production.config.js --progress --colors -p",
@@ -85,7 +88,7 @@
     "mongoose": "^5.5.10",
     "morgan": "^1.6.1",
     "multiparty": "^4.1.2",
-    "newrelic": "^4.13.1",
+    "newrelic": "^5.13.1",
     "node-pushnotifications": "^1.1.9",
     "normalizr": "^3.0.0",
     "passport": "^0.4.0",
@@ -278,7 +281,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "11.4.0"
+    "node": "^11.4.0"
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
   "directories": {

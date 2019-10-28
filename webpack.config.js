@@ -2,6 +2,7 @@ const LoadablePlugin = require('@loadable/webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
+require('dotenv').config({ silent: true });
 
 module.exports = {
   devtool: 'source-map',
@@ -66,9 +67,7 @@ module.exports = {
         WEB: JSON.stringify('true'),
         API_SERVER: JSON.stringify(''),
         BABEL_ENV: JSON.stringify('development_web'),
-        VAPID_PUBLIC_KEY: JSON.stringify(
-          'BJp16DSJF-SdwZ3yxE2cK502FKKI7hxTON6YDoCaTctcq9sr3scJS1iTsa3YSlvOV-p2_P51cNWF5-os4Gc0rq4'
-        ),
+        VAPID_PUBLIC_KEY: JSON.stringify(process.env.VAPID_PUBLIC_KEY),
         INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
         INFURA_NETWORK: JSON.stringify(process.env.INFURA_NETWORK),
         INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),

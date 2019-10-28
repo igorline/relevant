@@ -15,21 +15,6 @@ import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 
-// User.findOneAndUpdate({ handle: 'jennifar' }, { banned: true }).then(console.log);
-// User.findOne({ handle: 'jennifar' }).then(console.log);
-
-// const TwitterWorker = require('../../utils/twitterWorker');
-// User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
-// .then(u => u);
-//
-// sendConfirmation({ handle: 'feed', email: 'relevant.feed@gmail.com', confirmCode: 'xxx' });
-
-// sendConfirmation({
-//   email: 'slava@relevant.community',
-//   handle: 'test',
-//   confirmCode: 'xxx',
-// });
-
 async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';
