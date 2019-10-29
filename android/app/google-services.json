@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "271994332492",
+    "firebase_url": "https://relevant-analytics-ca794.firebaseio.com",
+    "project_id": "relevant-analytics-ca794",
+    "storage_bucket": "relevant-analytics-ca794.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271994332492:android:730e5bf0c7bc09fe",
+        "android_client_info": {
+          "package_name": "com.relevantnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271994332492-82v3tvdb08hnbjhmmi1846od6sk0ibdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.relevantnative",
+            "certificate_hash": "1c0c4f38f117740d932a5bd35f3770bf36728db3"
+          }
+        },
+        {
+          "client_id": "271994332492-oc97i4ern7gpmqi4t8adom0dqbbae3jc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9dsHceZMabRuEJSfFww63LHTHRa6ZT3k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "271994332492-oc97i4ern7gpmqi4t8adom0dqbbae3jc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "271994332492-0glev2k2l2rnkq7a8r37v1oegqab51mg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.Relevant"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
