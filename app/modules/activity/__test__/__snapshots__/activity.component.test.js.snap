@@ -125,7 +125,7 @@ exports[`Snapshot Activity Web 1`] = `
                 style={
                   Object {
                     "backgroundColor": "rgba(0,0,0,0.00)",
-                    "backgroundImage": "url(\\"bob-pic.jpg\\")",
+                    "backgroundImage": "url(\\"https://yt3.ggpht.com/a/AGF-l7_IPKJORqk1Wo7AR4jMhW15Ma-za_QDlRxMcQ=s900-c-k-c0xffffffff-no-rj-mo\\")",
                     "backgroundPosition": "center",
                     "backgroundRepeat": "no-repeat",
                     "backgroundSize": "cover",
@@ -144,7 +144,7 @@ exports[`Snapshot Activity Web 1`] = `
                 alt=""
                 className="css-accessibilityImage-9pa8cd"
                 draggable={false}
-                src="bob-pic.jpg"
+                src="https://yt3.ggpht.com/a/AGF-l7_IPKJORqk1Wo7AR4jMhW15Ma-za_QDlRxMcQ=s900-c-k-c0xffffffff-no-rj-mo"
               />
             </div>
           </a>
@@ -356,7 +356,7 @@ exports[`Snapshot Activity Web 1`] = `
                   "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef",
                 ],
                 "handle": "carol",
-                "image": "carol-pic.jpg",
+                "image": "https://ichef.bbci.co.uk/news/640/cpsprodpb/A369/production/_87133814_87135704.jpg",
                 "lockedTokens": 0,
                 "name": "Carol",
                 "notificationSettings": Object {
@@ -369,10 +369,10 @@ exports[`Snapshot Activity Web 1`] = `
                   "pagerank": 33,
                 },
               },
-              "image": "link_img2.jpg",
+              "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
               "link": Object {
                 "domain": "link.domain2",
-                "image": "link_img2.jpg",
+                "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
                 "title": "postTitle2",
                 "url": "https://example.com/testPost2",
               },

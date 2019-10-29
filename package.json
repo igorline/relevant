@@ -7,8 +7,11 @@
     "start": "node server/index.js",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "startDB": "mongod --fork --logpath /dev/null",
+    "stopDB": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
     "worker": "node server/worker.js",
     "dev": "nodemon server/index.js",
+    "devDB": "yarn startDB && nodemon server/index.js",
     "devServer": "NODE_ENV='native' nodemon server/index.js",
     "native": "NODE_ENV='native' nodemon server/index.js --max-old-space-size=4096",
     "build": "BABEL_ENV='development_web' webpack --config ./webpack.production.config.js --progress --colors -p",
@@ -54,7 +57,6 @@
     "babel-plugin-transform-remove-console": "^6.8.5",
     "body-parser": "^1.19.0",
     "body-scroll-lock": "^2.6.1",
-    "bonded-token": "^0.1.0",
     "cheerio": "^0.22.0",
     "cheerio-without-node-native": "^0.20.0",
     "composable-middleware": "^0.3.0",
@@ -255,6 +257,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jest": "^24.9.0",
     "jest-canvas-mock": "^2.1.2",
+    "jest-environment-jsdom": "^24.9.0",
     "jest-mock-express": "^0.1.1",
     "jest-styled-components": "^7.0.0-beta.1",
     "jetifier": "^1.6.4",
@@ -295,7 +298,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "11.4.0"
+    "node": "^11.4.0"
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
   "directories": {

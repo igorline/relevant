@@ -8,6 +8,10 @@ app/publicenv.js
 app/public/dist
 server/test/mongoTestConfig.json
 
+#firebase credentials
+google-services.json
+GoogleService-Info.plist
+
 #ios
 ios/Pods/
 
