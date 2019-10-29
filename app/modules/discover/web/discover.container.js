@@ -22,10 +22,6 @@ const Wrapper = styled.View`
 
 const POST_PAGE_SIZE = 15;
 
-if (process.env.BROWSER === true) {
-  require('./discover.css');
-}
-
 export class Discover extends Component {
   static propTypes = {
     match: PropTypes.object,
