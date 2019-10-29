@@ -169,7 +169,7 @@ class HeaderRight extends Component {
           {Platform.OS === 'ios' ? (
             <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>
           ) : (
-            <Icon name="ios-settings-outline" size={24} color={darkGrey} />
+            <Icon name="ios-settings" size={24} color={darkGrey} />
           )}
         </TouchableHighlight>
       );

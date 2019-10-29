@@ -14,7 +14,7 @@ import CustomListView from 'modules/listview/mobile/customList.component';
 import { withNavigation } from 'react-navigation';
 import SingleActivity from 'modules/activity/activity.component';
 import PostComponent from 'modules/post/mobile/post.component';
-import * as notifActions from './../activity.actions';
+import * as notifActions from '../activity.actions';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
@@ -47,18 +47,17 @@ class Activity extends Component {
     this.tabs = [{ id: 0, title: 'Personal' }];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.auth.user && this.props.notif.count) {
       this.props.actions.markRead();
     }
   }
 
-  componentWillReceiveProps(next) {
-    if (this.props.refresh !== next.refresh) {
-      this.scrollToTop();
-    }
-    if (this.props.reload !== next.reload) {
-      this.props.actions.markRead();
+  componentDidUpdate(prev) {
+    const { refresh, reload, actions } = this.props;
+    if (refresh !== prev.refresh) this.scrollToTop();
+    if (reload !== prev.reload) {
+      actions.markRead();
       this.needsReload = new Date().getTime();
     }
   }
@@ -70,7 +69,7 @@ class Activity extends Component {
   scrollToTop() {
     if (this.tabs[this.state.view].component) {
       const view = this.tabs[this.state.view].component.listview;
-      if (view) view.scrollTo({ y: 0, animated: true });
+      if (view) view.scrollToOffset({ offset: 0 });
     }
   }
 

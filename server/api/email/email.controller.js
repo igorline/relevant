@@ -6,13 +6,13 @@ import User from '../user/user.model';
 
 const dummyKey = 'XXXXXXXXXXXXXXXXXXXXXXX';
 
-const inlineCss = require('inline-css');
-const { emailStyle } = require('../../utils/emailStyle');
-
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY || dummyKey,
   domain: process.env.MAILGUN_DOMAIN || dummyKey
 });
+
+const inlineCss = require('inline-css');
+const { emailStyle } = require('../../utils/emailStyle');
 
 // const unsub = [
 //   'jasonfeifer@gmail.com',
@@ -59,7 +59,7 @@ async function generateList(type) {
       // const now = new Date();
       // now.setDate(now.getDate() - 5);
       query = { 'notificationSettings.email.digest': false };
-      users = await List.find(query);
+      users = await User.find(query, 'email code twitterEmail twitter handle name');
       console.log('nodigest', users.length);
     }
 
@@ -120,7 +120,7 @@ async function generateList(type) {
   }
 }
 
-generateList('nodigest');
+// generateList('nodigest');
 // generateList('currentUsers');
 // generateList('notregistered');
 // generateList('waitlist');

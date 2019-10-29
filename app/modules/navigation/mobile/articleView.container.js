@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  WebView,
   View,
   Image,
   TouchableHighlight,
   ActivityIndicator,
   InteractionManager,
   Platform,
-  Alert
+  Alert,
+  SafeAreaView,
+  Share,
+  ActionSheetIOS,
+  Linking
 } from 'react-native';
+import WebView from 'react-native-webview';
 import PropTypes from 'prop-types';
-import Share from 'react-native-share';
+import RNBottomSheet from 'react-native-bottom-sheet';
+
+// import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -20,9 +26,12 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 
 let styles;
 let RWebView;
+let ActionSheet = ActionSheetIOS;
 
 if (Platform.OS === 'android') {
   RWebView = WebView;
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 } else {
   RWebView = WebView;
 }
@@ -71,26 +80,45 @@ class ArticleView extends Component {
     return () => this.props.actions.pop('home');
   }
 
-  // showShareActionSheet() {
-  //   ActionSheetIOS.showShareActionSheetWithOptions({
-  //     url: this.url,
-  //   },
-  //   (error) => Alert.alert(error),
-  //   (completed, method) => {
+  showActionSheet = () => {
+    ActionSheet.showActionSheetWithOptions(
+      {
+        options: ['Open in Browser', 'Share Via...', 'Cancel'],
+        cancelButtonIndex: 4
+      },
+      button => {
+        switch (button) {
+          case 0:
+            return Linking.openURL(this.url);
+          case 1:
+            return this.onShare();
+          default:
+            return null;
+        }
+      }
+    );
+  };
 
+  // onShare() {
+  //   Share.open({
+  //     title: 'Relevant',
+  //     url: this.url,
+  //     subject: 'Article from Relevant'
+  //   }).catch(() => {
+  //     // Alert.alert(err);
   //   });
   // }
 
-  onShare() {
-    Share.open({
-      title: 'Relevant',
-      url: this.url,
-      subject: 'Article from Relevant',
-      message: this.url
-    }).catch(err => {
-      Alert.alert(err);
-    });
-  }
+  onShare = async () => {
+    try {
+      await Share.share({
+        url: this.url,
+        subject: 'Article From Relevant'
+      });
+    } catch (err) {
+      Alert(err.message);
+    }
+  };
 
   renderBack() {
     const back = (
@@ -118,7 +146,7 @@ class ArticleView extends Component {
       <TouchableHighlight
         style={[styles.leftButton]}
         underlayColor={'transparent'}
-        onPress={() => this.onShare()}
+        onPress={() => this.showActionSheet()}
       >
         <View style={{ paddingHorizontal: 10, marginLeft: 0 }}>
           <Image
@@ -200,12 +228,12 @@ class ArticleView extends Component {
     }
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 0 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         {progressEl}
         {activity}
         {webView}
         {this.renderFooter()}
-      </View>
+      </SafeAreaView>
     );
   }
 }

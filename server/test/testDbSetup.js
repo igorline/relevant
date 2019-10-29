@@ -9,7 +9,10 @@ const mongooseOpts = {
   autoReconnect: true,
   reconnectTries: Number.MAX_VALUE,
   reconnectInterval: 1000,
-  useMongoClient: true // remove this line if you use mongoose 5 and above
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true
 };
 
 process.env.SESSION_SECRET = 'test-secret';
@@ -18,10 +21,7 @@ process.env.TWITTER_SECRET = 'test-twitter-secret';
 
 beforeAll(async () => {
   if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(
-      `${global.MONGO_URI}${process.env.TEST_SUITE}`,
-      mongooseOpts
-    );
+    await mongoose.connect(`${global.MONGO_URI}${process.env.TEST_SUITE}`, mongooseOpts);
   }
   await clearDB();
   return setupTestData();
@@ -30,8 +30,8 @@ beforeAll(async () => {
     if (mongoose.connection.host !== '127.0.0.1') {
       throw new Error('this is not a test db!');
     }
-    const clear = Object.keys(mongoose.connection.collections).map(i =>
-      mongoose.connection.collections[i].remove()
+    const clear = Object.values(mongoose.connection.collections).map(collection =>
+      collection.deleteMany()
     );
     return Promise.all(clear);
   }

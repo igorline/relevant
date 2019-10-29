@@ -14,6 +14,7 @@ import { sizing, colors } from 'app/styles';
 import styled from 'styled-components/primitives';
 import { Header, View, SecondaryText, CTALink, Text } from 'modules/styled/uni';
 import { computeUserPayout } from 'app/utils/rewards';
+import { SIDE_NAV_PADDING } from 'styles/layout';
 
 const WalletInfo = styled.View`
   display: flex;
@@ -64,7 +65,7 @@ export class NavProfile extends Component {
 
     return (
       <View bb flex={1}>
-        <View p={[4, 2]} pb={[5, 3]}>
+        <View p={[SIDE_NAV_PADDING, 2]} pb={[4, 3]}>
           <View fdirection={'row'} justify="space-between" align="center">
             <Header>{user.name}</Header>
             <ULink hu to="/user/wallet" onPress={() => actions.goToTab('wallet')}>
@@ -72,7 +73,7 @@ export class NavProfile extends Component {
             </ULink>
           </View>
 
-          <View fdirection={'row'} align={'center'} mt={[4, 2]}>
+          <View fdirection={'row'} align={'center'} mt={[3, 2]}>
             <UAvatar
               user={user}
               size={8}
@@ -99,6 +100,7 @@ export class NavProfile extends Component {
                   <CoinStat
                     user={user}
                     isOwner={true}
+                    // showPrice
                     align="center"
                     data-for="mainTooltip"
                     data-tip={JSON.stringify({
@@ -111,12 +113,13 @@ export class NavProfile extends Component {
                   />
                 </ULink>
               </View>
-              <View fdirection={'row'} align={'baseline'} color={colors.grey} mt={2}>
+              <View fdirection={'row'} align={'center'} color={colors.grey} mt={2}>
                 <SecondaryText fs={1.5}>Pending Rewards: </SecondaryText>
                 <CoinStat
                   size={1.5}
                   mr={1.5}
                   fs={1.5}
+                  showPrice
                   secondary
                   c={colors.black}
                   amount={pendingPayouts}

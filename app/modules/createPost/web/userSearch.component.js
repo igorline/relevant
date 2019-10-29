@@ -7,12 +7,12 @@ import { colors } from 'app/styles';
 
 const UserSelect = styled(View)`
   &:hover {
-    background: ${colors.darkLightGrey};
+    background: ${colors.lightGrey};
   }
   ${p =>
     p.selected
       ? `
-    background: ${colors.darkLightGrey};
+    background: ${colors.lightGrey};
   `
       : ''}
 `;
@@ -37,13 +37,16 @@ export default class UserSuggestion extends Component {
   componentDidMount() {
     this.updateScrollPosition();
   }
+
   componentDidUpdate() {
     this.updateScrollPosition();
   }
+
   updateScrollPosition() {
     const offset = Math.max(this.props.userSearchIndex - 1, 0) * USER_ELEMENT_HEIGHT;
     if (this.el) this.el.scrollTop = offset;
   }
+
   render() {
     if (!this.props.users || !this.props.users.length) {
       return null;

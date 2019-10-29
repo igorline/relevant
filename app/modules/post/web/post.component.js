@@ -9,18 +9,17 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
 import { layout } from 'app/styles';
 import SingleComment from 'modules/comment/web/singleComment.container';
-import PostButtons from 'modules/post/postbuttons.component';
+import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import PostInfo from 'modules/post/postinfo.component';
-import { routing } from 'app/utils';
+import { getPostUrl } from 'app/utils/post';
 import { View, Text, Divider } from 'modules/styled/uni';
 import get from 'lodash/get';
 import ButtonRow from 'modules/post/web/buttonRow.component';
+import { MAX_POST_WIDTH } from 'styles/layout';
 
 export class Post extends Component {
   static propTypes = {
-    post: PropTypes.shape({
-      data: PropTypes.object
-    }),
+    post: PropTypes.object,
     postState: PropTypes.object,
     repost: PropTypes.object,
     link: PropTypes.object,
@@ -116,12 +115,12 @@ export class Post extends Component {
     if (!post) return null;
 
     const parentPost = post.parentPost || post;
-    const postUrl = routing.getPostUrl(community, parentPost);
+    const postUrl = getPostUrl(community, parentPost);
     const renderComment = !noComments && comment;
 
     // TODO pass post buttons as prop to Post?
     const postEl = isLink ? (
-      <View fdirection={'row'} m={[`4 4 ${renderComment ? 0 : 4} 0`, 0]}>
+      <View fdirection={'row'} m={[`4 3 ${renderComment ? 0 : 3} 0`, 0]}>
         {!hidePostButtons && !screenSize && (
           <View w={layout.POST_BUTTONS_WIDTH}>
             <PostButtons post={post} {...this.props} />
@@ -167,7 +166,7 @@ export class Post extends Component {
     );
 
     const commentCommunity = get(comment, 'community') || community;
-    const commentUrl = routing.getPostUrl(commentCommunity, parentPost);
+    const commentUrl = getPostUrl(commentCommunity, parentPost);
     const additionalNesting =
       hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_NESTING_UNITS;
     const commentEl = renderComment ? (
@@ -178,7 +177,7 @@ export class Post extends Component {
         hidePostButtons={screenSize === 0}
         hideBorder={isLink && !screenSize}
         additionalNesting={additionalNesting}
-        nestingLevel={1}
+        nestingLevel={isLink ? 0 : 1}
         actions={actions}
         preview={preview}
         inMainFeed
@@ -204,7 +203,7 @@ export class Post extends Component {
     );
 
     return (
-      <View fdirection={'column'}>
+      <View maxWidth={MAX_POST_WIDTH} fdirection={'column'}>
         {previewEl}
         {isLink && previewEl ? <View mt={2} /> : postEl}
         {commentEl}
@@ -222,7 +221,7 @@ export default withRouter(
       usersState: state.user,
       auth: state.auth,
       earnings: state.earnings,
-      myPostInv: state.investments.myPostInv,
+      // myPostInv: state.investments.myPostInv,
       screenSize: state.navigation.screenSize
     }),
     dispatch => ({

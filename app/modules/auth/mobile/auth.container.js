@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
+
 import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import { bindActionCreators } from 'redux';
@@ -64,9 +65,9 @@ class AuthContainer extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }} uriPrefix={'Relevant://'}>
+      <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'never' }}>
         <AuthNavigator navigation={this.props.navigation} screenProps={this.props} />
-      </View>
+      </SafeAreaView>
     );
   }
 }

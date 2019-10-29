@@ -68,14 +68,14 @@ function getUser(select) {
 
 function blocked() {
   return compose()
-  .use(validateTokenLenient)
-  .use(getUser('+blocked +blockedBy'));
+    .use(validateTokenLenient)
+    .use(getUser('+blocked +blockedBy'));
 }
 
 function currentUser() {
   return compose()
-  .use(validateTokenLenient)
-  .use(getUser());
+    .use(validateTokenLenient)
+    .use(getUser());
 }
 
 function authMiddleware() {
@@ -88,8 +88,8 @@ function authMiddleware() {
  */
 function isAuthenticated() {
   return compose()
-  .use(validateTokenStrict)
-  .use(getUser('+email'));
+    .use(validateTokenStrict)
+    .use(getUser('+email'));
 }
 
 function communityMember(role) {
@@ -99,15 +99,16 @@ function communityMember(role) {
         throw new Error('missing user credentials');
       }
       const user = req.user._id;
-      // TODO make sure share extension supports this
       const community = req.query.community || 'relevant';
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
       if (!member) {
-        // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
         const com = await Community.findOne({ slug: community });
+        // TODO private communities
+        if (!com || com.private) throw new Error("Community doesn't exist");
+
         member = await com.join(user);
         if (!member.community) {
           member.community = com.slug;
@@ -135,16 +136,16 @@ function communityMember(role) {
 function hasRole(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
   return compose()
-  .use(isAuthenticated())
-  .use((req, res, next) => {
-    if (
-      config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
-    ) {
-      next();
-    } else {
-      res.sendStatus(403);
-    }
-  });
+    .use(isAuthenticated())
+    .use((req, res, next) => {
+      if (
+        config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
+      ) {
+        next();
+      } else {
+        res.sendStatus(403);
+      }
+    });
 }
 
 /**

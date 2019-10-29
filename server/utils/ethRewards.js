@@ -11,6 +11,7 @@ import { SHARE_DECAY, MINIMUM_RANK, TOKEN_DECIMALS } from '../config/globalConst
 import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
 import computePageRank from './pagerankCompute';
+import { runAudit } from './tokenAudit';
 
 const queue = require('queue');
 
@@ -31,6 +32,7 @@ exports.rewards = async () => {
     console.log('rewardPool', rewardPool); // eslint-disable;
   } catch (err) {
     console.log(err);
+    throw err;
   }
 
   try {
@@ -84,19 +86,20 @@ exports.rewards = async () => {
     // console.log('distributedRewards Pool', distPool);
     // console.log('Finished distributing rewards, remaining reward fund: ', remainingRewards);
     const now = new Date();
-    await Earnings.update(
+    await Earnings.updateMany(
       { payoutTime: { $lte: now }, status: 'pending' },
       { status: 'expired' },
       { multi: true }
     );
 
     computingRewards = false;
+    await runAudit();
     return { payoutData, totalDistributedRewards };
-  } catch (error) {
-    console.log('rewards error', error);
+  } catch (err) {
+    console.log('rewards error', err);
     computingRewards = false;
     // return null;
-    throw error;
+    throw err;
   }
 };
 
@@ -221,13 +224,20 @@ async function distributeUserRewards(posts, _community) {
   let distributedRewards = 0;
 
   const updatedUsers = posts.map(async post => {
-    const votes = await Invest.find({ post: post.post });
+    const votes = await Invest.find({ post: post.post, communityId: post.communityId });
 
     // compute total vote shares
-    let totalShares = 0;
-    votes.forEach(vote => {
-      totalShares += vote.shares;
-    });
+    const totalShares = votes.reduce((a, v) => a + v.shares, 0);
+
+    if (totalShares !== post.shares) {
+      console.log('post:', post.post);
+      console.log(
+        'ERROR: shares mismatch, investShares:',
+        totalShares,
+        'postShares:',
+        post.shares
+      );
+    }
 
     if (totalShares === 0) return null;
 
@@ -295,7 +305,7 @@ async function distributeUserRewards(posts, _community) {
   console.log('total distributed rewards for', community, distributedRewards);
   console.log('\x1b[32m', payouts);
   console.log('\x1b[0m');
-  return { payouts, distributedRewards };
+  return { payouts, distributedRewards: distributedRewards.toPrecision(12) };
 }
 
 async function sendNotification(props) {
@@ -334,7 +344,7 @@ async function sendNotification(props) {
 
 async function updatePendingEarnings(posts) {
   posts = await posts.map(post =>
-    Earnings.update(
+    Earnings.updateMany(
       { post: post.post },
       { estimatedPostPayout: post.payout / TOKEN_DECIMALS },
       { multi: true }

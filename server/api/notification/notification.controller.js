@@ -16,18 +16,18 @@ exports.create = (req, res, next) => {
 
   const newNotification = new Notification(dbNotificationObj);
   return newNotification
-  .save()
-  .then(() => {
-    const newNotifObj = {
-      _id: req.body.forUser,
-      type: 'ADD_ACTIVITY'
-    };
-    if (newNotification.personal) {
-      socketEvent.emit('socketEvent', newNotifObj);
-    }
-    res.send(200).send();
-  })
-  .catch(next);
+    .save()
+    .then(() => {
+      const newNotifObj = {
+        _id: req.body.forUser,
+        type: 'ADD_ACTIVITY'
+      };
+      if (newNotification.personal) {
+        socketEvent.emit('socketEvent', newNotifObj);
+      }
+      res.send(200).send();
+    })
+    .catch(next);
 };
 
 exports.show = (req, res, next) => {
@@ -41,26 +41,26 @@ exports.show = (req, res, next) => {
   }
 
   Notification.find(query)
-  .limit(limit)
-  .skip(skip)
-  .sort({ _id: -1 })
-  // .populate('byUser')
-  .populate({
-    path: 'byUser',
-    populate: {
-      path: 'relevance',
-      match: {
-        community: req.query.community,
-        global: true
+    .limit(limit)
+    .skip(skip)
+    .sort({ _id: -1 })
+    // .populate('byUser')
+    .populate({
+      path: 'byUser',
+      populate: {
+        path: 'relevance',
+        match: {
+          community: req.query.community,
+          global: true
+        }
       }
-    }
-  })
-  .populate({
-    path: 'post',
-    populate: [{ path: 'metaPost' }, { path: 'parentPost' }, { path: 'data' }]
-  })
-  .then(notifications => res.status(200).json(notifications))
-  .catch(next);
+    })
+    .populate({
+      path: 'post',
+      populate: [{ path: 'metaPost' }, { path: 'parentPost' }, { path: 'data' }]
+    })
+    .then(notifications => res.status(200).json(notifications))
+    .catch(next);
 };
 
 exports.unread = (req, res, next) => {
@@ -69,11 +69,11 @@ exports.unread = (req, res, next) => {
   if (userId) {
     query = { forUser: userId, read: false };
   }
-  Notification.count(query)
-  .then(unread => {
-    res.status(200).json({ unread });
-  })
-  .catch(next);
+  Notification.countDocuments(query)
+    .then(unread => {
+      res.status(200).json({ unread });
+    })
+    .catch(next);
 };
 
 exports.showGeneral = (req, res, next) => {
@@ -84,17 +84,17 @@ exports.showGeneral = (req, res, next) => {
   if (avoidUser) query = { $and: [{ personal: false }, { byUser: { $ne: avoidUser } }] };
 
   Notification.find(query)
-  .limit(limit)
-  .skip(skip)
-  .sort({ _id: -1 })
-  .populate('byUser post tag')
-  .then(notifications => res.status(200).json(notifications))
-  .catch(next);
+    .limit(limit)
+    .skip(skip)
+    .sort({ _id: -1 })
+    .populate('byUser post tag')
+    .then(notifications => res.status(200).json(notifications))
+    .catch(next);
 };
 
 exports.markRead = (req, res, next) => {
   const query = { forUser: req.user._id, read: false };
-  return Notification.update(query, { read: true }, { multi: true })
-  .then(() => res.status(200).send())
-  .catch(next);
+  return Notification.updateMany(query, { read: true }, { multi: true })
+    .then(() => res.status(200).send())
+    .catch(next);
 };

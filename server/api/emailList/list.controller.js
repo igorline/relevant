@@ -1,7 +1,7 @@
 import List from './list.model';
 import * as InviteController from '../invites/invite.controller';
 
-// List.count({ status: { $exists: false } }).then(c => console.log('Waitlist', c));
+// List.countDocuments({ status: { $exists: false } }).then(c => console.log('Waitlist', c));
 // List.find({}).then(u => u.map(c => console.log('List', c.toObject())));
 
 exports.index = async (req, res, next) => {

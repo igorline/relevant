@@ -19,8 +19,8 @@ let DEFAULT_COMMINITY_ID;
 const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
 
 const Twitter = require('twitter');
-const User = require('../api/user/user.model');
 const queue = require('queue');
+const User = require('../api/user/user.model');
 
 let allUsers;
 
@@ -166,8 +166,8 @@ async function processTweet(tweet, user) {
     if (dupPost) return;
 
     const body = tweet.full_text
-    .replace(new RegExp(tweet.entities.urls[0].url, 'g'), '')
-    .replace(/&amp;/, '&');
+      .replace(new RegExp(tweet.entities.urls[0].url, 'g'), '')
+      .replace(/&amp;/, '&');
 
     post = new Post({
       // for now only pull tweets for relevant community
@@ -359,20 +359,20 @@ async function cleanup() {
 async function processTweets(users) {
   console.log('processing', users.length, 'users');
   let trim = await TwitterFeed.find({ user: '_common_Feed_' })
-  .sort({ rank: -1 })
-  .skip(1000);
+    .sort({ rank: -1 })
+    .skip(1000);
   let ids = trim.map(t => t._id);
-  await TwitterFeed.remove({ _id: { $in: ids } });
+  await TwitterFeed.deleteMany({ _id: { $in: ids } });
 
   users.forEach((u, i) => {
     try {
       q.push(async cb => {
         try {
           trim = await TwitterFeed.find({ user: u._id })
-          .sort({ rank: -1 })
-          .skip(1000);
+            .sort({ rank: -1 })
+            .skip(1000);
           ids = trim.map(t => t._id);
-          await TwitterFeed.remove({ _id: { $in: ids } });
+          await TwitterFeed.deleteMany({ _id: { $in: ids } });
           await getUserFeed(u, i);
           cb();
         } catch (err) {
@@ -411,8 +411,8 @@ async function getUsers(userId) {
       global: true,
       pagerank: { $gt: 1 }
     })
-    .sort({ pagerank: -1 })
-    .limit(15);
+      .sort({ pagerank: -1 })
+      .limit(15);
     userList = userList.map(u => u.user).filter(u => u !== 'undefined');
 
     const query = userId ? { _id: userId } : { _id: { $in: userList } };

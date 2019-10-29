@@ -65,11 +65,11 @@ async function referralRewards({ invite, user, Invite }) {
     await invite.save();
 
     let inviter = await Invite.model('User')
-    .findOne({ _id: invite.invitedBy })
-    .populate({
-      path: 'relevance',
-      match: { communityId, global: true }
-    });
+      .findOne({ _id: invite.invitedBy })
+      .populate({
+        path: 'relevance',
+        match: { communityId, global: true }
+      });
 
     const communityInstance = await Invite.model('Community').findOne({
       _id: communityId
@@ -108,7 +108,7 @@ async function referralRewards({ invite, user, Invite }) {
     const { author: updatedUser } = await computeApproxPageRank({
       communityId,
       author: user,
-      investment: vote,
+      vote,
       user: inviter
     });
 

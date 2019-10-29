@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { View, Divider, Spacer, Image } from 'modules/styled/uni';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
-import PostButtons from 'modules/post/postbuttons.component';
+import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import CommentBody from 'modules/comment/web/commentBody.component';
 import { layout } from 'app/styles';
@@ -59,7 +59,7 @@ class Comment extends Component {
     const { focusedComment, comment, scrollTo } = this.props;
     if (comment && focusedComment === comment._id) {
       this.el.current.measureInWindow((x, y) => {
-        scrollTo(0, y);
+        scrollTo && scrollTo(0, y);
       });
     }
   };
@@ -119,7 +119,8 @@ class Comment extends Component {
       inMainFeed,
       history,
       screenSize,
-      additionalNesting
+      additionalNesting,
+      parentPost
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -153,22 +154,22 @@ class Comment extends Component {
     );
 
     const commentChildren = get(childComments, comment.id) || [];
+    const borderMargin =
+      hidePostButtons || screenSize
+        ? (nestingLevel && -3) || 0
+        : layout.POST_BUTTONS_WIDTH / 3;
+
     return (
       <View ref={this.el}>
         <Spacer
           nestingLevel={nestingLevel}
           additionalNesting={additionalNesting}
           screenSize={screenSize}
-          m={['0 4 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
+          m={['0 3 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
           fdirection="column"
         >
-          {!hideBorder && nestingLevel > 0 && (
-            <Divider
-              className="divider"
-              ml={hidePostButtons || screenSize ? 0 : layout.POST_BUTTONS_WIDTH / 3}
-            />
-          )}
-          <View fdirection="row" mt={condensedView ? (hideAvatar ? 0 : 2) : 4}>
+          {!hideBorder && nestingLevel > 0 && <Divider ml={borderMargin} />}
+          <View fdirection="row" mt={4}>
             {!hidePostButtons && !screenSize ? (
               <View w={layout.POST_BUTTONS_WIDTH}>
                 <PostButtons {...this.props} post={comment} />
@@ -178,7 +179,7 @@ class Comment extends Component {
               <Image
                 h={3}
                 w={2}
-                ml={0}
+                ml={[-3, 0]}
                 mr={1}
                 resizeMode={'contain'}
                 source={require('app/public/img/reply.png')}
@@ -207,11 +208,11 @@ class Comment extends Component {
                 <View mt={2}>
                   <CommentForm
                     edit
-                    p={[0, 2]}
+                    p={['0 0 4 0', 2]}
+                    parentPost={parentPost}
                     comment={comment}
-                    text={'Update'}
+                    buttonText={'Update'}
                     cancel={this.cancel}
-                    {...this.props}
                     nestingLevel={nestingLevel}
                     additionalNesting={additionalNesting}
                     autoFocus
@@ -231,11 +232,10 @@ class Comment extends Component {
 
         {isActive && !editing && (
           <CommentForm
-            isReply
+            parentPost={parentPost}
             nestingLevel={nestingLevel}
             p={[4, 2]}
-            text={'Comment'}
-            {...this.props}
+            buttonText={'Comment'}
             additionalNesting={
               additionalNesting +
               (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)

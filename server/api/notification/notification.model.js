@@ -54,14 +54,14 @@ NotificationSchema.statics.createNotification = async function createNotificatio
 };
 
 NotificationSchema.pre('save', function limitNotifications(next) {
-  this.model('Notification').count({ forUser: this.forUser }, (err, c) => {
+  this.model('Notification').countDocuments({ forUser: this.forUser }, (err, c) => {
     if (c >= 500) {
       this.model('Notification')
-      .find({ forUser: this.forUser })
-      .sort({ _id: 1 })
-      .then(results => {
-        results[0].remove();
-      });
+        .find({ forUser: this.forUser })
+        .sort({ _id: 1 })
+        .then(results => {
+          results[0].remove();
+        });
       next();
     } else {
       next();

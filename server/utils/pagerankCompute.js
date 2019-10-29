@@ -54,33 +54,33 @@ export default async function computePageRank(params) {
       ownPost: { $ne: true },
       investor: { $exists: true }
     })
-    .populate({
-      path: 'investor',
-      select: 'relevance handle',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'author',
-      select: 'relevance handle',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'post',
-      select: 'data title',
-      options: { select: 'data body' },
-      populate: {
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw body'
-      }
-    });
+      .populate({
+        path: 'investor',
+        select: 'relevance handle',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'author',
+        select: 'relevance handle',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'post',
+        select: 'data title',
+        options: { select: 'data body' },
+        populate: {
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw body'
+        }
+      });
 
     votes.forEach(vote => {
       const user = vote.investor;
@@ -168,6 +168,7 @@ export default async function computePageRank(params) {
     debug && console.log('After PR is using ' + mb + 'MB of Heap.');
 
     let max = 0;
+    let secondMax = 0;
     const min = 0;
     let maxPost = 0;
     const minPost = 0;
@@ -181,7 +182,10 @@ export default async function computePageRank(params) {
 
       const u = scores[id] || 0;
       if (postNode) maxPost = Math.max(u, maxPost);
-      else max = Math.max(u, max);
+      else {
+        secondMax = Math.max(secondMax, Math.min(u, max));
+        max = Math.max(u, max);
+      }
 
       array.push({
         id,
@@ -197,7 +201,7 @@ export default async function computePageRank(params) {
 
     await Community.findOneAndUpdate(
       { _id: communityId },
-      { maxPostRank: maxPost || 50, maxUserRank: max || 50, numberOfElements: N }
+      { maxPostRank: maxPost || 50, maxUserRank: secondMax || 50, numberOfElements: N }
     );
 
     array = mergeNegativeNodes(array);
@@ -210,6 +214,7 @@ export default async function computePageRank(params) {
       u = await updateItemRank({
         min,
         max,
+        secondMax,
         minPost,
         maxPost,
         u,
@@ -247,6 +252,7 @@ export default async function computePageRank(params) {
           await updateItemRank({
             min,
             max,
+            secondMax,
             minPost,
             maxPost,
             u,
@@ -294,12 +300,15 @@ function mergeNegativeNodes(array) {
 }
 
 async function updateItemRank(props) {
-  const { max, maxPost, u, N, debug, communityId, community, maxRel } = props;
+  const { secondMax, maxPost, u, N, debug, communityId, community, maxRel } = props;
   let { min, minPost } = props;
   min = 0;
   minPost = 0;
   let rank =
-    (100 * Math.log(N * (u.rank - min) + 1)) / Math.log(N * (max - min) + 1) || 0;
+    Math.min(
+      99,
+      (100 * Math.log(N * (u.rank - min) + 1)) / Math.log(N * (secondMax - min) + 1)
+    ) || 0;
 
   const postRank =
     (100 * Math.log(N * (u.rank - minPost) + 1)) /
@@ -344,7 +353,8 @@ async function updateItemRank(props) {
         fields: 'pagerank pagerankRaw user rank relevance communityId community'
       }
     );
-  } else if (u.type === 'post') {
+  }
+  if (u.type === 'post') {
     if (Number.isNaN(rank)) {
       return null;
     }
@@ -464,15 +474,21 @@ function createPostNode({ post, rankedNodes, nstart, user, rankedPosts, downvote
   return postId;
 }
 
-export async function computeApproxPageRank(params) {
+export async function computeApproxPageRank({
+  author,
+  post,
+  user,
+  communityId,
+  vote,
+  undoInvest
+}) {
   try {
-    const { author, post, user, communityId, investment, undoInvest } = params;
     const com = await Community.findOne(
       { _id: communityId },
       'maxUserRank maxPostRank numberOfElements'
     );
     let amount;
-    if (investment) amount = investment.amount;
+    if (vote) amount = vote.amount;
     const N = com.numberOfElements;
     const { maxUserRank, maxPostRank } = com;
     // if user relevance object doesn't exist, there is nothing to update
@@ -497,43 +513,40 @@ export async function computeApproxPageRank(params) {
       communityId,
       createdAt: { $gt: repCutoff }
     })
-    .populate({
-      path: 'investor',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'author',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'post',
-      options: { select: 'data body' },
-      populate: {
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw pagerankRawNeg'
-      }
-    });
+      .populate({
+        path: 'investor',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'author',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'post',
+        options: { select: 'data body' },
+        populate: {
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw pagerankRawNeg'
+        }
+      });
 
     const rankedNodes = {};
     const rankedPosts = {};
     const nstart = {};
     const now = new Date();
 
-    if (investment && investment.post) {
-      investment.post = await Post.findOne(
-        { _id: investment.post },
-        'data body'
-      ).populate({
+    if (vote && vote.post) {
+      vote.post = await Post.findOne({ _id: vote.post }, 'data body').populate({
         path: 'data',
         select: 'pagerank relevance pagerankRaw pagerankRawNeg'
       });
@@ -555,29 +568,29 @@ export async function computeApproxPageRank(params) {
     let degree = 0;
 
     // TODO: can we optimize this by storing degree in relevance table?
-    Object.keys(userObj).forEach(vote => {
-      let w = userObj[vote].weight;
-      const n = userObj[vote].negative || 0;
+    Object.values(userObj).forEach(userEl => {
+      let w = userEl.weight;
+      const n = userEl.negative || 0;
       // eigentrust++ weights
       // w = Math.max((w - n) / (w + n), 0);
       if (w > 0) degree += w;
       w = Math.max(w - n, 0);
-      userObj[vote].w = w;
+      userEl.w = w;
     });
 
     // Need a way to 0 out post votes and user votes
     let postVotes = true;
     let userVotes = true;
     if (undoInvest) {
-      postVotes = await Invest.count({ post: post._id, ownPost: false });
-      if (!postVotes) {
+      postVotes = await Invest.countDocuments({ post: post._id, ownPost: false });
+      if (!postVotes && post) {
         post.data.pagerank = 0;
         post.data.pagerankRaw = 0;
         post.data.pagerankRawNeg = 0;
         await post.data.save();
       }
-      userVotes = await Invest.count({ author: authorId, ownPost: false });
-      if (!userVotes) {
+      userVotes = await Invest.countDocuments({ author: authorId, ownPost: false });
+      if (!userVotes && author) {
         author.relevance.pagerank = 0;
         author.relevance.pagerankRaw = 0;
         await author.relevance.save();
@@ -639,7 +652,7 @@ export async function computeApproxPageRank(params) {
     if (author) {
       const rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
       author.relevance.pagerank = Math.min(
-        100,
+        99,
         (100 * Math.log(N * rA + 1)) / Math.log(N * maxUserRank + 1)
       );
     }

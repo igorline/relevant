@@ -1,12 +1,12 @@
 export const standardRoutes = [
   // { key: 'feed', title: 'Subscriptions' },
   { key: 'new', title: 'New' },
-  { key: 'top', title: 'Top' }
+  { key: 'top', title: 'Relevant' }
 ];
 
 export const tagRoutes = [
   { key: 'new', title: 'New' },
-  { key: 'top', title: 'Top' }
+  { key: 'top', title: 'Relevant' }
   // { key: 'people', title: 'People' },
 ];
 

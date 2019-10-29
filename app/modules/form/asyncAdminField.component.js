@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { LinkFont, SecondaryText, View } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 
@@ -17,21 +17,26 @@ class AsyncAdminField extends Component {
     actions: PropTypes.object
     // userSearch: PropTypes.array
   };
+
   state = { inputValue: '' };
+
   handleInputChange = (newValue: string) => {
     const inputValue = newValue.replace(/\W/g, '');
     this.setState({ inputValue });
     return inputValue;
   };
+
   loadOptions = async val => {
     if (!val.length) return null;
     const userSearch = await this.props.actions.searchUser(val);
     return userSearch.map(u => ({ label: u.handle, value: u.handle }));
   };
+
   handleChange = vals => {
     const formattedVals = vals.map(v => v.value);
     this.props.input.onChange(formattedVals);
   };
+
   render() {
     const { label, error, input } = this.props;
     const vals = get(input, 'value', []).map(u => ({ label: u, value: u }));

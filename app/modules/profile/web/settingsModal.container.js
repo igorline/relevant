@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import { s3 } from 'app/utils';
 import { connect } from 'react-redux';
@@ -29,6 +29,7 @@ class SettingsModalContainer extends Component {
       browserAlerts.alert(err);
     }
   };
+
   render() {
     return <SettingsModalComponent {...this.props} onSubmit={this.submit} />;
   }

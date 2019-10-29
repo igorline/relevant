@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
-import { Image, LinkFont, SecondaryText, View, Button } from 'modules/styled/uni';
+import { Image, LinkFont, SecondaryText, View, ButtonWithIcon } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import { bindActionCreators } from 'redux';
@@ -11,6 +11,13 @@ import { showModal } from 'modules/navigation/navigation.actions';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
 const redditIcon = require('app/public/img/icons/reddit.png');
+
+const twitterIconComponent = (
+  <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
+);
+const redditIconComponent = (
+  <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
+);
 
 class SignupSocial extends Component {
   static propTypes = {
@@ -38,12 +45,14 @@ class SignupSocial extends Component {
           <ULink
             to={`/auth/twitter?invitecode=${invitecode}&redirect=${redirect}`}
             external
+            rel="nofollow"
             mr={[4, 0]}
           >
-            <Button bg={colors.twitterBlue}>
-              <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
-              Sign up with Twitter
-            </Button>
+            <ButtonWithIcon
+              bg={colors.twitterBlue}
+              image={twitterIconComponent}
+              text="Sign up with Twitter"
+            />
           </ULink>
           <ULink
             to={`/auth/reddit?invitecode=${invitecode}&redirect=${redirect}`}
@@ -51,10 +60,11 @@ class SignupSocial extends Component {
             mr={[4, 0]}
             mt={[0, 3]}
           >
-            <Button bg={colors.redditColor}>
-              <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
-              Sign up with Reddit
-            </Button>
+            <ButtonWithIcon
+              bg={colors.redditColor}
+              image={redditIconComponent}
+              text="Sign up with Reddit"
+            />
           </ULink>
           <ULink
             to={'#'}

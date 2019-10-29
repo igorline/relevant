@@ -99,11 +99,17 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     Left: 'left',
     Right: 'right'
   };
+
   _openValue: ?Animated.Interpolation;
+
   _onGestureEvent: ?Animated.Event;
+
   _accessibilityIsModalView = React.createRef();
+
   _pointerEventsView = React.createRef();
+
   _panGestureHandler = React.createRef();
+
   _drawerShown = false;
 
   constructor(props: PropType, context: any) {
@@ -507,6 +513,7 @@ export default class DrawerLayout extends Component<PropType, StateType> {
       <PanGestureHandler
         ref={this._setPanGestureRef}
         hitSlop={hitSlop}
+        // activeOffsetX={0}
         activeOffsetX={gestureOrientation * minSwipeDistance}
         failOffsetY={[-15, 15]}
         onGestureEvent={this._onGestureEvent}

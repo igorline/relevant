@@ -59,6 +59,7 @@ class Bio extends Component {
         }
         toggleFunction={() => {
           this.bio = null;
+          this.props.scrollTo(0);
           this.setState({ editing: false });
         }}
         saveEditFunction={this.updateBio}
@@ -74,9 +75,9 @@ class Bio extends Component {
               editing: true
             });
           }}
-          style={{ paddingLeft: 10 }}
+          style={{ paddingLeft: 10, paddingTop: 3 }}
         >
-          <Icon name="ios-create-outline" size={22} color={blue} />
+          <Icon name="ios-create" size={22} color={blue} />
         </Text>
       );
     }

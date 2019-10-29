@@ -3,10 +3,10 @@ import loadable from '@loadable/component';
 import { Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
 
-import App from './app';
+import App from './app'; // eslint-disable-line
 import NotFound from './404';
 import withAuth from './withAuth';
-import CommunityRedirect from './communityRedirect';
+// import CommunityRedirect from './communityRedirect';
 
 const DiscoverContainer = loadable(() =>
   import('modules/discover/web/discover.container')
@@ -21,8 +21,9 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
-const Contract = loadable(() => import('modules/admin/web/contract.component'));
+const Contract = loadable(() => import('modules/admin/web/contractParams.container'));
 const About = loadable(() => import('modules/web_splash/about.component'));
+const TopNav = loadable(() => import('modules/navigation/web/topnav.component'));
 
 const CommunityAdminForm = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
@@ -30,8 +31,9 @@ const CommunityAdminForm = loadable(() =>
 const CommunityAdminList = loadable(() =>
   import('modules/admin/web/communityAdminList.component')
 );
+const Styles = loadable(() => import('modules/ui/styles.component'));
 
-const CommunityList = loadable(() => import('modules/community/communityList.component'));
+const CommunityList = loadable(() => import('modules/community/communityList.container'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
 // const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
@@ -75,7 +77,7 @@ const routes = [
       // },
       {
         path: '/',
-        component: CommunityRedirect,
+        component: About,
         exact: true
       },
       { path: '/about', component: About, exact: true },
@@ -112,6 +114,7 @@ const routes = [
 
           // INFO
           { path: '/info/faq', component: Faq, exact: true },
+          { path: '/info/styles', component: Styles, exact: true },
 
           {
             path: '/:community/channel/:id',
@@ -124,27 +127,51 @@ const routes = [
             component: WithTopNav,
             routes: [
               // WALLET
-              { path: '/user/wallet', component: Wallet, exact: true },
+              {
+                path: '/user/wallet',
+                component: Wallet,
+                navbar: TopNav,
+                title: 'Wallet',
+                exact: true
+              },
               // USER
               {
                 path: '/user/:modal(resetPassword)/:token',
                 component: Auth,
+                navbar: TopNav,
                 exact: true
               },
               {
                 path:
                   '/user/:modal(login|confirmEmail|confirm|signup|resetPassword|forgot|setHandle)',
                 component: Auth,
+                navbar: TopNav,
                 exact: true
               },
-              { path: '/user/:modal(confirm)/:user/:code', component: Auth, exact: true },
-              { path: '/user/profile/:id', component: ProfileContainer, exact: true },
+              {
+                path: '/user/:modal(confirm)/:user/:code',
+                component: Auth,
+                navbar: TopNav,
+                exact: true
+              },
+              {
+                path: '/user/profile/:id',
+                component: ProfileContainer,
+                navbar: TopNav,
+                exact: true
+              },
               {
                 path: '/user/profile/:id/settings',
                 component: ProfileContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
-              { path: '/user/activity', component: ActivityContainer, exact: true },
+              {
+                path: '/user/activity',
+                component: ActivityContainer,
+                exact: true,
+                navbar: TopNav
+              },
               // WARNING THESE ROUTES MUST MACH MOBILE APP!
               // '/user/resetPassword/:token'
               // '/user/resetPassword'
@@ -152,13 +179,37 @@ const routes = [
 
               // TODO: use this route
               // { path: '/user/confirmEmail', component: Auth, exact: true },
-              { path: '/user/invite/:code', component: Invite, exact: true },
-              { path: '/community/all', component: CommunityList, exact: true },
-              { path: '/:community/post/:id', component: PostContainer, exact: true },
+              {
+                path: '/user/invite/:code',
+                component: Invite,
+                exact: true,
+                navbar: TopNav
+              },
+              {
+                path: '/communities',
+                component: CommunityList,
+                exact: true,
+                navbar: TopNav,
+                title: 'Communities'
+              },
+              // {
+              //   path: '/community/all',
+              //   component: CommunityList,
+              //   exact: true,
+              //   navbar: TopNav,
+              //   title: 'Communities'
+              // },
+              {
+                path: '/:community/post/:id',
+                component: PostContainer,
+                exact: true,
+                navbar: TopNav
+              },
               {
                 path: '/:community/post/:id/:commentId',
                 component: PostContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
 
               // DISCOVER
@@ -166,7 +217,8 @@ const routes = [
               {
                 path: '/:community/',
                 component: props => <MyRedirect {...props} to={'/new'} />,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
               // {
               //   path: '/:community/invite/:handle',
@@ -176,17 +228,20 @@ const routes = [
               {
                 path: '/:community/:sort/invite/slava',
                 component: DiscoverContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
               {
                 path: '/:community/:sort/:tag?',
                 component: DiscoverContainer,
-                exact: true
+                exact: true,
+                navbar: TopNav
               },
               {
                 path: '/:community/post/new',
                 exact: true,
-                component: withAuth(CreatePostContainer)
+                component: withAuth(CreatePostContainer),
+                navbar: TopNav
                 // component: CreatePostContainer
               }
             ]

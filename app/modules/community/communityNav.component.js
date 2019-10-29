@@ -10,8 +10,9 @@ import { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import CommunityListItem from 'modules/community/communityListItem.component';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { View, BodyText } from 'modules/styled/uni';
+import { SIDE_NAV_PADDING } from 'styles/layout';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
@@ -36,10 +37,6 @@ export class Community extends Component {
     showSettings: PropTypes.func
   };
 
-  componentDidMount() {
-    this.props.actions.getCommunities();
-  }
-
   renderCommunityLink(community) {
     const { actions } = this.props;
     return (
@@ -48,16 +45,13 @@ export class Community extends Component {
         key={community._id}
         to={'/' + community.slug + '/new'}
         onPress={() => {
-          actions.goToTab('discover');
+          actions.resetTabs();
           requestAnimationFrame(() => {
             actions.setCommunity(community.slug);
           });
         }}
-        onClick={() => {
-          actions.setCommunity(community.slug);
-        }}
       >
-        <CommunityListItem community={community} p={['1 4', '1 2']} />
+        <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
       </ULink>
     );
   }
@@ -119,8 +113,8 @@ export class Community extends Component {
           )}
           <View m={'2 0'}>{this.renderOtherCommunities()}</View>
         </View>
-        <BodyText m={[4, 2]}>
-          We'll be adding more communities in the coming weeks!{'\n\n'}
+        <BodyText m={[SIDE_NAV_PADDING, 2]}>
+          We'll be adding more communities soon!{'\n\n'}
         </BodyText>
       </View>
     );

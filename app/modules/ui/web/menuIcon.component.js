@@ -36,6 +36,7 @@ class MenuIcon extends Component {
       actions.openWebSideNav();
     }
   };
+
   render() {
     const {
       mr,

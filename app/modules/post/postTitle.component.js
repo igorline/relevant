@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tag from 'modules/tag/tag.component';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
 import { View, Title, SecondaryText, InlineText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
@@ -27,7 +27,7 @@ export default function PostTitle(props) {
   const tags = get(post, 'tags', []);
   const titleLines = preview && mobile ? 2 : 3;
 
-  const titleEl = postUrl ? (
+  const titleEl = link ? (
     <ULink
       to={singlePost ? post.url : postUrl || '#'}
       external={singlePost}

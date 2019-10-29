@@ -1,5 +1,8 @@
 import { toast } from 'react-toastify';
 
+const IS_NATIVE = process.env.WEB !== 'true';
+const IS_BROWSER = process.env.BROWSER;
+
 export const browserAlerts = {
   alert: (message, alertType) => {
     toast(message, {
@@ -10,20 +13,10 @@ export const browserAlerts = {
   }
 };
 
-export function Alert(noInput = false) {
-  if (process.env.WEB !== 'true') {
-    const ReactNative = require('react-native');
-    const { Platform } = ReactNative;
-    if (noInput) {
-      return ReactNative.Alert;
-    }
-    if (Platform.OS === 'ios') {
-      return ReactNative.AlertIOS;
-    }
-    return ReactNative.Alert;
-  } else if (process.env.BROWSER) {
-    return browserAlerts;
-  }
+export function Alert() {
+  if (IS_NATIVE) return require('react-native').Alert;
+  if (IS_BROWSER) return browserAlerts;
+
   // eslint-disable-next-line
   return { alert: (a, b) => console.log(a, ' ', b) };
 }

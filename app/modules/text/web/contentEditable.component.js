@@ -5,27 +5,27 @@ const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
 function stripContentEditableHTML(text) {
   return (text || '')
-  .replace(/<div><br>/g, '\n')
-  .replace(/<\/div>/g, '\n')
-  .replace(/<br>/g, '\n')
-  .replace(HTML_REGEX, '');
+    .replace(/<div><br>/g, '\n')
+    .replace(/<\/div>/g, '\n')
+    .replace(/<br>/g, '\n')
+    .replace(HTML_REGEX, '');
 }
 
 function renderBody(lines) {
   return lines
-  .split('\n')
-  .map(line =>
-    line
-    .split(' ')
-    .map(word => {
-      if (word[0] === '#' || word[0] === '@') {
-        return '<b>' + word + '</b>';
-      }
-      return word;
-    })
-    .join(' ')
-  )
-  .join('\n');
+    .split('\n')
+    .map(line =>
+      line
+        .split(' ')
+        .map(word => {
+          if (word[0] === '#' || word[0] === '@') {
+            return '<b>' + word + '</b>';
+          }
+          return word;
+        })
+        .join(' ')
+    )
+    .join('\n');
 }
 
 function onPaste(e) {
@@ -34,10 +34,10 @@ function onPaste(e) {
 
   // get text representation of clipboard
   const text = e.clipboardData
-  .getData('text/plain')
-  .replace(/&/g, '&amp')
-  .replace(/</g, '&lt')
-  .replace(/>/g, '&gt');
+    .getData('text/plain')
+    .replace(/&/g, '&amp')
+    .replace(/</g, '&lt')
+    .replace(/>/g, '&gt');
 
   // insert text manually
   document.execCommand('insertHTML', false, text);
@@ -175,9 +175,6 @@ export default class ContentEditable extends React.Component {
     return (
       <div
         id="editor"
-        style={{
-          minHeight: '300px'
-        }}
         className={this.props.className}
         placeholder={this.props.placeholder}
         role="textbox"

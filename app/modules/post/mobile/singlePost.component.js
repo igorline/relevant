@@ -6,8 +6,6 @@ import {
   StatusBar,
   FlatList,
   Keyboard
-  // TouchableOpacity,
-  // Text
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { IphoneX } from 'app/styles/global';
@@ -16,8 +14,7 @@ import CommentInput from 'modules/comment/mobile/commentInput.component';
 import UserSearchComponent from 'modules/createPost/mobile/userSearch.component';
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
 import { View, MobileDivider, Divider } from 'modules/styled/uni';
-import PostButtons from 'modules/post/mobile/postButtons.component';
-// import Avatar from 'modules/user/UAvatar.component';
+import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import Post from './post.component';
 
 const inputOffset = IphoneX ? 59 + 33 : 59;
@@ -35,7 +32,7 @@ class SinglePostComponent extends Component {
     link: PropTypes.object,
     users: PropTypes.object,
     comments: PropTypes.object,
-    myPostInv: PropTypes.object,
+    // myPostInv: PropTypes.object,
     auth: PropTypes.object,
     admin: PropTypes.object,
     comment: PropTypes.object
@@ -49,7 +46,8 @@ class SinglePostComponent extends Component {
       reloading: false,
       top: 0,
       suggestionHeight: 0,
-      loaded: false
+      loaded: false,
+      gotData: false
     };
     this.id = null;
     this.comments = null;
@@ -68,6 +66,7 @@ class SinglePostComponent extends Component {
   }
 
   comments = [];
+
   nestingLevel = {};
 
   componentDidMount() {
@@ -83,18 +82,22 @@ class SinglePostComponent extends Component {
     if (params.comment) {
       this.setState({ activeComment: params.comment });
     }
+  }
 
+  onLoad = () => {
     setTimeout(() => {
+      const { params } = this.props.navigation.state;
+      if (params.comment && this.comments.length) {
+        const id = params.comment._id || params.comment;
+        const index = this.comments.findIndex(c => id === c._id);
+        this.scrollToComment(index);
+      }
       if (params && params.openComment) {
-        if (params.commentCount && this.comments) {
-          // this.scrollToBottom(true);
-        } else if (!params.commentCount) {
-          this.input.textInput.focus();
-        }
+        this.input.textInput.focus();
       }
       this.forceUpdate();
-    }, 100);
-  }
+    }, 1000);
+  };
 
   getChildren = (id = this.props.postId, nestingLevel = 0) => {
     if (nestingLevel === 0) this.comments = [];
@@ -107,17 +110,14 @@ class SinglePostComponent extends Component {
     });
   };
 
-  componentWillReceiveProps(next) {
-    if (next.postComments && next.postComments !== this.props.postComments) {
-      if (!this.comments && this.props.navigation.state.openComment) {
-        this.scrollToBottom(true);
-      }
-
-      this.total = next.postComments.total;
-      if (this.total > 10) this.longFormat = true;
+  componentDidUpdate(prev) {
+    const { post, error } = this.props;
+    if (this.comments.length && !this.state.gotData && this.scrollView) {
+      this.onLoad();
+      this.setState({ gotData: true });
     }
 
-    if (this.props.post !== next.post || this.props.error) {
+    if (post !== prev.post || error) {
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() => this.setState({ reloading: false }), 1000);
     }
@@ -136,23 +136,18 @@ class SinglePostComponent extends Component {
   }
 
   scrollToComment(index) {
-    if (typeof index !== 'number') return;
+    if (typeof index !== 'number' || index < 0 || !this.scrollView) return;
     this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
-    const scroll = () => {
-      this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
-      Keyboard.removeListener('keyboardDidShow', scroll);
-    };
-    if (Platform.OS === 'android') {
-      Keyboard.addListener('keyboardDidShow', scroll);
-    }
     this.setState({ activeComment: this.comments[index], activeIndex: index });
   }
 
   scrollToTop() {
+    if (!this.scrollView) return;
     this.scrollView.scrollToOffset({ offset: 0 });
   }
 
   scrollToBottom() {
+    if (!this.scrollView) return;
     this.scrollTimeout = setTimeout(() => {
       if (!this.scrollView) return;
       if (this.comments && this.comments.length) {
@@ -192,29 +187,29 @@ class SinglePostComponent extends Component {
     return relatedEl;
   }
 
-  repostUrl = () => {
-    const { link = {}, actions } = this.props;
-    actions.setCreatePostState({
-      postBody: '',
-      component: 'createPost',
-      nativeImage: true,
-      postUrl: link.url,
-      postImage: link.image,
-      urlPreview: {
-        image: link.image,
-        title: link.title ? link.title : 'Untitled',
-        description: link.description
-      }
-    });
-    actions.push({
-      key: 'createPost',
-      back: true,
-      title: 'Add Commentary',
-      next: 'Next',
-      direction: 'vertical',
-      left: 'Cancel'
-    });
-  };
+  // repostUrl = () => {
+  //   const { link = {}, actions } = this.props;
+  //   actions.setCreatePostState({
+  //     postBody: '',
+  //     component: 'createPost',
+  //     nativeImage: true,
+  //     postUrl: link.url,
+  //     postImage: link.image,
+  //     urlPreview: {
+  //       image: link.image,
+  //       title: link.title ? link.title : 'Untitled',
+  //       description: link.description
+  //     }
+  //   });
+  //   actions.push({
+  //     key: 'createPost',
+  //     back: true,
+  //     title: 'Add Commentary',
+  //     next: 'Next',
+  //     direction: 'vertical',
+  //     left: 'Cancel'
+  //   });
+  // };
 
   renderHeader() {
     const { post, link, actions, navigation } = this.props;
@@ -257,7 +252,7 @@ class SinglePostComponent extends Component {
     const comment = item;
     if (!comment) return null;
 
-    const { post, myPostInv, auth, actions, navigation, users } = this.props;
+    const { post, auth, actions, navigation, users } = this.props;
 
     const setupReply = _comment =>
       this.setState({ activeComment: _comment, activeIndex: index });
@@ -267,7 +262,7 @@ class SinglePostComponent extends Component {
     const nestingLevel = this.nestingLevel[comment._id];
 
     return (
-      <View key={comment._id} index={index} fdirection={'column'} flex={1}>
+      <View fdirection={'column'}>
         {nestingLevel ? (
           <View ml={nestingLevel * 3 - 1} mr={2}>
             <Divider />
@@ -285,17 +280,20 @@ class SinglePostComponent extends Component {
           nestingLevel={nestingLevel}
           user={user}
           renderButtons={() => (
-            <PostButtons
-              isComment
-              parentPost={post}
-              post={comment}
-              actions={actions}
-              auth={auth}
-              navigation={navigation}
-              myPostInv={myPostInv[comment._id]}
-              setupReply={setupReply}
-              focusInput={focusInput}
-            />
+            <View m={'2 0'}>
+              <ButtonContainer
+                horizontal
+                isComment
+                parentPost={post}
+                post={comment}
+                actions={actions}
+                auth={auth}
+                navigation={navigation}
+                // myPostInv={myPostInv[comment._id]}
+                setupReply={setupReply}
+                focusInput={focusInput}
+              />
+            </View>
           )}
         />
       </View>
@@ -365,16 +363,18 @@ class SinglePostComponent extends Component {
           ref={c => (this.scrollView = c)}
           data={this.comments}
           renderItem={this.renderRow}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item._id}
           removeClippedSubviews
           pageSize={1}
           initialListSize={4}
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
+          onScrollBeginDrag={Keyboard.dismiss}
           onEndReachedThreshold={100}
           overScrollMode={'always'}
           style={{ flex: 1 }}
           ListHeaderComponent={this.renderHeader}
+          onScrollToIndexFailed={() => {}}
           onLayout={e => {
             this.scrollHeight = e.nativeEvent.layout.height;
           }}

@@ -1,5 +1,6 @@
 import '@babel/polyfill';
 import { AppContainer } from 'react-hot-loader';
+// import { hot } from 'react-hot-loader';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { Router } from 'react-router-dom';
@@ -10,18 +11,16 @@ import debug from 'debug';
 import configureStore from 'core/web/configureStore';
 import routes from 'modules/_app/web/routes';
 import { loadableReady } from '@loadable/component';
-// import SmartBanner from 'react-smartbanner';
-// import './node_modules/react-smartbanner/dist/main.css';
 
 const clientDebug = debug('app:client');
 const rootElement = document.getElementById('app');
 
 window.React = React; // For chrome dev tool support
 
-if (process.env.NODE_ENV === 'development') {
-  window.reduxDebug = debug;
-  window.reduxDebug.enable('*'); // this should be activated only on development env
-}
+// if (process.env.NODE_ENV === 'development') {
+// window.reduxDebug = debug;
+// window.reduxDebug.enable('*'); // this should be activated only on development env
+// }
 
 const initialState = window.__INITIAL_STATE__ || undefined;
 
@@ -41,9 +40,7 @@ const renderApp = appRoutes => {
   );
 };
 
-loadableReady(() => {
-  renderApp(routes);
-});
+loadableReady(() => renderApp(routes));
 
 if (module.hot) {
   module.hot.accept('./app/modules/_app/web/routes', () => {
@@ -51,11 +48,3 @@ if (module.hot) {
     renderApp(newRoutes);
   });
 }
-
-// render(<SmartBanner
-//   daysHidden={2}
-//   daysReminder={3}
-//   title={'Relevant Communities'}
-//   author={'Relevant Protocols'}
-//   position={'bottom'}
-// />, document.body);

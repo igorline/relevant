@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import PropTypes from 'prop-types';
-import Analytics from 'react-native-firebase-analytics';
+import { analytics } from 'react-native-firebase';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';
@@ -12,8 +12,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as utils from 'app/utils';
 import { globalStyles, mainPadding } from 'app/styles/global';
 
-// eslint-disable-next-line
-const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
+const Analytics = analytics();
 
 let styles;
 
@@ -144,27 +143,27 @@ class CreatePostHeaderRight extends Component {
     this.image = null;
 
     if (!props.allTags.length) {
-      Alert.alert('Please select at lest one tag');
+      Alert.alert('Please select at least one tag');
       return;
     }
 
     this.setState({ creatingPost: true });
     if (props.urlPreview && props.urlPreview.image && !props.nativeImage) {
       utils.s3
-      .toS3Advanced(props.urlPreview.image)
-      .then(results => {
-        if (results.success) {
-          this.image = results.url;
-          this.uploadPost();
-        } else {
-          Alert.alert('Error uploading image, please try again');
+        .toS3Advanced(props.urlPreview.image)
+        .then(results => {
+          if (results.success) {
+            this.image = results.url;
+            this.uploadPost();
+          } else {
+            Alert.alert('Error uploading image, please try again');
+            this.setState({ creatingPost: false });
+          }
+        })
+        .catch(err => {
+          Alert.alert('Error uploading image: ', err.message);
           this.setState({ creatingPost: false });
-        }
-      })
-      .catch(err => {
-        Alert.alert('Error uploading image: ', err.message);
-        this.setState({ creatingPost: false });
-      });
+        });
     } else {
       this.image =
         props.urlPreview && props.urlPreview.image

@@ -1,44 +1,116 @@
 import * as storage from './storage';
 
 const routes = {};
-let community;
+const IS_SERVER = !process.env.BROWSER && process.env.WEB === 'true';
+const IS_CLIENT = !IS_SERVER;
 
-export function env() {
+// TODO this should be somewhere else!
+export const env = () => {
   if (process.env.WEB !== 'true') {
     require('../publicenv');
     return process.env;
   }
   return process.env;
-}
+};
 env();
 
-if (process.env.BROWSER || process.env.WEB !== 'true') {
+const API_URL = process.env.API_SERVER || '';
+
+if (IS_CLIENT) {
   // this is a weird hack that makes conditional require work in react-native
-  // routes.post = require(postApi);
-  // routes.user = require(userApi);
 } else {
   // Desktop ONLY!!!
-  // the if statment doesn't work anymore - user reat-native field in package.json
-  // prevent react native from loading these modules
+  // use react-native field in package.json
+  // this will prevent react native from loading these modules
   const postApi = '../../server/api/post/post.controller';
   const userApi = '../../server/api/user/user.controller';
-  // post = require(postApi);
+  const commentsApi = '../../server/api/comment/comment.controller';
+  const feedApi = '../../server/api/communityFeed/communityFeed.controller';
+  const communityApi = '../../server/api/community/community.controller';
+
+  routes.comment = require(commentsApi) || {}; // eslint-disable-line
+  routes.communityFeed = require(feedApi) || {}; // eslint-disable-line
   routes.post = require(postApi) || {}; // eslint-disable-line
   routes.user = require(userApi) || {}; // eslint-disable-line
+  routes.community = require(communityApi) || {}; // eslint-disable-line
 }
 
-export const queryParams = params => {
-  if (!params) return '';
-  const paramString = Object.keys(params)
-  .filter(p => params[p])
-  .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-  .join('&');
-  if (paramString && paramString.length) return '?' + paramString;
-  return '';
-};
+export const request = options => (dispatch, getState) => _request(options, getState);
 
-export function setCommunity(_community) {
-  community = _community;
+/**
+ * send request to api
+ * @param  {[type]} options
+ * query - Object of url query params
+ * params - url params
+ * endpoint - api endpoint (user / post etc)
+ * path - speicifi api call (default is index)
+ * uri - optional - custom url
+ * method - REST method
+ * body: body
+ */
+export async function _request(options, getState) {
+  try {
+    // Add community query parameter
+    const state = getState();
+    const community = state.community.active;
+    const query = { community, ...options.query };
+    const params = { ...options, query };
+
+    // ---------------------------------------------
+    // This is the case when request is orginating from nodejs
+    // ---------------------------------------------
+    if (IS_SERVER) return getDataOnServer(params);
+
+    // ---------------------------------------------
+    // This is the case when request is orginating from client
+    // ---------------------------------------------
+    return getDataFromClient(params);
+  } catch (error) {
+    // console.log('api error', uri, error);
+    throw error;
+  }
+}
+
+async function getDataFromClient(params) {
+  const uri = constructUri(params);
+  const queryString = queryParams(params.query);
+  const response = await fetch(uri + queryString, {
+    method: params.method,
+    ...(await reqOptions()),
+    body: params.body
+  });
+  const responseOk = await handleErrors(response);
+  return responseOk.json();
+}
+
+async function getDataOnServer(params) {
+  const path = params.path || '';
+  if (path === '') params.path = 'index';
+  const req = {
+    params: params.params,
+    body: params.body,
+    query: params.query,
+    user: params.user
+  };
+  const next = () => null;
+  const res = null;
+  if (!routes[params.endpoint] || !routes[params.endpoint][params.path]) {
+    return null;
+  }
+  const resJSON = await routes[params.endpoint][params.path](req, res, next);
+
+  // convert to object in case we get a mongoose object back
+  return resJSON && resJSON.toObject ? res.toObject() : resJSON;
+}
+
+function constructUri(options) {
+  const rootUrl = options.uri || API_URL;
+  const apiPath = options.endpoint.match('auth') ? '' : '/api/';
+  const path = options.path || '';
+  const params = options.params
+    ? Object.keys(options.params).reduce((a, key) => a + '/' + options.params[key], '')
+    : '';
+  return rootUrl + apiPath + options.endpoint + path + params;
 }
 
 export async function reqOptions() {
@@ -63,6 +135,16 @@ export async function reqOptions() {
   }
 }
 
+export const queryParams = params => {
+  if (!params) return '';
+  const paramString = Object.keys(params)
+    .filter(p => params[p])
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
+  if (paramString && paramString.length) return '?' + paramString;
+  return '';
+};
+
 export async function handleErrors(response) {
   if (!response.ok) {
     let error = response.statusText;
@@ -77,73 +159,4 @@ export async function handleErrors(response) {
     }
   }
   return response;
-}
-
-/**
- * send request to api
- * @param  {[type]} options
- * query - Object of url query params
- * params - url params
- * endpoint - api endpoint
- * uri - optional - custom url
- * method - REST method
- * body: body
- */
-export async function request(options) {
-  try {
-    // Add community query parameter
-    options.query = { ...options.query, community };
-    const query = queryParams(options.query);
-    let apiPath = '/api/';
-    if (options.endpoint.match('auth')) apiPath = '';
-    let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;
-    const path = options.path || '';
-    uri += path;
-
-    if (options.params) {
-      Object.keys(options.params).forEach(key => {
-        uri += '/' + options.params[key];
-      });
-    }
-
-    let response;
-    let responseJSON;
-
-    // ---------------------------------------------
-    // This is the case when request is orginating from nodejs
-    // ---------------------------------------------
-
-    if (!process.env.BROWSER && process.env.WEB === 'true') {
-      if (options.path === '' && options.params) options.path = 'findById';
-      const req = {
-        params: options.params,
-        body: options.body,
-        query: options.query
-      };
-      const next = () => null;
-      const res = null;
-      if (!routes[options.endpoint] || !routes[options.endpoint][options.path]) {
-        return null;
-      }
-      responseJSON = await routes[options.endpoint][options.path](req, res, next);
-      // in case we get a mongoose object back
-      if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();
-
-      // ---------------------------------------------
-      // This is the case when request is orginating from client
-      // ---------------------------------------------
-    } else {
-      response = await fetch(uri + query, {
-        method: options.method,
-        ...(await reqOptions()),
-        body: options.body
-      });
-      response = await handleErrors(response);
-      responseJSON = await response.json();
-    }
-    return responseJSON;
-  } catch (error) {
-    // console.log('api error', uri, error);
-    throw error;
-  }
 }

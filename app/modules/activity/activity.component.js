@@ -5,7 +5,7 @@ import { colors } from 'app/styles';
 import * as activityHelper from 'modules/activity/activityHelper';
 import ActivityText from 'modules/activity/activityText.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import RStat from 'modules/stats/rStat.component';
+// import RStat from 'modules/stats/rStat.component';
 import {
   View,
   SecondaryText,
@@ -15,6 +15,7 @@ import {
   InlineText
 } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
+import { MAX_POST_WIDTH } from 'styles/layout';
 
 export default class SingleActivity extends Component {
   static propTypes = {
@@ -29,10 +30,11 @@ export default class SingleActivity extends Component {
       createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
     }).isRequired,
     auth: PropTypes.shape({
+      community: PropTypes.string,
       user: PropTypes.object.isRequired
     }).isRequired,
     screenSize: PropTypes.number,
-    PostComponent: PropTypes.func,
+    PostComponent: PropTypes.object,
     navigation: PropTypes.object
   };
 
@@ -64,7 +66,7 @@ export default class SingleActivity extends Component {
               @{user.handle}
             </BodyText>
           </ULink>
-          <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '}
+          {/* <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '} */}
           {activity.totalUsers - 1} other{s}
         </InlineText>
       );
@@ -80,7 +82,7 @@ export default class SingleActivity extends Component {
               @{user.handle}
             </BodyText>
           </ULink>{' '}
-          <RStat inline={1} user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '}
+          {/* <RStat inline={1} user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '} */}
         </InlineText>
       );
     }
@@ -193,7 +195,7 @@ export default class SingleActivity extends Component {
     }
 
     return (
-      <View>
+      <View maxWidth={MAX_POST_WIDTH}>
         <View
           m={['4 4 0 4', '4 2 0 2']}
           fdirection="row"

@@ -1,32 +1,41 @@
 import { Alert } from 'app/utils/alert';
 
+let LinkifyContainer;
+if (process.env.WEB !== 'true') {
+  LinkifyContainer = require('modules/text/mobile/textBody.component').default;
+} else {
+  LinkifyContainer = require('linkifyjs/react');
+}
+
+export const Linkify = LinkifyContainer;
+
 export function getMentions(words) {
   return words
-  .map(word => {
-    if (word.match(/^@\S+/g)) {
-      return word.replace('@', '');
-    }
-    return null;
-  })
-  .filter(el => el !== null);
+    .map(word => {
+      if (word.match(/^@\S+/g)) {
+        return word.replace('@', '');
+      }
+      return null;
+    })
+    .filter(el => el !== null);
 }
 
 export function getTags(words) {
   return words
-  .map(word => {
-    if (word.match(/^#\S+/g)) {
-      return word.replace('#', '');
-    }
-    return null;
-  })
-  .filter(el => el !== null);
+    .map(word => {
+      if (word.match(/^#\S+/g)) {
+        return word.replace('#', '');
+      }
+      return null;
+    })
+    .filter(el => el !== null);
 }
 
 export function getWords(text) {
   const res = text
-  // .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
-  .replace(/[,.!?](?!\b)|[\s+]/g, a => '`' + a + '`')
-  .split(/`/);
+    // .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
+    .replace(/[,.!?](?!\b)|[\s+]/g, a => '`' + a + '`')
+    .split(/`/);
   return res;
 }
 

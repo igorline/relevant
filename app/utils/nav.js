@@ -1,17 +1,11 @@
 import React from 'react';
 import { Animated } from 'react-native';
-import { layout } from 'app/styles';
-
-let NativeAnimatedModule = null;
-if (process.env.WEB !== 'true') {
-  // eslint-disable-next-line
-  NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
-}
+import { mediumScreenWidth, smallScreenWidth } from 'app/styles/screens';
 
 export function transtionConfig() {
   return {
     timing: Animated.spring,
-    useNativeDriver: NativeAnimatedModule || false,
+    useNativeDriver: true,
     speed: 20,
     bounciness: 0,
     overshootClamping: true
@@ -19,12 +13,11 @@ export function transtionConfig() {
 }
 
 export const getScreenSize = width => {
-  const breakpoints = [layout.mediumScreenWidth, layout.smallScreenWidth, 0];
+  const breakpoints = [mediumScreenWidth, smallScreenWidth];
   let screenSize = 0;
   for (let i = 0; i < breakpoints.length; i++) {
-    if (width <= breakpoints[i]) {
-      screenSize = i + 1;
-    }
+    screenSize = i;
+    if (width > breakpoints[i]) return screenSize;
   }
   return screenSize;
 };

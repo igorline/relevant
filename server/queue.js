@@ -1,18 +1,14 @@
-const computePageRank = require('./utils/pagerankCompute').default;
 const queue = require('queue');
+const computePageRank = require('./utils/pagerankCompute').default;
 const Stats = require('./api/statistics/statistics.model');
 const Relevance = require('./api/relevance/relevance.model');
 const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
-// const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
-// const TwitterWorker = require('./utils/twitterWorker');
-
 /* eslint no-console: 0 */
+const relevantEnv = process.env.RELEVANT_ENV;
 
-const q = queue({
-  concurrency: 5
-});
+const q = queue({ concurrency: 5 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -20,60 +16,53 @@ q.on('timeout', (next, job) => {
 });
 
 async function updateUserStats() {
-  Relevance.find({ global: true }).exec((err, res) => {
-    if (err || !res) {
-      console.log('db error', err);
-      return;
-    }
-    res.forEach(rel => {
-      q.push(cb => {
-        const date = new Date();
-        const hour = date.getHours();
-        const day = date.setUTCHours(0, 0, 0, 0);
-        const endTime = day + 24 * 60 * 60 * 1000;
-        const query = {
-          user: rel.user,
-          date: day,
-          endTime,
-          communityId: rel.communityId
-        };
-        const set = {};
-        set['hours.' + hour] = rel.pagerank || 0;
-        const update = {
-          $set: set,
-          $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
-        };
-        Stats.findOneAndUpdate(query, update, {
-          new: true,
-          upsert: true,
-          setDefaultsOnInsert: true
-        }).exec(statsError => {
-          if (!statsError) cb();
-          else throw statsError;
-        });
+  const repuatations = await Relevance.find({ global: true });
+  repuatations.forEach(rel => {
+    q.push(async cb => {
+      const date = new Date();
+      const hour = date.getHours();
+      const day = date.setUTCHours(0, 0, 0, 0);
+      const endTime = day + 24 * 60 * 60 * 1000;
+      const query = {
+        user: rel.user,
+        date: day,
+        endTime,
+        communityId: rel.communityId
+      };
+      const set = {};
+      set['hours.' + hour] = rel.pagerank || 0;
+      const update = {
+        $set: set,
+        $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
+      };
+      await Stats.findOneAndUpdate(query, update, {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true
       });
+      cb();
     });
-    q.start(queErr => {
-      if (queErr) return console.log(queErr);
-      return console.log('done updating stats');
-    });
+  });
+
+  return new Promise((resolve, reject) => {
+    q.start(err => (err ? reject(err) : resolve()));
   });
 }
 
-// setTimeout(basicIncome, 10000);
+// setTimeout(updateRepChange, 10000);
 
 async function getCommunityUserRank(community) {
   try {
     const communityId = community._id;
-    const totalUsers = await Relevance.count({
+    const totalUsers = await Relevance.countDocuments({
       pagerank: { $gt: 0 },
       global: true,
       communityId
     });
-    // let grandTotal = await Relevance.count({ global: true, communityId });
+    // let grandTotal = await Relevance.countDocuments({ global: true, communityId });
     const topUser = await Relevance.findOne({})
-    .sort('-pagerank')
-    .limit(1);
+      .sort('-pagerank')
+      .limit(1);
     const topR = topUser.pagerank;
     const users = await Relevance.find({
       global: true,
@@ -84,7 +73,7 @@ async function getCommunityUserRank(community) {
     return users.forEach(user => {
       q.push(async cb => {
         try {
-          const rank = await Relevance.count({
+          const rank = await Relevance.countDocuments({
             pagerank: { $lt: user.pagerank, $gt: 0 },
             communityId
           });
@@ -102,20 +91,22 @@ async function getCommunityUserRank(community) {
             tag: { $ne: null },
             communityId
           })
-          .sort('-relevance')
-          .limit(5);
+            .sort('-relevance')
+            .limit(5);
 
           user.topTopics = topicRelevance.map(tR => tR.tag);
 
           // TODO this may not work!
           const topicPromises = topicRelevance.map(async tR => {
             const topTopicUser = await Relevance.findOne({ tag: tR.tag, communityId })
-            .sort('-relevance')
-            .limit(1);
+              .sort('-relevance')
+              .limit(1);
             const topTopicR = topTopicUser.relevance;
 
-            const totalTopicUsers = await Relevance.find({ tag: tR.tag }).count();
-            const topicRank = await Relevance.count({
+            const totalTopicUsers = await Relevance.find({
+              tag: tR.tag
+            }).countDocuments();
+            const topicRank = await Relevance.countDocuments({
               tag: tR.tag,
               relevance: { $lt: tR.relevance }
             });
@@ -168,40 +159,26 @@ async function updateReputation() {
   }
 }
 
-async function basicIncome(done) {
-  const topicRelevance = await Relevance.find({ global: true });
+async function updateRepChange() {
+  const rep = await Relevance.find({ global: true });
 
-  function updateTopicRelevance() {
-    console.log('updating topic relevance');
-    return topic => {
-      q.push(async cb => {
-        try {
-          if (topic.user) {
-            // updates % stats
-            await topic.updateRelevanceRecord();
-            await topic.save();
-          }
-        } catch (err) {
-          console.log('error updating topic relevance income ', err);
-          console.log(topic);
-          cb();
+  rep.forEach(userRep =>
+    q.push(async cb => {
+      try {
+        if (userRep.user) {
+          // updates % stats
+          await userRep.updateRelevanceRecord();
+          await userRep.save();
         }
-        cb();
-      });
-    };
-  }
+      } catch (err) {
+        console.log('error updating topic relevance income ', err);
+      }
+      cb();
+    })
+  );
 
-  topicRelevance.forEach(updateTopicRelevance());
-
-  q.start(queErr => {
-    if (queErr) return console.log(queErr);
-    if (done) done();
-    return console.log('all finished basic income: ');
-  });
-
-  q.on('timeout', (next, job) => {
-    console.log('error: queue timeout', job);
-    next();
+  return new Promise((resolve, reject) => {
+    q.start(err => (err ? reject(err) : resolve()));
   });
 }
 
@@ -211,103 +188,39 @@ async function pagerank(community) {
   await computePageRank({ communityId, community, debug: true });
 }
 
-function getNextUpdateTime() {
-  console.log('get next time');
-  const now = new Date();
-  const h = now.getUTCHours();
-  console.log(h);
-  const nextUpdate = new Date();
-  const computeHour = 14;
-
-  if (h < computeHour) {
-    nextUpdate.setUTCHours(14, 0, 0, 0);
-  } else {
-    nextUpdate.setDate(now.getDate() + 1);
-    nextUpdate.setUTCHours(14, 0, 0, 0);
-  }
-
-  const timeToUpdate = nextUpdate.getTime() - now.getTime();
-  console.log('now ', now);
-  console.log('next update ', nextUpdate);
-
-  global.nextUpdate = nextUpdate;
-  return timeToUpdate;
-}
-
-getNextUpdateTime();
-
-// function startBasicIncomeUpdate() {
-//   // basic income is DEPRECATED
-//   basicIncome();
-//   setTimeout(() => {
-//     startBasicIncomeUpdate();
-//   }, getNextUpdateTime());
-// }
-
-// function startStatsUpdate() {
-//   // taking too long - should move to diff thread?
-//   setInterval(updateUserStats, 60 * 60 * 1000);
-//   updateUserStats();
-// }
-
 async function updateRewards() {
-  await ethRewards.rewards();
-  updateUserStats();
-  const now = new Date();
-  if (now.getUTCHours() === 14) {
-    basicIncome();
+  try {
+    await ethRewards.rewards();
+    console.log('done updating rewards');
+  } catch (err) {
+    console.log(err);
   }
-}
 
-// function startRewards() {
-//   // taking too long - should move to diff thread?
-//   setInterval(updateRewards, PAYOUT_FREQUENCY);
-//   updateRewards(updateReputation);
-// }
+  try {
+    await updateUserStats();
+    console.log('done updating stats');
 
-// eslint-disable-next-line
-// function startTwitterUpdate() {
-//   setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
-//   TwitterWorker.updateTwitterPosts();
-// }
+    const now = new Date();
+    if (now.getUTCHours() === 14) {
+      await updateRepChange();
+      console.log('done updating rep stats: ');
+    }
+  } catch (err) {
+    console.log(err);
+  }
 
-// updateUserStats(/);
-// startTwitterUpdate();
-// startBasicIncomeUpdate();
-// startRewards();
-// updateRewards();
-
-if (process.env.NODE_ENV !== 'production') {
-  // startTwitterUpdate();
+  if (relevantEnv === 'staging' || process.env.NODE_ENV === 'native') {
+    return;
+  }
+  process.exit();
 }
 
 if (process.env.NODE_ENV === 'production') {
   updateRewards();
-  // start interval on the hour
-  // const minutesTillHour = 60 - new Date().getMinutes();
-  // setTimeout(() => {
-  //   startStatsUpdate();
-  // }, minutesTillHour * 60 * 1000);
-  // setTimeout(() => {
-  //   startRewards();
-  // }, (15 + minutesTillHour) * 60 * 1000);
-  // setTimeout(() => {
-  //   startTwitterUpdate();
-  // }, ((10 + minutesTillHour) % 60) * 60 * 1000);
-  // TwitterWorker.updateTwitterPosts();
-  // DEPRECATED
-  // setTimeout(() => {
-  //   startBasicIncomeUpdate();
-  // }, getNextUpdateTime());
 }
-
-// pagerank('crypto');
-// pagerank('relevant');
-
-// setTimeout(TwitterWorker.updateTwitterPosts, 5000);
 
 module.exports = {
   updateUserStats,
-  basicIncome,
+  updateRepChange,
   updateReputation
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -136,7 +136,7 @@ class ChatLog extends Component {
         }}
         ref={el => (this.el = el)}
       >
-        <View flex={1} m={'auto'}>
+        <View flex={1}>
           {loading}
           {children.map(renderComment.bind(this))}
           {pending.map(renderComment.bind(this))}

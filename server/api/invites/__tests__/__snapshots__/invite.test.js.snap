@@ -9,6 +9,7 @@ Object {
   "bio": "",
   "blocked": Array [],
   "blockedBy": Array [],
+  "cashedOut": 0,
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",
@@ -18,7 +19,7 @@ Object {
   "ethAddress": Array [],
   "handle": "Bob",
   "id": "[SANITIZED]",
-  "image": "bob-pic.jpg",
+  "image": "https://yt3.ggpht.com/a/AGF-l7_IPKJORqk1Wo7AR4jMhW15Ma-za_QDlRxMcQ=s900-c-k-c0xffffffff-no-rj-mo",
   "investmentCount": 0,
   "lastFeedNotification": 1970-01-01T00:00:00.000Z,
   "lastVote": "[SANITIZED]",
@@ -28,6 +29,9 @@ Object {
   "messages": 0,
   "name": "Bob",
   "notificationSettings": Object {
+    "bet": Object {
+      "manual": false,
+    },
     "desktop": Object {
       "all": false,
     },
@@ -57,8 +61,8 @@ Object {
     "createdAt": "[SANITIZED]",
     "global": true,
     "invites": 0,
-    "pagerank": 29.15,
-    "pagerankRaw": 0.10811,
+    "pagerank": 54.32,
+    "pagerankRaw": 0.10983,
     "relevance": 0,
     "relevanceRecord": Array [],
     "topTopics": Array [],

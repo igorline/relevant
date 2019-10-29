@@ -9,9 +9,9 @@ import Invite from './invite.model';
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
-// Invite.count({ status: 'email sent' }).then(c => console.log('email sent', c));
-// Invite.count({ status: 'registered' }).then(c => console.log('registered', c));
-// User.count({}).then(u => console.log('Users', u));
+// Invite.countDocuments({ status: 'email sent' }).then(c => console.log('email sent', c));
+// Invite.countDocuments({ status: 'registered' }).then(c => console.log('registered', c));
+// User.countDocuments({}).then(u => console.log('Users', u));
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
@@ -30,10 +30,10 @@ exports.index = async (req, res, next) => {
   try {
     const query = { invitedBy: req.user._id, community };
     invites = await Invite.find(query)
-    .populate('registeredAs')
-    .sort({ updatedAt: -1 })
-    .skip(skip)
-    .limit(limit);
+      .populate('registeredAs')
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit);
   } catch (err) {
     return next(err);
   }
@@ -100,8 +100,8 @@ exports.create = async (req, res, next) => {
     await communityMember.save();
 
     return res
-    .status(200)
-    .json({ invite, count: { [community]: communityMember.invites } });
+      .status(200)
+      .json({ invite, count: { [community]: communityMember.invites } });
   } catch (err) {
     return next(err);
   }
@@ -117,7 +117,7 @@ async function computeInviteNumber({ user, communityId }) {
     if (!user.relevance) return 0;
   }
   const totalInvites = totalAllowedInvites(user.relevance.pagerank);
-  const usedInvites = await Invite.count({
+  const usedInvites = await Invite.countDocuments({
     invitedBy: user._id,
     communityId,
     type: 'referral'
@@ -160,9 +160,7 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
     let intro =
       'You are invited to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.';
     if (invite.invitedByString && invite.invitedByString !== '') {
-      intro = `${
-        invite.invitedByString
-      } invited you to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.`;
+      intro = `${invite.invitedByString} invited you to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.`;
     }
 
     let html = `
@@ -214,7 +212,7 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
       </p>
 
       <p>
-      At Relevant, we have created a <b>quality metric</b> for the attention economy that lets you share and rank information according to it’s value. Unlike other networks that fill your feed with clickbait and promoted posts, Relevant is optimized for and by <b>you</b>. 
+      At Relevant, we have created a <b>quality metric</b> for the attention economy that lets you share and rank information according to it’s value. Unlike other networks that fill your feed with clickbait and promoted posts, Relevant is optimized for and by <b>you</b>.
       </p>
 
       <p>

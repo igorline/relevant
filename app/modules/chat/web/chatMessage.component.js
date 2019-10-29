@@ -3,7 +3,7 @@ import { View, Divider, SecondaryText, Spacer, Image } from 'modules/styled/uni'
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
-import PostButtons from 'modules/post/postbuttons.component';
+import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { layout } from 'app/styles';
 import { withRouter } from 'react-router';

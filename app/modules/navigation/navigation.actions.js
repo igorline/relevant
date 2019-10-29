@@ -14,7 +14,7 @@ import {
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction, getScreenSize } from 'app/utils/nav';
-import { setCommunity } from 'modules/auth/auth.actions';
+import { setCommunity } from 'modules/auth/auth.actions'; // eslint-disable-line
 
 let dismissKeyboard;
 let safariView;
@@ -36,10 +36,13 @@ if (process.env.WEB !== 'true') {
   native = true;
 }
 
-export function showModal(modal) {
+export function showModal(modal, data) {
   return {
     type: SHOW_MODAL,
-    payload: modal
+    payload: {
+      modal,
+      data
+    }
   };
 }
 
@@ -106,6 +109,17 @@ export function goToTab(tab) {
         routeName: tab
       })
     );
+  };
+}
+
+export function resetTabs() {
+  return () => {
+    if (!native) return;
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'main' })]
+    });
+    dispatchNavigatorAction(resetAction);
   };
 }
 
@@ -206,36 +220,32 @@ export function goToPeople(topic) {
 }
 
 export function goToUrl(url, id) {
-  return dispatch => {
-    if (url.match('mailto:')) return Linking.openURL(url);
-    dispatch(setButtonTooltip('upvote', id));
-    if (safariView) {
-      safariView
-      .isAvailable()
-      .then(() => {
-        Orientation.unlockAllOrientations();
-        safariView.show({
-          url,
-          readerMode: true // optional,
-        });
-      })
-      .catch(() => {
-        dispatch(
-          push(
-            {
-              key: 'articleView',
-              component: 'articleView',
-              back: true,
-              uri: url,
-              id: url,
-              gestureResponseDistance: 120
-            },
-            'home'
-          )
-        );
+  return async dispatch => {
+    try {
+      if (url.match('mailto:')) return Linking.openURL(url);
+      dispatch(setButtonTooltip('upvote', id));
+      if (!safariView) return null;
+      await safariView.isAvailable();
+      Orientation.unlockAllOrientations();
+      return safariView.show({
+        url,
+        readerMode: true
       });
+    } catch (err) {
+      return dispatch(
+        push(
+          {
+            key: 'articleView',
+            component: 'articleView',
+            back: true,
+            uri: url,
+            id: url,
+            gestureResponseDistance: 120
+          },
+          'home'
+        )
+      );
     }
-    return null;
   };
 }
 

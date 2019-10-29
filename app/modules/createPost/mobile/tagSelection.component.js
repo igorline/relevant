@@ -62,6 +62,7 @@ class TagSelection extends Component {
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
   }
+
   componentDidUpdate(prevProps) {
     if (prevProps.communityTags !== this.props.communityTags) {
       this.setState({
@@ -100,15 +101,15 @@ class TagSelection extends Component {
     }
     const words = input.split(' ');
     const tags = words
-    .map(word => {
-      word = word
-      .replace('#', '')
-      .replace(/(,|\.|!|\?)\s*$/, '')
-      .toLowerCase();
-      if (word === '') return null;
-      return { _id: word };
-    })
-    .filter(el => el !== null);
+      .map(word => {
+        word = word
+          .replace('#', '')
+          .replace(/(,|\.|!|\?)\s*$/, '')
+          .toLowerCase();
+        if (word === '') return null;
+        return { _id: word };
+      })
+      .filter(el => el !== null);
     if (this.selectedTags.length + tags.length >= 7) {
       return Alert.alert('👋 too many topics!');
     }

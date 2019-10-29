@@ -17,7 +17,7 @@ import DiscoverComponent from 'modules/discover/mobile/discover.container';
 import SinglePost from 'modules/post/mobile/singlePost.container';
 import Blocked from 'modules/profile/mobile/blocked.container';
 import Invites from 'modules/invites/mobile/invites.container';
-import Notifications from 'modules/profile/mobile/notifications.container';
+import Settings from 'modules/profile/mobile/settings.container';
 import GetTokens from 'modules/getTokens/mobile/getTokens.container';
 import VoterList from 'modules/post/mobile/voterList.container';
 import Wallet from 'modules/wallet/mobile/wallet.container';
@@ -27,9 +27,11 @@ import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import CommunityMembers from 'modules/community/mobile/communityMembers.component';
 
+import { StackViewTransitionConfigs } from 'react-navigation-stack';
+
 export const DefaultStack = {
   notifications: {
-    screen: Notifications,
+    screen: Settings,
     path: 'user/profile/:id/settings'
   },
   profile: {
@@ -144,6 +146,8 @@ const defaultStackSettings = {
   cardStyle: {
     elevation: 4
   },
+
+  transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
   defaultNavigationOptions: props => ({
     gesturesEnabled: true,

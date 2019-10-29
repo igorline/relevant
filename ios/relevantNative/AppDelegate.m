@@ -6,14 +6,14 @@
  */
 
 #import "AppDelegate.h"
-#import <React/RCTBridge.h>
 #import <CodePush/CodePush.h>
-#import <React/RCTPushNotificationManager.h>
+#import <React/RCTBridge.h>
+#import <RNCPushNotificationIOS.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 #import "Orientation.h" // <--- import
-#import <TwitterKit/TwitterKit.h>
+#import <TwitterKit/TWTRKit.h>
 
 @import Firebase;
 
@@ -22,27 +22,28 @@
 // Required to register for notifications
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
-    [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];
+  [RNCPushNotificationIOS didRegisterUserNotificationSettings:notificationSettings];
 }
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+  [RNCPushNotificationIOS didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+// Required for the notification event. You must call the completion handler after handling the remote notification.
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+  [RNCPushNotificationIOS didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
 // Required for the registrationError event.
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    [RCTPushNotificationManager didFailToRegisterForRemoteNotificationsWithError:error];
-}
-// Required for the notification event.
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
-{
-    [RCTPushNotificationManager didReceiveRemoteNotification:notification];
+  [RNCPushNotificationIOS didFailToRegisterForRemoteNotificationsWithError:error];
 }
 // Required for the localNotification event.
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    [RCTPushNotificationManager didReceiveLocalNotification:notification];
+  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
 }
 
 // This makes linking work
@@ -87,11 +88,6 @@
                                                    moduleName:@"relevantNative"
                                             initialProperties:nil];
 
-  // RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-  //                                                     moduleName:@"relevantNative"
-  //                                              initialProperties:nil
-  //                                                  launchOptions:launchOptions];
-
   for (NSString* family in [UIFont familyNames])
   {
     NSLog(@"%@", family);
@@ -110,7 +106,9 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
-  [FIRApp configure];
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
 
 //  #ifdef DEBUG
 //    NSLog(@"DEBUG!!!");

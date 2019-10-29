@@ -3,10 +3,6 @@ import CommunityMember from './community.member.model';
 import User from '../user/user.model';
 // import Post from './post.model';
 
-// Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
-
-CommunityMember.remove({ 'embeddedUser.handle': 'a' }).exec();
-
 const RESERVED = [
   'user',
   'admin',
@@ -21,17 +17,38 @@ const RESERVED = [
 
 export async function findOne(req, res, next) {
   try {
+    const { user } = req;
     const { slug } = req.params;
     const community = await Community.findOne({ slug, inactive: { $ne: true } });
+    if (!community) throw new Error(`Community ${slug} doesn't exist`);
+
+    if (community.private) {
+      if (!user) throw new Error('This community is private');
+      const member = await CommunityMember.findOne({
+        communityId: community._id,
+        user: user._id
+      });
+      if (!member) throw new Error('This community is private');
+    }
+
     res.status(200).json(community);
   } catch (err) {
     next(err);
   }
 }
 
-export async function index(req, res, next) {
-  try {
-    const communties = await Community.find({ inactive: { $ne: true } })
+// uses middleware for server-sider rendering
+export async function index(req) {
+  const { user } = req;
+  const { community } = req.query;
+  const onlyPublic = user && user.role === 'admin' ? {} : { private: { $ne: true } };
+  const onlyVisible = user && user.role === 'admin' ? {} : { hidden: { $ne: true } };
+
+  const communties = await Community.find({
+    inactive: { $ne: true },
+    ...onlyPublic,
+    $or: [onlyVisible, { slug: community }]
+  })
     .populate({
       path: 'admins',
       match: { role: 'admin' }
@@ -40,10 +57,24 @@ export async function index(req, res, next) {
       path: 'channels',
       match: { channel: true }
     });
-    res.status(200).json(communties);
-  } catch (err) {
-    next(err);
+
+  // find private communities where user is a member
+  let privateCommunities = [];
+  if (user) {
+    const memberships = await CommunityMember.find({ user: user._id }).populate({
+      path: 'communityId',
+      match: { inactive: { $ne: true } }
+    });
+    privateCommunities = memberships
+      .filter(m => m.communityId)
+      .filter(
+        m =>
+          m.communityId.private === true ||
+          (m.communityId.hidden === true && m.communityId.slug !== community)
+      )
+      .map(m => m.communityId);
   }
+  return [...communties, ...privateCommunities].map(c => c.toObject());
 }
 
 export async function members(req, res, next) {
@@ -64,9 +95,9 @@ export async function members(req, res, next) {
         $nin: blocked
       }
     })
-    .sort({ role: 1, reputation: -1 })
-    .limit(limit)
-    .skip(skip);
+      .sort({ role: 1, reputation: -1 })
+      .limit(limit)
+      .skip(skip);
     res.status(200).json(users || []);
   } catch (err) {
     next(err);
@@ -91,11 +122,11 @@ export async function memberSearch(req, res, next) {
     };
     const community = req.params.slug;
     CommunityMember.find({ community, ...query })
-    .sort({ role: 1, reputation: -1 })
-    .limit(parseInt(limit, 10))
-    .then(users => {
-      res.status(200).json(users || []);
-    });
+      .sort({ role: 1, reputation: -1 })
+      .limit(parseInt(limit, 10))
+      .then(users => {
+        res.status(200).json(users || []);
+      });
     // res.status(200).json(users);
     // .catch(next);
   } catch (err) {
@@ -191,7 +222,7 @@ export async function create(req, res, next) {
 
 export async function update(req, res, next) {
   try {
-    // for no only admins create communities
+    // for now only admins create communities
     const updatedCommunity = req.body;
     const { admins, superAdmins } = updatedCommunity;
     const { user } = req;
@@ -224,7 +255,10 @@ export async function update(req, res, next) {
       name: updatedCommunity.name,
       topics: updatedCommunity.topics,
       description: updatedCommunity.description,
-      channels: updatedCommunity.channels
+      channels: updatedCommunity.channels,
+      private: updatedCommunity.private,
+      hidden: updatedCommunity.hidden,
+      betEnabled: updatedCommunity.betEnabled
     });
     community = await community.save();
 
@@ -245,20 +279,20 @@ export async function update(req, res, next) {
       removeAdmins = currentAdminsList.filter(a => !admins.includes(a));
       removeAdmins = await User.find({ handle: { $in: removeAdmins } }, '_id');
       removeAdmins = removeAdmins.map(u => u._id.toString());
-      await CommunityMember.update(
+      await CommunityMember.updateMany(
         { user: { $in: removeAdmins } },
         { role: 'user', superAdmin: false },
         { multi: true }
       );
     }
 
-    await CommunityMember.update(
+    await CommunityMember.updateMany(
       { 'embeddedUser.handle': { $in: admins } },
       { superAdmin: false },
       { multi: true }
     );
 
-    await CommunityMember.update(
+    await CommunityMember.updateMany(
       { 'embeddedUser.handle': { $in: superAdmins }, role: 'admin' },
       { superAdmin: true },
       { multi: true }

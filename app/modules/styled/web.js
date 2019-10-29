@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { mixins, layout, fonts, colors, sizing } from 'app/styles';
-import Textarea from 'react-textarea-autosize';
+import TextareaAutosize from 'react-textarea-autosize';
+import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete';
 
 export const StyledNavLink = styled(NavLink)`
   ${fonts.header};
@@ -27,6 +28,7 @@ export const View = styled.div`
   ${mixins.border}
   ${mixins.width}
   ${mixins.height}
+  ${p => (p.onClick ? 'cursor: pointer;' : '')}
 `;
 
 export const Text = styled.span`
@@ -37,6 +39,7 @@ export const Text = styled.span`
   ${mixins.background}
   ${mixins.border}
   ${mixins.color}
+  ${p => (p.onClick ? 'cursor: pointer;' : '')}
 `;
 
 export const InlineText = styled.span`
@@ -124,16 +127,33 @@ export const Button = styled.button`
     background: ${colors.grey};
     `
       : ''};
+  ${mixins.flex}
   ${mixins.background}
   ${mixins.padding}
   ${mixins.width}
   ${mixins.margin}
+  ${mixins.color}
+  ${mixins.width}
+  ${mixins.height}
+  &:hover {
+    ${layout.activeButtonShadow}
+  };
+  user-select: none; cursor: pointer;
+`;
+
+export const NumericalValue = styled(Text)`
+  ${fonts.numericalValue}
+  ${mixins.width}
+  ${mixins.font}
+  ${mixins.inheritfont}
   ${mixins.color}
 `;
 
 export const Input = styled.input`
   padding: ${sizing(2)} ${sizing(2)};
   margin-top: ${sizing(1)};  ${fonts.bodyStyle}
+  ${mixins.font}
+  ${mixins.flex}
   ${mixins.border}
   ${layout.universalBorder()}
   ${mixins.padding}
@@ -148,7 +168,22 @@ export const Input = styled.input`
   }
 `;
 
-export const StyledTextarea = styled(Textarea)`
+export const StyledTextareaAutocomplete = styled(ReactTextareaAutocomplete)`
+  ${fonts.bodyStyle}
+  ${mixins.border}
+  ${mixins.flex}
+  ${layout.universalBorder()}
+  padding: ${sizing(2)} ${sizing(2)};
+  ${mixins.padding}
+  ${mixins.margin}
+  min-width: 0;
+  &: focus {
+    min-height: ${sizing(8)};
+    outline: 1px solid ${colors.blue};
+  }
+`;
+
+export const StyledTextarea = styled(TextareaAutosize)`
   ${fonts.bodyStyle}
   ${mixins.border}
   ${mixins.flex}
@@ -166,4 +201,14 @@ export const StyledTextarea = styled(Textarea)`
 export const Form = styled.form`
   ${mixins.flex}
   ${mixins.margin}
+`;
+
+export const Video = styled.video`
+  ${mixins.margin}
+  ${mixins.height}
+  ${mixins.width}
+  ${mixins.padding}
+  ${mixins.background}
+  ${mixins.borderRadius}
+  ${mixins.flex}
 `;

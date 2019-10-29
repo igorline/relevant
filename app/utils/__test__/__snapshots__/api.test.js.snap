@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`client request generate correct fetch request 1`] = `
+Array [
+  "/api/user/123?community=relevant&search=user",
+  Object {
+    "body": Object {
+      "data": "some data",
+    },
+    "credentials": "include",
+    "headers": Object {
+      "Accept": "application/json",
+      "Authorization": "Bearer undefined",
+      "Content-Type": "application/json",
+    },
+    "method": "POST",
+  },
+]
+`;

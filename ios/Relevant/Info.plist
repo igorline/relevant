@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BundleEntryFilename</key>
+	<string>index.js</string>
+	<key>BundleForced</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -58,9 +62,9 @@
 	                $attachment,
 	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" ||
 	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text" ||
-	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.data" 
+	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.data"
 	            ).@count == $extensionItem.attachments.@count
-	        ).@count &gt; 0             
+	        ).@count &gt; 0
 	    </string>
 			<key>NSExtensionJavaScriptPreprocessingFile</key>
 			<string>WebsiteProcessor</string>
@@ -72,6 +76,8 @@
 		<key>New item</key>
 		<string></string>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>LibreCaslonDisplay-Regular.ttf</string>

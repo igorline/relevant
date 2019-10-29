@@ -2,536 +2,200 @@
 
 exports[`Snapshot Balance Web 1`] = `
 <div
+  className="css-view-1dbjc4n"
   style={
     Object {
-      "WebkitAlignItems": "stretch",
-      "WebkitBoxAlign": "stretch",
-      "WebkitBoxDirection": "normal",
-      "WebkitBoxOrient": "vertical",
-      "WebkitFlexBasis": "auto",
-      "WebkitFlexDirection": "column",
-      "WebkitFlexShrink": 0,
-      "alignItems": "stretch",
-      "borderBottomStyle": "solid",
-      "borderBottomWidth": "0px",
-      "borderLeftStyle": "solid",
-      "borderLeftWidth": "0px",
-      "borderRightStyle": "solid",
-      "borderRightWidth": "0px",
-      "borderTopStyle": "solid",
-      "borderTopWidth": "0px",
-      "boxSizing": "border-box",
       "display": "flex",
-      "flexBasis": "auto",
-      "flexDirection": "column",
-      "flexShrink": 0,
-      "marginBottom": "1.44rem",
-      "marginLeft": "2.88rem",
-      "marginRight": "2.88rem",
-      "marginTop": "2.88rem",
-      "minHeight": "0px",
-      "minWidth": "0px",
-      "msFlexAlign": "stretch",
-      "msFlexDirection": "column",
-      "msFlexNegative": 0,
-      "msFlexPreferredSize": "auto",
-      "paddingBottom": "0px",
-      "paddingLeft": "0px",
-      "paddingRight": "0px",
-      "paddingTop": "0px",
+      "marginBottom": "1rem",
+      "marginLeft": "2rem",
+      "marginRight": "2rem",
+      "marginTop": "2rem",
       "position": "relative",
-      "zIndex": 0,
     }
   }
 >
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
-      dir="auto"
-      style={
-        Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "rgba(0,0,0,1.00)",
-          "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
-          "fontFamily": "HelveticaNeue-Bold",
-          "fontSize": "2.16rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "2.88rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
-          "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
-        }
-      }
-    >
-      Relevant Tokens
-    </div>
-    <div
+      className="css-text-901oao"
       dir="auto"
       mt={2}
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "inherit",
+          "color": "rgba(0,0,0,1.00)",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.26rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "1.6799999999999997rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "1.44rem",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
+          "fontSize": "0.875rem",
+          "lineHeight": "1.2249999999999999rem",
+          "marginTop": "1rem",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
-      These are tokens you earned as rewards. Once you have more than
-       
-      100
-      , you can transfer them to your Ethereum account.
+      These are coins you earned as rewards. You can transfer up to 
+      1000
+      
+       coins to your Ethereum account (this limit will be increased as the network grows).
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
         "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "1.44rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "1.44rem",
-        "paddingLeft": "1.44rem",
-        "paddingRight": "1.44rem",
-        "paddingTop": "1.44rem",
+        "marginTop": "1rem",
+        "paddingBottom": "1rem",
+        "paddingLeft": "1rem",
+        "paddingRight": "1rem",
+        "paddingTop": "1rem",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
           "WebkitBoxDirection": "normal",
           "WebkitBoxLines": "multiple",
           "WebkitBoxOrient": "horizontal",
           "WebkitBoxPack": "justify",
-          "WebkitFlexBasis": "auto",
           "WebkitFlexDirection": "row",
-          "WebkitFlexShrink": 0,
           "WebkitFlexWrap": "wrap",
           "WebkitJustifyContent": "space-between",
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
           "flexDirection": "row",
-          "flexShrink": 0,
           "flexWrap": "wrap",
           "justifyContent": "space-between",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
           "msFlexDirection": "row",
-          "msFlexNegative": 0,
           "msFlexPack": "justify",
-          "msFlexPreferredSize": "auto",
           "msFlexWrap": "wrap",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-text-901oao"
         dir="auto"
         mb={0.5}
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "color": "inherit",
+            "color": "rgba(0,0,0,1.00)",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.26rem",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
-            "lineHeight": "1.6799999999999997rem",
-            "marginBottom": "0.36rem",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.2249999999999999rem",
+            "marginBottom": "0.25rem",
             "position": "relative",
-            "textDecoration": "none",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
           }
         }
       >
         Account Balance
       </div>
       <div
+        className="css-text-901oao"
         dir="auto"
         mb={0.5}
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexShrink": 0,
-            "borderBottomWidth": "0px",
-            "borderLeftWidth": "0px",
-            "borderRightWidth": "0px",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
-            "color": "rgba(153,153,153,1.00)",
+            "color": "rgba(128,128,128,1.00)",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexShrink": 0,
             "fontFamily": "HelveticaNeue",
-            "fontSize": "1.08rem",
-            "fontStyle": "inherit",
-            "fontVariant": "inherit",
-            "fontWeight": "inherit",
-            "lineHeight": "1.44rem",
-            "marginBottom": "0.36rem",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginBottom": "0.25rem",
             "position": "relative",
-            "textDecoration": "none",
-            "whiteSpace": "pre-wrap",
-            "wordWrap": "break-word",
           }
         }
       >
-        0x627306090abaB3A6e1400e9345bC60c78a8BEf57
+        0x6273...Ef57
       </div>
     </div>
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
           "WebkitAlignItems": "center",
           "WebkitBoxAlign": "center",
           "WebkitBoxDirection": "normal",
           "WebkitBoxOrient": "horizontal",
-          "WebkitFlexBasis": "auto",
           "WebkitFlexDirection": "row",
-          "WebkitFlexShrink": 0,
           "alignItems": "center",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
           "flexDirection": "row",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "1.44rem",
-          "minHeight": "0px",
-          "minWidth": "0px",
+          "marginTop": "1rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-view-1dbjc4n"
         style={
           Object {
             "WebkitAlignItems": "center",
             "WebkitBoxAlign": "center",
             "WebkitBoxDirection": "normal",
             "WebkitBoxOrient": "horizontal",
-            "WebkitFlexBasis": "auto",
             "WebkitFlexDirection": "row",
-            "WebkitFlexShrink": 0,
             "alignItems": "center",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
-            "flexBasis": "auto",
             "flexDirection": "row",
-            "flexShrink": 0,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "1.08rem",
-            "marginTop": "0px",
-            "minHeight": "0px",
-            "minWidth": "0px",
+            "marginRight": "0.75rem",
             "msFlexAlign": "center",
             "msFlexDirection": "row",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "zIndex": 0,
           }
         }
       >
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "vertical",
               "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "column",
-              "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
               "bottom": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
               "flexBasis": "auto",
-              "flexDirection": "column",
-              "flexShrink": 0,
-              "height": "3.6rem",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
-              "msFlexNegative": 0,
+              "height": "2.5rem",
               "msFlexPreferredSize": "auto",
               "overflowX": "hidden",
               "overflowY": "hidden",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
               "position": "relative",
-              "width": "3.7800000000000002rem",
+              "width": "2.625rem",
               "zIndex": 0,
             }
           }
         >
           <div
+            className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitAlignItems": "stretch",
-                "WebkitBoxAlign": "stretch",
-                "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "vertical",
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "column",
-                "WebkitFlexShrink": 0,
-                "alignItems": "stretch",
                 "backgroundColor": "rgba(0,0,0,0.00)",
                 "backgroundImage": "url(\\"relevantcoin.png\\")",
                 "backgroundPosition": "center",
                 "backgroundRepeat": "no-repeat",
                 "backgroundSize": "contain",
-                "borderBottomStyle": "solid",
-                "borderBottomWidth": "0px",
-                "borderLeftStyle": "solid",
-                "borderLeftWidth": "0px",
-                "borderRightStyle": "solid",
-                "borderRightWidth": "0px",
-                "borderTopStyle": "solid",
-                "borderTopWidth": "0px",
                 "bottom": "0px",
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexBasis": "auto",
-                "flexDirection": "column",
-                "flexShrink": 0,
                 "height": "100%",
                 "left": "0px",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "minHeight": "0px",
-                "minWidth": "0px",
-                "msFlexAlign": "stretch",
-                "msFlexDirection": "column",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
                 "position": "absolute",
                 "right": "0px",
                 "top": "0px",
@@ -542,24 +206,13 @@ exports[`Snapshot Balance Web 1`] = `
           />
           <img
             alt=""
+            className="css-accessibilityImage-9pa8cd"
             draggable={false}
             src="relevantcoin.png"
-            style={
-              Object {
-                "bottom": "0px",
-                "height": "100%",
-                "left": "0px",
-                "opacity": 0,
-                "position": "absolute",
-                "right": "0px",
-                "top": "0px",
-                "width": "100%",
-                "zIndex": -1,
-              }
-            }
           />
         </div>
         <div
+          className="css-text-901oao"
           dir="auto"
           fs={4.5}
           inline={0}
@@ -567,186 +220,326 @@ exports[`Snapshot Balance Web 1`] = `
           ml={1.25}
           style={
             Object {
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexShrink": 0,
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "color": "rgba(0,0,0,1.00)",
               "display": "flex",
-              "flexBasis": "auto",
-              "flexShrink": 0,
               "fontFamily": "HelveticaNeue-CondensedBold",
-              "fontSize": "3.2399999999999998rem",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "3.6rem",
-              "marginBottom": "0px",
-              "marginLeft": "0.9rem",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
+              "fontSize": "2.25rem",
+              "lineHeight": "2.5rem",
+              "marginLeft": "0.625rem",
               "position": "relative",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
             }
           }
         >
           
           111
+          
         </div>
       </div>
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
         "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "WebkitBoxLines": "multiple",
+        "WebkitBoxOrient": "horizontal",
+        "WebkitFlexDirection": "row",
+        "WebkitFlexWrap": "wrap",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
-        "borderLeftColor": "rgba(221,221,221,1.00)",
+        "borderLeftColor": "rgba(222,222,222,1.00)",
         "borderLeftStyle": "solid",
         "borderLeftWidth": "1px",
-        "borderRightColor": "rgba(221,221,221,1.00)",
+        "borderRightColor": "rgba(222,222,222,1.00)",
         "borderRightStyle": "solid",
         "borderRightWidth": "1px",
-        "borderTopColor": "rgba(221,221,221,1.00)",
+        "borderTopColor": "rgba(222,222,222,1.00)",
         "borderTopStyle": "solid",
         "borderTopWidth": "1px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "1.44rem",
-        "paddingLeft": "1.44rem",
-        "paddingRight": "1.44rem",
-        "paddingTop": "1.44rem",
+        "flexDirection": "row",
+        "flexWrap": "wrap",
+        "msFlexDirection": "row",
+        "msFlexWrap": "wrap",
+        "paddingBottom": "1rem",
+        "paddingLeft": "1rem",
+        "paddingRight": "1rem",
+        "paddingTop": "1rem",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
-      dir="auto"
+      className="css-view-1dbjc4n"
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "rgba(153,153,153,1.00)",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
-          "fontFamily": "HelveticaNeue",
-          "fontSize": "1.08rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "1.44rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
-      Unclaimed REL: 111
-      
-      
-      
-         Staking Power: 100%
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"You can transfer these coins to your Ethereum wallet.\\"}}"
+        dir="auto"
+        style={
+          Object {
+            "bottom": "0px",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Unclaimed Coins
+        : 
+        0
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are the coins located in your connected Ethereum wallet.\\"}}"
+        dir="auto"
+        style={
+          Object {
+            "bottom": "0px",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Metamask Coins
+        : 
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are coins you got for referrals and verifying social accounts.\\\\nYou cannot transfer these coins to Metamask.\\"}}"
+        dir="auto"
+        style={
+          Object {
+            "bottom": "0px",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Airdrop Coins
+        : 
+        111
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"These are coins that you are currently betting on posts.\\\\nThey get unlocked once the bets expire.\\"}}"
+        dir="auto"
+        style={
+          Object {
+            "bottom": "0px",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Locked Tokens Coins
+        : 
+        0
+      </div>
+    </div>
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "display": "flex",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-text-901oao"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"This is the ratio between unlocked and locked coins.\\"}}"
+        dir="auto"
+        style={
+          Object {
+            "bottom": "0px",
+            "left": "0px",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px",
+            "zIndex": 1,
+          }
+        }
+      />
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        mr={2}
+        style={
+          Object {
+            "color": "rgba(128,128,128,1.00)",
+            "display": "flex",
+            "fontFamily": "HelveticaNeue",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginRight": "1rem",
+            "position": "relative",
+          }
+        }
+      >
+        Staking Power
+        : 
+        100%
+      </div>
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
         "WebkitAlignItems": "center",
         "WebkitBoxAlign": "center",
         "WebkitBoxDirection": "normal",
         "WebkitBoxOrient": "horizontal",
-        "WebkitFlexBasis": "auto",
         "WebkitFlexDirection": "row",
-        "WebkitFlexShrink": 0,
         "alignItems": "center",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
         "flexDirection": "row",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "1.44rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
+        "marginTop": "1rem",
         "msFlexAlign": "center",
         "msFlexDirection": "row",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
-      aria-disabled={true}
-      c="#999999"
+      c="#0000ff"
+      className="css-text-901oao"
+      data-focusable={true}
       dir="auto"
-      disabled={true}
       mr={0.5}
       onClick={[Function]}
       onKeyDown={[Function]}
@@ -759,171 +552,94 @@ exports[`Snapshot Balance Web 1`] = `
       onStartShouldSetResponder={[Function]}
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "WebkitTextDecorationColor": "rgba(153,153,153,1.00)",
+          "MozUserSelect": "none",
+          "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
           "WebkitTextDecorationStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "rgba(153,153,153,1.00)",
+          "WebkitUserSelect": "none",
+          "color": "rgba(0,0,255,1.00)",
+          "cursor": "pointer",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue-Medium",
-          "fontSize": "1.08rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "1.44rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0.36rem",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
+          "fontSize": "0.75rem",
+          "lineHeight": "1.0499999999999998rem",
+          "marginRight": "0.25rem",
+          "msTouchAction": "manipulation",
+          "msUserSelect": "none",
           "position": "relative",
           "textDecoration": "underline",
-          "textDecorationColor": "rgba(153,153,153,1.00)",
+          "textDecorationColor": "rgba(0,0,255,1.00)",
           "textDecorationStyle": "solid",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
+          "touchAction": "manipulation",
+          "userSelect": "none",
         }
       }
+      tabIndex="0"
       td="underline"
     >
       Claim Tokens
     </div>
     <div
-      data-for="mainTooltip"
-      data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"Once you earn more than 100 tokens you\\\\ncan transfer them to your Metamask wallet\\\\n(temporarily disabled)\\"}}"
+      className="css-text-901oao"
+      dir="auto"
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
-          "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 0,
-          "height": "1.08rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "overflowX": "hidden",
-          "overflowY": "hidden",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "width": "1.08rem",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-view-1dbjc4n"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"You can transfer up to 1000 coins to your your Metamask wallet.\\\\n(You cannot transfer coins you got for refferrals and verifying social accounts.)\\"}}"
         style={
           Object {
-            "WebkitAlignItems": "stretch",
-            "WebkitBoxAlign": "stretch",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "vertical",
             "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "column",
-            "WebkitFlexShrink": 0,
-            "alignItems": "stretch",
-            "backgroundColor": "rgba(0,0,0,0.00)",
-            "backgroundImage": "url(\\"info.png\\")",
-            "backgroundPosition": "center",
-            "backgroundRepeat": "no-repeat",
-            "backgroundSize": "cover",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "bottom": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
             "flexBasis": "auto",
-            "flexDirection": "column",
-            "flexShrink": 0,
-            "height": "100%",
-            "left": "0px",
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "stretch",
-            "msFlexDirection": "column",
-            "msFlexNegative": 0,
+            "height": "0.85rem",
             "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
-            "position": "absolute",
-            "right": "0px",
-            "top": "0px",
-            "width": "100%",
-            "zIndex": -1,
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "position": "relative",
+            "width": "0.85rem",
+            "zIndex": 0,
           }
         }
-      />
-      <img
-        alt=""
-        draggable={false}
-        src="info.png"
-        style={
-          Object {
-            "bottom": "0px",
-            "height": "100%",
-            "left": "0px",
-            "opacity": 0,
-            "position": "absolute",
-            "right": "0px",
-            "top": "0px",
-            "width": "100%",
-            "zIndex": -1,
+      >
+        <div
+          className="css-view-1dbjc4n"
+          style={
+            Object {
+              "backgroundColor": "rgba(0,0,0,0.00)",
+              "backgroundImage": "url(\\"info.png\\")",
+              "backgroundPosition": "center",
+              "backgroundRepeat": "no-repeat",
+              "backgroundSize": "contain",
+              "bottom": "0px",
+              "display": "inline-flex",
+              "height": "100%",
+              "left": "0px",
+              "position": "absolute",
+              "right": "0px",
+              "top": "0px",
+              "width": "100%",
+              "zIndex": -1,
+            }
           }
-        }
-      />
+        />
+        <img
+          alt=""
+          className="css-accessibilityImage-9pa8cd"
+          draggable={false}
+          src="info.png"
+        />
+      </div>
     </div>
   </div>
   <div
+    className="css-text-901oao"
     dir="auto"
     mt={
       Array [
@@ -933,78 +649,31 @@ exports[`Snapshot Balance Web 1`] = `
     }
     style={
       Object {
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexShrink": 0,
-        "borderBottomWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "color": "rgba(0,0,0,1.00)",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexShrink": 0,
         "fontFamily": "HelveticaNeue-Bold",
-        "fontSize": "2.16rem",
-        "fontStyle": "inherit",
-        "fontVariant": "inherit",
-        "fontWeight": "inherit",
-        "lineHeight": "2.88rem",
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "6.4799999999999995rem",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
+        "fontSize": "1.5rem",
+        "lineHeight": "2.0999999999999996rem",
+        "marginTop": "4.5rem",
         "position": "relative",
-        "textDecoration": "none",
-        "whiteSpace": "pre-wrap",
-        "wordWrap": "break-word",
       }
     }
   >
     Recent Activity
   </div>
   <div
+    className="css-text-901oao"
     dir="auto"
     mt={2}
     style={
       Object {
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexShrink": 0,
-        "borderBottomWidth": "0px",
-        "borderLeftWidth": "0px",
-        "borderRightWidth": "0px",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "color": "inherit",
+        "color": "rgba(0,0,0,1.00)",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexShrink": 0,
         "fontFamily": "HelveticaNeue",
-        "fontSize": "1.26rem",
-        "fontStyle": "inherit",
-        "fontVariant": "inherit",
-        "fontWeight": "inherit",
-        "lineHeight": "1.6799999999999997rem",
-        "marginBottom": "0px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "1.44rem",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
+        "fontSize": "0.875rem",
+        "lineHeight": "1.2249999999999999rem",
+        "marginTop": "1rem",
         "position": "relative",
-        "textDecoration": "none",
-        "whiteSpace": "pre-wrap",
-        "wordWrap": "break-word",
       }
     }
   >

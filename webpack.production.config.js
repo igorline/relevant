@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const devConfig = require('./webpack.config');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -8,6 +7,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const prodConfig = {};
 const isAnalyze = typeof process.env.BUNDLE_ANALYZE !== 'undefined';
 const CompressionPlugin = require('compression-webpack-plugin');
+const devConfig = require('./webpack.config');
 
 Object.keys(devConfig).forEach(key => {
   prodConfig[key] = devConfig[key];
@@ -34,9 +34,12 @@ prodConfig.plugins = [
       WEB: JSON.stringify('true'),
       API_SERVER: JSON.stringify(''),
       BABEL_ENV: JSON.stringify('development_web'),
-      VAPID_PUBLIC_KEY: JSON.stringify(
-        'BJp16DSJF-SdwZ3yxE2cK502FKKI7hxTON6YDoCaTctcq9sr3scJS1iTsa3YSlvOV-p2_P51cNWF5-os4Gc0rq4'
-      )
+      VAPID_PUBLIC_KEY: JSON.stringify(process.env.VAPID_PUBLIC_KEY),
+      INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
+      INFURA_NETWORK: JSON.stringify(process.env.INFURA_NETWORK),
+      INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
+      NETWORK_NUMBER: JSON.stringify(process.env.NETWORK_NUMBER),
+      TOKEN_ADDRESS: JSON.stringify(process.env.TOKEN_ADDRESS)
     }
   }),
   new webpack.NamedModulesPlugin(),

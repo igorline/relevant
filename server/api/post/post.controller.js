@@ -16,6 +16,11 @@ import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
 
+PostData.updateOne(
+  { post: '5cf6b7775c11c20017dec3f4', community: 'culture' },
+  { isInFeed: false }
+).exec();
+
 const { promisify } = require('util');
 
 const requestAsync = promisify(request);
@@ -33,8 +38,8 @@ async function findRelatedPosts(metaId) {
       { $text: { $search: search }, _id: { $ne: metaId } },
       { score: { $meta: 'textScore' } }
     )
-    .sort({ score: { $meta: 'textScore' } })
-    .limit(5);
+      .sort({ score: { $meta: 'textScore' } })
+      .limit(5);
     return posts;
   } catch (err) {
     throw new Error(err);
@@ -46,35 +51,35 @@ exports.flagged = async (req, res, next) => {
     const { community, limit, skip } = req.query;
 
     const posts = await Post.find({ flagged: true })
-    .populate([
-      {
-        path: 'metaPost'
-      },
-      {
-        path: 'parentPost',
-        populate: 'metaPost'
-      },
-      {
-        path: 'post',
-        populate: [
-          {
-            path: 'commentary',
-            match: {
-              repost: { $exists: false },
-              $or: [{ hidden: { $ne: true } }]
+      .populate([
+        {
+          path: 'metaPost'
+        },
+        {
+          path: 'parentPost',
+          populate: 'metaPost'
+        },
+        {
+          path: 'post',
+          populate: [
+            {
+              path: 'commentary',
+              match: {
+                repost: { $exists: false },
+                $or: [{ hidden: { $ne: true } }]
+              }
+            },
+            {
+              path: 'embeddedUser.relevance',
+              match: { community, global: true },
+              select: 'pagerank'
             }
-          },
-          {
-            path: 'embeddedUser.relevance',
-            match: { community, global: true },
-            select: 'pagerank'
-          }
-        ]
-      }
-    ])
-    .skip(parseInt(skip, 10))
-    .limit(parseInt(limit, 10))
-    .sort('-createdAt');
+          ]
+        }
+      ])
+      .skip(parseInt(skip, 10))
+      .limit(parseInt(limit, 10))
+      .sort('-createdAt');
 
     res.status(200).json(posts);
   } catch (err) {
@@ -84,37 +89,38 @@ exports.flagged = async (req, res, next) => {
 
 exports.topPosts = async (req, res, next) => {
   try {
-    const { community } = req.query;
+    // const { community } = req.query;
     let posts;
     const now = new Date();
     now.setDate(now.getDate() - 7);
-    posts = await PostData.find({ createdAt: { $gt: now }, community })
-    .populate({
-      path: 'post',
-      populate: [
-        {
-          path: 'commentary',
-          match: {
-            // TODO implement intra-community commentary
-            community,
-            // TODO - we should probably sort the non-community commentary
-            // with some randomness on client side
-            repost: { $exists: false },
-            $or: [{ hidden: { $ne: true } }]
-          }
-        },
-        {
-          path: 'embeddedUser.relevance',
-          match: { community, global: true },
-          select: 'pagerank'
-        },
-        { path: 'metaPost' }
-      ]
-    })
-    .sort('-pagerank')
-    .limit(20);
+    posts = await PostData.find({ createdAt: { $gt: now }, isInFeed: true })
+      .populate({
+        path: 'post',
+        populate: [
+          // {
+          //   path: 'commentary',
+          //   match: {
+          //     // TODO implement intra-community commentary
+          //     // community,
+          //     // TODO - we should probably sort the non-community commentary
+          //     // with some randomness on client side
+          //     repost: { $exists: false },
+          //     $or: [{ hidden: { $ne: true } }]
+          //   }
+          // },
+          // {
+          //   path: 'embeddedUser.relevance',
+          //   match: { community, global: true },
+          //   select: 'pagerank'
+          // },
+          { path: 'metaPost' }
+        ]
+      })
+      .sort('-pagerank')
+      .limit(20);
 
     // TODO do this on frontend?
+    posts = posts.filter(d => d.post);
     posts = posts.map(d => ({
       ...d.post.toObject(),
       data: { ...d.toObject(), post: get(d, 'post._id') }
@@ -131,9 +137,7 @@ exports.sendPostNotification = async (req, res, next) => {
     const post = req.body;
     const users = await User.find({});
 
-    const alert = `In case you missed this top-ranked post from @${post.user}: ${
-      post.title
-    }`;
+    const alert = `In case you missed this top-ranked post from @${post.user}: ${post.title}`;
 
     // TODO - optimize this or put in queue so we don't create a bottle neck;
     const finished = users.map(async user => {
@@ -206,68 +210,53 @@ exports.flag = async (req, res, next) => {
   }
 };
 
-exports.index = async (req, res, next) => {
-  try {
-    let id;
-    if (req.user) id = req.user._id;
-    const { community } = req.query;
-    const limit = parseInt(req.query.limit, 10) || 15;
-    const skip = parseInt(req.query.skip, 10) || 0;
-    const tags = req.query.tag || null;
-    const sort = req.query.sort || null;
-    let category = req.query.category || null;
-    if (category === '') category = null;
-    let query = null;
-    let tagsArr = null;
-    let sortQuery = { postDate: -1 };
-    if (sort === 'rank') sortQuery = { rank: -1 };
-    if (tags) {
-      tagsArr = tags.split(',').trim();
-      query = { $or: [{ tags: { $in: tagsArr } }, { category: { $in: tagsArr } }] };
-      // if (category) query = { $or: [{ category }, query] };
-    } else if (category) query = { category };
+// exports.index = async (req, res, next) => {
+//   try {
+//     let id;
+//     if (req.user) id = req.user._id;
+//     const { community } = req.query;
+//     const limit = parseInt(req.query.limit, 10) || 15;
+//     const skip = parseInt(req.query.skip, 10) || 0;
+//     const tags = req.query.tag || null;
+//     const sort = req.query.sort || null;
+//     let category = req.query.category || null;
+//     if (category === '') category = null;
+//     let query = null;
+//     let tagsArr = null;
+//     let sortQuery = { postDate: -1 };
+//     if (sort === 'rank') sortQuery = { rank: -1 };
+//     if (tags) {
+//       tagsArr = tags.split(',').trim();
+//       query = { $or: [{ tags: { $in: tagsArr } }, { category: { $in: tagsArr } }] };
+//       // if (category) query = { $or: [{ category }, query] };
+//     } else if (category) query = { category };
 
-    const posts = await Post.find(query)
-    .populate({
-      path: 'embeddedUser.relevance',
-      select: 'pagerank',
-      match: { community, global: true }
-    })
-    .limit(limit)
-    .skip(skip)
-    .sort(sortQuery);
+//     const posts = await Post.find(query)
+//     .populate({
+//       path: 'embeddedUser.relevance',
+//       select: 'pagerank',
+//       match: { community, global: true }
+//     })
+//     .limit(limit)
+//     .skip(skip)
+//     .sort(sortQuery);
 
-    res.status(200).json(posts);
-
-    // TODO worker thread?
-    // This code sends out upvote info to user
-    // (to display what posts the users has and hasn't upvoted)
-    if (id) {
-      const postIds = [];
-      posts.forEach(post => {
-        postIds.push(post._id || post);
-      });
-      Post.sendOutInvestInfo(postIds, id);
-    }
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.status(200).json(posts);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 exports.userPosts = async (req, res, next) => {
   try {
     const { community } = req.query;
 
     const cObj = await Community.findOne({ slug: community }, '_id');
+    if (!cObj) return res.status(200).json({});
     const communityId = cObj._id;
 
     const { user } = req;
-    let id;
-    let blocked = [];
-    if (user) {
-      blocked = [...user.blocked, ...user.blockedBy];
-      id = user._id;
-    }
+    const blocked = user ? [...user.blocked, ...user.blockedBy] : [];
 
     const limit = parseInt(req.query.limit, 10);
     const skip = parseInt(req.query.skip, 10);
@@ -282,54 +271,73 @@ exports.userPosts = async (req, res, next) => {
       return res.status(200).json({});
     }
 
+    const myVote = user
+      ? [
+          {
+            path: 'myVote',
+            match: { investor: user._id, communityId }
+          }
+        ]
+      : [];
+
     const posts = await Post.find(query)
-    .populate({
-      path: 'repost.post',
-      populate: [
-        {
-          path: 'embeddedUser.relevance',
-          select: 'pagerank',
-          match: { communityId, global: true }
-        },
-        {
-          path: 'metaPost'
-        },
+      .populate({
+        path: 'repost.post',
+        populate: [
+          {
+            path: 'embeddedUser.relevance',
+            select: 'pagerank',
+            match: { communityId, global: true }
+          },
+          {
+            path: 'metaPost'
+          },
+          {
+            path: 'data',
+            match: { communityId }
+          }
+        ]
+      })
+      .populate({
+        path: 'parentPost',
+        populate: [
+          {
+            path: 'data',
+            match: { communityId }
+          },
+          { path: 'metaPost' },
+          ...myVote
+        ]
+      })
+      .populate({
+        path: 'parentComment',
+        populate: [
+          {
+            path: 'data',
+            match: { communityId }
+          },
+          { path: 'metaPost' },
+          ...myVote
+        ]
+      })
+      .populate({ path: 'metaPost ' })
+      .populate({
+        path: 'embeddedUser.relevance',
+        select: 'pagerank',
+        match: { communityId, global: true }
+      })
+      .populate([
         {
           path: 'data',
           match: { communityId }
-        }
-      ]
-    })
-    .populate({ path: 'parentPost', populate: { path: 'metaPost' } })
-    .populate({ path: 'parentComment' })
-    .populate({ path: 'metaPost ' })
-    .populate({
-      path: 'embeddedUser.relevance',
-      select: 'pagerank',
-      match: { communityId, global: true }
-    })
-    .populate({
-      path: 'data',
-      match: { communityId }
-    })
-    .limit(limit)
-    .skip(skip)
-    .sort(sortQuery);
+        },
+        ...myVote
+      ])
+      .limit(limit)
+      .skip(skip)
+      .sort(sortQuery);
 
-    res.status(200).json(posts);
-
-    // TODO worker thread?
-    if (id) {
-      const postIds = [];
-      posts.forEach(post => {
-        postIds.push(post._id || post);
-        if (post.repost && post.repost.post) {
-          postIds.push(post.repost.post._id);
-        }
-      });
-      Post.sendOutInvestInfo(postIds, id);
-    }
-    return null;
+    return res.status(200).json(posts);
   } catch (err) {
     return next(err);
   }
@@ -357,9 +365,16 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
       'User-Agent':
         'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot'
     };
-    const noFb = uri.match('apple.news') || uri.match('bloomberg.com');
+    const relevantHeader = {
+      'User-Agent':
+        'This is a user request for article matadata for Relevant Community (https://relevant.community | info@relevant.community)'
+    };
+    const noFb =
+      uri.match('apple.news') ||
+      uri.match('bloomberg.com') ||
+      uri.match('washingtonpost.com');
 
-    if (noFb) return {};
+    if (noFb) return relevantHeader;
     return fbHeader;
   }
 
@@ -416,34 +431,44 @@ exports.readable = async (req, res, next) => {
   }
 };
 
-exports.findById = async req => {
+exports.index = async req => {
   const { community } = req.query;
-  let id;
+  const { id: postId } = req.params;
   const { user } = req;
 
-  if (user) id = user._id;
+  const cObj = await Community.findOne({ slug: community }, '_id');
+  const communityId = cObj._id;
+
   let blocked = [];
-  if (user) blocked = [...user.blocked, ...user.blockedBy];
+  // TODO server rendering doesn't run the blocked middleware!
+  if (user) blocked = [...(user.blocked || []), ...(user.blockedBy || [])];
 
-  const post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
-  .populate({
-    path: 'embeddedUser.relevance',
-    select: 'pagerank',
-    match: { community, global: true }
-  })
-  .populate({ path: 'metaPost' })
-  .populate({
-    path: 'data',
-    match: { community }
-  });
+  const myVote = user
+    ? [
+        {
+          path: 'myVote',
+          match: { investor: user._id, communityId }
+        }
+      ]
+    : [];
 
-  // TODO worker thread
-  // TODO check if we recieve this in time for server rendering!
-  if (id && post) {
-    Post.sendOutInvestInfo([post._id], id);
-  }
-  // let related = await findRelatedPosts(post.metaPost);
-  // return { post, related };
+  const post = await Post.findOne({
+    _id: postId,
+    user: { $nin: blocked }
+  }).populate([
+    ...myVote,
+    {
+      path: 'embeddedUser.relevance',
+      select: 'pagerank',
+      match: { communityId, global: true }
+    },
+    { path: 'metaPost' },
+    {
+      path: 'data',
+      match: { communityId }
+    }
+  ]);
+
   return post;
 };
 
@@ -513,7 +538,7 @@ exports.update = async (req, res, next) => {
 
     // TODO redo tag processing stuff
     const pTags = newTags.map(tag =>
-      Tag.update(
+      Tag.updateOne(
         { _id: tag },
         {
           $addToSet: { parents: category },
@@ -538,7 +563,8 @@ async function processSubscriptions(newPost, communityId) {
   try {
     const author = newPost.embeddedUser;
     const subscribers = await Subscriptiton.find({
-      following: newPost.user
+      following: newPost.user,
+      communityId
       // category: newPostObj.category
     }).populate('follower', '_id handle name deviceTokens badge lastFeedNotification');
 
@@ -590,14 +616,12 @@ async function processSubscriptions(newPost, communityId) {
             createdAt: { $gte: now - 24 * 60 * 60 * 1000 }
           });
           const n = unread.length;
-          await Feed.update(
+          await Feed.updateMany(
             { userId: follower._id, read: false },
             { read: true },
             { multi: true }
           );
-          const alert = `There is a new post from ${author.name} in the ${
-            cObj.name
-          } community`;
+          const alert = `There is a new post from ${author.name} in the ${cObj.name} community`;
 
           const payload = {
             fromUser: author,
@@ -641,6 +665,12 @@ exports.create = async (req, res, next) => {
   try {
     const { user } = req;
     const { community, communityId } = req.communityMember;
+
+    if (user.banned) {
+      throw new Error(
+        'You are temporarily blocked from making new posts, if you think this is an error, please reach out to info@relevant.community'
+      );
+    }
 
     const { channel, body } = req.body;
     // TODO rate limiting?
@@ -784,8 +814,8 @@ exports.remove = async (req, res, next) => {
       notMe: true,
       payload: post
     };
-
     socketEvent.emit('socketEvent', newPostEvent);
+
     await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {

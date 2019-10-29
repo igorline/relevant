@@ -4,8 +4,8 @@ import Activity from 'modules/activity/activity.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { auth, activity } from 'app/mockdata';
+import { Text } from 'modules/styled/uni';
 
-// jest.mock('modules/comment/web/singleComment.container', () => 'SingleCommnetContainer');
 jest.mock('modules/post/web/post.component', () => 'PostComponent');
 
 const props = {
@@ -14,16 +14,16 @@ const props = {
   actions: {
     goToProfile: jest.fn()
   },
-  PostComponent: jest.fn(() => 'PostComponent')
+  PostComponent: Text
 };
 
 test('Snapshot Activity Web', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <Activity {...props} />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <Activity {...props} />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

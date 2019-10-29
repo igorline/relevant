@@ -6,49 +6,17 @@ exports[`Snapshot Activity Web 1`] = `
 }
 
 <div
+  className="css-view-1dbjc4n"
   style={
     Object {
-      "WebkitAlignItems": "stretch",
-      "WebkitBoxAlign": "stretch",
-      "WebkitBoxDirection": "normal",
-      "WebkitBoxOrient": "vertical",
-      "WebkitFlexBasis": "auto",
-      "WebkitFlexDirection": "column",
-      "WebkitFlexShrink": 0,
-      "alignItems": "stretch",
-      "borderBottomStyle": "solid",
-      "borderBottomWidth": "0px",
-      "borderLeftStyle": "solid",
-      "borderLeftWidth": "0px",
-      "borderRightStyle": "solid",
-      "borderRightWidth": "0px",
-      "borderTopStyle": "solid",
-      "borderTopWidth": "0px",
-      "boxSizing": "border-box",
       "display": "flex",
-      "flexBasis": "auto",
-      "flexDirection": "column",
-      "flexShrink": 0,
-      "marginBottom": "0px",
-      "marginLeft": "0px",
-      "marginRight": "0px",
-      "marginTop": "0px",
-      "minHeight": "0px",
-      "minWidth": "0px",
-      "msFlexAlign": "stretch",
-      "msFlexDirection": "column",
-      "msFlexNegative": 0,
-      "msFlexPreferredSize": "auto",
-      "paddingBottom": "0px",
-      "paddingLeft": "0px",
-      "paddingRight": "0px",
-      "paddingTop": "0px",
+      "maxWidth": "60rem",
       "position": "relative",
-      "zIndex": 0,
     }
   }
 >
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
         "WebkitAlignItems": "center",
@@ -56,46 +24,25 @@ exports[`Snapshot Activity Web 1`] = `
         "WebkitBoxDirection": "normal",
         "WebkitBoxOrient": "horizontal",
         "WebkitBoxPack": "justify",
-        "WebkitFlexBasis": "auto",
         "WebkitFlexDirection": "row",
-        "WebkitFlexShrink": 0,
         "WebkitJustifyContent": "space-between",
         "alignItems": "center",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
         "flexDirection": "row",
-        "flexShrink": 0,
         "justifyContent": "space-between",
         "marginBottom": "0rem",
-        "marginLeft": "2.88rem",
-        "marginRight": "2.88rem",
-        "marginTop": "2.88rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
+        "marginLeft": "2rem",
+        "marginRight": "2rem",
+        "marginTop": "2rem",
         "msFlexAlign": "center",
         "msFlexDirection": "row",
-        "msFlexNegative": 0,
         "msFlexPack": "justify",
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <div
+      className="css-view-1dbjc4n"
       style={
         Object {
           "WebkitAlignItems": "center",
@@ -108,131 +55,44 @@ exports[`Snapshot Activity Web 1`] = `
           "WebkitFlexGrow": 1,
           "WebkitFlexShrink": 1,
           "alignItems": "center",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
           "display": "flex",
           "flexBasis": "0px",
           "flexDirection": "row",
           "flexGrow": 1,
           "flexShrink": 1,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "msFlexNegative": 1,
           "msFlexPositive": 1,
           "msFlexPreferredSize": "0px",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
           "position": "relative",
-          "zIndex": 0,
         }
       }
     >
       <div
+        className="css-view-1dbjc4n"
         style={
           Object {
-            "WebkitAlignItems": "stretch",
             "WebkitAlignSelf": "flex-start",
-            "WebkitBoxAlign": "stretch",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "vertical",
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "column",
-            "WebkitFlexShrink": 0,
-            "alignItems": "stretch",
             "alignSelf": "flex-start",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexDirection": "column",
-            "flexShrink": 0,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "1.08rem",
-            "marginTop": "0px",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "stretch",
-            "msFlexDirection": "column",
+            "marginRight": "0.75rem",
             "msFlexItemAlign": "start",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "zIndex": 0,
           }
         }
       >
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "vertical",
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "column",
-              "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
-              "flexDirection": "column",
-              "flexShrink": 0,
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         >
           <a
-            className="ulink-mock c0"
+            className="c0 ulink-mock"
             href="/user/profile/bob"
             hu={0}
             inline={0}
@@ -240,102 +100,38 @@ exports[`Snapshot Activity Web 1`] = `
             styles=""
           >
             <div
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "WebkitAlignItems": "stretch",
-                  "WebkitBoxAlign": "stretch",
-                  "WebkitBoxDirection": "normal",
-                  "WebkitBoxOrient": "vertical",
                   "WebkitFlexBasis": "auto",
-                  "WebkitFlexDirection": "column",
-                  "WebkitFlexShrink": 0,
-                  "alignItems": "stretch",
-                  "borderBottomLeftRadius": "1.44rem",
-                  "borderBottomRightRadius": "1.44rem",
-                  "borderBottomStyle": "solid",
-                  "borderBottomWidth": "0px",
-                  "borderLeftStyle": "solid",
-                  "borderLeftWidth": "0px",
-                  "borderRightStyle": "solid",
-                  "borderRightWidth": "0px",
-                  "borderTopLeftRadius": "1.44rem",
-                  "borderTopRightRadius": "1.44rem",
-                  "borderTopStyle": "solid",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
+                  "borderBottomLeftRadius": "1rem",
+                  "borderBottomRightRadius": "1rem",
+                  "borderTopLeftRadius": "1rem",
+                  "borderTopRightRadius": "1rem",
                   "display": "flex",
                   "flexBasis": "auto",
-                  "flexDirection": "column",
-                  "flexShrink": 0,
-                  "height": "2.88rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "minHeight": "0px",
-                  "minWidth": "0px",
-                  "msFlexAlign": "stretch",
-                  "msFlexDirection": "column",
-                  "msFlexNegative": 0,
+                  "height": "2rem",
                   "msFlexPreferredSize": "auto",
                   "overflowX": "hidden",
                   "overflowY": "hidden",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
                   "position": "relative",
-                  "width": "2.88rem",
+                  "width": "2rem",
                   "zIndex": 0,
                 }
               }
             >
               <div
+                className="css-view-1dbjc4n"
                 style={
                   Object {
-                    "WebkitAlignItems": "stretch",
-                    "WebkitBoxAlign": "stretch",
-                    "WebkitBoxDirection": "normal",
-                    "WebkitBoxOrient": "vertical",
-                    "WebkitFlexBasis": "auto",
-                    "WebkitFlexDirection": "column",
-                    "WebkitFlexShrink": 0,
-                    "alignItems": "stretch",
                     "backgroundColor": "rgba(0,0,0,0.00)",
-                    "backgroundImage": "url(\\"bob-pic.jpg\\")",
+                    "backgroundImage": "url(\\"https://yt3.ggpht.com/a/AGF-l7_IPKJORqk1Wo7AR4jMhW15Ma-za_QDlRxMcQ=s900-c-k-c0xffffffff-no-rj-mo\\")",
                     "backgroundPosition": "center",
                     "backgroundRepeat": "no-repeat",
                     "backgroundSize": "cover",
-                    "borderBottomStyle": "solid",
-                    "borderBottomWidth": "0px",
-                    "borderLeftStyle": "solid",
-                    "borderLeftWidth": "0px",
-                    "borderRightStyle": "solid",
-                    "borderRightWidth": "0px",
-                    "borderTopStyle": "solid",
-                    "borderTopWidth": "0px",
                     "bottom": "0px",
-                    "boxSizing": "border-box",
-                    "display": "flex",
-                    "flexBasis": "auto",
-                    "flexDirection": "column",
-                    "flexShrink": 0,
                     "height": "100%",
                     "left": "0px",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "minHeight": "0px",
-                    "minWidth": "0px",
-                    "msFlexAlign": "stretch",
-                    "msFlexDirection": "column",
-                    "msFlexNegative": 0,
-                    "msFlexPreferredSize": "auto",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
                     "position": "absolute",
                     "right": "0px",
                     "top": "0px",
@@ -346,27 +142,16 @@ exports[`Snapshot Activity Web 1`] = `
               />
               <img
                 alt=""
+                className="css-accessibilityImage-9pa8cd"
                 draggable={false}
-                src="bob-pic.jpg"
-                style={
-                  Object {
-                    "bottom": "0px",
-                    "height": "100%",
-                    "left": "0px",
-                    "opacity": 0,
-                    "position": "absolute",
-                    "right": "0px",
-                    "top": "0px",
-                    "width": "100%",
-                    "zIndex": -1,
-                  }
-                }
+                src="https://yt3.ggpht.com/a/AGF-l7_IPKJORqk1Wo7AR4jMhW15Ma-za_QDlRxMcQ=s900-c-k-c0xffffffff-no-rj-mo"
               />
             </div>
           </a>
         </div>
       </div>
       <div
+        className="css-view-1dbjc4n"
         style={
           Object {
             "WebkitAlignItems": "baseline",
@@ -379,104 +164,30 @@ exports[`Snapshot Activity Web 1`] = `
             "WebkitFlexGrow": 1,
             "WebkitFlexShrink": 1,
             "alignItems": "baseline",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
             "flexBasis": "0px",
             "flexDirection": "column",
             "flexGrow": 1,
             "flexShrink": 1,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "0px",
-            "minHeight": "0px",
-            "minWidth": "0px",
             "msFlexAlign": "baseline",
             "msFlexDirection": "column",
             "msFlexNegative": 1,
             "msFlexPositive": 1,
             "msFlexPreferredSize": "0px",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "zIndex": 0,
           }
         }
       >
         <div
+          className="css-text-901oao"
           dir="auto"
-          style={
-            Object {
-              "borderBottomWidth": "0px",
-              "borderLeftWidth": "0px",
-              "borderRightWidth": "0px",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
-              "color": "inherit",
-              "display": "inline",
-              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-              "fontSize": "14px",
-              "fontStyle": "inherit",
-              "fontVariant": "inherit",
-              "fontWeight": "inherit",
-              "lineHeight": "inherit",
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
-              "textDecoration": "none",
-              "whiteSpace": "pre-wrap",
-              "wordWrap": "break-word",
-            }
-          }
         >
           <span
+            className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            style={
-              Object {
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
-                "color": "inherit",
-                "display": "inline",
-                "fontFamily": "inherit",
-                "fontSize": "inherit",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "inherit",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "textDecoration": "none",
-                "whiteSpace": "inherit",
-                "wordWrap": "break-word",
-              }
-            }
           >
             <a
-              className="ulink-mock c0"
+              className="c0 ulink-mock"
               href="/user/profile/bob"
               hu={0}
               inline={0}
@@ -485,37 +196,18 @@ exports[`Snapshot Activity Web 1`] = `
             >
               <span
                 c="#0000ff"
+                className="css-text-901oao css-textHasAncestor-16my406"
                 dir="auto"
                 inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-                    "borderBottomWidth": "0px",
-                    "borderLeftWidth": "0px",
-                    "borderRightWidth": "0px",
-                    "borderTopWidth": "0px",
-                    "boxSizing": "border-box",
                     "color": "rgba(0,0,255,1.00)",
-                    "display": "inline",
                     "fontFamily": "HelveticaNeue",
-                    "fontSize": "1.26rem",
-                    "fontStyle": "inherit",
-                    "fontVariant": "inherit",
-                    "fontWeight": "inherit",
-                    "lineHeight": "1.6799999999999997rem",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
                     "position": "relative",
-                    "textDecoration": "none",
                     "textDecorationColor": "rgba(0,0,255,1.00)",
-                    "whiteSpace": "inherit",
-                    "wordWrap": "break-word",
                   }
                 }
               >
@@ -524,297 +216,48 @@ exports[`Snapshot Activity Web 1`] = `
               </span>
             </a>
              
-            <span
-              align="baseline"
-              dir="auto"
-              inline={1}
-              ml={0}
-              style={
-                Object {
-                  "WebkitAlignItems": "baseline",
-                  "WebkitBoxAlign": "baseline",
-                  "alignItems": "baseline",
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "inline",
-                  "fontFamily": "inherit",
-                  "fontSize": "inherit",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "inherit",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "msFlexAlign": "baseline",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
-                  "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
-                }
-              }
-            >
-              <div
-                style={
-                  Object {
-                    "WebkitAlignItems": "stretch",
-                    "WebkitBoxAlign": "stretch",
-                    "WebkitBoxDirection": "normal",
-                    "WebkitBoxOrient": "vertical",
-                    "WebkitFlexBasis": "auto",
-                    "WebkitFlexDirection": "column",
-                    "alignItems": "stretch",
-                    "borderBottomStyle": "solid",
-                    "borderBottomWidth": "0px",
-                    "borderLeftStyle": "solid",
-                    "borderLeftWidth": "0px",
-                    "borderRightStyle": "solid",
-                    "borderRightWidth": "0px",
-                    "borderTopStyle": "solid",
-                    "borderTopWidth": "0px",
-                    "bottom": "-1px",
-                    "boxSizing": "border-box",
-                    "display": "inline-flex",
-                    "flexBasis": "auto",
-                    "flexDirection": "column",
-                    "height": "1.2311999999999999rem",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "minHeight": "0px",
-                    "minWidth": "0px",
-                    "msFlexAlign": "stretch",
-                    "msFlexDirection": "column",
-                    "msFlexPreferredSize": "auto",
-                    "overflowX": "hidden",
-                    "overflowY": "hidden",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
-                    "position": "relative",
-                    "width": "1.5048rem",
-                    "zIndex": 0,
-                  }
-                }
-              >
-                <div
-                  style={
-                    Object {
-                      "WebkitAlignItems": "stretch",
-                      "WebkitBoxAlign": "stretch",
-                      "WebkitBoxDirection": "normal",
-                      "WebkitBoxOrient": "vertical",
-                      "WebkitFlexDirection": "column",
-                      "alignItems": "stretch",
-                      "backgroundColor": "rgba(0,0,0,0.00)",
-                      "backgroundImage": "url(\\"r-emoji.png\\")",
-                      "backgroundPosition": "center",
-                      "backgroundRepeat": "no-repeat",
-                      "backgroundSize": "contain",
-                      "borderBottomStyle": "solid",
-                      "borderBottomWidth": "0px",
-                      "borderLeftStyle": "solid",
-                      "borderLeftWidth": "0px",
-                      "borderRightStyle": "solid",
-                      "borderRightWidth": "0px",
-                      "borderTopStyle": "solid",
-                      "borderTopWidth": "0px",
-                      "bottom": "0px",
-                      "boxSizing": "border-box",
-                      "display": "inline-flex",
-                      "flexDirection": "column",
-                      "height": "100%",
-                      "left": "0px",
-                      "marginBottom": "0px",
-                      "marginLeft": "0px",
-                      "marginRight": "0px",
-                      "marginTop": "0px",
-                      "minHeight": "0px",
-                      "minWidth": "0px",
-                      "msFlexAlign": "stretch",
-                      "msFlexDirection": "column",
-                      "paddingBottom": "0px",
-                      "paddingLeft": "0px",
-                      "paddingRight": "0px",
-                      "paddingTop": "0px",
-                      "position": "absolute",
-                      "right": "0px",
-                      "top": "0px",
-                      "width": "100%",
-                      "zIndex": -1,
-                    }
-                  }
-                />
-                <img
-                  alt=""
-                  draggable={false}
-                  src="r-emoji.png"
-                  style={
-                    Object {
-                      "bottom": "0px",
-                      "height": "100%",
-                      "left": "0px",
-                      "opacity": 0,
-                      "position": "absolute",
-                      "right": "0px",
-                      "top": "0px",
-                      "width": "100%",
-                      "zIndex": -1,
-                    }
-                  }
-                />
-              </div>
-               
-              <span
-                dir="auto"
-                inline={1}
-                style={
-                  Object {
-                    "borderBottomWidth": "0px",
-                    "borderLeftWidth": "0px",
-                    "borderRightWidth": "0px",
-                    "borderTopWidth": "0px",
-                    "boxSizing": "border-box",
-                    "color": "rgba(0,0,0,1.00)",
-                    "display": "inline",
-                    "fontFamily": "HelveticaNeue-CondensedBold",
-                    "fontSize": "1.26rem",
-                    "fontStyle": "inherit",
-                    "fontVariant": "inherit",
-                    "fontWeight": "inherit",
-                    "lineHeight": "1.6799999999999997rem",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
-                    "position": "relative",
-                    "textDecoration": "none",
-                    "whiteSpace": "inherit",
-                    "wordWrap": "break-word",
-                  }
-                }
-              >
-                22
-              </span>
-            </span>
-             
           </span>
           <span
+            className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
             inline={1}
             style={
               Object {
-                "borderBottomWidth": "0px",
-                "borderLeftWidth": "0px",
-                "borderRightWidth": "0px",
-                "borderTopWidth": "0px",
-                "boxSizing": "border-box",
-                "color": "inherit",
-                "display": "inline",
+                "color": "rgba(0,0,0,1.00)",
                 "fontFamily": "HelveticaNeue",
-                "fontSize": "1.26rem",
-                "fontStyle": "inherit",
-                "fontVariant": "inherit",
-                "fontWeight": "inherit",
-                "lineHeight": "1.6799999999999997rem",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
                 "position": "relative",
-                "textDecoration": "none",
-                "whiteSpace": "inherit",
-                "wordWrap": "break-word",
               }
             }
           >
             upvoted your comment
             <span
+              className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
               inline={1}
               style={
                 Object {
-                  "borderBottomWidth": "0px",
-                  "borderLeftWidth": "0px",
-                  "borderRightWidth": "0px",
-                  "borderTopWidth": "0px",
-                  "boxSizing": "border-box",
-                  "color": "inherit",
-                  "display": "inline",
+                  "color": "rgba(0,0,0,1.00)",
                   "fontFamily": "HelveticaNeue",
-                  "fontSize": "1.26rem",
-                  "fontStyle": "inherit",
-                  "fontVariant": "inherit",
-                  "fontWeight": "inherit",
-                  "lineHeight": "1.6799999999999997rem",
-                  "marginBottom": "0px",
-                  "marginLeft": "0px",
-                  "marginRight": "0px",
-                  "marginTop": "0px",
-                  "paddingBottom": "0px",
-                  "paddingLeft": "0px",
-                  "paddingRight": "0px",
-                  "paddingTop": "0px",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
                   "position": "relative",
-                  "textDecoration": "none",
-                  "whiteSpace": "inherit",
-                  "wordWrap": "break-word",
                 }
               }
             >
                → your reputation increased by 
               <span
                 c="#7ED321"
+                className="css-text-901oao css-textHasAncestor-16my406"
                 dir="auto"
                 inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
-                    "borderBottomWidth": "0px",
-                    "borderLeftWidth": "0px",
-                    "borderRightWidth": "0px",
-                    "borderTopWidth": "0px",
-                    "boxSizing": "border-box",
                     "color": "rgba(126,211,33,1.00)",
-                    "display": "inline",
-                    "fontFamily": "inherit",
-                    "fontSize": "inherit",
-                    "fontStyle": "inherit",
-                    "fontVariant": "inherit",
-                    "fontWeight": "inherit",
-                    "lineHeight": "inherit",
-                    "marginBottom": "0px",
-                    "marginLeft": "0px",
-                    "marginRight": "0px",
-                    "marginTop": "0px",
-                    "paddingBottom": "0px",
-                    "paddingLeft": "0px",
-                    "paddingRight": "0px",
-                    "paddingTop": "0px",
                     "position": "relative",
-                    "textDecoration": "none",
                     "textDecorationColor": "rgba(126,211,33,1.00)",
-                    "whiteSpace": "inherit",
-                    "wordWrap": "break-word",
                   }
                 }
               >
@@ -826,86 +269,28 @@ exports[`Snapshot Activity Web 1`] = `
           </span>
         </div>
         <div
+          className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "stretch",
-              "WebkitBoxAlign": "stretch",
-              "WebkitBoxDirection": "normal",
-              "WebkitBoxOrient": "vertical",
-              "WebkitFlexBasis": "auto",
-              "WebkitFlexDirection": "column",
-              "WebkitFlexShrink": 0,
-              "alignItems": "stretch",
-              "borderBottomStyle": "solid",
-              "borderBottomWidth": "0px",
-              "borderLeftStyle": "solid",
-              "borderLeftWidth": "0px",
-              "borderRightStyle": "solid",
-              "borderRightWidth": "0px",
-              "borderTopStyle": "solid",
-              "borderTopWidth": "0px",
-              "boxSizing": "border-box",
               "display": "flex",
-              "flexBasis": "auto",
-              "flexDirection": "column",
-              "flexShrink": 0,
-              "marginBottom": "0px",
-              "marginLeft": "0px",
-              "marginRight": "0px",
-              "marginTop": "0px",
-              "minHeight": "0px",
-              "minWidth": "0px",
-              "msFlexAlign": "stretch",
-              "msFlexDirection": "column",
-              "msFlexNegative": 0,
-              "msFlexPreferredSize": "auto",
-              "paddingBottom": "0px",
-              "paddingLeft": "0px",
-              "paddingRight": "0px",
-              "paddingTop": "0px",
               "position": "relative",
-              "zIndex": 0,
             }
           }
         />
       </div>
     </div>
     <div
+      className="css-text-901oao"
       dir="auto"
       lh={2}
       style={
         Object {
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexShrink": 0,
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "rgba(153,153,153,1.00)",
+          "color": "rgba(128,128,128,1.00)",
           "display": "flex",
-          "flexBasis": "auto",
-          "flexShrink": 0,
           "fontFamily": "HelveticaNeue",
-          "fontSize": "1.08rem",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "1.44rem",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
+          "fontSize": "0.75rem",
+          "lineHeight": "1rem",
           "position": "relative",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
         }
       }
     >
@@ -913,50 +298,17 @@ exports[`Snapshot Activity Web 1`] = `
     </div>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
         "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
-        "marginBottom": "0px",
-        "marginLeft": "4.32rem",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
+        "marginLeft": "3rem",
         "position": "relative",
-        "zIndex": 0,
       }
     }
   >
     <a
-      className="ulink-mock c0"
+      className="c0 ulink-mock"
       href="/undefined/post/000000000000000000000003"
       hu={0}
       inline={0}
@@ -964,93 +316,105 @@ exports[`Snapshot Activity Web 1`] = `
       styles=""
     >
       <div
+        className="css-view-1dbjc4n"
         style={
           Object {
-            "WebkitAlignItems": "stretch",
-            "WebkitBoxAlign": "stretch",
-            "WebkitBoxDirection": "normal",
-            "WebkitBoxOrient": "vertical",
-            "WebkitFlexBasis": "auto",
-            "WebkitFlexDirection": "column",
-            "WebkitFlexShrink": 0,
-            "alignItems": "stretch",
-            "borderBottomStyle": "solid",
-            "borderBottomWidth": "0px",
-            "borderLeftStyle": "solid",
-            "borderLeftWidth": "0px",
-            "borderRightStyle": "solid",
-            "borderRightWidth": "0px",
-            "borderTopStyle": "solid",
-            "borderTopWidth": "0px",
-            "boxSizing": "border-box",
             "display": "flex",
-            "flexBasis": "auto",
-            "flexDirection": "column",
-            "flexShrink": 0,
             "marginBottom": "0rem",
-            "marginLeft": "2.88rem",
-            "marginRight": "2.88rem",
+            "marginLeft": "2rem",
+            "marginRight": "2rem",
             "marginTop": "0rem",
-            "minHeight": "0px",
-            "minWidth": "0px",
-            "msFlexAlign": "stretch",
-            "msFlexDirection": "column",
-            "msFlexNegative": 0,
-            "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-            "paddingTop": "0px",
             "position": "relative",
-            "zIndex": 0,
           }
         }
       >
-        PostComponent
+        <div
+          className="css-text-901oao"
+          dir="auto"
+          hideDivider={true}
+          hidePostButtons={true}
+          link="000000000000000000000003"
+          noLink={true}
+          post={
+            Object {
+              "_id": "000000000000000000000002",
+              "body": "awesome post #2!",
+              "community": "relevant",
+              "communityId": "c00000000000000000000001",
+              "data": Object {
+                "pagerank": 45,
+                "payout": 18000000000000000000,
+              },
+              "domain": "link.domain2",
+              "embeddedUser": Object {
+                "_id": "c00000000000000000000000",
+                "airdropTokens": 333,
+                "balance": 333,
+                "bio": "admin of a few communities",
+                "email": "carol@carol.com",
+                "ethAddress": Array [
+                  "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef",
+                ],
+                "handle": "carol",
+                "image": "https://ichef.bbci.co.uk/news/640/cpsprodpb/A369/production/_87133814_87135704.jpg",
+                "lockedTokens": 0,
+                "name": "Carol",
+                "notificationSettings": Object {
+                  "bet": Object {
+                    "manual": true,
+                  },
+                },
+                "password": "test",
+                "relevance": Object {
+                  "pagerank": 33,
+                },
+              },
+              "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
+              "link": Object {
+                "domain": "link.domain2",
+                "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
+                "title": "postTitle2",
+                "url": "https://example.com/testPost2",
+              },
+              "parentComment": "000000000000000000000001",
+              "parentPost": "000000000000000000000003",
+              "payoutTime": 2019-02-03T09:02:02.000Z,
+              "postDate": 2019-01-31T09:02:02.000Z,
+              "tags": Array [
+                "tag21",
+                "tag22",
+              ],
+              "title": "postTitle2",
+              "type": "comment",
+              "url": "https://example.com/testPost2",
+              "user": "c00000000000000000000000",
+            }
+          }
+          preview={true}
+          style={
+            Object {
+              "display": "flex",
+              "position": "relative",
+            }
+          }
+        />
       </div>
     </a>
   </div>
   <div
+    className="css-view-1dbjc4n"
     style={
       Object {
-        "WebkitAlignItems": "stretch",
-        "WebkitBoxAlign": "stretch",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "vertical",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "column",
-        "WebkitFlexShrink": 0,
-        "alignItems": "stretch",
-        "borderBottomColor": "rgba(221,221,221,1.00)",
+        "borderBottomColor": "rgba(222,222,222,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "1px",
         "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
         "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
         "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "column",
-        "flexShrink": 0,
         "marginBottom": "0rem",
         "marginLeft": "0rem",
         "marginRight": "0rem",
-        "marginTop": "1.44rem",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "stretch",
-        "msFlexDirection": "column",
-        "msFlexNegative": 0,
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
-        "position": "relative",
-        "zIndex": 0,
+        "marginTop": "1rem",
       }
     }
   />

@@ -1,6 +1,6 @@
 import * as colors from './colors';
-import sizing from './sizing';
-import { size } from './mixins';
+import sizing, { size } from './sizing';
+// import { size } from './mixins';
 
 // TODO should we keep things consistent? Doesn't seem useful anymore
 export const linkStyle = `
@@ -8,21 +8,35 @@ export const linkStyle = `
   color: ${props => props.color || 'black'}
 `;
 
+export const activeButtonShadow = {
+  boxShadow: '0 2px 6px hsl(240,0%,70%);'
+};
+
 export const modalShadow = {
   boxShadow: '0 2px 6px hsl(0,0%,70%)'
 };
 
-export const BANNER_PROMPT_HEIGHT = sizing(5);
+const s = 1;
 
-export const headerHeight = sizing(16);
-export const mainHeaderHeight = sizing(12);
-export const sideNavWidth = sizing(40);
+export const AVATAR_SIZE = 4 * s;
+export const POST_IMAGE_H = 10 * s;
+export const POST_IMAGE_W = 20 * s;
+export const CENTER_BUTTON_SIZE = 4.5 * s;
+export const VOTE_BUTTON_SIZE = 2.75 * s;
+export const SIDE_NAV_PADDING = 3;
+export const MAX_POST_WIDTH = 120;
 
-export const mediumScreenWidth = 714;
-export const smallScreenWidth = 414;
+export const DESKTOP_PADDING = 4;
 
-export const NESTING_UNIT = 8;
-export const POST_BUTTONS_NESTING_UNITS = 1.5;
+export const BANNER_PROMPT_HEIGHT = size([5, 7]);
+
+export const headerHeight = sizing(10);
+export const mainHeaderHeight = sizing(10);
+export const sideNavWidth = sizing(37);
+
+export const NESTING_UNIT = 3;
+export const POST_BUTTONS_NESTING_UNITS = 4;
+// export const POST_BUTTONS_UNITS = 4;
 export const POST_BUTTONS_WIDTH = POST_BUTTONS_NESTING_UNITS * NESTING_UNIT;
 
 export const NESTING_UNIT_RESONSIVE = 2;
