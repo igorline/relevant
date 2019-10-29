@@ -17,37 +17,6 @@ import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 import { logCashOut } from '../../utils/cashOut';
 
-// async function getUserEmails(_users) {
-//   const users = await User.find({ handle: { $in: _users } }, '+email');
-//   users.map(u => console.log(u.handle, u.email));
-// }
-// getUserEmails([
-//   'JoannaPope',
-//   'commune_mist',
-//   'charlixcx',
-//   'clubinternet',
-//   'Druss',
-//   'mrcni',
-//   'bamboo',
-//   'mat',
-//   'darkmatter',
-// ]);
-
-// User.findOneAndUpdate({ handle: 'test' }, { balance: 10000, cashOut: null }).exec();
-// User.findOneAndUpdate({ handle: 'jennifar' }, { banned: true }).then(console.log);
-// User.findOne({ handle: 'jennifar' }).then(console.log);
-// const TwitterWorker = require('../../utils/twitterWorker');
-// User.findOne({ email: 'tem-tam@hotmail.com' }, '+email +confirmCode')
-// .then(u => u);
-//
-// sendConfirmation({ handle: 'feed', email: 'relevant.feed@gmail.com', confirmCode: 'xxx' });
-
-// sendConfirmation({
-//   email: 'slava@relevant.community',
-//   handle: 'test',
-//   confirmCode: 'xxx',
-// });
-
 async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';

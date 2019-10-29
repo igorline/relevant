@@ -2,6 +2,7 @@ const LoadablePlugin = require('@loadable/webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
+require('dotenv').config({ silent: true });
 
 module.exports = {
   devtool: 'source-map',

@@ -28,12 +28,12 @@ exports.send = data => {
     return Promise.resolve();
   }
   return mailgun
-  .messages()
-  .send(data)
-  .catch(err => {
-    // console.log('mail error ', err);
-    throw err;
-  });
+    .messages()
+    .send(data)
+    .catch(err => {
+      // console.log('mail error ', err);
+      throw err;
+    });
 };
 
 exports.mailgun = mailgun;

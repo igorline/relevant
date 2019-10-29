@@ -65,7 +65,6 @@ function logUser(user, totalRewards) {
 
 async function auditUser(handle) {
   const user = await User.findOne({ handle });
-  // console.log(user);
   const earnings = await Earnings.find({
     user: user._id,
     $or: [{ status: 'paidout' }, { status: 'expired' }]

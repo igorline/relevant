@@ -74,7 +74,7 @@ exports[`Snapshot other users Profile 1`] = `
           style={
             Object {
               "backgroundColor": "rgba(0,0,0,0.00)",
-              "backgroundImage": "url(\\"alice-pic.jpg\\")",
+              "backgroundImage": "url(\\"https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg\\")",
               "backgroundPosition": "center",
               "backgroundRepeat": "no-repeat",
               "backgroundSize": "cover",
@@ -93,7 +93,7 @@ exports[`Snapshot other users Profile 1`] = `
           alt=""
           className="css-accessibilityImage-9pa8cd"
           draggable={false}
-          src="alice-pic.jpg"
+          src="https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg"
         />
       </div>
     </a>
@@ -311,7 +311,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
                 ],
                 "handle": "alice",
-                "image": "alice-pic.jpg",
+                "image": "https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg",
                 "lockedTokens": 0,
                 "name": "Alice",
                 "notificationSettings": Object {
@@ -323,6 +323,7 @@ exports[`Snapshot other users Profile 1`] = `
                 "relevance": Object {
                   "pagerank": 11,
                 },
+                "role": "admin",
               }
             }
           >
@@ -582,7 +583,7 @@ exports[`Snapshot own Profile 1`] = `
           style={
             Object {
               "backgroundColor": "rgba(0,0,0,0.00)",
-              "backgroundImage": "url(\\"alice-pic.jpg\\")",
+              "backgroundImage": "url(\\"https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg\\")",
               "backgroundPosition": "center",
               "backgroundRepeat": "no-repeat",
               "backgroundSize": "cover",
@@ -601,7 +602,7 @@ exports[`Snapshot own Profile 1`] = `
           alt=""
           className="css-accessibilityImage-9pa8cd"
           draggable={false}
-          src="alice-pic.jpg"
+          src="https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg"
         />
       </div>
     </a>
@@ -819,7 +820,7 @@ exports[`Snapshot own Profile 1`] = `
                   "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
                 ],
                 "handle": "alice",
-                "image": "alice-pic.jpg",
+                "image": "https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg",
                 "lockedTokens": 0,
                 "name": "Alice",
                 "notificationSettings": Object {
@@ -831,6 +832,7 @@ exports[`Snapshot own Profile 1`] = `
                 "relevance": Object {
                   "pagerank": 11,
                 },
+                "role": "admin",
               }
             }
           >

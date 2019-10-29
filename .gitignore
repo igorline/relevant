@@ -8,6 +8,9 @@ app/publicenv.js
 app/public/dist
 server/test/mongoTestConfig.json
 
+# google-services.json
+# GoogleService-Info.plist
+
 #ios
 ios/Pods/
 
