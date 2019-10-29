@@ -12,7 +12,6 @@ import Modal from 'react-native-modalbox';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShareExtension from 'react-native-share-extension';
-import { StackViewTransitionConfigs } from 'react-navigation-stack';
 
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
@@ -21,7 +20,10 @@ import * as postActions from 'modules/post/post.actions';
 import * as communityActions from 'modules/community/community.actions';
 
 import Auth from 'modules/auth/mobile/auth.component';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+
+import { createAppContainer } from 'react-navigation';
+import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
+
 import UrlComponent from 'modules/createPost/mobile/url.component';
 import Categories from 'modules/createPost/mobile/categories.component';
 
