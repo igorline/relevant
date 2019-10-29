@@ -118,7 +118,7 @@
     "react-is": "^16.10.2",
     "react-markdown": "^4.2.2",
     "react-mde": "^7.6.2",
-    "react-native": "^0.61.2",
+    "react-native": "^0.61.3",
     "react-native-bottom-sheet": "^1.0.3",
     "react-native-code-push": "^5.7.0",
     "react-native-contacts": "^5.0.4",
