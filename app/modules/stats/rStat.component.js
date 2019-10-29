@@ -22,8 +22,8 @@ export default function RStat(props) {
     return (
       <Text {...rest} inline={inline ? 1 : 0} align={align || 'center'}>
         <Image
-          h={iconSize * 0.9}
-          w={iconSize * 1.1}
+          h={iconSize * 1.0}
+          w={iconSize * 1.0}
           source={iconImage}
           style={{ bottom: imageMargin }}
           resizeMode={'contain'}

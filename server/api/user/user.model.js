@@ -48,32 +48,14 @@ const UserSchema = new Schema(
     twitter: { type: Object, select: false },
     reddit: { type: Object, select: false },
     notificationSettings: {
+      bet: { manual: { type: Boolean, default: false } },
       email: {
-        digest: {
-          type: Boolean,
-          default: true
-        },
-        general: {
-          type: Boolean,
-          default: false
-        },
-        personal: {
-          type: Boolean,
-          default: true
-        }
+        digest: { type: Boolean, default: true },
+        general: { type: Boolean, default: false },
+        personal: { type: Boolean, default: true }
       },
-      mobile: {
-        all: {
-          type: Boolean,
-          default: false
-        }
-      },
-      desktop: {
-        all: {
-          type: Boolean,
-          default: false
-        }
-      }
+      mobile: { all: { type: Boolean, default: false } },
+      desktop: { all: { type: Boolean, default: false } }
     },
     desktopSubscriptions: [],
     redditId: String,
@@ -140,13 +122,14 @@ const UserSchema = new Schema(
     lastTweetId: { type: Number },
 
     tokenBalance: { type: Number, default: 0 },
+    cashedOut: { type: Number, default: 0 },
     ethAddress: [String],
 
     // eth cash out
     cashOut: {
       nonce: Number,
       sig: String,
-      amount: Number
+      amount: String
     },
     airdropTokens: { type: Number, default: 0 },
     referralTokens: { type: Number, default: 0 },

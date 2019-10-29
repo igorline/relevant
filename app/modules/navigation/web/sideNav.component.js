@@ -58,13 +58,12 @@ class SideNav extends Component {
   }
 
   render() {
-    const { community, className, actions, notif, navigation } = this.props;
+    const { community, actions, notif, navigation } = this.props;
     const logoLink = `/${community || 'relevant'}/new`;
     return (
       <Container top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}>
         <SideNavContent
           flex={1}
-          className={className}
           top={notif.promptType ? layout.BANNER_PROMPT_HEIGHT : null}
         >
           <SideNavScroll flex={1}>
@@ -111,7 +110,6 @@ class SideNav extends Component {
 }
 
 SideNav.propTypes = {
-  className: PropTypes.string,
   actions: PropTypes.object,
   community: PropTypes.string,
   navigation: PropTypes.object,

@@ -10,7 +10,7 @@ import {
   Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Analytics from 'react-native-firebase-analytics';
+import { analytics } from 'react-native-firebase';
 import Share from 'react-native-share';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, fullHeight } from 'app/styles/global';
@@ -18,6 +18,8 @@ import { CTALink } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import get from 'lodash/get';
 import { getPostUrl, getTitle } from 'app/utils/post';
+
+const Analytics = analytics();
 
 let ActionSheet = ActionSheetIOS;
 

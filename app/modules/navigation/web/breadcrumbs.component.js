@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from 'app/styles';

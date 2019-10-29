@@ -13,11 +13,12 @@ describe('User', () => {
   let res;
   let req;
   let aliceId;
-  const next = jest.fn(); // eslint-disable-line
+  let next; // eslint-disable-line
   // const next = jest.fn(console.log); // eslint-disable-line
 
   beforeEach(() => {
     res = response();
+    next = jest.fn();
     // req = { body: { user: user.user1 } };
   });
 

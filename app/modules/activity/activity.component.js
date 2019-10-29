@@ -34,7 +34,7 @@ export default class SingleActivity extends Component {
       user: PropTypes.object.isRequired
     }).isRequired,
     screenSize: PropTypes.number,
-    PostComponent: PropTypes.func,
+    PostComponent: PropTypes.object,
     navigation: PropTypes.object
   };
 

@@ -165,25 +165,26 @@ export function getFeed(skip, _tag) {
   const tag = _tag ? _tag._id : null;
 
   return dispatch =>
-    api
-    .request({
-      method: 'GET',
-      query: { skip, limit, tag },
-      endpoint: 'feed',
-      path: '/'
-    })
-    .then(res => {
-      const data = normalize({ feed: res }, { feed: [postSchema] });
-      dispatch(setUsers(data.entities.users));
-      dispatch(setPosts(data, type, skip));
-      dispatch(errorActions.setError('read', false));
-    })
-    .catch(err => {
-      // TODO do we need this?
-      if (!err.message.match('Get fail for key: token')) {
-        dispatch(errorActions.setError('read', true, err.message));
-      }
-    });
+    dispatch(
+      api.request({
+        method: 'GET',
+        query: { skip, limit, tag },
+        endpoint: 'feed',
+        path: '/'
+      })
+    )
+      .then(res => {
+        const data = normalize({ feed: res }, { feed: [postSchema] });
+        dispatch(setUsers(data.entities.users));
+        dispatch(setPosts(data, type, skip));
+        dispatch(errorActions.setError('read', false));
+      })
+      .catch(err => {
+        // TODO do we need this?
+        if (!err.message.match('Get fail for key: token')) {
+          dispatch(errorActions.setError('read', true, err.message));
+        }
+      });
 }
 
 export function getTwitterFeed(skip, _tag) {
@@ -193,39 +194,41 @@ export function getTwitterFeed(skip, _tag) {
   const tag = _tag ? _tag._id : null;
 
   return dispatch =>
-    api
-    .request({
-      method: 'GET',
-      query: { skip, limit, tag },
-      endpoint: 'twitterFeed',
-      path: '/'
-    })
-    .then(res => {
-      const data = normalize({ twitterFeed: res }, { twitterFeed: [feedSchema] });
-      dispatch(setPosts(data, type, skip));
-      dispatch(errorActions.setError('read', false));
-    })
-    .catch(err => {
-      // TODO do we need this?
-      if (!err.message.match('Get fail for key: token')) {
-        dispatch(errorActions.setError('read', true, err.message));
-      }
-    });
+    dispatch(
+      api.request({
+        method: 'GET',
+        query: { skip, limit, tag },
+        endpoint: 'twitterFeed',
+        path: '/'
+      })
+    )
+      .then(res => {
+        const data = normalize({ twitterFeed: res }, { twitterFeed: [feedSchema] });
+        dispatch(setPosts(data, type, skip));
+        dispatch(errorActions.setError('read', false));
+      })
+      .catch(err => {
+        // TODO do we need this?
+        if (!err.message.match('Get fail for key: token')) {
+          dispatch(errorActions.setError('read', true, err.message));
+        }
+      });
 }
 
 export function deletePost(post, redirect) {
   return dispatch =>
-    api
-    .request({
-      method: 'DELETE',
-      endpoint: 'post',
-      params: { id: post._id }
-    })
-    .then(() => {
-      dispatch(removePost(post));
-      if (redirect) dispatch(navigationActions.pop());
-    })
-    .catch(null);
+    dispatch(
+      api.request({
+        method: 'DELETE',
+        endpoint: 'post',
+        params: { id: post._id }
+      })
+    )
+      .then(() => {
+        dispatch(removePost(post));
+        if (redirect) dispatch(navigationActions.pop());
+      })
+      .catch(null);
 }
 
 export function clearPosts(type) {
@@ -287,12 +290,14 @@ export function getPosts(skip, tags, sort, limit, community) {
     try {
       const { auth } = getState();
       dispatch(getPostsAction(type));
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'communityFeed',
-        query: { skip, sort, limit, tag, ...communityParam },
-        user: auth.user
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'communityFeed',
+          query: { skip, sort, limit, tag, ...communityParam },
+          user: auth.user
+        })
+      );
 
       const dataType = feedSchema;
       const data = normalize({ [type]: res }, { [type]: [dataType] });
@@ -301,8 +306,8 @@ export function getPosts(skip, tags, sort, limit, community) {
         dispatch(setTopic(data, type, skip, topic));
       } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
-    } catch (error) {
-      dispatch(errorActions.setError('discover', true, error.message));
+    } catch (err) {
+      dispatch(errorActions.setError('discover', true, err.message));
     }
   };
 }
@@ -318,22 +323,23 @@ export function getUserPosts(skip, limit, userId) {
   if (!limit) limit = 5;
   return async dispatch => {
     dispatch(loadingUserPosts());
-    return api
-    .request({
-      method: 'GET',
-      endpoint: 'post/user',
-      params: { id: userId },
-      query: { skip, limit }
-    })
-    .then(responseJSON => {
-      const data = normalize({ [userId]: responseJSON }, { [userId]: [postSchema] });
-      dispatch(setUsers(data.entities.users));
-      dispatch(setUserPosts(data, userId, skip));
-      dispatch(errorActions.setError('profile', false));
-    })
-    .catch(error => {
-      dispatch(errorActions.setError('profile', true, error.message));
-    });
+    return dispatch(
+      api.request({
+        method: 'GET',
+        endpoint: 'post/user',
+        params: { id: userId },
+        query: { skip, limit }
+      })
+    )
+      .then(responseJSON => {
+        const data = normalize({ [userId]: responseJSON }, { [userId]: [postSchema] });
+        dispatch(setUsers(data.entities.users));
+        dispatch(setUserPosts(data, userId, skip));
+        dispatch(errorActions.setError('profile', false));
+      })
+      .catch(error => {
+        dispatch(errorActions.setError('profile', true, error.message));
+      });
   };
 }
 
@@ -347,11 +353,13 @@ export function addUpdatedComment(comment) {
 export function editPost(post) {
   return async dispatch => {
     try {
-      const response = await api.request({
-        method: 'PUT',
-        endpoint: 'post',
-        body: JSON.stringify(post)
-      });
+      const response = await dispatch(
+        api.request({
+          method: 'PUT',
+          endpoint: 'post',
+          body: JSON.stringify(post)
+        })
+      );
       dispatch(updatePost(response));
       return true;
     } catch (err) {
@@ -365,13 +373,15 @@ export function getSelectedPost(postId) {
   return async (dispatch, getState) => {
     try {
       const { auth } = getState();
-      const post = await api.request({
-        method: 'GET',
-        endpoint: 'post',
-        path: '',
-        params: { id: postId },
-        user: auth.user
-      });
+      const post = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'post',
+          path: '',
+          params: { id: postId },
+          user: auth.user
+        })
+      );
       if (!post) {
         dispatch(removePost(postId));
       } else {
@@ -389,12 +399,14 @@ export function getSelectedPost(postId) {
 export function getRelated(postId) {
   return async dispatch => {
     try {
-      const responseJSON = await api.request({
-        method: 'GET',
-        endpoint: 'metaPost',
-        path: '/related',
-        params: { id: postId }
-      });
+      const responseJSON = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'metaPost',
+          path: '/related',
+          params: { id: postId }
+        })
+      );
       dispatch(
         updateRelated({
           related: responseJSON,
@@ -425,35 +437,35 @@ export function setSubscriptions(data) {
 export function getSubscriptions() {
   return dispatch =>
     storage
-    .getToken()
-    .then(tk =>
-      fetch(`${apiServer}subscription/user`, {
-        ...reqOptions(tk),
-        method: 'GET'
-      })
-    )
-    .then(response => response.json())
-    .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
-    .catch(null);
+      .getToken()
+      .then(tk =>
+        fetch(`${apiServer}subscription/user`, {
+          ...reqOptions(tk),
+          method: 'GET'
+        })
+      )
+      .then(response => response.json())
+      .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
+      .catch(null);
 }
 
 export function flag(post) {
   return dispatch =>
     storage
-    .getToken()
-    .then(tk =>
-      fetch(`${apiServer}post/flag`, {
-        ...reqOptions(tk),
-        method: 'PUT',
-        body: JSON.stringify({ postId: post._id })
+      .getToken()
+      .then(tk =>
+        fetch(`${apiServer}post/flag`, {
+          ...reqOptions(tk),
+          method: 'PUT',
+          body: JSON.stringify({ postId: post._id })
+        })
+      )
+      .then(response => response.json())
+      .then(responseJSON => {
+        Alert.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
+        dispatch(updatePost(responseJSON));
       })
-    )
-    .then(response => response.json())
-    .then(responseJSON => {
-      Alert.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
-      dispatch(updatePost(responseJSON));
-    })
-    .catch(null);
+      .catch(null);
 }
 
 export function getPostHtml(post) {
@@ -461,11 +473,11 @@ export function getPostHtml(post) {
     fetch(`${apiServer}post/readable?uri=${post.link}`, {
       method: 'GET'
     })
-    .then(response => response.text())
-    .then(html => {
-      dispatch(updatePost({ ...post, html }));
-    })
-    .catch(null);
+      .then(response => response.text())
+      .then(html => {
+        dispatch(updatePost({ ...post, html }));
+      })
+      .catch(null);
 }
 
 export function setTopPosts(data) {
@@ -481,12 +493,14 @@ export function getFlaggedPosts(skip) {
 
   return async dispatch => {
     try {
-      const flagged = await api.request({
-        method: 'GET',
-        endpoint: 'post',
-        path: '/flagged',
-        query: { skip, limit: DEFAULT_LIMIT }
-      });
+      const flagged = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'post',
+          path: '/flagged',
+          query: { skip, limit: DEFAULT_LIMIT }
+        })
+      );
       const data = normalize({ [type]: flagged }, { [type]: [postSchema] });
       dispatch(setPosts(data, type, skip));
     } catch (err) {
@@ -506,11 +520,13 @@ function shuffleArray(array) {
 export function getTopPosts() {
   return async dispatch => {
     try {
-      const topPosts = await api.request({
-        method: 'GET',
-        endpoint: 'post',
-        path: '/topPosts'
-      });
+      const topPosts = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'post',
+          path: '/topPosts'
+        })
+      );
       return dispatch(setTopPosts(shuffleArray(topPosts)));
     } catch (error) {
       return false;

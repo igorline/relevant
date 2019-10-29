@@ -11,24 +11,17 @@ const CommunityImage = styled(Image)`
 class CommunityListItem extends Component {
   static propTypes = {
     community: PropTypes.object,
-    className: PropTypes.string,
     style: PropTypes.string,
     c: PropTypes.string
   };
 
   render() {
-    const { community, className, c, style, ...rest } = this.props;
+    const { community, c, style, ...rest } = this.props;
     const image = community.image
       ? { uri: community.image }
       : require('app/public/img/default_community.png');
     return (
-      <View
-        align={'center'}
-        fdirection={'row'}
-        className={className}
-        style={style}
-        {...rest}
-      >
+      <View align={'center'} fdirection={'row'} style={style} {...rest}>
         <CommunityImage w={4} h={4} mr={1.5} source={image} resizeMode={'cover'} />
         <CommunityLink lh={1.75} c={c || colors.black}>
           {community.name}

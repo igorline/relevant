@@ -2,14 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import EarningTooltip from 'modules/tooltip/web/postEarningTooltip.component';
-import styled from 'styled-components';
-import { BodyText, Title } from 'modules/styled/uni';
+// import styled from 'styled-components';
+import { BodyText, Title, View } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 
-const TooltipView = styled.div``;
-
 const TextTooltipComponent = ({ text, title }) => (
-  <TooltipView flex={1} fdirection={'column'}>
+  <View maxWidth={32} flex={1} fdirection={'column'}>
     {title ? (
       <Title c={colors.white} mb={1}>
         {title}
@@ -20,7 +18,7 @@ const TextTooltipComponent = ({ text, title }) => (
         {text}
       </BodyText>
     ) : null}
-  </TooltipView>
+  </View>
 );
 
 TextTooltipComponent.propTypes = {

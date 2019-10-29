@@ -67,7 +67,8 @@ export async function init() {
 export async function getBalance(address) {
   if (!instance) return 0;
   const balance = await instance.balanceOf(address);
-  return balance.div((10 ** decimals).toString()).toNumber();
+  const val = balance.div((10 ** decimals).toString());
+  return parseFloat(val.toString());
 }
 
 export async function getParam(param, opt) {
@@ -142,12 +143,11 @@ export async function getNonce(_account) {
 
 export async function sign(_account, _amount) {
   const nonce = await getNonce(_account);
-  // const amnt = ethers.utils.bigNumberify((_amount * 10 ** 18).toString());
-  const amnt = ethers.utils.parseUnits(_amount.toString(), decimals);
+  const amount = ethers.utils.parseUnits(_amount.toString(), decimals).toString();
   const hash = ethers.utils.solidityKeccak256(
     ['uint256', 'address', 'uint256'],
-    [amnt.toString(), _account, nonce]
+    [amount, _account, nonce]
   );
-  const ethSig = await wallet.signMessage(ethers.utils.arrayify(hash));
-  return ethSig;
+  const sig = await wallet.signMessage(ethers.utils.arrayify(hash));
+  return { sig, amount };
 }

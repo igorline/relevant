@@ -10,7 +10,7 @@ import { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import CommunityListItem from 'modules/community/communityListItem.component';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { View, BodyText } from 'modules/styled/uni';
 import { SIDE_NAV_PADDING } from 'styles/layout';
 
@@ -46,13 +46,9 @@ export class Community extends Component {
         to={'/' + community.slug + '/new'}
         onPress={() => {
           actions.resetTabs();
-          // actions.goToTab('discover');
           requestAnimationFrame(() => {
             actions.setCommunity(community.slug);
           });
-        }}
-        onClick={() => {
-          actions.setCommunity(community.slug);
         }}
       >
         <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />

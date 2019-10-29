@@ -4,10 +4,8 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-// import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import {
   PanGestureHandler,
@@ -76,6 +74,7 @@ export function BottomSheet({ children, close }) {
   });
 
   const onHandlerStateChange = ({ nativeEvent }) => {
+    // eslint-disable-next-line
     if (nativeEvent.oldState === State.ACTIVE) {
       const { velocityY } = nativeEvent;
       let { translationY } = nativeEvent;
@@ -99,9 +98,10 @@ export function BottomSheet({ children, close }) {
       // and resets the offset to zero. The final output of the value is unchanged.
       translateYOffset.flattenOffset();
       dragY.setValue(0);
-      if (destSnapPoint === END) closeModal(velocityY);
-      animateView({ offset: translateYOffset, velocityY, destSnapPoint });
+      if (destSnapPoint === END) return closeModal(velocityY);
+      return animateView({ offset: translateYOffset, velocityY, destSnapPoint });
     }
+    return null;
   };
 
   function closeModal({ velocityY = 0 }) {
@@ -122,22 +122,21 @@ export function BottomSheet({ children, close }) {
       velocityY: 0,
       destSnapPoint: START
     });
-  }, [height]);
+  }, [START, translateYOffset, height]);
 
   return (
     <TapGestureHandler
       maxDurationMs={100000}
       ref={masterdrawer}
       maxDeltaY={lastSnap - SnapPointsFromTop[0]}
+      style={[StyleSheet.absoluteFillObject]}
     >
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={closeModal}
+      <View
         style={[
           StyleSheet.absoluteFillObject,
           showBg && { backgroundColor: 'hsla(0,0%,0%,.4)' }
         ]}
-        pointerEvents={!showBg && 'box-none'}
+        pointerEvents={'box-none'}
       >
         <Animated.View
           style={[
@@ -188,7 +187,7 @@ export function BottomSheet({ children, close }) {
             </Animated.View>
           </PanGestureHandler>
         </Animated.View>
-      </TouchableOpacity>
+      </View>
     </TapGestureHandler>
   );
 }
@@ -200,5 +199,7 @@ function animateView({ offset, velocityY, destSnapPoint, callback }) {
     friction: 10,
     toValue: destSnapPoint,
     useNativeDriver: USE_NATIVE_DRIVER
-  }).start(({ finished }) => finished && callback && callback());
+  }).start(({ finished }) => {
+    finished && callback && callback();
+  });
 }

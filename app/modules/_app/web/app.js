@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import loadable from '@loadable/component';
@@ -6,7 +6,7 @@ import loadable from '@loadable/component';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import routes from 'modules/_app/web/routes'; // eslint-disable-line
 import queryString from 'query-string';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { getCommunities } from 'modules/community/community.actions';
 import { connect } from 'react-redux';
@@ -15,16 +15,16 @@ import { withRouter } from 'react-router-dom';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
-import Modal from 'modules/ui/web/modal';
+import ModalContainer from 'modules/ui/modals/modal.container';
 import { GlobalStyle } from 'app/styles';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import SmartBanner from 'react-smartbanner';
 import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
-import * as modals from 'modules/ui/modals';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
-import CreatePostModal from 'modules/createPost/web/createPost.modal';
+import { PriceProvider } from 'modules/wallet/price.context';
+import styled from 'styled-components';
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/upvoteAnimation.component')
@@ -33,9 +33,15 @@ const DownvoteAnimation = loadable(() =>
   import('modules/animation/downvoteAnimation.component')
 );
 
-let ReactPixel;
+const AnimationContainer = styled.div`
+  pointer-events: none;
+  top: '0',
+  left: '0',
+  zIndex: '10000'
+`;
 
-const DEV_MODE = process.env.NODE_ENV === 'development';
+let ReactPixel;
+// const DEV_MODE = process.env.NODE_ENV === 'development';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -51,27 +57,21 @@ class App extends Component {
     match: PropTypes.object,
     location: PropTypes.object,
     user: PropTypes.object,
-    children: PropTypes.node,
     history: PropTypes.object,
     route: PropTypes.object,
-    activeCommunity: PropTypes.string,
     globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     navigation: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    const { history } = props;
+    history.listen(loc => this.updateCommunity(loc));
+  }
+
   state = {
     authType: null
   };
-
-  componentWillMount() {
-    const { auth, history, actions, location } = this.props;
-    const { community } = auth;
-    if (community && location.pathname === '/') {
-      history.replace(`/${community}/new`);
-    }
-    // TODO don't need this if api is middleware
-    if (community) actions.setCommunity(community);
-  }
 
   componentDidMount() {
     const { actions, auth, location, history } = this.props;
@@ -108,6 +108,21 @@ class App extends Component {
     window.addEventListener('focus', () => this.reloadTabs());
   }
 
+  updateCommunity(location) {
+    const { actions, auth } = this.props;
+
+    const route = matchRoutes(routes, location.pathname);
+    const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
+
+    if (
+      newCommunity &&
+      newCommunity !== auth.community &&
+      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
+    ) {
+      actions.setCommunity(newCommunity);
+    }
+  }
+
   initAnalytics = ({ location, history }) => {
     ReactPixel = require('react-facebook-pixel').default;
 
@@ -125,7 +140,7 @@ class App extends Component {
       ReactPixel.pageView();
 
       // eslint-disable-next-line
-      Intercom('update');
+      // Intercom('update');
     });
   };
 
@@ -173,29 +188,18 @@ class App extends Component {
 
     if (screenSize) return null;
     // eslint-disable-next-line
-    Intercom('boot', {
-      alignment: screenSize ? 'left' : 'right',
-      app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
-      name: `${auth.user.name} @${auth.user.handle}`, // Full name
-      email: auth.user.email, // Email address
-      created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
-    });
+    // Intercom('boot', {
+    //   alignment: screenSize ? 'left' : 'right',
+    //   app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
+    //   name: `${auth.user.name} @${auth.user.handle}`, // Full name
+    //   email: auth.user.email, // Email address
+    //   created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
+    // });
     return null;
   };
 
   componentDidUpdate(prevProps) {
     const { actions, auth, location } = this.props;
-
-    const route = matchRoutes(routes, location.pathname);
-    const newCommunity = get(route, `[${route.length - 1}].match.params.community`);
-
-    if (
-      newCommunity &&
-      newCommunity !== auth.community &&
-      !BANNED_COMMUNITY_SLUGS.includes(newCommunity)
-    ) {
-      actions.setCommunity(newCommunity);
-    }
 
     if (location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
@@ -222,49 +226,6 @@ class App extends Component {
     }
   }
 
-  closeModal(redirect) {
-    const { history, location } = this.props;
-    const queryParams = queryString.parse(location.search);
-    if (queryParams.redirect) {
-      history.push(queryParams.redirect);
-    } else if (redirect) {
-      history.push(redirect);
-    } else {
-      history.push(location.pathname);
-    }
-  }
-
-  renderModal() {
-    const { location, history } = this.props; // eslint-disable-line
-    let { globalModal } = this.props;
-    const { hash } = location;
-    let hashModal;
-    if (hash) {
-      hashModal = hash.substring(1);
-    }
-    // if (!hash && globalModal) {
-    //   history.push(location.pathname + `#${globalModal}`);
-    // }
-    if (hashModal) {
-      globalModal = hashModal;
-    }
-    if (!globalModal) return null;
-    globalModal = modals[globalModal] || globalModal;
-
-    if (typeof globalModal === 'string') return null;
-    const { Body, redirect } = globalModal;
-    const bodyProps = globalModal.bodyProps ? globalModal.bodyProps : {};
-    const close = () => {
-      this.props.actions.hideModal();
-      this.closeModal(redirect);
-    };
-    return (
-      <Modal {...globalModal} close={close} visible>
-        <Body {...bodyProps} close={close} />
-      </Modal>
-    );
-  }
-
   render() {
     const { globalModal, navigation } = this.props;
     const { screenSize } = navigation;
@@ -288,23 +249,20 @@ class App extends Component {
         />
         {/*        <CustomTooltip id="tooltip" multiline />
          */}
-        <div
-          pointerEvents={'none'}
-          style={{
-            top: '0',
-            left: '0',
-            zIndex: '10000'
-          }}
-        >
+        <AnimationContainer>
           <UpvoteAnimation />
           <DownvoteAnimation />
-        </div>
-        {this.renderModal()}
-        <CreatePostModal visible={globalModal === 'newpost'} />
-        <ToastContainer />
-        <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
-          {renderRoutes(this.props.route.routes)}
-        </div>
+        </AnimationContainer>
+
+        <PriceProvider>
+          <Fragment>
+            <ModalContainer />
+            <ToastContainer />
+            <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+              {renderRoutes(this.props.route.routes)}
+            </div>
+          </Fragment>
+        </PriceProvider>
       </div>
     );
   }
@@ -313,7 +271,6 @@ class App extends Component {
 const mapStateToProps = state => ({
   user: state.auth.user,
   auth: state.auth,
-  activeCommunity: state.community.active,
   navigation: state.navigation,
   globalModal: state.navigation.modal
 });

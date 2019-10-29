@@ -28,11 +28,11 @@ exports.index = async req => {
 
   const myVote = user
     ? [
-      {
-        path: 'myVote',
-        match: { investor: user._id, communityId }
-      }
-    ]
+        {
+          path: 'myVote',
+          match: { investor: user._id, communityId }
+        }
+      ]
     : [];
 
   const comments = await Post.find(query)

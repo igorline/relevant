@@ -8,6 +8,9 @@ const mongod = new MongoMemoryServer({
   autoStart: false
 });
 
+process.env.WEB = 'true';
+delete process.env.BROWSER;
+
 module.exports = async () => {
   if (!mongod.isRunning) {
     await mongod.start();

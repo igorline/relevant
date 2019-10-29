@@ -21,15 +21,17 @@ export function setEarnings({ data, status, skip }) {
 export function getEarnings(status, limit, skip) {
   return async dispatch => {
     try {
-      const earnings = await api.request({
-        method: 'GET',
-        endpoint: 'earnings',
-        query: {
-          status,
-          limit,
-          skip
-        }
-      });
+      const earnings = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'earnings',
+          query: {
+            status,
+            limit,
+            skip
+          }
+        })
+      );
       const data = normalize(earnings, [earningSchema]);
       dispatch(setEarnings({ data, status, skip }));
       dispatch(setPostsSimple(data));

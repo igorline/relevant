@@ -110,15 +110,14 @@ class SinglePostComponent extends Component {
     });
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prev) {
+    const { post, error } = this.props;
     if (this.comments.length && !this.state.gotData && this.scrollView) {
       this.onLoad();
       this.setState({ gotData: true });
     }
-  }
 
-  componentWillReceiveProps(next) {
-    if (this.props.post !== next.post || this.props.error) {
+    if (post !== prev.post || error) {
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() => this.setState({ reloading: false }), 1000);
     }
@@ -137,23 +136,18 @@ class SinglePostComponent extends Component {
   }
 
   scrollToComment(index) {
-    if (typeof index !== 'number' || index < 0) return;
+    if (typeof index !== 'number' || index < 0 || !this.scrollView) return;
     this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
-    const scroll = () => {
-      this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
-      Keyboard.removeListener('keyboardDidShow', scroll);
-    };
-    if (Platform.OS === 'android') {
-      Keyboard.addListener('keyboardDidShow', scroll);
-    }
     this.setState({ activeComment: this.comments[index], activeIndex: index });
   }
 
   scrollToTop() {
+    if (!this.scrollView) return;
     this.scrollView.scrollToOffset({ offset: 0 });
   }
 
   scrollToBottom() {
+    if (!this.scrollView) return;
     this.scrollTimeout = setTimeout(() => {
       if (!this.scrollView) return;
       if (this.comments && this.comments.length) {
@@ -268,7 +262,7 @@ class SinglePostComponent extends Component {
     const nestingLevel = this.nestingLevel[comment._id];
 
     return (
-      <View key={comment._id} index={index} fdirection={'column'} flex={1}>
+      <View fdirection={'column'}>
         {nestingLevel ? (
           <View ml={nestingLevel * 3 - 1} mr={2}>
             <Divider />
@@ -369,12 +363,13 @@ class SinglePostComponent extends Component {
           ref={c => (this.scrollView = c)}
           data={this.comments}
           renderItem={this.renderRow}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item._id}
           removeClippedSubviews
           pageSize={1}
           initialListSize={4}
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
+          onScrollBeginDrag={Keyboard.dismiss}
           onEndReachedThreshold={100}
           overScrollMode={'always'}
           style={{ flex: 1 }}

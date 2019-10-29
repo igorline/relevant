@@ -55,6 +55,9 @@ InvestSchema.index({ communityId: 1, investor: 1, createdAt: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
 InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
 
+// TODO: we should not remove the bet and only the vote
+// otherwise voters before the removal of the bet will get a worse price
+// alternately we can recompute everyone's shares upon removal
 InvestSchema.methods.removeVote = async function removeVote({ post, user }) {
   const vote = this;
   post.data.shares -= vote.shares;
@@ -152,7 +155,11 @@ InvestSchema.statics.createVote = async function createVote({
   vote = await vote.save();
   post.data.needsRankUpdate = true;
 
-  if (communityInstance.betEnabled || amount <= 0) return vote;
+  // TODO - don't take into account community settings?
+  const manualBet = user.notificationSettings.bet.manual && communityInstance.betEnabled;
+
+  // If manual betting is enabled don't auto-bet
+  if (manualBet || amount <= 0) return vote;
 
   try {
     const stakedTokens =

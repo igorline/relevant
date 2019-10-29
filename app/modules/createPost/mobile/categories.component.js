@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { InteractionManager, ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';

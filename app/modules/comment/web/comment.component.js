@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Divider, CommentText, Spacer, Touchable, Image } from 'modules/styled/uni';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
@@ -125,7 +125,8 @@ class Comment extends Component {
       inMainFeed,
       history,
       screenSize,
-      additionalNesting
+      additionalNesting,
+      parentPost
     } = this.props;
     if (!comment) return null;
     const { editing, copied, user } = this.state;
@@ -220,9 +221,7 @@ class Comment extends Component {
           m={['0 3 0 0', `${preview ? '0 2 0 0' : '0 2 2 2'}`]}
           fdirection="column"
         >
-          {!hideBorder && nestingLevel > 0 && (
-            <Divider className="divider" ml={borderMargin} />
-          )}
+          {!hideBorder && nestingLevel > 0 && <Divider ml={borderMargin} />}
           <View fdirection="row" mt={4}>
             {!hidePostButtons && !screenSize ? (
               <View w={layout.POST_BUTTONS_WIDTH}>
@@ -258,11 +257,11 @@ class Comment extends Component {
                 <View mt={2}>
                   <CommentForm
                     edit
-                    p={[0, 2]}
+                    p={['0 0 4 0', 2]}
+                    parentPost={parentPost}
                     comment={comment}
-                    text={'Update'}
+                    buttonText={'Update'}
                     cancel={this.cancel}
-                    {...this.props}
                     nestingLevel={nestingLevel}
                     additionalNesting={additionalNesting}
                     autoFocus
@@ -282,11 +281,10 @@ class Comment extends Component {
 
         {isActive && !editing && (
           <CommentForm
-            isReply
+            parentPost={parentPost}
             nestingLevel={nestingLevel}
             p={[4, 2]}
-            text={'Comment'}
-            {...this.props}
+            buttonText={'Comment'}
             additionalNesting={
               additionalNesting +
               (hidePostButtons ? 0 : layout.POST_BUTTONS_NESTING_UNITS)

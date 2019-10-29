@@ -137,7 +137,9 @@ export default function ButtonRow({
       >
         <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
           <CTALink c={colors.blue}>{isLink ? 'Comment' : 'Reply'}</CTALink>
-          {post.commentCount ? <CTALink> ({post.commentCount})</CTALink> : null}
+          {post.commentCount && !isLink ? (
+            <CTALink> ({post.commentCount})</CTALink>
+          ) : null}
         </View>
       </TouchableOpacity>
 

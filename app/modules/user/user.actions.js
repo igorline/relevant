@@ -6,8 +6,8 @@ const Alert = alert.Alert();
 
 const queryParams = params =>
   Object.keys(params)
-  .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-  .join('&');
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
 
 export function updateLocalUser(user) {
   return {
@@ -69,12 +69,14 @@ export function searchUser(userName) {
   const limit = 50;
   return async dispatch => {
     try {
-      const res = await api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/search',
-        query: { limit, search: userName }
-      });
+      const res = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'user',
+          path: '/search',
+          query: { limit, search: userName }
+        })
+      );
       dispatch(setUserSearch(res));
       return res;
     } catch (err) {
@@ -88,11 +90,13 @@ export function getSelectedUser(userName) {
   return async dispatch => {
     try {
       dispatch(getUserLoading());
-      const user = await api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/user/' + userName
-      });
+      const user = await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'user',
+          path: '/user/' + userName
+        })
+      );
       dispatch(setSelectedUserData(user));
       dispatch(errorActions.setError('profile', false));
       return true;
@@ -109,9 +113,9 @@ export function getOnlineUser(userId) {
       method: 'GET',
       ...(await api.reqOptions())
     })
-    .then(response => response.json())
-    .then(responseJSON => ({ status: true, data: responseJSON }))
-    .catch(error => ({ status: false, data: error }));
+      .then(response => response.json())
+      .then(responseJSON => ({ status: true, data: responseJSON }))
+      .catch(error => ({ status: false, data: error }));
 }
 
 export function getUsers(skip, limit, tags) {
@@ -132,14 +136,14 @@ export function getUsers(skip, limit, tags) {
       method: 'GET',
       ...(await api.reqOptions())
     })
-    .then(response => response.json())
-    .then(responseJSON => {
-      dispatch(errorActions.setError('activity', false));
-      dispatch(setUserList(responseJSON, skip, topic));
-    })
-    .catch(error => {
-      dispatch(errorActions.setError('activity', true, error.message));
-    });
+      .then(response => response.json())
+      .then(responseJSON => {
+        dispatch(errorActions.setError('activity', false));
+        dispatch(setUserList(responseJSON, skip, topic));
+      })
+      .catch(error => {
+        dispatch(errorActions.setError('activity', true, error.message));
+      });
   };
 }
 
@@ -156,16 +160,16 @@ export function updateBlock(block, unblock) {
       }),
       ...(await api.reqOptions())
     })
-    .then(api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      let action = 'blocked';
-      if (unblock) action = 'unblocked';
-      Alert.alert('user ' + block + ' has been ' + action);
-      // console.log('block result ', responseJSON);
-      dispatch(updateLocalUser(responseJSON));
-    })
-    .catch(null);
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        let action = 'blocked';
+        if (unblock) action = 'unblocked';
+        Alert.alert('user ' + block + ' has been ' + action);
+        // console.log('block result ', responseJSON);
+        dispatch(updateLocalUser(responseJSON));
+      })
+      .catch(null);
 }
 
 export function getBlocked() {
@@ -174,10 +178,10 @@ export function getBlocked() {
       method: 'GET',
       ...(await api.reqOptions())
     })
-    .then(api.handleErrors)
-    .then(response => response.json())
-    .then(responseJSON => {
-      dispatch(updateLocalUser(responseJSON));
-    })
-    .catch(null);
+      .then(api.handleErrors)
+      .then(response => response.json())
+      .then(responseJSON => {
+        dispatch(updateLocalUser(responseJSON));
+      })
+      .catch(null);
 }

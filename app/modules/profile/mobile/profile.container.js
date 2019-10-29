@@ -161,33 +161,30 @@ class Profile extends Component {
 
   scrollToTop() {
     const view = this.tabs[this.state.view].component.listview;
-    if (view) view.scrollTo({ y: 0, animated: true });
+    if (view) view.scrollToLocation({ sectionIndex: 0, itemIndex: 0 });
   }
 
   scrollTo(y) {
     const view = this.tabs[this.state.view].component.listview;
-    if (view) view.scrollTo({ y, animated: true });
+    if (view) view.scrollToLocation({ sectionIndex: 0, itemIndex: 0, viewOffset: -y });
   }
 
   renderHeader() {
-    const { isOwner, user, view } = this.state;
-    let header = null;
-    if (user) {
-      header = [
-        <ProfileComponent
-          key={0}
-          {...this.props}
-          isOwner={isOwner}
-          user={user}
-          styles={styles}
-          scrollTo={this.scrollTo}
-        />,
-        <Tabs key={1} tabs={this.tabs} active={view} handleChange={this.changeView} />,
-        <View key={2} style={{ height: 0 }} />
-      ];
-    }
-    return header;
+    const { isOwner, user } = this.state;
+    return user ? (
+      <ProfileComponent
+        key={0}
+        {...this.props}
+        isOwner={isOwner}
+        user={user}
+        styles={styles}
+        scrollTo={this.scrollTo}
+      />
+    ) : null;
   }
+
+  // <Tabs key={1} tabs={this.tabs} active={view} handleChange={this.changeView} />,
+  // <View key={2} style={{ height: 0 }} />
 
   getViewData(props, view) {
     const { posts, investments } = this.props;
@@ -215,7 +212,7 @@ class Profile extends Component {
 
   render() {
     const { error } = this.props;
-    const { user, loaded } = this.state;
+    const { user, loaded, view } = this.state;
     let listEl = <CustomSpinner />;
 
     if (user && loaded) {
@@ -236,6 +233,26 @@ class Profile extends Component {
           tab.type = 'upvotes';
         }
 
+        const sections = [
+          {
+            title: 'header',
+            data: [0],
+            renderItem: this.renderHeader
+          },
+          {
+            title: 'main',
+            data,
+            header: (
+              <Tabs
+                key={1}
+                tabs={this.tabs}
+                active={view}
+                handleChange={this.changeView}
+              />
+            )
+          }
+        ];
+
         listEl.push(
           <CustomListView
             ref={c => {
@@ -243,6 +260,7 @@ class Profile extends Component {
             }}
             key={tab.id}
             data={data}
+            sections={sections}
             parent={'profile'}
             loaded={tabData.loaded}
             renderRow={this.renderRow}
@@ -251,7 +269,7 @@ class Profile extends Component {
             stickyHeaderIndices={[1]}
             type={tab.type}
             active={active}
-            renderHeader={this.renderHeader}
+            // renderHeader={this.renderHeader}
             needsReload={this.needsReload}
             onReload={this.loadUser}
             error={error}

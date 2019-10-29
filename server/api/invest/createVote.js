@@ -54,13 +54,13 @@ export const create = async (req, res, next) => {
     vote = undoInvest
       ? await vote.removeVote({ post, user })
       : await Invest.createVote({
-        post,
-        community,
-        communityId,
-        communityInstance,
-        amount,
-        user
-      });
+          post,
+          community,
+          communityId,
+          communityInstance,
+          amount,
+          user
+        });
 
     const adjustVotes = undoInvest ? -1 : 1;
     post.data.upVotes += amount > 0 ? adjustVotes : 0;
@@ -229,7 +229,7 @@ async function sendAuthorNotification({ author, user, post, type, undoInvest, am
     return null;
   }
 
-  Notification.createNotification({
+  await Notification.createNotification({
     post: post._id,
     forUser: author._id,
     byUser: user._id,
@@ -269,10 +269,10 @@ async function processNotifications(params) {
     }).populate('user');
 
     const authors = children.map(child => child.user);
-    authors.map(u =>
+    const notes = authors.map(u =>
       sendAuthorNotification({ author: u, user, post, undoInvest, type: 'upvoteParent' })
     );
-    return null;
+    return Promise.all(notes);
   }
 
   const pageRankChange = author.relevance
@@ -333,7 +333,7 @@ async function queryDb({ userId, postId, communityId }) {
 
   const user = await User.findOne(
     { _id: userId },
-    'name balance ethAddress image lastVote votePower handle tokenBalance lockedTokens'
+    'name balance ethAddress image lastVote votePower handle tokenBalance lockedTokens notificationSettings'
   ).populate({
     path: 'relevance',
     match: { communityId, global: true }

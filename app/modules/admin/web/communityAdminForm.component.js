@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { s3 } from 'app/utils';
@@ -185,8 +185,8 @@ const mapStateToProps = (state, ownProps) => {
   const adminMembers = get(community, 'admins', []);
   const admins = adminMembers.map(m => (m.embeddedUser ? m.embeddedUser.handle : m._id));
   const superAdmins = adminMembers
-  .filter(m => m.superAdmin)
-  .map(m => m.embeddedUser.handle);
+    .filter(m => m.superAdmin)
+    .map(m => m.embeddedUser.handle);
 
   const initialValues = { ...community, admins, superAdmins };
   return {

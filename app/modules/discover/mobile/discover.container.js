@@ -153,7 +153,7 @@ class Discover extends Component {
   scrollToTop() {
     const view = this.listview;
     if (view && view.listview) {
-      view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+      view.listview.scrollToOffset({ offset: -this.props.offsetY });
     }
   }
 

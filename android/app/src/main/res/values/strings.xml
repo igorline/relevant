@@ -1,5 +1,4 @@
 <resources>
-    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">kCA1vVsojGKYYq3xkyYKsttMQ1Oy52aae8fd-4800-425e-b2b2-b3be3d883f42</string>
     <string name="app_name">Relevant</string>
     <string name="title_activity_share">Relevant</string>
 </resources>

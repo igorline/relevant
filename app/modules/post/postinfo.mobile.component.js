@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
+import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
 import Gradient from 'modules/post/gradient.component';
 import styled from 'styled-components/primitives';

@@ -35,8 +35,7 @@ class Read extends Component {
     super(props, context);
     this.renderRow = this.renderRow.bind(this);
     this.load = this.load.bind(this);
-    this.needsReload = new Date()
-    .getTime();
+    this.needsReload = new Date().getTime();
     this.renderHeader = this.renderHeader.bind(this);
     this.tooltipParent = {};
     this.toggleTooltip = this.toggleTooltip.bind(this);
@@ -51,8 +50,7 @@ class Read extends Component {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
-      this.needsReload = new Date()
-      .getTime();
+      this.needsReload = new Date().getTime();
     }
 
     if (this.props.reloadFeed !== next.reloadFeed) {
@@ -60,8 +58,7 @@ class Read extends Component {
     }
 
     if (next.posts.feedUnread && next.active && !this.props.active) {
-      this.needsReload = new Date()
-      .getTime();
+      this.needsReload = new Date().getTime();
     }
   }
 
@@ -95,7 +92,7 @@ class Read extends Component {
   scrollToTop() {
     const view = this.listview;
     if (view && view.listview) {
-      view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+      view.listview.scrollToOffset({ offset: -this.props.offsetY });
     }
   }
 

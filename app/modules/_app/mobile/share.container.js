@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, AppState, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  AppState,
+  Platform,
+  Dimensions
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modalbox';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShareExtension from 'react-native-share-extension';
+import { StackViewTransitionConfigs } from 'react-navigation-stack';
 
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
@@ -23,7 +31,10 @@ import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import { setTopLevelNavigator, withProps } from 'app/utils/nav';
 
 import { text, storage, post } from 'app/utils';
-import { fullWidth, fullHeight, darkGrey, IphoneX } from 'app/styles/global';
+import { darkGrey, IphoneX } from 'app/styles/global';
+
+const fullWidth = Dimensions.get('screen').width;
+const fullHeight = Dimensions.get('screen').height;
 
 const KBView = KeyboardAvoidingView;
 
@@ -60,6 +71,7 @@ export const ShareStack = createStackNavigator(
     headerLayoutPreset: 'center',
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
+    transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
     defaultNavigationOptions: props => ({
       gesturesEnabled: true,
@@ -106,22 +118,15 @@ class ShareContainer extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
   }
 
-  componentWillMount() {
-    const community = 'relevant';
-    this.props.actions.setCommunity(community);
-    storage
-    .getToken()
-    .then(tk => {
-      this.setState({ token: tk });
-      if (!tk) this.props.actions.replace('shareAuth');
-    })
-    .catch(() => {
-      // console.warn(e);
-    });
-  }
-
   async componentDidMount() {
     try {
+      const community = 'relevant';
+      this.props.actions.setCommunity(community);
+      const token = await storage.getToken();
+
+      this.setState({ token });
+      if (!token) this.props.actions.replace('shareAuth');
+
       const { actions } = this.props;
       const resp = await this.props.actions.getUser();
       const { auth } = this.props;
@@ -132,6 +137,7 @@ class ShareContainer extends Component {
     } catch (e) {
       // console.log('e', e);
     }
+
     try {
       const { actions } = this.props;
       const data = await ShareExtension.data();

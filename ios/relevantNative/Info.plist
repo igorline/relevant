@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BundleCopied</key>
+	<true/>
+	<key>BundleEntryFilename</key>
+	<string>index.js</string>
+	<key>BundleSkipped</key>
+	<true/>
 	<key>CFBundleDisplayName</key>
 	<string>Relevant</string>
 	<key>CFBundleExecutable</key>
@@ -38,7 +44,7 @@
 	<key>CFBundleVersion</key>
 	<string>5</string>
 	<key>CodePushDeploymentKey</key>
-	<string>$(CODEPUSH_KEY)</string>
+	<string>deployment-key-here</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -84,17 +90,6 @@
 		<string>BebasNeueRelevant Bold.ttf</string>
 		<string>Georgia.ttf</string>
 		<string>helvetica-outline.otf</string>
-		<string>Entypo.ttf</string>
-		<string>EvilIcons.ttf</string>
-		<string>FontAwesome.ttf</string>
-		<string>Foundation.ttf</string>
-		<string>Ionicons.ttf</string>
-		<string>MaterialCommunityIcons.ttf</string>
-		<string>MaterialIcons.ttf</string>
-		<string>Octicons.ttf</string>
-		<string>SimpleLineIcons.ttf</string>
-		<string>Zocial.ttf</string>
-		<string>Feather.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

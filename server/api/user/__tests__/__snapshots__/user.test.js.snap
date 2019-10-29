@@ -9,6 +9,7 @@ Object {
   "bio": "",
   "blocked": Array [],
   "blockedBy": Array [],
+  "cashedOut": 0,
   "confirmCode": "[SANITIZED]",
   "confirmed": false,
   "createdAt": "[SANITIZED]",
@@ -18,7 +19,7 @@ Object {
   "ethAddress": Array [],
   "handle": "Alice",
   "id": "[SANITIZED]",
-  "image": "alice-pic.jpg",
+  "image": "https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg",
   "investmentCount": 0,
   "lastFeedNotification": 1970-01-01T00:00:00.000Z,
   "lastVote": "[SANITIZED]",
@@ -28,6 +29,9 @@ Object {
   "messages": 0,
   "name": "Alice",
   "notificationSettings": Object {
+    "bet": Object {
+      "manual": false,
+    },
     "desktop": Object {
       "all": false,
     },

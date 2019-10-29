@@ -206,7 +206,7 @@ exports[`Snapshot NavProfile 1`] = `
               style={
                 Object {
                   "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"alice-pic.jpg\\")",
+                  "backgroundImage": "url(\\"https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
                   "backgroundSize": "cover",
@@ -225,7 +225,7 @@ exports[`Snapshot NavProfile 1`] = `
               alt=""
               className="css-accessibilityImage-9pa8cd"
               draggable={false}
-              src="alice-pic.jpg"
+              src="https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg"
             />
           </div>
         </a>
@@ -448,6 +448,7 @@ exports[`Snapshot NavProfile 1`] = `
               >
                 
                 111
+                
               </div>
             </div>
           </a>
@@ -456,16 +457,16 @@ exports[`Snapshot NavProfile 1`] = `
           className="css-view-1dbjc4n"
           style={
             Object {
-              "WebkitAlignItems": "baseline",
-              "WebkitBoxAlign": "baseline",
+              "WebkitAlignItems": "center",
+              "WebkitBoxAlign": "center",
               "WebkitBoxDirection": "normal",
               "WebkitBoxOrient": "horizontal",
               "WebkitFlexDirection": "row",
-              "alignItems": "baseline",
+              "alignItems": "center",
               "display": "flex",
               "flexDirection": "row",
               "marginTop": "1rem",
-              "msFlexAlign": "baseline",
+              "msFlexAlign": "center",
               "msFlexDirection": "row",
               "position": "relative",
             }
@@ -577,6 +578,7 @@ exports[`Snapshot NavProfile 1`] = `
             >
               
               120
+              
             </div>
           </div>
         </div>

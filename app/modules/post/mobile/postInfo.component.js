@@ -212,7 +212,6 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row'
   },
   postInfo: {
-    flex: 1,
     flexDirection: 'row',
     overflow: 'visible',
     alignItems: 'center',

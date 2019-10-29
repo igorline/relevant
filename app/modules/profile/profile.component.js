@@ -4,12 +4,10 @@ import { withRouter } from 'react-router-dom';
 
 import UAvatar from 'modules/user/UAvatar.component';
 import { colors, sizing, mixins, fonts } from 'app/styles';
-import CoinStat from 'modules/stats/coinStat.component';
-import RStat from 'modules/stats/rStat.component';
 import { View, Header, AltLink, BodyText, Text } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 import { css } from 'styled-components/primitives';
-import Percent from 'modules/stats/percent.component';
+import ProfileStats from './profile.stats';
 
 const SettingsImage = require('app/public/img/settings.svg');
 const InviteImage = require('app/public/img/invite.svg');
@@ -43,8 +41,6 @@ class Profile extends Component {
         history.push({ search: searchString });
       }
       actions.showModal('settings');
-    } else {
-      actions.hideModal();
     }
   }
 
@@ -79,9 +75,7 @@ class Profile extends Component {
           >
             <View display="flex" fdirection="row" align="baseline" shrink={1} wrap={1}>
               <Header mr={sizing(2)}>{user.name}</Header>
-              <RStat size={1.75} user={user} mr={2} align="baseline" />
-              <Percent size={1.75} user={user} align="baseline" />
-              <CoinStat size={1.75} user={user} isOwner={isOwner} align="baseline" />
+              <ProfileStats user={user} isOwner={isOwner} />
             </View>
             {isOwner ? (
               <ULink

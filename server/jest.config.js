@@ -1,5 +1,3 @@
-process.env.WEB = 'true';
-
 module.exports = {
   rootDir: './',
   displayName: 'Server',
@@ -13,6 +11,10 @@ module.exports = {
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
   setupFilesAfterEnv: ['<rootDir>/test/testDbSetup'],
-  testPathIgnorePatterns: ['<rootDir>/../node_modules/', 'ethereum.test.js']
+  testPathIgnorePatterns: [
+    '<rootDir>/../node_modules/',
+    'ethereum.test.js',
+    'cashout.test.js'
+  ]
   // testPathIgnorePatterns: ['<rootDir>/../node_modules/']
 };
