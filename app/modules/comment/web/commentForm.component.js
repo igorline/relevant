@@ -168,7 +168,8 @@ export function CommentFormComponent({
           <StyledTextareaAutocomplete
             containerStyle={{
               display: 'flex',
-              flex: 'auto'
+              flex: 'auto',
+              flexDirection: 'column'
             }}
             listStyle={{
               display: 'flex',
