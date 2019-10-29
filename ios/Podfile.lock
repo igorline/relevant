@@ -1,5 +1,7 @@
 PODS:
   - Base64 (1.1.2)
+  - Beacon (1.0.1):
+    - HSAttachmentPicker (~> 1.0)
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
@@ -88,6 +90,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.3.1):
     - GoogleUtilities/Logger
+  - HSAttachmentPicker (1.0.8)
   - JWT (3.0.0-beta.12):
     - Base64 (~> 1.1.2)
   - nanopb (0.3.901):
@@ -315,6 +318,9 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
+  - ReactNativeHelpScout (0.0.1):
+    - Beacon
+    - React
   - ReactNativeShareExtension (1.2.1):
     - React
   - rn-fetch-blob (0.11.2):
@@ -332,7 +338,9 @@ PODS:
     - React
   - RNGestureHandler (1.4.1):
     - React
-  - RNShare (1.2.1):
+  - RNReanimated (1.3.0):
+    - React
+  - RNShare (2.0.0):
     - React
   - RNSKBucket (0.0.5):
     - React
@@ -385,11 +393,13 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeHelpScout (from `../node_modules/react-native-help-scout`)
   - ReactNativeShareExtension (from `../node_modules/react-native-share-extension/ReactNativeShareExtension.podspec`)
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNSKBucket (from `../node_modules/react-native-swiss-knife/ios`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -400,6 +410,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Base64
+    - Beacon
     - boost-for-react-native
     - Crashlytics
     - Fabric
@@ -413,6 +424,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
+    - HSAttachmentPicker
     - JWT
     - nanopb
     - SSZipArchive
@@ -490,6 +502,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeHelpScout:
+    :path: "../node_modules/react-native-help-scout"
   ReactNativeShareExtension:
     :podspec: "../node_modules/react-native-share-extension/ReactNativeShareExtension.podspec"
   rn-fetch-blob:
@@ -500,6 +514,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-firebase/ios"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNShare:
     :path: "../node_modules/react-native-share"
   RNSKBucket:
@@ -513,9 +529,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
+  Beacon: 88dc489af14fa2c47ef421cf10ae6303d7656cdd
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
-  CodePush: fe25db2e24ff1a2fab8b280a9633d9ba520867be
+  CodePush: d2e54ad42df82a8db65b2d23d8191b950ba945e1
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
@@ -533,6 +550,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 166f9b9f82cbf60a204e8fe2daa9db3e3ec1fb15
   GoogleDataTransportCCTSupport: f6ab1962e9dc05ab1fb938b795e5b310209edeec
   GoogleUtilities: f895fde57977df4e0233edda0dbeac490e3703b6
+  HSAttachmentPicker: ed3d5a670cdd805ba8268f0d00a4d102d65cbd1d
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   RCTRequired: c639d59ed389cfb1f1203f65c2ea946d8ec586e2
@@ -546,13 +564,13 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8909917ff7d8f21a57e443a866fd8d4560e50c65
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
   react-native-contacts: 7d0b7ccd5f00df82ceca035935fc9d6e63af5aec
-  react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
-  react-native-orientation: d4a97266b06ec8d45d74e626656a730ebbebbb6f
+  react-native-image-picker: 7a85cf7b0a53845f03ae52fb4592a2748ded069b
+  react-native-orientation: f1caf84d65f1a4fd4511a18f2b924e634ad7a628
   react-native-safari-view: 955d7160d159241b8e9395d12d10ea0ef863dcdd
   react-native-twitter-signin: 085bb0bb3fc4fd7b54e192bbf3fbc718a6228043
-  react-native-video: 961749da457e73bf0b5565edfbaffc25abfb8974
-  react-native-viewpager: 619fc2602b1d6ab81804519564afdbaad6b6915a
-  react-native-webview: dbfec7f16f09a71ea53731bdf5f86ae70eac4313
+  react-native-video: d01ed7ff1e38fa7dcc6c15c94cf505e661b7bfd0
+  react-native-viewpager: f41b42bba71407e916654d64e87ff2680edecc92
+  react-native-webview: 82d6456dfae1b3ef70c3939135536342afc96373
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
@@ -563,13 +581,15 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
+  ReactNativeHelpScout: 537220f61782cc263b0e941125d93f8b039f6651
   ReactNativeShareExtension: c3dca25799599e4205c0a5176bc518f7eb54fead
   rn-fetch-blob: f525a73a78df9ed5d35e67ea65e79d53c15255bc
-  RNCPushNotificationIOS: 7bcc4071d6f25c4d441cbef42a097462f4e30208
+  RNCPushNotificationIOS: 0b8d06ff190d84627dd17501bfb96652375970e4
   RNFirebase: ac0de8b24c6f91ae9459575491ed6a77327619c6
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
-  RNShare: 48cf88cadf9ca2143cdaa557c1ec7f8808040ffc
-  RNSKBucket: b8fd6d76e41bf5861f6c97c700dc9614f14dc59b
+  RNReanimated: 6abbbae2e5e72609d85aabd92a982a94566885f1
+  RNShare: 8b171d4b43c1d886917fdd303bf7a4b87167b05c
+  RNSKBucket: 81a7a3c1696f00abc93cde584e48a285f0a90107
   RNSVG: 9cb6e958c4b6a1f58185ac72a350b148947d6fed
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23

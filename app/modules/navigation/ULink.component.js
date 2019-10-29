@@ -178,7 +178,8 @@ export class ULinkComponent extends Component {
       return <DisabledLinkView flex={1}>{children}</DisabledLinkView>;
     }
 
-    const pressHandler = external && !onPress ? () => actions.goToUrl(to) : () => null;
+    const pressHandler =
+      external && !onPress ? () => actions.goToUrl(to) : () => onPress();
 
     return (
       <StyledLink

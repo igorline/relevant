@@ -15,7 +15,7 @@
 		2A46C3471DEA396400DAFC70 /* Georgia.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A46C3461DEA396400DAFC70 /* Georgia.ttf */; };
 		3071DFFF997F93323F5CFDDE /* libPods-relevantNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF8A7EE663221E457C45D1CA /* libPods-relevantNativeTests.a */; };
 		3D7EC265C098ED9B7311FBB4 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6207DE174BD38E3207E5FE23 /* libPods-relevantNative.a */; };
-		C242DF693C40F7EE4DC2ED93 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		C242DF693C40F7EE4DC2ED93 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		C2FE5E310310ACF8BEBDE1A0 /* libPods-relevantNative-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DDE082D6CC1A440207588B3 /* libPods-relevantNative-Relevant.a */; };
 		FB04E0C01E28548800DD436D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB04E0BE1E28548800DD436D /* LaunchScreen.xib */; };
 		FB04E0C21E2856B500DD436D /* default-launch.png in Resources */ = {isa = PBXBuildFile; fileRef = FB04E0C11E2856B500DD436D /* default-launch.png */; };
@@ -165,7 +165,7 @@
 				FBF8A9411E6F3A5A009404F2 /* SystemConfiguration.framework in Frameworks */,
 				FBF8A93F1E6F3A50009404F2 /* CoreData.framework in Frameworks */,
 				3D7EC265C098ED9B7311FBB4 /* libPods-relevantNative.a in Frameworks */,
-				C242DF693C40F7EE4DC2ED93 /* (null) in Frameworks */,
+				C242DF693C40F7EE4DC2ED93 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +508,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-relevantNative-Relevant/Pods-relevantNative-Relevant-resources.sh",
+				"${PODS_ROOT}/Beacon/Beacon.framework/Beacon.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -529,6 +530,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Beacon.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
@@ -596,6 +598,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-relevantNative/Pods-relevantNative-resources.sh",
+				"${PODS_ROOT}/Beacon/Beacon.framework/Beacon.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -617,6 +620,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Beacon.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
@@ -1280,26 +1284,7 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 				);
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
-					"$(SRCROOT)/../node_modules/react-native-image-picker/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-overlay",
-					"$(SRCROOT)/../node_modules/react-native-share/ios",
-					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
-					"$(SRCROOT)/../node_modules/react-native-firebase-analytics/ios",
-					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
-					"$(SRCROOT)/../node_modules/react-native-overlay",
-					"$(SRCROOT)/../node_modules/react-native-video/ios",
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
-					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
-					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(inherited) /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include $(SRCROOT)/../node_modules/react-native/React/** $(SRCROOT)/../node_modules/react-native-share-extension/ios/** $(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts $(SRCROOT)/../node_modules/react-native-image-picker/ios/** $(SRCROOT)/../node_modules/react-native-overlay $(SRCROOT)/../node_modules/react-native-share/ios $(SRCROOT)/../node_modules/react-native-svg/ios/** $(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu $(SRCROOT)/../node_modules/react-native-firebase-analytics/ios $(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/** $(SRCROOT)/../node_modules/react-native-overlay $(SRCROOT)/../node_modules/react-native-video/ios $(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager $(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/** $(SRCROOT)/../node_modules/rn-fetch-blob/ios/** $(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**";
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";

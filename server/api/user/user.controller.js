@@ -20,13 +20,12 @@ import { logCashOut } from '../../utils/cashOut';
 async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';
-  try {
-    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
-    const data = {
-      from: 'Relevant <info@relevant.community>',
-      to: user.email,
-      subject: 'Relevant Email Confirmation',
-      html: `
+  const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: user.email,
+    subject: 'Relevant Email Confirmation',
+    html: `
         Hi @${user.handle}${text}!
       <br />
       <br />
@@ -37,35 +36,27 @@ async function sendConfirmation(user, newUser) {
       <br />
       <br />
       `
-    };
-    await mail.send(data);
-  } catch (err) {
-    throw err;
-  }
+  };
+  await mail.send(data);
+
   return { email: user.email };
 }
 
 async function sendResetEmail(user, queryString) {
-  let status;
-  try {
-    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}${queryString}`;
-    const data = {
-      from: 'Relevant <info@relevant.community>',
-      to: user.email,
-      subject: 'Reset Relevant Password',
-      html: `
+  const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}${queryString}`;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: user.email,
+    subject: 'Reset Relevant Password',
+    html: `
       Hi, @${user.handle}
       <br/><br/>
       You are receiving this because you have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
       ${resetUrl}<br/><br/>
       If you did not request a password reset, please ignore this email and your password will remain unchanged.`
-    };
-    status = await mail.send(data);
-  } catch (err) {
-    throw err;
-  }
-  return status;
+  };
+  return mail.send(data);
 }
 
 exports.forgot = async (req, res, next) => {

@@ -17,7 +17,10 @@ module.exports = async () => {
   }
 
   const mongoUri = await mongod.getConnectionString();
-  fs.writeFileSync(mongoTestConfigPath, JSON.stringify({ mongoUri }));
+  fs.writeFileSync(
+    mongoTestConfigPath,
+    JSON.stringify({ mongoUri: mongoUri.replace('?', '') })
+  );
 
   // Set reference to mongod in order to close the server during teardown.
   global.__MONGOD__ = mongod;
