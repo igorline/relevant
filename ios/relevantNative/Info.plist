@@ -9,7 +9,7 @@
 	<key>BundleSkipped</key>
 	<true/>
 	<key>CFBundleDisplayName</key>
-	<string>Relevant</string>
+	<string>Relevant$(BUNDLE_DISPLAY_NAME_SUFFIX)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

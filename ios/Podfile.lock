@@ -327,6 +327,8 @@ PODS:
     - React-Core
   - RNCPushNotificationIOS (1.0.2):
     - React
+  - RNExitApp (1.1.0):
+    - React
   - RNFirebase (5.5.6):
     - Firebase/Core
     - React
@@ -397,6 +399,7 @@ DEPENDENCIES:
   - ReactNativeShareExtension (from `../node_modules/react-native-share-extension/ReactNativeShareExtension.podspec`)
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
+  - RNExitApp (from `../node_modules/react-native-exit-app`)
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -510,6 +513,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/rn-fetch-blob"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
+  RNExitApp:
+    :path: "../node_modules/react-native-exit-app"
   RNFirebase:
     :path: "../node_modules/react-native-firebase/ios"
   RNGestureHandler:
@@ -585,6 +590,7 @@ SPEC CHECKSUMS:
   ReactNativeShareExtension: c3dca25799599e4205c0a5176bc518f7eb54fead
   rn-fetch-blob: f525a73a78df9ed5d35e67ea65e79d53c15255bc
   RNCPushNotificationIOS: 0b8d06ff190d84627dd17501bfb96652375970e4
+  RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
   RNFirebase: ac0de8b24c6f91ae9459575491ed6a77327619c6
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
   RNReanimated: 6abbbae2e5e72609d85aabd92a982a94566885f1

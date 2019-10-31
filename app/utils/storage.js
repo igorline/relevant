@@ -5,7 +5,7 @@ if (process.env.WEB !== 'true') {
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
   const Cookies =
-    process.env.BROWSER && !process.env.NODE_ENV === 'test'
+    process.env.BROWSER && process.env.NODE_ENV !== 'test'
       ? require('universal-cookie').default
       : require('universal-cookie');
   cookie = new Cookies();

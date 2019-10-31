@@ -8,10 +8,10 @@ import {
   Dimensions
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Modal from 'react-native-modalbox';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShareExtension from 'react-native-share-extension';
+import RNExitApp from 'react-native-exit-app';
 
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
@@ -35,10 +35,11 @@ import { setTopLevelNavigator, withProps } from 'app/utils/nav';
 import { text, storage, post } from 'app/utils';
 import { darkGrey, IphoneX } from 'app/styles/global';
 
+// Nasty hack because for some reason Dimensions.get('window') returns 0,0
 const fullWidth = Dimensions.get('screen').width;
 const fullHeight = Dimensions.get('screen').height;
-
-const KBView = KeyboardAvoidingView;
+Dimensions.get = () => ({ width: fullWidth, height: fullHeight });
+const Modal = require('react-native-modalbox').default;
 
 let style;
 
@@ -101,7 +102,6 @@ class ShareContainer extends Component {
   static propTypes = {
     actions: PropTypes.object,
     auth: PropTypes.object
-    // community: PropTypes.object
   };
 
   state = {
@@ -175,6 +175,7 @@ class ShareContainer extends Component {
 
   onClose() {
     ShareExtension.close();
+    RNExitApp.exitApp();
   }
 
   closeModal() {
@@ -191,14 +192,15 @@ class ShareContainer extends Component {
           backgroundColor: 'transparent',
           flex: 1
         }}
+        coverScreen
+        keyboardTopOffset={0}
         swipeToClose={false}
-        animationType={'fade'}
         position="top"
-        transparent
+        entry="bottom"
         isOpen={this.state.isOpen}
         onClosed={this.onClose}
       >
-        <KBView
+        <KeyboardAvoidingView
           behavior={'padding'}
           style={{
             alignItems: 'center',
@@ -211,11 +213,10 @@ class ShareContainer extends Component {
               ref={navigatorRef => {
                 setTopLevelNavigator(navigatorRef);
               }}
-              // navigation={this.props.navigation}
               screenProps={{ close: this.closeModal, share: true }}
             />
           </View>
-        </KBView>
+        </KeyboardAvoidingView>
       </Modal>
     );
   }

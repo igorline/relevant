@@ -241,7 +241,8 @@ export const layout = {
   fieldsInput: {
     height: 50,
     fontFamily: 'Arial',
-    paddingHorizontal: 0
+    paddingHorizontal: 0,
+    color: 'black'
   },
   largeButton: {
     height: 50,

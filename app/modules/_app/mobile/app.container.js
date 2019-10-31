@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  AppState,
-  Linking,
-  Platform,
-  StatusBar,
-  YellowBox,
-  Dimensions
-} from 'react-native';
+import { View, AppState, Linking, Platform, StatusBar, Dimensions } from 'react-native';
 
 import { setCustomText } from 'react-native-global-props';
 import PropTypes from 'prop-types';
@@ -45,6 +37,8 @@ import * as modals from 'modules/ui/modals/mobile.lookup';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+global.Buffer = global.Buffer || require('buffer').Buffer;
+
 Ionicons.loadFont();
 
 const Analytics = analytics();
@@ -57,7 +51,7 @@ const customTextProps = {
 };
 setCustomText(customTextProps);
 
-YellowBox.ignoreWarnings(['Setting a timer']);
+StatusBar.setBarStyle('dark-content');
 
 class Application extends Component {
   static propTypes = {
