@@ -38,6 +38,7 @@ import { darkGrey, IphoneX } from 'app/styles/global';
 // Nasty hack because for some reason Dimensions.get('window') returns 0,0
 const fullWidth = Dimensions.get('screen').width;
 const fullHeight = Dimensions.get('screen').height;
+// Modal animation depends on getting the width of the screen
 Dimensions.get = () => ({ width: fullWidth, height: fullHeight });
 const Modal = require('react-native-modalbox').default;
 
@@ -175,6 +176,7 @@ class ShareContainer extends Component {
 
   onClose() {
     ShareExtension.close();
+    // Share extension fails to exit the React app, so if you try to open it two times in a row it fails
     RNExitApp.exitApp();
   }
 
