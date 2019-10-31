@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, IphoneX } from 'app/styles/global';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import { colors } from 'styles';
 
 let styles;
 
@@ -103,6 +104,7 @@ class Forgot extends Component {
                 autoCapitalize={'none'}
                 // keyboardType={'email-address'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="username or email"
                 onChangeText={username => this.setState({ username })}
                 value={this.state.username}

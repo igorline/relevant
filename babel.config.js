@@ -4,8 +4,8 @@ const plugins = [
   // plugin messing up flow types
   // https://github.com/babel/babel/issues/8417
   '@babel/plugin-transform-flow-strip-types',
-  '@babel/plugin-syntax-dynamic-import',
   '@babel/transform-exponentiation-operator',
+  '@babel/plugin-syntax-dynamic-import',
   '@loadable/babel-plugin',
   'styled-components',
   '@babel/plugin-proposal-class-properties',
@@ -88,57 +88,3 @@ module.exports = api => {
       };
   }
 };
-
-//   env: {
-//     test: {
-//       plugins: [
-//         ['styled-components'],
-//         ['@babel/plugin-transform-runtime'],
-//         [
-//           'module-resolver',
-//           {
-//             root: ['./app', './app/modules'],
-//             alias: {
-//               server: './server',
-//               modules: './app/modules',
-//               core: './app/core',
-//               app: './app',
-//               'react-native-svg$': 'react-native-web-svg',
-//               '^react-native$': 'react-native-web',
-//               'react-native-linear-gradient$': 'react-native-web-linear-gradient'
-//             }
-//           }
-//         ]
-//       ],
-//       presets: [['@babel/preset-env'], '@babel/preset-react']
-//     },
-//     development_web: {
-//       plugins: [
-//         'styled-components',
-//         [
-//           'module-resolver',
-//           {
-//             root: ['./app', './app/modules'],
-//             alias: {
-//               server: './server',
-//               modules: './app/modules',
-//               core: './app/core',
-//               app: './app',
-//               'react-native-svg$': 'react-native-web-svg',
-//               '^react-native$': 'react-native-web',
-//               'react-native-linear-gradient$': 'react-native-web-linear-gradient'
-//             }
-//           }
-//         ]
-//       ],
-//       presets: ['@babel/preset-env', '@babel/preset-react']
-//     },
-//     development: {
-//       presets: [['module:metro-react-native-babel-preset']]
-//     },
-//     production: {
-//       plugins: ['transform-remove-console'],
-//       presets: [['module:metro-react-native-babel-preset']]
-//     }
-//   }
-// };

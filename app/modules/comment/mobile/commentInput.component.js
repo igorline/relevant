@@ -138,17 +138,7 @@ class CommentInput extends Component {
             }}
             underlineColorAndroid={'transparent'}
             textAlignVertical={'top'}
-            style={[
-              styles.commentInput,
-              styles.font15,
-              {
-                flex: 5,
-                lineHeight: 18,
-                maxHeight: 200,
-                flexDirection: 'row',
-                alignItems: 'center'
-              }
-            ]}
+            style={[styles.commentInput]}
             placeholder={placeholder || 'Enter reply...'}
             placeholderTextColor={greyText}
             multiline
@@ -203,14 +193,22 @@ export default CommentInput;
 
 const localStyles = StyleSheet.create({
   commentInput: {
-    flex: 1,
     paddingBottom: 4,
-    justifyContent: 'center',
     // backgroundColor: 'pink',
     minHeight: 25,
+    maxHeight: 200,
+
     paddingLeft: 10,
-    marginTop: 10,
-    marginBottom: 10
+    marginTop: 12,
+    marginBottom: 12,
+
+    flex: 5,
+
+    lineHeight: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    fontSize: 16
+    // alignItems: 'center',
     // marginVertical: 12.5
   },
   commentInputParent: {

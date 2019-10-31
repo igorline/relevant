@@ -101,15 +101,15 @@ class TagSelection extends Component {
     }
     const words = input.split(' ');
     const tags = words
-    .map(word => {
-      word = word
-      .replace('#', '')
-      .replace(/(,|\.|!|\?)\s*$/, '')
-      .toLowerCase();
-      if (word === '') return null;
-      return { _id: word };
-    })
-    .filter(el => el !== null);
+      .map(word => {
+        word = word
+          .replace('#', '')
+          .replace(/(,|\.|!|\?)\s*$/, '')
+          .toLowerCase();
+        if (word === '') return null;
+        return { _id: word };
+      })
+      .filter(el => el !== null);
     if (this.selectedTags.length + tags.length >= 7) {
       return Alert.alert('👋 too many topics!');
     }
@@ -172,6 +172,7 @@ class TagSelection extends Component {
           value={this.state.input}
           multiline={false}
           isFocused={this.state.inputFocused}
+          placeholderTextColor={colors.grey}
           placeholder={'Select additional topics or create your own'}
         />
         <View style={styles.break} />

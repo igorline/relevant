@@ -12,7 +12,8 @@ import {
   StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import get from 'lodash/get';
+import { colors } from 'styles';
 
 import { globalStyles, IphoneX } from 'app/styles/global';
 
@@ -50,13 +51,13 @@ class ResetPassword extends Component {
       return;
     }
     this.props.actions
-    .resetPassword(this.state.password, this.token)
-    .then(success => {
-      if (success) {
-        this.props.navigation.replace('login');
-      }
-    })
-    .catch(Alert.alert);
+      .resetPassword(this.state.password, this.token)
+      .then(success => {
+        if (success) {
+          this.props.navigation.replace('login');
+        }
+      })
+      .catch(Alert.alert);
   }
 
   render() {
@@ -81,6 +82,7 @@ class ResetPassword extends Component {
                 secureTextEntry
                 keyboardType={'default'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="new password"
                 onChangeText={password => this.setState({ password })}
                 value={this.state.password}
@@ -94,6 +96,7 @@ class ResetPassword extends Component {
                 secureTextEntry
                 keyboardType={'default'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="confirm password"
                 onChangeText={cPassword => this.setState({ cPassword })}
                 value={this.state.cPassword}

@@ -1,9 +1,7 @@
-// This is needed for android
-// may not be needed in future versions
-// https://github.com/facebook/react-native/issues/20902
-
-// require('@babel/polyfill');
+// Buffer shim for data-uri-to-buffer
 global.Buffer = global.Buffer || require('buffer').Buffer;
+
+// Fixes a nasty bug: https://github.com/kmagiera/react-native-gesture-handler/issues/746
 require('react-native-gesture-handler');
 
 const { AppRegistry } = require('react-native');
