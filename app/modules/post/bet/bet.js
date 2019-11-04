@@ -54,6 +54,7 @@ function Bet({ user, post, close }) {
 
   // const time = getTimestamp(post.data.payoutTime).toLowerCase();
   const [time, setTimer] = useState(timeLeftTick(post.data.payoutTime));
+
   useEffect(() => {
     const id = setInterval(() => setTimer(timeLeftTick(post.data.payoutTime)), 1000);
     return () => clearInterval(id);
@@ -170,7 +171,7 @@ function Bet({ user, post, close }) {
         <BetStats maxBet={maxBet} post={post} amount={amount} earning={earning} />
       </View>
 
-      <HoverButton mt={3} onPress={placeBet} disabled={processingBet}>
+      <HoverButton mt={3} onPress={placeBet} disabled={processingBet || !amount}>
         Bet {toFixed(amount)} Coins
       </HoverButton>
 
