@@ -9,6 +9,7 @@ export default function auth(state = initialState, action) {
       const index = state[type] ? state[type].index + 1 : 0;
       return {
         ...state,
+        currentType: type,
         [type]: {
           index,
           ...action.payload.data

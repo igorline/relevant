@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ethRewards AutoBet should undo auto-bet 1`] = `
+Object {
+  "investment": null,
+  "rankChange": 0,
+  "subscription": Object {
+    "__v": 0,
+    "_id": "[SANITIZED]",
+    "amount": 0,
+    "category": Array [],
+    "community": "relevant",
+    "communityId": "c00000000000000000000001",
+    "createdAt": "[SANITIZED]",
+    "follower": "b00000000000000000000000",
+    "updatedAt": "[SANITIZED]",
+  },
+  "success": true,
+  "undoInvest": true,
+}
+`;
+
 exports[`ethRewards Bet should bet on post 1`] = `
 Object {
   "__v": 0,
@@ -10,6 +30,7 @@ Object {
   "createdAt": "[SANITIZED]",
   "downVotes": 0,
   "investor": "a00000000000000000000000",
+  "isManualBet": true,
   "ownPost": false,
   "paidOut": false,
   "partialRelevance": 0,
@@ -36,6 +57,7 @@ Object {
     "createdAt": "[SANITIZED]",
     "downVotes": 0,
     "investor": "a00000000000000000000000",
+    "isManualBet": false,
     "ownPost": false,
     "paidOut": false,
     "partialRelevance": 0,
@@ -74,25 +96,5 @@ Object {
   },
   "success": true,
   "undoInvest": false,
-}
-`;
-
-exports[`ethRewards Undo should undo invest 1`] = `
-Object {
-  "investment": null,
-  "rankChange": "[SANITIZED]",
-  "subscription": Object {
-    "__v": 0,
-    "_id": "[SANITIZED]",
-    "amount": 0,
-    "category": Array [],
-    "community": "relevant",
-    "communityId": "c00000000000000000000001",
-    "createdAt": "[SANITIZED]",
-    "follower": "a00000000000000000000000",
-    "updatedAt": "[SANITIZED]",
-  },
-  "success": true,
-  "undoInvest": true,
 }
 `;

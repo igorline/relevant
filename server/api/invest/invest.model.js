@@ -40,7 +40,8 @@ const InvestSchema = new Schema(
     updatePowerInvestor: { type: String, ref: 'User' },
     partialUsers: { type: Number, default: 0 },
     relevance: { type: Number, default: 0 },
-    partialRelevance: { type: Number, default: 0 }
+    partialRelevance: { type: Number, default: 0 },
+    isManualBet: { type: Boolean, default: false }
   },
   {
     timestamps: true
@@ -113,6 +114,7 @@ InvestSchema.methods.placeBet = async function placeBet({
 
   vote.shares += shares;
   vote.stakedTokens += stakedTokens;
+  vote.isManualBet = user.notificationSettings.bet.manual;
   vote = await vote.save();
 
   post.myVote = vote;

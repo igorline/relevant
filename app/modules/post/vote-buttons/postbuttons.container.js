@@ -1,16 +1,16 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { getPostType } from 'app/utils/post';
 import { View, Image } from 'modules/styled/uni';
-import { triggerAnimation } from 'modules/animation/animation.actions';
 import { useCommunity } from 'modules/community/community.selectors';
 import { sizing } from 'styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 // import { CenterButton } from './center-button';
 import PostButton from './postbutton';
 import { vote as voteAction } from '../invest.actions';
+import launchAnimation from './launchAnimation';
 import PostRank from './postrank';
 
 let Analytics;
@@ -48,6 +48,26 @@ export default function PostButtons({ post, auth, color, horizontal }) {
   const canBet = getCanBet({ post, community, user });
   const displayBetPrompt = showBetPrompt({ post, community, user });
 
+  const newVote = useSelector(state => state.investments.voteSuccess);
+
+  useEffect(() => {
+    if (!newVote._id) return;
+    const postId = (newVote && newVote.post) || newVote.post._id;
+    if (postId !== post._id) return;
+
+    const rankChange = computeRankChange({ post, rankChange: newVote.rankChange });
+    const type = newVote.amount >= 0 ? 'upvote' : 'downvote';
+
+    const el = investButton;
+    const params = { amount: rankChange, horizontal };
+    if (newVote.isManualBet && newVote.stakedTokens > 0) {
+      params.amount = 0;
+      launchAnimation({ type: 'bet', params, el, dispatch });
+    } else {
+      launchAnimation({ type, params, el, dispatch });
+    }
+  }, [newVote]); // eslint-disable-line
+
   const castVote = useCallback(
     async (e, vote, amount) => {
       try {
@@ -59,6 +79,11 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         if (!auth.isAuthenticated)
           throw new Error(`You must be logged in to ${type} posts`);
 
+        if (vote && vote.isManualBet && type === 'upvote') {
+          showBetModal({ dispatch, postId: post._id });
+          return;
+        }
+
         setProcessingVote(true);
         const res = await dispatch(
           voteAction({ amount, post, user, vote, displayBetPrompt })
@@ -67,27 +92,13 @@ export default function PostButtons({ post, auth, color, horizontal }) {
         if (!res || res.undoInvest) return;
 
         type === 'upvote' && canBet && showBetModal({ dispatch, postId: post._id });
-
-        const rankChange = computeRankChange({ post, rankChange: res.rankChange });
-        const el = investButton;
-        const params = { amount: rankChange, horizontal };
-        launchAnimation({ type, params, el, dispatch });
         runAnalytics(type);
       } catch (err) {
         setProcessingVote(false);
         browserAlerts.alert(err.message);
       }
     },
-    [
-      processingVote,
-      auth.isAuthenticated,
-      dispatch,
-      post,
-      user,
-      displayBetPrompt,
-      canBet,
-      horizontal
-    ]
+    [processingVote, auth.isAuthenticated, dispatch, post, user, displayBetPrompt, canBet]
   );
 
   if (!post || post === 'notFound') return null;
@@ -104,7 +115,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
       style={{ opacity: 1 }} // need this to make animations work on android
     >
       <View>
-        {canBet && !voteStatus.vote && (
+        {canBet && (
           <Image
             w={1.6}
             h={1.6}
@@ -198,15 +209,6 @@ function computeRankChange({ post, rankChange }) {
   const startRank = post.data ? post.data.pagerank : 0;
   const total = startRank + rankChange + 1;
   return Math.round(total) - Math.round(startRank);
-}
-
-function launchAnimation({ type, params, el, dispatch }) {
-  el.current.measureInWindow((x, y, w, h) => {
-    const parent = { x, y, w, h };
-    if (x + y + w + h === 0) return;
-    const action = triggerAnimation(type, { parent, ...params });
-    dispatch(action);
-  });
 }
 
 function runAnalytics(type) {

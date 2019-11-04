@@ -5,12 +5,18 @@ import { animatedElement } from 'app/styles/layout';
 
 const ENDY = 300;
 
+const ICONS = {
+  upvote: { size: 28, icon: require('app/public/img/icons/upvoteActive.png') },
+  bet: { size: 18, icon: require('app/public/img/relevantcoin.png') }
+};
+
 class Vote extends Component {
   static propTypes = {
     horizontal: PropTypes.bool,
     parent: PropTypes.object,
     specialKey: PropTypes.number,
-    destroy: PropTypes.func
+    destroy: PropTypes.func,
+    type: PropTypes.string
   };
 
   constructor(props, context) {
@@ -67,10 +73,10 @@ class Vote extends Component {
   }
 
   render() {
-    const { specialKey, horizontal, parent } = this.props;
-    const icon = require('app/public/img/icons/upvoteActive.png');
+    const { specialKey, horizontal, parent, type } = this.props;
+    const { icon, size } = ICONS[type];
     const img = (
-      <Image resizeMode={'contain'} style={{ width: 28, height: 28 }} source={icon} />
+      <Image resizeMode={'contain'} style={{ width: size, height: size }} source={icon} />
     );
 
     return (

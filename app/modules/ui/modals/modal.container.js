@@ -28,7 +28,7 @@ function ModalContainer({ location, history }) {
       const qString = queryString.stringify({
         ...urlParams,
         modal: currentModal,
-        modalParams: modalData
+        modalParams: JSON.stringify(modalData)
       });
       history.push({ search: qString });
     }
