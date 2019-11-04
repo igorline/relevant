@@ -35,7 +35,7 @@ const DownvoteAnimation = loadable(() =>
 
 let ReactPixel;
 
-const DEV_MODE = process.env.NODE_ENV === 'development';
+// const DEV_MODE = process.env.NODE_ENV === 'development';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -123,9 +123,6 @@ class App extends Component {
       TwitterCT.pageView();
       ReactGA.pageview(loc.pathname + loc.search);
       ReactPixel.pageView();
-
-      // eslint-disable-next-line
-      Intercom('update');
     });
   };
 
@@ -172,14 +169,6 @@ class App extends Component {
     }
 
     if (screenSize) return null;
-    // eslint-disable-next-line
-    Intercom('boot', {
-      alignment: screenSize ? 'left' : 'right',
-      app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
-      name: `${auth.user.name} @${auth.user.handle}`, // Full name
-      email: auth.user.email, // Email address
-      created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
-    });
     return null;
   };
 
