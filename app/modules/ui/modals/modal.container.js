@@ -22,13 +22,10 @@ function ModalContainer({ location, history }) {
 
   useEffect(() => {
     if ((!modal && currentModal) || (modal && currentModal && modal !== currentModal)) {
-      // const paramString = modalData ? `&modalParams=${JSON.stringify(modalData)}` : '';
-      // const prefix = location.search ? location.search + '&' : '?';
-      // const qString = `${prefix}modal=${currentModal}${paramString}`;
       const qString = queryString.stringify({
         ...urlParams,
         modal: currentModal,
-        modalParams: modalData
+        modalParams: JSON.stringify(modalData)
       });
       history.push({ search: qString });
     }

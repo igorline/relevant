@@ -51,6 +51,10 @@ export const create = async (req, res, next) => {
     let vote = await getExistingVote({ user, post, amount, communityId });
     const undoInvest = !!vote;
 
+    if (undoInvest && vote.isManualBet && vote.stakedTokens) {
+      throw new Error('You cannot undo a vote once after you bet on a post.');
+    }
+
     vote = undoInvest
       ? await vote.removeVote({ post, user })
       : await Invest.createVote({
