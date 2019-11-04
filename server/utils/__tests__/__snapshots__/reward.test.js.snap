@@ -154,6 +154,7 @@ Object {
   "createdAt": "[SANITIZED]",
   "downVotes": 0,
   "investor": "a00000000000000000000000",
+  "isManualBet": true,
   "ownPost": false,
   "paidOut": false,
   "partialRelevance": 0,
