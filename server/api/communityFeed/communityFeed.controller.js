@@ -11,7 +11,6 @@ exports.index = async req => {
   // TODO - for now isolate commentary to given community
   const { community } = req.query;
   const { user } = req;
-
   const skip = parseInt(req.query.skip, 10) || 0;
   const limit = parseInt(req.query.limit, 10) || 5;
   const tag = req.query.tag || null;

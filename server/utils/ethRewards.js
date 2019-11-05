@@ -2,6 +2,7 @@
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import Notification from 'server/api/notification/notification.model';
 import Post from 'server/api/post/post.model';
+import { sendAdminAlert } from 'server/config/mail';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';
@@ -32,6 +33,7 @@ exports.rewards = async () => {
     console.log('rewardPool', rewardPool); // eslint-disable;
   } catch (err) {
     console.log(err);
+    await sendAdminAlert(err);
     throw err;
   }
 

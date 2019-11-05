@@ -3,7 +3,7 @@ import request from 'request';
 import get from 'lodash/get';
 import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
-import mail from 'server/config/mail';
+import { sendEmail } from 'server/config/mail';
 import { sendNotification } from 'server/notifications';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
@@ -169,24 +169,20 @@ exports.sendPostNotification = async (req, res, next) => {
 };
 
 async function sendFlagEmail() {
-  try {
-    const flaggedUrl = `${process.env.API_SERVER}/admin/flagged`;
-    const data = {
-      from: 'Relevant <info@relevant.community>',
-      to: 'info@relevant.community',
-      subject: 'Inapproprate Content',
-      html: `Someone has flagged a post for inappropriate content
+  const flaggedUrl = `${process.env.API_SERVER}/admin/flagged`;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: 'info@relevant.community',
+    subject: 'Inapproprate Content',
+    html: `Someone has flagged a post for inappropriate content
       <br />
       <br />
       You can manage flagged content here:&nbsp;
       <a href="${flaggedUrl}" target="_blank">${flaggedUrl}</a>
       <br />
       <br />`
-    };
-    return mail.send(data);
-  } catch (err) {
-    throw err;
-  }
+  };
+  return sendEmail(data);
 }
 
 exports.flag = async (req, res, next) => {

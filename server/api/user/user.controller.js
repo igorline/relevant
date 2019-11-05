@@ -6,7 +6,7 @@ import url from 'url';
 // eslint-disable-next-line import/named
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
-import mail from 'server/config/mail';
+import { sendEmail } from 'server/config/mail';
 import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
@@ -37,7 +37,7 @@ async function sendConfirmation(user, newUser) {
       <br />
       `
   };
-  await mail.send(data);
+  await sendEmail(data);
 
   return { email: user.email };
 }
@@ -56,7 +56,7 @@ async function sendResetEmail(user, queryString) {
       ${resetUrl}<br/><br/>
       If you did not request a password reset, please ignore this email and your password will remain unchanged.`
   };
-  return mail.send(data);
+  return sendEmail(data);
 }
 
 exports.forgot = async (req, res, next) => {
