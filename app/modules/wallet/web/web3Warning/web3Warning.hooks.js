@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMetamask } from 'modules/contract/contract.hooks';
-import { CASHOUT_LIMIT } from 'server/config/globalConstants';
+// import { CASHOUT_LIMIT } from 'server/config/globalConstants';
 import * as warnings from './web3Warning.constants';
 import {
   hasAccount,
@@ -13,7 +13,7 @@ export const useCurrentWarning = ({
   accounts,
   user,
   networkId,
-  unclaimedSig,
+  // unclaimedSig,
   canClaim
 }) => {
   const [warning, setWarning] = useState();
@@ -21,7 +21,7 @@ export const useCurrentWarning = ({
 
   useEffect(() => {
     const updateWarnings = () => {
-      if (canClaim < CASHOUT_LIMIT && !unclaimedSig) return warnings.balance;
+      // if (canClaim < CASHOUT_LIMIT && !unclaimedSig) return warnings.balance;
       if (!metamask) return warnings.metamask;
       if (metamask && !hasAccount(accounts)) return warnings.connectMetamask;
       if (!hasCorrectNetwork(networkId)) return warnings.network;
@@ -31,6 +31,6 @@ export const useCurrentWarning = ({
       return null;
     };
     setWarning(updateWarnings());
-  }, [accounts, user.ethAddress, networkId, user, canClaim, unclaimedSig, metamask]);
+  }, [accounts, user.ethAddress, networkId, user, canClaim, metamask]);
   return warning;
 };

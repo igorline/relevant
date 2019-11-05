@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { getProvider, getMetamask } from 'app/utils/eth';
+import { getProvider, getMetamask, formatBN } from 'app/utils/eth';
 import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
 import { actions as tokenActions, tokenAddress } from 'core/contracts';
@@ -127,7 +127,12 @@ export const useBalance = () => {
     }
   }, [accounts, haveBalance, cacheMethod, subscribeToEvent]);
 
-  return userBalance;
+  const relCoins =
+    userBalance && userBalance.phase === 'SUCCESS'
+      ? formatBN(userBalance.value, 18)
+      : null;
+
+  return relCoins;
 };
 
 export const useEventSubscription = () => {

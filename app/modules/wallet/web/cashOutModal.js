@@ -15,7 +15,6 @@ import Web3Warning from 'modules/wallet/web/web3Warning/web3Warning.component';
 import {
   useWeb3,
   useMetamask,
-  useBalance,
   useRelevantActions,
   useTxState
 } from 'modules/contract/contract.hooks';
@@ -32,6 +31,7 @@ import { CASHOUT_MAX } from 'server/config/globalConstants';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { usePrice } from 'modules/wallet/price.context';
 import { CashoutFooter } from './cashoutFooter';
+// import ULink from 'modules/navigation/ULink.component';
 
 const TxProgress = styled(View)`
   position: absolute;
@@ -54,7 +54,7 @@ export default function AddEthAddress({ close }) {
   const canClaim = user.balance - (user.airdroppedTokens || 0);
   const account = accounts && accounts[0];
 
-  useBalance();
+  // useBalance();
   useMetamask();
 
   const unclaimedSig = useUnclaimedSig(user, account);

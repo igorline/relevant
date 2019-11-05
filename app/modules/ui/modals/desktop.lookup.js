@@ -27,6 +27,11 @@ const SetHandle = loadable(() => import('modules/auth/web/handle.component'));
 const ConfirmEmail = loadable(() => import('modules/auth/web/confirmEmail.component'));
 const BetBody = loadable(() => import('modules/post/bet/bet'));
 const CashOutModal = loadable(() => import('modules/wallet/web/cashOutModal'));
+
+const ConnectMetamaskModal = loadable(() =>
+  import('modules/wallet/web/connectMetamaskModal')
+);
+
 const CommunitySettings = loadable(() =>
   import('modules/admin/web/communityAdminForm.component')
 );
@@ -42,6 +47,10 @@ export const newpost = {
 
 export const cashOut = {
   Body: CashOutModal
+};
+
+export const connectMetamask = {
+  Body: ConnectMetamaskModal
 };
 
 export const investModal = {
