@@ -119,7 +119,6 @@ export class NavProfile extends Component {
                   size={1.5}
                   mr={1.5}
                   fs={1.5}
-                  showPrice
                   secondary
                   c={colors.black}
                   amount={pendingPayouts}
