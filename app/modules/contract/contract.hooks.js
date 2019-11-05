@@ -148,27 +148,22 @@ export const useTokenContract = () => {
   return [web3.accounts, relevantState, relevantActions];
 };
 
-export const useTxState = ({ tx, method, clearTx }) => {
+export const useTxState = ({ tx, method, callback }) => {
   const { methodCache } = useRelevantState();
   if (!tx) return null;
 
   const txState = methodCache.select(method, ...tx.payload.args);
-  const txConfirmed = methodCache.select(
-    'claimTokens',
-    ...tx.payload.args,
-    'confirmations'
-  );
+
+  if (txState && txState.phase === 'RECEIPT') {
+    Alert.alert('Transaction Completed!', 'success');
+    callback();
+    return 'success';
+  }
 
   if (txState && txState.phase === 'ERROR') {
     Alert.alert(txState.value.get('message'));
-    clearTx();
+    callback();
     return 'error';
-  }
-
-  if (txConfirmed && txConfirmed.value) {
-    Alert.alert('Transaction Completed!', 'success');
-    clearTx();
-    return 'success';
   }
 
   return 'pending';

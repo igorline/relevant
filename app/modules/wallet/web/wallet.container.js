@@ -48,7 +48,7 @@ class WalletContainer extends Component {
     const earning = item;
 
     const payout = computeUserPayout(earning);
-    if (!payout) return null;
+    // if (!payout) return null;
 
     const month = getMonth(earning.createdAt);
     const showMonth = this.previousMonth !== month;

@@ -251,7 +251,7 @@ async function distributeUserRewards(posts, _community) {
 
       let user = await User.findOne(
         { _id: vote.investor },
-        'name balance deviceTokens badge lockedTokens'
+        'name balance deviceTokens badge lockedTokens legacyAirdrop referralTokens airdropTokens'
       );
 
       const curationWeight = vote.shares / totalShares;
@@ -271,6 +271,11 @@ async function distributeUserRewards(posts, _community) {
         post: post.post,
         earned: reward,
         status: curationPayout ? 'paidout' : 'expired',
+        prevBalance: user.balance,
+        endBalance: user.balance + reward,
+        legacyAirdrop: user.legacyAirdrop,
+        referralTokens: user.referralTokens,
+        airdropTokens: user.airdropTokens,
         community,
         communityId
       });

@@ -767,8 +767,8 @@ exports.cashOut = async (req, res, next) => {
     const nonce = await ethUtils.getNonce(address);
 
     // Prioritize last withdrawal attempt
-    if (user.cashOut && user.cashOut.nonce === nonce) {
-      return res.status(200).json(user);
+    if (user.cashOut && user.cashOut.nonce === nonce.toString()) {
+      return res.status(200).json({ user, earning: null });
     }
 
     // Temp - let global admins cash out more
@@ -792,7 +792,7 @@ exports.cashOut = async (req, res, next) => {
       );
     }
 
-    logCashOut(user, amount, next);
+    const earning = await logCashOut(user, amount, next);
 
     user.balance -= amount;
     user.cashedOut += amount;
@@ -800,9 +800,9 @@ exports.cashOut = async (req, res, next) => {
 
     const { sig, amount: bnAmount } = await ethUtils.sign(address, amount);
     user.nonce = nonce;
-    user.cashOut = { sig, amount: bnAmount, nonce };
+    user.cashOut = { sig, amount: bnAmount, nonce, earningId: earning._id };
     await user.save();
-    return res.status(200).json(user);
+    return res.status(200).json({ user, earning });
   } catch (err) {
     return next(err);
   }

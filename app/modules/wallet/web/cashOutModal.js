@@ -23,6 +23,7 @@ import { useRelevantState } from 'modules/contract/contract.selectors';
 import { useCurrentWarning } from 'modules/wallet/web/web3Warning/web3Warning.hooks';
 import { parseBN } from 'app/utils/eth';
 import { cashOutCall, connectAddress } from 'modules/wallet/wallet.actions';
+import { updateCashoutLog } from 'modules/wallet/earnings.actions';
 import { hideModal } from 'modules/navigation/navigation.actions'; // eslint-disable-line
 import styled from 'styled-components/primitives';
 import { colors, sizing } from 'styles';
@@ -41,7 +42,11 @@ const TxProgress = styled(View)`
   background-color: ${colors.modalBackground};
 `;
 
-export default function AddEthAddress() {
+AddEthAddress.propTypes = {
+  close: PropTypes.func
+};
+
+export default function AddEthAddress({ close }) {
   const [accounts, , networkId] = useWeb3();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
@@ -75,6 +80,7 @@ export default function AddEthAddress() {
         />
       ) : (
         <CashOutHandler
+          close={close}
           canClaim={canClaim}
           account={account}
           unclaimedSig={unclaimedSig}
@@ -87,10 +93,11 @@ export default function AddEthAddress() {
 CashOutHandler.propTypes = {
   canClaim: PropTypes.number,
   account: PropTypes.string,
-  unclaimedSig: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+  unclaimedSig: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  close: PropTypes.func
 };
 
-function CashOutHandler({ canClaim, account, unclaimedSig }) {
+function CashOutHandler({ canClaim, account, unclaimedSig, close }) {
   const [currentTx, setCurrentTx] = useState();
   const user = useSelector(state => state.auth.user);
   const maxClaim =
@@ -118,10 +125,15 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
   const txState = useTxState({
     tx: currentTx,
     method: 'claimTokens',
-    clearTx: () => setCurrentTx(null)
+    callback: () => {
+      dispatch(updateCashoutLog(user.cashOut.earningId));
+      setCurrentTx(null);
+    }
   });
 
-  if (txState === 'success') dispatch(hideModal());
+  if (txState === 'success') {
+    close();
+  }
 
   const validateAmount = value => (value < 0 ? 0 : value > maxClaim ? maxClaim : value);
 
@@ -152,7 +164,6 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
             h={6}
             style={{ right: sizing(1), bottom: sizing(0) }}
             position="absolute"
-            // fw={'bold'}
             fs={4}
           >
             {'$' + usdAmount}
