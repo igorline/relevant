@@ -5,7 +5,7 @@ import {
   updateUserEmail,
   getMLUser
 } from 'server/utils/mail';
-import { user1 as alice } from 'app/mockdata/user';
+import { getUsers } from 'server/test/seedData';
 
 const { MAILGUN_API_KEY, MAILGUN_DOMAIN, MAILER_LITE_KEY } = process.env;
 
@@ -14,6 +14,7 @@ const SHOULD_RUN_TEST = MAILGUN_API_KEY && MAILGUN_DOMAIN && MAILER_LITE_KEY;
 describe('email list', () => {
   const list = mailgun.lists('test@mail.relevant.community');
   const newEmail = 'new@new.email';
+  let alice;
 
   if (!SHOULD_RUN_TEST) {
     test.only('skip email test', () => {
@@ -24,12 +25,14 @@ describe('email list', () => {
 
   beforeAll(async () => {
     if (SHOULD_RUN_TEST) {
+      ({ alice } = getUsers());
       await removeFromEmailList(alice);
       await removeFromEmailList({ email: newEmail });
     }
   });
 
   test('should add user to email list', async () => {
+    delete alice.email;
     await addUserToEmailList(alice);
     const { member } = await getMember(list, alice.email);
     expect(member.name).toBe('@' + alice.handle);
@@ -38,7 +41,6 @@ describe('email list', () => {
     const mlUser = await getMLUser(alice.email);
     expect(mlUser.name).toBe('@' + alice.handle);
     expect(mlUser.email).toBe(alice.email);
-    // console.log(mlUser);
   });
 
   test('should update user email', async () => {

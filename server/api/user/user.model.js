@@ -466,5 +466,12 @@ UserSchema.methods.updatePower = function updatePower() {
   return this;
 };
 
+UserSchema.methods.ensureParam = async function ensureParam(param) {
+  if (this[param] !== undefined) return this;
+  const getParam = await this.model().findOne({ _id: this._id }, '+param');
+  this[param] = getParam[param];
+  return this;
+};
+
 // export default mongoose.model('User', UserSchema);
 module.exports = mongoose.model('User', UserSchema);

@@ -704,7 +704,13 @@ exports.updateUserNotifications = async (req, res, next) => {
     const { user, body } = req;
     const { notificationSettings, subscription, deviceTokens } = body;
     const newSettings = merge(user.notificationSettings.toObject(), notificationSettings);
+
+    if (user.notificationSettings.email.digest !== newSettings.email.digest) {
+      if (!newSettings.email.digest) addUserToEmailList(user, 'nodigest');
+      else removeFromEmailList(user, 'nodigest');
+    }
     user.notificationSettings = newSettings;
+
     if (subscription) {
       const findIndex = user.desktopSubscriptions.findIndex(
         s =>
