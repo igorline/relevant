@@ -10452,6 +10452,13 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+mailerlite-mailerlite@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/mailerlite-mailerlite/-/mailerlite-mailerlite-0.5.1.tgz#77d94053c07b59f406813d1e2274264b76419e41"
+  integrity sha512-2XG/FBTQvjgEUTXAdea1segywmlWwa9HK00IOUnz4CrV5jRPZllZrRFBQFYP23P8ilc07Ag1T6nNNHnCtnIJqA==
+  dependencies:
+    request "^2.88.0"
+
 mailgun-js@^0.22.0:
   version "0.22.0"
   resolved "https://registry.yarnpkg.com/mailgun-js/-/mailgun-js-0.22.0.tgz#128942b5e47a364a470791608852bf68c96b3a05"
@@ -14771,7 +14778,7 @@ request@2.87.0:
     tunnel-agent "^0.6.0"
     uuid "^3.1.0"
 
-request@^2.55.0, request@^2.72.0, request@^2.79.0, request@^2.81.0, request@^2.86.0, request@^2.87.0:
+request@^2.55.0, request@^2.72.0, request@^2.79.0, request@^2.86.0, request@^2.87.0, request@^2.88.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==

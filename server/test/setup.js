@@ -4,12 +4,16 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const mongoTestConfigPath = path.join(__dirname, './mongoTestConfig.json');
 
+process.env.WEB = 'true';
+delete process.env.BROWSER;
+
+process.env.SESSION_SECRET = 'test-secret';
+process.env.TWITTER_ID = 'test-twitter-id';
+process.env.TWITTER_SECRET = 'test-twitter-secret';
+
 const mongod = new MongoMemoryServer({
   autoStart: false
 });
-
-process.env.WEB = 'true';
-delete process.env.BROWSER;
 
 module.exports = async () => {
   if (!mongod.isRunning) {

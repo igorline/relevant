@@ -6,7 +6,7 @@ import url from 'url';
 // eslint-disable-next-line import/named
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
-import { sendEmail } from 'server/config/mail';
+import { sendEmail, addUserToEmailList, removeFromEmailList } from 'server/utils/mail';
 import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
@@ -103,6 +103,7 @@ exports.confirm = async (req, res, next) => {
     user.confirmed = true;
     user = await user.addReward({ type: 'email' });
     user = await user.save();
+    await addUserToEmailList(user);
     req.confirmed = true;
     return middleware ? next() : res.status(200).json(user);
   } catch (err) {
@@ -479,13 +480,13 @@ exports.show = async function show(req, res, next) {
  */
 exports.destroy = async (req, res, next) => {
   try {
-    if (
-      !req.user ||
-      (!req.user.role === 'admin' && req.user.handle !== req.params.handle)
-    ) {
+    const { id } = req.params;
+    if (!req.user || (!req.user.role === 'admin' || !req.user._id.equals(id))) {
       throw new Error('no right to delete');
     }
-    await User.findOne({ handle: req.params.id }).remove();
+    const user = await User.findOne({ _id: id });
+    await removeFromEmailList(user);
+    await User.deleteOne({ handle: req.params.id });
     return res.sendStatus(204);
   } catch (err) {
     return next(err);

@@ -3,7 +3,7 @@ import request from 'request';
 import get from 'lodash/get';
 import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
-import { sendEmail } from 'server/config/mail';
+import { sendEmail } from 'server/utils/mail';
 import { sendNotification } from 'server/notifications';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';

@@ -1,4 +1,5 @@
 import { handleAdminInvite } from 'server/api/invites/invite.controller';
+import { addUserToEmailList } from 'server/utils/mail';
 
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
@@ -79,6 +80,7 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
   if (isNewUser) {
     user = await addNewTwitterUser({ handle, invitecode });
     user = await addTwitterProfile({ profile, user, twitterAuth });
+    await addUserToEmailList(user);
     user = await user.initialCoins();
     if (invitecode && invitecode !== 'undefined') {
       user = await Invite.processInvite({ invitecode, user });

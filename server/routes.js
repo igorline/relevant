@@ -1,5 +1,5 @@
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
-import { sendAdminAlert } from 'server/config/mail';
+import { sendAdminAlert } from 'server/utils/mail';
 import handleRender from './render';
 // eslint-disable-next-line import/named
 import { currentUser } from './auth/auth.service';

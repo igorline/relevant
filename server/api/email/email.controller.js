@@ -1,5 +1,5 @@
 import List from 'server/api/emailList/list.model';
-import { mailgun, sendEmail } from 'server/config/mail';
+import { mailgun, sendEmail } from 'server/utils/mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
@@ -99,7 +99,7 @@ async function generateList(type) {
       list.members().create(u, err => {
         if (err) {
           try {
-            // list.members(u.address).update(u, console.log);
+            list.members(u.address).update(u, console.log);
           } catch (error) {
             console.log('err updating', u);
           }

@@ -2,7 +2,7 @@ import uuid from 'uuid/v4';
 import Relevance from 'server/api/relevance/relevance.model';
 import { totalAllowedInvites } from 'server/config/globalConstants';
 import Community from 'server/api/community/community.model';
-import { sendEmail } from 'server/config/mail';
+import { sendEmail } from 'server/utils/mail';
 // import User from 'server/api/user/user.model';
 import Invite from './invite.model';
 

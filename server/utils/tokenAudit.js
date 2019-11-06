@@ -5,7 +5,7 @@ import User from 'server/api/user/user.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import Invest from 'server/api/invest/invest.model';
 import PostData from 'server/api/post/postData.model';
-import { sendEmail } from 'server/config/mail';
+import { sendEmail } from 'server/utils/mail';
 
 const queue = require('queue');
 

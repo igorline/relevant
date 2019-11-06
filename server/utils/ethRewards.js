@@ -2,7 +2,7 @@
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import Notification from 'server/api/notification/notification.model';
 import Post from 'server/api/post/post.model';
-import { sendAdminAlert } from 'server/config/mail';
+import { sendAdminAlert } from 'server/utils/mail';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';

@@ -1,7 +1,7 @@
 import request from 'request-promise-any';
 import { ethers } from 'ethers';
 import { INFURA_NETWORK, NETWORK_NUMBER } from 'app/core/config';
-import { sendAdminAlert } from 'server/config/mail';
+import { sendAdminAlert } from 'server/utils/mail';
 
 const RelevantToken = require('../../app/contracts/RelevantToken.json');
 

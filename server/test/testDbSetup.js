@@ -15,10 +15,6 @@ const mongooseOpts = {
   useUnifiedTopology: true
 };
 
-process.env.SESSION_SECRET = 'test-secret';
-process.env.TWITTER_ID = 'test-twitter-id';
-process.env.TWITTER_SECRET = 'test-twitter-secret';
-
 beforeAll(async () => {
   if (mongoose.connection.readyState === 0) {
     await mongoose.connect(`${global.MONGO_URI}${process.env.TEST_SUITE}`, mongooseOpts);

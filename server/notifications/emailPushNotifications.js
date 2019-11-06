@@ -1,4 +1,4 @@
-const { sendEmail } = require('server/config/mail');
+const { sendEmail } = require('server/utils/mail');
 const inlineCss = require('inline-css');
 const { notificationStyle } = require('server/utils/emailStyle');
 const User = require('server/api/user/user.model');
