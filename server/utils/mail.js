@@ -84,12 +84,12 @@ export async function addUserToEmailList(user) {
     if (u.address) u.address = u.address.trim();
     else return null;
 
-    return new Promise((resolve, reject) =>
+    return new Promise(resolve =>
       list.members().create(u, (err, data) => {
         if (err) {
-          console.log('error adding user to email list', user, err); // eslint-disable-line
+          console.log('error adding user to email list', user.handle, err); // eslint-disable-line
           sendAdminAlert(err);
-          return reject(err);
+          return resolve(null);
         }
         return resolve(data);
       })

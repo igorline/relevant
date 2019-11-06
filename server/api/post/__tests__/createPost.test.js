@@ -8,7 +8,7 @@ import { post, community } from 'app/mockdata';
 import { sanitize } from 'server/test/utils';
 import { getUsers } from 'server/test/seedData';
 
-jest.mock('request-promise-native');
+// jest.mock('request-promise-native');
 
 let alice;
 const { createPost } = post;
