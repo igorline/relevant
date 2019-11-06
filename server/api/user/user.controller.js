@@ -107,7 +107,6 @@ exports.confirm = async (req, res, next) => {
     req.confirmed = true;
     return middleware ? next() : res.status(200).json(user);
   } catch (err) {
-    console.error(err); // eslint-disable-line
     return next();
   }
 };
