@@ -2,6 +2,8 @@ import { Alert } from 'app/utils/alert';
 
 require('./api').env();
 
+const S3_KEY = process.env.S3_KEY || 'AKIAJUARIDOFR6VZSEYA';
+
 let RNFetchBlob;
 let Platform = {};
 
@@ -29,9 +31,9 @@ function dataURItoBlob(dataURI) {
 
   // separate out the mime component
   const mimeString = dataURI
-  .split(',')[0]
-  .split(':')[1]
-  .split(';')[0];
+    .split(',')[0]
+    .split(':')[1]
+    .split(';')[0];
 
   // write the bytes of the string to a typed array
   const ia = new Uint8Array(byteString.length);
@@ -69,7 +71,8 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, signedObjectNa
   }
 
   body.append('key', signedObjectName);
-  body.append('AWSAccessKeyId', 'AKIAJUARIDOFR6VZSEYA');
+  // TODO fetch this form the server?
+  body.append('AWSAccessKeyId', S3_KEY);
   body.append('acl', 'public-read');
   body.append('success_action_status', '201');
   body.append('Content-Type', file.type);
@@ -81,30 +84,30 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, signedObjectNa
     method: 'POST',
     body
   })
-  .then(response => {
-    if (Platform.OS === 'android') {
-      RNFetchBlob.session('uploads').dispose();
-      if (response.status === 201) {
-        return { success: true, url: publicUrl };
+    .then(response => {
+      if (Platform.OS === 'android') {
+        RNFetchBlob.session('uploads').dispose();
+        if (response.status === 201) {
+          return { success: true, url: publicUrl };
+        }
+        return { success: false, response };
       }
-      return { success: false, response };
-    }
-    return { success: true, url: publicUrl };
-  })
-  .catch(error => {
-    if (Platform.OS === 'android') {
-      RNFetchBlob.session('uploads').dispose();
-    }
-    return { success: false, url: null, error };
-  });
+      return { success: true, url: publicUrl };
+    })
+    .catch(error => {
+      if (Platform.OS === 'android') {
+        RNFetchBlob.session('uploads').dispose();
+      }
+      return { success: false, url: null, error };
+    });
 }
 
 function executeOnSignedUrl(uri, fileName) {
   const extension = fileName || uri.substr(uri.length - 4);
   const signedPutUrl = process.env.API_SERVER + '/api/s3/sign';
   let signedObjectName = Math.random()
-  .toString(36)
-  .substr(2, 9);
+    .toString(36)
+    .substr(2, 9);
   signedObjectName += '_' + extension;
 
   return fetch(
@@ -118,18 +121,18 @@ function executeOnSignedUrl(uri, fileName) {
       method: 'GET'
     }
   )
-  .then(response => response.json())
-  .then(responseJSON =>
-    uploadToS3(
-      uri,
-      responseJSON.signature.s3Policy,
-      responseJSON.signature.s3Signature,
-      responseJSON.url,
-      responseJSON.publicUrl,
-      signedObjectName
+    .then(response => response.json())
+    .then(responseJSON =>
+      uploadToS3(
+        uri,
+        responseJSON.signature.s3Policy,
+        responseJSON.signature.s3Signature,
+        responseJSON.url,
+        responseJSON.publicUrl,
+        signedObjectName
+      )
     )
-  )
-  .catch(error => ({ success: false, url: null, error }));
+    .catch(error => ({ success: false, url: null, error }));
 }
 
 export function toS3Advanced(uri, fileName) {
