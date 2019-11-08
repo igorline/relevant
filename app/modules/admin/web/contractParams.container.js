@@ -17,6 +17,8 @@ import { useTokenContract, useRelevantActions } from 'modules/contract/contract.
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
 
+const BN = require('bignumber.js');
+
 const ParamsTable = styled.table`
   margin-top: 10px;
   margin-left: 20px;
@@ -78,6 +80,33 @@ const ContractParams = () => {
   const allocateRewards = () =>
     cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
 
+  const initializeRewardSplit = () => {
+    const airdropSwitchRound = 1;
+    const airdropRoundDecay = 1;
+    const firstNewAirdrop = 1;
+
+    // transform big number parameters for contract initialization
+    // (ugh is there a better way to do this?)
+    cacheMethod('airdropSwitchRound');
+    cacheMethod('airdropRoundDecay');
+    cacheMethod('airdropSwitchRound');
+
+    const airdropRoundDecayBNString = new BN(airdropRoundDecay.toString())
+      .toFixed(0)
+      .toString();
+    const firstNewAirdropBNString = new BN(firstNewAirdrop.toString())
+      .toFixed(0)
+      .toString();
+
+    cacheSend(
+      'initializeRewardSplit',
+      { from: accounts[0] },
+      airdropSwitchRound,
+      airdropRoundDecayBNString,
+      firstNewAirdropBNString
+    );
+  };
+
   return (
     <View m={4}>
       <Title>Contract Params</Title>
@@ -99,6 +128,9 @@ const ContractParams = () => {
               </Button>
               <Button mr={'auto'} mt={4} onClick={() => allocateRewards()}>
                 Allocate Rewards
+              </Button>
+              <Button mr={'auto'} mt={4} onClick={() => initializeRewardSplit()}>
+                Init Airdrop
               </Button>
             </AdminActions>
           )}
@@ -153,7 +185,12 @@ function getReadableMethods() {
           method !== 'isOwner' &&
           method !== 'allocatedRewards' &&
           method !== 'totalReleased' &&
-          method !== 'currentRound'
+          method !== 'currentRound' &&
+          method !== 'initializeRewardSplit' // &&
+        // method !== 'airdropSwitchRound' &&
+        // method !== 'airdropRoundDecay' &&
+        // method !== 'initRoundAirdrop' &&
+        // method !== 'lastRoundAirdrop'
       )
     )
   );

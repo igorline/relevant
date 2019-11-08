@@ -33,34 +33,40 @@ export const getWeb3 = () => web3;
 export const getInstance = () => instance;
 
 export async function init() {
-  // SECURITY - this env var should never by exposed via any APIs!
-  if (process.env.NODE_ENV === 'production') {
-    key = process.env.OWNER_KEY;
-    if (!key) return false;
+  try {
+    // SECURITY - this env var should never by exposed via any APIs!
+    if (process.env.NODE_ENV === 'production') {
+      key = process.env.OWNER_KEY;
+      if (!key) return false;
 
-    provider = ethers.getDefaultProvider(INFURA_NETWORK);
-    tokenAddress = RelevantToken.networks[NETWORK_NUMBER]
-      ? RelevantToken.networks[NETWORK_NUMBER].address
-      : null;
-  } else {
-    key = process.env.TEST_KEY;
-    if (!key) return false;
+      provider = ethers.getDefaultProvider(INFURA_NETWORK);
+      tokenAddress = RelevantToken.networks[NETWORK_NUMBER]
+        ? RelevantToken.networks[NETWORK_NUMBER].address
+        : null;
+    } else {
+      key = process.env.TEST_KEY;
+      if (!key) return false;
 
-    rpcUrl = process.env.TEST_RPC;
-    provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    network = await provider.getNetwork();
-    tokenAddress = RelevantToken.networks[network.chainId].address;
+      rpcUrl = process.env.TEST_RPC;
+      provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+      network = await provider.getNetwork();
+      tokenAddress = RelevantToken.networks[network.chainId].address;
+    }
+
+    wallet = new ethers.Wallet(key, provider);
+    instance = new ethers.Contract(tokenAddress, RelevantToken.abi, provider);
+
+    // SECURITY - this should never by exposed via any APIs!
+    instance = instance.connect(wallet);
+
+    decimals = await instance.decimals();
+    initialized = true;
+
+    return true;
+  } catch (err) {
+    console.log(err); // eslint-disable-line
+    return false;
   }
-
-  wallet = new ethers.Wallet(key, provider);
-  instance = new ethers.Contract(tokenAddress, RelevantToken.abi, provider);
-
-  // SECURITY - this should never by exposed via any APIs!
-  instance = instance.connect(wallet);
-
-  decimals = await instance.decimals();
-  initialized = true;
-  return true;
 }
 
 export async function getBalance(address) {
