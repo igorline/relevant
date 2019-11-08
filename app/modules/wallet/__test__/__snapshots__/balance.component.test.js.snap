@@ -742,6 +742,7 @@ exports[`Snapshot Balance Web 1`] = `
           "alignItems": "center",
           "display": "flex",
           "flexDirection": "row",
+          "marginRight": "1rem",
           "marginTop": "1rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
@@ -749,6 +750,84 @@ exports[`Snapshot Balance Web 1`] = `
         }
       }
     />
+    <div
+      className="css-view-1dbjc4n"
+      style={
+        Object {
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitFlexDirection": "row",
+          "alignItems": "center",
+          "display": "flex",
+          "flexDirection": "row",
+          "marginRight": "1rem",
+          "marginTop": "1rem",
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="css-view-1dbjc4n"
+        data-event-off="click"
+        data-for="mainTooltip"
+        data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"When you upvote posts you also bet coins on them. How much you bet can be decided automatically or manualy.\\"}}"
+        style={
+          Object {
+            "display": "flex",
+            "position": "relative",
+          }
+        }
+      >
+        <div
+          c="#0000ff"
+          className="css-text-901oao"
+          data-focusable={true}
+          dir="auto"
+          mr={0.5}
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "MozUserSelect": "none",
+              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+              "WebkitTextDecorationStyle": "solid",
+              "WebkitUserSelect": "none",
+              "color": "rgba(0,0,255,1.00)",
+              "cursor": "pointer",
+              "display": "flex",
+              "fontFamily": "HelveticaNeue-Medium",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
+              "marginRight": "0.25rem",
+              "msTouchAction": "manipulation",
+              "msUserSelect": "none",
+              "position": "relative",
+              "textDecoration": "underline",
+              "textDecorationColor": "rgba(0,0,255,1.00)",
+              "textDecorationStyle": "solid",
+              "touchAction": "manipulation",
+              "userSelect": "none",
+            }
+          }
+          tabIndex="0"
+          td="underline"
+        >
+          Disable
+           Manual Betting
+        </div>
+      </div>
+    </div>
   </div>
   <div
     className="css-text-901oao"
