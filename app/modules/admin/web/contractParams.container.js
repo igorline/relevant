@@ -81,15 +81,15 @@ const ContractParams = () => {
     cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
 
   const initializeRewardSplit = () => {
-    const airdropSwitchRound = 1;
-    const airdropRoundDecay = 1;
-    const firstNewAirdrop = 1;
+    const airdropSwitchRound = 8352;
+    const airdropRoundDecay = 999762649000782000;
+    const firstNewAirdrop = 3442799625893100000000;
 
     // transform big number parameters for contract initialization
     // (ugh is there a better way to do this?)
-    cacheMethod('airdropSwitchRound');
-    cacheMethod('airdropRoundDecay');
-    cacheMethod('airdropSwitchRound');
+    // cacheMethod('airdropSwitchRound');
+    // cacheMethod('airdropRoundDecay');
+    // cacheMethod('airdropSwitchRound');
 
     const airdropRoundDecayBNString = new BN(airdropRoundDecay.toString())
       .toFixed(0)

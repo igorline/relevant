@@ -151,10 +151,12 @@ InvestSchema.statics.createVote = async function createVote({
     // parentPost: post.parentPost,
     // linkPost: post.linkPost,
     payoutDate: post.data.payoutDate,
-    paidOut: post.data.paidOut
+    paidOut: post.data.paidOut,
+    isManualBet: user.notificationSettings.bet.manual
   });
 
   vote = await vote.save();
+
   post.data.needsRankUpdate = true;
 
   // TODO - don't take into account community settings?
