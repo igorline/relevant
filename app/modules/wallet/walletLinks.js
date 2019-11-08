@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { colors, isNative } from 'app/styles';
 import { exchangeLink, tokenEnabled } from 'modules/wallet/price.context';
 import { goToUrl, showModal } from 'modules/navigation/navigation.actions';
@@ -7,11 +7,19 @@ import { Touchable, LinkFont, View } from 'modules/styled/uni';
 import { CASHOUT_MAX } from 'server/config/globalConstants';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import ULink from 'modules/navigation/ULink.component';
+import { updateNotificationSettings } from 'modules/auth/auth.actions';
 
 export default function WalletLinks() {
   const dispatch = useDispatch();
-  if (isNative) return null;
   const exchageUrl = exchangeLink();
+  const user = useSelector(state => state.auth.user);
+  if (isNative) return null;
+
+  const isManualBet = user.notificationSettings.bet.manual;
+
+  const toggleManualBet = () => {
+    dispatch(updateNotificationSettings({ bet: { manual: !isManualBet } }));
+  };
 
   return (
     <View fdirection="row">
@@ -46,7 +54,7 @@ export default function WalletLinks() {
         </Tooltip>
       </View>
 
-      <View fdirection="row" mt={2} align="center">
+      <View fdirection="row" mr={2} mt={2} align="center">
         {tokenEnabled() && (
           <ULink to={exchageUrl} external target="_blank" td={'underline'}>
             <LinkFont
@@ -60,6 +68,20 @@ export default function WalletLinks() {
             </LinkFont>
           </ULink>
         )}
+      </View>
+
+      <View fdirection="row" mr={2} mt={2} align="center">
+        <Tooltip
+          data={{
+            text: `When you upvote posts you also bet coins on them. How much you bet can be decided automatically or manualy.`
+          }}
+        >
+          <Touchable style={{ zIndex: 1 }} onClick={toggleManualBet} td={'underline'}>
+            <LinkFont c={colors.blue} mr={0.5}>
+              {isManualBet ? 'Disable' : 'Enable'} Manual Betting
+            </LinkFont>
+          </Touchable>
+        </Tooltip>
       </View>
     </View>
   );

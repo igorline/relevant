@@ -7,11 +7,15 @@ import { View, BodyText, Header, SecondaryText } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_MAX } from 'server/config/globalConstants';
 import Tooltip from 'modules/tooltip/tooltip.component';
+// import { updateNotificationSettings } from 'modules/auth/auth.actions';
+// import { TEXT } from 'modules/bannerPrompt/betBanner';
+// import { NotificationToggle } from 'modules/profile/settings/settings.toggle';
 import WalletLinks from './walletLinks';
 
 export function Balance() {
   const user = useSelector(state => state.auth.user);
   const screenSize = useSelector(state => state.navigation.screenSize);
+  // const dispatch = useDispatch();
 
   const maxUSD = usePrice(CASHOUT_MAX);
 
@@ -32,6 +36,10 @@ export function Balance() {
     lockedTokens,
     stakingPower
   });
+
+  // const enableManualBet = () => {
+  //   dispatch(updateNotificationSettings({ bet: { manual: true } }));
+  // };
 
   return (
     <View m={['4 4 2 4', '2 2 0 2']}>
@@ -73,6 +81,28 @@ export function Balance() {
         )}
       </View>
       <WalletLinks />
+
+      {/*      <BodyText inline={1}>
+        {TEXT.messageText}
+        <ULink to="#">
+          <Text inline={1} onClick={enableManualBet}>
+            {TEXT.actionText}
+          </Text>
+        </ULink>
+      </BodyText> */}
+      {/*      <View maxWidth={40}>
+        <NotificationToggle
+          notification={user.notificationSettings.bet.manual}
+          parent={'bet'}
+          label={'manual'}
+          togglePosition={'right'}
+          DescriptionComponent={BodyText}
+          text={{
+            description: 'Enable manual betting:'
+          }}
+        />
+      </View> */}
+
       <Header mt={[9, 4]}>Recent Activity</Header>
       {!screenSize ? (
         <BodyText mt={2}>
