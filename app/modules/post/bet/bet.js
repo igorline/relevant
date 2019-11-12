@@ -179,7 +179,7 @@ function Bet({ user, post, close }) {
        */}
 
       <SmallText mt={2}>
-        *You always your coins back once the betting round ends.
+        *You always get your coins back once the betting round ends.
       </SmallText>
 
       {/*      <NotificationToggle

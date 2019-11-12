@@ -13,8 +13,8 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/testDbSetup'],
   setupFiles: ['dotenv/config'],
   testPathIgnorePatterns: [
-    '<rootDir>/../node_modules/',
-    'ethereum.test.js',
-    'cashout.test.js'
+    '<rootDir>/../node_modules/'
+    // 'ethereum.test.js'
+    // 'cashout.test.js'
   ]
 };

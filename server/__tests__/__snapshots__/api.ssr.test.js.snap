@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`server-side request generate correct fetch request 1`] = `
+exports[`server-side api request generate correct fetch request 1`] = `
 [MockFunction] {
   "calls": Array [
     Array [

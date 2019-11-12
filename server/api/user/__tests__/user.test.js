@@ -15,7 +15,7 @@ describe('User', () => {
   let aliceId;
   let next; // eslint-disable-line
   // const next = jest.fn(console.log); // eslint-disable-line
-  global.console = { log: jest.fn() }; // hides logs
+  global.console.log = jest.fn(); // hides logs
 
   beforeEach(() => {
     res = response();

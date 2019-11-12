@@ -2,19 +2,21 @@ import User from 'server/api/user/user.model';
 import { cashOut } from 'server/api/user/user.controller';
 import { response } from 'jest-mock-express';
 import { getUsers } from 'server/test/seedData';
-import { init } from 'server/utils/ethereum';
+import { init, mintRewardTokens, allocateRewards } from 'server/utils/ethereum';
 import { CASHOUT_MAX } from 'server/config/globalConstants';
+import { deployContract } from 'server/test/setup.eth';
 
-require('dotenv').config({ silent: true });
+process.env.TEST_SUITE = 'cashout';
 
 describe('Cashout', () => {
   let { alice, bob, next, res } = {};
 
   beforeAll(async () => {
-    await init();
+    const { address, provider } = await deployContract();
+    await init(provider, address);
     ({ alice, bob } = getUsers());
-    // global.console = { log: jest.fn() }; // hides logs
-  });
+    global.console.log = jest.fn(); // hides logs
+  }, 15000);
 
   beforeEach(() => {
     res = response();
@@ -62,17 +64,21 @@ describe('Cashout', () => {
     expect(next).toHaveBeenCalled();
   });
 
+  test('should mint tokens', async () => {
+    await mintRewardTokens();
+    await allocateRewards((10 * 10 ** 18).toString());
+  });
+
   test('cashout success', async () => {
-    alice.balance = 100 + bob.airdropTokens;
-    await bob.save();
+    const amnt = 10;
     const req = {
       user: alice,
-      body: { customAmount: 100 }
+      body: { customAmount: amnt }
     };
     await cashOut(req, res, next);
     const apiRes = res.json.mock.calls[0][0];
-    expect(apiRes.cashOut.amount).toBe((100 * 1e18).toString());
+    expect(apiRes.user.cashOut.amount).toBe((amnt * 1e18).toString());
     const updatedUser = await User.findOne({ _id: alice._id });
-    expect(updatedUser.cashedOut).toBe(100);
+    expect(updatedUser.cashedOut).toBe(amnt);
   });
 });

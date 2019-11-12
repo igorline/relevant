@@ -9,17 +9,24 @@ import {
   sign,
   sendTx
 } from 'server/utils/ethereum';
-
-require('dotenv').config({ silent: true });
+import { deployContract, provider } from 'server/test/setup.eth';
 
 const devRewardsAddress = '0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0';
 
-describe('ethRewards', () => {
+process.env.TEST_SUITE = 'ethereum';
+
+describe('ethereum test', () => {
   let instance;
+  let address;
+  global.console.log = jest.fn(); // hides logs
+
+  beforeAll(async () => {
+    ({ address } = await deployContract());
+  }, 15000);
 
   describe('init', () => {
     test('should initialize', async () => {
-      await init();
+      await init(provider, address);
       const initialized = isInitialized();
       expect(initialized).toBe(true);
       instance = getInstance();
@@ -29,7 +36,6 @@ describe('ethRewards', () => {
   describe('mintRewardTokens', () => {
     test('rewards sinse last round', async () => {
       const rounds = await instance.roundsSincleLast();
-      console.log('rounds', rounds.toString()); // eslint-disable-line
       expect(rounds.toNumber()).toBeGreaterThan(0);
     });
 

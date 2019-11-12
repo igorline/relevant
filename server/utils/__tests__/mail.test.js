@@ -7,6 +7,8 @@ import {
 } from 'server/utils/mail';
 import { getUsers } from 'server/test/seedData';
 
+process.env.TEST_SUITE = 'email';
+
 const { MAILGUN_API_KEY, MAILGUN_DOMAIN, MAILER_LITE_KEY } = process.env;
 
 const SHOULD_RUN_TEST = MAILGUN_API_KEY && MAILGUN_DOMAIN && MAILER_LITE_KEY;

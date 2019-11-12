@@ -32,7 +32,7 @@ export const getWeb3 = () => web3;
 // SECURITY - this should never by exposed via any APIs!
 export const getInstance = () => instance;
 
-export async function init() {
+export async function init(_provider, _address) {
   try {
     // SECURITY - this env var should never by exposed via any APIs!
     if (process.env.NODE_ENV === 'production') {
@@ -48,9 +48,9 @@ export async function init() {
       if (!key) return false;
 
       rpcUrl = process.env.TEST_RPC;
-      provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+      provider = _provider || new ethers.providers.JsonRpcProvider(rpcUrl);
       network = await provider.getNetwork();
-      tokenAddress = RelevantToken.networks[network.chainId].address;
+      tokenAddress = _address || RelevantToken.networks[network.chainId].address;
     }
 
     wallet = new ethers.Wallet(key, provider);

@@ -37,7 +37,7 @@ describe('CreatePost', () => {
     inviteWithEmail,
     aliceInitialAirdrop
   } = {};
-  global.console = { log: jest.fn() }; // hides logs
+  global.console.log = jest.fn(); // hides logs
   const next = console.log; // eslint-disable-line
   let newUser;
 

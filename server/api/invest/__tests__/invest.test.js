@@ -38,7 +38,7 @@ describe('ethRewards', () => {
 
   beforeEach(() => {
     res = response();
-    global.console = { log: jest.fn() }; // hides logs
+    global.console.log = jest.fn(); // hides logs
   });
 
   describe('Invest', () => {
