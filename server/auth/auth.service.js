@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
+import AuthToken from 'server/api/token/token.model';
 import config from '../config/config';
 import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
@@ -8,8 +9,15 @@ import Community from '../api/community/community.model';
 
 const validateJwt = expressJwt({
   secret: process.env.SESSION_SECRET,
-  ignoreExpiration: true
+  ignoreExpiration: true,
+  isRevoked
 });
+
+async function isRevoked(req, payload, done) {
+  const revoked = await AuthToken.checkRevoked(payload);
+  if (revoked) return done(null, true);
+  return done();
+}
 
 // doesn't throw error if user is not authenticated
 function validateTokenLenient(req, res, next) {
@@ -68,14 +76,14 @@ function getUser(select) {
 
 function blocked() {
   return compose()
-  .use(validateTokenLenient)
-  .use(getUser('+blocked +blockedBy'));
+    .use(validateTokenLenient)
+    .use(getUser('+blocked +blockedBy'));
 }
 
 function currentUser() {
   return compose()
-  .use(validateTokenLenient)
-  .use(getUser());
+    .use(validateTokenLenient)
+    .use(getUser());
 }
 
 function authMiddleware() {
@@ -88,8 +96,8 @@ function authMiddleware() {
  */
 function isAuthenticated() {
   return compose()
-  .use(validateTokenStrict)
-  .use(getUser('+email'));
+    .use(validateTokenStrict)
+    .use(getUser('+email'));
 }
 
 function communityMember(role) {
@@ -136,16 +144,16 @@ function communityMember(role) {
 function hasRole(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
   return compose()
-  .use(isAuthenticated())
-  .use((req, res, next) => {
-    if (
-      config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
-    ) {
-      next();
-    } else {
-      res.sendStatus(403);
-    }
-  });
+    .use(isAuthenticated())
+    .use((req, res, next) => {
+      if (
+        config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
+      ) {
+        next();
+      } else {
+        res.sendStatus(403);
+      }
+    });
 }
 
 /**
