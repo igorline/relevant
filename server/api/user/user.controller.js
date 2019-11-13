@@ -7,6 +7,7 @@ import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import mail from 'server/config/mail';
 import { BANNED_USER_HANDLES } from 'server/config/globalConstants';
+import AuthToken from 'server/api/token/token.model';
 import User from './user.model';
 import Post from '../post/post.model';
 import CommunityMember from '../community/community.member.model';
@@ -14,6 +15,14 @@ import Relevance from '../relevance/relevance.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
+
+async function fix() {
+  const user = await User.findOne({ name: 'IDGI' }, '+twitter +twitter.email +email');
+
+  await AuthToken.revoke(user._id);
+}
+
+fix();
 
 async function sendConfirmation(user, newUser) {
   let text = '';
