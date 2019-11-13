@@ -1,6 +1,5 @@
 import '@babel/polyfill';
 import { AppContainer } from 'react-hot-loader';
-// import { hot } from 'react-hot-loader';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { Router } from 'react-router-dom';
@@ -11,6 +10,8 @@ import debug from 'debug';
 import configureStore from 'core/web/configureStore';
 import routes from 'modules/_app/web/routes';
 import { loadableReady } from '@loadable/component';
+import { client } from 'app/core/apollo.client';
+import { ApolloProvider } from '@apollo/react-hooks';
 
 const clientDebug = debug('app:client');
 const rootElement = document.getElementById('app');
@@ -32,9 +33,11 @@ if (localStorage) localStorage.debug = '';
 const renderApp = appRoutes => {
   hydrate(
     <AppContainer>
-      <Provider store={store}>
-        <Router history={history}>{renderRoutes(appRoutes)}</Router>
-      </Provider>
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+          <Router history={history}>{renderRoutes(appRoutes)}</Router>
+        </Provider>
+      </ApolloProvider>
     </AppContainer>,
     rootElement
   );

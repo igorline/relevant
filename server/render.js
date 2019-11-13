@@ -13,6 +13,8 @@ import { AppRegistry } from 'react-native-web';
 import useragent from 'express-useragent';
 import { Dimensions } from 'react-native';
 import { getScreenSize } from 'app/utils/nav';
+import { client } from 'app/core/apollo.client.server';
+import { ApolloProvider } from '@apollo/react-common';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -69,6 +71,8 @@ export default async function handleRender(req, res) {
   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {
+    // throw new Error('temp disable ssr');
+
     await handleRouteData({ req, store });
     const { app, rnWebStyles } = renderApp({ url: req.url, store });
 
@@ -132,7 +136,10 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl, req })
       </head>
       <body>
         <div id="app">${app}</div>
-        <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}</script>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
+          window.__APOLLO_STATE__ = ${JSON.stringify(client.extract())};
+        </script>
         ${scriptTags}
       </body>
     </html>
@@ -206,11 +213,13 @@ export function renderApp({ url, store }) {
   const nonce = new Date().getTime();
 
   const App = () => (
-    <Provider store={store}>
-      <StaticRouter location={url} context={context}>
-        {renderRoutes(routes)}
-      </StaticRouter>
-    </Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <StaticRouter location={url} context={context}>
+          {renderRoutes(routes)}
+        </StaticRouter>
+      </Provider>
+    </ApolloProvider>
   );
 
   AppRegistry.registerComponent('App', () => App);

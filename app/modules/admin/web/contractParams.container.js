@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import pickBy from 'lodash/pickBy';
@@ -12,10 +12,23 @@ import {
   Button,
   NumericalValue
 } from 'modules/styled/uni';
-import { contractPropTypes } from 'modules/contract/contract.container';
 import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
+
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
+const GET_TREASURY = gql`
+  query {
+    treasuryOne {
+      balance
+      community
+      rewardFund
+      totalTokens
+    }
+  }
+`;
 
 const ParamsTable = styled.table`
   margin-top: 10px;
@@ -38,35 +51,23 @@ const AdminActions = styled.div`
 const rewardsToAllocate = formatBalanceWrite('999', 18);
 const readableMethods = getReadableMethods();
 
-const ParamRow = ({ method, methodCache, cacheMethod }) => (
-  <tr>
-    <td>{method}</td>
-    <td>
-      <NumericalValue>
-        {methodCache.select(method) &&
-        typeof parseBN(methodCache.select(method).value) !== 'number'
-          ? parseBN(methodCache.select(method).value)
-          : numbers.abbreviateNumber(parseBN(methodCache.select(method).value))}
-      </NumericalValue>
-    </td>
-    <td>
-      <Button onClick={() => cacheMethod(method)}>Call</Button>
-    </td>
-    <td>
-      <Input />
-    </td>
-  </tr>
-);
+export default function TokenPanel() {
+  return (
+    <Fragment>
+      <Treasury />
+      <ContractParams />
+    </Fragment>
+  );
+}
 
-ParamRow.propTypes = {
-  method: PropTypes.string,
-  methodCache: PropTypes.shape({
-    select: PropTypes.func
-  }),
-  cacheMethod: PropTypes.func
-};
+function Treasury() {
+  const { data, loading, error } = useQuery(GET_TREASURY);
+  if (loading) return <BodyText>Loading...</BodyText>;
+  if (error) return <BodyText>ERROR: {error.message}</BodyText>;
+  return <BodyText>{JSON.stringify(data)}</BodyText>;
+}
 
-const ContractParams = () => {
+function ContractParams() {
   const [accounts, { userBalance, methodCache }] = useTokenContract();
   const { cacheMethod, cacheSend } = useRelevantActions();
 
@@ -127,11 +128,37 @@ const ContractParams = () => {
       </View>
     </View>
   );
+}
+
+ParamRow.propTypes = {
+  method: PropTypes.string,
+  methodCache: PropTypes.shape({
+    select: PropTypes.func
+  }),
+  cacheMethod: PropTypes.func
 };
 
-ContractParams.propTypes = contractPropTypes;
-
-export default ContractParams;
+function ParamRow({ method, methodCache, cacheMethod }) {
+  return (
+    <tr>
+      <td>{method}</td>
+      <td>
+        <NumericalValue>
+          {methodCache.select(method) &&
+          typeof parseBN(methodCache.select(method).value) !== 'number'
+            ? parseBN(methodCache.select(method).value)
+            : numbers.abbreviateNumber(parseBN(methodCache.select(method).value))}
+        </NumericalValue>
+      </td>
+      <td>
+        <Button onClick={() => cacheMethod(method)}>Call</Button>
+      </td>
+      <td>
+        <Input />
+      </td>
+    </tr>
+  );
+}
 
 // Utils
 function hasCacheValue(cache) {

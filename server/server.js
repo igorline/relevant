@@ -2,6 +2,8 @@
 import Express from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
+import { ApolloServer } from 'apollo-server-express';
+import schema from 'server/graphql/schema';
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -100,11 +102,17 @@ app.use(cookiesMiddleware());
 const port = process.env.PORT || 3000;
 
 console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
-let server;
+
+let server = new ApolloServer({
+  schema,
+  playground: process.env.NODE_ENV === 'development'
+});
 const socketServer = require('./socket').default;
 
+server.applyMiddleware({ app });
+
 if (process.env.NODE_ENV !== 'test') {
-  server = app.listen(port, error => {
+  server = app.listen({ port }, error => {
     if (error) {
       console.error(error);
     } else {
