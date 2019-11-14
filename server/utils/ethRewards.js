@@ -71,8 +71,8 @@ exports.rewards = async () => {
       q.start(err => (err ? reject(err) : resolve(results)));
     });
 
-    const totalDistributedRewards = Object.keys(payoutData).reduce(
-      (result, key) => result + payoutData[key].distributedRewards,
+    const totalDistributedRewards = Object.values(payoutData).reduce(
+      (result, value) => result + value.distributedRewards,
       0
     );
 
@@ -305,7 +305,7 @@ async function distributeUserRewards(posts, _community) {
   console.log('total distributed rewards for', community, distributedRewards);
   console.log('\x1b[32m', payouts);
   console.log('\x1b[0m');
-  return { payouts, distributedRewards: distributedRewards.toPrecision(12) };
+  return { payouts, distributedRewards };
 }
 
 async function sendNotification(props) {

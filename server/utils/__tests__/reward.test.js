@@ -52,6 +52,7 @@ describe('ethRewards', () => {
   describe('Rewards', () => {
     test('should compute correctly', async () => {
       const payouts = await ethRewards.rewards();
+      payouts.totalDistributedRewards = payouts.totalDistributedRewards.toPrecision(12);
       expect(payouts).toMatchSnapshot();
     });
   });
