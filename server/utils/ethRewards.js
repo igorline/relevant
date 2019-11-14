@@ -73,8 +73,8 @@ exports.rewards = async () => {
       q.start(err => (err ? reject(err) : resolve(results)));
     });
 
-    const totalDistributedRewards = Object.keys(payoutData).reduce(
-      (result, key) => result + payoutData[key].distributedRewards,
+    const totalDistributedRewards = Object.values(payoutData).reduce(
+      (result, value) => result + value.distributedRewards,
       0
     );
 
@@ -138,7 +138,6 @@ function communityRewardShare({ community, stakedTokens, rewardPool }) {
 }
 
 async function postRewards(community) {
-  const rewardPool = community.rewardFund;
   const now = new Date();
 
   // use postData as post
@@ -159,7 +158,6 @@ async function postRewards(community) {
   // decay current reward shares
   const decay = (now.getTime() - community.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
 
-  community.rewardFund = rewardPool;
   community.currentShares *= 1 - Math.min(1, decay);
   community.topPostShares *= 1 - Math.min(1, decay);
   community.postCount *= 1 - Math.min(1, decay);
@@ -312,7 +310,7 @@ async function distributeUserRewards(posts, _community) {
   console.log('total distributed rewards for', community, distributedRewards);
   console.log('\x1b[32m', payouts);
   console.log('\x1b[0m');
-  return { payouts, distributedRewards: distributedRewards.toPrecision(12) };
+  return { payouts, distributedRewards };
 }
 
 async function sendNotification(props) {

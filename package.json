@@ -54,6 +54,8 @@
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
     "apollo-link-schema": "^1.2.4",
+    "apollo-link-ws": "^1.0.19",
+    "apollo-server": "^2.9.9",
     "apollo-server-express": "^2.9.7",
     "awesome-debounce-promise": "^2.1.0",
     "aws-sdk": "^2.559.0",

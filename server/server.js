@@ -5,6 +5,10 @@ import passport from 'passport';
 import { ApolloServer } from 'apollo-server-express';
 import schema from 'server/graphql/schema';
 
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { execute, subscribe } from 'graphql';
+import http from 'http';
+
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -19,6 +23,8 @@ const app = new Express();
 mongoose.Promise = global.Promise;
 
 require('dotenv').config({ silent: true });
+
+const { validateTokenLenient, verify } = require('server/auth/auth.service');
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 
@@ -96,7 +102,6 @@ if (process.env.NO_SSL !== 'true') {
 
 // public folder
 app.use('/', expressStaticGzip(path.join(__dirname, '/../app/public'), { index: false }));
-// app.use(Express.static(path.join(__dirname, '/../app/public')));
 app.use(cookiesMiddleware());
 
 const port = process.env.PORT || 3000;
@@ -105,30 +110,65 @@ console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
 
 let server = new ApolloServer({
   schema,
-  playground: process.env.NODE_ENV === 'development'
+  playground: process.env.NODE_ENV !== 'production',
+  context: ({ req, connection }) => {
+    console.log('connection', connection);
+    return connection ? connection.context : { user: req.user || {} };
+  }
 });
-const socketServer = require('./socket').default;
 
+app.use('/graphql', validateTokenLenient);
 server.applyMiddleware({ app });
 
-if (process.env.NODE_ENV !== 'test') {
-  server = app.listen({ port }, error => {
-    if (error) {
-      console.error(error);
-    } else {
-      console.info(
-        `==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`
-      );
-      const now = new Date();
-      require('./routes')(app);
-      const time = new Date().getTime() - now.getTime();
-      console.log('done loading routes', time / 1000, 's');
-    }
-    socketServer(server, { pingTimeout: 30000 });
-  });
-} else {
-  require('./routes')(app);
-}
+const socketServer = require('./socket').default;
+
+const socketIoServer = http.Server(app).listen(3001, function() {
+  console.log('WebSocket listening on port %d', 3001);
+});
+
+server = app.listen({ port }, error => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.info(
+      `==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`
+    );
+    const now = new Date();
+    require('./routes')(app);
+    const time = new Date().getTime() - now.getTime();
+    console.log('done loading routes', time / 1000, 's');
+  }
+
+  socketServer(server, { pingTimeout: 30000 });
+});
+
+SubscriptionServer.create(
+  {
+    onOperation: async (message, params) => {
+      const { token } = message.payload;
+      const user = await verify(token);
+      return {
+        ...params,
+        context: {
+          ...params.context,
+          user
+        }
+      };
+    },
+    // onConnect: (connectionParams, webSocket, context) => {
+    //   // TODO auth socket request
+    //   console.log(webSocket.user);
+    //   console.log(context.user);
+    // },
+    execute,
+    subscribe,
+    schema
+  },
+  {
+    server: socketIoServer,
+    path: '/graphql'
+  }
+);
 
 // in production this is a worker
 if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'native') {

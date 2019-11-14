@@ -72,12 +72,11 @@ async function userEarnings(user) {
 function difference(user, totalRewards) {
   return (
     user.balance +
-    user.tokenBalance -
+    user.cashedOut -
     user.airdropTokens -
     totalRewards -
     user.legacyTokens -
-    user.legacyAirdrop -
-    user.cashedOut
+    user.legacyAirdrop
   );
 }
 

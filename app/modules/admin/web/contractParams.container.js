@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import pickBy from 'lodash/pickBy';
 import { types } from 'core/contracts';
-import { numbers } from 'app/utils';
+import { abbreviateNumber } from 'app/utils/numbers';
 import {
   View,
   Title,
@@ -15,20 +15,7 @@ import {
 import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
-
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-const GET_TREASURY = gql`
-  query {
-    treasuryOne {
-      balance
-      community
-      rewardFund
-      totalTokens
-    }
-  }
-`;
+import Treasury from './treasury';
 
 const ParamsTable = styled.table`
   margin-top: 10px;
@@ -58,13 +45,6 @@ export default function TokenPanel() {
       <ContractParams />
     </Fragment>
   );
-}
-
-function Treasury() {
-  const { data, loading, error } = useQuery(GET_TREASURY);
-  if (loading) return <BodyText>Loading...</BodyText>;
-  if (error) return <BodyText>ERROR: {error.message}</BodyText>;
-  return <BodyText>{JSON.stringify(data)}</BodyText>;
 }
 
 function ContractParams() {
@@ -144,10 +124,7 @@ function ParamRow({ method, methodCache, cacheMethod }) {
       <td>{method}</td>
       <td>
         <NumericalValue>
-          {methodCache.select(method) &&
-          typeof parseBN(methodCache.select(method).value) !== 'number'
-            ? parseBN(methodCache.select(method).value)
-            : numbers.abbreviateNumber(parseBN(methodCache.select(method).value))}
+          {abbreviateNumber(methodCache.select(method).value)}
         </NumericalValue>
       </td>
       <td>

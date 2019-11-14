@@ -7,11 +7,20 @@ import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
 import Community from '../api/community/community.model';
 
+const secret = process.env.SESSION_SECRET;
+
 const validateJwt = expressJwt({
-  secret: process.env.SESSION_SECRET,
+  secret,
   ignoreExpiration: true,
   isRevoked
 });
+
+async function verify(token) {
+  const user = jwt.verify(token, secret, { ignoreExpiration: true });
+  const revoked = await AuthToken.checkRevoked(user);
+  if (revoked) return null;
+  return user;
+}
 
 async function isRevoked(req, payload, done) {
   const revoked = await AuthToken.checkRevoked(payload);
@@ -210,3 +219,5 @@ exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
 exports.communityMember = communityMember;
 exports.setTokenNative = setTokenNative;
+exports.validateTokenLenient = validateTokenLenient;
+exports.verify = verify;

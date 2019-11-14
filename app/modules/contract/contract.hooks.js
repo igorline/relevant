@@ -45,6 +45,7 @@ export const useRelevantActions = () => {
     ),
     cacheMethod: useCallback(
       (method, args) => {
+        // if (!method) return;
         if (args) dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
         else dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
       },

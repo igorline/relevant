@@ -88,7 +88,7 @@ Object {
   "payoutData": Object {
     "crypto": Object {
       "community": "crypto",
-      "distributedRewards": "6.00000000000e+20",
+      "distributedRewards": 600000000000000100000,
       "payouts": Object {
         "b00000000000000000000000": 600000000000000100000,
         "c00000000000000000000000": 0,
@@ -116,7 +116,7 @@ Object {
     },
     "relevant": Object {
       "community": "relevant",
-      "distributedRewards": "4.00000000000e+20",
+      "distributedRewards": 400000000000000070000,
       "payouts": Object {
         "a00000000000000000000000": 200000000000000030000,
         "b00000000000000000000000": 126491106406735200000,
@@ -138,7 +138,7 @@ Object {
       ],
     },
   },
-  "totalDistributedRewards": "04.00000000000e+206.00000000000e+20",
+  "totalDistributedRewards": "1.00000000000e+21",
 }
 `;
 

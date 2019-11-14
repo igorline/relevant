@@ -14,7 +14,7 @@ const coinImage = require('app/public/img/relevantcoin.png');
 PostButtons.propTypes = {
   auth: PropTypes.object,
   post: PropTypes.shape({
-    _id: PropTypes.string,
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     id: PropTypes.string,
     data: PropTypes.object,
     user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

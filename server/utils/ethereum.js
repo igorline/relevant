@@ -118,7 +118,7 @@ export async function sendTx({ method, args, cancelPendingTx }) {
   return result;
 }
 
-function toBN(num) {
+export function toBN(num) {
   return ethers.utils.parseUnits((num / 10 ** decimals).toString(), decimals);
 }
 
