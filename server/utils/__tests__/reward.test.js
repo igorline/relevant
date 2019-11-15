@@ -17,6 +17,7 @@ jest.mock('server/utils/ethereum');
 
 describe('ethRewards', () => {
   Eth.mintRewardTokens = jest.fn();
+  Eth.allocateRewards = jest.fn();
   Eth.getParam.mockImplementation(() => 10000 * 1e18);
 
   beforeEach(() => {
@@ -56,6 +57,8 @@ describe('ethRewards', () => {
         v.distributedRewards = v.distributedRewards.toPrecision(12);
       });
       payouts.totalDistributedRewards = payouts.totalDistributedRewards.toPrecision(12);
+      expect(Eth.allocateRewards).toHaveBeenCalled();
+      expect(Eth.mintRewardTokens).toHaveBeenCalled();
       expect(payouts).toMatchSnapshot();
     });
   });
