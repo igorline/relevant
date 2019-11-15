@@ -23,7 +23,7 @@ describe('ethRewards', () => {
     ({ alice, bob, carol } = getUsers());
     ({ link1, link2, link3, link4, link5 } = getPosts());
     ({ relevant, crypto } = getCommunities());
-    // global.console.log = jest.fn(); // hides logs
+    // global.console = { log: jest.fn() }; // hides logs
   });
 
   describe('No Rewards', () => {
@@ -52,6 +52,9 @@ describe('ethRewards', () => {
   describe('Rewards', () => {
     test('should compute correctly', async () => {
       const payouts = await ethRewards.rewards();
+      Object.values(payouts.payoutData).forEach(v => {
+        v.distributedRewards = v.distributedRewards.toPrecision(12);
+      });
       payouts.totalDistributedRewards = payouts.totalDistributedRewards.toPrecision(12);
       expect(payouts).toMatchSnapshot();
     });
