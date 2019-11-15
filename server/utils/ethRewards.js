@@ -2,6 +2,7 @@
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import Notification from 'server/api/notification/notification.model';
 import Post from 'server/api/post/post.model';
+import Treasury from 'server/api/treasury/treasury.model';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';
@@ -76,10 +77,6 @@ exports.rewards = async () => {
       0
     );
 
-    if (totalDistributedRewards > 0) {
-      await Eth.allocateRewards(totalDistributedRewards);
-    }
-
     // TODO do we need these checks?
     // const remainingRewards = await Eth.getParam('rewardPool', { noConvert: true });
     // const distPool = await Eth.getParam('distributedRewards', { noConvert: true });
@@ -94,6 +91,13 @@ exports.rewards = async () => {
 
     computingRewards = false;
     await runAudit();
+
+    const treasury = await Treasury.findOne({ community: 'global' });
+    treasury.unAllocatedRewards += totalDistributedRewards;
+    await treasury.save();
+
+    if (treasury.unAllocatedRewards) await updateRewardAllocation();
+
     return { payoutData, totalDistributedRewards };
   } catch (err) {
     console.log('rewards error', err);
@@ -103,7 +107,23 @@ exports.rewards = async () => {
   }
 };
 
+async function updateRewardAllocation() {
+  let treasury = await Treasury.findOne({ community: 'global' });
+  if (!treasury) {
+    treasury = new Treasury({ community: 'global' });
+    treasury = await treasury.save();
+  }
+  const { unAllocatedRewards } = treasury || {};
+  if (unAllocatedRewards) {
+    const cancelPendingTx = true;
+    await Eth.allocateRewards(unAllocatedRewards, cancelPendingTx);
+    treasury.unAllocatedRewards = 0;
+    await treasury.save();
+  }
+}
+
 async function allocateRewards() {
+  await updateRewardAllocation();
   await Eth.mintRewardTokens();
   const rewardPool = await Eth.getParam('rewardFund', { noConvert: true });
   return rewardPool;
