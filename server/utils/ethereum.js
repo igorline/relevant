@@ -122,15 +122,15 @@ export function toBN(num) {
   return ethers.utils.parseUnits((num / 10 ** decimals).toString(), decimals);
 }
 
-export async function mintRewardTokens() {
+export async function mintRewardTokens(cancelPendingTx) {
   if (!instance) await init();
   const lastMint = await instance.roundsSincleLast();
   if (lastMint.toNumber() === 0) return null;
-  return sendTx({ method: 'releaseTokens', args: [], cancelPendingTx: true });
+  return sendTx({ method: 'releaseTokens', args: [], cancelPendingTx });
 }
 
-export async function allocateRewards(_amount) {
-  return sendTx({ method: 'allocateRewards', args: [toBN(_amount)] });
+export async function allocateRewards(_amount, cancelPendingTx) {
+  return sendTx({ method: 'allocateRewards', args: [toBN(_amount)], cancelPendingTx });
 }
 
 export async function allocateAirdrops(_amount) {

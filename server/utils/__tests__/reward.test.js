@@ -8,6 +8,7 @@ import Earnings from 'server/api/earnings/earnings.model';
 import Notification from 'server/api/notification/notification.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
 import * as Eth from 'server/utils/ethereum';
+import Treasury from 'server/api/treasury/treasury.model';
 
 // this will define the database name where the tests are run
 process.env.TEST_SUITE = 'eth-rewards';
@@ -17,7 +18,7 @@ jest.mock('server/utils/ethereum');
 
 describe('ethRewards', () => {
   Eth.mintRewardTokens = jest.fn();
-  Eth.allocateRewards = jest.fn();
+  Eth.allocateRewards = jest.fn(async () => Treasury.findOne({ community: 'global' }));
   Eth.getParam.mockImplementation(() => 10000 * 1e18);
 
   beforeEach(() => {
@@ -57,9 +58,15 @@ describe('ethRewards', () => {
         v.distributedRewards = v.distributedRewards.toPrecision(12);
       });
       payouts.totalDistributedRewards = payouts.totalDistributedRewards.toPrecision(12);
+      expect(payouts).toMatchSnapshot();
       expect(Eth.allocateRewards).toHaveBeenCalled();
       expect(Eth.mintRewardTokens).toHaveBeenCalled();
-      expect(payouts).toMatchSnapshot();
+      const treasury = await Eth.allocateRewards.mock.results[0].value;
+      expect(treasury.unAllocatedRewards.toPrecision(12)).toBe(
+        payouts.totalDistributedRewards
+      );
+      const afterAllocation = await Treasury.findOne({ community: 'global' });
+      expect(afterAllocation.unAllocatedRewards).toBe(0);
     });
   });
 
