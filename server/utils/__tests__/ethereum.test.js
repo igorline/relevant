@@ -43,7 +43,7 @@ describe('ethereum test', () => {
       await mintRewardTokens();
       await allocateRewards((10 * 10 ** 18).toString());
       await allocateAirdrops((10 * 10 ** 18).toString());
-    });
+    }, 10000);
 
     test('should get balance of dev account', async () => {
       const devTokens = await getBalance(devRewardsAddress);

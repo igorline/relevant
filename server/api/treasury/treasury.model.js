@@ -17,7 +17,8 @@ const TreasurySchema = new Schema(
 
     twitterCount: { type: Number, default: 0 },
     lastTwitterUpdate: { type: Date },
-    community: String
+    community: String,
+    unAllocatedRewards: { type: Number, default: 0 }
   },
   {
     timestamps: true

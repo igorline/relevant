@@ -3,6 +3,7 @@ import { sendNotification as sendPushNotification } from 'server/notifications';
 import Notification from 'server/api/notification/notification.model';
 import Post from 'server/api/post/post.model';
 import { sendAdminAlert } from 'server/utils/mail';
+import Treasury from 'server/api/treasury/treasury.model';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';
@@ -73,14 +74,10 @@ exports.rewards = async () => {
       q.start(err => (err ? reject(err) : resolve(results)));
     });
 
-    const totalDistributedRewards = Object.keys(payoutData).reduce(
-      (result, key) => result + payoutData[key].distributedRewards,
+    const totalDistributedRewards = Object.values(payoutData).reduce(
+      (result, value) => result + value.distributedRewards,
       0
     );
-
-    if (totalDistributedRewards > 0) {
-      await Eth.allocateRewards(totalDistributedRewards);
-    }
 
     // TODO do we need these checks?
     // const remainingRewards = await Eth.getParam('rewardPool', { noConvert: true });
@@ -96,6 +93,13 @@ exports.rewards = async () => {
 
     computingRewards = false;
     await runAudit();
+
+    const treasury = await Treasury.findOne({ community: 'global' });
+    treasury.unAllocatedRewards += totalDistributedRewards;
+    await treasury.save();
+
+    if (treasury.unAllocatedRewards) await updateRewardAllocation();
+
     return { payoutData, totalDistributedRewards };
   } catch (err) {
     console.log('rewards error', err);
@@ -105,7 +109,23 @@ exports.rewards = async () => {
   }
 };
 
+async function updateRewardAllocation() {
+  let treasury = await Treasury.findOne({ community: 'global' });
+  if (!treasury) {
+    treasury = new Treasury({ community: 'global' });
+    treasury = await treasury.save();
+  }
+  const { unAllocatedRewards } = treasury || {};
+  if (unAllocatedRewards) {
+    const cancelPendingTx = true;
+    await Eth.allocateRewards(unAllocatedRewards, cancelPendingTx);
+    treasury.unAllocatedRewards = 0;
+    await treasury.save();
+  }
+}
+
 async function allocateRewards() {
+  await updateRewardAllocation();
   await Eth.mintRewardTokens();
   const rewardPool = await Eth.getParam('rewardFund', { noConvert: true });
   return rewardPool;
@@ -312,7 +332,7 @@ async function distributeUserRewards(posts, _community) {
   console.log('total distributed rewards for', community, distributedRewards);
   console.log('\x1b[32m', payouts);
   console.log('\x1b[0m');
-  return { payouts, distributedRewards: distributedRewards.toPrecision(12) };
+  return { payouts, distributedRewards };
 }
 
 async function sendNotification(props) {
