@@ -67,7 +67,7 @@ describe('Cashout', () => {
   test('should mint tokens', async () => {
     await mintRewardTokens();
     await allocateRewards((10 * 10 ** 18).toString());
-  });
+  }, 10000);
 
   test('cashout success', async () => {
     const amnt = 10;
