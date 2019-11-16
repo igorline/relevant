@@ -347,7 +347,6 @@ async function updateItemRank(props) {
         fields: 'pagerank pagerankRaw user rank relevance communityId community'
       }
     );
-    console.log(user);
     return user;
   }
   if (u.type === 'post') {
