@@ -122,7 +122,7 @@ server.applyMiddleware({ app });
 
 const socketServer = require('./socket').default;
 
-const socketIoServer = http.Server(app).listen(3001, function() {
+const socketIoServer = http.Server(app).listen(3001, () => {
   console.log('WebSocket listening on port %d', 3001);
 });
 

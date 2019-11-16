@@ -28,7 +28,7 @@ export default function pagerank(inputs, params) {
 
   const pgParams = objectToMatrix(inputs, params);
 
-  const { neg, g, N, dictionary, danglingNodes, danglingObj } = pgParams;
+  const { neg, g, N, dictionary, danglingNodes, danglingObj, degreeStore } = pgParams;
   let { P, avoid } = pgParams;
 
   let p = new Array(N).fill(0);
@@ -106,14 +106,14 @@ export default function pagerank(inputs, params) {
       params.debug && console.log(err);
       const elapsed = new Date().getTime() - now.getTime();
       params.debug && console.log('elapsed time: ', elapsed / 1000, 's');
-      return formatOutput(x, dictionary, inputs, params);
+      return formatOutput(x, dictionary, inputs, params, degreeStore);
     }
   }
 
   console.warn(
     'pagerank: power iteration failed to converge in ' + params.iter_max + ' iterations.'
   );
-  return formatOutput(x, dictionary, inputs, params);
+  return formatOutput(x, dictionary, inputs, params, degreeStore);
 }
 
 function runLoop(loopParams, params) {
@@ -249,6 +249,7 @@ function objectToMatrix(_inputs, params) {
   let avoid = [];
   const danglingNodes = [];
   const danglingObj = {};
+  const degreeStore = {};
 
   inputs.forEach((el, i) => {
     // const upvotes = new Array(N).fill(0);
@@ -272,6 +273,7 @@ function objectToMatrix(_inputs, params) {
       danglingObj[i] = true;
       degree = 1;
     }
+    degreeStore[el] = degree;
     const id_i = dictionary[el];
 
     if (params.personalization[el]) {
@@ -314,11 +316,13 @@ function objectToMatrix(_inputs, params) {
     console.log('Matrix - program is using', mb, 'MB of Heap.');
   }
 
-  return { neg, g, N, P, dictionary, danglingNodes, avoid, danglingObj };
+  return { neg, g, N, P, dictionary, danglingNodes, avoid, danglingObj, degreeStore };
 }
 
-function formatOutput(x, dictionary, inputs) {
+function formatOutput(x, dictionary, inputs, params, degreeStore) {
   const result = {};
-  Object.keys(inputs).forEach((node, i) => (result[node] = x[i]));
+  Object.keys(inputs).forEach(
+    (node, i) => (result[node] = { rank: x[i], degree: degreeStore[node] })
+  );
   return result;
 }

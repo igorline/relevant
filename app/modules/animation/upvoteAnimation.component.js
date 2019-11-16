@@ -40,6 +40,8 @@ export default function UpvoteAnimation() {
     };
   }, [index, parent, amount]);
 
+  if (!HANDLE_ANIMATIONS.includes(type)) return null;
+
   function destroy(key, coinKey) {
     if (typeof key === 'number') {
       setVoteEls(els => [...els.slice(0, key), ...els.slice(key + 1)]);

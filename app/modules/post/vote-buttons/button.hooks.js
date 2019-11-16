@@ -29,7 +29,7 @@ export function useCastVote({ auth, post, user, community, canBet }) {
         if (!auth.isAuthenticated)
           throw new Error(`You must be logged in to ${type} posts`);
 
-        if (vote && vote.isManualBet && type === 'upvote') {
+        if (vote && vote.isManualBet && type === 'upvote' && canBet) {
           showBetModal({ dispatch, postId: post._id });
           return;
         }

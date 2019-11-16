@@ -18,7 +18,10 @@ const CommunityMemberSchema = new Schema(
     reputation: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },
     weight: { type: Number, default: 0 },
-    invites: { type: Number, default: 0 }
+    invites: { type: Number, default: 0 },
+    degree: { type: Number, default: 0 },
+    pagerank: { type: Number, default: 0 },
+    pagerankRaw: { type: Number, default: 0 }
   },
   {
     timestamps: true

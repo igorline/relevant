@@ -79,7 +79,7 @@ InvestSchema.methods.removeVote = async function removeVote({ post, user }) {
   await user.save();
   await post.save();
   await vote.remove();
-  return null;
+  return vote;
 };
 
 InvestSchema.methods.placeBet = async function placeBet({
@@ -114,7 +114,7 @@ InvestSchema.methods.placeBet = async function placeBet({
 
   vote.shares += shares;
   vote.stakedTokens += stakedTokens;
-  vote.isManualBet = user.notificationSettings.bet.manual;
+  vote.isManualBet = user.notificationSettings.bet.manual && communityInstance.betEnabled;
   vote = await vote.save();
 
   post.myVote = vote;
@@ -139,6 +139,8 @@ InvestSchema.statics.createVote = async function createVote({
   amount,
   user
 }) {
+  const isManualBet =
+    user.notificationSettings.bet.manual && communityInstance.betEnabled;
   let vote = new (this.model('Invest'))({
     investor: user._id,
     post: post._id,
@@ -152,18 +154,15 @@ InvestSchema.statics.createVote = async function createVote({
     // linkPost: post.linkPost,
     payoutDate: post.data.payoutDate,
     paidOut: post.data.paidOut,
-    isManualBet: user.notificationSettings.bet.manual
+    isManualBet
   });
 
   vote = await vote.save();
 
   post.data.needsRankUpdate = true;
 
-  // TODO - don't take into account community settings?
-  const manualBet = user.notificationSettings.bet.manual && communityInstance.betEnabled;
-
   // If manual betting is enabled don't auto-bet
-  if (manualBet || amount <= 0) return vote;
+  if (isManualBet || amount <= 0) return vote;
 
   try {
     const stakedTokens =
@@ -178,7 +177,7 @@ InvestSchema.statics.createVote = async function createVote({
       });
     }
   } catch (err) {
-    // console.log("can't bet");
+    console.log('bet error', err); // eslint-disable-line
   }
   return vote;
 };

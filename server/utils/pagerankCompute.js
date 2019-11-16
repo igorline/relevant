@@ -14,204 +14,241 @@ const q = queue({ concurrency: 10 });
 
 // compute relevance using pagerank
 export default async function computePageRank(params) {
-  try {
-    const { author, post, debug, communityId, community, fast } = params;
+  const { author, post, debug, communityId, community, fast } = params;
 
-    if (!community) throw new Error('missing community name');
+  if (!community) throw new Error('missing community name');
 
-    let { heapUsed } = process.memoryUsage();
-    let mb = Math.round((100 * heapUsed) / 1048576) / 100;
-    debug && console.log('Init PR is using ' + mb + 'MB of Heap.');
-    // let users = await User.find({})
-    // .populate({ path: 'relevance', match: { communityId, global: true } });
+  let { heapUsed } = process.memoryUsage();
+  let mb = Math.round((100 * heapUsed) / 1048576) / 100;
+  debug && console.log('Init PR is using ' + mb + 'MB of Heap.');
+  // let users = await User.find({})
+  // .populate({ path: 'relevance', match: { communityId, global: true } });
 
-    const now = new Date();
+  const now = new Date();
 
-    const admins = await CommunityMember.find({ role: 'admin', communityId }).populate({
-      path: 'user',
-      select: 'relevance',
+  const admins = await CommunityMember.find({ role: 'admin', communityId }).populate({
+    path: 'user',
+    select: 'relevance',
+    populate: {
+      path: 'relevance',
+      match: { communityId, global: true },
+      select: 'pagerank pagerankRaw relevance'
+    }
+  });
+
+  const rankedNodes = {};
+  const negativeWeights = {};
+  const originalRelevance = {};
+  const originalUsers = {};
+  const originalPosts = {};
+  const rankedPosts = {};
+  const nstart = {};
+
+  // only look at votes up to a REP_CUTOFF years ago
+  const timeLimit = new Date().setFullYear(new Date().getFullYear() - REP_CUTOFF);
+
+  const votes = await Invest.find({
+    communityId,
+    createdAt: { $gt: timeLimit },
+    ownPost: { $ne: true },
+    investor: { $exists: true }
+  })
+    .populate({
+      path: 'investor',
+      select: 'relevance handle',
       populate: {
         path: 'relevance',
         match: { communityId, global: true },
         select: 'pagerank pagerankRaw relevance'
       }
-    });
-
-    const rankedNodes = {};
-    const negativeWeights = {};
-    const originalRelevance = {};
-    const originalUsers = {};
-    const originalPosts = {};
-    const rankedPosts = {};
-    const nstart = {};
-
-    // only look at votes up to a REP_CUTOFF years ago
-    const timeLimit = new Date().setFullYear(new Date().getFullYear() - REP_CUTOFF);
-
-    const votes = await Invest.find({
-      communityId,
-      createdAt: { $gt: timeLimit },
-      ownPost: { $ne: true },
-      investor: { $exists: true }
     })
-      .populate({
-        path: 'investor',
-        select: 'relevance handle',
-        populate: {
-          path: 'relevance',
-          match: { communityId, global: true },
-          select: 'pagerank pagerankRaw relevance'
-        }
-      })
-      .populate({
-        path: 'author',
-        select: 'relevance handle',
-        populate: {
-          path: 'relevance',
-          match: { communityId, global: true },
-          select: 'pagerank pagerankRaw relevance'
-        }
-      })
-      .populate({
-        path: 'post',
-        select: 'data title',
-        options: { select: 'data body' },
-        populate: {
-          path: 'data',
-          select: 'pagerank relevance pagerankRaw body'
-        }
-      });
-
-    votes.forEach(vote => {
-      const user = vote.investor;
-      if (!user) return null;
-      const postAuthor = vote.author;
-      const { post: postObj } = vote;
-
-      const postId = postObj
-        ? vote.amount < 0
-          ? postObj._id + '__neg'
-          : postObj._id
-        : null;
-
-      if (postObj && !originalPosts[postId]) {
-        originalPosts[postId] = postObj._id;
+    .populate({
+      path: 'author',
+      select: 'relevance handle',
+      populate: {
+        path: 'relevance',
+        match: { communityId, global: true },
+        select: 'pagerank pagerankRaw relevance'
       }
-      if (postAuthor && !originalUsers[postAuthor._id]) {
-        originalUsers[postAuthor._id] = postAuthor;
-        originalRelevance[postAuthor._id] = postAuthor.relevance
-          ? postAuthor.relevance.relevance
-          : 0;
-      }
-      return processUpvote({
-        rankedNodes,
-        rankedPosts,
-        nstart,
-        upvote: vote,
-        user,
-        now
-      });
-    });
-
-    const personalization = {};
-    admins.forEach(a => {
-      if (!a.user) return;
-      const userId = a.user._id;
-      if (!originalUsers[userId]) originalUsers[userId] = a.user;
-      if (!rankedNodes[userId]) rankedNodes[userId] = {};
-      personalization[userId] = 1;
-      if (!nstart[userId]) {
-        nstart[userId] = a.user.relevance ? Math.max(a.user.relevance.pagerankRaw, 0) : 0;
-      }
-      if (!rankedNodes[userId]) {
-        rankedNodes[userId] = {};
+    })
+    .populate({
+      path: 'post',
+      select: 'data title',
+      options: { select: 'data body' },
+      populate: {
+        path: 'data',
+        select: 'pagerank relevance pagerankRaw body'
       }
     });
 
-    // TODO prune users with no votes
-    Object.keys(rankedNodes).forEach(u => {
-      if (!originalUsers[u] && !originalPosts[u]) {
-        return delete rankedNodes[u];
-      }
-      return Object.keys(rankedNodes[u]).forEach(name => {
-        // fills any missing names in list
-        if (!rankedNodes[name]) {
-          if (!originalUsers[name]) {
-            delete rankedNodes[u][name];
-          } else {
-            const user = originalUsers[name];
-            nstart[name] = user.relevance ? Math.max(user.relevance.pagerankRaw, 0) : 0;
-            rankedNodes[name] = {};
-          }
-        }
-      });
-    });
+  votes.forEach(vote => {
+    const user = vote.investor;
+    if (!user) return null;
+    const postAuthor = vote.author;
+    const { post: postObj } = vote;
 
-    heapUsed = process.memoryUsage().heapUsed;
-    mb = Math.round((100 * heapUsed) / 1048576) / 100;
-    debug && console.log('Before PR - using ' + mb + 'MB of Heap.');
+    const postId = postObj
+      ? vote.amount < 0
+        ? postObj._id + '__neg'
+        : postObj._id
+      : null;
 
-    debug && console.log('user query time ', (new Date().getTime() - now) / 1000 + 's');
-
-    const scores = pagerank(rankedNodes, {
-      alpha: 0.85,
-      users: originalUsers,
-      personalization,
-      negativeWeights,
+    if (postObj && !originalPosts[postId]) {
+      originalPosts[postId] = postObj._id;
+    }
+    if (postAuthor && !originalUsers[postAuthor._id]) {
+      originalUsers[postAuthor._id] = postAuthor;
+      originalRelevance[postAuthor._id] = postAuthor.relevance
+        ? postAuthor.relevance.relevance
+        : 0;
+    }
+    return processUpvote({
+      rankedNodes,
+      rankedPosts,
       nstart,
-      fast,
-      debug
+      upvote: vote,
+      user,
+      now
     });
+  });
 
-    heapUsed = process.memoryUsage().heapUsed;
-    mb = Math.round((100 * heapUsed) / 1048576) / 100;
-    debug && console.log('After PR is using ' + mb + 'MB of Heap.');
+  const personalization = {};
+  admins.forEach(a => {
+    if (!a.user) return;
+    const userId = a.user._id;
+    if (!originalUsers[userId]) originalUsers[userId] = a.user;
+    if (!rankedNodes[userId]) rankedNodes[userId] = {};
+    personalization[userId] = 1;
+    if (!nstart[userId]) {
+      nstart[userId] = a.user.relevance ? Math.max(a.user.relevance.pagerankRaw, 0) : 0;
+    }
+    if (!rankedNodes[userId]) {
+      rankedNodes[userId] = {};
+    }
+  });
 
-    let max = 0;
-    let secondMax = 0;
-    const min = 0;
-    let maxPost = 0;
-    const minPost = 0;
-
-    let array = [];
-    Object.keys(scores).forEach(id => {
-      let postNode;
-      if (rankedPosts[id]) {
-        postNode = rankedPosts[id];
+  // TODO prune users with no votes
+  Object.keys(rankedNodes).forEach(u => {
+    if (!originalUsers[u] && !originalPosts[u]) {
+      return delete rankedNodes[u];
+    }
+    return Object.keys(rankedNodes[u]).forEach(name => {
+      // fills any missing names in list
+      if (!rankedNodes[name]) {
+        if (!originalUsers[name]) {
+          delete rankedNodes[u][name];
+        } else {
+          const user = originalUsers[name];
+          nstart[name] = user.relevance ? Math.max(user.relevance.pagerankRaw, 0) : 0;
+          rankedNodes[name] = {};
+        }
       }
-
-      const u = scores[id] || 0;
-      if (postNode) maxPost = Math.max(u, maxPost);
-      else {
-        secondMax = Math.max(secondMax, Math.min(u, max));
-        max = Math.max(u, max);
-      }
-
-      array.push({
-        id,
-        rank: u,
-        relevance: postNode ? postNode.data.relevance : originalRelevance[id],
-        type: postNode ? 'post' : 'user',
-        title: postNode ? postNode.title : null,
-        handle: rankedNodes[id].handle
-      });
     });
+  });
 
-    const N = array.length;
+  heapUsed = process.memoryUsage().heapUsed;
+  mb = Math.round((100 * heapUsed) / 1048576) / 100;
+  debug && console.log('Before PR - using ' + mb + 'MB of Heap.');
 
-    await Community.findOneAndUpdate(
-      { _id: communityId },
-      { maxPostRank: maxPost || 50, maxUserRank: secondMax || 50, numberOfElements: N }
-    );
+  debug && console.log('user query time ', (new Date().getTime() - now) / 1000 + 's');
 
-    array = mergeNegativeNodes(array);
+  const scores = pagerank(rankedNodes, {
+    alpha: 0.85,
+    users: originalUsers,
+    personalization,
+    negativeWeights,
+    nstart,
+    fast,
+    debug
+  });
 
-    const maxRel = array.reduce((p, n) => Math.max(p, n.relevance || 0), 0);
-    array = array.sort((a, b) => a.rank - b.rank);
+  heapUsed = process.memoryUsage().heapUsed;
+  mb = Math.round((100 * heapUsed) / 1048576) / 100;
+  debug && console.log('After PR is using ' + mb + 'MB of Heap.');
 
-    if (author) {
-      let u = array.find(el => el.id.toString() === author._id.toString());
-      u = await updateItemRank({
+  let max = 0;
+  let secondMax = 0;
+  const min = 0;
+  let maxPost = 0;
+  const minPost = 0;
+
+  let array = [];
+  Object.keys(scores).forEach(id => {
+    let postNode;
+    if (rankedPosts[id]) {
+      postNode = rankedPosts[id];
+    }
+
+    const u = scores[id] || 0;
+    if (postNode) maxPost = Math.max(u.rank, maxPost);
+    else {
+      secondMax = Math.max(secondMax, Math.min(u.rank, max));
+      max = Math.max(u.rank, max);
+    }
+
+    array.push({
+      id,
+      rank: u.rank,
+      relevance: postNode ? postNode.data.relevance : originalRelevance[id],
+      type: postNode ? 'post' : 'user',
+      title: postNode ? postNode.title : null,
+      handle: rankedNodes[id].handle,
+      degree: u.degree
+    });
+  });
+
+  const N = array.length;
+
+  await Community.findOneAndUpdate(
+    { _id: communityId },
+    { maxPostRank: maxPost || 50, maxUserRank: secondMax || 50, numberOfElements: N }
+  );
+
+  array = mergeNegativeNodes(array);
+
+  const maxRel = array.reduce((p, n) => Math.max(p, n.relevance || 0), 0);
+  array = array.sort((a, b) => a.rank - b.rank);
+
+  if (author) {
+    let u = array.find(el => el.id.toString() === author._id.toString());
+    u = await updateItemRank({
+      min,
+      max,
+      secondMax,
+      minPost,
+      maxPost,
+      u,
+      N,
+      debug,
+      communityId,
+      community,
+      maxRel
+    });
+    author.relevance.pagerank = u.pagerank;
+  }
+
+  if (post) {
+    let u = array.find(el => el.id.toString() === post._id.toString());
+    if (!u) u = { id: post._id, rank: 0, relevance: 0, type: 'post' };
+    u = await updateItemRank({
+      min,
+      max,
+      minPost,
+      maxPost,
+      u,
+      N,
+      debug,
+      communityId,
+      community,
+      maxRel
+    });
+    post.data.pagerank = u.pagerank;
+    post.pagerank = u.pagerank;
+  }
+
+  array.forEach(async u => {
+    q.push(async cb => {
+      await updateItemRank({
         min,
         max,
         secondMax,
@@ -224,66 +261,23 @@ export default async function computePageRank(params) {
         community,
         maxRel
       });
-      author.relevance.pagerank = u.pagerank;
-    }
 
-    if (post) {
-      let u = array.find(el => el.id.toString() === post._id.toString());
-      if (!u) u = { id: post._id, rank: 0, relevance: 0, type: 'post' };
-      u = await updateItemRank({
-        min,
-        max,
-        minPost,
-        maxPost,
-        u,
-        N,
-        debug,
-        communityId,
-        community,
-        maxRel
-      });
-      post.data.pagerank = u.pagerank;
-      post.pagerank = u.pagerank;
-    }
-
-    array.forEach(async u => {
-      q.push(async cb => {
-        try {
-          await updateItemRank({
-            min,
-            max,
-            secondMax,
-            minPost,
-            maxPost,
-            u,
-            N,
-            debug,
-            communityId,
-            community,
-            maxRel
-          });
-        } catch (err) {
-          throw err;
-        }
-        cb();
-      });
+      cb();
     });
+  });
 
-    return new Promise((resolve, reject) =>
-      q.start(err => {
-        if (err) reject(err);
-        resolve({ author, post });
-      })
-    );
+  return new Promise((resolve, reject) =>
+    q.start(err => {
+      if (err) reject(err);
+      resolve({ author, post });
+    })
+  );
 
-    // if (author || post) {
-    //   return { author, post };
-    // }
-    // updatedUsers = await Promise.all(updatedUsers);
-    // console.log(updatedUsers);
-  } catch (err) {
-    throw err;
-  }
+  // if (author || post) {
+  //   return { author, post };
+  // }
+  // updatedUsers = await Promise.all(updatedUsers);
+  // console.log(updatedUsers);
 }
 
 function mergeNegativeNodes(array) {
@@ -335,16 +329,16 @@ async function updateItemRank(props) {
   if (u.type === 'user') {
     if (Number.isNaN(rank)) return null;
 
-    await CommunityMember.findOneAndUpdate(
+    const user = await CommunityMember.findOneAndUpdate(
       { user: u.id, communityId },
-      { reputation: rank },
+      { reputation: rank, degree: u.degree, pagerank: rank, pagerankRaw: u.rank },
       {
         // new: true,
         upsert: true
       }
     );
 
-    return Relevance.findOneAndUpdate(
+    await Relevance.findOneAndUpdate(
       { user: u.id, communityId, global: true },
       { pagerank: rank, pagerankRaw: u.rank, community },
       {
@@ -353,6 +347,8 @@ async function updateItemRank(props) {
         fields: 'pagerank pagerankRaw user rank relevance communityId community'
       }
     );
+    console.log(user);
+    return user;
   }
   if (u.type === 'post') {
     if (Number.isNaN(rank)) {
@@ -435,9 +431,8 @@ function processUpvote(params) {
       downvote
     });
 
-    // console.log(user._id, 'downvoted', upvote.author, upvote.post.body);
     if (authorId) rankedNodes[userId][authorId].negative += -a;
-    // here we use a different note to track post downvotes
+    // here we use a different node to track post downvotes
     if (post) {
       rankedNodes[userId][postId].weight += -a;
       rankedNodes[userId][postId].total += -a;
@@ -487,16 +482,19 @@ export async function computeApproxPageRank({
       { _id: communityId },
       'maxUserRank maxPostRank numberOfElements'
     );
+    const member = await CommunityMember.findOne({ communityId, user: user._id });
+
     let amount;
     if (vote) amount = vote.amount;
     const N = com.numberOfElements;
     const { maxUserRank, maxPostRank } = com;
+
     // if user relevance object doesn't exist, there is nothing to update
-    if (!user.relevance || user.relevance.pagerankRaw <= 0) {
-      return { author, post };
-    }
+    if (!user.relevance || user.relevance.pagerankRaw <= 0) return { author, post };
+
     const userR = user.relevance ? user.relevance.pagerankRaw : 0;
     const authorId = author ? author._id : null;
+
     if (author && !author.relevance) {
       author.relevance = await Relevance.findOne({
         user: author._id,
@@ -504,79 +502,6 @@ export async function computeApproxPageRank({
         global: true
       });
     }
-
-    // only consider votes from REP_CUTOFF years ago
-    const repCutoff = new Date().setFullYear(new Date().getFullYear() - REP_CUTOFF);
-
-    const upvotes = await Invest.find({
-      investor: user._id,
-      communityId,
-      createdAt: { $gt: repCutoff }
-    })
-      .populate({
-        path: 'investor',
-        select: 'relevance',
-        populate: {
-          path: 'relevance',
-          match: { communityId, global: true },
-          select: 'pagerank pagerankRaw relevance'
-        }
-      })
-      .populate({
-        path: 'author',
-        select: 'relevance',
-        populate: {
-          path: 'relevance',
-          match: { communityId, global: true },
-          select: 'pagerank pagerankRaw relevance'
-        }
-      })
-      .populate({
-        path: 'post',
-        options: { select: 'data body' },
-        populate: {
-          path: 'data',
-          select: 'pagerank relevance pagerankRaw pagerankRawNeg'
-        }
-      });
-
-    const rankedNodes = {};
-    const rankedPosts = {};
-    const nstart = {};
-    const now = new Date();
-
-    if (vote && vote.post) {
-      vote.post = await Post.findOne({ _id: vote.post }, 'data body').populate({
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw pagerankRawNeg'
-      });
-    }
-
-    upvotes.forEach(upvote =>
-      processUpvote({
-        rankedNodes,
-        rankedPosts,
-        nstart,
-        upvote,
-        user,
-        now
-      })
-    );
-
-    const userObj = rankedNodes[user._id] || {};
-
-    let degree = 0;
-
-    // TODO: can we optimize this by storing degree in relevance table?
-    Object.values(userObj).forEach(userEl => {
-      let w = userEl.weight;
-      const n = userEl.negative || 0;
-      // eigentrust++ weights
-      // w = Math.max((w - n) / (w + n), 0);
-      if (w > 0) degree += w;
-      w = Math.max(w - n, 0);
-      userEl.w = w;
-    });
 
     // Need a way to 0 out post votes and user votes
     let postVotes = true;
@@ -600,52 +525,29 @@ export async function computeApproxPageRank({
       }
     }
 
-    degree = degree || 1;
-    const w = userObj[authorId] ? userObj[authorId].w : 0;
-    const userWeight = w / degree;
-    let postWeight;
-    let oldWeight;
+    const degree = member.degree || 1;
 
     const a = Math.abs(amount);
-    const twoA = author ? 2 * a : a;
+    const increment = (a / degree) * userR;
+    const uDownvoteInc = increment / 3;
+
     if (amount >= 0) {
       if (undoInvest) {
-        postWeight = a / (degree + twoA);
-        oldWeight = (w + a) / (degree + twoA);
-        if (author) {
-          author.relevance.pagerankRaw = Math.max(
-            author.relevance.pagerankRaw + userR * (userWeight - oldWeight),
-            0
-          );
-        }
-        post.data.pagerankRaw = Math.max(post.data.pagerankRaw - userR * postWeight, 0);
+        if (author && userVotes) author.relevance.pagerankRaw -= increment;
+        if (post && postVotes) post.data.pagerankRaw -= increment;
       } else {
-        postWeight = a / degree;
-        oldWeight = Math.max(w - a, 0) / Math.max(degree - twoA, 1);
-        if (userVotes && author) {
-          author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
-        }
-        if (post && postVotes) post.data.pagerankRaw += userR * postWeight;
+        if (author) author.relevance.pagerankRaw += increment;
+        if (post) post.data.pagerankRaw += increment;
       }
     } else if (amount < 0) {
       if (undoInvest) {
-        // NOTE we let pagerankRaw get negative so we can undo downvotes that
-        // take us below 0 correctly
-        // This can create a weird effect in the edge case where
-        // we undo the downvote AFTER pagerank recompute
-        // TODO we can avoid this for posts by querying all
-        // upvotes for a post and adding them together
-        oldWeight = (w - a) / (degree + a);
-        postWeight = a / (degree + twoA - a);
-        if (userVotes && author) {
-          author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
+        if (author && userVotes) {
+          author.relevance.pagerankRaw += uDownvoteInc;
         }
-        if (post && postVotes) post.data.pagerankRawNeg -= userR * postWeight;
+        if (post && postVotes) post.data.pagerankRawNeg -= increment;
       } else {
-        oldWeight = (w + a) / (degree - a);
-        postWeight = a / degree;
-        if (author) author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
-        post.data.pagerankRawNeg += userR * postWeight;
+        if (author) author.relevance.pagerankRaw -= uDownvoteInc;
+        if (post) post.data.pagerankRawNeg += increment;
       }
     }
 
