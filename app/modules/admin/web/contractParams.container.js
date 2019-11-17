@@ -15,7 +15,7 @@ import {
 import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
-import Test from 'modules/profile/apollo.test';
+import Test from 'modules/profile/apollo.demo';
 import Treasury from './treasury';
 
 const ParamsTable = styled.table`
