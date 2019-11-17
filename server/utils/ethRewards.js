@@ -126,7 +126,8 @@ async function updateRewardAllocation() {
 
 async function allocateRewards() {
   await updateRewardAllocation();
-  await Eth.mintRewardTokens();
+  const cancelPendingTx = true;
+  await Eth.mintRewardTokens(cancelPendingTx);
   const rewardPool = await Eth.getParam('rewardFund', { noConvert: true });
   return rewardPool;
 }
