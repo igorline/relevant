@@ -72,14 +72,17 @@ export default function Treasury() {
           </BodyText>
           <View p={1} fdirection={'row'}>
             <BodyText br={colors.lightGrey} mr={1} flex={1}>
-              {methodCache.select(row.contract).value / 1e18}
+              {methodCache.select(row.contract).value &&
+                methodCache.select(row.contract).value / 1e18}
             </BodyText>
             <BodyText br={colors.lightGrey} mr={1} flex={1}>
               {data.distributedTokens[row.db]}
             </BodyText>
             <BodyText flex={1}>
-              {methodCache.select(row.contract).value / 1e18 -
-                data.distributedTokens[row.db]}
+              {row.contract && row.db
+                ? methodCache.select(row.contract).value / 1e18 -
+                  data.distributedTokens[row.db]
+                : ''}
             </BodyText>
           </View>
         </View>

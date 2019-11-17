@@ -44,7 +44,7 @@ export function connectAddress(account) {
         }
       ];
       const web3 = getProvider();
-      await web3.currentProvider.connection.sendAsync(
+      await web3.currentProvider.sendAsync(
         {
           method: 'eth_signTypedData',
           params: [msgParams, account],

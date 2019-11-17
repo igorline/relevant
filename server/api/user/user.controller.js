@@ -736,7 +736,7 @@ exports.ethAddress = async (req, res, next) => {
   try {
     let { user } = req;
     const { msg, sig, acc } = req.body;
-    const recovered = sigUtil.recoverTypedSignature({
+    const recovered = sigUtil.recoverTypedSignatureLegacy({
       data: msg,
       sig
     });
