@@ -19,8 +19,8 @@ const uri = process.env.API_SERVER.length
   : 'http://localhost:3000';
 
 const wsUri = process.env.API_SERVER.length
-  ? uri.replace('https', 'ws').replace(':3000', '') + ':3001'
-  : 'ws://localhost:3001';
+  ? uri.replace('http', 'ws')
+  : 'ws://localhost:3000';
 
 const wsLink = new WebSocketLink({
   uri: `${wsUri}/graphql`,

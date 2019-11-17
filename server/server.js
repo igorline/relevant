@@ -1,4 +1,5 @@
 /* eslint-disable no-console, no-use-before-define */
+import 'dotenv/config';
 import Express from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
@@ -7,7 +8,6 @@ import schema from 'server/graphql/schema';
 
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
-import http from 'http';
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -21,8 +21,6 @@ const expressStaticGzip = require('express-static-gzip');
 
 const app = new Express();
 mongoose.Promise = global.Promise;
-
-require('dotenv').config({ silent: true });
 
 const { validateTokenLenient, verify } = require('server/auth/auth.service');
 
@@ -122,10 +120,6 @@ server.applyMiddleware({ app });
 
 const socketServer = require('./socket').default;
 
-const socketIoServer = http.Server(app).listen(3001, () => {
-  console.log('WebSocket listening on port %d', 3001);
-});
-
 server = app.listen({ port }, error => {
   if (error) {
     console.error(error);
@@ -138,9 +132,8 @@ server = app.listen({ port }, error => {
     const time = new Date().getTime() - now.getTime();
     console.log('done loading routes', time / 1000, 's');
   }
-
-  socketServer(server, { pingTimeout: 30000 });
 });
+socketServer(server, { pingTimeout: 30000 });
 
 SubscriptionServer.create(
   {
@@ -165,10 +158,12 @@ SubscriptionServer.create(
     schema
   },
   {
-    server: socketIoServer,
+    server,
     path: '/graphql'
   }
 );
+
+socketServer(server, { pingTimeout: 30000 });
 
 // in production this is a worker
 if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'native') {
