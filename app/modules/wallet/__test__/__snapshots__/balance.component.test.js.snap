@@ -1,6 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot Balance Web 1`] = `
+.c0 {
+  color: #0000ff;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
 <div
   className="css-view-1dbjc4n"
   style={
@@ -749,7 +755,43 @@ exports[`Snapshot Balance Web 1`] = `
           "position": "relative",
         }
       }
-    />
+    >
+      <a
+        className="c0 ulink-mock"
+        href="https://uniswap.exchange/swap?theme=dark&outputCurrency=0xdood"
+        onClick={[Function]}
+        target="_blank"
+      >
+        <div
+          c="#0000ff"
+          className="css-text-901oao"
+          data-focusable={true}
+          dir="auto"
+          onClick={[Function]}
+          onKeyDown={[Function]}
+          style={
+            Object {
+              "MozUserSelect": "none",
+              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+              "WebkitUserSelect": "none",
+              "color": "rgba(0,0,255,1.00)",
+              "cursor": "pointer",
+              "display": "flex",
+              "fontFamily": "HelveticaNeue-Medium",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
+              "msUserSelect": "none",
+              "position": "relative",
+              "textDecorationColor": "rgba(0,0,255,1.00)",
+              "userSelect": "none",
+            }
+          }
+          tabIndex="0"
+        >
+          Get more coins
+        </div>
+      </a>
+    </div>
     <div
       className="css-view-1dbjc4n"
       style={
