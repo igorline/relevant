@@ -27,6 +27,7 @@ export function cashOutCall(customAmount = 0, account) {
       Alert.alert(`Claiming ${parseFloat(formatBalanceRead(amnt))} tokens 😄`, 'success');
       return tx;
     } catch (err) {
+      console.log(err); // eslint-disable-line
       return Alert.alert(err.message, 'error');
     }
   };

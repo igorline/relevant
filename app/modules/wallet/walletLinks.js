@@ -54,8 +54,8 @@ export default function WalletLinks() {
         </Tooltip>
       </View>
 
-      <View fdirection="row" mr={2} mt={2} align="center">
-        {tokenEnabled() && (
+      {tokenEnabled() && (
+        <View fdirection="row" mr={2} mt={2} align="center">
           <ULink to={exchageUrl} external target="_blank" td={'underline'}>
             <LinkFont
               // mt={0.5}
@@ -67,8 +67,8 @@ export default function WalletLinks() {
               Get more coins
             </LinkFont>
           </ULink>
-        )}
-      </View>
+        </View>
+      )}
 
       <View fdirection="row" mr={2} mt={2} align="center">
         <Tooltip
