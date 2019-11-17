@@ -33,7 +33,7 @@ const CommunitySchema = new Schema(
     inactive: Boolean,
     private: { type: Boolean, default: false },
     hidden: { type: Boolean, default: false },
-    betEnabled: { type: Boolean, default: true }
+    betEnabled: { type: Boolean, default: false }
   },
   {
     timestamps: true,
