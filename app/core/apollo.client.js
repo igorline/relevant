@@ -14,13 +14,8 @@ if (process.env.WEB !== 'true') {
 const cache = new InMemoryCache();
 cache.restore(window.__APOLLO_STATE__);
 
-const uri = process.env.API_SERVER.length
-  ? process.env.API_SERVER
-  : 'http://localhost:3000';
-
-const wsUri = process.env.API_SERVER.length
-  ? uri.replace('http', 'ws')
-  : 'ws://localhost:3000';
+const uri = process.env.API_SERVER;
+const wsUri = uri.replace('http', 'ws');
 
 const wsLink = new WebSocketLink({
   uri: `${wsUri}/graphql`,

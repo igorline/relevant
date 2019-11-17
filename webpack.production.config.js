@@ -32,7 +32,7 @@ prodConfig.plugins = [
       BROWSER: JSON.stringify(true),
       NODE_ENV: JSON.stringify('production'),
       WEB: JSON.stringify('true'),
-      API_SERVER: JSON.stringify(''),
+      API_SERVER: JSON.stringify(process.env.API_SERVER),
       BABEL_ENV: JSON.stringify('development_web'),
       VAPID_PUBLIC_KEY: JSON.stringify(process.env.VAPID_PUBLIC_KEY),
       INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
