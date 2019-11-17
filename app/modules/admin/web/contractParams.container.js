@@ -15,6 +15,7 @@ import {
 import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
+import Test from 'modules/profile/apollo.test';
 import Treasury from './treasury';
 
 const ParamsTable = styled.table`
@@ -42,6 +43,7 @@ export default function TokenPanel() {
   return (
     <Fragment>
       <Treasury />
+      <Test />
       <ContractParams />
     </Fragment>
   );

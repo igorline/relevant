@@ -62,22 +62,19 @@ export default class CustomListView extends Component {
   componentDidUpdate(prev) {
     const { data, error, active, needsReload, load, view } = this.props;
     const { reloading, loading } = this.state;
-    if (data !== prev.data || error) {
-      // clearTimeout(this.stateTimeout);
-      // this.stateTimeout = setTimeout(
-      // () => this.setState({ reloading: false, loading: false }),
-      //   100
-      // );
+    if (JSON.stringify(data) !== JSON.stringify(prev.data) || error) {
       reloading && this.setState({ reloading: false });
       loading && this.setState({ loading: false });
     }
-    // if (error) {
-    //   reloading && this.setState({ reloading: false });
-    //   loading && this.setState({ loading: false });
-    // }
+    if (reloading) {
+      clearTimeout(this.stateTimeout);
+      this.stateTimeout = setTimeout(
+        () => this.setState({ reloading: false, loading: false }),
+        100
+      );
+    }
 
-    if (active && needsReload > this.lastReload) {
-      !loading && this.setState({ loading: true });
+    if (active && needsReload > this.lastReload && !loading) {
       load(view, 0);
       this.lastReload = new Date().getTime();
     }
@@ -154,7 +151,7 @@ export default class CustomListView extends Component {
         scrollToOverflowEnabled={true}
         // removeClippedSubviews={false}
         stickySectionHeadersEnabled
-        pageSize={1}
+        // pageSize={1}
         initialListSize={3}
         scrollEventThrottle={10}
         renderSectionHeader={({ section: { header } }) => header}
@@ -185,7 +182,7 @@ export default class CustomListView extends Component {
           }
         }}
         onEndReached={this.loadMore}
-        onEndReachedThreshold={100}
+        onEndReachedThreshold={0.3}
         ListFooterComponent={() => emptyEl}
         refreshControl={
           <RefreshControl

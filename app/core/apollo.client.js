@@ -7,16 +7,23 @@ import { concat, split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
+if (process.env.WEB !== 'true') {
+  require('../publicenv');
+}
+
 const cache = new InMemoryCache();
 cache.restore(window.__APOLLO_STATE__);
 
-const uri = process.env.API_SERVER.length ? process.env.API_SERVER : 'localhost:3000';
+const uri = process.env.API_SERVER.length
+  ? process.env.API_SERVER
+  : 'http://localhost:3000';
+
 const wsUri = process.env.API_SERVER.length
-  ? process.env.API_SERVER + ':3001'
-  : 'localhost:3001';
+  ? uri.replace('https', 'ws').replace(':3000', '') + ':3001'
+  : 'ws://localhost:3001';
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${wsUri}/graphql`,
+  uri: `${wsUri}/graphql`,
   options: {
     reconnect: true
   }
@@ -30,7 +37,7 @@ const subscriptionMiddleware = {
 };
 wsLink.subscriptionClient.use([subscriptionMiddleware]);
 
-const httpLink = new HttpLink({ uri: `http://${uri}/graphql` });
+const httpLink = new HttpLink({ uri: `${uri}/graphql` });
 
 const authMiddleware = setContext(async (req, { headers }) => {
   const token = await getToken();

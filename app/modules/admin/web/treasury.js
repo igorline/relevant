@@ -90,34 +90,3 @@ export default function Treasury() {
     </View>
   );
 }
-
-// const SUBSCRIBE = gql`
-//   subscription {
-//     userUpdated {
-//       _id
-//       balance
-//       handle
-//       name
-//       email
-//     }
-//   }
-// `;
-
-// const GET_ME = gql`
-//   query {
-//     userOne(filter: { handle: "slava" }) {
-//       _id
-//       handle
-//       balance
-//       name
-//       email
-//     }
-//   }
-// `;
-
-// const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
-
-// useEffect(() => {
-//   const unsubscribe = subscribeToMore({ document: SUBSCRIBE });
-//   return () => unsubscribe();
-// }, [subscribeToMore]);

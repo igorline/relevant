@@ -218,11 +218,10 @@ class Application extends Component {
       if (this.backgroundTime + 10 * 60 * 1000 < now) {
         // reload current tab
         if (!state.routes) return null;
-        const childKey = state.routes[state.index].key;
-        const tabNav = this.props.navigation.getChildNavigation(childKey);
-        if (!tabNav.state || !state.routes.routes) return null;
-        const currentTab = tabNav.state.routes[tabNav.state.index];
-        this.props.actions.reloadTab(currentTab.key);
+        const tabNavigator = state.routes[0];
+        if (!tabNavigator.routes) return null;
+        const currentTab = tabNavigator.routes[tabNavigator.index].routeName;
+        this.props.actions.reloadTab(currentTab);
 
         // reload all other tabs on focus
         return this.props.actions.reloadAllTabs();
