@@ -24,7 +24,7 @@ import { TwitterCT } from 'app/utils/social';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
 import { PriceProvider } from 'modules/wallet/price.context';
-import { ContractProvider } from 'modules/contract/contract.context';
+import { ContractProvider } from 'modules/contract/contract.provider';
 import styled from 'styled-components';
 
 const UpvoteAnimation = loadable(() =>

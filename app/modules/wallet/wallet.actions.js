@@ -1,4 +1,3 @@
-import { actions, tokenAddress } from 'core/contracts';
 import { getProvider, generateSalt, formatBalanceRead } from 'app/utils/eth';
 import { alert, api } from 'app/utils';
 import { updateAuthUser } from 'modules/auth/auth.actions';
@@ -6,7 +5,7 @@ import { addEarning } from 'modules/wallet/earnings.actions';
 
 const Alert = alert.Alert();
 
-export function cashOutCall(customAmount = 0, account) {
+export function cashOutCall(customAmount = 0, sendCashoutAction) {
   return async dispatch => {
     try {
       const { user, earning } = await dispatch(
@@ -20,10 +19,7 @@ export function cashOutCall(customAmount = 0, account) {
       dispatch(updateAuthUser(user));
       earning && dispatch(addEarning(earning));
       const { amount: amnt, sig } = user.cashOut;
-
-      const tx = dispatch(
-        actions.methods.claimTokens({ at: tokenAddress, from: account }).send(amnt, sig)
-      );
+      const tx = sendCashoutAction(amnt, sig);
       Alert.alert(`Claiming ${parseFloat(formatBalanceRead(amnt))} tokens 😄`, 'success');
       return tx;
     } catch (err) {

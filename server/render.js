@@ -4,7 +4,7 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import { compose } from 'redux';
 import { Provider } from 'react-redux';
-import { setUser, setCommunity } from 'modules/auth/auth.actions';
+import { setUser } from 'modules/auth/auth.actions';
 import routes from 'modules/_app/web/routes';
 import configureStore from 'core/web/configureStore';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
@@ -32,10 +32,8 @@ let extractor =
     ? new ChunkExtractor({ statsFile, entrypoints: 'app' })
     : null;
 
-export function createInitialState(req, res) {
+export function createInitialState(req) {
   const cachedCommunity = req.user ? req.user.community : null;
-
-  if (cachedCommunity && req.url === '/') return res.redirect(`/${cachedCommunity}/new`);
 
   const userAgent = req.headers['user-agent']
     ? useragent.parse(req.headers['user-agent'])
@@ -49,6 +47,9 @@ export function createInitialState(req, res) {
       confirmed: req.confirmed || (req.user && req.user.confirmed),
       // TODO - get this from req.user
       community: req.params.community || cachedCommunity
+    },
+    communities: {
+      active: req.params.community || cachedCommunity
     },
     navigation: {
       width,
@@ -64,10 +65,11 @@ export const initStore = compose(
 
 export default async function handleRender(req, res) {
   const store = initStore(req, res);
-  // TODO - get rid of this - need to convert util/api to middleware
+  const { community } = store.getState().auth;
+  if (community && req.url === '/') return res.redirect(`/${community}/new`);
+
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
-  store.dispatch(setCommunity(store.getState().auth.community));
   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {
@@ -83,10 +85,10 @@ export default async function handleRender(req, res) {
       initialState: store.getState(),
       req
     });
-    res.send(html);
+    return res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
+    return res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
   }
 }
 

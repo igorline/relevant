@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-// import { tokenAddress, selectors } from 'core/contracts';
 import { parseBN } from 'app/utils/eth';
 import { useContract } from './contract.context';
 
@@ -45,16 +44,14 @@ export const useRelevantState = () => {
           userNonce: selectUserNonce(selectors, state, tokenAddress),
           userBalance: selectUserBalance(selectors, state, tokenAddress),
           RelevantToken: state.RelevantToken,
-          methodCache: {
-            select: (method, ...args) =>
-              selectors.methods[method]
-                ? formatSelection(
-                    selectors.methods[method]({ at: tokenAddress })(state, ...args)
-                  )
-                : {}
-          },
+          getState: (method, ...args) =>
+            selectors.methods[method]
+              ? formatSelection(
+                  selectors.methods[method]({ at: tokenAddress })(state, ...args)
+                )
+              : {},
           eventCache: event => selectors.events[event]
         }
-      : { methodCache: { select: () => ({}) } };
+      : { getState: () => ({}) };
   });
 };

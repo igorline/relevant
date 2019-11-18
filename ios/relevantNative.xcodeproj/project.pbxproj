@@ -15,8 +15,8 @@
 		2A46C3471DEA396400DAFC70 /* Georgia.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A46C3461DEA396400DAFC70 /* Georgia.ttf */; };
 		3071DFFF997F93323F5CFDDE /* libPods-relevantNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF8A7EE663221E457C45D1CA /* libPods-relevantNativeTests.a */; };
 		3D7EC265C098ED9B7311FBB4 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6207DE174BD38E3207E5FE23 /* libPods-relevantNative.a */; };
-		C242DF693C40F7EE4DC2ED93 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
-		C2FE5E310310ACF8BEBDE1A0 /* libPods-relevantNative-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DDE082D6CC1A440207588B3 /* libPods-relevantNative-Relevant.a */; };
+		ABE6EE3664519D29DAEBF89E /* libPods-relevantNative-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DDE082D6CC1A440207588B3 /* libPods-relevantNative-Relevant.a */; };
+		C242DF693C40F7EE4DC2ED93 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		FB04E0C01E28548800DD436D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB04E0BE1E28548800DD436D /* LaunchScreen.xib */; };
 		FB04E0C21E2856B500DD436D /* default-launch.png in Resources */ = {isa = PBXBuildFile; fileRef = FB04E0C11E2856B500DD436D /* default-launch.png */; };
 		FB0C7D0F2285F63A00F132A5 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB0C7CC82285F63300F132A5 /* JavaScriptCore.framework */; };
@@ -154,7 +154,7 @@
 			files = (
 				FBDA046F1EEF281F00789ED9 /* CodePush.h in Frameworks */,
 				3D7EC265C098ED9B7311FBB4 /* libPods-relevantNative.a in Frameworks */,
-				C242DF693C40F7EE4DC2ED93 /* (null) in Frameworks */,
+				C242DF693C40F7EE4DC2ED93 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,7 +168,7 @@
 				FBDA04701EEF289600789ED9 /* CodePush.h in Frameworks */,
 				FB2BD6281E8B0C6200DBC2BA /* libsqlite3.0.tbd in Frameworks */,
 				FB2BD6261E8B0C4C00DBC2BA /* CoreData.framework in Frameworks */,
-				C2FE5E310310ACF8BEBDE1A0 /* libPods-relevantNative-Relevant.a in Frameworks */,
+				ABE6EE3664519D29DAEBF89E /* libPods-relevantNative-Relevant.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

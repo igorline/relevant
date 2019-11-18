@@ -98,6 +98,7 @@ CashOutHandler.propTypes = {
 
 function CashOutHandler({ canClaim, account, unclaimedSig, close }) {
   const [currentTx, setCurrentTx] = useState();
+  const { send } = useRelevantActions();
   const user = useSelector(state => state.auth.user);
   const maxClaim =
     user.role === 'admin'
@@ -117,7 +118,9 @@ function CashOutHandler({ canClaim, account, unclaimedSig, close }) {
   }, [unclaimedSig]);
 
   const cashOut = async customAmount => {
-    const tx = await dispatch(cashOutCall(customAmount, account));
+    const sendCashoutAction = (amnt, sig) =>
+      send('claimTokens', { from: account }, amnt, sig);
+    const tx = await dispatch(cashOutCall(customAmount, sendCashoutAction));
     setCurrentTx(tx);
   };
 
@@ -209,11 +212,11 @@ function useUnclaimedSig(user, account) {
   const unclaimedSig =
     user && user.cashOut && user.cashOut.nonce === nonce && user.cashOut;
 
-  const { cacheMethod } = useRelevantActions();
+  const { call } = useRelevantActions();
 
   useEffect(() => {
-    account && cacheMethod('nonceOf', account);
-  }, [account, cacheMethod]);
+    account && call && call('nonceOf', account);
+  }, [account, call]);
 
   return unclaimedSig;
 }

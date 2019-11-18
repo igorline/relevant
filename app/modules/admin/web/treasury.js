@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, BodyText, NumericalValue } from 'modules/styled/uni';
-import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
+import { useRelevantToken } from 'modules/contract/contract.hooks';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { colors } from 'styles';
@@ -43,12 +43,11 @@ const GET_TREASURY = gql`
 
 export default function Treasury() {
   const { data, loading, error } = useQuery(GET_TREASURY);
-  const [, { methodCache }] = useTokenContract();
-  const { cacheMethod } = useRelevantActions();
+  const { getState, call } = useRelevantToken();
 
   useEffect(() => {
-    cacheMethod && contractParams.forEach(method => cacheMethod(method));
-  }, [cacheMethod]);
+    call && contractParams.forEach(method => call(method));
+  }, [call]);
 
   if (loading) return <BodyText>Loading...</BodyText>;
   if (error) return <BodyText>ERROR: {error.message}</BodyText>;
@@ -72,8 +71,7 @@ export default function Treasury() {
           </BodyText>
           <View p={1} fdirection={'row'}>
             <BodyText br={colors.lightGrey} mr={1} flex={1}>
-              {methodCache.select(row.contract).value &&
-                methodCache.select(row.contract).value / 1e18}
+              {getState(row.contract).value && getState(row.contract).value / 1e18}
             </BodyText>
             <BodyText br={colors.lightGrey} mr={1} flex={1}>
               {data.distributedTokens[row.db]}
@@ -81,7 +79,7 @@ export default function Treasury() {
             <BodyText flex={1}>
               {row.contract && row.db
                 ? (
-                    methodCache.select(row.contract).value / 1e18 -
+                    getState(row.contract).value / 1e18 -
                     data.distributedTokens[row.db]
                   ).toString()
                 : ''}

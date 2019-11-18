@@ -2,7 +2,6 @@ import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import pickBy from 'lodash/pickBy';
-import { types } from 'core/contracts';
 import { abbreviateNumber } from 'app/utils/numbers';
 import {
   View,
@@ -12,10 +11,11 @@ import {
   Button,
   NumericalValue
 } from 'modules/styled/uni';
-import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
+import { useRelevantToken } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
 import Test from 'modules/profile/apollo.demo';
+import { useContract } from 'modules/contract/contract.context';
 import Treasury from './treasury';
 
 const ParamsTable = styled.table`
@@ -37,7 +37,6 @@ const AdminActions = styled.div`
 `;
 
 const rewardsToAllocate = formatBalanceWrite('999', 18);
-const readableMethods = getReadableMethods();
 
 export default function TokenPanel() {
   return (
@@ -50,17 +49,18 @@ export default function TokenPanel() {
 }
 
 function ContractParams() {
-  const [accounts, RelevantContract] = useTokenContract();
-  const { userBalance, methodCache } = RelevantContract;
-  const { cacheMethod, cacheSend } = useRelevantActions();
+  const { userBalance, accounts, send, call, getState } = useRelevantToken();
+  const { types, initialized } = useContract();
+  const readableMethods = types ? getReadableMethods(types) : [];
 
   useEffect(() => {
-    cacheMethod && readableMethods.forEach(method => cacheMethod(method));
-  }, [cacheMethod]);
+    if (!initialized) return;
+    call && readableMethods.forEach(method => call(method));
+  }, [call, initialized]); // eslint-disable-line
 
-  const releaseTokens = () => cacheSend('releaseTokens', { from: accounts[0] });
+  const releaseTokens = () => send('releaseTokens', { from: accounts[0] });
   const allocateRewards = () =>
-    cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+    send('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
 
   return (
     <View m={4}>
@@ -95,13 +95,13 @@ function ContractParams() {
                 </tr>
               </tbody>
               <tbody>
-                {hasCacheValue(methodCache) &&
+                {hasValue(getState) &&
                   readableMethods.map(method => (
                     <ParamRow
                       key={method}
                       method={method}
-                      methodCache={methodCache}
-                      cacheMethod={cacheMethod}
+                      getState={getState}
+                      call={call}
                     />
                   ))}
               </tbody>
@@ -115,23 +115,19 @@ function ContractParams() {
 
 ParamRow.propTypes = {
   method: PropTypes.string,
-  methodCache: PropTypes.shape({
-    select: PropTypes.func
-  }),
-  cacheMethod: PropTypes.func
+  getState: PropTypes.func,
+  call: PropTypes.func
 };
 
-function ParamRow({ method, methodCache, cacheMethod }) {
+function ParamRow({ method, call, getState }) {
   return (
     <tr>
       <td>{method}</td>
       <td>
-        <NumericalValue>
-          {abbreviateNumber(methodCache.select(method).value)}
-        </NumericalValue>
+        <NumericalValue>{abbreviateNumber(getState(method).value)}</NumericalValue>
       </td>
       <td>
-        <Button onClick={() => cacheMethod(method)}>Call</Button>
+        <Button onClick={() => call(method)}>Call</Button>
       </td>
       <td>
         <Input />
@@ -141,11 +137,11 @@ function ParamRow({ method, methodCache, cacheMethod }) {
 }
 
 // Utils
-function hasCacheValue(cache) {
-  return cache && cache.select('name') && cache.select('name').value;
+function hasValue(state) {
+  return state && state('name') && state('name').value;
 }
 
-function getReadableMethods() {
+function getReadableMethods(types) {
   return ['allocatedRewards', 'totalReleased'].concat(
     Object.keys(
       pickBy(

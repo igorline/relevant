@@ -34,35 +34,34 @@ export const useRelevantActions = () => {
     subscribeToEvent: useCallback(
       event => {
         dispatch(tokenActions.events[event].get({ at: tokenAddress }));
-        dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
+        return dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
       },
       [dispatch, tokenActions, tokenAddress]
     ),
-    cacheMethod: useCallback(
+    call: useCallback(
       (method, args) => {
-        // if (!method) return;
-        if (args) dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
-        else dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
+        if (args)
+          return dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
+        return dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
       },
       [dispatch, tokenActions, tokenAddress]
     ),
-    cacheSend: useCallback(
+    send: useCallback(
       (method, options, ...args) => {
         if (args) {
-          dispatch(
+          return dispatch(
             tokenActions.methods[method]({
               at: tokenAddress,
               ...options
             }).send(...args)
           );
-        } else {
-          dispatch(
-            tokenActions.methods[method]({
-              at: tokenAddress,
-              ...options
-            }).send()
-          );
         }
+        return dispatch(
+          tokenActions.methods[method]({
+            at: tokenAddress,
+            ...options
+          }).send()
+        );
       },
       [dispatch, tokenActions, tokenAddress]
     )
@@ -115,15 +114,15 @@ export const useMetamask = () => {
 export const useBalance = () => {
   const { accounts } = useWeb3State();
   const { userBalance } = useRelevantState();
-  const { cacheMethod, subscribeToEvent } = useRelevantActions();
+  const { call, subscribeToEvent } = useRelevantActions();
   const haveBalance = !!userBalance;
 
   useEffect(() => {
     subscribeToEvent && subscribeToEvent('Transfer');
     if (accounts && accounts.length && !haveBalance) {
-      cacheMethod('balanceOf', accounts[0]);
+      call && call('balanceOf', accounts[0]);
     }
-  }, [accounts, haveBalance, cacheMethod, subscribeToEvent]);
+  }, [accounts, haveBalance, call, subscribeToEvent]);
 
   const relCoins =
     userBalance && userBalance.phase === 'SUCCESS'
@@ -140,23 +139,41 @@ export const useEventSubscription = () => {
   }, [subscribeToEvent]);
 };
 
+// DEPRECATED backwards compatability
+
 // Rerturns [Accounts, Relevant State, Relevant Actions]
 export const useTokenContract = () => {
   useContract();
-  const relevantState = useRelevantState();
+  const { getState } = useRelevantState();
   const web3 = useWeb3State();
-  const relevantActions = useRelevantActions();
+  const { call, send } = useRelevantActions();
   useWeb3();
   useBalance();
   // useEventSubscription(ethActions);
-  return [web3.accounts, relevantState, relevantActions];
+  return [
+    web3.accounts,
+    { methodCache: { select: getState } },
+    { cacheMethod: call, cacheSend: send }
+  ];
+};
+
+// Rerturns [Accounts, Relevant State, Relevant Actions]
+export const useRelevantToken = () => {
+  useContract();
+  const { getState } = useRelevantState();
+  const web3 = useWeb3State();
+  const { call, send } = useRelevantActions();
+  useWeb3();
+  useBalance();
+  // useEventSubscription(ethActions);
+  return { accounts: web3.accounts, getState, call, send };
 };
 
 export const useTxState = ({ tx, method, callback }) => {
-  const { methodCache } = useRelevantState();
-  if (!tx) return null;
+  const { getState } = useRelevantState();
+  if (!tx || !getState) return null;
 
-  const txState = methodCache.select(method, ...tx.payload.args);
+  const txState = getState(method, ...tx.payload.args);
 
   if (txState && txState.phase === 'RECEIPT') {
     Alert.alert('Transaction Completed!', 'success');
