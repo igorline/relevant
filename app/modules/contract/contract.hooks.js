@@ -88,7 +88,7 @@ export const useWeb3 = () => {
 export const useMetamask = () => {
   const dispatch = useDispatch();
   const metamask = getMetamask();
-  metamask.autoRefreshOnNetworkChange = false;
+  if (metamask) metamask.autoRefreshOnNetworkChange = false;
 
   useEffect(() => {
     if (!metamask) return () => {};
