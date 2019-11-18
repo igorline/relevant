@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import { getProvider, getMetamask, formatBN } from 'app/utils/eth';
 import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
-import { actions as tokenActions, tokenAddress } from 'core/contracts';
 import { alert } from 'app/utils';
 import { useWeb3State, useRelevantState } from './contract.selectors';
+import { useContract } from './contract.context';
 
 const Alert = alert.Alert();
 const _web3 = getProvider();
@@ -16,32 +16,27 @@ export const useWeb3Actions = () => {
     init: useCallback(web3Instance => dispatch(_web3Actions.init.init(web3Instance)), [
       dispatch
     ]),
-    network: useCallback(
-      () => bindActionCreators({ ..._web3Actions.network, dispatch }),
-      [dispatch]
-    ),
-    accounts: useCallback(
-      () => bindActionCreators({ ..._web3Actions.accounts, dispatch }),
-      [dispatch]
-    )
+    network: bindActionCreators({ ..._web3Actions.network }, dispatch),
+    accounts: bindActionCreators({ ..._web3Actions.accounts }, dispatch)
   };
 };
 
 export const useRelevantActions = () => {
+  const { actions: tokenActions, tokenAddress } = useContract();
   const dispatch = useDispatch();
-  return {
+  const actions = {
     getEvent: useCallback(
       event => {
         dispatch(tokenActions.events[event].get({ at: tokenAddress }));
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     ),
     subscribeToEvent: useCallback(
       event => {
         dispatch(tokenActions.events[event].get({ at: tokenAddress }));
         dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     ),
     cacheMethod: useCallback(
       (method, args) => {
@@ -49,7 +44,7 @@ export const useRelevantActions = () => {
         if (args) dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
         else dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     ),
     cacheSend: useCallback(
       (method, options, ...args) => {
@@ -69,12 +64,14 @@ export const useRelevantActions = () => {
           );
         }
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     )
   };
+  return tokenActions ? actions : {};
 };
 
 export const useWeb3 = () => {
+  useContract();
   useMetamask();
   const web3 = useWeb3State();
   const { init } = useWeb3Actions();
@@ -91,6 +88,7 @@ export const useWeb3 = () => {
 export const useMetamask = () => {
   const dispatch = useDispatch();
   const metamask = getMetamask();
+  metamask.autoRefreshOnNetworkChange = false;
 
   useEffect(() => {
     if (!metamask) return () => {};
@@ -99,7 +97,6 @@ export const useMetamask = () => {
     } catch (err) {
       return () => {};
     }
-    metamask.autoRefreshOnNetworkChange = false;
 
     const getAccounts = _accounts =>
       dispatch(_web3Actions.accounts.getSuccess(_accounts));
@@ -122,7 +119,7 @@ export const useBalance = () => {
   const haveBalance = !!userBalance;
 
   useEffect(() => {
-    subscribeToEvent('Transfer');
+    subscribeToEvent && subscribeToEvent('Transfer');
     if (accounts && accounts.length && !haveBalance) {
       cacheMethod('balanceOf', accounts[0]);
     }
@@ -145,6 +142,7 @@ export const useEventSubscription = () => {
 
 // Rerturns [Accounts, Relevant State, Relevant Actions]
 export const useTokenContract = () => {
+  useContract();
   const relevantState = useRelevantState();
   const web3 = useWeb3State();
   const relevantActions = useRelevantActions();

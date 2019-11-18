@@ -47,7 +47,7 @@ export default function Treasury() {
   const { cacheMethod } = useRelevantActions();
 
   useEffect(() => {
-    contractParams.forEach(method => cacheMethod(method));
+    cacheMethod && contractParams.forEach(method => cacheMethod(method));
   }, [cacheMethod]);
 
   if (loading) return <BodyText>Loading...</BodyText>;
@@ -80,8 +80,10 @@ export default function Treasury() {
             </BodyText>
             <BodyText flex={1}>
               {row.contract && row.db
-                ? methodCache.select(row.contract).value / 1e18 -
-                  data.distributedTokens[row.db]
+                ? (
+                    methodCache.select(row.contract).value / 1e18 -
+                    data.distributedTokens[row.db]
+                  ).toString()
                 : ''}
             </BodyText>
           </View>

@@ -24,6 +24,7 @@ import { TwitterCT } from 'app/utils/social';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
 import { PriceProvider } from 'modules/wallet/price.context';
+import { ContractProvider } from 'modules/contract/contract.context';
 import styled from 'styled-components';
 
 const UpvoteAnimation = loadable(() =>
@@ -237,15 +238,17 @@ class App extends Component {
           <DownvoteAnimation />
         </AnimationContainer>
 
-        <PriceProvider>
-          <Fragment>
-            <ModalContainer />
-            <ToastContainer />
-            <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
-              {renderRoutes(this.props.route.routes)}
-            </div>
-          </Fragment>
-        </PriceProvider>
+        <ContractProvider>
+          <PriceProvider>
+            <Fragment>
+              <ModalContainer />
+              <ToastContainer />
+              <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+                {renderRoutes(this.props.route.routes)}
+              </div>
+            </Fragment>
+          </PriceProvider>
+        </ContractProvider>
       </div>
     );
   }

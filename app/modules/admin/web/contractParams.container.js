@@ -50,11 +50,12 @@ export default function TokenPanel() {
 }
 
 function ContractParams() {
-  const [accounts, { userBalance, methodCache }] = useTokenContract();
+  const [accounts, RelevantContract] = useTokenContract();
+  const { userBalance, methodCache } = RelevantContract;
   const { cacheMethod, cacheSend } = useRelevantActions();
 
   useEffect(() => {
-    readableMethods.forEach(method => cacheMethod(method));
+    cacheMethod && readableMethods.forEach(method => cacheMethod(method));
   }, [cacheMethod]);
 
   const releaseTokens = () => cacheSend('releaseTokens', { from: accounts[0] });
@@ -141,7 +142,7 @@ function ParamRow({ method, methodCache, cacheMethod }) {
 
 // Utils
 function hasCacheValue(cache) {
-  return cache.select('name') && cache.select('name').value;
+  return cache && cache.select('name') && cache.select('name').value;
 }
 
 function getReadableMethods() {

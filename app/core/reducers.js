@@ -23,59 +23,58 @@ import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
-let RelevantToken = {};
 let web3Reducers = {};
 
 if (process.env.WEB !== 'true') {
   // might need this form for conditional require
 } else {
   // block these imports in package.json in react-native field
-  RelevantToken = require('./contracts').reducer;
   web3Reducers = require('./web3.reducer').web3Reducers;
 }
 
 let communityState = {};
 
+const reducers = {
+  auth,
+  posts,
+  user,
+  socket,
+  form: formReducer,
+  notif,
+  error,
+  animation,
+  view,
+  // TODO update
+  investments: invest,
+  stats,
+  // TODO update
+  comments: comment,
+  navigation,
+  createPost,
+  tags,
+  tooltip,
+  subscriptions,
+  admin,
+  community,
+  earnings,
+  // ...drizzleReducers,
+  web3: web3Reducers
+  // ...RelevantToken,
+};
+
 const createReducer = (asyncReducers = {}) =>
-  combineReducers({
-    auth,
-    posts,
-    user,
-    socket,
-    form: formReducer,
-    notif,
-    error,
-    animation,
-    view,
-    // TODO update
-    investments: invest,
-    stats,
-    // TODO update
-    comments: comment,
-    navigation,
-    createPost,
-    tags,
-    tooltip,
-    subscriptions,
-    admin,
-    community,
-    earnings,
-    // ...drizzleReducers,
-    web3: web3Reducers,
-    ...RelevantToken,
-    ...asyncReducers
-  });
+  combineReducers({ ...reducers, ...asyncReducers });
 
-const appReducer = createReducer();
+let appReducer = createReducer();
 
-// export function injectAsyncReducer(store, name, asyncReducer) {
-//   if (store.asyncReducers[name]) {
-//     return;
-//   }
-//   store.asyncReducers[name] = asyncReducer;
-//   appReducer = createReducer();
-//   store.replaceReducer(createReducer(appReducer));
-// }
+export function injectReducer(store, name, asyncReducer) {
+  if (store.asyncReducers[name]) {
+    return;
+  }
+  store.asyncReducers[name] = asyncReducer;
+  appReducer = createReducer(store.asyncReducers);
+  store.replaceReducer(appReducer);
+}
 
 const initialState = {
   posts: appReducer.posts,
@@ -126,3 +125,4 @@ const rootReducer = (state, action) => {
 export const _rootReducer = createReducer();
 
 export default rootReducer;
+// export default { ...reducers, rootReducer };

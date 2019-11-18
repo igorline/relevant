@@ -54,7 +54,6 @@ export default function AddEthAddress({ close }) {
   const canClaim = user.balance - (user.airdroppedTokens || 0);
   const account = accounts && accounts[0];
 
-  // useBalance();
   useMetamask();
 
   const unclaimedSig = useUnclaimedSig(user, account);

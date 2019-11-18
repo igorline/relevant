@@ -188,6 +188,7 @@
     "redux-saga": "^1.0.2",
     "redux-saga-web3": "0.1.0-alpha.3",
     "redux-saga-web3-eth-contract": "0.1.0-alpha.3",
+    "redux-sagas-injector": "^1.1.1",
     "redux-socket.io": "^1.4.0",
     "redux-thunk": "^2.0.1",
     "request": "2.87.0",

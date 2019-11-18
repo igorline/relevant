@@ -1,20 +1,21 @@
 import { useSelector } from 'react-redux';
-import { tokenAddress, selectors } from 'core/contracts';
+// import { tokenAddress, selectors } from 'core/contracts';
 import { parseBN } from 'app/utils/eth';
+import { useContract } from './contract.context';
 
-export const selectUserBalance = (state, address) =>
+export const selectUserBalance = (selectors, state, address) =>
   selectors.methods.balanceOf({ at: address })(
     state,
     state.web3.accounts.items && state.web3.accounts.items[0]
   );
 
-export const selectUserNonce = (state, address) =>
+export const selectUserNonce = (selectors, state, address) =>
   selectors.methods.nonceOf({ at: address })(
     state,
     state.web3.accounts.items && state.web3.accounts.items[0]
   );
 
-export const selectCashOut = (state, address) =>
+export const selectCashOut = (selectors, state, address) =>
   selectors.methods.cashOut({ at: address })(
     state,
     state.web3.accounts.items && state.web3.accounts.items[0]
@@ -36,18 +37,24 @@ export const useWeb3State = () =>
     address: state.web3.accounts.items && state.web3.accounts.items[0]
   }));
 
-export const useRelevantState = () =>
-  useSelector(state => ({
-    userNonce: selectUserNonce(state, tokenAddress),
-    userBalance: selectUserBalance(state, tokenAddress),
-    RelevantToken: state.RelevantToken,
-    methodCache: {
-      select: (method, ...args) =>
-        selectors.methods[method]
-          ? formatSelection(
-              selectors.methods[method]({ at: tokenAddress })(state, ...args)
-            )
-          : {}
-    },
-    eventCache: event => selectors.events[event]
-  }));
+export const useRelevantState = () => {
+  const { selectors, tokenAddress, initialized } = useContract();
+  return useSelector(state => {
+    return initialized
+      ? {
+          userNonce: selectUserNonce(selectors, state, tokenAddress),
+          userBalance: selectUserBalance(selectors, state, tokenAddress),
+          RelevantToken: state.RelevantToken,
+          methodCache: {
+            select: (method, ...args) =>
+              selectors.methods[method]
+                ? formatSelection(
+                    selectors.methods[method]({ at: tokenAddress })(state, ...args)
+                  )
+                : {}
+          },
+          eventCache: event => selectors.events[event]
+        }
+      : { methodCache: { select: () => ({}) } };
+  });
+};

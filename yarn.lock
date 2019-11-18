@@ -11043,7 +11043,7 @@ lodash.unescape@4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
   integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
 
-lodash@^4.0.0, lodash@^4.1.0, lodash@^4.12.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0:
+lodash@4.17.15, lodash@^4.0.0, lodash@^4.1.0, lodash@^4.12.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -15199,6 +15199,14 @@ redux-mock-store@^1.5.3:
   dependencies:
     lodash.isplainobject "^4.0.6"
 
+redux-reducers-injector@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/redux-reducers-injector/-/redux-reducers-injector-0.3.0.tgz#8ac3db20ddce237c9462eb0d13d8f928f4ea4581"
+  integrity sha512-oEiIVo650RRjFwSdouPMjCNMPVaaIt5Z/YqangAxQ0W65TmLX5h9+qBj1paU4JRq0CNqf9DGJ/orM1QcaOfIhw==
+  dependencies:
+    lodash "4.17.15"
+    redux "4.0.4"
+
 redux-saga-web3-eth-contract@0.1.0-alpha.3:
   version "0.1.0-alpha.3"
   resolved "https://registry.yarnpkg.com/redux-saga-web3-eth-contract/-/redux-saga-web3-eth-contract-0.1.0-alpha.3.tgz#33e24625ea7ebdb032861b46d7884948ab80f17a"
@@ -15250,12 +15258,21 @@ redux-saga-web3@0.1.0-alpha.3, redux-saga-web3@^0.1.0-alpha.3:
     web3 "1.0.0-beta.55"
     web3-eth "1.0.0-beta.55"
 
-redux-saga@^1.0.2:
+redux-saga@1.1.1, redux-saga@^1.0.2:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-1.1.1.tgz#7e02879beb02c92030b5fbe746fd70e8bda97dfb"
   integrity sha512-guSnGJ/uEF8yL8Mn4aNa7HxRGCpVUALCkec9iTTD0fOhQqkF6bRQkBLeS+7/cAH3nFnr299bi/DOurTi1apcCA==
   dependencies:
     "@redux-saga/core" "^1.1.1"
+
+redux-sagas-injector@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/redux-sagas-injector/-/redux-sagas-injector-1.1.1.tgz#ed5603faa5369846a07acc772aa08cb9d094757c"
+  integrity sha512-+Z+G1Z0po01WPdXMJm1GAjovtZsLJ/A8SDlx6YMksrazOYQwUSOa7wZf5Zfq906c4cU7665Gn9H6jQVMFM/lkw==
+  dependencies:
+    redux "4.0.4"
+    redux-reducers-injector "0.3.0"
+    redux-saga "1.1.1"
 
 redux-socket.io@^1.4.0:
   version "1.4.0"
@@ -15267,6 +15284,14 @@ redux-thunk@^2.0.1:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
+redux@4.0.4, redux@^4.0.0, redux@^4.0.1, redux@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.4.tgz#4ee1aeb164b63d6a1bcc57ae4aa0b6e6fa7a3796"
+  integrity sha512-vKv4WdiJxOWKxK0yRoaK3Y4pxxB0ilzVx6dszU2W8wLxlb2yikRph4iV/ymtdJ6ZxpBLFbyrxklnT5yBbQSl3Q==
+  dependencies:
+    loose-envify "^1.4.0"
+    symbol-observable "^1.2.0"
+
 redux@^3.6.0:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
@@ -15276,14 +15301,6 @@ redux@^3.6.0:
     lodash-es "^4.2.1"
     loose-envify "^1.1.0"
     symbol-observable "^1.0.3"
-
-redux@^4.0.0, redux@^4.0.1, redux@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.4.tgz#4ee1aeb164b63d6a1bcc57ae4aa0b6e6fa7a3796"
-  integrity sha512-vKv4WdiJxOWKxK0yRoaK3Y4pxxB0ilzVx6dszU2W8wLxlb2yikRph4iV/ymtdJ6ZxpBLFbyrxklnT5yBbQSl3Q==
-  dependencies:
-    loose-envify "^1.4.0"
-    symbol-observable "^1.2.0"
 
 reflect.ownkeys@^0.2.0:
   version "0.2.0"
