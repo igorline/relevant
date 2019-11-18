@@ -1,7 +1,6 @@
 import createSocketIoMiddleware from 'redux-socket.io';
 import { applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-// import createSagaMiddleware from 'redux-saga';
 import { createInjectSagasStore, sagaMiddleware } from 'redux-sagas-injector';
 
 import rootReducer, { injectReducer } from '../reducers';
@@ -30,13 +29,6 @@ export default function configureStore(initialState = {}) {
     // only use the socket middleware on client and not on server
     const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
     const _middleware = [thunk, socketIoMiddleware, sagaMiddleware];
-    // if (process.env.DEVTOOLS) {
-    // const logger = createLogger({
-    //   collapsed: (getState, action) => collapseActions[action.type],
-    //   stateTransformer
-    // });
-    // _middleware.push(logger);
-    // }
     middleware = applyMiddleware(..._middleware);
   } else {
     middleware = applyMiddleware(thunk, sagaMiddleware);
@@ -77,6 +69,5 @@ export default function configureStore(initialState = {}) {
     });
   }
 
-  // sagaMiddleware.run(rootSaga);
   return store;
 }
