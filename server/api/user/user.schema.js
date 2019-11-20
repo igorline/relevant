@@ -13,14 +13,14 @@ const remove = Object.keys(User.schema.paths).filter(
 const customizationOptions = {};
 const TC = composeWithMongoose(User, customizationOptions);
 
-async function testSub() {
-  const user = await User.findOne({ handle: 'slava' }, '+email');
-  setInterval(() => {
-    user.balance += 10;
-    pubsub.publish(USER_UPDATED, user);
-  }, 1000);
-}
-testSub();
+// async function testSub() {
+//   const user = await User.findOne({ handle: 'slava' }, '+email');
+//   setInterval(() => {
+//     user.balance += 10;
+//     pubsub.publish(USER_UPDATED, user);
+//   }, 1000);
+// }
+// testSub();
 
 remove.map(field =>
   TC.extendField(field, {
@@ -45,13 +45,15 @@ export const userQuery = {
   // userPagination: TC.getResolver('pagination')
 
   me: TC.getResolver('findOne').wrapResolve(next => rp => {
+    if (!rp.context.user) return null;
+    rp.args.user = rp.context.user._id;
     return next(rp);
   })
 };
 
-TC.addFields({
-  test: { type: 'String' }
-});
+// TC.addFields({
+//   test: { type: 'String' }
+// });
 
 export const userSubscription = {
   userUpdated: {

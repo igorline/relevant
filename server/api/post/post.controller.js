@@ -779,6 +779,7 @@ exports.create = async (req, res, next) => {
     // });
 
     if (!postUrl && !channel) await newPost.insertIntoFeed(communityId, community);
+    await newPost.incrementUnread({ communityId, community });
 
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);

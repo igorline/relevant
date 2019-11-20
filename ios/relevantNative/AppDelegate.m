@@ -110,12 +110,6 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
     [FIRApp configure];
   }
 
-//  #ifdef DEBUG
-//    NSLog(@"DEBUG!!!");
-//  #else
-//    NSLog(@"PRODUCTION");
-//  #endif
-
   return YES;
 }
 
@@ -124,7 +118,6 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
   #if DEBUG
     return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   #else
-//    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     return [CodePush bundleURL];
   #endif
 }

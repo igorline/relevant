@@ -27,7 +27,7 @@ const Nav = styled(View)`
 `;
 
 const Badge = styled(View)`
-  border-radius: 108%;
+  border-radius: 100%;
   align-items: center;
   height: ${sizing(2)};
   width: ${sizing(2)};

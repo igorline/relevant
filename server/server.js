@@ -139,7 +139,12 @@ SubscriptionServer.create(
   {
     onOperation: async (message, params) => {
       const { token } = message.payload;
-      const user = await verify(token);
+      let user;
+      try {
+        user = await verify(token);
+      } catch (err) {
+        // console.log(err);
+      }
       return {
         ...params,
         context: {
@@ -172,6 +177,7 @@ if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'nati
 
 require('./utils/tokenAudit');
 require('./utils/ethereum').init();
+// require('./utils/dbMigrate-v1.1.1');
 
 exports.app = app;
 exports.server = server;

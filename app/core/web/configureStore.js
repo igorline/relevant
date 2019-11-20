@@ -39,7 +39,6 @@ export default function configureStore(initialState = {}) {
     middleware = composeEnhancers(middleware);
   }
   // Create final store and subscribe router in debug env ie. for devtools
-  // const store = middleware(createStore)(rootReducer, initialState);
   const store = createInjectSagasStore(
     { rootSaga },
     rootReducer,

@@ -6,7 +6,9 @@ import { getToken } from 'utils/storage';
 import { setContext } from 'apollo-link-context';
 import { concat } from 'apollo-link';
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+  dataIdFromObject: object => object._id || null
+});
 
 const authMiddleware = setContext(async (req, { headers }) => {
   const token = await getToken();

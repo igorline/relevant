@@ -192,14 +192,7 @@ export async function create(req, res, next) {
     if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
 
     // TODO - this should create an invitation!
-    admins = admins.map(async admin => {
-      try {
-        return await community.join(admin._id, 'admin');
-      } catch (err) {
-        throw err;
-      }
-    });
-
+    admins = admins.map(async admin => community.join(admin._id, 'admin'));
     admins = await Promise.all(admins);
 
     res.status(200).json(community);
@@ -252,12 +245,8 @@ export async function update(req, res, next) {
 
     // TODO - this should create an invitation!
     newAdmins = newAdmins.map(async admin => {
-      try {
-        const role = superAdmins.includes(admin._id) ? 'superAdmin' : 'admin';
-        return await community.join(admin._id, role);
-      } catch (err) {
-        throw err;
-      }
+      const role = superAdmins.includes(admin._id) ? 'superAdmin' : 'admin';
+      return community.join(admin._id, role);
     });
 
     await Promise.all(newAdmins);
@@ -319,7 +308,15 @@ export async function remove(req, res, next) {
     if (!admin) throw new Error('you need to be a community admin to do this');
 
     // await Community.findOne({ slug }).remove().exec();
-    await Community.findOneAndUpdate({ slug }, { inactive: true }, { new: true });
+    const community = await Community.findOneAndUpdate(
+      { slug },
+      { inactive: true },
+      { new: true }
+    );
+    await CommunityMember.update(
+      { communityId: community._id },
+      { deletedCommunity: true }
+    );
 
     res.status(200).json('removed');
   } catch (err) {

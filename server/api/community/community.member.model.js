@@ -21,7 +21,9 @@ const CommunityMemberSchema = new Schema(
     invites: { type: Number, default: 0 },
     degree: { type: Number, default: 0 },
     pagerank: { type: Number, default: 0 },
-    pagerankRaw: { type: Number, default: 0 }
+    pagerankRaw: { type: Number, default: 0 },
+    unread: { type: Number, default: 0 },
+    deletedCommunity: { type: Boolean, default: false }
   },
   {
     timestamps: true
@@ -30,12 +32,17 @@ const CommunityMemberSchema = new Schema(
 
 CommunityMemberSchema.index({ community: 1 });
 CommunityMemberSchema.index({ communityId: 1 });
+CommunityMemberSchema.index({ deletedCommunity: 1 });
+
+CommunityMemberSchema.index({ communityId: 1, deletedCommunity: 1 });
 CommunityMemberSchema.index({ communityId: 1, user: 1 });
 CommunityMemberSchema.index({ community: 1, user: 1 });
 
 CommunityMemberSchema.index({ community: 1, reputation: -1 });
 CommunityMemberSchema.index({ community: 1, reputation: -1, role: 1 });
 CommunityMemberSchema.index({ community: 1, reputation: -1, user: 1 });
+
+CommunityMemberSchema.index({ deletedCommunity: 1, user: 1 });
 
 // TODO rep key to search by
 CommunityMemberSchema.virtual('repKey').get(function getProfile() {

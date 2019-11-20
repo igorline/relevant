@@ -4,7 +4,7 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import { compose } from 'redux';
 import { Provider } from 'react-redux';
-import { setUser } from 'modules/auth/auth.actions';
+import { setUser, setCommunity } from 'modules/auth/auth.actions';
 import routes from 'modules/_app/web/routes';
 import configureStore from 'core/web/configureStore';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
@@ -48,9 +48,6 @@ export function createInitialState(req) {
       // TODO - get this from req.user
       community: req.params.community || cachedCommunity
     },
-    communities: {
-      active: req.params.community || cachedCommunity
-    },
     navigation: {
       width,
       screenSize: getScreenSize(width)
@@ -64,12 +61,14 @@ export const initStore = compose(
 );
 
 export default async function handleRender(req, res) {
-  const store = initStore(req, res);
+  const store = initStore(req);
   const { community } = store.getState().auth;
   if (community && req.url === '/') return res.redirect(`/${community}/new`);
 
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
+  if (community) store.dispatch(setCommunity(community));
+
   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {

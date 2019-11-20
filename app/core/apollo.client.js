@@ -11,7 +11,10 @@ if (process.env.WEB !== 'true') {
   require('../publicenv');
 }
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+  dataIdFromObject: object => object._id || null
+});
+
 cache.restore(window.__APOLLO_STATE__);
 
 const uri = process.env.API_SERVER;

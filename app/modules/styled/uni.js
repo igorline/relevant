@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
 import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
+import { abbreviateNumber } from 'utils/numbers';
 
 export const View = styled.View`
   ${mixins.margin}
@@ -301,3 +302,43 @@ export const Overlay = styled(View)`
   bottom: 0;
   background-color: ${colors.modalBackground};
 `;
+
+// export const Badge = styled(View)`
+//   border-radius: 100%;
+//   align-items: center;
+//   justify-content: center;
+//   display: flex;
+//   flex-direction: row;
+// `;
+Badge.propTypes = {
+  color: PropTypes.sting,
+  textColor: PropTypes.string,
+  h: PropTypes.number,
+  children: PropTypes.node,
+  number: PropTypes.number
+};
+
+export function Badge({ color, textColor, h, children, number, ...styles }) {
+  if (!number) return null;
+  return (
+    <View
+      minwidth={h || 1.75}
+      p={0.5}
+      h={h || 1.75}
+      bradius={(h || 1.75) / 2}
+      align={'center'}
+      justify={'center'}
+      bg={colors.blue}
+      style={{ textDecoration: 'none !important' }}
+      {...styles}
+    >
+      <NumericalValue
+        style={{ textDecorationColor: 'rgba(0,0,0,0)' }}
+        fs={1.25}
+        c={textColor || colors.white}
+      >
+        {abbreviateNumber(number)}
+      </NumericalValue>
+    </View>
+  );
+}

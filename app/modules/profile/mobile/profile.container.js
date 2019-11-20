@@ -22,7 +22,6 @@ import CustomListView from 'modules/listview/mobile/customList.component';
 import Tabs from 'modules/navigation/mobile/tabs.component';
 import { get } from 'lodash';
 import ProfileComponent from './profile.component';
-import Test from '../apollo.demo';
 
 let styles;
 
@@ -182,7 +181,6 @@ class Profile extends Component {
           styles={styles}
           scrollTo={this.scrollTo}
         />
-        <Test />
       </View>
     ) : null;
   }

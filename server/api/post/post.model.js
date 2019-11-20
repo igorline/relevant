@@ -1,3 +1,6 @@
+import { pubsub } from 'server/graphql/pubsub';
+import { UPDATE_UNREAD } from 'server/api/community/member.schema';
+
 const mongoose = require('mongoose');
 const socketEvent = require('server/socket/socketEvent').default;
 
@@ -685,5 +688,16 @@ PostSchema.post('remove', async function postRemove(post, next) {
   await Promise.all([note, feed, twitterFeed, data, metaPost, commentNote]);
   return next();
 });
+
+PostSchema.methods.incrementUnread = async function incrementUnread({
+  communityId,
+  community
+}) {
+  await this.model('CommunityMember').updateMany(
+    { communityId },
+    { $inc: { unread: 1 } }
+  );
+  pubsub.publish(UPDATE_UNREAD, { community, communityId: communityId.toString() });
+};
 
 module.exports = mongoose.model('Post', PostSchema);
