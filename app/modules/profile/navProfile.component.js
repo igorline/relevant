@@ -178,7 +178,7 @@ export class NavProfile extends Component {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  user: state.auth.user,
+  user: state.auth && state.auth.user,
   earnings: state.earnings
 });
 

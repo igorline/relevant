@@ -152,8 +152,10 @@ export const StaticButton = styled(View)`
   ${p =>
     p.disabled
       ? `
-    color: ${colors.white};
-    background: ${colors.grey};
+      background: ${colors.grey};
+    & > div {
+      color: ${colors.white};
+    }
     `
       : ''};
   ${mixins.width}
@@ -311,7 +313,7 @@ export const Overlay = styled(View)`
 //   flex-direction: row;
 // `;
 Badge.propTypes = {
-  color: PropTypes.sting,
+  color: PropTypes.string,
   textColor: PropTypes.string,
   h: PropTypes.number,
   children: PropTypes.node,
@@ -323,20 +325,15 @@ export function Badge({ color, textColor, h, children, number, ...styles }) {
   return (
     <View
       minwidth={h || 1.75}
-      p={0.5}
+      p={'0 0.5'}
       h={h || 1.75}
       bradius={(h || 1.75) / 2}
       align={'center'}
       justify={'center'}
-      bg={colors.blue}
-      style={{ textDecoration: 'none !important' }}
+      bg={color || colors.blue}
       {...styles}
     >
-      <NumericalValue
-        style={{ textDecorationColor: 'rgba(0,0,0,0)' }}
-        fs={1.25}
-        c={textColor || colors.white}
-      >
+      <NumericalValue fs={1.25} lh={h || 1.75} c={textColor || colors.white}>
         {abbreviateNumber(number)}
       </NumericalValue>
     </View>

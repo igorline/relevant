@@ -14,11 +14,14 @@ exports[`Snapshot NavProfile 1`] = `
   color: #0000ff;
 }
 
-.c0:hover {
+.c0:hover > div > div:first-child {
   -webkit-text-decoration: underline;
   text-decoration: underline;
   -webkit-text-decoration-color: hsl(0,0%,0%);
   text-decoration-color: hsl(0,0%,0%);
+}
+
+.c0:hover {
   background: hsl(0,0%,100%);
 }
 
@@ -108,6 +111,7 @@ exports[`Snapshot NavProfile 1`] = `
       />
       <a
         className="c0 ulink-mock"
+        flex={1}
         href="/relevant/new"
         hu={0}
         inline={0}
@@ -116,9 +120,9 @@ exports[`Snapshot NavProfile 1`] = `
           Array [
             "display:flex;align-items:center;color:",
             "hsl(0, 0%, 0%)",
-            ";&:hover{text-decoration:underline;text-decoration-color:",
+            ";&:hover > div > div:first-child{text-decoration:underline;text-decoration-color:",
             "hsl(0, 0%, 0%)",
-            ";background:",
+            ";}&:hover{background:",
             "hsl(0, 0%, 100%)",
             ";}",
           ]
@@ -131,17 +135,23 @@ exports[`Snapshot NavProfile 1`] = `
               "WebkitAlignItems": "center",
               "WebkitBoxAlign": "center",
               "WebkitBoxDirection": "normal",
+              "WebkitBoxFlex": 1,
               "WebkitBoxOrient": "horizontal",
+              "WebkitFlexBasis": "0px",
               "WebkitFlexDirection": "row",
+              "WebkitFlexGrow": 1,
+              "WebkitFlexShrink": 1,
               "alignItems": "center",
               "display": "flex",
+              "flexBasis": "0px",
               "flexDirection": "row",
+              "flexGrow": 1,
+              "flexShrink": 1,
               "msFlexAlign": "center",
               "msFlexDirection": "row",
-              "paddingBottom": "0.5rem",
-              "paddingLeft": "1.5rem",
-              "paddingRight": "1.5rem",
-              "paddingTop": "0.5rem",
+              "msFlexNegative": 1,
+              "msFlexPositive": 1,
+              "msFlexPreferredSize": "0px",
               "position": "relative",
             }
           }
@@ -150,18 +160,31 @@ exports[`Snapshot NavProfile 1`] = `
             className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "backgroundColor": "rgba(128,128,128,1.00)",
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxFlex": 1,
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexBasis": "0px",
+                "WebkitFlexDirection": "row",
+                "WebkitFlexGrow": 1,
+                "WebkitFlexShrink": 1,
+                "alignItems": "center",
                 "display": "flex",
-                "flexBasis": "auto",
-                "height": "2rem",
-                "marginRight": "0.75rem",
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
+                "flexBasis": "0px",
+                "flexDirection": "row",
+                "flexGrow": 1,
+                "flexShrink": 1,
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "msFlexNegative": 1,
+                "msFlexPositive": 1,
+                "msFlexPreferredSize": "0px",
+                "paddingBottom": "0.5rem",
+                "paddingLeft": "1.5rem",
+                "paddingRight": "1.5rem",
+                "paddingTop": "0.5rem",
                 "position": "relative",
-                "width": "2rem",
-                "zIndex": 0,
               }
             }
           >
@@ -169,48 +192,119 @@ exports[`Snapshot NavProfile 1`] = `
               className="css-view-1dbjc4n"
               style={
                 Object {
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
+                  "WebkitFlexBasis": "auto",
+                  "backgroundColor": "rgba(128,128,128,1.00)",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "height": "2rem",
+                  "marginRight": "0.75rem",
+                  "msFlexPreferredSize": "auto",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
+                  "position": "relative",
+                  "width": "2rem",
+                  "zIndex": 0,
                 }
               }
-            />
-            <img
-              alt=""
-              className="css-accessibilityImage-9pa8cd"
-              draggable={false}
-              src="https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg"
-            />
+            >
+              <div
+                className="css-view-1dbjc4n"
+                style={
+                  Object {
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "cover",
+                    "bottom": "0px",
+                    "height": "100%",
+                    "left": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                className="css-accessibilityImage-9pa8cd"
+                draggable={false}
+                src="https://relevant-image.s3.amazonaws.com/9fgwyrd05_rL.jpg"
+              />
+            </div>
+            <div
+              c="hsl(0, 0%, 0%)"
+              className="css-text-901oao"
+              dir="auto"
+              lh={1.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+                  "color": "rgba(0,0,0,1.00)",
+                  "display": "flex",
+                  "fontFamily": "HelveticaNeue",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "0.875rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(0,0,0,1.00)",
+                }
+              }
+            >
+              Relevant
+            </div>
           </div>
           <div
-            c="hsl(0, 0%, 0%)"
-            className="css-text-901oao"
-            dir="auto"
-            lh={1.75}
+            className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-                "color": "rgba(0,0,0,1.00)",
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxPack": "center",
+                "WebkitJustifyContent": "center",
+                "alignItems": "center",
+                "backgroundColor": "rgba(0,0,255,1.00)",
+                "borderBottomLeftRadius": "0.4375rem",
+                "borderBottomRightRadius": "0.4375rem",
+                "borderTopLeftRadius": "0.4375rem",
+                "borderTopRightRadius": "0.4375rem",
                 "display": "flex",
-                "fontFamily": "HelveticaNeue",
-                "fontSize": "0.875rem",
-                "lineHeight": "0.875rem",
+                "height": "0.875rem",
+                "justifyContent": "center",
+                "marginRight": "1.5rem",
+                "minWidth": "0.875rem",
+                "msFlexAlign": "center",
+                "msFlexPack": "center",
+                "paddingBottom": "0rem",
+                "paddingLeft": "0.25rem",
+                "paddingRight": "0.25rem",
+                "paddingTop": "0rem",
                 "position": "relative",
-                "textDecorationColor": "rgba(0,0,0,1.00)",
               }
             }
           >
-            Relevant
+            <div
+              c="hsl(0, 0%, 100%)"
+              className="css-text-901oao"
+              dir="auto"
+              fs={1.25}
+              lh={1.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(255,255,255,1.00)",
+                  "color": "rgba(255,255,255,1.00)",
+                  "display": "flex",
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "0.625rem",
+                  "lineHeight": "0.875rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(255,255,255,1.00)",
+                }
+              }
+            >
+              5
+            </div>
           </div>
         </div>
       </a>
@@ -580,6 +674,7 @@ exports[`Snapshot NavProfile 1`] = `
     >
       <a
         className="c0 ulink-mock"
+        flex={1}
         href="/crypto/new"
         hu={0}
         inline={0}
@@ -588,9 +683,9 @@ exports[`Snapshot NavProfile 1`] = `
           Array [
             "display:flex;align-items:center;color:",
             "hsl(0, 0%, 0%)",
-            ";&:hover{text-decoration:underline;text-decoration-color:",
+            ";&:hover > div > div:first-child{text-decoration:underline;text-decoration-color:",
             "hsl(0, 0%, 0%)",
-            ";background:",
+            ";}&:hover{background:",
             "hsl(0, 0%, 100%)",
             ";}",
           ]
@@ -603,17 +698,23 @@ exports[`Snapshot NavProfile 1`] = `
               "WebkitAlignItems": "center",
               "WebkitBoxAlign": "center",
               "WebkitBoxDirection": "normal",
+              "WebkitBoxFlex": 1,
               "WebkitBoxOrient": "horizontal",
+              "WebkitFlexBasis": "0px",
               "WebkitFlexDirection": "row",
+              "WebkitFlexGrow": 1,
+              "WebkitFlexShrink": 1,
               "alignItems": "center",
               "display": "flex",
+              "flexBasis": "0px",
               "flexDirection": "row",
+              "flexGrow": 1,
+              "flexShrink": 1,
               "msFlexAlign": "center",
               "msFlexDirection": "row",
-              "paddingBottom": "0.5rem",
-              "paddingLeft": "1.5rem",
-              "paddingRight": "1.5rem",
-              "paddingTop": "0.5rem",
+              "msFlexNegative": 1,
+              "msFlexPositive": 1,
+              "msFlexPreferredSize": "0px",
               "position": "relative",
             }
           }
@@ -622,18 +723,31 @@ exports[`Snapshot NavProfile 1`] = `
             className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitFlexBasis": "auto",
-                "backgroundColor": "rgba(128,128,128,1.00)",
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxFlex": 1,
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexBasis": "0px",
+                "WebkitFlexDirection": "row",
+                "WebkitFlexGrow": 1,
+                "WebkitFlexShrink": 1,
+                "alignItems": "center",
                 "display": "flex",
-                "flexBasis": "auto",
-                "height": "2rem",
-                "marginRight": "0.75rem",
-                "msFlexPreferredSize": "auto",
-                "overflowX": "hidden",
-                "overflowY": "hidden",
+                "flexBasis": "0px",
+                "flexDirection": "row",
+                "flexGrow": 1,
+                "flexShrink": 1,
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "msFlexNegative": 1,
+                "msFlexPositive": 1,
+                "msFlexPreferredSize": "0px",
+                "paddingBottom": "0.5rem",
+                "paddingLeft": "1.5rem",
+                "paddingRight": "1.5rem",
+                "paddingTop": "0.5rem",
                 "position": "relative",
-                "width": "2rem",
-                "zIndex": 0,
               }
             }
           >
@@ -641,48 +755,119 @@ exports[`Snapshot NavProfile 1`] = `
               className="css-view-1dbjc4n"
               style={
                 Object {
-                  "backgroundColor": "rgba(0,0,0,0.00)",
-                  "backgroundImage": "url(\\"default_community.png\\")",
-                  "backgroundPosition": "center",
-                  "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
-                  "bottom": "0px",
-                  "height": "100%",
-                  "left": "0px",
-                  "position": "absolute",
-                  "right": "0px",
-                  "top": "0px",
-                  "width": "100%",
-                  "zIndex": -1,
+                  "WebkitFlexBasis": "auto",
+                  "backgroundColor": "rgba(128,128,128,1.00)",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "height": "2rem",
+                  "marginRight": "0.75rem",
+                  "msFlexPreferredSize": "auto",
+                  "overflowX": "hidden",
+                  "overflowY": "hidden",
+                  "position": "relative",
+                  "width": "2rem",
+                  "zIndex": 0,
                 }
               }
-            />
-            <img
-              alt=""
-              className="css-accessibilityImage-9pa8cd"
-              draggable={false}
-              src="default_community.png"
-            />
+            >
+              <div
+                className="css-view-1dbjc4n"
+                style={
+                  Object {
+                    "backgroundColor": "rgba(0,0,0,0.00)",
+                    "backgroundImage": "url(\\"default_community.png\\")",
+                    "backgroundPosition": "center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "cover",
+                    "bottom": "0px",
+                    "height": "100%",
+                    "left": "0px",
+                    "position": "absolute",
+                    "right": "0px",
+                    "top": "0px",
+                    "width": "100%",
+                    "zIndex": -1,
+                  }
+                }
+              />
+              <img
+                alt=""
+                className="css-accessibilityImage-9pa8cd"
+                draggable={false}
+                src="default_community.png"
+              />
+            </div>
+            <div
+              c="hsl(0, 0%, 0%)"
+              className="css-text-901oao"
+              dir="auto"
+              lh={1.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+                  "color": "rgba(0,0,0,1.00)",
+                  "display": "flex",
+                  "fontFamily": "HelveticaNeue",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "0.875rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(0,0,0,1.00)",
+                }
+              }
+            >
+              Crypto
+            </div>
           </div>
           <div
-            c="hsl(0, 0%, 0%)"
-            className="css-text-901oao"
-            dir="auto"
-            lh={1.75}
+            className="css-view-1dbjc4n"
             style={
               Object {
-                "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-                "color": "rgba(0,0,0,1.00)",
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxPack": "center",
+                "WebkitJustifyContent": "center",
+                "alignItems": "center",
+                "backgroundColor": "rgba(0,0,255,1.00)",
+                "borderBottomLeftRadius": "0.4375rem",
+                "borderBottomRightRadius": "0.4375rem",
+                "borderTopLeftRadius": "0.4375rem",
+                "borderTopRightRadius": "0.4375rem",
                 "display": "flex",
-                "fontFamily": "HelveticaNeue",
-                "fontSize": "0.875rem",
-                "lineHeight": "0.875rem",
+                "height": "0.875rem",
+                "justifyContent": "center",
+                "marginRight": "1.5rem",
+                "minWidth": "0.875rem",
+                "msFlexAlign": "center",
+                "msFlexPack": "center",
+                "paddingBottom": "0rem",
+                "paddingLeft": "0.25rem",
+                "paddingRight": "0.25rem",
+                "paddingTop": "0rem",
                 "position": "relative",
-                "textDecorationColor": "rgba(0,0,0,1.00)",
               }
             }
           >
-            Crypto
+            <div
+              c="hsl(0, 0%, 100%)"
+              className="css-text-901oao"
+              dir="auto"
+              fs={1.25}
+              lh={1.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(255,255,255,1.00)",
+                  "color": "rgba(255,255,255,1.00)",
+                  "display": "flex",
+                  "fontFamily": "HelveticaNeue-CondensedBold",
+                  "fontSize": "0.625rem",
+                  "lineHeight": "0.875rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(255,255,255,1.00)",
+                }
+              }
+            >
+              5
+            </div>
           </div>
         </div>
       </a>

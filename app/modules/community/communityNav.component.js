@@ -11,20 +11,14 @@ import CommunityListItem from 'modules/community/communityListItem.component';
 import get from 'lodash/get';
 import { View, BodyText, Badge } from 'modules/styled/uni';
 import { SIDE_NAV_PADDING } from 'styles/layout';
-import {
-  useQuery,
-  useApolloClient,
-  useMutation,
-  useSubscription
-} from '@apollo/react-hooks';
-import { MY_MEMBERSHIPS, CLEAR_UNREAD, INC_UNREAD } from './queries';
+import { useUnread } from './hooks';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
   display: flex;
   align-items: center;
   color: ${colors.black};
-  &:hover > div:first-child {
+  &:hover > div > div:first-child {
     text-decoration: underline;
     text-decoration-color: ${colors.black};
   }
@@ -101,7 +95,7 @@ CommunityLink.propTypes = {
 
 function CommunityLink({ community, active }) {
   const dispatch = useDispatch();
-  const { unread } = useUnread(community, active);
+  const unread = useUnread(community, active);
 
   return (
     <ULink
@@ -116,37 +110,12 @@ function CommunityLink({ community, active }) {
         });
       }}
     >
-      <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
-      <Badge mr={[SIDE_NAV_PADDING, 2]} number={unread} />
+      <View flex={1} fdirection={'row'} align={'center'}>
+        <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
+        <Badge mr={[SIDE_NAV_PADDING, 2]} number={unread} />
+      </View>
     </ULink>
   );
-}
-
-function useUnread(community, active) {
-  const client = useApolloClient();
-  const { data = { myMemberships: [] } } = useQuery(MY_MEMBERSHIPS);
-  const [clearUnread] = useMutation(CLEAR_UNREAD);
-
-  const { myMemberships } = data;
-  const membership =
-    myMemberships && myMemberships.find(m => m.communityId === community._id);
-  const unread = membership && membership.unread;
-  const total = myMemberships.reduce((a, m) => a + m.unread, 0);
-
-  useSubscription(INC_UNREAD, {
-    variables: { communities: [community._id] },
-    onSubscriptionData: () => {
-      membership.unread++;
-      client.writeQuery({ query: MY_MEMBERSHIPS, data });
-    }
-  });
-
-  if (unread && active && membership) {
-    membership.unread = 0;
-    client.writeQuery({ query: MY_MEMBERSHIPS, data });
-    clearUnread({ variables: { _id: membership._id } });
-  }
-  return { unread, total };
 }
 
 export default Community;
