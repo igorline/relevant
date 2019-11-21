@@ -68,7 +68,7 @@ class DiscoverUser extends Component {
         <View style={styles.discoverUserContainer}>
           <View style={[styles.discoverUser]}>
             <AvatarBox
-              bio
+              bio={this.props.bio}
               big
               inline={1}
               type={this.props.type}
@@ -80,7 +80,6 @@ class DiscoverUser extends Component {
             />
             <View
               style={{
-                flex: 1,
                 alignItems: 'flex-end',
                 justifyContent: 'center'
               }}

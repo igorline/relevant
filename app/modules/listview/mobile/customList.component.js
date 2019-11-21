@@ -149,10 +149,13 @@ export default class CustomListView extends Component {
         sections={sections}
         enableEmptySections
         scrollToOverflowEnabled={true}
-        // removeClippedSubviews={false}
+        // removeClippedSubviews
         stickySectionHeadersEnabled
+        initialNumToRender={5}
+        maxToRenderPerBatch={10}
+        windowSize={10}
         // pageSize={1}
-        initialListSize={3}
+        // initialListSize={3}
         scrollEventThrottle={10}
         renderSectionHeader={({ section: { header } }) => header}
         automaticallyAdjustContentInsets={false}

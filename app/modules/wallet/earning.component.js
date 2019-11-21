@@ -66,15 +66,15 @@ function Header({ date, amount, text, bb }) {
       bl
       br
       bb={bb}
-      p={'1.5 2'}
+      p={'1.5 1'}
       fdirection="row"
       mt={2}
       bg={colors.secondaryBG}
       grow={1}
       justify="space-between"
     >
-      <View display="flex" fdirection="row">
-        <BodyText mr={4}>{date && numbers.getDayMonthYearTimestamp(date)}</BodyText>
+      <View display="flex" fdirection="row" wrap flex={1}>
+        <BodyText mr={[4, 2]}>{date && numbers.getDayMonthYearTimestamp(date)}</BodyText>
         <BodyText c={colors.secondaryText}>{text}</BodyText>
       </View>
       {amount < 0 ? (
