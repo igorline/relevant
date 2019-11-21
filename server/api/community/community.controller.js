@@ -222,7 +222,8 @@ export async function update(req, res, next) {
     const currentAdminsList = currentAdmins.map(a => a.embeddedUser.handle);
     let newAdmins = admins.filter(a => !currentAdminsList.includes(a));
 
-    const canEdit = user.role === 'admin' || (member && member.superAdmin);
+    const isSuperAdmin = member && member.superAdmin;
+    const canEdit = user.role === 'admin' || isSuperAdmin;
 
     if (!canEdit) {
       throw new Error("You don't have permission to edit a community");
@@ -252,7 +253,7 @@ export async function update(req, res, next) {
     await Promise.all(newAdmins);
 
     let removeAdmins;
-    if (user.role === 'admin') {
+    if (user.role === 'admin' || isSuperAdmin) {
       removeAdmins = currentAdminsList.filter(a => !admins.includes(a));
       removeAdmins = await User.find({ handle: { $in: removeAdmins } }, '_id');
       removeAdmins = removeAdmins.map(u => u._id.toString());

@@ -131,6 +131,7 @@ CommunitySchema.methods.leave = async function leave(userId) {
 };
 
 CommunitySchema.methods.join = async function join(userId, role) {
+  const superAdmin = role === 'superAdmin';
   const { _id: communityId, slug: community } = this;
   const user = await this.model('User').findOne(
     { _id: userId },
@@ -144,7 +145,7 @@ CommunitySchema.methods.join = async function join(userId, role) {
 
   if ((member && role === 'admin') || role === 'superAdmin') {
     member.role = 'admin';
-    member.superAdmin = role === 'superAdmin';
+    member.superAdmin = superAdmin;
     return member.save();
   }
 
@@ -182,7 +183,8 @@ CommunitySchema.methods.join = async function join(userId, role) {
     communityId,
     community,
     reputation: 0,
-    role: role || 'user'
+    superAdmin,
+    role: superAdmin ? 'admin' : role || 'user'
   };
 
   member = new (this.model('CommunityMember'))(member);
