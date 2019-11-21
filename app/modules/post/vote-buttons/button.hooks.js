@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { browserAlerts } from 'app/utils/alert';
 import { showModal } from 'modules/navigation/navigation.actions';
 import launchAnimation from './launchAnimation';
-import { vote as voteAction } from '../invest.actions';
+import { vote as voteAction, updatePostVote } from '../invest.actions';
 
 let Analytics;
 let ReactGA;
@@ -72,6 +72,8 @@ export function useVoteAnimation({ post, investButton, horizontal }) {
     } else {
       launchAnimation({ type, params, el, dispatch });
     }
+    // clear new vote
+    dispatch(updatePostVote());
   }, [newVote]); // eslint-disable-line
 }
 
