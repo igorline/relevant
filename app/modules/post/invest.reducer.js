@@ -20,13 +20,6 @@ export default function investments(state = initialState, action) {
       };
     }
 
-    case types.CLEAR_NEW_VOTE: {
-      return {
-        ...state,
-        voteSuccess: null
-      };
-    }
-
     case types.LOADING_POST_INVESTMENTS: {
       return {
         ...state,
