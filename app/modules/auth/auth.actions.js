@@ -466,7 +466,7 @@ export function createUser(user, invitecode) {
                 action: 'Created an Account'
               });
             TwitterCT && TwitterCT.signUp();
-            Analytics && Analytics.logEvent('Created an Account');
+            Analytics && Analytics.logEvent('CreatedAccount');
             dispatch(loginUserSuccess(responseJSON.token));
             dispatch(getUser());
             return true;
@@ -508,7 +508,7 @@ export function updateHandle(user) {
           category: 'User',
           action: 'Created an Account'
         });
-      Analytics && Analytics.logEvent('Created an Account');
+      Analytics && Analytics.logEvent('CreatedAccount');
       setupUser(result, dispatch);
       return true;
     } catch (err) {

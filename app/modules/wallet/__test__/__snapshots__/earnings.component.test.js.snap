@@ -72,8 +72,8 @@ exports[`Snapshot Paidout Web 1`] = `
         "msFlexPack": "justify",
         "msFlexPositive": 1,
         "paddingBottom": "0.75rem",
-        "paddingLeft": "1rem",
-        "paddingRight": "1rem",
+        "paddingLeft": "0.5rem",
+        "paddingRight": "0.5rem",
         "paddingTop": "0.75rem",
         "position": "relative",
       }
@@ -84,11 +84,25 @@ exports[`Snapshot Paidout Web 1`] = `
       style={
         Object {
           "WebkitBoxDirection": "normal",
+          "WebkitBoxFlex": 1,
+          "WebkitBoxLines": "multiple",
           "WebkitBoxOrient": "horizontal",
+          "WebkitFlexBasis": "0px",
           "WebkitFlexDirection": "row",
+          "WebkitFlexGrow": 1,
+          "WebkitFlexShrink": 1,
+          "WebkitFlexWrap": "wrap",
           "display": "flex",
+          "flexBasis": "0px",
           "flexDirection": "row",
+          "flexGrow": 1,
+          "flexShrink": 1,
+          "flexWrap": "wrap",
           "msFlexDirection": "row",
+          "msFlexNegative": 1,
+          "msFlexPositive": 1,
+          "msFlexPreferredSize": "0px",
+          "msFlexWrap": "wrap",
           "position": "relative",
         }
       }
@@ -96,7 +110,12 @@ exports[`Snapshot Paidout Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={4}
+        mr={
+          Array [
+            4,
+            2,
+          ]
+        }
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
@@ -251,8 +270,8 @@ exports[`Snapshot Pending Web 1`] = `
         "msFlexPack": "justify",
         "msFlexPositive": 1,
         "paddingBottom": "0.75rem",
-        "paddingLeft": "1rem",
-        "paddingRight": "1rem",
+        "paddingLeft": "0.5rem",
+        "paddingRight": "0.5rem",
         "paddingTop": "0.75rem",
         "position": "relative",
       }
@@ -263,11 +282,25 @@ exports[`Snapshot Pending Web 1`] = `
       style={
         Object {
           "WebkitBoxDirection": "normal",
+          "WebkitBoxFlex": 1,
+          "WebkitBoxLines": "multiple",
           "WebkitBoxOrient": "horizontal",
+          "WebkitFlexBasis": "0px",
           "WebkitFlexDirection": "row",
+          "WebkitFlexGrow": 1,
+          "WebkitFlexShrink": 1,
+          "WebkitFlexWrap": "wrap",
           "display": "flex",
+          "flexBasis": "0px",
           "flexDirection": "row",
+          "flexGrow": 1,
+          "flexShrink": 1,
+          "flexWrap": "wrap",
           "msFlexDirection": "row",
+          "msFlexNegative": 1,
+          "msFlexPositive": 1,
+          "msFlexPreferredSize": "0px",
+          "msFlexWrap": "wrap",
           "position": "relative",
         }
       }
@@ -275,7 +308,12 @@ exports[`Snapshot Pending Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={4}
+        mr={
+          Array [
+            4,
+            2,
+          ]
+        }
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
