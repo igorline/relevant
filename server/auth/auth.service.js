@@ -24,6 +24,7 @@ async function verify(token) {
 
 async function isRevoked(req, payload, done) {
   const revoked = await AuthToken.checkRevoked(payload);
+  if (revoked) console.log('token is revoked', payload); // eslint-disable-line
   if (revoked) return done(null, true);
   return done();
 }
