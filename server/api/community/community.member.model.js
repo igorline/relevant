@@ -16,8 +16,6 @@ const CommunityMemberSchema = new Schema(
     superAdmin: { type: Boolean, default: false },
     role: { type: String, default: 'user' },
     reputation: { type: Number, default: 0 },
-    balance: { type: Number, default: 0 },
-    weight: { type: Number, default: 0 },
     invites: { type: Number, default: 0 },
     degree: { type: Number, default: 0 },
     pagerank: { type: Number, default: 0 },

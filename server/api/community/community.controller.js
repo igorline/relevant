@@ -121,8 +121,6 @@ export async function memberSearch(req, res, next) {
       .then(users => {
         res.status(200).json(users || []);
       });
-    // res.status(200).json(users);
-    // .catch(next);
   } catch (err) {
     next(err);
   }
@@ -156,7 +154,7 @@ export async function leave(req, res, next) {
     const { slug } = req.params;
     const community = await Community.findOne({ slug });
     await community.leave(userId);
-    res.sendStatus(200);
+    res.status(200).send();
   } catch (err) {
     next(err);
   }
@@ -174,26 +172,27 @@ export async function showAdmins(req, res, next) {
 
 export async function create(req, res, next) {
   try {
-    // for no only admins create communities
-    // TODO relax this and community creator as admin
     const { user } = req;
-    if (!req.user || !req.user.role === 'admin') {
-      throw new Error("You don't have permission to create a community");
-    }
+    if (!req.user) throw new Error('You need to be logged in');
+
     let community = req.body;
     let { admins } = community;
     admins = await User.find({ handle: { $in: admins } }, '_id');
     community.slug = community.slug.toLowerCase();
     if (RESERVED.indexOf(community.slug) > -1) throw new Error('Reserved slug');
-    if (!admins || !admins.length) throw new Error('Please set community admins');
     community = new Community(community);
     community = await community.save();
 
-    if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
-
     // TODO - this should create an invitation!
-    admins = admins.map(async admin => community.join(admin._id, 'admin'));
-    admins = await Promise.all(admins);
+    if (admins && admins.length) {
+      admins = admins.map(async admin => community.join(admin._id, 'admin'));
+      admins = await Promise.all(admins);
+    }
+    if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
+    community.admins = await CommunityMember.find({
+      communityId: community._id,
+      role: 'admin'
+    });
 
     res.status(200).json(community);
   } catch (err) {
@@ -289,28 +288,22 @@ export async function update(req, res, next) {
 
 export async function remove(req, res, next) {
   try {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('deleting communities is disabled in production');
-    }
     const { user } = req;
-    if (user.role !== 'admin') {
-      throw new Error("you don't have permission to delete this community");
-    }
+    const { id } = req.params;
 
-    const userId = req.user._id;
-    const { slug } = req.params;
     // check that user is an admin
-    const admin = CommunityMember.findOne({
-      community: slug,
-      user: userId,
+    const member = await CommunityMember.findOne({
+      communityId: id,
+      user: user._id,
       role: 'admin'
     });
 
-    if (!admin) throw new Error('you need to be a community admin to do this');
+    const canDelete = (member && member.superAdmin) || user.role === 'admin';
+    if (!canDelete) throw new Error('you need to be a community admin to do this');
 
     // await Community.findOne({ slug }).remove().exec();
     const community = await Community.findOneAndUpdate(
-      { slug },
+      { _id: id },
       { inactive: true },
       { new: true }
     );

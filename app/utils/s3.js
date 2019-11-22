@@ -1,9 +1,5 @@
 import { Alert } from 'app/utils/alert';
 
-require('./api').env();
-
-const S3_KEY = process.env.S3_KEY || 'AKIAJUARIDOFR6VZSEYA';
-
 let RNFetchBlob;
 let Platform = {};
 
@@ -44,7 +40,15 @@ function dataURItoBlob(dataURI) {
   return new Blob([ia], { type: mimeString });
 }
 
-async function uploadToS3(uri, policy, signature, url, publicUrl, signedObjectName) {
+async function uploadToS3(
+  uri,
+  policy,
+  signature,
+  url,
+  publicUrl,
+  signedObjectName,
+  AWS_ACCESS_KEY
+) {
   const body = new FormData();
 
   try {
@@ -71,8 +75,7 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, signedObjectNa
   }
 
   body.append('key', signedObjectName);
-  // TODO fetch this form the server?
-  body.append('AWSAccessKeyId', S3_KEY);
+  body.append('AWSAccessKeyId', AWS_ACCESS_KEY);
   body.append('acl', 'public-read');
   body.append('success_action_status', '201');
   body.append('Content-Type', file.type);
@@ -121,15 +124,16 @@ function executeOnSignedUrl(uri, fileName) {
       method: 'GET'
     }
   )
-    .then(response => response.json())
-    .then(responseJSON =>
+    .then(res => res.json())
+    .then(resJSON =>
       uploadToS3(
         uri,
-        responseJSON.signature.s3Policy,
-        responseJSON.signature.s3Signature,
-        responseJSON.url,
-        responseJSON.publicUrl,
-        signedObjectName
+        resJSON.signature.s3Policy,
+        resJSON.signature.s3Signature,
+        resJSON.url,
+        resJSON.publicUrl,
+        signedObjectName,
+        resJSON.AWS_ACCESS_KEY
       )
     )
     .catch(error => ({ success: false, url: null, error }));

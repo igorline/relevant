@@ -23,6 +23,6 @@ router.put(
 router.put('/:slug/join', auth.isAuthenticated(), controller.join);
 router.put('/:slug/leave', auth.isAuthenticated(), controller.leave);
 
-router.delete('/:slug', auth.isAuthenticated(), controller.remove);
+router.delete('/:id', auth.isAuthenticated(), controller.remove);
 
 module.exports = router;

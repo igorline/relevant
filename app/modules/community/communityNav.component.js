@@ -73,6 +73,7 @@ export function Community({ viewCommunityMembers, showSettings }) {
           <OtherCommunities />
         </View>
       </View>
+
       <BodyText m={[SIDE_NAV_PADDING, 2]}>
         We'll be adding more communities soon!{'\n\n'}
       </BodyText>

@@ -41,7 +41,6 @@ exports.rewards = async () => {
   try {
     const communities = await Community.find({ inactive: { $ne: true } });
 
-    // const stakedTokens = await Community.getBalances();
     const stakedTokens = await Earnings.stakedTokens();
     console.log('stakedTokens', stakedTokens);
 

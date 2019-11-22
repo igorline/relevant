@@ -149,6 +149,22 @@ export const NumericalValue = styled(Text)`
   ${mixins.color}
 `;
 
+export const InputPlain = styled.input`
+  ${mixins.font}
+  ${mixins.flex}
+  ${mixins.border}
+  ${mixins.padding}
+  ${mixins.margin}
+  ::placeholder: {
+    font-size: ${sizing(1.75)};
+    line-height: ${sizing(1.75)};
+  };
+  &: focus {
+    outline: none;
+    ${layout.universalBorder('', colors.blue)}
+  }
+`;
+
 export const Input = styled.input`
   padding: ${sizing(2)} ${sizing(2)};
   margin-top: ${sizing(1)};  ${fonts.bodyStyle}

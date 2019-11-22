@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { NAME_PATTERN } from 'app/utils/text';
-import * as ethUtils from 'server/utils/ethereum';
 import socketEvent from 'server/socket/socketEvent';
 
 const { Schema } = mongoose;
@@ -81,69 +80,23 @@ CommunitySchema.methods.updateMemeberCount = async function updateMemeberCount()
 };
 
 CommunitySchema.methods.leave = async function leave(userId) {
-  const user = await this.model('User').findOne(
-    { _id: userId },
-    'name balance ethAddress image'
-  );
-
-  let userBalance = user.balance || 0;
-  let tokenBalance = 0;
-  const ethAddress = user.ethAddress[0];
-  if (ethAddress) {
-    // TODO - balance should be locked for 3 days
-    // TODO - shouldn't need to do this - subscribe to contract events
-    tokenBalance = await ethUtils.getBalance(ethAddress);
-    userBalance += tokenBalance;
-  }
-
-  let memberships = await this.model('CommunityMember').find({ user: userId });
-  const member = memberships.filter(
-    m => m.communityId.toString() === this._id.toString()
-  )[0];
-
-  memberships = memberships.filter(m => m.communityId.toString() !== this._id.toString());
-  if (member) {
-    await member.remove();
-    // console.log(
-    //   'membership being removed',
-    //   member.user,
-    //   ' ',
-    //   member.weight,
-    //   ' ',
-    //   member.community
-    // );
-  }
-
-  const weight = 1 - memberships.reduce((a, m) => m.weight + a, 0);
-
-  // let availableTokens = member.weight * userBalance;
-  const updatedMemberships = memberships.map(async m => {
-    m.weight /= 1 - weight;
-    m.balance = m.weight * userBalance;
-    // console.log('member updated ', m.user, ' ', m.community);
-    // console.log('memberships ', memberships.length);
-    // console.log('member weight ', m.weight);
-    return m.save();
-  });
-
-  memberships = await Promise.all(updatedMemberships);
+  await this.model('CommunityMember').deleteOne({ user: userId, communityId: this._id });
   await this.updateMemeberCount();
 };
 
 CommunitySchema.methods.join = async function join(userId, role) {
   const superAdmin = role === 'superAdmin';
+
   const { _id: communityId, slug: community } = this;
-  const user = await this.model('User').findOne(
-    { _id: userId },
-    'name balance ethAddress image handle'
-  );
+  const user = await this.model('User').findOne({ _id: userId }, 'name image handle');
   if (!user) throw new Error('missing user');
+
   let member = await this.model('CommunityMember').findOne({
-    user: userId,
-    communityId: this._id
+    user: user._id,
+    communityId
   });
 
-  if ((member && role === 'admin') || role === 'superAdmin') {
+  if (member && (role === 'admin' || superAdmin)) {
     member.role = 'admin';
     member.superAdmin = superAdmin;
     return member.save();
@@ -153,33 +106,9 @@ CommunitySchema.methods.join = async function join(userId, role) {
 
   await this.model('Relevance').create({ userId, communityId, community });
 
-  let userBalance = user.balance || 0;
-  let tokenBalance = 0;
-  const ethAddress = user.ethAddress[0];
-  if (ethAddress) {
-    // TODO - shouldn't need to do this - subscribe to contract events
-    tokenBalance = await ethUtils.getBalance(ethAddress);
-    userBalance += tokenBalance;
-  }
-
-  let memberships = await this.model('CommunityMember').find({ user: userId });
-  const count = 1 + memberships.length;
-
-  const tokensToAdd = userBalance / count;
-  const weight = 1 / count;
-
-  const updatedMemberships = memberships.map(async m => {
-    m.weight *= 1 - weight;
-    m.balance = m.weight * userBalance;
-    return m.save();
-  });
-  memberships = await Promise.all(updatedMemberships);
-
   member = {
     user: userId,
     embeddedUser: user,
-    weight,
-    balance: tokensToAdd,
     communityId,
     community,
     reputation: 0,
@@ -189,17 +118,6 @@ CommunitySchema.methods.join = async function join(userId, role) {
 
   member = new (this.model('CommunityMember'))(member);
   await member.save();
-
-  // TODO sanity checks - move this to test
-  // let totalWeight = weight;
-  // let totalBalance = tokensToAdd;
-  // memberships.forEach(m => {
-  //   totalWeight += m.weight;
-  //   totalBalance += m.balance;
-  // });
-  // console.log('for user ', userId);
-  // console.log('totalWeights should be 1 ', totalWeight);
-  // console.log('totalBalance should be ', userBalance, ' ', totalBalance);
 
   await this.updateMemeberCount();
 
@@ -211,18 +129,6 @@ CommunitySchema.methods.join = async function join(userId, role) {
   socketEvent.emit('socketEvent', memberEvent);
 
   return member;
-};
-
-CommunitySchema.statics.getBalances = async function getBalances() {
-  // this.model('CommunityMember').find({}).then(console.log);
-  return this.model('CommunityMember').aggregate([
-    {
-      $group: {
-        _id: '$community',
-        stakedTokens: { $sum: '$balance' }
-      }
-    }
-  ]);
 };
 
 export default mongoose.model('Community', CommunitySchema);

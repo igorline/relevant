@@ -130,19 +130,21 @@ export function updateCommunity(community) {
 }
 
 export function deleteCommunity(community) {
-  const { slug } = community;
+  const { slug, _id } = community;
   return async dispatch => {
     try {
       await dispatch(
         api.request({
           method: 'DELETE',
-          endpoint: `community/${slug}`
+          endpoint: `community/${_id}`
         })
       );
       dispatch(removeCommunity(slug));
-      return Alert.alert('Community Removed', 'success');
+      Alert.alert('Community Removed', 'success');
+      return true;
     } catch (err) {
-      return Alert.alert(err.message);
+      Alert.alert(err.message);
+      return false;
     }
   };
 }

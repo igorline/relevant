@@ -8,7 +8,7 @@ export default class SelectField extends Component {
   static propTypes = {
     input: PropTypes.object,
     options: PropTypes.array,
-    label: PropTypes.string,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     error: PropTypes.string
   };
 
