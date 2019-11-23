@@ -18,7 +18,7 @@ function CommunityListItem({ community, c, ...rest }) {
     ? { uri: community.image }
     : require('app/public/img/default_community.png');
   return (
-    <View flex={1} align={'center'} fdirection={'row'} {...rest}>
+    <View align={'center'} fdirection={'row'} {...rest}>
       <CommunityImage w={4} h={4} mr={1.5} source={image} resizeMode={'cover'} />
       <CommunityLink lh={1.75} c={c || colors.black}>
         {community.name}

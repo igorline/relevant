@@ -119,8 +119,9 @@ class PostInfo extends Component {
   }
 
   showActionSheet() {
+    const { post, actions } = this.props;
     if (this.myPost) {
-      ActionSheet.showActionSheetWithOptions(
+      return ActionSheet.showActionSheetWithOptions(
         {
           options: this.menu.buttons,
           cancelButtonIndex: this.menu.cancelIndex,
@@ -141,24 +142,35 @@ class PostInfo extends Component {
         }
       );
     }
+
+    return ActionSheet.showActionSheetWithOptions(
+      {
+        options: ['Flag Inappropriate Content', 'Cancel'],
+        cancelButtonIndex: 1
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 0:
+            actions.flag(post);
+            break;
+          default:
+        }
+      }
+    );
   }
 
   render() {
     const { post, big, preview, repost, user, avatarText } = this.props;
-    let postActions;
-
     if (!user) return null;
 
-    if (this.myPost) {
-      postActions = (
-        <TouchableOpacity
-          style={[styles.postButton, { paddingRight: 10 }]}
-          onPress={() => this.showActionSheet()}
-        >
-          <Icon name="ios-more" size={24} color={greyText} />
-        </TouchableOpacity>
-      );
-    }
+    const postActions = (
+      <TouchableOpacity
+        style={[styles.postButton, { paddingRight: 10 }]}
+        onPress={() => this.showActionSheet()}
+      >
+        <Icon name="ios-more" size={24} color={greyText} />
+      </TouchableOpacity>
+    );
 
     const userEl = (
       <AvatarBox

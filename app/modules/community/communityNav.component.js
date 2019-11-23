@@ -111,7 +111,7 @@ function CommunityLink({ community, active }) {
         });
       }}
     >
-      <View flex={1} fdirection={'row'} align={'center'}>
+      <View flex={1} fdirection={'row'} align={'center'} justify={'space-between'}>
         <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
         <Badge mr={[SIDE_NAV_PADDING, 2]} number={unread} />
       </View>

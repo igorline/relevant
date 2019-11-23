@@ -139,8 +139,8 @@ android {
         applicationId "com.relevantnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName "1.1.0"
+        versionCode 17
+        versionName "1.1.1"
     }
     // productFlavors {
     //     // Includes settings you want to keep only while developing your app.

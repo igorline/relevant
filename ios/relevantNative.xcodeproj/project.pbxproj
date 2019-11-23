@@ -820,7 +820,7 @@
 				CODE_SIGN_ENTITLEMENTS = relevantNative/relevantNative.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = relevantNative/Info.plist;
@@ -858,7 +858,7 @@
 				CODE_SIGN_ENTITLEMENTS = relevantNative/relevantNative.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -983,7 +983,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = Relevant/Info.plist;
@@ -1019,7 +1019,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = Relevant/Info.plist;
@@ -1092,7 +1092,7 @@
 				CODE_SIGN_ENTITLEMENTS = relevantNative/relevantNative.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -1149,7 +1149,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = Relevant/Info.plist;

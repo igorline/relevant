@@ -37,7 +37,8 @@
     "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p",
     "heroku-postbuild": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "preinstall": "rm -rf ./node_modules/**/.git & rm -rf ./node_modules/**/**/websocket/.git",
-    "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
+    "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
+    "jetify": "jetify"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
