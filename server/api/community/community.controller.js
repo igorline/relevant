@@ -47,10 +47,15 @@ export async function index(req) {
     inactive: { $ne: true },
     ...onlyPublic,
     $or: [onlyVisible, { slug: community }]
-  }).populate({
-    path: 'admins',
-    match: { role: 'admin' }
-  });
+  })
+    .populate({
+      path: 'admins',
+      match: { role: 'admin' }
+    })
+    .populate({
+      path: 'superAdmins',
+      match: { superAdmin: true }
+    });
 
   // find private communities where user is a member
   let privateCommunities = [];
@@ -173,26 +178,41 @@ export async function showAdmins(req, res, next) {
 export async function create(req, res, next) {
   try {
     const { user } = req;
-    if (!req.user) throw new Error('You need to be logged in');
+    if (!user) throw new Error('You need to be logged in');
 
-    let community = req.body;
-    let { admins } = community;
-    admins = await User.find({ handle: { $in: admins } }, '_id');
-    community.slug = community.slug.toLowerCase();
-    if (RESERVED.indexOf(community.slug) > -1) throw new Error('Reserved slug');
-    community = new Community(community);
+    const c = req.body;
+    const slug = c.slug.toLowerCase();
+    if (RESERVED.indexOf(slug) > -1) throw new Error(`The slug ${slug} cannot be used`);
+
+    const newCommunity = {
+      slug,
+      image: c.image,
+      name: c.name,
+      topics: c.topics,
+      description: c.description,
+      channels: c.channels,
+      private: c.private,
+      hidden: c.hidden,
+      betEnabled: c.betEnabled
+    };
+
+    const { admins = [], superAdmins = [] } = req.body;
+
+    let community = new Community(newCommunity);
     community = await community.save();
 
-    // TODO - this should create an invitation!
-    if (admins && admins.length) {
-      admins = admins.map(async admin => community.join(admin._id, 'admin'));
-      admins = await Promise.all(admins);
-    }
-    if (user.role !== 'admin') await community.join(user._id, 'superAdmin');
-    community.admins = await CommunityMember.find({
-      communityId: community._id,
-      role: 'admin'
-    });
+    const superAdminsAndCreator = [...new Set([...superAdmins, user.handle])];
+
+    // order matters here - superAdmins should go first
+    const newSuperAdmins = await updateAdmins(
+      superAdminsAndCreator,
+      'superAdmin',
+      community
+    );
+    const newAdmins = await updateAdmins(admins, 'admin', community);
+    community = await community.updateMemeberCount();
+    community.admins = newAdmins;
+    community.superAdmins = newSuperAdmins;
 
     res.status(200).json(community);
   } catch (err) {
@@ -205,30 +225,16 @@ export async function update(req, res, next) {
     // for now only admins create communities
     const updatedCommunity = req.body;
     const { admins, superAdmins } = updatedCommunity;
-    const { user } = req;
+    const { user, communityMember } = req;
+    if (!communityMember.communityId.equals(updatedCommunity._id))
+      throw new Error('Community id mismatch');
 
-    if (!updatedCommunity || !user) return;
-    const member = await CommunityMember.findOne({
-      communityId: updatedCommunity._id,
-      user: user._id
-    });
+    if (!updatedCommunity) throw new Error('There was an error processing your request');
 
-    const currentAdmins = await CommunityMember.find({
-      communityId: updatedCommunity._id,
-      role: 'admin'
-    });
-
-    const currentAdminsList = currentAdmins.map(a => a.embeddedUser.handle);
-    let newAdmins = admins.filter(a => !currentAdminsList.includes(a));
-
-    const isSuperAdmin = member && member.superAdmin;
+    const isSuperAdmin = communityMember && communityMember.superAdmin;
     const canEdit = user.role === 'admin' || isSuperAdmin;
 
-    if (!canEdit) {
-      throw new Error("You don't have permission to edit a community");
-    }
-
-    newAdmins = await User.find({ handle: { $in: newAdmins } }, '_id');
+    if (!canEdit) throw new Error("You don't have permission to edit a community");
 
     let community = await Community.findOne({ _id: updatedCommunity._id });
     community.set({
@@ -243,47 +249,51 @@ export async function update(req, res, next) {
     });
     community = await community.save();
 
-    // TODO - this should create an invitation!
-    newAdmins = newAdmins.map(async admin => {
-      const role = superAdmins.includes(admin._id) ? 'superAdmin' : 'admin';
-      return community.join(admin._id, role);
-    });
+    community = await community.updateMemeberCount();
 
-    await Promise.all(newAdmins);
-
-    let removeAdmins;
-    if (user.role === 'admin' || isSuperAdmin) {
-      removeAdmins = currentAdminsList.filter(a => !admins.includes(a));
-      removeAdmins = await User.find({ handle: { $in: removeAdmins } }, '_id');
-      removeAdmins = removeAdmins.map(u => u._id.toString());
-      await CommunityMember.updateMany(
-        { user: { $in: removeAdmins } },
-        { role: 'user', superAdmin: false },
-        { multi: true }
-      );
-    }
-
-    await CommunityMember.updateMany(
-      { 'embeddedUser.handle': { $in: admins } },
-      { superAdmin: false },
-      { multi: true }
-    );
-
-    await CommunityMember.updateMany(
-      { 'embeddedUser.handle': { $in: superAdmins }, role: 'admin' },
-      { superAdmin: true },
-      { multi: true }
-    );
-
-    community.admins = await CommunityMember.find({
-      communityId: community._id,
-      role: 'admin'
-    });
+    // order matters here - superAdmins should go first
+    const newSuperAdmins = await updateAdmins(superAdmins, 'superAdmin', community);
+    const newAdmins = await updateAdmins(admins, 'admin', community);
+    community = await community.updateMemeberCount();
+    community.admins = newAdmins;
+    community.superAdmins = newSuperAdmins;
 
     res.status(200).json(community);
   } catch (err) {
     next(err);
   }
+}
+
+/**
+ * upserts admins
+ * @param  {[_id]} admins array of user ids
+ * @param  {string} type type of admin ('admin', 'superAdmin')
+ * @param  {commuinty}
+ * @return {[CommunityMembers]} array of community member objects
+ */
+async function updateAdmins(admins, type, community) {
+  const newAdmins = (await User.find({ handle: { $in: admins } }, '_id')).map(m => m._id);
+
+  const query = {
+    admin: { role: 'admin' },
+    superAdmin: { superAdmin: true }
+  };
+  const updateFields = {
+    admin: { role: 'user' },
+    superAdmin: { superAdmin: false }
+  };
+  await CommunityMember.updateMany(
+    { user: { $nin: newAdmins }, ...query[type] },
+    updateFields[type]
+  );
+
+  const dontUpdateCount = true;
+
+  // TODO - should create an invitation
+  const newAdminMembers = newAdmins.map(async _id =>
+    community.join(_id, type, dontUpdateCount)
+  );
+  return Promise.all(newAdminMembers);
 }
 
 export async function remove(req, res, next) {

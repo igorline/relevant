@@ -49,7 +49,9 @@ export const brandNew = {
   description: 'Discussion of blockchain tech and ecosystem',
   lastRewardFundUpdate: new Date(),
   topics: ['co community topic'],
-  channels: []
+  channels: [],
+  superAdmins: ['alice'],
+  admins: ['alice']
 };
 
 export const allCommunities = [relevant, crypto];

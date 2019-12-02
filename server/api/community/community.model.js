@@ -47,6 +47,12 @@ CommunitySchema.virtual('admins', {
   foreignField: 'community'
 });
 
+CommunitySchema.virtual('superAdmins', {
+  ref: 'CommunityMember',
+  localField: 'slug',
+  foreignField: 'community'
+});
+
 CommunitySchema.virtual('members', {
   ref: 'CommunityMember',
   localField: 'slug',
@@ -84,7 +90,7 @@ CommunitySchema.methods.leave = async function leave(userId) {
   await this.updateMemeberCount();
 };
 
-CommunitySchema.methods.join = async function join(userId, role) {
+CommunitySchema.methods.join = async function join(userId, role, dontUpdateCount) {
   const superAdmin = role === 'superAdmin';
 
   const { _id: communityId, slug: community } = this;
@@ -96,9 +102,13 @@ CommunitySchema.methods.join = async function join(userId, role) {
     communityId
   });
 
-  if (member && (role === 'admin' || superAdmin)) {
+  if (member && role === 'admin') {
     member.role = 'admin';
-    member.superAdmin = superAdmin;
+    return member.save();
+  }
+
+  if (member && superAdmin) {
+    member.superAdmin = true;
     return member.save();
   }
 
@@ -119,7 +129,9 @@ CommunitySchema.methods.join = async function join(userId, role) {
   member = new (this.model('CommunityMember'))(member);
   await member.save();
 
-  await this.updateMemeberCount();
+  if (!dontUpdateCount) {
+    await this.updateMemeberCount();
+  }
 
   const memberEvent = {
     _id: user._id,
