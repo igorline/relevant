@@ -146,7 +146,7 @@ class CommunityAdminForm extends Component {
       {
         name: 'superAdmins',
         component: SelectField,
-        options: initialValues.superAdmins,
+        options: initialValues.admins,
         type: 'text',
         label: (
           <View fdirection={'column'}>

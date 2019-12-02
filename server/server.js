@@ -160,7 +160,8 @@ SubscriptionServer.create(
     // },
     execute,
     subscribe,
-    schema
+    schema,
+    keepAlive: 10000
   },
   {
     server,

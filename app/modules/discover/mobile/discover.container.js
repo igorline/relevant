@@ -61,7 +61,7 @@ class Discover extends Component {
     this.state.view = this.myTabs.find(tab => tab.type === this.type).id;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.navigation.state.params) {
       this.topic = this.props.navigation.state.params.topic;
       this.topic = this.topic && this.topic._id ? this.topic._id : this.topic;
@@ -95,10 +95,7 @@ class Discover extends Component {
     // }
   }
 
-  shouldComponentUpdate(next) {
-    if (!next.active) return false;
-    return true;
-  }
+  shouldComponentUpdate = next => next.active && next.navigation.isFocused();
 
   getViewData(props, view) {
     switch (view) {
@@ -197,7 +194,7 @@ class Discover extends Component {
   }
 
   renderRow(rowData, view, i) {
-    const { posts } = this.props;
+    const { posts, actions } = this.props;
     const { type } = this.myTabs[view];
     if (view !== 2) {
       const post = posts.posts[rowData];
@@ -215,10 +212,9 @@ class Discover extends Component {
           commentary={commentary}
           link={link}
           showReposts={showReposts}
-          actions={this.props.actions}
+          actions={actions}
           styles={styles}
           posts={posts}
-          navigation={this.props.navigation}
         />
       );
     }

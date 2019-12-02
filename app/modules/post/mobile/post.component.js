@@ -21,14 +21,23 @@ class Post extends PureComponent {
     auth: PropTypes.object,
     post: PropTypes.object,
     commentary: PropTypes.array,
-    posts: PropTypes.object,
+    // posts: PropTypes.object,
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
-    navigation: PropTypes.object.isRequired, // eslint-disable-line
     hideDivider: PropTypes.bool,
     preview: PropTypes.bool,
     noLink: PropTypes.bool
   };
+
+  // componentDidUpdate(prev) {
+  // Object.keys(prev).forEach(key => {
+  // const same = prev[key] === this.props[key];
+  // if (!same) {
+  //   console.log(key);
+  //   console.log(prev[key], this.props[key]);
+  // }
+  // });
+  // }
 
   render() {
     const {
@@ -43,7 +52,7 @@ class Post extends PureComponent {
     } = this.props;
 
     const { community } = auth;
-    let { post } = this.props;
+    const { post } = this.props;
 
     const separator = (
       <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
@@ -70,11 +79,11 @@ class Post extends PureComponent {
       />
     ) : null;
 
-    if (post && post.repost) {
-      let repost = this.props.posts.posts[post.repost.post];
-      if (!repost) repost = { body: '[deleted]' };
-      post = { ...repost };
-    }
+    // if (post && post.repost) {
+    //   let repost = this.props.posts.posts[post.repost.post];
+    //   if (!repost) repost = { body: '[deleted]' };
+    //   post = { ...repost };
+    // }
 
     const title = getTitle({ post, link });
     const postUrl = getPostUrl(community, post);
@@ -98,6 +107,7 @@ class Post extends PureComponent {
             <ButtonContainer
               horizontal
               post={post}
+              singlePost={singlePost}
               actions={actions}
               auth={auth}
               link={link}
@@ -108,6 +118,8 @@ class Post extends PureComponent {
     ) : (
       <Commentary {...this.props} commentary={[post]} />
     );
+
+    // console.log('render post');
 
     return (
       <View style={{ overflow: 'hidden' }}>

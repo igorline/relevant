@@ -17,12 +17,10 @@ export default class Commentary extends Component {
     link: PropTypes.object,
     users: PropTypes.object,
     auth: PropTypes.object,
-    // myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
     tooltip: PropTypes.bool,
     focusInput: PropTypes.func,
     commentary: PropTypes.array,
-    navigation: PropTypes.object,
     preview: PropTypes.bool,
     avatarText: PropTypes.func,
     isReply: PropTypes.bool
@@ -110,7 +108,6 @@ export default class Commentary extends Component {
                 auth={auth}
                 singlePost={singlePost}
                 user={user}
-                navigation={this.props.navigation}
                 avatarText={this.props.avatarText}
                 preview
               />
@@ -121,7 +118,6 @@ export default class Commentary extends Component {
                 actions={actions}
                 auth={auth}
                 singlePost={singlePost}
-                navigation={this.props.navigation}
                 avatarText={this.props.avatarText}
                 preview={preview}
               />
@@ -137,9 +133,8 @@ export default class Commentary extends Component {
                     comments={post.comments || null}
                     actions={actions}
                     auth={auth}
-                    // myPostInv={myPostInv[post._id]}
                     focusInput={focusInput}
-                    navigation={this.props.navigation}
+                    singlePost={singlePost}
                   />
                 </View>
               )}

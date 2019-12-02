@@ -529,9 +529,10 @@ exports.updateHandle = async (req, res, next) => {
       user = await user.save();
       await sendConfirmation(user, true);
     }
-
     user.handle = handle;
     user.role = 'user';
+
+    await addUserToEmailList(user);
 
     const newUser = {
       name: user.name,

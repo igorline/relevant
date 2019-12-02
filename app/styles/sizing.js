@@ -6,6 +6,7 @@ if (process.env.WEB === 'true') {
 }
 
 export default function sizing(unit, type) {
+  // console.log('sizing');
   if (!isNative) {
     if (type) return `${unit}${type}`;
     return `${unit / 2}rem`;

@@ -5,7 +5,6 @@ import { ActionSheetIOS, TouchableOpacity, Platform, Linking } from 'react-nativ
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Share from 'react-native-share';
 import { getPostUrl, getTitle } from 'app/utils/post';
-import get from 'lodash/get';
 import { push, goToPost } from 'modules/navigation/navigation.actions';
 import { setCreatePostState } from 'modules/createPost/createPost.actions';
 import { CTALink, View } from 'modules/styled/uni';
@@ -29,7 +28,7 @@ const defaultMenu = {
 };
 
 ButtonRow.propTypes = {
-  navigation: PropTypes.object,
+  singlePost: PropTypes.bool,
   focusInput: PropTypes.func,
   link: PropTypes.object,
   comment: PropTypes.object,
@@ -43,7 +42,7 @@ export default function ButtonRow({
   link,
   post,
   parentPost,
-  navigation,
+  singlePost,
   focusInput,
   comment,
   setupReply,
@@ -118,7 +117,10 @@ export default function ButtonRow({
     const _parentPost = parentPost || post;
     const parentPostId = _parentPost._id || _parentPost;
 
-    if (get(navigation, 'state.params.id') === parentPostId) {
+    // console.log('click NAVIGATE TO POST', parentPostId);
+    if (singlePost) {
+      // console.log('setup reply');
+      // console.log('post id', get(navigation, 'state.params.id'));
       if (setupReply) setupReply(post);
       if (focusInput) focusInput();
       return;

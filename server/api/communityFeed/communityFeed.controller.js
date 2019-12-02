@@ -27,7 +27,7 @@ exports.index = async req => {
       communityId: cObj._id,
       user: user._id
     });
-    if (!member) throw new Error('This community is private');
+    if (!member && user.role !== 'admin') throw new Error('This community is private');
   }
   const communityId = cObj._id;
 

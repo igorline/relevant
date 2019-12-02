@@ -3,14 +3,12 @@ import { StyleSheet, Text, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
 import * as utils from 'app/utils';
-import { get } from 'lodash';
 
 let styles;
 
 class TextBody extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    navigation: PropTypes.object,
     post: PropTypes.object,
     body: PropTypes.string,
     children: PropTypes.node,
@@ -34,14 +32,7 @@ class TextBody extends Component {
     this.props.actions.resetRoutes('discover');
   }
 
-  setSelected(user) {
-    if (!this.props.actions) return;
-    const userId = user._id || user.replace('@', '');
-    if (!user) return;
-    const params = get(this.props.navigation, 'state.params');
-    if (params && params.id === userId) return;
-    this.props.actions.goToProfile(user);
-  }
+  setSelected = user => this.props.actions && this.props.actions.goToProfile(user);
 
   goToTopic(tag) {
     const topic = {
@@ -51,12 +42,10 @@ class TextBody extends Component {
     this.props.actions.goToTopic(topic);
   }
 
-  goToPost() {
-    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
-    const params = get(this.props.navigation, 'state.params');
-    if (params && params.id === this.props.post._id) return;
-    this.props.actions.goToPost(this.props.post);
-  }
+  goToPost = () => {
+    const { actions, post } = this.props;
+    actions && post && post._id && actions.goToPost(this.props.post);
+  };
 
   shouldComponentUpdate(next) {
     if (this.props.body !== next.body || this.props.children !== next.children) {

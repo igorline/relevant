@@ -38,9 +38,7 @@ class WalletContainer extends Component {
 
   needsReload = new Date().getTime();
 
-  shouldComponentUpdate(next) {
-    return next.navigation.isFocused();
-  }
+  shouldComponentUpdate = next => next.navigation.isFocused();
 
   componentDidMount() {
     if (!this.props.earnings.list.length) {
@@ -137,7 +135,7 @@ class WalletContainer extends Component {
           renderHeader={this.renderHeader}
           load={this.load}
           type={'posts'}
-          parent={'feed'}
+          parent={'wallet'}
           needsReload={this.needsReload}
           actions={this.props.actions}
         />
