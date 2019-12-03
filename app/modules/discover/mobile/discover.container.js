@@ -196,13 +196,12 @@ class Discover extends Component {
   renderRow(rowData, view, i) {
     const { posts } = this.props;
     const { type } = this.myTabs[view];
-    const { topic } = this.topic;
 
     return type === 'people' ? (
       <DiscoverUser
         bio
         relevance={this.topic || false}
-        topic={topic}
+        topic={this.topic}
         user={rowData}
         {...this.props}
       />

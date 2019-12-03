@@ -1,3 +1,5 @@
+import computePageRank from 'server/utils/pagerankCompute';
+import PostData from 'server/api/post/postData.model';
 import Community from './community.model';
 import CommunityMember from './community.member.model';
 import User from '../user/user.model';
@@ -259,9 +261,23 @@ export async function update(req, res, next) {
     community.superAdmins = newSuperAdmins;
 
     res.status(200).json(community);
+
+    // TODO: only do this when admins change
+    updateReputationScores(community);
   } catch (err) {
     next(err);
   }
+}
+
+async function updateReputationScores(community) {
+  // Only do this for small communities;
+  if (community.memberCount > 100) return;
+  await PostData.updateMany({ communityId: community._id }, { needsRankUpdate: true });
+  await computePageRank({
+    communityId: community._id,
+    community: community.slug,
+    debug: false
+  });
 }
 
 /**

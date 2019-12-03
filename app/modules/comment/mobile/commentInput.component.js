@@ -31,7 +31,6 @@ class CommentInput extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.renderInput = this.renderInput.bind(this);
     this.setMention = this.setMention.bind(this);
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
@@ -106,86 +105,82 @@ class CommentInput extends Component {
     });
   }
 
-  renderInput() {
+  render() {
     const { auth, editing, placeholder } = this.props;
     const { user } = auth;
     const { inputHeight } = this.state;
-    if (!editing) {
-      const inputImage = user && user.image && (
-        <Image style={styles.inputImage} source={{ uri: user.image }} />
-      );
 
-      // let inputImage = null;
-      // if (user && user.image) {
-      //   const imageUrl = user.image;
-      //   inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
-      // }
-      return (
-        <View
-          onLayout={e => {
-            this.top = e.nativeEvent.layout.y;
-            this.props.updatePosition({
-              inputHeight,
-              top: this.top
+    if (editing) return null;
+
+    const inputImage = user && user.image && (
+      <Image style={styles.inputImage} source={{ uri: user.image }} />
+    );
+
+    // let inputImage = null;
+    // if (user && user.image) {
+    //   const imageUrl = user.image;
+    //   inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
+    // }
+    return (
+      <View
+        onLayout={e => {
+          this.top = e.nativeEvent.layout.y;
+          this.props.updatePosition({
+            inputHeight,
+            top: this.top
+          });
+        }}
+        style={styles.commentInputParent}
+      >
+        {inputImage}
+        <TextInput
+          ref={c => {
+            this.textInput = c;
+          }}
+          underlineColorAndroid={'transparent'}
+          textAlignVertical={'top'}
+          style={[styles.commentInput]}
+          placeholder={placeholder || 'Enter reply...'}
+          placeholderTextColor={greyText}
+          multiline
+          onChangeText={comment => {
+            this.processInput(comment, false);
+            this.setState({ comment });
+          }}
+          onContentSizeChange={event => {
+            const h = event.nativeEvent.contentSize.height;
+            this.setState({
+              inputHeight: Math.max(DEFAULT_INPUT_HEIGHT, h)
             });
           }}
-          style={styles.commentInputParent}
-        >
-          {inputImage}
-          <TextInput
-            ref={c => {
-              this.textInput = c;
-            }}
-            underlineColorAndroid={'transparent'}
-            textAlignVertical={'top'}
-            style={[styles.commentInput]}
-            placeholder={placeholder || 'Enter reply...'}
-            placeholderTextColor={greyText}
-            multiline
-            onChangeText={comment => {
+          returnKeyType="default"
+          onFocus={this.props.onFocus}
+          onSubmitEditing={() => {
+            if (this.okToSubmit) {
+              let { comment } = this.state;
+              comment += '\n';
               this.processInput(comment, false);
               this.setState({ comment });
-            }}
-            onContentSizeChange={event => {
-              const h = event.nativeEvent.contentSize.height;
-              this.setState({
-                inputHeight: Math.max(DEFAULT_INPUT_HEIGHT, h)
-              });
-            }}
-            returnKeyType="default"
-            onFocus={this.props.onFocus}
-            onSubmitEditing={() => {
-              if (this.okToSubmit) {
-                let { comment } = this.state;
-                comment += '\n';
-                this.processInput(comment, false);
-                this.setState({ comment });
-                return (this.okToSubmit = false);
-              }
-              return (this.okToSubmit = true);
-            }}
-          >
-            <TextBody style={{ flex: 1 }} showAllMentions>
-              {this.state.comment}
-            </TextBody>
-          </TextInput>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={[styles.commentSubmit]}
-            onPress={() => this.createComment()}
-          >
-            <Text style={[{ fontSize: 18, fontWeight: 'bold', color: 'white' }]}>
-              {'\u2191'}
-            </Text>
-          </TouchableHighlight>
-        </View>
-      );
-    }
-    return null;
-  }
-
-  render() {
-    return this.renderInput();
+              return (this.okToSubmit = false);
+            }
+            return (this.okToSubmit = true);
+          }}
+        >
+          <TextBody style={{ flex: 1 }} showAllMentions>
+            {this.state.comment}
+          </TextBody>
+        </TextInput>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.commentSubmit]}
+          onPress={() => this.createComment()}
+        >
+          <Text style={[{ fontSize: 18, fontWeight: 'bold', color: 'white' }]}>
+            {'\u2191'}
+          </Text>
+        </TouchableHighlight>
+      </View>
+    );
   }
 }
 

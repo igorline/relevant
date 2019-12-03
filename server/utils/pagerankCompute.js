@@ -77,7 +77,7 @@ export default async function computePageRank(params) {
       options: { select: 'data body' },
       populate: {
         path: 'data',
-        select: 'pagerank relevance pagerankRaw body'
+        select: 'pagerank relevance pagerankRaw body needsRankUpdate'
       }
     });
 
@@ -367,11 +367,13 @@ async function updateItemRank(props) {
       {
         new: true,
         fields:
-          'pagerank pagerankRaw pagerankRawNeg post rank relevance postDate communityId'
+          'pagerank pagerankRaw pagerankRawNeg post rank relevance postDate communityId needsRankUpdate'
       }
     );
 
+    console.log('pagerank', postData);
     if (postData && postData.needsRankUpdate) {
+      console.log('updating rank');
       postData.needsRankUpdate = false;
       post.data = postData;
       post = await post.updateRank({ communityId });
@@ -572,6 +574,7 @@ export async function computeApproxPageRank({
       );
 
       post.data.pagerank = normRank - normRankNeg;
+      await post.updateRank({ communityId });
     }
 
     await Promise.all([
