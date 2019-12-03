@@ -22,8 +22,8 @@ export default function WalletLinks() {
   };
 
   return (
-    <View fdirection="row">
-      <View mr={2} fdirection="row" mt={2} align="center">
+    <View mt={2} fdirection="row" wrap="wrap">
+      <View mr={2} mt={1} fdirection="row" align="center">
         <Touchable onClick={() => dispatch(showModal('cashOut'))} td={'underline'}>
           <LinkFont c={colors.blue} mr={0.5}>
             Claim Tokens
@@ -36,7 +36,7 @@ export default function WalletLinks() {
           }}
         />
       </View>
-      <View mr={2} fdirection="row" mt={2} align="center">
+      <View mr={2} mt={1} fdirection="row" align="center">
         <Tooltip
           data={{
             text: `If you have Relevant tokens in your Metamask wallet, you need to connect your account to be able to use them.`
@@ -55,7 +55,7 @@ export default function WalletLinks() {
       </View>
 
       {tokenEnabled() && (
-        <View fdirection="row" mr={2} mt={2} align="center">
+        <View mt={1} fdirection="row" mr={2} align="center">
           <ULink to={exchageUrl} external target="_blank" td={'underline'}>
             <LinkFont
               // mt={0.5}
@@ -70,7 +70,7 @@ export default function WalletLinks() {
         </View>
       )}
 
-      <View fdirection="row" mr={2} mt={2} align="center">
+      <View mt={1} fdirection="row" mr={2} align="center">
         <Tooltip
           data={{
             text: `When you upvote posts you also bet coins on them. How much you bet can be decided automatically or manualy.`
