@@ -582,7 +582,7 @@ exports[`Snapshot NavProfile 1`] = `
             className="c2 ulink-mock"
             href="/"
             hu={0}
-            inline={0}
+            inline={1}
             onClick={[Function]}
             styles=""
           >

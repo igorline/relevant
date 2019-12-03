@@ -527,11 +527,16 @@ exports[`Snapshot Balance Web 1`] = `
     style={
       Object {
         "WebkitBoxDirection": "normal",
+        "WebkitBoxLines": "multiple",
         "WebkitBoxOrient": "horizontal",
         "WebkitFlexDirection": "row",
+        "WebkitFlexWrap": "wrap",
         "display": "flex",
         "flexDirection": "row",
+        "flexWrap": "wrap",
+        "marginTop": "1rem",
         "msFlexDirection": "row",
+        "msFlexWrap": "wrap",
         "position": "relative",
       }
     }
@@ -549,7 +554,7 @@ exports[`Snapshot Balance Web 1`] = `
           "display": "flex",
           "flexDirection": "row",
           "marginRight": "1rem",
-          "marginTop": "1rem",
+          "marginTop": "0.5rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -557,11 +562,8 @@ exports[`Snapshot Balance Web 1`] = `
       }
     >
       <div
-        c="#0000ff"
-        className="css-text-901oao"
+        className="css-view-1dbjc4n"
         data-focusable={true}
-        dir="auto"
-        mr={0.5}
         onClick={[Function]}
         onKeyDown={[Function]}
         onKeyUp={[Function]}
@@ -573,31 +575,48 @@ exports[`Snapshot Balance Web 1`] = `
         onStartShouldSetResponder={[Function]}
         style={
           Object {
+            "MozTransitionProperty": "opacity",
             "MozUserSelect": "none",
-            "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-            "WebkitTextDecorationStyle": "solid",
+            "WebkitTransitionDuration": "0.15s",
+            "WebkitTransitionProperty": "opacity",
             "WebkitUserSelect": "none",
-            "color": "rgba(0,0,255,1.00)",
             "cursor": "pointer",
-            "display": "flex",
-            "fontFamily": "HelveticaNeue-Medium",
-            "fontSize": "0.75rem",
-            "lineHeight": "1.0499999999999998rem",
-            "marginRight": "0.25rem",
             "msTouchAction": "manipulation",
             "msUserSelect": "none",
-            "position": "relative",
-            "textDecoration": "underline",
-            "textDecorationColor": "rgba(0,0,255,1.00)",
-            "textDecorationStyle": "solid",
             "touchAction": "manipulation",
+            "transitionDuration": "0.15s",
+            "transitionProperty": "opacity",
             "userSelect": "none",
           }
         }
         tabIndex="0"
-        td="underline"
       >
-        Claim Tokens
+        <div
+          c="#0000ff"
+          className="css-text-901oao"
+          dir="auto"
+          mr={0.5}
+          style={
+            Object {
+              "MozUserSelect": "none",
+              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+              "WebkitUserSelect": "none",
+              "color": "rgba(0,0,255,1.00)",
+              "cursor": "pointer",
+              "display": "flex",
+              "fontFamily": "HelveticaNeue-Medium",
+              "fontSize": "0.75rem",
+              "lineHeight": "1.0499999999999998rem",
+              "marginRight": "0.25rem",
+              "msUserSelect": "none",
+              "position": "relative",
+              "textDecorationColor": "rgba(0,0,255,1.00)",
+              "userSelect": "none",
+            }
+          }
+        >
+          Claim Tokens
+        </div>
       </div>
       <div
         className="css-text-901oao"
@@ -672,7 +691,7 @@ exports[`Snapshot Balance Web 1`] = `
           "display": "flex",
           "flexDirection": "row",
           "marginRight": "1rem",
-          "marginTop": "1rem",
+          "marginTop": "0.5rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -692,11 +711,8 @@ exports[`Snapshot Balance Web 1`] = `
         }
       >
         <div
-          c="#0000ff"
-          className="css-text-901oao"
+          className="css-view-1dbjc4n"
           data-focusable={true}
-          dir="auto"
-          mr={0.5}
           onClick={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -708,31 +724,49 @@ exports[`Snapshot Balance Web 1`] = `
           onStartShouldSetResponder={[Function]}
           style={
             Object {
+              "MozTransitionProperty": "opacity",
               "MozUserSelect": "none",
-              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-              "WebkitTextDecorationStyle": "solid",
+              "WebkitTransitionDuration": "0.15s",
+              "WebkitTransitionProperty": "opacity",
               "WebkitUserSelect": "none",
-              "color": "rgba(0,0,255,1.00)",
               "cursor": "pointer",
-              "display": "flex",
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "0.75rem",
-              "lineHeight": "1.0499999999999998rem",
-              "marginRight": "0.25rem",
               "msTouchAction": "manipulation",
               "msUserSelect": "none",
-              "position": "relative",
-              "textDecoration": "underline",
-              "textDecorationColor": "rgba(0,0,255,1.00)",
-              "textDecorationStyle": "solid",
               "touchAction": "manipulation",
+              "transitionDuration": "0.15s",
+              "transitionProperty": "opacity",
               "userSelect": "none",
+              "zIndex": 1,
             }
           }
           tabIndex="0"
-          td="underline"
         >
-          Connect Your Wallet
+          <div
+            c="#0000ff"
+            className="css-text-901oao"
+            dir="auto"
+            mr={0.5}
+            style={
+              Object {
+                "MozUserSelect": "none",
+                "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+                "WebkitUserSelect": "none",
+                "color": "rgba(0,0,255,1.00)",
+                "cursor": "pointer",
+                "display": "flex",
+                "fontFamily": "HelveticaNeue-Medium",
+                "fontSize": "0.75rem",
+                "lineHeight": "1.0499999999999998rem",
+                "marginRight": "0.25rem",
+                "msUserSelect": "none",
+                "position": "relative",
+                "textDecorationColor": "rgba(0,0,255,1.00)",
+                "userSelect": "none",
+              }
+            }
+          >
+            Connect Your Wallet
+          </div>
         </div>
       </div>
     </div>
@@ -749,7 +783,7 @@ exports[`Snapshot Balance Web 1`] = `
           "display": "flex",
           "flexDirection": "row",
           "marginRight": "1rem",
-          "marginTop": "1rem",
+          "marginTop": "0.5rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -805,7 +839,7 @@ exports[`Snapshot Balance Web 1`] = `
           "display": "flex",
           "flexDirection": "row",
           "marginRight": "1rem",
-          "marginTop": "1rem",
+          "marginTop": "0.5rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
           "position": "relative",
@@ -825,11 +859,8 @@ exports[`Snapshot Balance Web 1`] = `
         }
       >
         <div
-          c="#0000ff"
-          className="css-text-901oao"
+          className="css-view-1dbjc4n"
           data-focusable={true}
-          dir="auto"
-          mr={0.5}
           onClick={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
@@ -841,32 +872,50 @@ exports[`Snapshot Balance Web 1`] = `
           onStartShouldSetResponder={[Function]}
           style={
             Object {
+              "MozTransitionProperty": "opacity",
               "MozUserSelect": "none",
-              "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-              "WebkitTextDecorationStyle": "solid",
+              "WebkitTransitionDuration": "0.15s",
+              "WebkitTransitionProperty": "opacity",
               "WebkitUserSelect": "none",
-              "color": "rgba(0,0,255,1.00)",
               "cursor": "pointer",
-              "display": "flex",
-              "fontFamily": "HelveticaNeue-Medium",
-              "fontSize": "0.75rem",
-              "lineHeight": "1.0499999999999998rem",
-              "marginRight": "0.25rem",
               "msTouchAction": "manipulation",
               "msUserSelect": "none",
-              "position": "relative",
-              "textDecoration": "underline",
-              "textDecorationColor": "rgba(0,0,255,1.00)",
-              "textDecorationStyle": "solid",
               "touchAction": "manipulation",
+              "transitionDuration": "0.15s",
+              "transitionProperty": "opacity",
               "userSelect": "none",
+              "zIndex": 1,
             }
           }
           tabIndex="0"
-          td="underline"
         >
-          Disable
-           Manual Betting
+          <div
+            c="#0000ff"
+            className="css-text-901oao"
+            dir="auto"
+            mr={0.5}
+            style={
+              Object {
+                "MozUserSelect": "none",
+                "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+                "WebkitUserSelect": "none",
+                "color": "rgba(0,0,255,1.00)",
+                "cursor": "pointer",
+                "display": "flex",
+                "fontFamily": "HelveticaNeue-Medium",
+                "fontSize": "0.75rem",
+                "lineHeight": "1.0499999999999998rem",
+                "marginRight": "0.25rem",
+                "msUserSelect": "none",
+                "position": "relative",
+                "textDecorationColor": "rgba(0,0,255,1.00)",
+                "userSelect": "none",
+              }
+            }
+          >
+            Disable
+             Manual Betting
+          </div>
         </div>
       </div>
     </div>

@@ -34,9 +34,13 @@ const ActivityText = ({ activity, amount }) => {
         );
       }
       return [
-        <BodyText inline={1}>{`upvoted your ${postType}`}</BodyText>,
-        <BodyText inline={1}>{arrow}</BodyText>,
-        <BodyText inline={1}>{relText}</BodyText>
+        <BodyText key={'action'} inline={1}>{`upvoted your ${postType}`}</BodyText>,
+        <BodyText key={'arrow'} inline={1}>
+          {arrow}
+        </BodyText>,
+        <BodyText key={'result'} inline={1}>
+          {relText}
+        </BodyText>
       ];
     }
 
