@@ -129,13 +129,13 @@ function communityMember(role) {
         if (!com || (com.private && !globalAdmin))
           throw new Error("Community doesn't exist");
 
-        if (user.role !== 'admin') {
-          member = await com.join(user);
-          if (!member.community) {
-            member.community = com.slug;
-            member = await member.save();
-          }
+        // if (user.role !== 'admin') {
+        member = await com.join(user);
+        if (!member.community) {
+          member.community = com.slug;
+          member = await member.save();
         }
+        // }
       }
 
       if (role === 'superAdmin' && (!globalAdmin && !member.superAdmin)) {
