@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useMemo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -194,32 +194,11 @@ class Discover extends Component {
   }
 
   renderRow(rowData, view, i) {
-    const { posts, actions } = this.props;
+    const { posts } = this.props;
     const { type } = this.myTabs[view];
-    if (view !== 2) {
-      const post = posts.posts[rowData];
-      if (!post) return null;
-      const link = posts.links[post.metaPost];
-      const commentary = post[type].map(c => posts.posts[c]);
-
-      let showReposts = false;
-      if (type === 'new') showReposts = true;
-
-      return (
-        <Post
-          tooltip={parseInt(i, 10) === 0 || false}
-          post={post}
-          commentary={commentary}
-          link={link}
-          showReposts={showReposts}
-          actions={actions}
-          styles={styles}
-          posts={posts}
-        />
-      );
-    }
     const { topic } = this.topic;
-    return (
+
+    return type === 'people' ? (
       <DiscoverUser
         bio
         relevance={this.topic || false}
@@ -227,6 +206,8 @@ class Discover extends Component {
         user={rowData}
         {...this.props}
       />
+    ) : (
+      <PostEl type={type} rowData={rowData} posts={posts} index={i} />
     );
   }
 
@@ -259,6 +240,36 @@ class Discover extends Component {
 
     return <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>{dataEl}</View>;
   }
+}
+
+PostEl.propTypes = {
+  posts: PropTypes.object,
+  rowData: PropTypes.string,
+  type: PropTypes.string,
+  index: PropTypes.number
+};
+
+function PostEl({ posts, rowData, type, index }) {
+  const post = posts.posts[rowData];
+
+  const commentary = useMemo(() => {
+    if (!post) return null;
+    return post[type].map(c => posts.posts[c]);
+  }, [posts.posts, post, type]);
+
+  if (!post) return null;
+  const link = posts.links[post.metaPost];
+
+  return (
+    <Post
+      tooltip={parseInt(index, 10) === 0 || false}
+      post={post}
+      commentary={commentary}
+      link={link}
+      styles={styles}
+      posts={posts}
+    />
+  );
 }
 
 const localStyles = StyleSheet.create({

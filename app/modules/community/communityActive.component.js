@@ -97,7 +97,12 @@ export default function CommunityActive({
 
         <View mt={SIDE_NAV_PADDING} mb={2} fdirection="row" justify="space-between">
           <CommunityLink c={colors.black}>{`${totalMembers} Members`}</CommunityLink>
-          <ULink to="#" onPress={viewCommunityMembers} onClick={viewCommunityMembers}>
+          <ULink
+            inline={1}
+            to="#"
+            onPress={viewCommunityMembers}
+            onClick={viewCommunityMembers}
+          >
             <CommunityLink c={colors.blue}>See All</CommunityLink>
           </ULink>
         </View>

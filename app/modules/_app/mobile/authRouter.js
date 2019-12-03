@@ -67,7 +67,7 @@ export const AuthStack = createStackNavigator(
   {
     initialRouteName: 'mainAuth',
     headerLayoutPreset: 'center',
-
+    mode: 'card',
     transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
     defaultNavigationOptions: props => ({

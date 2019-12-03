@@ -21,23 +21,12 @@ class Post extends PureComponent {
     auth: PropTypes.object,
     post: PropTypes.object,
     commentary: PropTypes.array,
-    // posts: PropTypes.object,
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
     hideDivider: PropTypes.bool,
     preview: PropTypes.bool,
     noLink: PropTypes.bool
   };
-
-  // componentDidUpdate(prev) {
-  // Object.keys(prev).forEach(key => {
-  // const same = prev[key] === this.props[key];
-  // if (!same) {
-  //   console.log(key);
-  //   console.log(prev[key], this.props[key]);
-  // }
-  // });
-  // }
 
   render() {
     const {
@@ -118,8 +107,6 @@ class Post extends PureComponent {
     ) : (
       <Commentary {...this.props} commentary={[post]} />
     );
-
-    // console.log('render post');
 
     return (
       <View style={{ overflow: 'hidden' }}>

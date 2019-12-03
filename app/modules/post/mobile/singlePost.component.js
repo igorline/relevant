@@ -17,7 +17,7 @@ import { View, MobileDivider, Divider } from 'modules/styled/uni';
 import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import Post from './post.component';
 
-const inputOffset = IphoneX ? 59 + 33 : 59;
+const INPUT_OFFSET = IphoneX ? 33 + 55 : 55;
 
 class SinglePostComponent extends Component {
   static propTypes = {
@@ -319,7 +319,7 @@ class SinglePostComponent extends Component {
             }}
           >
             <UserSearchComponent
-              style={{ paddingTop: inputOffset }}
+              style={{ paddingTop: INPUT_OFFSET }}
               setSelected={this.input.setMention}
               users={this.props.users.search}
             />
@@ -353,7 +353,7 @@ class SinglePostComponent extends Component {
         behavior={'padding'}
         style={{ flex: 1, backgroundColor: 'white' }}
         keyboardVerticalOffset={
-          inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
+          INPUT_OFFSET + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
         }
       >
         <FlatList

@@ -60,9 +60,7 @@ export default function ImagePost(props) {
         noLink={noLink}
         style={{ flex: 1 }}
       >
-        <View h={imageHeight} flex={1}>
-          {imgBg || <Gradient flex={1} title={title} />}
-        </View>
+        <View h={imageHeight}>{imgBg || <Gradient flex={1} title={title} />}</View>
       </ULink>
 
       <TitleContainer fdirection={'row'} p={'0 2 2 2'} pl={preview ? 2 : 0}>

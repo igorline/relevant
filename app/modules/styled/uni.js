@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
 import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
 import { abbreviateNumber } from 'utils/numbers';
+import { TouchableOpacity } from 'react-native';
+
+export const Touchable = TouchableOpacity;
 
 export const View = styled.View`
   ${mixins.margin}
@@ -145,8 +148,6 @@ export const BodyText = styled(Text)`
   ${mixins.font}
 `;
 
-export const Touchable = styled.Touchable``;
-
 export const StaticButton = styled(View)`
   ${layout.button}
   ${p =>
@@ -187,8 +188,9 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
   const isArray = typeof children === 'object' && children.length;
   const isTextArray = isArray && children.find(el => typeof el !== 'string');
   const renderString = !children || !children.$$typeof || isTextArray || isString;
+
   return (
-    <Touchable onClick={onClick} onPress={onPress}>
+    <TouchableOpacity onClick={onClick} onPress={onPress}>
       <StaticButton
         hover={hover}
         active={active}
@@ -203,7 +205,7 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
       >
         {renderString ? <ButtonText {...rest}>{children}</ButtonText> : children}
       </StaticButton>
-    </Touchable>
+    </TouchableOpacity>
   );
 }
 

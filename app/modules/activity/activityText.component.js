@@ -21,22 +21,23 @@ const ActivityText = ({ activity, amount }) => {
   switch (activity.type) {
     case 'upvote': {
       let relText = null;
+      let arrow = null;
       if (amount > 0) {
+        arrow = ' → ';
         relText = (
           <BodyText inline={1}>
-            {' → your reputation increased by '}
+            {'your reputation increased by '}
             <Triangle inline={1} direction={triangleDirection} />
             &nbsp;
             {`${amount}%`}
           </BodyText>
         );
       }
-      return (
-        <BodyText inline={1}>
-          {`upvoted your ${postType}`}
-          {relText}
-        </BodyText>
-      );
+      return [
+        <BodyText inline={1}>{`upvoted your ${postType}`}</BodyText>,
+        <BodyText inline={1}>{arrow}</BodyText>,
+        <BodyText inline={1}>{relText}</BodyText>
+      ];
     }
 
     case 'upvoteParent':
@@ -100,8 +101,8 @@ const ActivityText = ({ activity, amount }) => {
       text = `mentioned you in a ${postType}`;
       break;
 
-      // text = 'mentioned you in a comment';
-      // break;
+    // text = 'mentioned you in a comment';
+    // break;
 
     case 'topPost':
       text = 'In case you missed this top-ranked post';

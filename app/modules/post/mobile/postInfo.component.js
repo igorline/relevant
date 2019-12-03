@@ -52,8 +52,8 @@ class PostInfo extends Component {
     this.ownerMenu = {
       myPost: true,
       buttons: ['Edit', 'Delete', 'Cancel'],
-      destructiveIndex: 2,
-      cancelIndex: 3
+      destructiveIndex: 1,
+      cancelIndex: 2
     };
 
     this.showActionSheet = this.showActionSheet.bind(this);

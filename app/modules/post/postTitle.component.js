@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tag from 'modules/tag/tag.component';
 import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
-import { View, Title, SecondaryText, InlineText } from 'modules/styled/uni';
+import { View, Title, SecondaryText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 
 export default function PostTitle(props) {
@@ -53,25 +53,22 @@ export default function PostTitle(props) {
 
   const commentEl =
     post.commentCount && postUrl ? (
-      <InlineText>
-        <ULink
-          type="text"
-          to={postUrl}
-          hu
-          noLink={noLink}
-          onPress={() => actions.goToPost(post)}
-        >
-          <SecondaryText inline={1} c={c || colors.blue}>
-            {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
-          </SecondaryText>
-        </ULink>
-        <InlineText>&nbsp;&nbsp;&nbsp; </InlineText>
-      </InlineText>
+      <ULink
+        type="text"
+        to={postUrl}
+        hu
+        noLink={noLink}
+        onPress={() => actions.goToPost(post)}
+        inline={1}
+      >
+        <SecondaryText mr={1} c={c || colors.blue}>
+          {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
+        </SecondaryText>
+      </ULink>
     ) : null;
 
-  const tagEl = tags.length ? (
-    <InlineText c={c || colors.blue}>
-      {tags.map(tag => (
+  const tagEl = tags.length
+    ? tags.map(tag => (
         <Tag
           actions={actions}
           name={tag}
@@ -80,21 +77,15 @@ export default function PostTitle(props) {
           noLink={noLink}
           c={c || colors.blue}
         />
-      ))}
-    </InlineText>
-  ) : null;
+      ))
+    : null;
 
   const hasAuthor = link && link.articleAuthor && link.articleAuthor.length;
-  const authorEl = hasAuthor ? (
-    <InlineText numberOfLines={1}>
-      {link.articleAuthor.join(', ')}
-      {' • '}
-    </InlineText>
-  ) : null;
+  const authorEl = hasAuthor ? link.articleAuthor.join(', ') + ' • ' : null;
 
   const domainEl = get(link, 'domain') && (
-    <InlineText numberOfLines={1}>
-      <SecondaryText c={c} inline={1}>
+    <View fdirection={'row'} numberOfLines={1} align={'flex-end'}>
+      <SecondaryText c={c} inline={1} numberOfLines={1}>
         {authorEl}
       </SecondaryText>
       <ULink
@@ -112,7 +103,7 @@ export default function PostTitle(props) {
           {link.domain && `${link.domain}\u00A0\u2197\uFE0E`}
         </SecondaryText>
       </ULink>
-    </InlineText>
+    </View>
   );
 
   // const userSet = new Set();
@@ -140,17 +131,26 @@ export default function PostTitle(props) {
       <View>
         {titleEl}
         {/* {postUrl && timestamp }{' • '} */}
-        <SecondaryText mt={mobile ? 1 : 0} c={c}>
+        <View mt={mobile ? 1 : 0} c={c}>
           {domainEl}
-        </SecondaryText>
+        </View>
       </View>
       {commentEl || tagEl ? (
-        <SecondaryText c={c} mt={mobile ? 0 : 0.5} numberOfLines={mobile ? 1 : null}>
-          <InlineText>
+        <View>
+          <View
+            fdirection={'row'}
+            align={'flex-end'}
+            h={2}
+            style={{ overflow: 'hidden' }}
+            c={c}
+            mt={mobile ? 1 : 0.5}
+            numberOfLines={mobile ? 1 : null}
+            // wrap={'nowrap'}
+          >
             {commentEl}
             {tagEl}
-          </InlineText>
-        </SecondaryText>
+          </View>
+        </View>
       ) : null}
       {children}
     </View>

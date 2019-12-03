@@ -193,23 +193,16 @@ export default CommentInput;
 
 const localStyles = StyleSheet.create({
   commentInput: {
-    paddingBottom: 4,
-    // backgroundColor: 'pink',
-    minHeight: 25,
+    minHeight: 50,
     maxHeight: 200,
-
+    paddingTop: 14,
+    paddingBottom: 10,
     paddingLeft: 10,
-    marginTop: 12,
-    marginBottom: 12,
-
     flex: 5,
-
     lineHeight: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     fontSize: 16
-    // alignItems: 'center',
-    // marginVertical: 12.5
   },
   commentInputParent: {
     flexDirection: 'row',

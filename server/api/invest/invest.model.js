@@ -177,7 +177,7 @@ InvestSchema.statics.createVote = async function createVote({
       });
     }
   } catch (err) {
-    console.log('bet error', err); // eslint-disable-line
+    // console.log('bet error', err); // eslint-disable-line
   }
   return vote;
 };

@@ -42,8 +42,9 @@ const FooterIcon = ({ href, source, target, actions }) => {
       to={href}
       onPress={() => actions.goToUrl(href)}
       target={target || '_self'}
+      inline={1}
     >
-      <Image w={2.8} h={2.4} mr={1.5} resizeMode={'contain'} source={source} />
+      <Image w={2.8} h={2.4} mr={3} resizeMode={'contain'} source={source} />
     </ULink>
   );
 };

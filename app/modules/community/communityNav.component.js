@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
-import { resetTabs } from 'modules/navigation/navigation.actions';
+import { resetTabs, closeDrawer } from 'modules/navigation/navigation.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
 import { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
@@ -105,9 +105,10 @@ function CommunityLink({ community, active }) {
       key={community._id}
       to={'/' + community.slug + '/new'}
       onPress={() => {
-        dispatch(resetTabs());
+        dispatch(closeDrawer());
         requestAnimationFrame(() => {
           dispatch(setCommunity(community.slug));
+          dispatch(resetTabs());
         });
       }}
     >

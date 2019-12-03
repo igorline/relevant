@@ -126,18 +126,18 @@ function UniswapButton() {
   const exchageUrl = exchangeLink();
 
   return (
-    <ULink to={exchageUrl} external mr={['auto', 0]} mt={3} target="_blank">
+    <ULink inline={1} to={exchageUrl} external mr={['auto', 0]} mt={3} target="_blank">
       <HoverButton
         w={[22, 'auto']}
         bg={colors.uniswap}
         m={0}
         c={colors.white}
-        fdirection="row"
-        align="flex-start"
-        onPress={dispatch(goToUrl(exchageUrl))}
+        onPress={() => dispatch(goToUrl(exchageUrl))}
       >
-        <Image resizeMode="contain" source={uniIcon} w={3} h={3} mr={1.5} />
-        <LinkFont c={colors.white}>Uniswap Exchange</LinkFont>
+        <View fdirection="row" justify={'center'} align="center">
+          <Image resizeMode="contain" source={uniIcon} w={3} h={3} mr={1.5} />
+          <LinkFont c={colors.white}>Uniswap Exchange</LinkFont>
+        </View>
       </HoverButton>
     </ULink>
   );

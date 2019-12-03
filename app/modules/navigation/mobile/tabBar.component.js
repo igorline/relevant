@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, blue, greyText, IphoneX } from 'app/styles/global';
+import { globalStyles, fullWidth, blue, greyText } from 'app/styles/global';
 import Percent from 'modules/stats/mobile/percent.component';
+import { SafeAreaView } from 'react-navigation';
 
 let styles;
 
@@ -119,20 +120,25 @@ export default class TabBar extends Component {
     const tabs = [...navigation.state.routes];
     this.totalBadge = 0;
 
-    return <View style={styles.footer}>{tabs.map(t => this.renderTab(t))}</View>;
+    return (
+      <SafeAreaView>
+        <View style={styles.footer}>{tabs.map(t => this.renderTab(t))}</View>
+      </SafeAreaView>
+    );
   }
 }
 
 const localStyles = StyleSheet.create({
   footer: {
     width: fullWidth,
-    height: IphoneX ? 83 : 50,
+    height: 50,
+    // height: IphoneX ? 83 : 50,
     flexDirection: 'row',
     alignItems: 'stretch',
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'black',
-    paddingBottom: IphoneX ? 33 : 0
+    borderTopColor: 'black'
+    // paddingBottom: IphoneX ? 33 : 0
   },
   footerItem: {
     flex: 1,
