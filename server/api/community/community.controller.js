@@ -263,7 +263,7 @@ export async function update(req, res, next) {
     res.status(200).json(community);
 
     // TODO: only do this when admins change
-    updateReputationScores(community);
+    await updateReputationScores(community);
   } catch (err) {
     next(err);
   }

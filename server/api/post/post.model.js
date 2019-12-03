@@ -281,11 +281,11 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     post.data.rank = rank;
 
     // TODO - deprecate this once we don't use this in the feed
-    post.rank = rank;
-    if (post.communityId && post.communityId.toString() === communityId.toString()) {
-      post.pagerank = post.data.pagerank;
-      // console.log('updating post pagerank', post.pagerank);
-    }
+    // post.rank = rank;
+    // if (post.communityId && post.communityId.toString() === communityId.toString()) {
+    //   post.pagerank = post.data.pagerank;
+    //   // console.log('updating post pagerank', post.pagerank);
+    // }
 
     await post.data.save();
     await post.save();

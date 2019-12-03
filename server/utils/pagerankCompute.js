@@ -371,14 +371,10 @@ async function updateItemRank(props) {
       }
     );
 
-    console.log('pagerank', postData);
     if (postData && postData.needsRankUpdate) {
-      console.log('updating rank');
       postData.needsRankUpdate = false;
       post.data = postData;
       post = await post.updateRank({ communityId });
-      // console.log(post.toObject());
-      // console.log(post.url, post.title, post.pagerank, post.rank);
     }
 
     return post.data || postData;
