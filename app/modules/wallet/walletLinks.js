@@ -78,7 +78,7 @@ export default function WalletLinks() {
         >
           <Touchable style={{ zIndex: 1 }} onClick={toggleManualBet} td={'underline'}>
             <LinkFont c={colors.blue} mr={0.5}>
-              {isManualBet ? 'Disable' : 'Enable'} Manual Betting
+              {isManualBet ? 'Disable' : 'Enable'} Betting Mode
             </LinkFont>
           </Touchable>
         </Tooltip>

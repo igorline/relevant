@@ -13,10 +13,17 @@ if (process.env.WEB !== 'true') {
   ReactGA = require('react-ga').default;
 }
 
-export function useCastVote({ auth, post, user, community, canBet }) {
+export function useCastVote({
+  auth,
+  post,
+  user,
+  canBet
+  // community
+}) {
   const dispatch = useDispatch();
   const [processingVote, setProcessingVote] = useState(false);
-  const displayBetPrompt = showBetPrompt({ post, community, user });
+  // const displayBetPrompt = showBetPrompt({ post, community, user });
+  const displayBetPrompt = false;
 
   return useCallback(
     async (e, vote, amount) => {
@@ -77,19 +84,19 @@ export function useVoteAnimation({ post, investButton, horizontal }) {
   }, [newVote]); // eslint-disable-line
 }
 
-function showBetPrompt({ post, community, user }) {
-  if (!post) return false;
-  const now = new Date();
-  const bettingEnabled = community && community.betEnabled;
-  const manualBet = user && user.notificationSettings.bet.manual;
-  return (
-    !manualBet &&
-    bettingEnabled &&
-    post.data &&
-    post.data.eligibleForReward &&
-    now.getTime() < new Date(post.data.payoutTime).getTime()
-  );
-}
+// function showBetPrompt({ post, community, user }) {
+//   if (!post) return false;
+//   const now = new Date();
+//   const bettingEnabled = community && community.betEnabled;
+//   const manualBet = user && user.notificationSettings.bet.manual;
+//   return (
+//     !manualBet &&
+//     bettingEnabled &&
+//     post.data &&
+//     post.data.eligibleForReward &&
+//     now.getTime() < new Date(post.data.payoutTime).getTime()
+//   );
+// }
 
 function showBetModal({ dispatch, postId }) {
   setTimeout(() => dispatch(showModal('investModal', { postId })), 1000);
