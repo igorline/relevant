@@ -159,8 +159,8 @@ export const InputPlain = styled.input`
     font-size: ${sizing(1.75)};
     line-height: ${sizing(1.75)};
   };
-  &: focus {
-    outline: none;
+  :focus {
+    outline: none !important;
     ${layout.universalBorder('', colors.blue)}
   }
 `;
@@ -178,8 +178,8 @@ export const Input = styled.input`
     font-size: ${sizing(1.75)};
     line-height: ${sizing(1.75)};
   };
-  &:focus {
-    outline: none;
+  :focus {
+    outline: none !important;
     ${layout.universalBorder('', colors.blue)}
   }
 `;

@@ -1,2 +1,2 @@
-export const mediumScreenWidth = 900;
+export const mediumScreenWidth = 746;
 export const smallScreenWidth = 414;
