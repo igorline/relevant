@@ -358,6 +358,9 @@ class CreatePostContainer extends Component {
 
     const submitDisabled =
       submitting || !this.state.selectedTags.length || !body || !body.trim().length;
+
+    const chatEnabled = false;
+
     return (
       <View>
         <View display="flex" fdirection="row" align="center">
@@ -390,16 +393,16 @@ class CreatePostContainer extends Component {
             {this.state.urlPreview &&
               this.state.body === '' &&
               this.state.urlPreview.description && (
-              <a
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  this.addTextFromLink();
-                }}
-              >
+                <a
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.addTextFromLink();
+                  }}
+                >
                   Paste article description
-              </a>
-            )}
+                </a>
+              )}
           </PasteTextFromLink>
         </View>
 
@@ -437,7 +440,7 @@ class CreatePostContainer extends Component {
         ) : null}
 
         <View mt={2} fdirection="row" justify="space-between">
-          {isAdmin && (
+          {isAdmin && chatEnabled && (
             <View fdirection="row" align={'center'} alignself={'center'}>
               <input
                 checked={channel}

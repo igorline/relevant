@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, StyledNavLink } from 'modules/styled/web';
+import { StyledNavLink, Button } from 'modules/styled/web';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import Breadcrumbs from 'modules/navigation/web/breadcrumbs.component';
-import { View, Text, LinkFont, Header } from 'modules/styled/uni';
+import { View, Text, LinkFont, Header, ButtonText } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
-import styledComponents from 'styled-components';
+import styledComponent from 'styled-components';
 import { colors, layout, sizing } from 'app/styles';
 import { showModal } from 'modules/navigation/navigation.actions';
 import { getNotificationCount } from 'modules/activity/activity.actions';
@@ -37,7 +37,7 @@ const Badge = styled(View)`
   margin-bottom: ${sizing(1)};
 `;
 
-const ActionButton = styledComponents(Button)`
+const ActionButton = styledComponent(Button)`
   ${p =>
     !p.screenSize
       ? ''
@@ -101,10 +101,6 @@ class TopNav extends Component {
     history.push({ search: `?redirect=${location.pathname}` });
     this.props.actions.showModal('login');
   };
-
-  closeModal() {
-    this.props.history.push(this.props.location.pathname);
-  }
 
   render() {
     const { auth, actions, notif, screenSize, title } = this.props;
@@ -170,20 +166,20 @@ class TopNav extends Component {
                 </Ulink>
               )}
               {auth.isAuthenticated ? (
-                <Link
+                <ActionButton
                   onClick={() => actions.showModal('newpost')}
-                  to={'#'}
                   disabled={!auth.user}
+                  screenSize={screenSize}
                 >
-                  <ActionButton screenSize={screenSize}>New Post</ActionButton>
-                </Link>
+                  <ButtonText>New Post</ButtonText>
+                </ActionButton>
               ) : (
                 <ActionButton
-                  screenSize={screenSize}
                   onClick={this.toggleLogin}
+                  screenSize={screenSize}
                   color={colors.blue}
                 >
-                  Login
+                  <ButtonText>Login</ButtonText>
                 </ActionButton>
               )}
             </View>

@@ -178,7 +178,7 @@ export const Input = styled.input`
     font-size: ${sizing(1.75)};
     line-height: ${sizing(1.75)};
   };
-  &: focus {
+  &:focus {
     outline: none;
     ${layout.universalBorder('', colors.blue)}
   }

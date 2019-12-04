@@ -1,10 +1,12 @@
 import React from 'react';
+import { hideModal } from 'modules/navigation/navigation.actions';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { View, Title, Image } from 'modules/styled/uni';
 import { colors, fonts, sizing } from 'app/styles';
 import loadable from '@loadable/component';
+import { browserAlerts } from 'utils/alert';
 
 const Select = loadable(() => import('react-select'));
 
@@ -13,11 +15,17 @@ ModalHeader.propTypes = {
 };
 
 function ModalHeader({ history }) {
+  const dispatch = useDispatch();
   const { communities, list, active } = useSelector(state => state.community);
 
   const com = list.map(id => communities[id]);
   const options = com.map(c => ({ label: c.name, value: c.slug }));
   const activeCommunity = com.find(c => c.slug === active);
+  if (!activeCommunity) {
+    dispatch(hideModal());
+    browserAlerts.alert('Please select a community first', 'error');
+    return null;
+  }
   const value = { label: activeCommunity.name, value: active };
 
   const image = activeCommunity.image
