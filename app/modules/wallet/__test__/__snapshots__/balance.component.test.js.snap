@@ -13,7 +13,7 @@ exports[`Snapshot Balance Web 1`] = `
       "marginBottom": "1rem",
       "marginLeft": "2rem",
       "marginRight": "2rem",
-      "marginTop": "2rem",
+      "marginTop": "0rem",
       "position": "relative",
     }
   }
@@ -562,7 +562,6 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-view-1dbjc4n"
         data-focusable={true}
-        onClick={[Function]}
         onKeyDown={[Function]}
         onKeyUp={[Function]}
         onResponderGrant={[Function]}
@@ -743,7 +742,6 @@ exports[`Snapshot Balance Web 1`] = `
             c="#0000ff"
             className="css-text-901oao"
             dir="auto"
-            mr={0.5}
             style={
               Object {
                 "MozUserSelect": "none",
@@ -755,7 +753,6 @@ exports[`Snapshot Balance Web 1`] = `
                 "fontFamily": "HelveticaNeue-Medium",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
-                "marginRight": "0.25rem",
                 "msUserSelect": "none",
                 "position": "relative",
                 "textDecorationColor": "rgba(0,0,255,1.00)",
@@ -836,7 +833,6 @@ exports[`Snapshot Balance Web 1`] = `
           "alignItems": "center",
           "display": "flex",
           "flexDirection": "row",
-          "marginRight": "1rem",
           "marginTop": "0.5rem",
           "msFlexAlign": "center",
           "msFlexDirection": "row",
@@ -859,7 +855,6 @@ exports[`Snapshot Balance Web 1`] = `
         <div
           className="css-view-1dbjc4n"
           data-focusable={true}
-          onClick={[Function]}
           onKeyDown={[Function]}
           onKeyUp={[Function]}
           onResponderGrant={[Function]}
@@ -891,7 +886,6 @@ exports[`Snapshot Balance Web 1`] = `
             c="#0000ff"
             className="css-text-901oao"
             dir="auto"
-            mr={0.5}
             style={
               Object {
                 "MozUserSelect": "none",
@@ -903,7 +897,6 @@ exports[`Snapshot Balance Web 1`] = `
                 "fontFamily": "HelveticaNeue-Medium",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
-                "marginRight": "0.25rem",
                 "msUserSelect": "none",
                 "position": "relative",
                 "textDecorationColor": "rgba(0,0,255,1.00)",
