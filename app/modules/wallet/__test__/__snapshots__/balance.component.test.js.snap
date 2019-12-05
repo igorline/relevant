@@ -3,8 +3,6 @@
 exports[`Snapshot Balance Web 1`] = `
 .c0 {
   color: #0000ff;
-  -webkit-text-decoration: underline;
-  text-decoration: underline;
 }
 
 <div
@@ -48,7 +46,7 @@ exports[`Snapshot Balance Web 1`] = `
       These are coins you earned as rewards. You can transfer up to 
       1000
       
-       coins to your Ethereum account (this limit will be increased as the network grows).
+       coins to your Ethereum wallet (this limit will be increased as the network grows).
     </div>
   </div>
   <div
