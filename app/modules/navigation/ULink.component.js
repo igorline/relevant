@@ -199,6 +199,7 @@ export class ULinkComponent extends Component {
         style={{ flex: inline ? 0 : 1 }}
         to={to || '#'}
         onPress={() => requestAnimationFrame(() => pressHandler())}
+        activeOpacity={0.8}
         // onPress={this.checkAuth(onPress)}
       >
         {children}
