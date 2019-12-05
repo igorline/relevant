@@ -299,7 +299,7 @@ async function updateAdmins(admins, type, community) {
     superAdmin: { superAdmin: false }
   };
   await CommunityMember.updateMany(
-    { user: { $nin: newAdmins }, ...query[type] },
+    { user: { $nin: newAdmins }, communityId: community._id, ...query[type] },
     updateFields[type]
   );
 

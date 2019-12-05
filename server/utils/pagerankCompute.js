@@ -358,7 +358,7 @@ async function updateItemRank(props) {
       { pagerank: rank },
       {
         new: true,
-        fields: 'pagerank title rank relevance parentPost communityId'
+        fields: 'pagerank title rank relevance parentPost communityId postDate'
       }
     );
     const postData = await PostData.findOneAndUpdate(
