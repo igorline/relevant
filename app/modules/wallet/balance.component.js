@@ -42,7 +42,7 @@ export function Balance() {
   // };
 
   return (
-    <View m={['4 4 2 4', '2 2 0 2']}>
+    <View m={['0 4 2 4', '2 2 0 2']}>
       {!screenSize ? (
         <View>
           <BodyText mt={2}>

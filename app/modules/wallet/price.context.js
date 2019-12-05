@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { getTokenReserves } from '@uniswap/sdk';
 import { abbreviateNumber } from 'utils/numbers';
 
+if (process.env.WEB !== 'true') {
+  require('../../publicenv');
+}
+
 const { TOKEN_ADDRESS } = process.env;
 const UPDATE_INTERVAL = 1 * 60 * 1000;
 

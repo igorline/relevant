@@ -30,7 +30,7 @@ import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
-// import { PriceProvider } from 'modules/wallet/price.context';
+import { PriceProvider } from 'modules/wallet/price.context';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
 import * as modals from 'modules/ui/modals/mobile.lookup';
@@ -263,14 +263,16 @@ class Application extends Component {
     // main app view has to be absolute to make android keyboard work
     return (
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
-        <AppContainer navigation={this.props.navigation} />
-        <BannerPrompt isMobile />
-        {this.renderModal()}
-        <Tooltip />
-        <InvestAnimation />
-        <HeartAnimation />
-        <DownvoteAnimation />
-        <UpvoteAnimation />
+        <PriceProvider>
+          <AppContainer navigation={this.props.navigation} />
+          <BannerPrompt isMobile />
+          {this.renderModal()}
+          <Tooltip />
+          <InvestAnimation />
+          <HeartAnimation />
+          <DownvoteAnimation />
+          <UpvoteAnimation />
+        </PriceProvider>
       </View>
     );
   }
