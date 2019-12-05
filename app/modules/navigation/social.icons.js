@@ -7,11 +7,17 @@ const TwitterIcon = require('app/public/img/twitter-black.png');
 const EmailIcon = require('app/public/img/email.png');
 const SlackIcon = require('app/public/img/slack.png');
 const MediumIcon = require('app/public/img/medium.png');
+const InstaIcon = require('app/public/img/instagram.png');
 
 const icons = [
   {
     href: 'https://blog.relevant.community',
     source: MediumIcon,
+    target: '_blank'
+  },
+  {
+    href: 'https://instagram.com/relevant_community',
+    source: InstaIcon,
     target: '_blank'
   },
   {
@@ -21,7 +27,7 @@ const icons = [
   },
   {
     href:
-      'https://join.slack.com/t/relevantcommunity/shared_invite/enQtMjIwMjEwNzUzMjUzLTFkOTkwNzFjN2EzMjFhYTVkZDZmYzU1ZGFlZmY4MzdjNGMyOWIwYjhmYTE2OTQ1NmJlOWVmNjkyODNjM2I4YWI',
+      'https://join.slack.com/t/relevantcommunity/shared_invite/enQtMjIwMjEwNzUzMjUzLWVjODViM2ZkZDE5ZWMyYzcxMzI3ZTQ3Njc4YTBmYmVmMTQxZGJiNDcxYzljODZlM2U0NGU1YTE3MDlhM2I1NmI',
     source: SlackIcon,
     target: '_blank'
   },
@@ -44,7 +50,7 @@ const FooterIcon = ({ href, source, target, actions }) => {
       target={target || '_self'}
       inline={1}
     >
-      <Image w={2.8} h={2.4} mr={3} resizeMode={'contain'} source={source} />
+      <Image w={2.8} h={2.4} mr={2} resizeMode={'contain'} source={source} />
     </ULink>
   );
 };
