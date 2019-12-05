@@ -56,9 +56,8 @@ export default function WalletLinks() {
 
       {tokenEnabled() && (
         <View mt={1} fdirection="row" mr={2} align="center">
-          <ULink to={exchageUrl} external target="_blank" td={'underline'}>
+          <ULink to={exchageUrl} external target="_blank">
             <LinkFont
-              // mt={0.5}
               c={colors.blue}
               onPress={() => {
                 dispatch(goToUrl(exchageUrl));

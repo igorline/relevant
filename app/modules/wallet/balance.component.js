@@ -47,7 +47,7 @@ export function Balance() {
         <View>
           <BodyText mt={2}>
             These are coins you earned as rewards. You can transfer up to {CASHOUT_MAX}
-            {maxUSD} coins to your Ethereum account (this limit will be increased as the
+            {maxUSD} coins to your Ethereum wallet (this limit will be increased as the
             network grows).
           </BodyText>
         </View>
