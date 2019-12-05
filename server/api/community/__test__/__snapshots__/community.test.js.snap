@@ -31,7 +31,7 @@ Object {
     },
   ],
   "avgTwitterScore": 0,
-  "betEnabled": false,
+  "betEnabled": true,
   "channels": Array [],
   "createdAt": "[SANITIZED]",
   "currentPosts": 0,
