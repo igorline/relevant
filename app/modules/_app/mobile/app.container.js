@@ -72,6 +72,13 @@ class Application extends Component {
     this.backgroundTime = 0;
   }
 
+  // static navigationOptions = props => {
+  //   console.log('drawer props', props);
+  //   return {
+  //     drawerLockMode: 'locked-closed'
+  //   };
+  // };
+
   componentWillMount() {
     // hard-code community for now
     const community = 'relevant';

@@ -100,6 +100,7 @@ module.exports = {
     exprContextRegExp: /$^/,
     exprContextCritical: false,
     rules: [
+      { test: /\.tsx?$/, loader: 'ts-loader' },
       {
         test: /\.(png|woff|woff2|eot|ttf|jpg|jpeg|gif)$/,
         loader: 'url-loader?limit=100000', // or directly file-loader

@@ -146,6 +146,11 @@ const defaultStackSettings = {
 
   transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
+  // navigationOptions: props => {
+  //   console.log('drawer props', props);
+  //   // return
+  // },
+
   defaultNavigationOptions: props => ({
     gesturesEnabled: true,
     gestureResponseDistance: {

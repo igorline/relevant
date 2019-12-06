@@ -10,12 +10,18 @@ import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { globalStyles, fullWidth, fullHeight, blue } from 'app/styles/global';
 import { getParentTags } from 'modules/tag/tag.actions';
-import { goToTopic, registerGesture } from 'modules/navigation/navigation.actions';
+import {
+  goToTopic,
+  registerGesture,
+  setView,
+  goToPage
+} from 'modules/navigation/navigation.actions';
 import Topics from 'modules/createPost/mobile/topics.component';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import get from 'lodash/get';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import DefaultTabBar from './discoverTabBar.component';
+import { DrawerGestureContext } from 'react-navigation-drawer';
+import TabBar from './TabBar';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
 
@@ -31,6 +37,7 @@ class DiscoverTabs extends Component {
   };
 
   tabView = React.createRef();
+  header = React.createRef();
   position = new Animated.Value(0);
 
   constructor(props, context) {
@@ -45,7 +52,7 @@ class DiscoverTabs extends Component {
       headerHeight: 50
     };
     this.renderHeader = this.renderHeader.bind(this);
-    this.handleChangeTab = this.handleChangeTab.bind(this);
+    // this.handleChangeTab = this.handleChangeTab.bind(this);
     this.setPostTop = this.setPostTop.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.renderScene = this.renderScene.bind(this);
@@ -79,8 +86,8 @@ class DiscoverTabs extends Component {
     }
   }
 
-  componentDidUpdate(prev) {
-    const { navigation, view } = this.props;
+  componentDidUpdate(prev, prevState) {
+    const { navigation, view, actions } = this.props;
     const newSortUrlParam = get(navigation, 'state.params.sort');
     const oldSortUrlParam = get(prev.navigation, 'state.params.sort');
 
@@ -91,21 +98,36 @@ class DiscoverTabs extends Component {
     if (tabId > -1 && tabId !== prev.view.discover.tab && tabId !== this.state.index) {
       this.tabView.goToPage(tabId);
     }
+
+    const { index } = this.state;
+    const prevIndex = prevState.index;
+
+    if (index !== prevIndex) {
+      const isActive = index !== 0;
+      actions.registerGesture({
+        name: 'tabView',
+        active: isActive,
+        gesture: this.tabView
+      });
+      this.header.current.showHeader();
+      actions.setView('discover', index);
+    }
   }
 
   onScroll = event => {
-    // this.header.onScroll(event);
+    this.header.current.onScroll(event);
   };
 
   setPostTop(height) {
     this.setState({ headerHeight: height });
   }
 
-  handleChangeTab(index) {
-    // this.header.showHeader();
-    this.setState({ index });
-    this.props.actions.setView('discover', index);
-  }
+  // handleChangeTab(index) {
+  //   console.log('change tab');
+  //   // this.header.showHeader();
+  //   this.setState({ index });
+  //   this.props.actions.setView('discover', index);
+  // }
 
   renderScene({ route }) {
     const { index } = this.state;
@@ -192,21 +214,14 @@ class DiscoverTabs extends Component {
   }
 
   renderHeader(props) {
-    if (!this.loaded) return <View {...props} />;
+    // if (!this.loaded) return <View {...props} />;
     return (
-      <DiscoverHeader ref={c => (this.header = c)} setPostTop={this.setPostTop}>
-        <DefaultTabBar
-          tabStyle={{ paddingBottom: 0 }}
-          style={{
-            height: 50,
-            paddingBottom: 0,
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderColor: 'black'
-          }}
-          textStyle={{}}
-          initialTab={this.initialTab}
-          renderBadge={this.renderBadge}
-          topic={this.topicId || 'default'}
+      <DiscoverHeader ref={this.header} setPostTop={this.setPostTop}>
+        <TabBar
+          setTab={index => this.setState({ index })}
+          // initialTab={this.initialTab}
+          // renderBadge={this.renderBadge}
+          // topic={this.topicId || 'default'}
           {...props}
         />
       </DiscoverHeader>
@@ -249,23 +264,34 @@ class DiscoverTabs extends Component {
     // console.log('render pos', this.position);
     // const drawer = getHandler('drawer');
 
+    // <PositionListener
+    //   position={this.position}
+    //   drawer={ref}
+    //   tabView={this.tabView}
+    // />
+
     return (
       <View style={{ flex: 1 }}>
-        <PositionListener position={this.position} tabView={this.tabView} />
-        <TabView
-          gestureHandlerProps={{
-            ref: this.tabView
-            // simultaneousHandlers: drawer
-            // onGestureEvent: console.log,
-            // onHandlerStateChange: console.log
-          }}
-          position={this.position}
-          // onSwipeStart={e => console.log('start', e)}
-          navigationState={this.state}
-          renderScene={this.renderScene}
-          onIndexChange={index => this.setState({ index })}
-          initialLayout={{ width: Dimensions.get('window').width }}
-        />
+        <DrawerGestureContext.Consumer>
+          {ref => (
+            <View style={{ flex: 1 }}>
+              <TabView
+                gestureHandlerProps={{
+                  ref: this.tabView,
+                  simultaneousHandlers: ref
+                  // onGestureEvent: console.log,
+                  // onHandlerStateChange: console.log
+                }}
+                renderTabBar={props => this.renderHeader(props)}
+                position={this.position}
+                navigationState={this.state}
+                renderScene={this.renderScene}
+                onIndexChange={index => this.setState({ index })}
+                initialLayout={{ width: Dimensions.get('window').width }}
+              />
+            </View>
+          )}
+        </DrawerGestureContext.Consumer>
 
         {/*        <ScrollableTabView
           ref={c => (this.tabView = c)}
@@ -303,7 +329,7 @@ class DiscoverTabs extends Component {
   }
 }
 
-function PositionListener({ position, tabView }) {
+function PositionListener({ position, tabView, drawer }) {
   const dispatch = useDispatch();
   const g = useSelector(state => state.navigation.gestures);
   const tabViewGesture = useSelector(state => state.navigation.gestures.tabView);
@@ -315,6 +341,7 @@ function PositionListener({ position, tabView }) {
           position,
           Animated.call([position], ([value]) => {
             const isActive = value > 0.0001;
+            // drawer.current.props.enabled = isActive;
             dispatch(
               registerGesture({ name: 'tabView', active: isActive, gesture: tabView })
             );
@@ -348,6 +375,9 @@ function mapDispatchToProps(dispatch) {
       {
         getParentTags,
         goToTopic,
+        registerGesture,
+        setView,
+        goToPage,
         registerGesture
       },
       dispatch
