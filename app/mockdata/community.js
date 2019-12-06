@@ -26,7 +26,7 @@ export const crypto = {
   slug: 'crypto',
   image: '',
   description: 'Discussion of blockchain tech and ecosystem',
-  rewardFund: 10000 * 1e18,
+  rewardFund: 100 * 1e18,
   topics: [
     'governance',
     'layer1',

@@ -31,6 +31,8 @@ exports.rewards = async () => {
   let rewardPool;
   try {
     rewardPool = await allocateRewards();
+    const oldRewards = await getOldRewards();
+    rewardPool -= oldRewards[0].rewardFund;
     console.log('rewardPool', rewardPool); // eslint-disable;
   } catch (err) {
     console.log(err);
@@ -135,7 +137,7 @@ async function computeCommunityRewards(community, rewardPool, stakedTokens) {
   await computePageRank({ communityId: community._id, community: community.slug, debug });
   const reward = await communityRewardShare({ community, stakedTokens, rewardPool });
 
-  community.rewardFund = reward;
+  community.rewardFund += reward;
   community = await community.save();
   return community;
 }
@@ -376,4 +378,16 @@ async function updatePendingEarnings(posts) {
     )
   );
   return Promise.all(posts);
+}
+
+async function getOldRewards() {
+  return Community.aggregate([
+    { $match: {} },
+    {
+      $group: {
+        _id: 0,
+        rewardFund: { $sum: '$rewardFund' }
+      }
+    }
+  ]);
 }
