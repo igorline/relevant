@@ -68,14 +68,14 @@ module.exports = {
         DEVTOOLS: JSON.stringify(true), // <-------- DISABLE redux-devtools HERE
         NODE_ENV: JSON.stringify('development'),
         WEB: JSON.stringify('true'),
-        API_SERVER: JSON.stringify(''),
         BABEL_ENV: JSON.stringify('development_web'),
         VAPID_PUBLIC_KEY: JSON.stringify(process.env.VAPID_PUBLIC_KEY),
         INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
         INFURA_NETWORK: JSON.stringify(process.env.INFURA_NETWORK),
         INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
         NETWORK_NUMBER: JSON.stringify(process.env.NETWORK_NUMBER),
-        TOKEN_ADDRESS: JSON.stringify(process.env.TOKEN_ADDRESS)
+        TOKEN_ADDRESS: JSON.stringify(process.env.TOKEN_ADDRESS),
+        API_SERVER: JSON.stringify(process.env.API_SERVER)
       }
     }),
     new CompressionPlugin(),

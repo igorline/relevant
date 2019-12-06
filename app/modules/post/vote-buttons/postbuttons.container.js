@@ -1,32 +1,20 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import { browserAlerts } from 'app/utils/alert';
 import { getPostType } from 'app/utils/post';
 import { View, Image } from 'modules/styled/uni';
-import { triggerAnimation } from 'modules/animation/animation.actions';
 import { useCommunity } from 'modules/community/community.selectors';
 import { sizing } from 'styles';
-import { showModal } from 'modules/navigation/navigation.actions';
 // import { CenterButton } from './center-button';
 import PostButton from './postbutton';
-import { vote as voteAction } from '../invest.actions';
 import PostRank from './postrank';
-
-let Analytics;
-let ReactGA;
-if (process.env.WEB !== 'true') {
-  Analytics = require('react-native-firebase').analytics();
-} else {
-  ReactGA = require('react-ga').default;
-}
+import { useVoteAnimation, useCastVote } from './button.hooks';
 
 const coinImage = require('app/public/img/relevantcoin.png');
 
 PostButtons.propTypes = {
   auth: PropTypes.object,
   post: PropTypes.shape({
-    _id: PropTypes.string,
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     id: PropTypes.string,
     data: PropTypes.object,
     user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -40,55 +28,13 @@ PostButtons.propTypes = {
 };
 
 export default function PostButtons({ post, auth, color, horizontal }) {
-  const dispatch = useDispatch();
   const investButton = useRef();
-  const [processingVote, setProcessingVote] = useState(false);
   const community = useCommunity();
   const { user } = auth;
   const canBet = getCanBet({ post, community, user });
-  const displayBetPrompt = showBetPrompt({ post, community, user });
 
-  const castVote = useCallback(
-    async (e, vote, amount) => {
-      try {
-        e.preventDefault();
-        e.stopPropagation();
-        if (processingVote) return;
-
-        const type = amount > 0 ? 'upvote' : 'downvote';
-        if (!auth.isAuthenticated)
-          throw new Error(`You must be logged in to ${type} posts`);
-
-        setProcessingVote(true);
-        const res = await dispatch(
-          voteAction({ amount, post, user, vote, displayBetPrompt })
-        );
-        setProcessingVote(false);
-        if (!res || res.undoInvest) return;
-
-        type === 'upvote' && canBet && showBetModal({ dispatch, postId: post._id });
-
-        const rankChange = computeRankChange({ post, rankChange: res.rankChange });
-        const el = investButton;
-        const params = { amount: rankChange, horizontal };
-        launchAnimation({ type, params, el, dispatch });
-        runAnalytics(type);
-      } catch (err) {
-        setProcessingVote(false);
-        browserAlerts.alert(err.message);
-      }
-    },
-    [
-      processingVote,
-      auth.isAuthenticated,
-      dispatch,
-      post,
-      user,
-      displayBetPrompt,
-      canBet,
-      horizontal
-    ]
-  );
+  useVoteAnimation({ post, investButton, horizontal });
+  const castVote = useCastVote({ auth, post, user, community, canBet });
 
   if (!post || post === 'notFound') return null;
 
@@ -104,7 +50,7 @@ export default function PostButtons({ post, auth, color, horizontal }) {
       style={{ opacity: 1 }} // need this to make animations work on android
     >
       <View>
-        {canBet && !voteStatus.vote && (
+        {canBet && (
           <Image
             w={1.6}
             h={1.6}
@@ -163,24 +109,6 @@ function getTooltipData(post) {
   };
 }
 
-function showBetModal({ dispatch, postId }) {
-  setTimeout(() => dispatch(showModal('investModal', { postId })), 1000);
-}
-
-function showBetPrompt({ post, community, user }) {
-  if (!post) return false;
-  const now = new Date();
-  const bettingEnabled = community && community.betEnabled;
-  const manualBet = user && user.notificationSettings.bet.manual;
-  return (
-    !manualBet &&
-    bettingEnabled &&
-    post.data &&
-    post.data.eligibleForReward &&
-    now.getTime() < new Date(post.data.payoutTime).getTime()
-  );
-}
-
 function getCanBet({ post, community, user }) {
   if (!post) return false;
   const now = new Date();
@@ -192,28 +120,4 @@ function getCanBet({ post, community, user }) {
     post.data.eligibleForReward &&
     now.getTime() < new Date(post.data.payoutTime).getTime()
   );
-}
-
-function computeRankChange({ post, rankChange }) {
-  const startRank = post.data ? post.data.pagerank : 0;
-  const total = startRank + rankChange + 1;
-  return Math.round(total) - Math.round(startRank);
-}
-
-function launchAnimation({ type, params, el, dispatch }) {
-  el.current.measureInWindow((x, y, w, h) => {
-    const parent = { x, y, w, h };
-    if (x + y + w + h === 0) return;
-    const action = triggerAnimation(type, { parent, ...params });
-    dispatch(action);
-  });
-}
-
-function runAnalytics(type) {
-  Analytics && Analytics.logEvent(type);
-  ReactGA &&
-    ReactGA.event({
-      category: 'User',
-      action: `${type}ed a post`
-    });
 }

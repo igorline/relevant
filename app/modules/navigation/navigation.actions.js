@@ -32,7 +32,7 @@ if (process.env.WEB !== 'true') {
   safariView = require('react-native-safari-view').default;
   NavigationActions = require('react-navigation').NavigationActions;
   StackActions = require('react-navigation').StackActions;
-  DrawerActions = require('react-navigation').DrawerActions;
+  DrawerActions = require('react-navigation-drawer').DrawerActions;
   Linking = require('react-native').Linking;
   native = true;
 }

@@ -9,6 +9,8 @@ import { analytics } from 'react-native-firebase';
 import { setTopLevelNavigator } from 'app/utils/nav';
 import SideNav from 'modules/navigation/mobile/sideNav.component';
 import { fullWidth } from 'app/styles/global';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { client } from 'app/core/apollo.client';
 
 const Analytics = analytics();
 
@@ -62,24 +64,26 @@ const MainNavigator = createAppContainer(MainStack);
 class App extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <MainNavigator
-          uriPrefix={'https://relevant.community/'}
-          ref={navigatorRef => {
-            setTopLevelNavigator(navigatorRef);
-          }}
-          onNavigationStateChange={(prevState, currentState) => {
-            const currentScreen = getActiveRouteName(currentState);
-            const prevScreen = getActiveRouteName(prevState);
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+          <MainNavigator
+            uriPrefix={'https://relevant.community/'}
+            ref={navigatorRef => {
+              setTopLevelNavigator(navigatorRef);
+            }}
+            onNavigationStateChange={(prevState, currentState) => {
+              const currentScreen = getActiveRouteName(currentState);
+              const prevScreen = getActiveRouteName(prevState);
 
-            if (prevScreen !== currentScreen) {
-              Analytics.logEvent('screenView', {
-                viewName: currentScreen
-              });
-            }
-          }}
-        />
-      </Provider>
+              if (prevScreen !== currentScreen) {
+                Analytics.logEvent('screenView', {
+                  viewName: currentScreen
+                });
+              }
+            }}
+          />
+        </Provider>
+      </ApolloProvider>
     );
   }
 }

@@ -26,7 +26,10 @@ export default function earnings(state = initialState, action) {
     case types.ADD_EARNING: {
       return {
         ...state,
-        [action.payload.status]: [action.payload._id, ...state[action.payload.status]],
+        [action.payload.status]: [
+          action.payload._id,
+          ...(state[action.payload.status] || [])
+        ],
         entities: {
           ...state.entities,
           [action.payload._id]: action.payload

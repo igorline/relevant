@@ -126,6 +126,7 @@ export default class TabBar extends Component {
 const localStyles = StyleSheet.create({
   footer: {
     width: fullWidth,
+    // height: 50,
     height: IphoneX ? 83 : 50,
     flexDirection: 'row',
     alignItems: 'stretch',

@@ -32,6 +32,7 @@ export const dividerBg = lightTheme ? gs(97) : gs(3);
 export const lightGrey = lightTheme ? gs(87) : gs(13);
 export const lightBorder = lightTheme ? gs(85) : gs(20);
 export const redditColor = '#ff4500';
+export const uniswap = 'rgb(220, 107, 229)';
 
 export const background = white;
 export const secondaryText = grey;

@@ -291,7 +291,7 @@ class DrawerLayout extends Component<PropType, StateType> {
     if (shouldOpen) {
       this._animateDrawer(startOffsetX, drawerWidth, velocityX * 3);
     } else {
-      this._animateDrawer(startOffsetX, 0, velocityX * 3);
+      this._animateDrawer(startOffsetX, 0, velocityX);
     }
   };
 

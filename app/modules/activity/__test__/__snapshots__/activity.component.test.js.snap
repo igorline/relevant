@@ -179,46 +179,60 @@ exports[`Snapshot Activity Web 1`] = `
         }
       >
         <div
-          className="css-text-901oao"
-          dir="auto"
+          className="css-view-1dbjc4n"
+          style={
+            Object {
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxLines": "multiple",
+              "WebkitBoxOrient": "horizontal",
+              "WebkitBoxPack": "end",
+              "WebkitFlexDirection": "row",
+              "WebkitFlexWrap": "wrap",
+              "WebkitJustifyContent": "flex-end",
+              "display": "flex",
+              "flexDirection": "row",
+              "flexWrap": "wrap",
+              "justifyContent": "flex-end",
+              "msFlexDirection": "row",
+              "msFlexPack": "end",
+              "msFlexWrap": "wrap",
+              "position": "relative",
+            }
+          }
         >
-          <span
-            className="css-text-901oao css-textHasAncestor-16my406"
-            dir="auto"
+          <a
+            className="c0 ulink-mock"
+            href="/user/profile/bob"
+            hu={0}
+            inline={1}
+            onClick={[Function]}
+            styles=""
           >
-            <a
-              className="c0 ulink-mock"
-              href="/user/profile/bob"
-              hu={0}
-              inline={0}
-              onClick={[Function]}
-              styles=""
-            >
-              <span
-                c="#0000ff"
-                className="css-text-901oao css-textHasAncestor-16my406"
-                dir="auto"
-                inline={1}
-                style={
-                  Object {
-                    "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-                    "color": "rgba(0,0,255,1.00)",
-                    "fontFamily": "HelveticaNeue",
-                    "fontSize": "0.875rem",
-                    "lineHeight": "1.2249999999999999rem",
-                    "position": "relative",
-                    "textDecorationColor": "rgba(0,0,255,1.00)",
-                  }
+            <div
+              c="#0000ff"
+              className="css-text-901oao"
+              dir="auto"
+              inline={1}
+              mr={0.75}
+              style={
+                Object {
+                  "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+                  "color": "rgba(0,0,255,1.00)",
+                  "fontFamily": "HelveticaNeue",
+                  "fontSize": "0.875rem",
+                  "lineHeight": "1.2249999999999999rem",
+                  "marginRight": "0.375rem",
+                  "position": "relative",
+                  "textDecorationColor": "rgba(0,0,255,1.00)",
                 }
-              >
-                @
-                bob
-              </span>
-            </a>
-             
-          </span>
-          <span
-            className="css-text-901oao css-textHasAncestor-16my406"
+              }
+            >
+              @
+              bob
+            </div>
+          </a>
+          <div
+            className="css-text-901oao"
             dir="auto"
             inline={1}
             style={
@@ -232,6 +246,37 @@ exports[`Snapshot Activity Web 1`] = `
             }
           >
             upvoted your comment
+          </div>
+          <div
+            className="css-text-901oao"
+            dir="auto"
+            inline={1}
+            style={
+              Object {
+                "color": "rgba(0,0,0,1.00)",
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
+                "position": "relative",
+              }
+            }
+          >
+             → 
+          </div>
+          <div
+            className="css-text-901oao"
+            dir="auto"
+            inline={1}
+            style={
+              Object {
+                "color": "rgba(0,0,0,1.00)",
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
+                "position": "relative",
+              }
+            }
+          >
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
@@ -246,7 +291,7 @@ exports[`Snapshot Activity Web 1`] = `
                 }
               }
             >
-               → your reputation increased by 
+              your reputation increased by 
               <span
                 c="#7ED321"
                 className="css-text-901oao css-textHasAncestor-16my406"
@@ -266,7 +311,7 @@ exports[`Snapshot Activity Web 1`] = `
                
               10%
             </span>
-          </span>
+          </div>
         </div>
         <div
           className="css-view-1dbjc4n"

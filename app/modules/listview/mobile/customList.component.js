@@ -62,22 +62,19 @@ export default class CustomListView extends Component {
   componentDidUpdate(prev) {
     const { data, error, active, needsReload, load, view } = this.props;
     const { reloading, loading } = this.state;
-    if (data !== prev.data || error) {
-      // clearTimeout(this.stateTimeout);
-      // this.stateTimeout = setTimeout(
-      // () => this.setState({ reloading: false, loading: false }),
-      //   100
-      // );
+    if (JSON.stringify(data) !== JSON.stringify(prev.data) || error) {
       reloading && this.setState({ reloading: false });
       loading && this.setState({ loading: false });
     }
-    // if (error) {
-    //   reloading && this.setState({ reloading: false });
-    //   loading && this.setState({ loading: false });
-    // }
+    if (reloading) {
+      clearTimeout(this.stateTimeout);
+      this.stateTimeout = setTimeout(
+        () => this.setState({ reloading: false, loading: false }),
+        100
+      );
+    }
 
-    if (active && needsReload > this.lastReload) {
-      !loading && this.setState({ loading: true });
+    if (active && needsReload > this.lastReload && !loading) {
       load(view, 0);
       this.lastReload = new Date().getTime();
     }
@@ -119,10 +116,18 @@ export default class CustomListView extends Component {
       sections,
       type = 'data',
       loaded,
-      parent
+      parent,
+      error,
+      children,
+      YOffset,
+      load,
+      stickyHeaderIndices,
+      renderRow,
+      renderHeader,
+      onScroll,
+      view
     } = this.props;
-    let listEl = null;
-    let emptyEl = null;
+    const { reloading } = this.state;
 
     const spinnerEl = !loaded && (
       <CustomSpinner visible={!data.length && active && !headerData} />
@@ -133,18 +138,15 @@ export default class CustomListView extends Component {
         ? [styles.commonList, styles.vis]
         : [styles.commonList, styles.hiddenList];
 
-    if (loaded && !data.length) {
-      emptyEl = (
-        <EmptyList visible emoji={'😶'} type={type} YOffset={this.props.YOffset}>
-          {this.props.children}
-        </EmptyList>
-      );
-      if (parent !== 'profile') listEl = null;
-    }
+    const emptyEl = loaded && !data.length && (
+      <EmptyList visible emoji={'😶'} type={type} YOffset={YOffset}>
+        {children}
+      </EmptyList>
+    );
 
     const { List } = this;
 
-    listEl = (
+    const listEl = (
       <List
         ref={c => {
           this.listview = c;
@@ -152,22 +154,23 @@ export default class CustomListView extends Component {
         sections={sections}
         enableEmptySections
         scrollToOverflowEnabled={true}
-        // removeClippedSubviews={false}
+        // removeClippedSubviews
         stickySectionHeadersEnabled
-        pageSize={1}
-        initialListSize={3}
+        initialNumToRender={5}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        // pageSize={1}
+        // initialListSize={3}
         scrollEventThrottle={10}
         renderSectionHeader={({ section: { header } }) => header}
         automaticallyAdjustContentInsets={false}
-        stickyHeaderIndices={this.props.stickyHeaderIndices}
+        stickyHeaderIndices={stickyHeaderIndices}
         data={data}
-        renderItem={({ item, index }) =>
-          this.props.renderRow(item, this.props.view, index)
-        }
+        renderItem={({ item, index }) => renderRow(item, view, index)}
         keyExtractor={(item, index) => index.toString()}
-        contentInset={{ top: this.props.YOffset || 0 }}
-        contentOffset={{ y: -this.props.YOffset || 0 }}
-        ListHeaderComponent={this.props.renderHeader}
+        contentInset={{ top: YOffset || 0 }}
+        contentOffset={{ y: -YOffset || 0 }}
+        ListHeaderComponent={renderHeader}
         contentContainerStyle={{
           paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0,
           backgroundColor: 'white'
@@ -180,20 +183,20 @@ export default class CustomListView extends Component {
         keyboardShouldPersistTaps={'always'}
         keyboardDismissMode={'on-drag'}
         onScroll={e => {
-          if (this.props.onScroll) {
-            this.props.onScroll(e, this.props.view || 0);
+          if (onScroll) {
+            onScroll(e, view || 0);
           }
         }}
         onEndReached={this.loadMore}
-        onEndReachedThreshold={100}
+        onEndReachedThreshold={0.3}
         ListFooterComponent={() => emptyEl}
         refreshControl={
           <RefreshControl
             style={[
               { backgroundColor: 'hsl(238,20%,95%)' },
-              this.props.data.length ? null : styles.hideReload
+              data.length ? null : styles.hideReload
             ]}
-            refreshing={this.state.reloading && !this.props.error}
+            refreshing={reloading && !error}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}
@@ -203,12 +206,12 @@ export default class CustomListView extends Component {
       />
     );
 
-    if (this.props.error && !this.props.data.length && !this.props.headerData) {
+    if (error && !data.length && !headerData) {
       return (
         <ErrorComponent
-          parent={this.props.parent}
-          error={this.props.error}
-          reloadFunction={() => this.props.load(this.props.view, 0)}
+          parent={parent}
+          error={error}
+          reloadFunction={() => load(view, 0)}
         />
       );
     }

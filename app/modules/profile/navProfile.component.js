@@ -68,7 +68,12 @@ export class NavProfile extends Component {
         <View p={[SIDE_NAV_PADDING, 2]} pb={[4, 3]}>
           <View fdirection={'row'} justify="space-between" align="center">
             <Header>{user.name}</Header>
-            <ULink hu to="/user/wallet" onPress={() => actions.goToTab('wallet')}>
+            <ULink
+              inline={1}
+              hu
+              to="/user/wallet"
+              onPress={() => actions.goToTab('wallet')}
+            >
               <CTALink c={colors.blue}>My Wallet</CTALink>
             </ULink>
           </View>
@@ -82,7 +87,11 @@ export class NavProfile extends Component {
             />
             <WalletInfo>
               <View fdirection={'row'}>
-                <ULink to="/user/wallet" onPress={() => actions.push('statsView')}>
+                <ULink
+                  to="/user/wallet"
+                  inline={1}
+                  onPress={() => actions.push('statsView')}
+                >
                   <RStat
                     user={user}
                     align="center"
@@ -96,7 +105,11 @@ export class NavProfile extends Component {
                     })}
                   />
                 </ULink>
-                <ULink to="/user/wallet" onPress={() => actions.goToTab('wallet')}>
+                <ULink
+                  to="/user/wallet"
+                  inline={1}
+                  onPress={() => actions.goToTab('wallet')}
+                >
                   <CoinStat
                     user={user}
                     isOwner={true}
@@ -119,7 +132,6 @@ export class NavProfile extends Component {
                   size={1.5}
                   mr={1.5}
                   fs={1.5}
-                  showPrice
                   secondary
                   c={colors.black}
                   amount={pendingPayouts}
@@ -179,7 +191,7 @@ export class NavProfile extends Component {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  user: state.auth.user,
+  user: state.auth && state.auth.user,
   earnings: state.earnings
 });
 

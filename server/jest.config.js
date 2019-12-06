@@ -11,10 +11,10 @@ module.exports = {
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
   setupFilesAfterEnv: ['<rootDir>/test/testDbSetup'],
+  setupFiles: ['dotenv/config'],
   testPathIgnorePatterns: [
-    '<rootDir>/../node_modules/',
-    'ethereum.test.js',
-    'cashout.test.js'
+    '<rootDir>/../node_modules/'
+    // 'ethereum.test.js'
+    // 'cashout.test.js'
   ]
-  // testPathIgnorePatterns: ['<rootDir>/../node_modules/']
 };

@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import pickBy from 'lodash/pickBy';
-import { types } from 'core/contracts';
-import { numbers } from 'app/utils';
+import { abbreviateNumber } from 'app/utils/numbers';
 import {
   View,
   Title,
@@ -12,10 +11,12 @@ import {
   Button,
   NumericalValue
 } from 'modules/styled/uni';
-import { contractPropTypes } from 'modules/contract/contract.container';
-import { useTokenContract, useRelevantActions } from 'modules/contract/contract.hooks';
+import { useRelevantToken } from 'modules/contract/contract.hooks';
 import { formatBalanceWrite, parseBN } from 'app/utils/eth';
 import { Input } from 'app/modules/styled/web';
+import Test from 'modules/profile/apollo.demo';
+import { useContract } from 'modules/contract/contract.context';
+import Treasury from './treasury';
 
 const ParamsTable = styled.table`
   margin-top: 10px;
@@ -36,47 +37,30 @@ const AdminActions = styled.div`
 `;
 
 const rewardsToAllocate = formatBalanceWrite('999', 18);
-const readableMethods = getReadableMethods();
 
-const ParamRow = ({ method, methodCache, cacheMethod }) => (
-  <tr>
-    <td>{method}</td>
-    <td>
-      <NumericalValue>
-        {methodCache.select(method) &&
-        typeof parseBN(methodCache.select(method).value) !== 'number'
-          ? parseBN(methodCache.select(method).value)
-          : numbers.abbreviateNumber(parseBN(methodCache.select(method).value))}
-      </NumericalValue>
-    </td>
-    <td>
-      <Button onClick={() => cacheMethod(method)}>Call</Button>
-    </td>
-    <td>
-      <Input />
-    </td>
-  </tr>
-);
+export default function TokenPanel() {
+  return (
+    <Fragment>
+      <Treasury />
+      <Test />
+      <ContractParams />
+    </Fragment>
+  );
+}
 
-ParamRow.propTypes = {
-  method: PropTypes.string,
-  methodCache: PropTypes.shape({
-    select: PropTypes.func
-  }),
-  cacheMethod: PropTypes.func
-};
-
-const ContractParams = () => {
-  const [accounts, { userBalance, methodCache }] = useTokenContract();
-  const { cacheMethod, cacheSend } = useRelevantActions();
+function ContractParams() {
+  const { userBalance, accounts, send, call, getState } = useRelevantToken();
+  const { types, initialized } = useContract();
+  const readableMethods = types ? getReadableMethods(types) : [];
 
   useEffect(() => {
-    readableMethods.forEach(method => cacheMethod(method));
-  }, [cacheMethod]);
+    if (!initialized) return;
+    call && readableMethods.forEach(method => call(method));
+  }, [call, initialized]); // eslint-disable-line
 
-  const releaseTokens = () => cacheSend('releaseTokens', { from: accounts[0] });
+  const releaseTokens = () => send('releaseTokens', { from: accounts[0] });
   const allocateRewards = () =>
-    cacheSend('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+    send('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
 
   return (
     <View m={4}>
@@ -111,13 +95,13 @@ const ContractParams = () => {
                 </tr>
               </tbody>
               <tbody>
-                {hasCacheValue(methodCache) &&
+                {hasValue(getState) &&
                   readableMethods.map(method => (
                     <ParamRow
                       key={method}
                       method={method}
-                      methodCache={methodCache}
-                      cacheMethod={cacheMethod}
+                      getState={getState}
+                      call={call}
                     />
                   ))}
               </tbody>
@@ -127,18 +111,37 @@ const ContractParams = () => {
       </View>
     </View>
   );
-};
-
-ContractParams.propTypes = contractPropTypes;
-
-export default ContractParams;
-
-// Utils
-function hasCacheValue(cache) {
-  return cache.select('name') && cache.select('name').value;
 }
 
-function getReadableMethods() {
+ParamRow.propTypes = {
+  method: PropTypes.string,
+  getState: PropTypes.func,
+  call: PropTypes.func
+};
+
+function ParamRow({ method, call, getState }) {
+  return (
+    <tr>
+      <td>{method}</td>
+      <td>
+        <NumericalValue>{abbreviateNumber(getState(method).value)}</NumericalValue>
+      </td>
+      <td>
+        <Button onClick={() => call(method)}>Call</Button>
+      </td>
+      <td>
+        <Input />
+      </td>
+    </tr>
+  );
+}
+
+// Utils
+function hasValue(state) {
+  return state && state('name') && state('name').value;
+}
+
+function getReadableMethods(types) {
   return ['allocatedRewards', 'totalReleased'].concat(
     Object.keys(
       pickBy(
@@ -153,7 +156,9 @@ function getReadableMethods() {
           method !== 'isOwner' &&
           method !== 'allocatedRewards' &&
           method !== 'totalReleased' &&
-          method !== 'currentRound'
+          method !== 'currentRound' &&
+          method !== 'initializeRewardSplit' &&
+          method !== 'airdropSwitchRound'
       )
     )
   );

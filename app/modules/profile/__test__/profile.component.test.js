@@ -6,6 +6,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { auth } from 'app/mockdata';
 import { Linkify } from 'app/utils/text';
 
+jest.mock('react-redux', () => ({ useDispatch: () => () => {}, connect: el => el }));
+
 const props = {
   user: auth.auth.user,
   actions: {

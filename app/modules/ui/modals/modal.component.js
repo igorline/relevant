@@ -95,12 +95,15 @@ function ModalComponent(props) {
           onClick={e => e.stopPropagation()}
         >
           {hideX ? null : (
-            <Touchable onClick={closeModal}>
+            <Touchable
+              onPress={closeModal}
+              style={{ zIndex: 1, position: 'absolute', top: 0, right: 0 }}
+            >
               <CloseX
                 w={2.5}
                 h={2.5}
-                top={[4, 3]}
-                right={[4, 3]}
+                top={[6, 4]}
+                right={[6, 3]}
                 resizeMode={'contain'}
                 source={require('app/public/img/x.png')}
               />

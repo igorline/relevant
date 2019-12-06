@@ -119,7 +119,7 @@ exports[`Snapshot NavProfile 1`] = `
         className="c0 ulink-mock"
         href="/user/wallet"
         hu={1}
-        inline={0}
+        inline={1}
         onClick={[Function]}
         styles=""
       >
@@ -265,7 +265,7 @@ exports[`Snapshot NavProfile 1`] = `
             className="c1 ulink-mock"
             href="/user/wallet"
             hu={0}
-            inline={0}
+            inline={1}
             onClick={[Function]}
             styles=""
           >
@@ -359,7 +359,7 @@ exports[`Snapshot NavProfile 1`] = `
             className="c1 ulink-mock"
             href="/user/wallet"
             hu={0}
-            inline={0}
+            inline={1}
             onClick={[Function]}
             styles=""
           >

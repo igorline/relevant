@@ -7,13 +7,19 @@ const initialState = {
   myEarnings: {},
   posts: {},
   loaded: {},
-  loadedProfileInv: false
-  // myPostInvList: [],
-  // myPostInv: {}
+  loadedProfileInv: false,
+  voteSuccess: null
 };
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
+    case types.UPDATE_POST_INVESTMENTS: {
+      return {
+        ...state,
+        voteSuccess: action.payload
+      };
+    }
+
     case types.LOADING_POST_INVESTMENTS: {
       return {
         ...state,

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
@@ -17,11 +17,12 @@ const TreasurySchema = new Schema(
 
     twitterCount: { type: Number, default: 0 },
     lastTwitterUpdate: { type: Date },
-    community: String
+    community: String,
+    unAllocatedRewards: { type: Number, default: 0 }
   },
   {
     timestamps: true
   }
 );
 
-module.exports = mongoose.model('Treasury', TreasurySchema);
+export default mongoose.model('Treasury', TreasurySchema);

@@ -185,6 +185,13 @@ const routes = [
                 navbar: TopNav,
                 title: 'Communities'
               },
+              {
+                path: '/communities/new',
+                component: CommunityAdminForm,
+                exact: true,
+                navbar: TopNav,
+                title: 'Create a New Community'
+              },
               // {
               //   path: '/community/all',
               //   component: CommunityList,

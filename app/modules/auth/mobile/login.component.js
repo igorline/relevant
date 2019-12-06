@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, IphoneX } from 'app/styles/global';
+import { colors } from 'styles';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import TwitterButton from './TwitterButton.component';
 
@@ -127,6 +128,7 @@ class Login extends Component {
                 autoCorrect={false}
                 autoCapitalize={'none'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="username or email"
                 onChangeText={username => this.setState({ username: username.trim() })}
                 value={this.state.username}
@@ -143,6 +145,7 @@ class Login extends Component {
                 secureTextEntry
                 keyboardType={'default'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="password"
                 onChangeText={password => this.setState({ password: password.trim() })}
                 value={this.state.password}

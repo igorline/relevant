@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withProps } from 'app/utils/nav';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { StackViewTransitionConfigs } from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
+import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
 import UrlComponent from 'modules/createPost/mobile/url.component';
 import Categories from 'modules/createPost/mobile/categories.component';
 

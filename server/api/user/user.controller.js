@@ -6,7 +6,7 @@ import url from 'url';
 // eslint-disable-next-line import/named
 import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
-import mail from 'server/config/mail';
+import { sendEmail, addUserToEmailList, removeFromEmailList } from 'server/utils/mail';
 import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants';
 import User from './user.model';
 import Post from '../post/post.model';
@@ -20,13 +20,12 @@ import { logCashOut } from '../../utils/cashOut';
 async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';
-  try {
-    const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
-    const data = {
-      from: 'Relevant <info@relevant.community>',
-      to: user.email,
-      subject: 'Relevant Email Confirmation',
-      html: `
+  const confirmUrl = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: user.email,
+    subject: 'Relevant Email Confirmation',
+    html: `
         Hi @${user.handle}${text}!
       <br />
       <br />
@@ -37,35 +36,27 @@ async function sendConfirmation(user, newUser) {
       <br />
       <br />
       `
-    };
-    await mail.send(data);
-  } catch (err) {
-    throw err;
-  }
+  };
+  await sendEmail(data);
+
   return { email: user.email };
 }
 
 async function sendResetEmail(user, queryString) {
-  let status;
-  try {
-    const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}${queryString}`;
-    const data = {
-      from: 'Relevant <info@relevant.community>',
-      to: user.email,
-      subject: 'Reset Relevant Password',
-      html: `
+  const resetUrl = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}${queryString}`;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: user.email,
+    subject: 'Reset Relevant Password',
+    html: `
       Hi, @${user.handle}
       <br/><br/>
       You are receiving this because you have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
       ${resetUrl}<br/><br/>
       If you did not request a password reset, please ignore this email and your password will remain unchanged.`
-    };
-    status = await mail.send(data);
-  } catch (err) {
-    throw err;
-  }
-  return status;
+  };
+  return sendEmail(data);
 }
 
 exports.forgot = async (req, res, next) => {
@@ -112,10 +103,10 @@ exports.confirm = async (req, res, next) => {
     user.confirmed = true;
     user = await user.addReward({ type: 'email' });
     user = await user.save();
+    await addUserToEmailList(user);
     req.confirmed = true;
     return middleware ? next() : res.status(200).json(user);
   } catch (err) {
-    console.error(err); // eslint-disable-line
     return next();
   }
 };
@@ -488,13 +479,13 @@ exports.show = async function show(req, res, next) {
  */
 exports.destroy = async (req, res, next) => {
   try {
-    if (
-      !req.user ||
-      (!req.user.role === 'admin' && req.user.handle !== req.params.handle)
-    ) {
+    const { id } = req.params;
+    if (!req.user || (!req.user.role === 'admin' || !req.user._id.equals(id))) {
       throw new Error('no right to delete');
     }
-    await User.findOne({ handle: req.params.id }).remove();
+    const user = await User.findOne({ _id: id });
+    await removeFromEmailList(user);
+    await User.deleteOne({ handle: req.params.id });
     return res.sendStatus(204);
   } catch (err) {
     return next(err);
@@ -538,9 +529,10 @@ exports.updateHandle = async (req, res, next) => {
       user = await user.save();
       await sendConfirmation(user, true);
     }
-
     user.handle = handle;
     user.role = 'user';
+
+    await addUserToEmailList(user);
 
     const newUser = {
       name: user.name,
@@ -712,7 +704,13 @@ exports.updateUserNotifications = async (req, res, next) => {
     const { user, body } = req;
     const { notificationSettings, subscription, deviceTokens } = body;
     const newSettings = merge(user.notificationSettings.toObject(), notificationSettings);
+
+    if (user.notificationSettings.email.digest !== newSettings.email.digest) {
+      if (!newSettings.email.digest) addUserToEmailList(user, 'nodigest');
+      else removeFromEmailList(user, 'nodigest');
+    }
     user.notificationSettings = newSettings;
+
     if (subscription) {
       const findIndex = user.desktopSubscriptions.findIndex(
         s =>
@@ -739,7 +737,7 @@ exports.ethAddress = async (req, res, next) => {
   try {
     let { user } = req;
     const { msg, sig, acc } = req.body;
-    const recovered = sigUtil.recoverTypedSignature({
+    const recovered = sigUtil.recoverTypedSignatureLegacy({
       data: msg,
       sig
     });
@@ -776,8 +774,8 @@ exports.cashOut = async (req, res, next) => {
     const nonce = await ethUtils.getNonce(address);
 
     // Prioritize last withdrawal attempt
-    if (user.cashOut && user.cashOut.nonce === nonce) {
-      return res.status(200).json(user);
+    if (user.cashOut && user.cashOut.nonce === nonce.toString()) {
+      return res.status(200).json({ user, earning: null });
     }
 
     // Temp - let global admins cash out more
@@ -801,7 +799,7 @@ exports.cashOut = async (req, res, next) => {
       );
     }
 
-    logCashOut(user, amount, next);
+    const earning = await logCashOut(user, amount, next);
 
     user.balance -= amount;
     user.cashedOut += amount;
@@ -809,9 +807,9 @@ exports.cashOut = async (req, res, next) => {
 
     const { sig, amount: bnAmount } = await ethUtils.sign(address, amount);
     user.nonce = nonce;
-    user.cashOut = { sig, amount: bnAmount, nonce };
+    user.cashOut = { sig, amount: bnAmount, nonce, earningId: earning._id };
     await user.save();
-    return res.status(200).json(user);
+    return res.status(200).json({ user, earning });
   } catch (err) {
     return next(err);
   }

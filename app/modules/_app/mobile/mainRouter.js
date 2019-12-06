@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 import {
+  createStackNavigator,
   StackViewStyleInterpolator,
   StackViewTransitionConfigs
 } from 'react-navigation-stack';

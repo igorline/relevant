@@ -1,145 +1,123 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { colors } from 'app/styles';
-import * as communityActions from 'modules/community/community.actions';
-import * as navigationActions from 'modules/navigation/navigation.actions';
+import { resetTabs, closeDrawer } from 'modules/navigation/navigation.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
 import { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/communityActive.component';
 import CommunityListItem from 'modules/community/communityListItem.component';
 import get from 'lodash/get';
-import { View, BodyText } from 'modules/styled/uni';
+import { View, BodyText, Badge } from 'modules/styled/uni';
 import { SIDE_NAV_PADDING } from 'styles/layout';
+import { useUnread } from './hooks';
 
 // TODO: change to work like in the communityActive component
 const linkStyle = css`
   display: flex;
   align-items: center;
   color: ${colors.black};
-  &:hover {
+  &:hover > div > div:first-child {
     text-decoration: underline;
     text-decoration-color: ${colors.black};
+  }
+  &:hover {
     background: ${colors.white};
   }
 `;
 
-export class Community extends Component {
-  static propTypes = {
-    actions: PropTypes.object,
-    community: PropTypes.object,
-    view: PropTypes.object,
-    auth: PropTypes.object,
-    screenSize: PropTypes.number,
-    viewCommunityMembers: PropTypes.func,
-    showSettings: PropTypes.func
-  };
+Community.propTypes = {
+  viewCommunityMembers: PropTypes.func,
+  showSettings: PropTypes.func
+};
 
-  renderCommunityLink(community) {
-    const { actions } = this.props;
-    return (
-      <ULink
-        styles={linkStyle}
-        key={community._id}
-        to={'/' + community.slug + '/new'}
-        onPress={() => {
-          actions.resetTabs();
-          requestAnimationFrame(() => {
-            actions.setCommunity(community.slug);
-          });
-        }}
-      >
-        <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
-      </ULink>
-    );
-  }
+export function Community({ viewCommunityMembers, showSettings }) {
+  const community = useSelector(state => state.community);
+  const auth = useSelector(state => state.auth);
+  const view = useSelector(state => state.view);
+  const screenSize = useSelector(state => state.navigation.screenSize);
 
-  renderOtherCommunities() {
-    const { communities, list } = this.props.community;
-    return list.map(id => {
-      const community = communities[id];
-      if (!community) {
-        return null;
-      }
-      const isActive = this.props.community.active === community.slug;
-      if (isActive) return null;
-      return this.renderCommunityLink(community);
-    });
-  }
+  const {
+    communityMembers,
+    members,
+    communities,
+    userCommunities,
+    userMemberships
+  } = community;
 
-  render() {
-    const {
-      community,
-      actions,
-      view,
-      auth,
-      screenSize,
-      viewCommunityMembers,
-      showSettings
-    } = this.props;
-    const {
-      communityMembers,
-      members,
-      communities,
-      userCommunities,
-      userMemberships
-    } = community;
-    const activeCommunity = communities[community.active];
-    const activeMembers = get(communityMembers, community.active, []).map(
-      id => members[id]
-    );
-    return (
-      <View flex={1}>
-        <View bb>
-          {activeCommunity && (
-            <CommunityActive
-              key={activeCommunity._id}
-              community={activeCommunity}
-              userCommunities={userCommunities}
-              userMemberships={userMemberships}
-              members={activeMembers}
-              actions={actions}
-              screenSize={screenSize}
-              getCommunityMembers={get(actions, 'getCommunityMembers', null)}
-              viewCommunityMembers={viewCommunityMembers}
-              showSettings={showSettings}
-              view={view}
-              auth={auth}
-            >
-              {this.renderCommunityLink(activeCommunity)}
-            </CommunityActive>
-          )}
-          <View m={'2 0'}>{this.renderOtherCommunities()}</View>
+  const activeCommunity = communities[community.active];
+  const activeMembers = get(communityMembers, community.active, []).map(
+    id => members[id]
+  );
+  return (
+    <View flex={1}>
+      <View bb>
+        {activeCommunity && (
+          <CommunityActive
+            key={activeCommunity._id}
+            community={activeCommunity}
+            userCommunities={userCommunities}
+            userMemberships={userMemberships}
+            members={activeMembers}
+            screenSize={screenSize}
+            viewCommunityMembers={viewCommunityMembers}
+            showSettings={showSettings}
+            view={view}
+            auth={auth}
+          >
+            <CommunityLink community={activeCommunity} active />
+          </CommunityActive>
+        )}
+        <View m={'2 0'}>
+          <OtherCommunities />
         </View>
-        <BodyText m={[SIDE_NAV_PADDING, 2]}>
-          We'll be adding more communities soon!{'\n\n'}
-        </BodyText>
       </View>
-    );
-  }
+
+      <BodyText m={[SIDE_NAV_PADDING, 2]}>
+        We'll be adding more communities soon!{'\n\n'}
+      </BodyText>
+    </View>
+  );
 }
 
-const mapStateToProps = state => ({
-  community: state.community,
-  auth: state.auth,
-  view: state.view,
-  screenSize: state.navigation.screenSize
-});
+function OtherCommunities() {
+  const { communities, list, active } = useSelector(state => state.community);
+  return list
+    .map(id => communities[id])
+    .filter(community => community && active !== community.slug)
+    .map(community => <CommunityLink key={community._id} community={community} />);
+}
 
-const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(
-    {
-      ...communityActions,
-      ...navigationActions,
-      setCommunity
-    },
-    dispatch
-  )
-});
+CommunityLink.propTypes = {
+  community: PropTypes.object,
+  active: PropTypes.bool
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Community);
+function CommunityLink({ community, active }) {
+  const dispatch = useDispatch();
+  const unread = useUnread(community, active);
+
+  return (
+    <ULink
+      flex={1}
+      styles={linkStyle}
+      key={community._id}
+      to={'/' + community.slug + '/new'}
+      onPress={() => {
+        dispatch(closeDrawer());
+        requestAnimationFrame(() => {
+          dispatch(setCommunity(community.slug));
+          dispatch(resetTabs());
+        });
+      }}
+    >
+      <View flex={1} fdirection={'row'} align={'center'} justify={'space-between'}>
+        <CommunityListItem community={community} p={[`1 ${SIDE_NAV_PADDING}`, '1 2']} />
+        <Badge mr={[SIDE_NAV_PADDING, 2]} number={unread} />
+      </View>
+    </ULink>
+  );
+}
+
+export default Community;

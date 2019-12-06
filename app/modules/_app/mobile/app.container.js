@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  AppState,
-  Linking,
-  Platform,
-  StatusBar,
-  YellowBox,
-  Dimensions
-} from 'react-native';
+import { View, AppState, Linking, Platform, StatusBar, Dimensions } from 'react-native';
 
 import { setCustomText } from 'react-native-global-props';
 import PropTypes from 'prop-types';
@@ -38,12 +30,14 @@ import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
-// import { PriceProvider } from 'modules/wallet/price.context';
+import { PriceProvider } from 'modules/wallet/price.context';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
 import * as modals from 'modules/ui/modals/mobile.lookup';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+global.Buffer = global.Buffer || require('buffer').Buffer;
 
 Ionicons.loadFont();
 
@@ -57,7 +51,7 @@ const customTextProps = {
 };
 setCustomText(customTextProps);
 
-YellowBox.ignoreWarnings(['Setting a timer']);
+StatusBar.setBarStyle('dark-content');
 
 class Application extends Component {
   static propTypes = {
@@ -224,11 +218,10 @@ class Application extends Component {
       if (this.backgroundTime + 10 * 60 * 1000 < now) {
         // reload current tab
         if (!state.routes) return null;
-        const childKey = state.routes[state.index].key;
-        const tabNav = this.props.navigation.getChildNavigation(childKey);
-        if (!tabNav.state || !state.routes.routes) return null;
-        const currentTab = tabNav.state.routes[tabNav.state.index];
-        this.props.actions.reloadTab(currentTab.key);
+        const tabNavigator = state.routes[0];
+        if (!tabNavigator.routes) return null;
+        const currentTab = tabNavigator.routes[tabNavigator.index].routeName;
+        this.props.actions.reloadTab(currentTab);
 
         // reload all other tabs on focus
         return this.props.actions.reloadAllTabs();
@@ -270,14 +263,16 @@ class Application extends Component {
     // main app view has to be absolute to make android keyboard work
     return (
       <View style={{ ...platformStyles, backgroundColor: 'black' }}>
-        <AppContainer navigation={this.props.navigation} />
-        <BannerPrompt isMobile />
-        {this.renderModal()}
-        <Tooltip />
-        <InvestAnimation />
-        <HeartAnimation />
-        <DownvoteAnimation />
-        <UpvoteAnimation />
+        <PriceProvider>
+          <AppContainer navigation={this.props.navigation} />
+          <BannerPrompt isMobile />
+          {this.renderModal()}
+          <Tooltip />
+          <InvestAnimation />
+          <HeartAnimation />
+          <DownvoteAnimation />
+          <UpvoteAnimation />
+        </PriceProvider>
       </View>
     );
   }

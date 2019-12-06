@@ -7,11 +7,11 @@ import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
 import computePageRank, { computeApproxPageRank } from 'server/utils/pagerankCompute';
 
 // this will define the database name where the tests are run
-process.env.TEST_SUITE = 'pagerankCompute-approx';
+process.env.TEST_SUITE = 'pagerankComputeApprox';
 
 jest.mock('server/utils/ethereum');
 
-describe('ethRewards', () => {
+describe('computeApproxPageRank', () => {
   let {
     alice,
     bob,
@@ -76,22 +76,22 @@ describe('ethRewards', () => {
   });
 
   beforeEach(() => {
-    // global.console = { log: jest.fn() }; // hides logs
+    // global.console.log = jest.fn(); // hides logs
   });
 
-  describe('computeApproxPageRank', () => {
+  describe('upvote and undo', () => {
     test('should upvote and undo', async () => {
       await testCompute({ amount: 0.5, hasAuthor: true });
     });
   });
 
-  describe('computeApproxPageRank', () => {
+  describe('downvote and undo', () => {
     test('should downvote and undo', async () => {
       await testCompute({ amount: -0.5, hasAuthor: true });
     });
   });
 
-  describe('computeApproxPageRank', () => {
+  describe('no author', () => {
     test('should upvote and undo with no author', async () => {
       await testCompute({ amount: -1, hasAuthor: false });
     });
@@ -144,6 +144,7 @@ describe('ethRewards', () => {
         Math.round(authorSan.relevance.pagerankRaw * 1000) / 1000;
     }
 
+    postSan.pagerank = Math.round(postSan.pagerank * 100) / 100;
     postSan.data.pagerank = Math.round(postSan.data.pagerank * 100) / 100;
     postSan.data.pagerankRaw = Math.round(postSan.data.pagerankRaw * 1000) / 1000;
     postSan.data.pagerankRawNeg = Math.round(postSan.data.pagerankRawNeg * 1000) / 1000;

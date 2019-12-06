@@ -49,26 +49,21 @@ export const request = options => (dispatch, getState) => _request(options, getS
  * body: body
  */
 export async function _request(options, getState) {
-  try {
-    // Add community query parameter
-    const state = getState();
-    const community = state.community.active;
-    const query = { community, ...options.query };
-    const params = { ...options, query };
+  // Add community query parameter
+  const state = getState();
+  const community = state.community.active;
+  const query = { community, ...options.query };
+  const params = { ...options, query };
 
-    // ---------------------------------------------
-    // This is the case when request is orginating from nodejs
-    // ---------------------------------------------
-    if (IS_SERVER) return getDataOnServer(params);
+  // ---------------------------------------------
+  // This is the case when request is orginating from nodejs
+  // ---------------------------------------------
+  if (IS_SERVER) return getDataOnServer(params);
 
-    // ---------------------------------------------
-    // This is the case when request is orginating from client
-    // ---------------------------------------------
-    return getDataFromClient(params);
-  } catch (error) {
-    // console.log('api error', uri, error);
-    throw error;
-  }
+  // ---------------------------------------------
+  // This is the case when request is orginating from client
+  // ---------------------------------------------
+  return getDataFromClient(params);
 }
 
 async function getDataFromClient(params) {
@@ -100,7 +95,7 @@ async function getDataOnServer(params) {
   const resJSON = await routes[params.endpoint][params.path](req, res, next);
 
   // convert to object in case we get a mongoose object back
-  return resJSON && resJSON.toObject ? res.toObject() : resJSON;
+  return resJSON && resJSON.toObject ? resJSON.toObject() : resJSON;
 }
 
 function constructUri(options) {

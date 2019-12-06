@@ -5,10 +5,10 @@ import { globalStyles } from 'app/styles/global';
 import { pickerOptions } from 'app/utils/pickerOptions';
 import * as utils from 'app/utils';
 import CustomSpinnerRelative from 'modules/ui/mobile/customSpinnerRelative.component';
+import ImagePicker from 'react-native-image-picker';
 
 let localStyles;
 let styles;
-const ImagePicker = require('react-native-image-picker');
 
 class ImageUpload extends Component {
   static propTypes = {

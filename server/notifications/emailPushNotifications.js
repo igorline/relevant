@@ -1,4 +1,4 @@
-const mail = require('server/config/mail');
+const { sendEmail } = require('server/utils/mail');
 const inlineCss = require('inline-css');
 const { notificationStyle } = require('server/utils/emailStyle');
 const User = require('server/api/user/user.model');
@@ -18,7 +18,7 @@ export async function handleEmailNotifications(params) {
       subject,
       html
     };
-    return mail.send(data);
+    return sendEmail(data);
   } catch (err) {
     return console.log(err); // eslint-disable-line
   }

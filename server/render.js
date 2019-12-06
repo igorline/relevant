@@ -13,6 +13,8 @@ import { AppRegistry } from 'react-native-web';
 import useragent from 'express-useragent';
 import { Dimensions } from 'react-native';
 import { getScreenSize } from 'app/utils/nav';
+import { client } from 'app/core/apollo.client.server';
+import { ApolloProvider } from '@apollo/react-common';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -30,10 +32,8 @@ let extractor =
     ? new ChunkExtractor({ statsFile, entrypoints: 'app' })
     : null;
 
-export function createInitialState(req, res) {
+export function createInitialState(req) {
   const cachedCommunity = req.user ? req.user.community : null;
-
-  if (cachedCommunity && req.url === '/') return res.redirect(`/${cachedCommunity}/new`);
 
   const userAgent = req.headers['user-agent']
     ? useragent.parse(req.headers['user-agent'])
@@ -61,14 +61,19 @@ export const initStore = compose(
 );
 
 export default async function handleRender(req, res) {
-  const store = initStore(req, res);
-  // TODO - get rid of this - need to convert util/api to middleware
+  const store = initStore(req);
+  const { community } = store.getState().auth;
+  if (community && req.url === '/') return res.redirect(`/${community}/new`);
+
   // and populate user store with req.user
   if (req.user) store.dispatch(setUser(req.user));
-  store.dispatch(setCommunity(store.getState().auth.community));
+  if (community) store.dispatch(setCommunity(community));
+
   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 
   try {
+    // throw new Error('temp disable ssr');
+
     await handleRouteData({ req, store });
     const { app, rnWebStyles } = renderApp({ url: req.url, store });
 
@@ -79,10 +84,10 @@ export default async function handleRender(req, res) {
       initialState: store.getState(),
       req
     });
-    res.send(html);
+    return res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
+    return res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
   }
 }
 
@@ -129,11 +134,15 @@ export function renderFullPage({ app, rnWebStyles, initialState, fullUrl, req })
         ${rnWebStyles}
         ${cssStyleTags}
         ${styledComponentsTags}
-        <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/uxuj5f7o';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();</script>
       </head>
       <body>
         <div id="app">${app}</div>
-        <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}</script>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
+        </script>
+        <script>
+          window.__APOLLO_STATE__ = ${JSON.stringify(client.extract())};
+        </script>
         ${scriptTags}
       </body>
     </html>
@@ -207,11 +216,13 @@ export function renderApp({ url, store }) {
   const nonce = new Date().getTime();
 
   const App = () => (
-    <Provider store={store}>
-      <StaticRouter location={url} context={context}>
-        {renderRoutes(routes)}
-      </StaticRouter>
-    </Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <StaticRouter location={url} context={context}>
+          {renderRoutes(routes)}
+        </StaticRouter>
+      </Provider>
+    </ApolloProvider>
   );
 
   AppRegistry.registerComponent('App', () => App);

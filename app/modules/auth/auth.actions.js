@@ -13,7 +13,6 @@ let userDefaults;
 
 let Analytics;
 let ReactGA;
-let ReactPixel;
 let TwitterCT;
 
 if (process.env.WEB !== 'true') {
@@ -22,7 +21,6 @@ if (process.env.WEB !== 'true') {
   PushNotification = require('react-native-push-notification');
 } else {
   ReactGA = require('react-ga').default;
-  ReactPixel = require('react-facebook-pixel').default;
   TwitterCT = require('app/utils/social').TwitterCT;
 }
 
@@ -468,8 +466,7 @@ export function createUser(user, invitecode) {
                 action: 'Created an Account'
               });
             TwitterCT && TwitterCT.signUp();
-            ReactPixel && ReactPixel.track('CompleteRegistration');
-            Analytics && Analytics.logEvent('Created an Account');
+            Analytics && Analytics.logEvent('CreatedAccount');
             dispatch(loginUserSuccess(responseJSON.token));
             dispatch(getUser());
             return true;
@@ -511,7 +508,7 @@ export function updateHandle(user) {
           category: 'User',
           action: 'Created an Account'
         });
-      Analytics && Analytics.logEvent('Created an Account');
+      Analytics && Analytics.logEvent('CreatedAccount');
       setupUser(result, dispatch);
       return true;
     } catch (err) {

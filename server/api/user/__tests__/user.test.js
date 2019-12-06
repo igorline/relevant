@@ -15,6 +15,7 @@ describe('User', () => {
   let aliceId;
   let next; // eslint-disable-line
   // const next = jest.fn(console.log); // eslint-disable-line
+  global.console.log = jest.fn(); // hides logs
 
   beforeEach(() => {
     res = response();
@@ -76,6 +77,20 @@ describe('User', () => {
       await handleTwitterAuth({ req, twitterAuth, profile: twitter.profile });
       const twitterUser = await User.findOne({ handle: twitter.profile.username });
       expect(twitterUser.balance).toBe(TWITTER_REWARD + EMAIL_REWARD);
+    });
+  });
+
+  describe('missing email', () => {
+    test('should handle missing email', async () => {
+      req = {};
+      const twitterAuth = 'xxxx';
+      await handleTwitterAuth({ req, twitterAuth, profile: twitter.profileNoEmail });
+      const twitterUser = await User.findOne(
+        { handle: twitter.profileNoEmail.username },
+        '+email +twitter'
+      );
+      expect(twitterUser.email).toBe(undefined);
+      expect(twitterUser.confirmed).toBe(false);
     });
   });
 });

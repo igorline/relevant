@@ -5,6 +5,8 @@ import { isNative } from 'styles';
 import Vote from './vote.component';
 import VoteNumber from './upvoteNumber.component';
 
+const HANDLE_ANIMATIONS = ['upvote', 'bet'];
+
 const Container = styled.View`
   position: ${isNative ? 'absolute' : 'fixed'};
   z-index: 10000;
@@ -15,20 +17,30 @@ const Container = styled.View`
 `;
 
 export default function UpvoteAnimation() {
-  const { index, parent, horizontal, amount } = useSelector(
-    state => state.animation.upvote || {}
+  const type = useSelector(state => state.animation.currentType);
+  const { index, parent, horizontal, amount } = useSelector(state =>
+    HANDLE_ANIMATIONS.includes(type) ? state.animation[type] : {}
   );
 
   const [voteEls, setVoteEls] = useState([]);
   const [numEls, setNumEls] = useState([]);
 
   useEffect(() => {
+    function initAnimation() {
+      if (!parent) return;
+      setVoteEls([...Array(10).keys()]);
+      if (!amount) return;
+      setNumEls([...Array(1).keys()]);
+    }
     initAnimation();
+
     return () => {
       setVoteEls([]);
       setNumEls([]);
     };
-  }, [index, initAnimation]);
+  }, [index, parent, amount]);
+
+  if (!HANDLE_ANIMATIONS.includes(type)) return null;
 
   function destroy(key, coinKey) {
     if (typeof key === 'number') {
@@ -39,17 +51,11 @@ export default function UpvoteAnimation() {
     }
   }
 
-  function initAnimation() {
-    if (!parent) return;
-    setVoteEls([...Array(10).keys()]);
-    if (!amount) return;
-    setNumEls([...Array(1).keys()]);
-  }
-
   return (
     <Container pointerEvents={'none'}>
       {voteEls.map(i => (
         <Vote
+          type={type}
           horizontal={horizontal}
           destroy={destroy}
           parent={parent}

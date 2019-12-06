@@ -1,4 +1,5 @@
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
+import { sendAdminAlert } from 'server/utils/mail';
 import handleRender from './render';
 // eslint-disable-next-line import/named
 import { currentUser } from './auth/auth.service';
@@ -54,8 +55,9 @@ module.exports = app => {
   // Error handler route
   // (need next for this to work)
   // eslint-disable-next-line
-  app.use((err, req, res, next) => {
+  app.use(async (err, req, res, next) => {
     console.error(err); // eslint-disable-line
+    await sendAdminAlert(err);
     return res.status(500).json({ message: err.message });
   });
 

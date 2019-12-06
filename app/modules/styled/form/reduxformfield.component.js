@@ -10,7 +10,7 @@ const ReduxFormField = props => {
     <View display="flex" fdirection="column" mt={3}>
       {label ? (
         <label html-for={name}>
-          <LinkFont c={colors.black}>{label}:</LinkFont>
+          <LinkFont c={colors.black}>{label}</LinkFont>
         </label>
       ) : null}
       <Input
@@ -38,7 +38,7 @@ ReduxFormField.propTypes = {
   error: PropTypes.string,
   type: PropTypes.string,
   name: PropTypes.string,
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   placeholder: PropTypes.string,
   meta: PropTypes.object,
   input: PropTypes.object,

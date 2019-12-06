@@ -83,7 +83,9 @@ export const BANNED_COMMUNITY_SLUGS = [
   'home',
   'auth',
   'profile',
-  'communities'
+  'communities',
+  'subscriptions',
+  'graphql'
 ];
 
 export const BANNED_USER_HANDLES = [

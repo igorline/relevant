@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { showModal, goToUrl } from 'modules/navigation/navigation.actions';
 import { Alert } from 'app/utils/alert';
-// import TouchableOpacity from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 let styled;
 let StyledLink;
@@ -178,18 +178,32 @@ export class ULinkComponent extends Component {
       return <DisabledLinkView flex={1}>{children}</DisabledLinkView>;
     }
 
-    const pressHandler = external && !onPress ? () => actions.goToUrl(to) : () => null;
+    const pressHandler =
+      external && !onPress ? () => actions.goToUrl(to) : () => onPress();
+
+    // return (
+    //   <StyledLink
+    //     // {...rest}
+    //     to={to || '#'}
+    //     onPress={() => requestAnimationFrame(() => pressHandler())}
+    //     // onPress={this.checkAuth(onPress)}
+    //     // styles={styles || ''}
+    //   >
+    //     {children}
+    //   </StyledLink>
+    // );
 
     return (
-      <StyledLink
+      <TouchableOpacity
         // {...rest}
+        style={{ flex: inline ? 0 : 1 }}
         to={to || '#'}
         onPress={() => requestAnimationFrame(() => pressHandler())}
+        activeOpacity={0.8}
         // onPress={this.checkAuth(onPress)}
-        // styles={styles || ''}
       >
         {children}
-      </StyledLink>
+      </TouchableOpacity>
     );
   }
 }

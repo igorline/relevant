@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withProps } from 'app/utils/nav';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { StackViewTransitionConfigs } from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
+import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
 
 import TwitterSignup from 'modules/auth/mobile/twitterSignup.component';
 import ImageUpload from 'modules/auth/mobile/imageUpload.component';
@@ -67,7 +67,7 @@ export const AuthStack = createStackNavigator(
   {
     initialRouteName: 'mainAuth',
     headerLayoutPreset: 'center',
-
+    mode: 'card',
     transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
     defaultNavigationOptions: props => ({

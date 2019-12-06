@@ -14,7 +14,7 @@ import { colors } from 'styles';
 import { VOTE_COST_RATIO } from 'server/config/globalConstants';
 import CoinStat from 'modules/stats/coinStat.component';
 import { bet } from 'modules/post/invest.actions';
-import { hideModal, goToUrl } from 'modules/navigation/navigation.actions';
+import { goToUrl } from 'modules/navigation/navigation.actions';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { exchangeLink, tokenEnabled } from 'modules/wallet/price.context';
 import ULink from 'modules/navigation/ULink.component';
@@ -23,25 +23,27 @@ import BetStats from './betstats';
 import CircleButton from './circlebutton';
 import SmallCoinStat from './smallcoinstat';
 
-export function BetContainer() {
+export function BetContainer({ ...props }) {
   const user = useSelector(state => state.auth.user) || {};
   const post = useSelector(state => state.posts.posts[state.navigation.modalData.postId]);
   if (!user || !post) return null;
-  return <Bet user={user} post={post} />;
+  return <Bet user={user} post={post} {...props} />;
 }
 
 Bet.propTypes = {
   user: PropTypes.object,
-  post: PropTypes.object
+  post: PropTypes.object,
+  close: PropTypes.func
 };
 
-function Bet({ user, post }) {
+function Bet({ user, post, close }) {
   const dispatch = useDispatch();
   const earning = useSelector(state =>
     state.earnings.pending
       .map(e => state.earnings.entities[e])
       .find(ee => ee.post === post._id)
   );
+  const [processingBet, setProcessingBet] = useState(false);
 
   const title = earning ? 'Increase Your Bet' : 'Bet on the Relevance of this Post';
 
@@ -52,6 +54,7 @@ function Bet({ user, post }) {
 
   // const time = getTimestamp(post.data.payoutTime).toLowerCase();
   const [time, setTimer] = useState(timeLeftTick(post.data.payoutTime));
+
   useEffect(() => {
     const id = setInterval(() => setTimer(timeLeftTick(post.data.payoutTime)), 1000);
     return () => clearInterval(id);
@@ -80,9 +83,16 @@ function Bet({ user, post }) {
         : Math.max(0, a - smallStep);
     });
 
-  const placeBet = () => {
-    dispatch(hideModal());
-    dispatch(bet({ postId: post._id, stakedTokens: amount }));
+  const placeBet = async () => {
+    try {
+      setProcessingBet(true);
+      await dispatch(bet({ postId: post._id, stakedTokens: amount }));
+      setProcessingBet(false);
+      close();
+    } catch (err) {
+      setProcessingBet(false);
+      // console.log(err);
+    }
   };
 
   const exchageUrl = exchangeLink();
@@ -132,7 +142,7 @@ function Bet({ user, post }) {
         </View>
         <CircleButton onPress={plusAmount}>+</CircleButton>
       </View>
-      <View flex={1} mt={2}>
+      <View mt={2}>
         <View h={0.5} fdirection={'row'}>
           <View w={`${power}%`} bg={colors.blue} />
           <View w={`${100 - power}%`} bg={colors.lightBorder} />
@@ -148,7 +158,6 @@ function Bet({ user, post }) {
                 c={colors.blue}
                 onPress={() => {
                   dispatch(goToUrl(exchageUrl));
-                  dispatch(hideModal());
                 }}
               >
                 Get more coins
@@ -158,11 +167,11 @@ function Bet({ user, post }) {
         </View>
       </View>
 
-      <View mt={4}>
+      <View mt={3}>
         <BetStats maxBet={maxBet} post={post} amount={amount} earning={earning} />
       </View>
 
-      <HoverButton mt={3} onPress={placeBet}>
+      <HoverButton mt={3} onPress={placeBet} disabled={processingBet || !amount}>
         Bet {toFixed(amount)} Coins
       </HoverButton>
 
@@ -170,7 +179,7 @@ function Bet({ user, post }) {
        */}
 
       <SmallText mt={2}>
-        *You always your coins back once the betting round ends.
+        *You always get your coins back once the betting round ends.
       </SmallText>
 
       {/*      <NotificationToggle

@@ -5,6 +5,7 @@ import User from 'server/api/user/user.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import Invest from 'server/api/invest/invest.model';
 import PostData from 'server/api/post/postData.model';
+import { sendEmail } from 'server/utils/mail';
 
 const queue = require('queue');
 
@@ -12,9 +13,44 @@ const q = queue({
   concurrency: 1
 });
 
+const { RELEVANT_ENV, SYS_ADMIN_EMAIL } = process.env;
+
+export async function runAudit() {
+  try {
+    await auditUserEarnings();
+    // await auditUser('slava');
+    // listAllBalances();
+    console.log('finished audit');
+  } catch (err) {
+    console.log(err);
+  }
+}
+// runAudit();
+
+async function sendAdminAlert(user, diff) {
+  if (RELEVANT_ENV !== 'production') return null;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: 'slava@relevant.community',
+    subject: 'User balance discreptacy',
+    html: `
+      user: @${user.handle}
+      discreptacy: ${diff}
+      <br />
+      <br />
+      user object:
+      <br />
+      ${JSON.stringify(user)}
+      <br />
+      `
+  };
+  return sendEmail(data);
+}
+
 async function auditUserEarnings() {
   const users = await User.find({ balance: { $gt: 0 } });
-  users.forEach(userEarnings);
+  const audited = users.map(userEarnings);
+  return Promise.all(audited);
 }
 
 async function userEarnings(user) {
@@ -29,13 +65,14 @@ async function userEarnings(user) {
   if (Math.abs(diff) > 0.000001) {
     console.log('error! earnings mismatch for', user._id);
     console.log(user.handle, 'discreptacy', diff);
+    sendAdminAlert(user, diff);
   }
 }
 
 function difference(user, totalRewards) {
   return (
     user.balance +
-    user.tokenBalance -
+    user.cashedOut -
     user.airdropTokens -
     totalRewards -
     user.legacyTokens -
@@ -59,7 +96,9 @@ function logUser(user, totalRewards) {
     'legacyRewards:',
     user.legacyTokens,
     'legacyAirdrop:',
-    user.legacyAirdrop
+    user.legacyAirdrop,
+    'cashedOut:',
+    user.cashedOut
   );
 }
 
@@ -106,6 +145,7 @@ async function auditUser(handle) {
     const estimatedReward = !postdata.payout
       ? 0
       : (postdata.payout * e.shares * 1e-18) / invShares;
+
     if (Math.abs(estimatedReward - e.earned) > 0.001) {
       console.log(e.post._id, e.post.title);
       console.log('shares', e.totalPostShares, postdata.shares, invShares);
@@ -137,16 +177,3 @@ async function listAllBalances() {
   const users = await User.find({ balance: { $gt: 0 } }).sort('-balance');
   users.forEach(u => console.log(u.handle, ',', u.balance));
 }
-
-export async function runAudit() {
-  try {
-    await auditUserEarnings();
-    // await auditUser('slava');
-    // listAllBalances();
-    console.log('finished audit');
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-// runAudit();
