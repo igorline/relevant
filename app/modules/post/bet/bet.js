@@ -152,7 +152,7 @@ function Bet({ user, post, close }) {
             Available Coins: <SmallCoinStat amount={maxBet - amount} />
           </SecondaryText>
           {tokenEnabled() && (
-            <ULink to={exchageUrl} external target="_blank">
+            <ULink inline={1} to={exchageUrl} external target="_blank">
               <SecondaryText
                 mt={0.5}
                 c={colors.blue}
