@@ -64,8 +64,14 @@ async function userEarnings(user) {
 
   if (Math.abs(diff) > 0.000001) {
     console.log('error! earnings mismatch for', user._id);
+    logUser(user, totalRewards);
     console.log(user.handle, 'discreptacy', diff);
     sendAdminAlert(user, diff);
+    const shouldBe = 113527.6139;
+    if (user.handle === 'slava') {
+      user.cashedOut = shouldBe;
+      await user.save();
+    }
   }
 }
 

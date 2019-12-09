@@ -81,4 +81,21 @@ describe('Cashout', () => {
     const updatedUser = await User.findOne({ _id: alice._id });
     expect(updatedUser.cashedOut).toBe(amnt);
   });
+
+  test('cashout one more time', async () => {
+    const amnt = 10;
+    const user = await User.findOneAndUpdate(
+      { _id: alice._id },
+      { cashOut: null },
+      { new: true }
+    );
+    const req = {
+      user,
+      body: { customAmount: amnt }
+    };
+    const startCashout = user.cashedOut;
+    await cashOut(req, res, next);
+    const updatedUser = await User.findOne({ _id: alice._id });
+    expect(updatedUser.cashedOut).toBe(amnt + startCashout);
+  });
 });
