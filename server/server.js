@@ -176,7 +176,7 @@ if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'nati
   require('./queue');
 }
 
-require('./utils/tokenAudit').runAudit();
+require('./utils/tokenAudit');
 require('./utils/ethereum').init();
 // require('./utils/dbMigrate-v1.1.1');
 
