@@ -81,9 +81,9 @@ export class Discover extends Component {
   componentDidUpdate(prevProps) {
     let alreadyLoading;
     const { tag, sort, community } = this.props.match.params;
-    const prevTag = get(prevProps, 'match.params.tag', null);
-    const prevSort = get(prevProps, 'match.params.sort', null);
-    const prevCommunity = get(prevProps, 'match.params.community', null);
+    const prevTag = get(prevProps, 'match.params.tag', undefined);
+    const prevSort = get(prevProps, 'match.params.sort', undefined);
+    const prevCommunity = get(prevProps, 'match.params.community', undefined);
     if (tag !== prevTag || sort !== prevSort || community !== prevCommunity) {
       this.props.actions.setScrollTab('discover', this.props.match.params);
     }

@@ -14,7 +14,7 @@ import {
   REGISTER_GESTURE
 } from 'core/actionTypes';
 
-const initialState = {
+export const initialState = {
   showTopics: false,
   reload: 0,
   scroll: false,

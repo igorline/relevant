@@ -11,6 +11,7 @@ import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { required } from 'modules/form/validators';
 import { Field, reduxForm } from 'redux-form';
 import { Form, View, Button } from 'modules/styled/web';
+import queryString from 'query-string';
 
 class Forgot extends Component {
   static propTypes = {
@@ -38,8 +39,11 @@ class Forgot extends Component {
   }
 
   sendEmail = async data => {
-    const queryParams = this.props.location.search;
-    const res = await this.props.actions.forgotPassword(data.username, queryParams);
+    const { actions, location } = this.props;
+    const params = queryString.parse(location.search);
+    delete params.modal;
+    const queryParams = '?' + queryString.stringify(params);
+    const res = await actions.forgotPassword(data.username, queryParams);
     if (res && res.email) {
       this.setState({ sentEmailTo: res.email });
     }

@@ -67,11 +67,19 @@ exports.forgot = async (req, res, next) => {
     const string = req.body.user;
 
     email = /^.+@.+\..+$/.test(string);
-    const query = email ? { email: string } : { handle: string };
+    const query = email
+      ? { email: { $regex: `^${string}$`, $options: 'i' } }
+      : { handle: { $regex: `^${string}$`, $options: 'i' } };
     let user = await User.findOne(
       query,
       'resetPasswordToken resetPasswordExpires email handle'
     );
+    if (!user && email) {
+      const errorText = email
+        ? 'No user with this email exists'
+        : "Couldn't find user with this username";
+      throw new Error(errorText);
+    }
     const rand = await crypto.randomBytes(32);
     const token = rand.toString('hex');
     user.resetPasswordToken = token;
@@ -80,11 +88,7 @@ exports.forgot = async (req, res, next) => {
     await sendResetEmail(user, queryString);
     return res.status(200).json({ email: user.email, username: user.handle });
   } catch (err) {
-    let error = new Error("Couldn't find user with this name ", err);
-    if (email) {
-      error = new Error('No user with this email exists');
-    }
-    return next(error);
+    return next(err);
   }
 };
 

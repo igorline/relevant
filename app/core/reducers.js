@@ -17,7 +17,7 @@ import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
 import { reducer as formReducer } from 'redux-form';
 import socket from './socket.reducer';
-import view from './view.reducer';
+// import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
 let web3Reducers = {};
@@ -40,7 +40,6 @@ const reducers = {
   notif,
   error,
   animation,
-  view,
   // TODO update
   investments: invest,
   stats,

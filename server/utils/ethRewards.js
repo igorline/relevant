@@ -34,6 +34,7 @@ exports.rewards = async () => {
     const oldRewards = await getOldRewards();
     rewardPool -= oldRewards[0].rewardFund;
     console.log('rewardPool', rewardPool); // eslint-disable;
+    if (rewardPool < 0) throw new Error(`not enough funds in reward pool ${rewardPool}`);
   } catch (err) {
     console.log(err);
     await sendAdminAlert(err);
@@ -118,6 +119,7 @@ async function updateRewardAllocation() {
   }
   const { unAllocatedRewards } = treasury || {};
   if (unAllocatedRewards) {
+    console.log('unAllocated Rewards', allocateRewards);
     const cancelPendingTx = true;
     await Eth.allocateRewards(unAllocatedRewards, cancelPendingTx);
     treasury.unAllocatedRewards = 0;
@@ -220,6 +222,7 @@ async function postRewards(community) {
 // ANALYSIS — attack scenario community with low-quality posts to bring down the average?
 async function computePostPayout({ posts, community }) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
+  const communityRewardFund = community.rewardFund;
   let updatedPosts = posts.map(async post => {
     const average = community.currentShares / (community.postCount || 1);
 
@@ -233,10 +236,13 @@ async function computePostPayout({ posts, community }) {
 
     // cap rewards share at 1/20th of the fund - especially for the first rewards?
     post.payoutShare = Math.min(0.05, post.pagerank / (community.topPostShares || 1));
-    post.payout = community.rewardFund * post.payoutShare;
+    const payout = communityRewardFund * post.payoutShare;
+    community.rewardFund -= payout;
+    post.payout = payout;
     return post.save();
   });
   updatedPosts = await Promise.all(updatedPosts);
+  await community.save();
   return updatedPosts;
 }
 

@@ -15,6 +15,7 @@ import { Dimensions } from 'react-native';
 import { getScreenSize } from 'app/utils/nav';
 import { client } from 'app/core/apollo.client.server';
 import { ApolloProvider } from '@apollo/react-common';
+import { initialState as navState } from 'modules/navigation/navigation.reducer';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -49,6 +50,7 @@ export function createInitialState(req) {
       community: req.params.community || cachedCommunity
     },
     navigation: {
+      ...navState,
       width,
       screenSize: getScreenSize(width)
     }
