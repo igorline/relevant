@@ -23,7 +23,7 @@ const logoLink = '/relevant/new';
 const SideNav = props => (
   <SafeAreaView style={{ backgroundColor: colors.secondaryBG }}>
     <ScrollView stickyHeaderIndices={[0]}>
-      <LogoContainer br bb h={8}>
+      <LogoContainer bb h={8}>
         <ULink
           align={'flex-start'}
           onPress={() => props.actions.goToTab('discover')}

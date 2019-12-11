@@ -39,7 +39,7 @@ export default function DownvoteAnimation() {
 
   useEffect(() => {
     runAnimation();
-  }, [index]);
+  }, [index, runAnimation]);
 
   return <Container pointerEvents={'none'}>{Object.values(animEls)}</Container>;
 }

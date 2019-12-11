@@ -11,8 +11,13 @@ import { darkGrey, mainPadding, colors } from 'app/styles/global';
 
 let styles;
 
-const HeaderLeft = props => {
-  const { navigation, screenProps } = props;
+HeaderLeft.propTypes = {
+  navigation: PropTypes.object,
+  screenProps: PropTypes.object
+};
+
+function HeaderLeft({ navigation, screenProps }) {
+  // console.log(screenProps, navigation.state);
   const parent = navigation.dangerouslyGetParent() || navigation;
 
   const { index } = parent.state;
@@ -70,12 +75,7 @@ const HeaderLeft = props => {
   return (
     <View style={[styles.leftButton, { flexDirection: 'row' }]}>{backEl || options}</View>
   );
-};
-
-HeaderLeft.propTypes = {
-  navigation: PropTypes.object,
-  screenProps: PropTypes.object
-};
+}
 
 const localStyles = {
   leftButton: {

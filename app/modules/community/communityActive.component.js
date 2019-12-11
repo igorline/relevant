@@ -65,7 +65,7 @@ export default function CommunityActive({
     (memberShip && memberShip.superAdmin) || get(auth, 'user.role') === 'admin';
 
   const limitedMembers = allMembers.slice(0, screenSize ? 14 : 12);
-  const sort = get(view, 'discover.sort') || 'new';
+  const sort = get(view, 'sort') || 'new';
   return (
     <View bg={colors.white} mr={'1px'}>
       <View mt={[SIDE_NAV_PADDING, 2]} />

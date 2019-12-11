@@ -35,7 +35,7 @@ Community.propTypes = {
 export function Community({ viewCommunityMembers, showSettings }) {
   const community = useSelector(state => state.community);
   const auth = useSelector(state => state.auth);
-  const view = useSelector(state => state.view);
+  const view = useSelector(state => state.navigation.discover);
   const screenSize = useSelector(state => state.navigation.screenSize);
 
   const {

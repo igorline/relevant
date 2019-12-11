@@ -21,44 +21,49 @@ class TabBarContainer extends Component {
   }
 
   changeTab(key) {
-    const tab = this.props.navigation.state.routes[this.props.navigation.state.index];
-    this.props.actions.toggleTopics(false);
+    const { actions, navigation, reducerNav, notif } = this.props;
+    const tab = navigation.state.routes[this.props.navigation.state.index];
+    actions.toggleTopics(false);
+    actions.registerGesture({
+      name: 'tabView',
+      active: false
+    });
 
     // Triggers route in the main router
     if (key === 'createPostTab') {
-      return this.props.navigation.navigate({
+      return navigation.navigate({
         routeName: 'createPost',
         params: { left: 'Cancel', title: 'New Post', next: 'Next' }
       });
     }
 
-    if (this.props.reducerNav.reload > this.props.reducerNav[key].reload) {
-      this.props.actions.reloadTab(key);
+    if (reducerNav.reload > reducerNav[key].reload) {
+      actions.reloadTab(key);
     }
 
     if (tab.key === key) {
       if (tab.routes.length === 1) {
-        return this.props.actions.refreshTab(key);
+        return actions.refreshTab(key);
       }
 
       if (key === 'discover') {
         const { index } = tab;
         const route = tab.routes[index];
         if (route.params.key === 'discoverTag') {
-          this.props.actions.refreshTab(key);
+          actions.refreshTab(key);
         } else {
-          this.props.navigation.popToTop();
+          navigation.popToTop();
         }
       } else {
-        this.props.navigation.popToTop();
+        navigation.popToTop();
       }
     }
 
-    if (key === 'activity' && this.props.notif.count) {
-      this.props.actions.reloadTab(key);
+    if (key === 'activity' && notif.count) {
+      actions.reloadTab(key);
     }
 
-    return this.props.navigation.navigate(key);
+    return navigation.navigate(key);
   }
 
   render() {

@@ -251,9 +251,9 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   const k2 = data.news_keywords ? data.news_keywords.split(',').map(k => k.trim()) : [];
   const k3 = data['article:tag']
     ? data['article:tag']
-      .split(',')
-      .map(k => k.replace('--primarykeyword-', '').trim())
-      .filter(k => !k.match('--'))
+        .split(',')
+        .map(k => k.replace('--primarykeyword-', '').trim())
+        .filter(k => !k.match('--'))
     : [];
 
   let keywords = [...new Set([...k1, ...k2, ...k3])];

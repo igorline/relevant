@@ -58,10 +58,13 @@ export const DefaultStack = {
   },
   discoverTag: {
     screen: Discover,
-    path: ':community/:sort/:topic',
-    navigationOptions: {
-      title: 'Read'
-    }
+    path: ':community/:sort/:topic'
+    // navigationOptions: {
+    //   title: 'Read'
+    // }
+    // navigationOptions: props => {
+    //   return { gesturesEnabled: false, title: 'Read XXX' };
+    // }
   },
   statsView: {
     screen: Stats,
@@ -145,6 +148,11 @@ const defaultStackSettings = {
   },
 
   transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
+
+  // navigationOptions: props => {
+  //   console.log('drawer props', props);
+  //   // return
+  // },
 
   defaultNavigationOptions: props => ({
     gesturesEnabled: true,

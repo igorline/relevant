@@ -9,6 +9,8 @@
 // that could be found when using the drawer component
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import invariant from 'invariant';
 import {
   Animated,
@@ -25,14 +27,15 @@ import {
   State
 } from 'react-native-gesture-handler';
 
-const DRAG_TOSS = 1;
+const DRAG_TOSS = 0.7;
 
 const IDLE = 'Idle';
 const DRAGGING = 'Dragging';
 const SETTLING = 'Settling';
+let PanHandler = {};
 
 const SPRING_CONFIG = {
-  damping: 30,
+  damping: 20,
   mass: 0.3,
   stiffness: 150,
   overshootClamping: true,
@@ -63,7 +66,6 @@ export type PropType = {
   drawerContainerStyle?: any,
   contentContainerStyle?: any,
   onGestureRef?: Function
-
   // Properties not yet supported
   // onDrawerSlide?: Function
 };
@@ -282,9 +284,9 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     const shouldOpen = projOffsetX > drawerWidth / 2;
 
     if (shouldOpen) {
-      this._animateDrawer(startOffsetX, drawerWidth, velocityX * 3);
+      this._animateDrawer(startOffsetX, drawerWidth, velocityX * 2);
     } else {
-      this._animateDrawer(startOffsetX, 0, velocityX);
+      this._animateDrawer(startOffsetX, 0, velocityX * 2);
     }
   };
 
@@ -510,21 +512,50 @@ export default class DrawerLayout extends Component<PropType, StateType> {
       : { right: 0, width: this._drawerShown ? undefined : edgeWidth };
 
     return (
-      <PanGestureHandler
+      <PanHandler
         ref={this._setPanGestureRef}
         hitSlop={hitSlop}
-        // activeOffsetX={0}
         activeOffsetX={gestureOrientation * minSwipeDistance}
-        failOffsetY={[-15, 15]}
         onGestureEvent={this._onGestureEvent}
         onHandlerStateChange={this._openingHandlerStateChange}
         enabled={drawerLockMode !== 'locked-closed' && drawerLockMode !== 'locked-open'}
-      >
-        {this._renderDrawer()}
-      </PanGestureHandler>
+        renderDrawer={this._renderDrawer}
+      />
     );
   }
 }
+
+PanHandler.propTypes = {
+  hitSlop: PropTypes.object,
+  activeOffsetX: PropTypes.array,
+  enabled: PropTypes.bool,
+  onHandlerStateChange: PropTypes.func,
+  onGestureEvent: PropTypes.func,
+  renderDrawer: PropTypes.func
+};
+
+PanHandler = React.forwardRef((
+  // eslint-disable-next-line
+  { hitSlop, activeOffsetX, enabled, onHandlerStateChange, onGestureEvent, renderDrawer },
+  ref
+) => {
+  const gesture = useSelector(state => state.navigation.gesture);
+  return (
+    <PanGestureHandler
+      ref={ref}
+      hitSlop={hitSlop}
+      activeOffsetX={activeOffsetX}
+      // failOffsetY={[-15, 15]}
+      onGestureEvent={onGestureEvent}
+      onHandlerStateChange={onHandlerStateChange}
+      enabled={enabled}
+      simultaneousHandlers={gesture || {}}
+      waitFor={gesture || {}}
+    >
+      {renderDrawer()}
+    </PanGestureHandler>
+  );
+});
 
 const styles = StyleSheet.create({
   drawerContainer: {

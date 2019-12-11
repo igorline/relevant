@@ -218,7 +218,7 @@ class Discover extends Component {
       dataEl = (
         <CustomListView
           ref={c => (this.listview = c)}
-          key={this.state.view}
+          key={this.state.view + this.topic}
           data={tabData.data || []}
           loaded={tabData.loaded}
           renderRow={this.renderRow}
@@ -295,7 +295,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     animation: state.animation,
-    view: state.view,
+    // view: state.navigation.discover,
     stats: state.stats,
     userList: state.user.list,
     tags: state.tags,

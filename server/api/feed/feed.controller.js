@@ -19,25 +19,25 @@ exports.get = async (req, res) => {
 
   try {
     feed = await Feed.find(query)
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate({
-      path: 'post',
-      populate: [
-        {
-          path: 'user',
-          select: 'name image relevance'
-        },
-        {
-          path: 'repost.post',
-          populate: {
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'post',
+        populate: [
+          {
             path: 'user',
             select: 'name image relevance'
+          },
+          {
+            path: 'repost.post',
+            populate: {
+              path: 'user',
+              select: 'name image relevance'
+            }
           }
-        }
-      ]
-    });
+        ]
+      });
 
     feed.forEach(f => {
       if (f.post) posts.push(f.post);
@@ -62,18 +62,18 @@ exports.unread = (req, res) => {
 exports.markRead = (req, res) => {
   const query = { userId: req.user._id, read: false };
   return Feed.update(query, { read: true }, { multi: true })
-  .then(() => res.status(200).send())
-  .catch(err => handleError(res, err));
+    .then(() => res.status(200).send())
+    .catch(err => handleError(res, err));
 };
 
 // for testing
 exports.post = (req, res) => {
   const postId = req.params.id;
   Feed.find({ post: postId })
-  .sort({ createdAt: -1 })
-  // .populate('post')
-  .then(feed => {
-    res.status(200).json(feed);
-  })
-  .catch(handleError(res));
+    .sort({ createdAt: -1 })
+    // .populate('post')
+    .then(feed => {
+      res.status(200).json(feed);
+    })
+    .catch(handleError(res));
 };
