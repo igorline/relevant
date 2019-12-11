@@ -138,11 +138,12 @@ export default class CustomListView extends Component {
         ? [styles.commonList, styles.vis]
         : [styles.commonList, styles.hiddenList];
 
-    const emptyEl = loaded && !data.length && (
-      <EmptyList visible emoji={'😶'} type={type} YOffset={YOffset}>
-        {children}
-      </EmptyList>
-    );
+    const emptyEl =
+      loaded && !data.length ? (
+        <EmptyList visible emoji={'😶'} type={type} YOffset={YOffset}>
+          {children}
+        </EmptyList>
+      ) : null;
 
     const { List } = this;
 

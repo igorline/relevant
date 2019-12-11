@@ -28,9 +28,9 @@ const moduleResolverWeb = [
       app: './app',
       'react-native-svg$': 'react-native-web-svg',
       '^react-native$': 'react-native-web',
-      'react-native-linear-gradient$': 'react-native-web-linear-gradient'
+      'react-native-linear-gradient$': 'react-native-web-linear-gradient',
       // 'react-navigation-drawer/src/views/Drawer': './app/modules/ui/mobile/Drawer'
-      // 'react-native-gesture-handler/DrawerLayout': './app/modules/ui/mobile/DrawerLayout'
+      'react-native-gesture-handler/DrawerLayout': './app/modules/ui/mobile/DrawerLayout'
     }
   }
 ];
@@ -44,8 +44,8 @@ const moduleResolverNative = [
       server: './server',
       modules: './app/modules',
       core: './app/core',
-      app: './app'
-      // 'react-native-gesture-handler/DrawerLayout': './app/modules/ui/mobile/DrawerLayout'
+      app: './app',
+      'react-native-gesture-handler/DrawerLayout': './app/modules/ui/mobile/DrawerLayout'
     }
   }
 ];

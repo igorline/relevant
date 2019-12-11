@@ -289,7 +289,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     error: state.error.universal,
-    globalModal: state.navigation.modal
+    globalModal: state.navigation.modal,
+    discoverTab: state.navigation.discover.tab
   };
 }
 

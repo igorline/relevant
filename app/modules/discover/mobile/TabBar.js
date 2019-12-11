@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import Animated from 'react-native-reanimated';
-import { Title, NumericalValue } from 'modules/styled/uni';
+import { NumericalValue } from 'modules/styled/uni';
 import { globalStyles, fullWidth } from 'app/styles/global';
 import { colors } from 'styles';
 
@@ -30,7 +30,8 @@ export default function TabBar({ navigationState, position, setTab }) {
     return Animated.round(
       Animated.interpolate(position, {
         inputRange,
-        outputRange: inputRange.map(inputIndex => (inputIndex === i ? active : inactive))
+        outputRange: inputRange.map(inputIndex => (inputIndex === i ? active : inactive)),
+        extrapolate: 'clamp'
       })
     );
   }
@@ -52,6 +53,7 @@ export default function TabBar({ navigationState, position, setTab }) {
 
         return (
           <TouchableOpacity
+            key={route.title}
             activeOpacity={0.6}
             style={styles.tab}
             onPress={() => setTab(i)}
@@ -79,7 +81,7 @@ const localStyles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    borderWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderGrey
   }
 });

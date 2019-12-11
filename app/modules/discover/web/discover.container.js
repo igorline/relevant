@@ -75,7 +75,7 @@ export class Discover extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.setWebView('discover', this.props.match.params);
+    this.props.actions.setScrollTab('discover', this.props.match.params);
   }
 
   componentDidUpdate(prevProps) {
@@ -85,7 +85,7 @@ export class Discover extends Component {
     const prevSort = get(prevProps, 'match.params.sort', null);
     const prevCommunity = get(prevProps, 'match.params.community', null);
     if (tag !== prevTag || sort !== prevSort || community !== prevCommunity) {
-      this.props.actions.setWebView('discover', this.props.match.params);
+      this.props.actions.setScrollTab('discover', this.props.match.params);
     }
 
     if (this.props.refresh && this.props.refresh > this.lastRefresh) {
@@ -117,7 +117,7 @@ export class Discover extends Component {
   }
 
   componentWillUnmount() {
-    this.props.actions.setWebView('discover', {});
+    this.props.actions.setScrollTab('discover', {});
   }
 
   getLoadedState() {
@@ -211,7 +211,7 @@ function mapStateToProps(state) {
     tags: state.tags,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
-    refresh: state.view.refresh.discover,
+    refresh: state.navigation.discover.refresh,
     reload: state.navigation.reload
   };
 }

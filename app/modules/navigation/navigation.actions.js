@@ -2,16 +2,16 @@ import {
   REFRESH_ROUTE,
   RELOAD_ROUTE,
   RELOAD_ALL_TABS,
-  SET_VIEW,
+  SET_SCROLL_TAB,
   TOGGLE_TOPICS,
   SCROLL,
-  SET_WEB_VIEW,
   SHOW_MODAL,
   HIDE_MODAL,
   OPEN_WEB_SIDE_NAV,
   CLOSE_WEB_SIDE_NAV,
   SET_WIDTH,
-  REGISTER_GESTURE
+  REGISTER_GESTURE,
+  LOCK_DRAWER
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction, getScreenSize } from 'app/utils/nav';
@@ -35,6 +35,13 @@ if (process.env.WEB !== 'true') {
   DrawerActions = require('react-navigation-drawer').DrawerActions;
   Linking = require('react-native').Linking;
   native = true;
+}
+
+export function lockDrawer(lock) {
+  return {
+    type: LOCK_DRAWER,
+    payload: lock
+  };
 }
 
 export function showModal(modal, data) {
@@ -153,9 +160,9 @@ export function goToTopic(topic) {
   };
 }
 
-export function setView(type, view) {
+export function setScrollTab(type, view) {
   return {
-    type: SET_VIEW,
+    type: SET_SCROLL_TAB,
     payload: {
       type,
       view
@@ -170,16 +177,6 @@ export function setWidth(width) {
     payload: {
       width,
       screenSize
-    }
-  };
-}
-
-export function setWebView(type, params) {
-  return {
-    type: SET_WEB_VIEW,
-    payload: {
-      type,
-      params
     }
   };
 }

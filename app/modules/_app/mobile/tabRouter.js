@@ -58,10 +58,13 @@ export const DefaultStack = {
   },
   discoverTag: {
     screen: Discover,
-    path: ':community/:sort/:topic',
-    navigationOptions: {
-      title: 'Read'
-    }
+    path: ':community/:sort/:topic'
+    // navigationOptions: {
+    //   title: 'Read'
+    // }
+    // navigationOptions: props => {
+    //   return { gesturesEnabled: false, title: 'Read XXX' };
+    // }
   },
   statsView: {
     screen: Stats,

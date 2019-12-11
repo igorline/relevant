@@ -155,7 +155,7 @@ class Read extends Component {
         </Text>
         <Text
           onPress={() => {
-            this.props.actions.setView('discover', 1);
+            this.props.actions.setScrollTab('discover', 1);
           }}
           style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
         >
