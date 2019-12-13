@@ -33,7 +33,7 @@
     "lint": "eslint . --fix",
     "prettier-watch": "onchange '**/*.js' -- prettier-eslint --write {{changed}}",
     "formatAll": "prettier-eslint 'app/**/**/*.js' --write",
-    "ganache": "ganache-cli -i 7545",
+    "ganache": "node ./server/ganache.js",
     "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p",
     "heroku-postbuild": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "preinstall": "rm -rf ./node_modules/**/.git & rm -rf ./node_modules/**/**/websocket/.git",
@@ -317,7 +317,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "^11.4.0"
+    "node": "^12.13.1"
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
   "directories": {

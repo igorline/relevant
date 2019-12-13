@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import pickBy from 'lodash/pickBy';
@@ -36,8 +36,6 @@ const AdminActions = styled.div`
   margin-top: 10px;
 `;
 
-const rewardsToAllocate = formatBalanceWrite('999', 18);
-
 export default function TokenPanel() {
   return (
     <Fragment>
@@ -52,6 +50,7 @@ function ContractParams() {
   const { userBalance, accounts, send, call, getState } = useRelevantToken();
   const { types, initialized } = useContract();
   const readableMethods = types ? getReadableMethods(types) : [];
+  const [allocateAmount, setAllocateAmount] = useState();
 
   useEffect(() => {
     if (!initialized) return;
@@ -60,7 +59,11 @@ function ContractParams() {
 
   const releaseTokens = () => send('releaseTokens', { from: accounts[0] });
   const allocateRewards = () =>
-    send('allocateRewards', { from: accounts[0] }, rewardsToAllocate);
+    send(
+      'allocateRewards',
+      { from: accounts[0] },
+      formatBalanceWrite(allocateAmount, 18)
+    );
 
   return (
     <View m={4}>
@@ -81,9 +84,18 @@ function ContractParams() {
               <Button mr={'auto'} mt={4} onClick={() => releaseTokens()}>
                 Release Tokens
               </Button>
-              <Button mr={'auto'} mt={4} onClick={() => allocateRewards()}>
-                Allocate Rewards
-              </Button>
+              <View mt={4} fdirection="row" align={'flex-start'}>
+                <Input
+                  mt={'0'}
+                  p={1.7}
+                  type="text"
+                  value={allocateAmount}
+                  onChange={e => setAllocateAmount(e.target.value)}
+                />
+                <Button mr={'auto'} onClick={() => allocateRewards()}>
+                  Allocate Rewards
+                </Button>
+              </View>
             </AdminActions>
           )}
           <BodyText>

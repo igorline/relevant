@@ -173,6 +173,7 @@ class TagSelection extends Component {
           multiline={false}
           isFocused={this.state.inputFocused}
           placeholderTextColor={colors.grey}
+          style={{ color: colors.black }}
           placeholder={'Select additional topics or create your own'}
         />
         <View style={styles.break} />

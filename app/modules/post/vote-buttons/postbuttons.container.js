@@ -117,6 +117,7 @@ function getCanBet({ post, community, user }) {
   return (
     manualBet &&
     bettingEnabled &&
+    post.data &&
     post.data.eligibleForReward &&
     now.getTime() < new Date(post.data.payoutTime).getTime()
   );

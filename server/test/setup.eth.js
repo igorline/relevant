@@ -33,6 +33,7 @@ export async function deployContract() {
 
     await contract.deployed();
     await initContract(contract);
+    console.log('CONTRACT_ADDRESS', contract.address); // eslint-disable-line
     return { address: contract.address, provider };
   } catch (err) {
     console.log('failed to deploy contract', err); // eslint-disable-line
