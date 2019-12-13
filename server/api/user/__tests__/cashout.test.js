@@ -16,7 +16,7 @@ describe('Cashout', () => {
     await init(provider, address);
     ({ alice, bob } = getUsers());
     global.console.log = jest.fn(); // hides logs
-  }, 15000);
+  }, 60000);
 
   beforeEach(() => {
     res = response();

@@ -317,7 +317,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "^12.13.1"
+    "node": "^11.14.0"
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
   "directories": {
