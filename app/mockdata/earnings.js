@@ -1,7 +1,7 @@
 export const earningPaidout = {
   community: 'relevant',
   communityId: null,
-  createdAt: '2019-02-05T05:42:29.684Z',
+  createdAt: new Date('January 31, 2019 04:01:01 EST').toString(),
   earned: 0.0918203703714779,
   estimatedPostPayout: 0,
   post: '5c45483709a5b05cd0646d7c',
