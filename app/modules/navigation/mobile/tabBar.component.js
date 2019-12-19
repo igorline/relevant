@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,12 +19,13 @@ if (Platform.OS === 'android') {
   Emoji = require('react-native-emoji-compat-text').default;
 }
 
-export default class TabBar extends Component {
+export default class TabBar extends PureComponent {
   static propTypes = {
-    auth: PropTypes.object,
-    navigation: PropTypes.object,
+    user: PropTypes.object,
+    currentTab: PropTypes.object,
     notif: PropTypes.object,
-    changeTab: PropTypes.func
+    changeTab: PropTypes.func,
+    tabs: PropTypes.array
   };
 
   constructor(props, context) {
@@ -48,11 +49,7 @@ export default class TabBar extends Component {
   }
 
   renderTab(tab) {
-    const { notif, auth, navigation, changeTab } = this.props;
-    const { user } = auth;
-    const currentTab = navigation.state
-      ? navigation.state.routes[navigation.state.index]
-      : null;
+    const { notif, user, currentTab, changeTab } = this.props;
     let badge;
     const active = tab.key === currentTab.key;
     let activeText;
@@ -97,7 +94,7 @@ export default class TabBar extends Component {
     return (
       <View style={{ flex: 1 }} key={tab.key}>
         <TouchableHighlight
-          onPress={() => changeTab(tab.key)}
+          onPress={() => requestAnimationFrame(() => changeTab(tab.key))}
           underlayColor={'transparent'}
           style={[
             styles.footerItem,
@@ -115,10 +112,8 @@ export default class TabBar extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
-    const tabs = [...navigation.state.routes];
+    const { tabs } = this.props;
     this.totalBadge = 0;
-
     return <View style={styles.footer}>{tabs.map(t => this.renderTab(t))}</View>;
   }
 }

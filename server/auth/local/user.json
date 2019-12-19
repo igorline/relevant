@@ -1,0 +1,4 @@
+{
+  "user": { "$gt" : "test"},
+  "password": { "$gt" : ""}
+}

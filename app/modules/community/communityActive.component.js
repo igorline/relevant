@@ -38,12 +38,6 @@ export default function CommunityActive({
   userMemberships
 }) {
   const dispatch = useDispatch();
-  // componentDidMount() {
-  //   const { members, community, getCommunityMembers } = this.props;
-  //   if (!members.length) {
-  //     getCommunityMembers({ slug: community.slug });
-  //   }
-  // }
 
   useEffect(() => {
     if (!members.length) dispatch(getCommunityMembers({ slug: community.slug }));

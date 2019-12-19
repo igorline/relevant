@@ -51,7 +51,6 @@ const MainNavigator = createAppContainer(MainStack);
 
 export default function DrawerRouter() {
   const discoverTab = useSelector(state => state.navigation.discover.tab);
-
   return (
     <MainNavigator
       screenProps={{ discoverTab }}

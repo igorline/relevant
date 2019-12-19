@@ -35,9 +35,11 @@ const SETTLING = 'Settling';
 let PanHandler = {};
 
 const SPRING_CONFIG = {
-  damping: 20,
-  mass: 0.3,
-  stiffness: 150,
+  // damping: 20,
+  // mass: 10,
+  // stiffness: 210,
+  speed: 20,
+  bounciness: 0,
   overshootClamping: true,
   restSpeedThreshold: 0.001,
   restDisplacementThreshold: 0.001
@@ -286,7 +288,7 @@ export default class DrawerLayout extends Component<PropType, StateType> {
     if (shouldOpen) {
       this._animateDrawer(startOffsetX, drawerWidth, velocityX * 2);
     } else {
-      this._animateDrawer(startOffsetX, 0, velocityX * 2);
+      this._animateDrawer(startOffsetX, 0, velocityX);
     }
   };
 
@@ -320,33 +322,24 @@ export default class DrawerLayout extends Component<PropType, StateType> {
   };
 
   _animateDrawer = (fromValue: ?number, toValue: number, velocity: number) => {
-    this.state.dragX.setValue(0);
-    this.state.touchX.setValue(
-      this.props.drawerPosition === 'left' ? 0 : this.state.containerWidth
-    );
-
     if (fromValue !== undefined) {
-      const nextFramePosition = fromValue;
-      // if (this.props.useNativeAnimations) {
-      //   // When using native driver, we predict the next position of the animation
-      //   // because it takes one frame of a roundtrip to pass RELEASE event from
-      //   // native driver to JS before we can start animating. Without it, it is more
-      //   // noticable that the frame is dropped.
-      //   if (fromValue < toValue && velocity > 0) {
-      //     nextFramePosition = Math.min(fromValue + velocity / 60.0, toValue);
-      //   } else if (fromValue > toValue && velocity < 0) {
-      //     nextFramePosition = Math.max(fromValue + velocity / 60.0, toValue);
-      //   }
-      // }
+      let nextFramePosition = fromValue;
+      if (this.props.useNativeAnimations) {
+        // When using native driver, we predict the next position of the animation
+        // because it takes one frame of a roundtrip to pass RELEASE event from
+        // native driver to JS before we can start animating. Without it, it is more
+        // noticable that the frame is dropped.
+        if (fromValue < toValue && velocity > 0) {
+          nextFramePosition = Math.min(fromValue + velocity / 60.0, toValue);
+        } else if (fromValue > toValue && velocity < 0) {
+          nextFramePosition = Math.max(fromValue + velocity / 60.0, toValue);
+        }
+      }
       this.state.drawerTranslation.setValue(nextFramePosition);
     }
 
     const willShow = toValue !== 0;
-    this._updateShowing(willShow);
-    this._emitStateChanged(SETTLING, willShow);
-    if (this.props.hideStatusBar) {
-      StatusBar.setHidden(willShow, this.props.statusBarAnimation || 'slide');
-    }
+
     Animated.spring(this.state.drawerTranslation, {
       velocity,
       ...SPRING_CONFIG,
@@ -360,6 +353,19 @@ export default class DrawerLayout extends Component<PropType, StateType> {
         } else {
           this.props.onDrawerClose && this.props.onDrawerClose();
         }
+      }
+    });
+
+    this.state.dragX.setValue(0);
+
+    requestAnimationFrame(() => {
+      this.state.touchX.setValue(
+        this.props.drawerPosition === 'left' ? 0 : this.state.containerWidth
+      );
+      this._updateShowing(willShow);
+      this._emitStateChanged(SETTLING, willShow);
+      if (this.props.hideStatusBar) {
+        StatusBar.setHidden(willShow, this.props.statusBarAnimation || 'slide');
       }
     });
   };
