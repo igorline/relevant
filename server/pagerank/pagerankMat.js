@@ -117,8 +117,7 @@ export default function pagerank(inputs, params) {
 
   const tildeP = P.map(arr => arr.slice());
   let iter;
-  const T = new Array(N).fill(0)
-  .map(() => new Array(N).fill(0));
+  const T = new Array(N).fill(0).map(() => new Array(N).fill(0));
 
   let danglesum = 0;
 

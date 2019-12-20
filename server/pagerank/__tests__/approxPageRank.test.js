@@ -4,7 +4,8 @@ import Invest from 'server/api/invest/invest.model';
 
 import { sanitize, toObject } from 'server/test/utils';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
-import computePageRank, { computeApproxPageRank } from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
+import computeApproxPageRank from 'server/pagerank/computeApproxPageRank';
 
 // this will define the database name where the tests are run
 process.env.TEST_SUITE = 'pagerankComputeApprox';

@@ -19,7 +19,7 @@ import {
   MAX_AIRDROP
 } from 'server/config/globalConstants';
 import { user2, user3 } from 'app/mockdata/user';
-import computePageRank from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import { handleTwitterAuth } from 'server/auth/twitter/passport';
 
 // this will define the database name where the tests are run

@@ -1,6 +1,6 @@
 import Earnings from 'server/api/earnings/earnings.model';
 import { sendNotification as sendPushNotification } from 'server/notifications';
-import { computeApproxPageRank } from 'server/utils/pagerankCompute';
+import computeApproxPageRank from 'server/pagerank/computeApproxPageRank';
 import { computePostPayout } from 'app/utils/rewards';
 import Community from 'server/api/community/community.model';
 import Post from 'server/api/post/post.model';

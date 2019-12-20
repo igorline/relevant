@@ -38,7 +38,8 @@
     "heroku-postbuild": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "preinstall": "rm -rf ./node_modules/**/.git & rm -rf ./node_modules/**/**/websocket/.git",
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
-    "jetify": "jetify"
+    "jetify": "jetify",
+    "testPagerank": "nodemon server/pagerank/manulaTest.js"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",

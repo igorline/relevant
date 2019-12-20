@@ -1,5 +1,5 @@
 import { setupTestData } from 'server/test/seedData';
-import computePageRank from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import Community from 'server/api/community/community.model';
 
 const SEED_DB = process.env.SEED_DB === 'true' && process.env.NODE_ENV === 'development';

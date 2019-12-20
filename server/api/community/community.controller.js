@@ -1,4 +1,4 @@
-import computePageRank from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import PostData from 'server/api/post/postData.model';
 import Community from './community.model';
 import CommunityMember from './community.member.model';

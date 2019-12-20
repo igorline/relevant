@@ -4,6 +4,7 @@ import Notification from 'server/api/notification/notification.model';
 import Post from 'server/api/post/post.model';
 import { sendAdminAlert } from 'server/utils/mail';
 import Treasury from 'server/api/treasury/treasury.model';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import Earnings from '../api/earnings/earnings.model';
@@ -12,7 +13,6 @@ import * as Eth from './ethereum';
 import { SHARE_DECAY, MINIMUM_RANK, TOKEN_DECIMALS } from '../config/globalConstants';
 import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
-import computePageRank from './pagerankCompute';
 import { runAudit } from './tokenAudit';
 
 const queue = require('queue');

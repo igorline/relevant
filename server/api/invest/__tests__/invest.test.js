@@ -3,7 +3,7 @@ import { sanitize, toObject } from 'server/test/utils';
 import Invest from 'server/api/invest/invest.model';
 import Post from 'server/api/post/post.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
-import computePageRank from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import { create, bet } from 'server/api/invest/invest.controller';
 import { response } from 'jest-mock-express';
 
