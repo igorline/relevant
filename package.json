@@ -202,6 +202,7 @@
     "serve-favicon": "^2.3.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
+    "sqreen": "^1.38.1",
     "styled-components": "^5.0.0-beta.8",
     "twitter": "^1.7.1",
     "universal-cookie-express": "^4.0.1",

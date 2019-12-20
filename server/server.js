@@ -1,5 +1,6 @@
 /* eslint-disable no-console, no-use-before-define */
 import 'dotenv/config';
+import 'sqreen';
 import Express from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
