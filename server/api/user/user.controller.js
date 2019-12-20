@@ -74,7 +74,7 @@ exports.forgot = async (req, res, next) => {
       query,
       'resetPasswordToken resetPasswordExpires email handle'
     );
-    if (!user && email) {
+    if (!user) {
       const errorText = email
         ? 'No user with this email exists'
         : "Couldn't find user with this username";
