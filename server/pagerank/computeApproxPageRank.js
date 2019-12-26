@@ -1,9 +1,8 @@
 import Invest from 'server/api/invest/invest.model';
 import CommunityMember from 'server/api/community/community.member.model';
 import Community from 'server/api/community/community.model';
-import Relevance from 'server/api/relevance/relevance.model';
 
-export async function computeApproxPageRank({
+export default async function computeApproxPageRank({
   author,
   post,
   user,
@@ -30,10 +29,9 @@ export async function computeApproxPageRank({
     const authorId = author ? author._id : null;
 
     if (author && !author.relevance) {
-      author.relevance = await Relevance.findOne({
+      author.relevance = await CommunityMember.findOne({
         user: author._id,
-        communityId,
-        global: true
+        communityId
       });
     }
 
@@ -59,29 +57,36 @@ export async function computeApproxPageRank({
       }
     }
 
-    const degree = member.degree || 1;
+    const negPosRatio = member.pagerankRaw
+      ? member.pagerankRawNeg / member.pagerankRaw
+      : 0;
+
+    const userDegree = member.degree * (1 + negPosRatio) + 1;
+    const mergedDegree = member.degree + member.postDegree;
+    const postDegree = mergedDegree * (1 + negPosRatio) + 1;
 
     const a = Math.abs(amount);
-    const increment = (a / degree) * userR;
-    const uDownvoteInc = increment / 3;
+    const uInc = (a / userDegree) * userR;
+    const pInc = (a / postDegree) * userR;
+    const uDownvoteInc = uInc / 3;
 
     if (amount >= 0) {
       if (undoInvest) {
-        if (author && userVotes) author.relevance.pagerankRaw -= increment;
-        if (post && postVotes) post.data.pagerankRaw -= increment;
+        if (author && userVotes) author.relevance.pagerankRaw -= uInc;
+        if (post && postVotes) post.data.pagerankRaw -= pInc;
       } else {
-        if (author) author.relevance.pagerankRaw += increment;
-        if (post) post.data.pagerankRaw += increment;
+        if (author) author.relevance.pagerankRaw += uInc;
+        if (post) post.data.pagerankRaw += pInc;
       }
     } else if (amount < 0) {
       if (undoInvest) {
         if (author && userVotes) {
           author.relevance.pagerankRaw += uDownvoteInc;
         }
-        if (post && postVotes) post.data.pagerankRawNeg -= increment;
+        if (post && postVotes) post.data.pagerankRawNeg -= pInc;
       } else {
         if (author) author.relevance.pagerankRaw -= uDownvoteInc;
-        if (post) post.data.pagerankRawNeg += increment;
+        if (post) post.data.pagerankRawNeg += pInc;
       }
     }
 

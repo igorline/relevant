@@ -54,7 +54,6 @@ Object {
   "provider": "local",
   "referralTokens": 0,
   "relevance": null,
-  "relevanceRecord": Array [],
   "role": "user",
   "token": Object {
     "_id": "[SANITIZED]",

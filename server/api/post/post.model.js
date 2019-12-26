@@ -123,7 +123,7 @@ PostSchema.virtual('commentary', {
 });
 
 PostSchema.virtual('embeddedUser.relevance', {
-  ref: 'Relevance',
+  ref: 'CommunityMember',
   localField: 'user',
   foreignField: 'user',
   justOne: true
@@ -663,9 +663,6 @@ PostSchema.post('remove', async function postRemove(post, next) {
   const feed = this.model('Feed')
     .deleteMany({ post: post._id })
     .exec();
-  const twitterFeed = this.model('TwitterFeed')
-    .deleteMany({ post: post._id })
-    .exec();
   const data = this.model('PostData')
     .deleteMany({ post: post._id })
     .exec();
@@ -685,7 +682,7 @@ PostSchema.post('remove', async function postRemove(post, next) {
       .exec();
   }
 
-  await Promise.all([note, feed, twitterFeed, data, metaPost, commentNote]);
+  await Promise.all([note, feed, data, metaPost, commentNote]);
   return next();
 });
 

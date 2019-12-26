@@ -2,15 +2,10 @@ import Community from 'server/api/community/community.model';
 import { getMentions, getWords, getTags } from 'app/utils/text';
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import socketEvent from 'server/socket/socketEvent';
-
-const Post = require('../post/post.model');
-const User = require('../user/user.model');
-const Notification = require('../notification/notification.model');
-const Subscriptiton = require('../subscription/subscription.model');
-const Feed = require('../feed/feed.model');
-const Invest = require('../invest/invest.model');
-
-const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
+import Post from 'server/api/post/post.model';
+import User from 'server/api/user/user.model';
+import Notification from 'server/api/notification/notification.model';
+import Invest from 'server/api/invest/invest.model';
 
 // COMMENTS ARE USING POST SCHEMA
 exports.index = async req => {
@@ -41,7 +36,7 @@ exports.index = async req => {
       {
         path: 'embeddedUser.relevance',
         select: 'pagerank',
-        match: { communityId, global: true }
+        match: { communityId }
       },
       {
         path: 'data',
@@ -98,23 +93,11 @@ exports.create = async (req, res, next) => {
     parentPost = await Post.findOne({ _id: parentPost });
     parentComment = await Post.findOne({ _id: parentComment });
 
-    if (repost) comment = await createRepost(comment, parentPost, user);
-
     comment = await comment.addUserInfo(user);
     comment = await comment.addPostData();
 
     // this will also save the new comment
     comment = await Post.sendOutMentions(mentions, comment, user, comment);
-
-    // Do we need this?
-    // await Invest.createVote({
-    //   post: comment,
-    //   user,
-    //   amount: 0,
-    //   relevanceToAdd: 0,
-    //   community,
-    //   communityId,
-    // });
 
     const updateTime = type === 'post' || false;
     await parentPost.updateRank({ communityId, updateTime });
@@ -199,124 +182,48 @@ async function sendNotifications({
   comment,
   type
 }) {
-  try {
-    if (user._id.equals(commentor._id)) return;
+  if (user._id.equals(commentor._id)) return;
 
-    const ownPost = postAuthor && commentor._id.equals(postAuthor._id);
-    const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
+  const ownPost = postAuthor && commentor._id.equals(postAuthor._id);
+  const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
 
-    const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
+  const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
 
-    if (repost && ownPost) type = 'repost';
+  if (repost && ownPost) type = 'repost';
 
-    let note = {
-      post: comment._id,
-      forUser: commentor._id,
-      byUser: user._id,
-      amount: null,
-      type: noteType,
-      source: type,
-      personal: true,
-      read: false
-    };
+  let note = {
+    post: comment._id,
+    forUser: commentor._id,
+    byUser: user._id,
+    amount: null,
+    type: noteType,
+    source: type,
+    personal: true,
+    read: false
+  };
 
-    note = new Notification(note);
-    note = await note.save();
+  note = new Notification(note);
+  note = await note.save();
 
-    const noteAction = {
-      _id: commentor._id,
-      type: 'ADD_ACTIVITY',
-      payload: note
-    };
-    socketEvent.emit('socketEvent', noteAction);
+  const noteAction = {
+    _id: commentor._id,
+    type: 'ADD_ACTIVITY',
+    payload: note
+  };
+  socketEvent.emit('socketEvent', noteAction);
 
-    let action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
-    if (type === 'repost' && ownPost) action = ` reposted your ${type}`;
+  let action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
+  if (type === 'repost' && ownPost) action = ` reposted your ${type}`;
 
-    // if (ownComment || ownPost) {
-    //   sendCommentEmail({ commentor: user, comment, user: commentor, action });
-    // }
-    // const noteType = ownComment || ownPost ? 'personal' : 'general';
-
-    const alert = user.name + action;
-    const payload = {
-      fromUser: user,
-      toUser: commentor,
-      post: comment,
-      action,
-      noteType: ownPost || ownComment ? 'reply' : 'general'
-    };
-    sendPushNotification(commentor, alert, payload);
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function createRepost(comment, post, user) {
-  try {
-    const now = new Date().getTime();
-    const { rank } = post;
-
-    // keeps rank the same (may cause negative relevance);
-    const newRelevance = 10 ** (rank - now / TENTH_LIFE) - 1;
-    post.rankRelevance = newRelevance;
-    post.postDate = now;
-
-    const repostObj = {
-      user: user._id,
-      metaPost: post.metaPost,
-      postDate: new Date(),
-      relevance: 0,
-      parentPost: post._id,
-      body: comment.body,
-      type: 'repost',
-      eligibleForRewards: true,
-      repost: {
-        post: post._id,
-        commentBody: comment.body
-      }
-    };
-    let repost = new Post(repostObj);
-
-    repost = await repost.addUserInfo(user);
-    repost = await repost.save();
-
-    const subscribers = await Subscriptiton.find({
-      following: user._id
-      // category: newPostObj.category
-    });
-
-    // if its a repost, push the post to all subscribers
-    // TODO only push if subscriber doesn't have this post already
-    if (subscribers) {
-      // save post here
-      subscribers.forEach(async subscription => {
-        if (subscription.amount < 1) {
-          await subscription.remove();
-        } else {
-          subscription.amount -= 1;
-          await Feed.findOneAndUpdate(
-            {
-              userId: subscription.follower,
-              post: repost._id,
-              metaPost: post.metaPost
-            },
-            { tags: post.tags, createdAt: new Date() },
-            { upsert: true }
-          ).exec();
-
-          const newFeedPost = {
-            _id: subscription.follower,
-            type: 'INC_FEED_COUNT'
-          };
-          socketEvent.emit('socketEvent', newFeedPost);
-        }
-      });
-    }
-    return repost;
-  } catch (err) {
-    throw err;
-  }
+  const alert = user.name + action;
+  const payload = {
+    fromUser: user,
+    toUser: commentor,
+    post: comment,
+    action,
+    noteType: ownPost || ownComment ? 'reply' : 'general'
+  };
+  sendPushNotification(commentor, alert, payload);
 }
 
 exports.update = async (req, res, next) => {

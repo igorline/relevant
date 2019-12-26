@@ -27,6 +27,8 @@ const CommunitySchema = new Schema(
     lastTwitterUpdate: { type: Date },
     maxUserRank: { type: Number },
     maxPostRank: { type: Number },
+    danglingConsumer: { type: Number, default: 0 },
+    negConsumer: { type: Number, default: 0 },
     numberOfElements: { type: Number },
     memberCount: { type: Number },
     inactive: Boolean,
@@ -113,8 +115,6 @@ CommunitySchema.methods.join = async function join(userId, role, dontUpdateCount
   }
 
   if (member) return member;
-
-  await this.model('Relevance').create({ userId, communityId, community });
 
   member = {
     user: userId,

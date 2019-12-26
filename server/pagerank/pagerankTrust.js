@@ -203,7 +203,7 @@ function runLoop(loopParams, params) {
 
   // normalize
   let sum = x.reduce((prev, next) => prev + next, 0);
-
+  console.log('sum', sum);
   let err = 0.0;
   x = x.map((el, i) => {
     el /= sum;

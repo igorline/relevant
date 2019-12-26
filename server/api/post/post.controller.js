@@ -71,7 +71,7 @@ exports.flagged = async (req, res, next) => {
             },
             {
               path: 'embeddedUser.relevance',
-              match: { community, global: true },
+              match: { community },
               select: 'pagerank'
             }
           ]
@@ -89,32 +89,13 @@ exports.flagged = async (req, res, next) => {
 
 exports.topPosts = async (req, res, next) => {
   try {
-    // const { community } = req.query;
     let posts;
     const now = new Date();
     now.setDate(now.getDate() - 7);
     posts = await PostData.find({ createdAt: { $gt: now }, isInFeed: true })
       .populate({
         path: 'post',
-        populate: [
-          // {
-          //   path: 'commentary',
-          //   match: {
-          //     // TODO implement intra-community commentary
-          //     // community,
-          //     // TODO - we should probably sort the non-community commentary
-          //     // with some randomness on client side
-          //     repost: { $exists: false },
-          //     $or: [{ hidden: { $ne: true } }]
-          //   }
-          // },
-          // {
-          //   path: 'embeddedUser.relevance',
-          //   match: { community, global: true },
-          //   select: 'pagerank'
-          // },
-          { path: 'metaPost' }
-        ]
+        populate: [{ path: 'metaPost' }]
       })
       .sort('-pagerank')
       .limit(20);
@@ -206,43 +187,6 @@ exports.flag = async (req, res, next) => {
   }
 };
 
-// exports.index = async (req, res, next) => {
-//   try {
-//     let id;
-//     if (req.user) id = req.user._id;
-//     const { community } = req.query;
-//     const limit = parseInt(req.query.limit, 10) || 15;
-//     const skip = parseInt(req.query.skip, 10) || 0;
-//     const tags = req.query.tag || null;
-//     const sort = req.query.sort || null;
-//     let category = req.query.category || null;
-//     if (category === '') category = null;
-//     let query = null;
-//     let tagsArr = null;
-//     let sortQuery = { postDate: -1 };
-//     if (sort === 'rank') sortQuery = { rank: -1 };
-//     if (tags) {
-//       tagsArr = tags.split(',').trim();
-//       query = { $or: [{ tags: { $in: tagsArr } }, { category: { $in: tagsArr } }] };
-//       // if (category) query = { $or: [{ category }, query] };
-//     } else if (category) query = { category };
-
-//     const posts = await Post.find(query)
-//     .populate({
-//       path: 'embeddedUser.relevance',
-//       select: 'pagerank',
-//       match: { community, global: true }
-//     })
-//     .limit(limit)
-//     .skip(skip)
-//     .sort(sortQuery);
-
-//     res.status(200).json(posts);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 exports.userPosts = async (req, res, next) => {
   try {
     const { community } = req.query;
@@ -283,7 +227,7 @@ exports.userPosts = async (req, res, next) => {
           {
             path: 'embeddedUser.relevance',
             select: 'pagerank',
-            match: { communityId, global: true }
+            match: { communityId }
           },
           {
             path: 'metaPost'
@@ -320,7 +264,7 @@ exports.userPosts = async (req, res, next) => {
       .populate({
         path: 'embeddedUser.relevance',
         select: 'pagerank',
-        match: { communityId, global: true }
+        match: { communityId }
       })
       .populate([
         {
@@ -456,7 +400,7 @@ exports.index = async req => {
     {
       path: 'embeddedUser.relevance',
       select: 'pagerank',
-      match: { communityId, global: true }
+      match: { communityId }
     },
     { path: 'metaPost' },
     {

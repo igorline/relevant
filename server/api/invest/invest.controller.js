@@ -41,10 +41,10 @@ exports.postInvestments = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .populate({
         path: 'investor',
-        select: 'relevance name image handle',
+        select: 'name image handle',
         populate: {
           path: 'relevance',
-          match: { global: true, community }
+          match: { community }
         }
       });
 
@@ -67,10 +67,10 @@ exports.postvotes = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .populate({
         path: 'investor',
-        select: 'relevance name image handle',
+        select: 'name image handle',
         populate: {
           path: 'relevance',
-          match: { global: true, community }
+          match: { community }
         }
       });
 
@@ -120,7 +120,7 @@ exports.show = async (req, res, next) => {
         populate: [
           {
             path: 'embeddedUser.relevance',
-            match: { communityId, global: true }
+            match: { communityId }
           },
           {
             path: 'data',

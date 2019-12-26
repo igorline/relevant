@@ -1,17 +1,12 @@
 import uuid from 'uuid/v4';
-import Relevance from 'server/api/relevance/relevance.model';
+import CommunityMember from 'server/api/community/community.member.model';
 import { totalAllowedInvites } from 'server/config/globalConstants';
 import Community from 'server/api/community/community.model';
 import { sendEmail } from 'server/utils/mail';
-// import User from 'server/api/user/user.model';
 import Invite from './invite.model';
 
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
-
-// Invite.countDocuments({ status: 'email sent' }).then(c => console.log('email sent', c));
-// Invite.countDocuments({ status: 'registered' }).then(c => console.log('registered', c));
-// User.countDocuments({}).then(u => console.log('Users', u));
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
@@ -73,10 +68,9 @@ exports.create = async (req, res, next) => {
     };
 
     if (!user.relevance) {
-      user.relevance = await Relevance.findOne({
+      user.relevance = await CommunityMember.findOne({
         user: user._id,
-        communityId,
-        global: true
+        communityId
       });
     }
     if (!user.relevance) {
@@ -109,10 +103,9 @@ exports.create = async (req, res, next) => {
 
 async function computeInviteNumber({ user, communityId }) {
   if (!user.relevance) {
-    user.relevance = await Relevance.findOne({
+    user.relevance = await CommunityMember.findOne({
       user: user._id.toString(),
-      communityId,
-      global: true
+      communityId
     });
     if (!user.relevance) return 0;
   }
@@ -138,18 +131,12 @@ exports.sendEmail = async (req, res) => {
 
 exports.sendEmailFunc = async function inviteEamil(_invite) {
   let invite = _invite;
-  // const appStoreUrl =
-  //  'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
 
   if (invite && !invite._id) {
     invite = await Invite.findById(invite);
   }
-  // const webUrl = 'https://relevant.community';
 
   if (!invite || !invite.code) throw new Error('no invite or code');
-  // const url = `${process.env.API_SERVER}/invite/${invite.code}`;
-  // const androidStoreUrl =
-  //  'https://play.google.com/store/apps/details?id=com.relevantnative';
   let name = invite.name ? invite.name.split(' ')[0] : null;
   if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
   let hi = 'Hi!<br /><br />';
@@ -272,10 +259,9 @@ exports.handleAdminInvite = async ({ user, invitecode }) => {
   invite.redeemed = true;
   await invite.save();
 
-  const relevance = await Relevance.findOne({
+  const relevance = await CommunityMember.findOne({
     user: user._id,
-    communityId,
-    global: true
+    communityId
   });
   relevance.pagerank = 70;
   await relevance.save();

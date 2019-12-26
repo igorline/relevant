@@ -96,7 +96,7 @@ export async function members(req, res, next) {
         $nin: blocked
       }
     })
-      .sort({ role: 1, reputation: -1 })
+      .sort({ role: 1, pagerank: -1 })
       .limit(limit)
       .skip(skip);
     res.status(200).json(users || []);

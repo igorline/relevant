@@ -85,7 +85,7 @@ exports.index = async req => {
             {
               path: 'embeddedUser.relevance',
               select: 'pagerank',
-              match: { communityId, global: true }
+              match: { communityId }
             }
           ]
         },
@@ -93,7 +93,7 @@ exports.index = async req => {
         {
           path: 'embeddedUser.relevance',
           select: 'pagerank',
-          match: { communityId, global: true }
+          match: { communityId }
         }
       ]
     });

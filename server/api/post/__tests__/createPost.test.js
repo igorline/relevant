@@ -1,4 +1,3 @@
-import TwitterFeed from 'server/api/twitterFeed/twitterFeed.model'; // eslint-disable-line
 import Post from 'server/api/post/post.model';
 import PostData from 'server/api/post/postData.model';
 import Link from 'server/api/post/link.model';

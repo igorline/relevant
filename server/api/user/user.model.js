@@ -62,12 +62,7 @@ const UserSchema = new Schema(
     redditAuth: { type: Object, select: false },
     google: {},
     github: {},
-    relevanceRecord: [
-      {
-        relevance: Number,
-        time: Date
-      }
-    ],
+
     postCount: { type: Number, default: 0 },
     investmentCount: { type: Number, default: 0 },
     onboarding: { type: Number, default: 0 },
@@ -156,7 +151,7 @@ UserSchema.index({ handle: 1 });
  */
 // TODO use this in controller
 UserSchema.virtual('relevance', {
-  ref: 'Relevance',
+  ref: 'CommunityMember',
   localField: '_id',
   foreignField: 'user',
   justOne: true
@@ -300,23 +295,6 @@ UserSchema.methods = {
     return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64');
   },
 
-  // update user relevance and save record
-
-  // updateRelevanceRecord: async function updateRelevanceRecord(communityId) {
-  //   if (!community) community = 'relevant';
-
-  //   // TODO test updateRelevanceRecord
-  //   let relevance = await this.model('Relevance')
-  //   .findOneAndUpdate(
-  //     { user: this._id, communityId, global: true },
-  //     { upsert: true, new: true }
-  //   );
-
-  //   relevance.updateRelevanceRecord();
-  //   await relevance.save();
-  //   return this;
-  // },
-
   // get following and followers
   getSubscriptions: function getSubscriptions() {
     return this.model('Subscription')
@@ -334,10 +312,9 @@ UserSchema.methods = {
 };
 
 UserSchema.methods.getRelevance = async function getRelevance(community) {
-  const rel = await this.model('Relevance').findOne({
+  const rel = await this.model('CommunityMember').findOne({
     community,
-    user: this._id,
-    global: true
+    user: this._id
   });
   this.relevance = rel ? rel.relevance : 0;
   return this;

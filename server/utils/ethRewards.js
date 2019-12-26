@@ -17,6 +17,8 @@ import { runAudit } from './tokenAudit';
 
 const queue = require('queue');
 
+const IS_TEST = process.env.NODE_ENV === 'test';
+
 const q = queue({ concurrency: 1 });
 // const debug = process.env.NODE_ENV === 'test';
 const debug = false;
@@ -180,7 +182,9 @@ async function postRewards(community) {
   });
 
   // decay current reward shares
-  const decay = (now.getTime() - community.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
+  const decay = IS_TEST
+    ? 0
+    : (now.getTime() - community.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
 
   community.currentShares *= 1 - Math.min(1, decay);
   community.topPostShares *= 1 - Math.min(1, decay);

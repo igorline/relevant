@@ -1,4 +1,4 @@
-import Relevance from 'server/api/relevance/relevance.model';
+import CommunityMember from 'server/api/community/community.member.model';
 import PostData from 'server/api/post/postData.model';
 import Invest from 'server/api/invest/invest.model';
 
@@ -109,7 +109,7 @@ describe('computeApproxPageRank', () => {
     postI1.data = await PostData.findOne({ post: postI1._id, communityId });
     const startPagerank = postI1.data.pagerank;
 
-    bob.relevance = await Relevance.findOne({ user: bob._id, communityId, global: true });
+    bob.relevance = await CommunityMember.findOne({ user: bob._id, communityId });
     const startAuthorRank = bob.relevance.pagerank;
 
     let vote = new Invest({
@@ -121,10 +121,9 @@ describe('computeApproxPageRank', () => {
     });
     vote = await vote.save();
 
-    alice.relevance = await Relevance.findOne({
+    alice.relevance = await CommunityMember.findOne({
       user: alice._id,
-      communityId,
-      global: true
+      communityId
     });
 
     let result = await computeApproxPageRank({
@@ -140,6 +139,8 @@ describe('computeApproxPageRank', () => {
     const authorSan = sanitize(toObject(author), 'hashedPassword lastVote salt');
     const postSan = sanitize(toObject(post));
     if (hasAuthor) {
+      authorSan.relevance.postDegree =
+        Math.round(authorSan.relevance.postDegree * 100) / 100;
       authorSan.relevance.pagerank = Math.round(authorSan.relevance.pagerank * 100) / 100;
       authorSan.relevance.pagerankRaw =
         Math.round(authorSan.relevance.pagerankRaw * 1000) / 1000;

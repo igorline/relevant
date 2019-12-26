@@ -22,7 +22,6 @@ module.exports = app => {
   app.use('/api/s3', require('./api/s3'));
   app.use('/auth', require('./auth'));
   app.use('/api/post', require('./api/post'));
-  app.use('/api/feed', require('./api/feed'));
   app.use('/api/subscription', require('./api/subscription'));
   app.use('/api/invest', require('./api/invest'));
   app.use('/api/tag', require('./api/tag'));
@@ -30,12 +29,10 @@ module.exports = app => {
   app.use('/api/comment', require('./api/comment'));
   app.use('/api/statistics', require('./api/statistics'));
   app.use('/api/earnings', require('./api/earnings'));
-  app.use('/api/relevance', require('./api/relevance'));
   app.use('/api/treasury', require('./api/treasury'));
   app.use('/api/list', require('./api/emailList'));
   app.use('/api/invites', require('./api/invites'));
   app.use('/api/email', require('./api/email'));
-  app.use('/api/twitterFeed', require('./api/twitterFeed'));
   app.use('/api/communityFeed', require('./api/communityFeed'));
   app.use('/api/community', require('./api/community'));
   app.get('/confirm/:user/:code', userController.confirm); // deprecate

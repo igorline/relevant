@@ -11,7 +11,6 @@ import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants'
 import User from './user.model';
 import Post from '../post/post.model';
 import CommunityMember from '../community/community.member.model';
-import Relevance from '../relevance/relevance.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
@@ -292,9 +291,9 @@ exports.testData = async (req, res, next) => {
     const limit = parseInt(req.query.limit, 10) || 5;
     const skip = parseInt(req.query.skip, 10) || 0;
     const community = req.query.community || 'relevant';
-    const query = { global: true, community, pagerank: { $gt: 0 } };
+    const query = { community, pagerank: { $gt: 0 } };
 
-    const rel = await Relevance.find(
+    const rel = await CommunityMember.find(
       query,
       'pagerank level community communityId pagerankRaw'
     )
@@ -317,7 +316,6 @@ exports.list = async (req, res, next) => {
     const { user } = req;
     const limit = parseInt(req.query.limit, 10) || 5;
     const skip = parseInt(req.query.skip, 10) || 0;
-    let topic = req.query.topic || null;
 
     let blocked = [];
     if (user) {
@@ -325,25 +323,16 @@ exports.list = async (req, res, next) => {
     }
     const community = req.query.community || 'relevant';
 
-    let query;
-    let sort;
-    if (topic && topic !== 'null') {
-      // TODO should topic relevance be limited to community? maybe not?
-      query = { tag: topic, community, user: { $nin: blocked } };
-      sort = { relevance: -1 };
-    } else {
-      topic = null;
-      sort = { pagerank: -1 };
-      query = { global: true, community, user: { $nin: blocked } };
-    }
+    const sort = { pagerank: -1 };
+    const query = { community, user: { $nin: blocked } };
 
-    const rel = await Relevance.find(query)
+    const rel = await CommunityMember.find(query)
       .limit(limit)
       .skip(skip)
       .sort(sort)
       .populate({
         path: 'user',
-        select: 'handle name votePower image bio'
+        select: 'handle name image bio'
       });
 
     const users = rel.map(r => {
@@ -352,8 +341,7 @@ exports.list = async (req, res, next) => {
       let u = { ...r.user }; // eslint-disable-line
       u.relevance = {};
       delete r.user;
-      if (topic) u[topic + '_relevance'] = r.relevance;
-      else u.relevance = r;
+      u.relevance = r;
       return u;
     });
 
@@ -445,7 +433,7 @@ exports.show = async function show(req, res, next) {
     const select = me ? '+email' : null;
     user = await User.findOne({ handle }, select).populate({
       path: 'relevance',
-      match: { community, global: true },
+      match: { community },
       select: 'pagerank relevanceRecord community'
     });
 
@@ -453,7 +441,7 @@ exports.show = async function show(req, res, next) {
     user = await user.getSubscriptions();
 
     // topic relevance
-    const relevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
+    const relevance = await CommunityMember.find({ user: user._id })
       .sort('-relevance')
       .limit(5);
     const userObj = user.toObject();

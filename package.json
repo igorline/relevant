@@ -39,7 +39,7 @@
     "preinstall": "rm -rf ./node_modules/**/.git & rm -rf ./node_modules/**/**/websocket/.git",
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
     "jetify": "jetify",
-    "testPagerank": "nodemon server/pagerank/manulaTest.js"
+    "testPagerank": "nodemon server/pagerank/manualTest.js"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",

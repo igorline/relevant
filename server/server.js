@@ -154,11 +154,6 @@ SubscriptionServer.create(
         }
       };
     },
-    // onConnect: (connectionParams, webSocket, context) => {
-    //   // TODO auth socket request
-    //   console.log(webSocket.user);
-    //   console.log(context.user);
-    // },
     execute,
     subscribe,
     schema,

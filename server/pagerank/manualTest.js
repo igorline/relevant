@@ -15,8 +15,6 @@ const { db } = require('../config/db.connect');
 async function runTest() {
   try {
     await db;
-    // request(app);
-
     const communityId = (await Community.findOne({ slug: community }))._id;
     await computePageRank({ communityId, community, debug: true });
   } catch (err) {

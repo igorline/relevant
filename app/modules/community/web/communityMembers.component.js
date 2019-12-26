@@ -92,7 +92,7 @@ class CommunityMembers extends Component {
             user={{
               ...user.embeddedUser,
               relevance: {
-                pagerank: user.reputation
+                pagerank: user.pagerank
               }
             }}
             navigationCallback={close}

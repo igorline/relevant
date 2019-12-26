@@ -18,10 +18,23 @@ const CommunityMemberSchema = new Schema(
     reputation: { type: Number, default: 0 },
     invites: { type: Number, default: 0 },
     degree: { type: Number, default: 0 },
+    postDegree: { type: Number, default: 0 },
     pagerank: { type: Number, default: 0 },
+    pagerankNeg: { type: Number, default: 0 },
     pagerankRaw: { type: Number, default: 0 },
+    pagerankRawNeg: { type: Number, default: 0 },
     unread: { type: Number, default: 0 },
-    deletedCommunity: { type: Boolean, default: false }
+    deletedCommunity: { type: Boolean, default: false },
+
+    totalUsers: Number,
+    level: Number,
+    percentRank: Number,
+    relevanceRecord: [
+      {
+        relevance: Number,
+        time: Date
+      }
+    ]
   },
   {
     timestamps: true
@@ -46,5 +59,18 @@ CommunityMemberSchema.index({ deletedCommunity: 1, user: 1 });
 CommunityMemberSchema.virtual('repKey').get(function getProfile() {
   return this.user + '_' + this.communityId;
 });
+
+// update user relevance and save record
+CommunityMemberSchema.methods.updateRelevanceRecord = function updateRelevanceRecord() {
+  let { relevanceRecord } = this;
+  if (!relevanceRecord) relevanceRecord = [];
+  relevanceRecord.unshift({
+    time: new Date(),
+    relevance: this.pagerank
+  });
+  relevanceRecord = this.relevanceRecord.slice(0, 10);
+  this.relevanceRecord = relevanceRecord;
+  return this;
+};
 
 export default mongoose.model('CommunityMember', CommunityMemberSchema);

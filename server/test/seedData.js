@@ -3,7 +3,6 @@ import PostData from 'server/api/post/postData.model'; // eslint-disable-line
 import CommunityMember from 'server/api/community/community.member.model'; // eslint-disable-line
 import Earnings from 'server/api/earnings/earnings.model'; // eslint-disable-line
 import CommunityFeed from 'server/api/communityFeed/communityFeed.model'; // eslint-disable-line
-import Relevance from 'server/api/relevance/relevance.model'; // eslint-disable-line
 import Treasury from 'server/api/treasury/treasury.model'; // eslint-disable-line
 import Link from 'server/api/post/link.model'; // eslint-disable-line
 

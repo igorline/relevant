@@ -8,7 +8,6 @@ import User from 'server/api/user/user.model';
 import Subscription from 'server/api/subscription/subscription.model';
 import Notification from 'server/api/notification/notification.model';
 import Invest from 'server/api/invest/invest.model';
-import Relevance from 'server/api/relevance/relevance.model';
 
 const { NODE_ENV } = process.env;
 
@@ -46,7 +45,12 @@ export const create = async (req, res, next) => {
     // TODO create twitter user authors!
 
     ratelimitVotes({ user });
-    await ensureAuthorPagerank({ author, communityId, community });
+    if (author) {
+      author.relevance = await ensurePagerank({ user: author, communityInstance });
+    }
+    if (user) {
+      user.relevance = await ensurePagerank({ user, communityInstance });
+    }
 
     let vote = await getExistingVote({ user, post, amount, communityId });
     const undoInvest = !!vote;
@@ -318,16 +322,10 @@ async function unhideTwitterComments({ amount, post, communityId, community }) {
   return post;
 }
 
-async function ensureAuthorPagerank({ author, communityId, community }) {
-  // TODO: should this be done upon joining a community?
-  if (!author || author.relevance) return;
-  author.relevance = new Relevance({
-    user: author._id,
-    communityId,
-    community,
-    global: true
-  });
-  author.relevance = await author.relevance.save();
+async function ensurePagerank({ user, communityInstance }) {
+  if (!user) return null;
+  if (user.relevance) return user.relevance;
+  return communityInstance.join(user._id);
 }
 
 async function queryDb({ userId, postId, communityId }) {
@@ -340,7 +338,7 @@ async function queryDb({ userId, postId, communityId }) {
     'name balance ethAddress image lastVote votePower handle tokenBalance lockedTokens notificationSettings'
   ).populate({
     path: 'relevance',
-    match: { communityId, global: true }
+    match: { communityId }
   });
 
   const author = await User.findOne(
@@ -348,7 +346,7 @@ async function queryDb({ userId, postId, communityId }) {
     'name handle image balance deviceTokens badge'
   ).populate({
     path: 'relevance',
-    match: { communityId, global: true }
+    match: { communityId }
   });
   return { user, author, post };
 }

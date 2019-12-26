@@ -15,6 +15,7 @@ class CommunityMembersTitle extends Component {
     const { community } = this.props;
     const { communities, active } = community;
     const activeCommunity = communities[active];
+    if (!activeCommunity) return null;
     return (
       <View fdirection="row" align="baseline">
         <Header inline={1}>Community Members</Header>

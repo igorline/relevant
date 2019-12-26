@@ -2,9 +2,9 @@
 /* eslint no-console: 0 */
 import initMatrix from './initMatrix';
 
-export default function pagerank(inputs, params) {
+export default function pagerank(nodes, params) {
   if (!params) params = {};
-  if (!params.alpha) params.alpha = 0.97;
+  if (!params.alpha) params.alpha = 0.95;
   if (!params.personalization) params.personalization = null;
   if (!params.max_iter) params.max_iter = 500;
   if (!params.tol) params.tol = 1.0e-6;
@@ -12,25 +12,24 @@ export default function pagerank(inputs, params) {
   if (!params.negative) params.negative = 'negative';
   if (!params.beta) params.beta = 2;
   if (!params.M) params.M = 1;
-  if (!params.fast) params.fast = false;
   if (!params.debug) params.debug = false;
 
   const now = new Date();
   const { g, N, dictionary, danglingNodes, degreeStore, personalization } = initMatrix(
-    inputs,
+    nodes,
     params
   );
   const p = setupTrustSeed({ personalization, N, dictionary, g });
-  const danglingWeights = initDanglingWeights(params.dangling, p, N);
-  let x = initialRank({ params, p, dictionary, N });
+  const danglingWeights = dictionary.danglingConsumer
+    ? []
+    : initDanglingWeights(params.dangling, p, N);
+  let x = initialRank({ params, dictionary, nodes, N });
 
   params.debug &&
     console.log('matrix setup time ', (new Date().getTime() - now) / 1000 + 's');
 
   let iter;
   let err;
-
-  params.alpha = Math.max(1 - 1 / (2 * N), params.alpha);
 
   for (iter = 0; iter < params.max_iter; iter++) {
     // this enables garbage collector to free up memory between iterations
@@ -51,19 +50,20 @@ export default function pagerank(inputs, params) {
       params.debug && console.log(err);
       const elapsed = new Date().getTime() - now.getTime();
       params.debug && console.log('elapsed time: ', elapsed / 1000, 's');
-      return formatOutput(x, dictionary, inputs, params, degreeStore);
+      return formatOutput(x, dictionary, nodes, params, degreeStore);
     }
   }
 
   console.warn(
     'pagerank: power iteration failed to converge in ' + params.iter_max + ' iterations.'
   );
-  return formatOutput(x, dictionary, inputs, params, degreeStore);
+  return formatOutput(x, dictionary, nodes, params, degreeStore);
 }
 
 function setupTrustSeed({ N, dictionary, g, personalization }) {
   // if we don't have a personalization vector, initial trust gets spread over all nodes
-  if (!personalization) return new Array(N).fill(1.0 / N);
+  if (!personalization || !Object.keys(personalization).length)
+    return new Array(N).fill(1.0 / N);
 
   const p = new Array(N).fill(0);
   const keys = Object.keys(personalization);
@@ -84,17 +84,15 @@ function initDanglingWeights(danglingVector, p) {
   // return new Array(N).fill(1.0 / N);
 }
 
-function initialRank({ params, p, dictionary, N }) {
-  if (!params.nstart) return [...p];
-
+function initialRank({ nodes, params, dictionary, N }) {
   const x = new Array(N).fill(0);
-  const keys = Object.keys(params.nstart);
-  const degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
+
   let sum = 0;
-  keys.forEach(key => {
-    if (!degree) return;
+  Object.keys(nodes).forEach(key => {
     const i = dictionary[key];
-    x[i] = params.nstart[key];
+    const node = nodes[key];
+    if (i === undefined || !node) return;
+    x[i] = node.start || 0;
     sum += x[i];
   });
   params.debug && console.log('start sum ', sum);
@@ -120,23 +118,24 @@ function runLoop(loopParams, params) {
       x[i] += params.alpha * g[i].inputs[j] * xlast[j];
     }
 
+    // random jump to the seed vector
     x[i] += (1.0 - params.alpha) * p[i];
 
     // add the weights from dangling nodes to make sure sum is 1
-    x[i] += danglesum * danglingWeights[i];
+    x[i] += danglesum * (danglingWeights[i] || 0);
   }
 
   // normalize
   const sum = x.reduce((prev, next) => prev + next, 0);
-
   let err = 0.0;
-  x = x.map((el, i) => {
-    el /= sum;
+  x.forEach((el, i) => {
+    el /= sum || 1;
     err += Math.abs(el - xlast[i]);
     return el;
   });
 
   if (params.debug) {
+    console.log('sum', sum);
     const { heapUsed } = process.memoryUsage();
     const mb = Math.round((100 * heapUsed) / 1048576) / 100;
     console.log('Iter - program is using', mb, 'MB of Heap.');
@@ -145,9 +144,9 @@ function runLoop(loopParams, params) {
   return { x, err };
 }
 
-function formatOutput(x, dictionary, inputs, params, degreeStore) {
+function formatOutput(x, dictionary, nodes, params, degreeStore) {
   const result = {};
-  Object.keys(inputs).forEach(
+  Object.keys(nodes).forEach(
     (node, i) => (result[node] = { rank: x[i], degree: degreeStore[node] })
   );
   return result;

@@ -15,7 +15,7 @@ jest.mock('server/utils/ethereum');
 describe('ethRewards', () => {
   let { alice, bob, relevant, link1, req, res, communityId, communityMember } = {};
 
-  const next = jest.fn();
+  const next = jest.fn(console.log); // eslint-disable-line
   let voteId;
 
   beforeAll(async () => {

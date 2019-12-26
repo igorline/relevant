@@ -67,7 +67,7 @@ async function referralRewards({ invite, user, Invite }) {
     .findOne({ _id: invite.invitedBy })
     .populate({
       path: 'relevance',
-      match: { communityId, global: true }
+      match: { communityId }
     });
 
   const communityInstance = await Invite.model('Community').findOne({
@@ -77,10 +77,9 @@ async function referralRewards({ invite, user, Invite }) {
   await communityInstance.join(user._id, role);
 
   if (role === 'admin') {
-    const relevance = await Invite.model('Relevance').findOne({
+    const relevance = await Invite.model('CommunityMember').findOne({
       user: user._id,
-      communityId,
-      global: true
+      communityId
     });
     relevance.pagerank = 70;
     await relevance.save();
