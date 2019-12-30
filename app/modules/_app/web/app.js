@@ -213,7 +213,6 @@ class App extends Component {
   render() {
     const { globalModal, navigation } = this.props;
     const { screenSize } = navigation;
-
     return (
       <div>
         <GlobalStyle />

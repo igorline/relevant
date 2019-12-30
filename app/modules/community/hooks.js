@@ -24,7 +24,10 @@ export function useTotalUnread() {
 
 export function useMembers() {
   const user = useSelector(state => state.auth.user);
-  const { data = { myMemberships: [] } } = useQuery(MY_MEMBERSHIPS, { skip: !user });
+  const { data = { myMemberships: [] } } = useQuery(MY_MEMBERSHIPS, {
+    skip: !user,
+    ssr: false
+  });
   const { myMemberships } = data;
   return myMemberships;
 }
@@ -34,6 +37,7 @@ function useSubscribeToUnread(membership) {
   const client = useApolloClient();
   const { communityId } = membership || {};
   useSubscription(INC_UNREAD, {
+    ssr: false,
     variables: { communities: [communityId] },
     onSubscriptionData: () => {
       membership.unread++;

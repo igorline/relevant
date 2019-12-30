@@ -55,7 +55,6 @@ if (isDevelopment) {
   app.use(webpackHotMiddleware(compiler));
 }
 
-app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -102,6 +101,7 @@ if (process.env.NO_SSL !== 'true') {
 // public folder
 app.use('/', expressStaticGzip(path.join(__dirname, '/../app/public'), { index: false }));
 app.use(cookiesMiddleware());
+app.use(morgan('tiny'));
 
 const port = process.env.PORT || 3000;
 

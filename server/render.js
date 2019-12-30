@@ -33,6 +33,46 @@ let extractor =
     ? new ChunkExtractor({ statsFile, entrypoints: 'app' })
     : null;
 
+export const initStore = compose(
+  configureStore,
+  createInitialState
+);
+
+export default async function handleRender(req, res) {
+  const store = initStore(req);
+  const { community } = store.getState().auth;
+  if (community && req.url === '/') return res.redirect(`/${community}/new`);
+
+  // and populate user store with req.user
+  if (req.user) store.dispatch(setUser(req.user));
+  if (community) store.dispatch(setCommunity(community));
+
+  const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+  try {
+    await handleRouteData({ req, store });
+    const { app, rnWebStyles } = renderApp({ url: req.url, store });
+
+    const html = renderFullPage({
+      app,
+      fullUrl,
+      rnWebStyles,
+      initialState: store.getState(),
+      req
+    });
+
+    // global.gc();
+    // const { heapUsed } = process.memoryUsage();
+    // const mb = Math.round((100 * heapUsed) / 1048576) / 100;
+    // console.log('Program is using', mb, 'MB of Heap.');
+
+    return res.send(html);
+  } catch (err) {
+    console.log('RENDER ERROR', err); // eslint-disable-line
+    return res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
+  }
+}
+
 export function createInitialState(req) {
   const cachedCommunity = req.user ? req.user.community : null;
 
@@ -55,42 +95,6 @@ export function createInitialState(req) {
       screenSize: getScreenSize(width)
     }
   };
-}
-
-export const initStore = compose(
-  configureStore,
-  createInitialState
-);
-
-export default async function handleRender(req, res) {
-  const store = initStore(req);
-  const { community } = store.getState().auth;
-  if (community && req.url === '/') return res.redirect(`/${community}/new`);
-
-  // and populate user store with req.user
-  if (req.user) store.dispatch(setUser(req.user));
-  if (community) store.dispatch(setCommunity(community));
-
-  const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-
-  try {
-    // throw new Error('temp disable ssr');
-
-    await handleRouteData({ req, store });
-    const { app, rnWebStyles } = renderApp({ url: req.url, store });
-
-    const html = renderFullPage({
-      app,
-      fullUrl,
-      rnWebStyles,
-      initialState: store.getState(),
-      req
-    });
-    return res.send(html);
-  } catch (err) {
-    console.log('RENDER ERROR', err); // eslint-disable-line
-    return res.send(renderFullPage({ initialState: store.getState(), fullUrl, req }));
-  }
 }
 
 export function renderFullPage({ app, rnWebStyles, initialState, fullUrl, req }) {

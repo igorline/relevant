@@ -69,11 +69,6 @@ const routes = [
     path: '/',
     component: App,
     routes: [
-      // {
-      //   path: '/',
-      //   component: SplashContainer,
-      //   exact: true
-      // },
       {
         path: '/',
         component: About,
@@ -192,13 +187,6 @@ const routes = [
                 navbar: TopNav,
                 title: 'Create a New Community'
               },
-              // {
-              //   path: '/community/all',
-              //   component: CommunityList,
-              //   exact: true,
-              //   navbar: TopNav,
-              //   title: 'Communities'
-              // },
               {
                 path: '/:community/post/:id',
                 component: PostContainer,
@@ -220,17 +208,6 @@ const routes = [
                 exact: true,
                 navbar: TopNav
               },
-              // {
-              //   path: '/:community/invite/:handle',
-              //   component: (props) => <MyRedirect {...props} to={'/new'} />,
-              //   exact: true
-              // },
-              {
-                path: '/:community/:sort/invite/slava',
-                component: DiscoverContainer,
-                exact: true,
-                navbar: TopNav
-              },
               {
                 path: '/:community/:sort/:tag?',
                 component: DiscoverContainer,
@@ -242,7 +219,6 @@ const routes = [
                 exact: true,
                 component: withAuth(CreatePostContainer),
                 navbar: TopNav
-                // component: CreatePostContainer
               }
             ]
           }

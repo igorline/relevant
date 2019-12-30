@@ -7,7 +7,8 @@ import { setContext } from 'apollo-link-context';
 import { concat } from 'apollo-link';
 
 const cache = new InMemoryCache({
-  dataIdFromObject: object => object._id || null
+  dataIdFromObject: object => object._id || null,
+  resultCaching: false
 });
 
 const authMiddleware = setContext(async (req, { headers }) => {

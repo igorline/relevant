@@ -1,5 +1,5 @@
 import createSocketIoMiddleware from 'redux-socket.io';
-import { applyMiddleware, compose } from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { createInjectSagasStore, sagaMiddleware } from 'redux-sagas-injector';
 
@@ -38,13 +38,14 @@ export default function configureStore(initialState = {}) {
     const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
     middleware = composeEnhancers(middleware);
   }
-  // Create final store and subscribe router in debug env ie. for devtools
-  const store = createInjectSagasStore(
-    { rootSaga },
-    rootReducer,
-    initialState,
-    middleware
-  );
+
+  const store = process.env.BROWSER
+    ? // This causes a small memory leak on server
+      createInjectSagasStore({ rootSaga }, rootReducer, initialState, middleware)
+    : createStore(rootReducer, initialState, middleware);
+
+  // This doesn't cause leak on server
+  // const store = createStore(rootReducer, initialState, middleware);
 
   store.asyncReducers = {};
   store.injectReducer = (key, asyncReducer) => injectReducer(store, key, asyncReducer);

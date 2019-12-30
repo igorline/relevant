@@ -50,6 +50,7 @@ class WithSideNav extends Component {
     const { sideNavIsOpen, screenSize } = navigation;
     const { promptType } = notif;
     const isDesktop = screenSize === 0;
+
     return (
       <View bg={colors.white} display="flex" flex={1}>
         {!isAuthenticated ? (
