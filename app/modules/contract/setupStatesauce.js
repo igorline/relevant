@@ -4,10 +4,10 @@ import get from 'lodash/get';
 import { combineReducers } from 'redux';
 import { reducers, sagas } from 'redux-saga-web3';
 import { all, fork } from 'redux-saga/effects';
-import RelevantToken from '../contracts/RelevantToken';
-import { NETWORK_NUMBER } from './config';
+import RelevantToken from 'app/contracts/RelevantToken';
+import { NETWORK_NUMBER } from 'app/core/config';
 
-export function* contractSagas() {
+export function* web3Sagas() {
   yield all([...Object.values(sagas).map(saga => fork(saga))]);
 }
 

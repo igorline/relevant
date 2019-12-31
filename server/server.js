@@ -110,10 +110,8 @@ console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
 let server = new ApolloServer({
   schema,
   playground: process.env.NODE_ENV !== 'production',
-  context: ({ req, connection }) => {
-    console.log('connection', connection);
-    return connection ? connection.context : { user: req.user || {} };
-  }
+  context: ({ req, connection }) =>
+    connection ? connection.context : { user: req.user || {} }
 });
 
 app.use('/graphql', validateTokenLenient);

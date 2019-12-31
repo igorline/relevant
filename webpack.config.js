@@ -21,42 +21,7 @@ module.exports = {
   mode: 'development',
   optimization: {
     splitChunks: {
-      chunks: 'all',
-      // maxInitialRequests: Infinity,
-      // minSize: 0,
-      cacheGroups: {
-        default: false,
-        vendors: false,
-        // vendor chunk
-        vendor: {
-          // sync + async chunks
-          chunks: 'all',
-          // import file path containing node_modules
-          test: /node_modules/,
-          name(module) {
-            // get the name. E.g. node_modules/packageName/not/this/part.js
-            // or node_modules/packageName
-            const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-            )[1];
-
-            // npm package names are URL-safe, but some servers don't like @ symbols
-            return `npm.${packageName.replace('@', '')}`;
-          },
-          reuseExistingChunk: true,
-          // priority
-          priority: 20
-        },
-        // common chunk
-        common: {
-          chunks: 'all',
-          name: 'common',
-          minChunks: 2,
-          priority: 10,
-          reuseExistingChunk: true,
-          enforce: true
-        }
-      }
+      chunks: 'all'
     }
   },
   plugins: [
@@ -90,7 +55,7 @@ module.exports = {
       react: path.resolve('./node_modules/react'),
       'react-native$': 'react-native-web',
       'react-native-linear-gradient$': 'react-native-web-linear-gradient',
-      lodash: path.resolve(__dirname, 'node_modules/lodash'),
+      // lodash: path.resolve(__dirname, 'node_modules/lodash'),
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
       'react-dom': '@hot-loader/react-dom'
     }

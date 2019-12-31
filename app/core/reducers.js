@@ -17,17 +17,7 @@ import earnings from 'modules/wallet/earnings.reducer';
 import navigation from 'modules/navigation/navigation.reducer';
 import { reducer as formReducer } from 'redux-form';
 import socket from './socket.reducer';
-// import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
-
-let web3Reducers = {};
-
-if (process.env.WEB !== 'true') {
-  // might need this form for conditional require
-} else {
-  // block these imports in package.json in react-native field
-  web3Reducers = require('./web3.reducer').web3Reducers;
-}
 
 let communityState = {};
 
@@ -52,8 +42,7 @@ const reducers = {
   subscriptions,
   admin,
   community,
-  earnings,
-  web3: web3Reducers
+  earnings
 };
 
 const createReducer = (asyncReducers = {}) =>

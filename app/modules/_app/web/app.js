@@ -23,9 +23,10 @@ import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
-import { PriceProvider } from 'modules/wallet/price.context';
 import { ContractProvider } from 'modules/contract/contract.provider';
 import styled from 'styled-components';
+
+const PriceProvider = loadable(() => import('modules/wallet/price.context'));
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/upvoteAnimation.component')

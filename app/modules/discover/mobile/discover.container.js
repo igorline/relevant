@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Post from 'modules/post/mobile/post.component';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import * as userActions from 'modules/user/user.actions';
 import * as statsActions from 'modules/stats/stats.actions';
 import * as authActions from 'modules/auth/auth.actions';

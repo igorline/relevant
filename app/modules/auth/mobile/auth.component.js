@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import { globalStyles, fullWidth, fullHeight, smallScreen } from 'app/styles/global';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 let styles;
 

@@ -20,7 +20,7 @@ import * as animationActions from 'modules/animation/animation.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import CustomListView from 'modules/listview/mobile/customList.component';
 import Tabs from 'modules/navigation/mobile/tabs.component';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import ProfileComponent from './profile.component';
 
 let styles;

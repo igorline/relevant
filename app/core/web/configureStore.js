@@ -4,7 +4,8 @@ import thunk from 'redux-thunk';
 import { createInjectSagasStore, sagaMiddleware } from 'redux-sagas-injector';
 
 import rootReducer, { injectReducer } from '../reducers';
-import rootSaga from '../sagas';
+
+function rootSaga() {}
 
 let server = process.env.API_SERVER;
 if (process.env.NODE_ENV === 'development') {
@@ -42,10 +43,8 @@ export default function configureStore(initialState = {}) {
   const store = process.env.BROWSER
     ? // This causes a small memory leak on server
       createInjectSagasStore({ rootSaga }, rootReducer, initialState, middleware)
-    : createStore(rootReducer, initialState, middleware);
-
-  // This doesn't cause leak on server
-  // const store = createStore(rootReducer, initialState, middleware);
+    : // This doesn't cause leak on server
+      createStore(rootReducer, initialState, middleware);
 
   store.asyncReducers = {};
   store.injectReducer = (key, asyncReducer) => injectReducer(store, key, asyncReducer);

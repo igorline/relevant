@@ -5,7 +5,7 @@ import { injectSaga } from 'redux-sagas-injector';
 import { ReactReduxContext } from 'react-redux';
 import { ContractContext } from './contract.context';
 
-const contract = loadable(() => import('app/core/contracts'));
+const contract = loadable(() => import('./setupStatesauce'));
 
 export function useContract() {
   const contractData = useContext(ContractContext);
@@ -25,10 +25,12 @@ export function ContractProvider({ children }) {
 
   useEffect(() => {
     async function initialize() {
-      const { instance: _instance } = await contract.load();
+      const { instance: _instance, web3Sagas, web3Reducers } = await contract.load();
       const { saga, reducer } = _instance;
       injectSaga('RelevantToken', saga);
+      injectSaga('web3Sagas', web3Sagas);
       store.injectReducer('RelevantToken', reducer.RelevantToken);
+      store.injectReducer('web3', web3Reducers);
       setInstance(_instance);
       setInitialized(true);
     }

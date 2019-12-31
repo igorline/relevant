@@ -31,7 +31,7 @@ PriceProvider.propTypes = {
   children: PropTypes.node
 };
 
-export function PriceProvider({ children }) {
+export default function PriceProvider({ children }) {
   const [state, dispatch] = useReducer(priceReducer, {
     loading: false,
     error: false,

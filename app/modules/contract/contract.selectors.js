@@ -5,19 +5,19 @@ import { useContract } from './contract.context';
 export const selectUserBalance = (selectors, state, address) =>
   selectors.methods.balanceOf({ at: address })(
     state,
-    state.web3.accounts.items && state.web3.accounts.items[0]
+    state.web3 && state.web3.accounts.items && state.web3.accounts.items[0]
   );
 
 export const selectUserNonce = (selectors, state, address) =>
   selectors.methods.nonceOf({ at: address })(
     state,
-    state.web3.accounts.items && state.web3.accounts.items[0]
+    state.web3 && state.web3.accounts.items && state.web3.accounts.items[0]
   );
 
 export const selectCashOut = (selectors, state, address) =>
   selectors.methods.cashOut({ at: address })(
     state,
-    state.web3.accounts.items && state.web3.accounts.items[0]
+    state.web3 && state.web3.accounts.items && state.web3.accounts.items[0]
   );
 
 export const formatSelection = el => {
@@ -26,15 +26,17 @@ export const formatSelection = el => {
   return { ...el, value };
 };
 
-export const useWeb3State = () =>
-  useSelector(state => ({
+export const useWeb3State = () => {
+  useContract();
+  return useSelector(state => ({
     web3: state.web3,
-    status: state.web3.init.status,
-    isInitialized: state.web3.init.isInitialized,
-    networkId: state.web3.network.id && state.web3.network.id,
-    accounts: state.web3.accounts.items && state.web3.accounts.items,
-    address: state.web3.accounts.items && state.web3.accounts.items[0]
+    status: state.web3 && state.web3.init.status,
+    isInitialized: state.web3 && state.web3.init.isInitialized,
+    networkId: state.web3 && state.web3.network.id && state.web3.network.id,
+    accounts: state.web3 && state.web3.accounts.items && state.web3.accounts.items,
+    address: state.web3 && state.web3.accounts.items && state.web3.accounts.items[0]
   }));
+};
 
 export const useRelevantState = () => {
   const { selectors, tokenAddress, initialized } = useContract();

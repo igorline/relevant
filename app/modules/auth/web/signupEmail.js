@@ -59,7 +59,7 @@ class SignupEmail extends Component {
 
   submit = async vals => {
     try {
-      const allVals = Object.assign({}, vals);
+      const allVals = { ...vals };
       if (allVals.image && allVals.image.preview && allVals.image.fileName) {
         const image = await s3.toS3Advanced(
           allVals.image.preview,
