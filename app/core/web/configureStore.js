@@ -4,8 +4,9 @@ import thunk from 'redux-thunk';
 import { createInjectSagasStore, sagaMiddleware } from 'redux-sagas-injector';
 
 import rootReducer, { injectReducer } from '../reducers';
+// import rootSaga from '../sagas';
 
-function rootSaga() {}
+function* rootSaga() {} // eslint-disable-line
 
 let server = process.env.API_SERVER;
 if (process.env.NODE_ENV === 'development') {

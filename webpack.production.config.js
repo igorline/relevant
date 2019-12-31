@@ -13,7 +13,7 @@ Object.keys(devConfig).forEach(key => {
   prodConfig[key] = devConfig[key];
 });
 
-delete prodConfig.devtool;
+// delete prodConfig.devtool;
 
 prodConfig.entry = {
   app: ['./index.web.js', 'whatwg-fetch']
