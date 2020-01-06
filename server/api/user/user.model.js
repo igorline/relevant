@@ -343,10 +343,11 @@ UserSchema.methods.updateClient = function updateClient(actor) {
 UserSchema.methods.updateMeta = async function updateMeta() {
   const newUser = {
     name: this.name,
-    image: this.image
+    image: this.image,
+    _id: this._id,
+    handle: this.handle
   };
 
-  // Do this on a separate thread?
   await this.model('Post').updateMany(
     { user: this._id },
     { embeddedUser: newUser },
