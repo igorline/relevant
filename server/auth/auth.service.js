@@ -1,15 +1,33 @@
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
+import AuthToken from 'server/api/token/token.model';
 import config from '../config/config';
 import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
 import Community from '../api/community/community.model';
 
+const secret = process.env.SESSION_SECRET;
+
 const validateJwt = expressJwt({
-  secret: process.env.SESSION_SECRET,
-  ignoreExpiration: true
+  secret,
+  ignoreExpiration: true,
+  isRevoked
 });
+
+async function verify(token) {
+  const user = jwt.verify(token, secret, { ignoreExpiration: true });
+  const revoked = await AuthToken.checkRevoked(user);
+  if (revoked) return null;
+  return user;
+}
+
+async function isRevoked(req, payload, done) {
+  const revoked = await AuthToken.checkRevoked(payload);
+  if (revoked) console.log('token is revoked', payload); // eslint-disable-line
+  if (revoked) return done(null, true);
+  return done();
+}
 
 // doesn't throw error if user is not authenticated
 function validateTokenLenient(req, res, next) {
@@ -68,14 +86,14 @@ function getUser(select) {
 
 function blocked() {
   return compose()
-  .use(validateTokenLenient)
-  .use(getUser('+blocked +blockedBy'));
+    .use(validateTokenLenient)
+    .use(getUser('+blocked +blockedBy'));
 }
 
 function currentUser() {
   return compose()
-  .use(validateTokenLenient)
-  .use(getUser());
+    .use(validateTokenLenient)
+    .use(getUser());
 }
 
 function authMiddleware() {
@@ -88,39 +106,44 @@ function authMiddleware() {
  */
 function isAuthenticated() {
   return compose()
-  .use(validateTokenStrict)
-  .use(getUser('+email'));
+    .use(validateTokenStrict)
+    .use(getUser('+email'));
 }
 
 function communityMember(role) {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user._id) {
+      const { user } = req;
+      const globalAdmin = user.role === 'admin';
+      if (!user || !user._id) {
         throw new Error('missing user credentials');
       }
-      const user = req.user._id;
       const community = req.query.community || 'relevant';
-      let member = await CommunityMember.findOne({ user, community });
+      let member = await CommunityMember.findOne({ user: user._id, community });
 
       // add member to default community
       if (!member) {
         // TODO join community that one is signing up with
         const com = await Community.findOne({ slug: community });
         // TODO private communities
-        if (!com || com.private) throw new Error("Community doesn't exist");
+        if (!com || (com.private && !globalAdmin))
+          throw new Error("Community doesn't exist");
 
+        // if (user.role !== 'admin') {
         member = await com.join(user);
         if (!member.community) {
           member.community = com.slug;
           member = await member.save();
         }
+        // }
       }
 
-      if (role === 'superAdmin' && !member.superAdmin && req.user.role !== 'admin') {
+      if (role === 'superAdmin' && (!globalAdmin && !member.superAdmin)) {
         throw new Error("You don't have the priveleges required to do this");
       }
 
-      if (!member) throw new Error('you are not a member of this community');
+      if (!member && !globalAdmin)
+        throw new Error('you are not a member of this community');
       // TODO grab user reputation & figure out permission level
       req.communityMember = member;
       return next();
@@ -136,16 +159,16 @@ function communityMember(role) {
 function hasRole(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
   return compose()
-  .use(isAuthenticated())
-  .use((req, res, next) => {
-    if (
-      config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
-    ) {
-      next();
-    } else {
-      res.sendStatus(403);
-    }
-  });
+    .use(isAuthenticated())
+    .use((req, res, next) => {
+      if (
+        config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
+      ) {
+        next();
+      } else {
+        res.sendStatus(403);
+      }
+    });
 }
 
 /**
@@ -202,3 +225,5 @@ exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
 exports.communityMember = communityMember;
 exports.setTokenNative = setTokenNative;
+exports.validateTokenLenient = validateTokenLenient;
+exports.verify = verify;

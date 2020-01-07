@@ -13,6 +13,7 @@ const mockStore = configureMockStore([thunk]);
 
 process.env.WEB = 'true';
 process.env.BROWSER = true;
+process.env.TOKEN_ADDRESS = '0xdood';
 
 export function withRenderer({ state, Component, props, options = {} }) {
   const store = mockStore(state);

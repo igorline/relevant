@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
+import { colors } from 'styles';
 
 let styles;
 
@@ -45,6 +46,7 @@ class Search extends Component {
           }}
           onSubmitEditing={this.search}
           style={[styles.searchInput, styles.font15]}
+          placeholderTextColor={colors.grey}
           placeholder={'Search'}
           autoFocus
           onBlur={this.props.toggleSearch}

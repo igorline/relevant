@@ -3,7 +3,7 @@ import request from 'request';
 import get from 'lodash/get';
 import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
-import mail from 'server/config/mail';
+import { sendEmail } from 'server/utils/mail';
 import { sendNotification } from 'server/notifications';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
@@ -71,7 +71,7 @@ exports.flagged = async (req, res, next) => {
             },
             {
               path: 'embeddedUser.relevance',
-              match: { community, global: true },
+              match: { community },
               select: 'pagerank'
             }
           ]
@@ -89,32 +89,13 @@ exports.flagged = async (req, res, next) => {
 
 exports.topPosts = async (req, res, next) => {
   try {
-    // const { community } = req.query;
     let posts;
     const now = new Date();
     now.setDate(now.getDate() - 7);
     posts = await PostData.find({ createdAt: { $gt: now }, isInFeed: true })
       .populate({
         path: 'post',
-        populate: [
-          // {
-          //   path: 'commentary',
-          //   match: {
-          //     // TODO implement intra-community commentary
-          //     // community,
-          //     // TODO - we should probably sort the non-community commentary
-          //     // with some randomness on client side
-          //     repost: { $exists: false },
-          //     $or: [{ hidden: { $ne: true } }]
-          //   }
-          // },
-          // {
-          //   path: 'embeddedUser.relevance',
-          //   match: { community, global: true },
-          //   select: 'pagerank'
-          // },
-          { path: 'metaPost' }
-        ]
+        populate: [{ path: 'metaPost' }]
       })
       .sort('-pagerank')
       .limit(20);
@@ -169,24 +150,20 @@ exports.sendPostNotification = async (req, res, next) => {
 };
 
 async function sendFlagEmail() {
-  try {
-    const flaggedUrl = `${process.env.API_SERVER}/admin/flagged`;
-    const data = {
-      from: 'Relevant <info@relevant.community>',
-      to: 'info@relevant.community',
-      subject: 'Inapproprate Content',
-      html: `Someone has flagged a post for inappropriate content
+  const flaggedUrl = `${process.env.API_SERVER}/admin/flagged`;
+  const data = {
+    from: 'Relevant <info@relevant.community>',
+    to: 'info@relevant.community',
+    subject: 'Inapproprate Content',
+    html: `Someone has flagged a post for inappropriate content
       <br />
       <br />
       You can manage flagged content here:&nbsp;
       <a href="${flaggedUrl}" target="_blank">${flaggedUrl}</a>
       <br />
       <br />`
-    };
-    return mail.send(data);
-  } catch (err) {
-    throw err;
-  }
+  };
+  return sendEmail(data);
 }
 
 exports.flag = async (req, res, next) => {
@@ -209,43 +186,6 @@ exports.flag = async (req, res, next) => {
     next(err);
   }
 };
-
-// exports.index = async (req, res, next) => {
-//   try {
-//     let id;
-//     if (req.user) id = req.user._id;
-//     const { community } = req.query;
-//     const limit = parseInt(req.query.limit, 10) || 15;
-//     const skip = parseInt(req.query.skip, 10) || 0;
-//     const tags = req.query.tag || null;
-//     const sort = req.query.sort || null;
-//     let category = req.query.category || null;
-//     if (category === '') category = null;
-//     let query = null;
-//     let tagsArr = null;
-//     let sortQuery = { postDate: -1 };
-//     if (sort === 'rank') sortQuery = { rank: -1 };
-//     if (tags) {
-//       tagsArr = tags.split(',').trim();
-//       query = { $or: [{ tags: { $in: tagsArr } }, { category: { $in: tagsArr } }] };
-//       // if (category) query = { $or: [{ category }, query] };
-//     } else if (category) query = { category };
-
-//     const posts = await Post.find(query)
-//     .populate({
-//       path: 'embeddedUser.relevance',
-//       select: 'pagerank',
-//       match: { community, global: true }
-//     })
-//     .limit(limit)
-//     .skip(skip)
-//     .sort(sortQuery);
-
-//     res.status(200).json(posts);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 exports.userPosts = async (req, res, next) => {
   try {
@@ -287,7 +227,7 @@ exports.userPosts = async (req, res, next) => {
           {
             path: 'embeddedUser.relevance',
             select: 'pagerank',
-            match: { communityId, global: true }
+            match: { communityId }
           },
           {
             path: 'metaPost'
@@ -324,7 +264,7 @@ exports.userPosts = async (req, res, next) => {
       .populate({
         path: 'embeddedUser.relevance',
         select: 'pagerank',
-        match: { communityId, global: true }
+        match: { communityId }
       })
       .populate([
         {
@@ -433,6 +373,8 @@ exports.readable = async (req, res, next) => {
 
 exports.index = async req => {
   const { community } = req.query;
+
+  if (!community) throw new Error('missing the community query parameter');
   const { id: postId } = req.params;
   const { user } = req;
 
@@ -460,7 +402,7 @@ exports.index = async req => {
     {
       path: 'embeddedUser.relevance',
       select: 'pagerank',
-      match: { communityId, global: true }
+      match: { communityId }
     },
     { path: 'metaPost' },
     {
@@ -783,6 +725,7 @@ exports.create = async (req, res, next) => {
     // });
 
     if (!postUrl && !channel) await newPost.insertIntoFeed(communityId, community);
+    await newPost.incrementUnread({ communityId, community });
 
     await author.updatePostCount();
     res.status(200).json(newPost || linkParent);

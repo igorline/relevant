@@ -1,8 +1,19 @@
 import Statesauce from 'redux-saga-web3-eth-contract';
 import { getProvider, getRpcUrl, getMetamask } from 'app/utils/eth';
 import get from 'lodash/get';
+import { combineReducers } from 'redux';
+import { reducers, sagas } from 'redux-saga-web3';
+import { all, fork } from 'redux-saga/effects';
 import RelevantToken from '../contracts/RelevantToken';
 import { NETWORK_NUMBER } from './config';
+
+export function* contractSagas() {
+  yield all([...Object.values(sagas).map(saga => fork(saga))]);
+}
+
+export const web3Reducers = combineReducers({ ...reducers });
+
+export const { accounts, blocks, init, network, context } = reducers;
 
 const web3 = getProvider({
   rpcUrl: getRpcUrl(),

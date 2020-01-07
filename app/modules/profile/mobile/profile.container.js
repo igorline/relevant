@@ -20,7 +20,7 @@ import * as animationActions from 'modules/animation/animation.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import CustomListView from 'modules/listview/mobile/customList.component';
 import Tabs from 'modules/navigation/mobile/tabs.component';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import ProfileComponent from './profile.component';
 
 let styles;
@@ -172,14 +172,16 @@ class Profile extends Component {
   renderHeader() {
     const { isOwner, user } = this.state;
     return user ? (
-      <ProfileComponent
-        key={0}
-        {...this.props}
-        isOwner={isOwner}
-        user={user}
-        styles={styles}
-        scrollTo={this.scrollTo}
-      />
+      <View>
+        <ProfileComponent
+          key={0}
+          {...this.props}
+          isOwner={isOwner}
+          user={user}
+          styles={styles}
+          scrollTo={this.scrollTo}
+        />
+      </View>
     ) : null;
   }
 
@@ -269,7 +271,6 @@ class Profile extends Component {
             stickyHeaderIndices={[1]}
             type={tab.type}
             active={active}
-            // renderHeader={this.renderHeader}
             needsReload={this.needsReload}
             onReload={this.loadUser}
             error={error}

@@ -1,15 +1,8 @@
 import List from 'server/api/emailList/list.model';
-import mail from 'server/config/mail';
+import { mailgun, sendEmail } from 'server/utils/mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
-
-const dummyKey = 'XXXXXXXXXXXXXXXXXXXXXXX';
-
-const mailgun = require('mailgun-js')({
-  apiKey: process.env.MAILGUN_API_KEY || dummyKey,
-  domain: process.env.MAILGUN_DOMAIN || dummyKey
-});
 
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
@@ -106,7 +99,7 @@ async function generateList(type) {
       list.members().create(u, err => {
         if (err) {
           try {
-            // list.members(u.address).update(u, console.log);
+            list.members(u.address).update(u, console.log);
           } catch (error) {
             console.log('err updating', u);
           }
@@ -194,7 +187,7 @@ exports.index = async (req, res, next) => {
       subject: req.body.subject,
       html
     };
-    const status = await mail.send(data);
+    const status = await sendEmail(data);
     return res.status(200).json(status);
   } catch (err) {
     return next(err);

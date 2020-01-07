@@ -11,7 +11,6 @@ exports.index = async req => {
   // TODO - for now isolate commentary to given community
   const { community } = req.query;
   const { user } = req;
-
   const skip = parseInt(req.query.skip, 10) || 0;
   const limit = parseInt(req.query.limit, 10) || 5;
   const tag = req.query.tag || null;
@@ -28,7 +27,7 @@ exports.index = async req => {
       communityId: cObj._id,
       user: user._id
     });
-    if (!member) throw new Error('This community is private');
+    if (!member && user.role !== 'admin') throw new Error('This community is private');
   }
   const communityId = cObj._id;
 
@@ -86,7 +85,7 @@ exports.index = async req => {
             {
               path: 'embeddedUser.relevance',
               select: 'pagerank',
-              match: { communityId, global: true }
+              match: { communityId }
             }
           ]
         },
@@ -94,7 +93,7 @@ exports.index = async req => {
         {
           path: 'embeddedUser.relevance',
           select: 'pagerank',
-          match: { communityId, global: true }
+          match: { communityId }
         }
       ]
     });

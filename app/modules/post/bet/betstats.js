@@ -35,7 +35,6 @@ export default function BetStats({ post, amount, earning, maxBet }) {
 
   const existingShares = earning ? earning.shares : 0;
   const existingStake = earning ? earning.stakedTokens : 0;
-
   const bets = investments.length;
   const users = bets > 1 ? 'users' : 'user';
   const invText = bets
@@ -48,8 +47,9 @@ export default function BetStats({ post, amount, earning, maxBet }) {
   const shares = computeShares({ post, stakedTokens: amount });
   const postRewards = computePostPayout(post.data, community);
   const shareOfRewards = !bets
-    ? amount / maxBet
+    ? (existingStake + amount) / (maxBet + existingStake)
     : (shares + existingShares) / (post.data.shares + shares);
+
   const shareOfRewardsPercent = shareOfRewards * 100;
   const potentialRewards = postRewards * shareOfRewards;
   // const showPie = shareOfRewards !== 1;

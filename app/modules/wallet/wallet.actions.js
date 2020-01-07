@@ -1,30 +1,29 @@
-import { actions, tokenAddress } from 'core/contracts';
 import { getProvider, generateSalt, formatBalanceRead } from 'app/utils/eth';
 import { alert, api } from 'app/utils';
 import { updateAuthUser } from 'modules/auth/auth.actions';
+import { addEarning } from 'modules/wallet/earnings.actions';
 
 const Alert = alert.Alert();
 
-export function cashOutCall(customAmount = 0, account) {
+export function cashOutCall(customAmount = 0, sendCashoutAction) {
   return async dispatch => {
     try {
-      const result = await dispatch(
+      const { user, earning } = await dispatch(
         api.request({
           method: 'POST',
           endpoint: 'user',
           path: '/cashOut',
-          body: { customAmount }
+          body: JSON.stringify({ customAmount })
         })
       );
-      dispatch(updateAuthUser(result));
-      const { amount: amnt, sig } = result.cashOut;
-
-      const tx = dispatch(
-        actions.methods.claimTokens({ at: tokenAddress, from: account }).send(amnt, sig)
-      );
+      dispatch(updateAuthUser(user));
+      earning && dispatch(addEarning(earning));
+      const { amount: amnt, sig } = user.cashOut;
+      const tx = sendCashoutAction(amnt, sig);
       Alert.alert(`Claiming ${parseFloat(formatBalanceRead(amnt))} tokens 😄`, 'success');
       return tx;
     } catch (err) {
+      console.log(err); // eslint-disable-line
       return Alert.alert(err.message, 'error');
     }
   };
@@ -42,7 +41,7 @@ export function connectAddress(account) {
         }
       ];
       const web3 = getProvider();
-      await web3.currentProvider.connection.sendAsync(
+      await web3.currentProvider.sendAsync(
         {
           method: 'eth_signTypedData',
           params: [msgParams, account],

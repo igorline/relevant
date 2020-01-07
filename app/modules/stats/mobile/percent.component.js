@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import { globalStyles, green } from 'app/styles/global';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 let styles;
 

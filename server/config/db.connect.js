@@ -1,5 +1,5 @@
 import { setupTestData } from 'server/test/seedData';
-import computePageRank from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import Community from 'server/api/community/community.model';
 
 const SEED_DB = process.env.SEED_DB === 'true' && process.env.NODE_ENV === 'development';
@@ -16,7 +16,8 @@ const config = {
   keepAlive: 1,
   reconnectTries: 30,
   useNewUrlParser: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useUnifiedTopology: true
 };
 
 function connectWithRetry() {
@@ -52,21 +53,17 @@ async function seedDb() {
   if (!SEED_DB || mongoose.connection.host !== 'localhost') {
     throw new Error('should not seed db');
   }
-  try {
-    console.log('SEEDING DB');
-    const clear = Object.keys(mongoose.connection.collections).map(i =>
-      mongoose.connection.collections[i].remove()
-    );
-    await Promise.all(clear);
-    await setupTestData();
-    const communities = await Community.find({});
-    const pagerank = communities.forEach(c =>
-      computePageRank({ communityId: c._id, community: c.slug })
-    );
-    await Promise.all(pagerank);
-  } catch (err) {
-    throw err;
-  }
+  console.log('SEEDING DB');
+  const clear = Object.keys(mongoose.connection.collections).map(i =>
+    mongoose.connection.collections[i].remove()
+  );
+  await Promise.all(clear);
+  await setupTestData();
+  const communities = await Community.find({});
+  const pagerank = communities.forEach(c =>
+    computePageRank({ communityId: c._id, community: c.slug })
+  );
+  await Promise.all(pagerank);
 }
 
 module.exports = {

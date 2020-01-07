@@ -107,7 +107,7 @@ Object {
       "paidOut": false,
       "payoutTime": "[SANITIZED]",
       "postDate": "[SANITIZED]",
-      "rank": "[SANITIZED]",
+      "rank": 0,
       "relevance": 0,
       "seenInFeedNumber": 0,
       "tags": Array [
@@ -234,7 +234,7 @@ Object {
     "paidOut": false,
     "payoutTime": "[SANITIZED]",
     "postDate": "[SANITIZED]",
-    "rank": "[SANITIZED]",
+    "rank": 0,
     "relevance": 0,
     "seenInFeedNumber": 0,
     "tags": Array [
@@ -359,7 +359,7 @@ Object {
     "paidOut": false,
     "payoutTime": "[SANITIZED]",
     "postDate": "[SANITIZED]",
-    "rank": "[SANITIZED]",
+    "rank": 0,
     "relevance": 0,
     "seenInFeedNumber": 0,
     "tags": Array [

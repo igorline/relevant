@@ -19,9 +19,11 @@ export const EXPONENT = 1; // exponent for bonding curve price formula
 export const POWER_REGEN_INTERVAL = 24 * 60 * 60 * 1000; // 1 day to fully regenerate vote power
 
 export const RELEVANCE_DECAY = 90 * DAYS; // half life of relevance
-export const MINIMUM_RANK = 1; // minimum rank to be considered for rewards
+export const RELEVANCE_DECAY_POSTS = 90 * DAYS; // half life of relevance
+export const REP_CUTOFF = 2; // number of years before we ignore votes for users
+export const REP_CUTOFF_POSTS = 90 * DAYS; // time before we ignore votes for posts
 
-export const REP_CUTOFF = 2; // number of years before we ignore votes
+export const MINIMUM_RANK = 1; // minimum rank to be considered for rewards
 
 export const PUBLIC_LINK_REWARD = 5; // amount of tokens you get for public referral
 export const REFERRAL_REWARD = 20; // amount of tokens awarded both the referrer and referee
@@ -83,7 +85,9 @@ export const BANNED_COMMUNITY_SLUGS = [
   'home',
   'auth',
   'profile',
-  'communities'
+  'communities',
+  'subscriptions',
+  'graphql'
 ];
 
 export const BANNED_USER_HANDLES = [

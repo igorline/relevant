@@ -14,7 +14,7 @@ const ReduxFormField = props => {
     <View display="flex" fdirection="column" mt={3}>
       {label ? (
         <label html-for={name}>
-          <LinkFont c={colors.black}>{label}:</LinkFont>
+          <LinkFont c={colors.black}>{label}</LinkFont>
         </label>
       ) : null}
       <ImageUpload

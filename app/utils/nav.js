@@ -41,3 +41,18 @@ export function dispatchNavigatorAction(action) {
   if (!_navigator) return console.warn('TopLevelNavigator not ready!'); // eslint-disable-line
   return _navigator.dispatch(action);
 }
+
+export function getCurrentRouteAndTab() {
+  if (!_navigator) return {};
+  let route = _navigator.state.nav;
+  let tab;
+  let tabChildrenCount = 0;
+  while (route.routes) {
+    route = route.routes[route.index];
+    if (tab) tabChildrenCount++;
+    if (route.routeName === 'main') {
+      tab = route.routes[route.index];
+    }
+  }
+  return { route, tab, tabChildrenCount };
+}

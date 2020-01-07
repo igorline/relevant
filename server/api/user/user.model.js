@@ -62,12 +62,7 @@ const UserSchema = new Schema(
     redditAuth: { type: Object, select: false },
     google: {},
     github: {},
-    relevanceRecord: [
-      {
-        relevance: Number,
-        time: Date
-      }
-    ],
+
     postCount: { type: Number, default: 0 },
     investmentCount: { type: Number, default: 0 },
     onboarding: { type: Number, default: 0 },
@@ -127,9 +122,10 @@ const UserSchema = new Schema(
 
     // eth cash out
     cashOut: {
-      nonce: Number,
+      nonce: String,
       sig: String,
-      amount: String
+      amount: String,
+      earningId: String
     },
     airdropTokens: { type: Number, default: 0 },
     referralTokens: { type: Number, default: 0 },
@@ -155,7 +151,7 @@ UserSchema.index({ handle: 1 });
  */
 // TODO use this in controller
 UserSchema.virtual('relevance', {
-  ref: 'Relevance',
+  ref: 'CommunityMember',
   localField: '_id',
   foreignField: 'user',
   justOne: true
@@ -299,23 +295,6 @@ UserSchema.methods = {
     return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64');
   },
 
-  // update user relevance and save record
-
-  // updateRelevanceRecord: async function updateRelevanceRecord(communityId) {
-  //   if (!community) community = 'relevant';
-
-  //   // TODO test updateRelevanceRecord
-  //   let relevance = await this.model('Relevance')
-  //   .findOneAndUpdate(
-  //     { user: this._id, communityId, global: true },
-  //     { upsert: true, new: true }
-  //   );
-
-  //   relevance.updateRelevanceRecord();
-  //   await relevance.save();
-  //   return this;
-  // },
-
   // get following and followers
   getSubscriptions: function getSubscriptions() {
     return this.model('Subscription')
@@ -333,28 +312,19 @@ UserSchema.methods = {
 };
 
 UserSchema.methods.getRelevance = async function getRelevance(community) {
-  try {
-    const rel = await this.model('Relevance').findOne({
-      community,
-      user: this._id,
-      global: true
-    });
-    this.relevance = rel ? rel.relevance : 0;
-    return this;
-  } catch (err) {
-    throw err;
-  }
+  const rel = await this.model('CommunityMember').findOne({
+    community,
+    user: this._id
+  });
+  this.relevance = rel ? rel.relevance : 0;
+  return this;
 };
 
 UserSchema.methods.updatePostCount = async function updatePostCount() {
-  try {
-    this.postCount = await this.model('Post').countDocuments({ user: this._id });
-    await this.save();
-    await this.updateClient();
-    return this;
-  } catch (err) {
-    throw err;
-  }
+  this.postCount = await this.model('Post').countDocuments({ user: this._id });
+  await this.save();
+  await this.updateClient();
+  return this;
 };
 
 UserSchema.methods.updateClient = function updateClient(actor) {
@@ -371,96 +341,85 @@ UserSchema.methods.updateClient = function updateClient(actor) {
 };
 
 UserSchema.methods.updateMeta = async function updateMeta() {
-  try {
-    const newUser = {
-      name: this.name,
-      image: this.image
-    };
+  const newUser = {
+    name: this.name,
+    image: this.image,
+    _id: this._id,
+    handle: this.handle
+  };
 
-    // Do this on a separate thread?
-    await this.model('Post').updateMany(
-      { user: this._id },
-      { embeddedUser: newUser },
-      { multi: true }
-    );
+  await this.model('Post').updateMany(
+    { user: this._id },
+    { embeddedUser: newUser },
+    { multi: true }
+  );
 
-    await this.model('CommunityMember').updateMany(
-      { user: this._id },
-      { embeddedUser: newUser },
-      { multi: true }
-    );
-    return true;
-  } catch (err) {
-    throw err;
-  }
+  await this.model('CommunityMember').updateMany(
+    { user: this._id },
+    { embeddedUser: newUser },
+    { multi: true }
+  );
+  return true;
 };
 
 UserSchema.methods.addReward = async function addReward({ type, user, extraRewards }) {
-  try {
-    const amount = getRewardForType(type) + (extraRewards || 0);
-    const airdropTokens = Math.min(amount, MAX_AIRDROP - this.airdropTokens);
+  const amount = getRewardForType(type) + (extraRewards || 0);
+  const airdropTokens = Math.min(amount, MAX_AIRDROP - this.airdropTokens);
 
-    if (airdropTokens <= 0) return this;
+  if (airdropTokens <= 0) return this;
 
-    // TODO - update this and tie it to smart contract
-    await this.model('Treasury')
-      .findOneAndUpdate(
-        {},
-        { $inc: { balance: -airdropTokens } },
-        { new: true, upsert: true }
-      )
-      .exec();
+  // TODO - update this and tie it to smart contract
+  await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
 
-    this.balance += airdropTokens;
-    this.airdropTokens += airdropTokens;
-    if (type === 'referral' || type === 'publicLink') {
-      this.referralTokens += airdropTokens;
-    }
-
-    const notification = {
-      forUser: this._id,
-      type: `reward_${type}`,
-      coin: airdropTokens,
-      byUser: user ? user._id : null,
-      byUsersHandle: user ? [user.handle] : null
-    };
-    await this.model('Notification').createNotification(notification);
-
-    return this.save();
-  } catch (err) {
-    throw err;
+  this.balance += airdropTokens;
+  this.airdropTokens += airdropTokens;
+  if (type === 'referral' || type === 'publicLink') {
+    this.referralTokens += airdropTokens;
   }
+
+  const notification = {
+    forUser: this._id,
+    type: `reward_${type}`,
+    coin: airdropTokens,
+    byUser: user ? user._id : null,
+    byUsersHandle: user ? [user.handle] : null
+  };
+  await this.model('Notification').createNotification(notification);
+
+  return this.save();
 };
 
 UserSchema.methods.initialCoins = async function initialCoins(invite) {
-  try {
-    const airdropTokens = newUserCoins(this, invite);
+  const airdropTokens = newUserCoins(this, invite);
 
-    if (!airdropTokens) return this;
-    // TODO - update this and tie it to smart contract
-    await this.model('Treasury')
-      .findOneAndUpdate(
-        {},
-        { $inc: { balance: -airdropTokens } },
-        { new: true, upsert: true }
-      )
-      .exec();
+  if (!airdropTokens) return this;
+  // TODO - update this and tie it to smart contract
+  await this.model('Treasury')
+    .findOneAndUpdate(
+      {},
+      { $inc: { balance: -airdropTokens } },
+      { new: true, upsert: true }
+    )
+    .exec();
 
-    this.balance += airdropTokens;
-    this.airdropTokens += airdropTokens;
+  this.balance += airdropTokens;
+  this.airdropTokens += airdropTokens;
 
-    const type = this.twitterId ? 'twitter' : 'email';
-    const notification = {
-      forUser: this._id,
-      type: `reward_${type}`,
-      coin: airdropTokens
-    };
-    await this.model('Notification').createNotification(notification);
+  const type = this.twitterId ? 'twitter' : 'email';
+  const notification = {
+    forUser: this._id,
+    type: `reward_${type}`,
+    coin: airdropTokens
+  };
+  await this.model('Notification').createNotification(notification);
 
-    return this.save();
-  } catch (err) {
-    throw err;
-  }
+  return this.save();
 };
 
 UserSchema.methods.updateBalance = async function updateBalance() {
@@ -482,6 +441,13 @@ UserSchema.methods.updatePower = function updatePower() {
   this.votePower = votePower;
   // async?
   this.save();
+  return this;
+};
+
+UserSchema.methods.ensureParam = async function ensureParam(param) {
+  if (this[param] !== undefined) return this;
+  const getParam = await this.model('User').findOne({ _id: this._id }, '+param');
+  this[param] = getParam[param];
   return this;
 };
 

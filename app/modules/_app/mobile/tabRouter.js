@@ -1,11 +1,8 @@
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { darkGrey, fullWidth } from 'app/styles/global';
-import {
-  createAppContainer,
-  createBottomTabNavigator,
-  createStackNavigator
-} from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import Discover from 'modules/discover/mobile/discoverTabs.component';
 import Stats from 'modules/stats/mobile/stats.container';
@@ -27,7 +24,7 @@ import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import CommunityMembers from 'modules/community/mobile/communityMembers.component';
 
-import { StackViewTransitionConfigs } from 'react-navigation-stack';
+import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
 
 export const DefaultStack = {
   notifications: {
@@ -61,10 +58,13 @@ export const DefaultStack = {
   },
   discoverTag: {
     screen: Discover,
-    path: ':community/:sort/:topic',
-    navigationOptions: {
-      title: 'Read'
-    }
+    path: ':community/:sort/:topic'
+    // navigationOptions: {
+    //   title: 'Read'
+    // }
+    // navigationOptions: props => {
+    //   return { gesturesEnabled: false, title: 'Read XXX' };
+    // }
   },
   statsView: {
     screen: Stats,
@@ -148,6 +148,11 @@ const defaultStackSettings = {
   },
 
   transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
+
+  // navigationOptions: props => {
+  //   console.log('drawer props', props);
+  //   // return
+  // },
 
   defaultNavigationOptions: props => ({
     gesturesEnabled: true,

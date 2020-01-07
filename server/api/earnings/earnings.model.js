@@ -22,13 +22,15 @@ const EarningsSchema = new Schema(
     type: { type: String, default: 'coins' },
     community: { type: String },
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+
     cashOutAttempt: { type: Schema.Types.Boolean, default: false },
     cashOutAmt: { type: Number, default: 0 },
+
     prevBalance: { type: Number, default: 0 },
     endBalance: { type: Number, default: 0 },
+
     totalPreviousPaidout: { type: Number, default: 0 },
     legacyAirdrop: { type: Number, default: 0 },
-    legacyTokens: { type: Number, default: 0 },
     referralTokens: { type: Number, default: 0 },
     airdropTokens: { type: Number, default: 0 }
   },
@@ -43,17 +45,13 @@ EarningsSchema.index({ user: 1, status: 1 });
 EarningsSchema.index({ user: 1, post: 1 });
 
 EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(earning) {
-  try {
-    const updatedEarning = await this.findOneAndUpdate(
-      { user: earning.user, post: earning.post, communityId: earning.communityId },
-      { ...earning },
-      { new: true, upsert: true }
-    );
-    updatedEarning.updateClient({ actionType: 'UPDATE_EARNING' });
-    return updatedEarning;
-  } catch (err) {
-    throw err;
-  }
+  const updatedEarning = await this.findOneAndUpdate(
+    { user: earning.user, post: earning.post, communityId: earning.communityId },
+    { ...earning },
+    { new: true, upsert: true }
+  );
+  updatedEarning.updateClient({ actionType: 'UPDATE_EARNING' });
+  return updatedEarning;
 };
 
 EarningsSchema.methods.updateClient = function updateClient({ actionType }) {
@@ -66,22 +64,14 @@ EarningsSchema.methods.updateClient = function updateClient({ actionType }) {
 };
 
 EarningsSchema.pre('remove', async function preRemove(next) {
-  try {
-    this.updateClient({ actionType: 'REMOVE_EARNING' });
-    next();
-  } catch (err) {
-    throw err;
-  }
+  this.updateClient({ actionType: 'REMOVE_EARNING' });
+  next();
 });
 
 EarningsSchema.statics.updateUserBalance = async function updateBalance(earning) {
-  try {
-    earning = new this(earning);
-    earning = await earning.save();
-    return earning;
-  } catch (err) {
-    throw err;
-  }
+  earning = new this(earning);
+  earning = await earning.save();
+  return earning;
 };
 
 EarningsSchema.statics.updateEarnings = async function updateEarnings({
@@ -105,20 +95,15 @@ EarningsSchema.statics.updateEarnings = async function updateEarnings({
 };
 
 EarningsSchema.statics.stakedTokens = async function stakedTokens() {
-  try {
-    // this.model('CommunityMember').find({}).then(console.log);
-    return await this.model('Earnings').aggregate([
-      { $match: { status: 'pending' } },
-      {
-        $group: {
-          _id: '$community',
-          stakedTokens: { $sum: '$stakedTokens' }
-        }
+  return this.model('Earnings').aggregate([
+    { $match: { status: 'pending' } },
+    {
+      $group: {
+        _id: '$community',
+        stakedTokens: { $sum: '$stakedTokens' }
       }
-    ]);
-  } catch (err) {
-    throw err;
-  }
+    }
+  ]);
 };
 
 module.exports = mongoose.model('Earnings', EarningsSchema);

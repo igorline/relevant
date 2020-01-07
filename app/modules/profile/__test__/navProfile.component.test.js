@@ -10,13 +10,15 @@ const props = {
   user: auth.auth.user
 };
 
+jest.mock('react-redux', () => ({ useDispatch: () => () => {}, connect: el => el }));
+
 test('Snapshot NavProfile', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <NavProfile {...props} />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <NavProfile {...props} />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

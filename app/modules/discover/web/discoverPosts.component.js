@@ -14,7 +14,6 @@ class DiscoverPosts extends Component {
     sort: PropTypes.string,
     tag: PropTypes.string,
     auth: PropTypes.object
-    // actions: PropTypes.object
   };
 
   constructor(props) {

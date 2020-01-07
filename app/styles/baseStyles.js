@@ -54,5 +54,26 @@ export const GlobalStyle = createGlobalStyle`
     html {
       font-size: 100%;
     }
+
+    .BeaconContainer {
+      /*bottom: 30px !important; */
+      left: 0 !important;
+      top: 0 !important;
+      padding-bottom: 32px;
+    }
+    .c-BeaconCloseButton {
+      padding: 0;
+      margin: 0;
+      top: auto !important;
+      bottom: -32px !important;
+      height: 32px;
+      backgroundColor: blue;
+      z-index: 1000 !important;
+    }
+    .BeaconFabButtonFrame {
+      left: 16px !important;
+      right: auto !important;
+      bottom: 16px !important;
+    }
   }
 `;

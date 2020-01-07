@@ -7,7 +7,7 @@ import { isNative } from 'styles';
 import MobileAlert from './banner.mobile';
 import Banner from './banner.desktop';
 
-const TEXT = {
+export const TEXT = {
   mobileText:
     'When you upvote a post you are automatically betting some coins on it. You can customize bet amounts if you enable manual betting.',
   messageText:

@@ -16,6 +16,7 @@ import codePush from 'react-native-code-push';
 import { globalStyles, IphoneX } from 'app/styles/global';
 import { NAME_PATTERN } from 'app/utils/text';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import { colors } from 'styles';
 import TwitterButton from './TwitterButton.component';
 
 let styles;
@@ -94,6 +95,7 @@ export default class TwitterSignup extends Component {
             autoCorrect={false}
             keyboardType={'default'}
             clearTextOnFocus={false}
+            placeholderTextColor={colors.grey}
             placeholder="username"
             onChangeText={username => {
               username = username.replace('@', '').trim();

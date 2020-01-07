@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import codePush from 'react-native-code-push';
 import { Provider } from 'react-redux';
 import configureStore from 'app/core/mobile/configureShareStore';
+import { client } from 'app/core/apollo.client';
+import { ApolloProvider } from '@apollo/react-hooks';
 import ShareContainer from './share.container';
 
 const store = configureStore();
@@ -13,9 +15,11 @@ const codePushOptions = {
 class Share extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <ShareContainer />
-      </Provider>
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+          <ShareContainer />
+        </Provider>
+      </ApolloProvider>
     );
   }
 }

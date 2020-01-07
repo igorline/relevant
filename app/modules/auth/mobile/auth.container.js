@@ -27,6 +27,7 @@ class AuthContainer extends Component {
   componentDidMount() {
     this.props.actions.getUser().then(async user => {
       if (!user) return null;
+      codePush.allowRestart();
       return this.props.navigation.navigate('main');
       // const resetAction = StackActions.reset({
       //   index: 0,
@@ -44,6 +45,7 @@ class AuthContainer extends Component {
 
   componentDidUpdate() {
     if (this.props.auth.user) {
+      codePush.allowRestart();
       this.props.navigation.navigate('main');
       // const resetAction = StackActions.reset({
       //   index: 0,

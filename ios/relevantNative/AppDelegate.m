@@ -110,12 +110,6 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
     [FIRApp configure];
   }
 
-//  #ifdef DEBUG
-//    NSLog(@"DEBUG!!!");
-//  #else
-//    NSLog(@"PRODUCTION");
-//  #endif
-
   return YES;
 }
 

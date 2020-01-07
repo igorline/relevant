@@ -44,7 +44,7 @@ export default function Thumb({ parent, id, destroy, key }) {
       clearTimeout(timeout);
       destroy(id);
     };
-  }, []);
+  }, [destroy, id, opacity, scale]);
 
   return (
     <Animated.Text

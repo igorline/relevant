@@ -6,8 +6,7 @@ import {
   View,
   Platform,
   ActionSheetIOS,
-  Alert,
-  AlertIOS
+  Alert
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -57,7 +56,7 @@ class HeaderRight extends Component {
     }
 
     // IOS
-    AlertIOS.prompt('Enter new name', user.name, [
+    Alert.prompt('Enter new name', user.name, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'OK',

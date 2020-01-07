@@ -1,11 +1,11 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { getProvider, getMetamask } from 'app/utils/eth';
+import { getProvider, getMetamask, formatBN } from 'app/utils/eth';
 import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
-import { actions as tokenActions, tokenAddress } from 'core/contracts';
 import { alert } from 'app/utils';
 import { useWeb3State, useRelevantState } from './contract.selectors';
+import { useContract } from './contract.context';
 
 const Alert = alert.Alert();
 const _web3 = getProvider();
@@ -16,64 +16,61 @@ export const useWeb3Actions = () => {
     init: useCallback(web3Instance => dispatch(_web3Actions.init.init(web3Instance)), [
       dispatch
     ]),
-    network: useCallback(
-      () => bindActionCreators({ ..._web3Actions.network, dispatch }),
-      [dispatch]
-    ),
-    accounts: useCallback(
-      () => bindActionCreators({ ..._web3Actions.accounts, dispatch }),
-      [dispatch]
-    )
+    network: bindActionCreators({ ..._web3Actions.network }, dispatch),
+    accounts: bindActionCreators({ ..._web3Actions.accounts }, dispatch)
   };
 };
 
 export const useRelevantActions = () => {
+  const { actions: tokenActions, tokenAddress } = useContract();
   const dispatch = useDispatch();
-  return {
+  const actions = {
     getEvent: useCallback(
       event => {
         dispatch(tokenActions.events[event].get({ at: tokenAddress }));
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     ),
     subscribeToEvent: useCallback(
       event => {
         dispatch(tokenActions.events[event].get({ at: tokenAddress }));
-        dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
+        return dispatch(tokenActions.events[event].subscribe({ at: tokenAddress }));
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     ),
-    cacheMethod: useCallback(
+    call: useCallback(
       (method, args) => {
-        if (args) dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
-        else dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
+        if (args)
+          return dispatch(tokenActions.methods[method]({ at: tokenAddress }).call(args));
+        return dispatch(tokenActions.methods[method]({ at: tokenAddress }).call());
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     ),
-    cacheSend: useCallback(
+    send: useCallback(
       (method, options, ...args) => {
         if (args) {
-          dispatch(
+          return dispatch(
             tokenActions.methods[method]({
               at: tokenAddress,
               ...options
             }).send(...args)
           );
-        } else {
-          dispatch(
-            tokenActions.methods[method]({
-              at: tokenAddress,
-              ...options
-            }).send()
-          );
         }
+        return dispatch(
+          tokenActions.methods[method]({
+            at: tokenAddress,
+            ...options
+          }).send()
+        );
       },
-      [dispatch]
+      [dispatch, tokenActions, tokenAddress]
     )
   };
+  return tokenActions ? actions : {};
 };
 
 export const useWeb3 = () => {
+  useContract();
   useMetamask();
   const web3 = useWeb3State();
   const { init } = useWeb3Actions();
@@ -90,6 +87,7 @@ export const useWeb3 = () => {
 export const useMetamask = () => {
   const dispatch = useDispatch();
   const metamask = getMetamask();
+  if (metamask) metamask.autoRefreshOnNetworkChange = false;
 
   useEffect(() => {
     if (!metamask) return () => {};
@@ -98,7 +96,6 @@ export const useMetamask = () => {
     } catch (err) {
       return () => {};
     }
-    metamask.autoRefreshOnNetworkChange = false;
 
     const getAccounts = _accounts =>
       dispatch(_web3Actions.accounts.getSuccess(_accounts));
@@ -117,17 +114,22 @@ export const useMetamask = () => {
 export const useBalance = () => {
   const { accounts } = useWeb3State();
   const { userBalance } = useRelevantState();
-  const { cacheMethod, subscribeToEvent } = useRelevantActions();
+  const { call, subscribeToEvent } = useRelevantActions();
   const haveBalance = !!userBalance;
 
   useEffect(() => {
-    subscribeToEvent('Transfer');
+    subscribeToEvent && subscribeToEvent('Transfer');
     if (accounts && accounts.length && !haveBalance) {
-      cacheMethod('balanceOf', accounts[0]);
+      call && call('balanceOf', accounts[0]);
     }
-  }, [accounts, haveBalance, cacheMethod, subscribeToEvent]);
+  }, [accounts, haveBalance, call, subscribeToEvent]);
 
-  return userBalance;
+  const relCoins =
+    userBalance && userBalance.phase === 'SUCCESS'
+      ? formatBN(userBalance.value, 18)
+      : null;
+
+  return relCoins;
 };
 
 export const useEventSubscription = () => {
@@ -137,38 +139,52 @@ export const useEventSubscription = () => {
   }, [subscribeToEvent]);
 };
 
+// DEPRECATED backwards compatability
+
 // Rerturns [Accounts, Relevant State, Relevant Actions]
 export const useTokenContract = () => {
-  const relevantState = useRelevantState();
+  useContract();
+  const { getState } = useRelevantState();
   const web3 = useWeb3State();
-  const relevantActions = useRelevantActions();
+  const { call, send } = useRelevantActions();
   useWeb3();
   useBalance();
   // useEventSubscription(ethActions);
-  return [web3.accounts, relevantState, relevantActions];
+  return [
+    web3.accounts,
+    { methodCache: { select: getState } },
+    { cacheMethod: call, cacheSend: send }
+  ];
 };
 
-export const useTxState = ({ tx, method, clearTx }) => {
-  const { methodCache } = useRelevantState();
-  if (!tx) return null;
+// Rerturns [Accounts, Relevant State, Relevant Actions]
+export const useRelevantToken = () => {
+  useContract();
+  const { getState } = useRelevantState();
+  const web3 = useWeb3State();
+  const { call, send } = useRelevantActions();
+  useWeb3();
+  useBalance();
+  // useEventSubscription(ethActions);
+  return { accounts: web3.accounts, getState, call, send };
+};
 
-  const txState = methodCache.select(method, ...tx.payload.args);
-  const txConfirmed = methodCache.select(
-    'claimTokens',
-    ...tx.payload.args,
-    'confirmations'
-  );
+export const useTxState = ({ tx, method, callback }) => {
+  const { getState } = useRelevantState();
+  if (!tx || !getState) return null;
+
+  const txState = getState(method, ...tx.payload.args);
+
+  if (txState && txState.phase === 'RECEIPT') {
+    Alert.alert('Transaction Completed!', 'success');
+    callback();
+    return 'success';
+  }
 
   if (txState && txState.phase === 'ERROR') {
     Alert.alert(txState.value.get('message'));
-    clearTx();
+    callback();
     return 'error';
-  }
-
-  if (txConfirmed && txConfirmed.value) {
-    Alert.alert('Transaction Completed!', 'success');
-    clearTx();
-    return 'success';
   }
 
   return 'pending';
