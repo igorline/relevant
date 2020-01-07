@@ -81,13 +81,15 @@ export default function PostTitle(props) {
     : null;
 
   const hasAuthor = link && link.articleAuthor && link.articleAuthor.length;
-  const authorEl = hasAuthor ? link.articleAuthor.join(', ') + ' • ' : null;
+  const authorEl = hasAuthor ? (
+    <SecondaryText c={c} numberOfLines={1} mr={0.5}>
+      {link.articleAuthor.join(', ')} •
+    </SecondaryText>
+  ) : null;
 
   const domainEl = get(link, 'domain') && (
     <View fdirection={'row'} numberOfLines={1} align={'flex-end'}>
-      <SecondaryText c={c} inline={1} numberOfLines={1}>
-        {authorEl}
-      </SecondaryText>
+      {authorEl}
       <ULink
         type="text"
         external
@@ -106,31 +108,10 @@ export default function PostTitle(props) {
     </View>
   );
 
-  // const userSet = new Set();
-  // (get(post, 'commentary', []) || []).forEach(user => userSet.add(user.id));
-
-  // const timestamp = getTimestamp(post.postDate);
-  // const uniqueUsers = userSet.size - 1;
-  // let postUser;
-  // if (get(post, 'embeddedUser.handle')) {
-  //   postUser = post.embeddedUser;
-  // } else if (get(firstPost, 'embeddedUser.handle')) {
-  //   postUser = firstPost.embeddedUser;
-  // }
-
-  // const userEl = get(postUser, 'handle') &&
-  //   <TextView>
-  //     <Text>Posted by: </Text>
-  //     <ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>
-  //       {`@${get(postUser, 'handle')}`}
-  //     </ULink>
-  //   </TextView>;
-
   return (
     <View fdirection={'column'} flex={1} justify={mobile ? 'center' : 'flex-start'}>
       <View>
         {titleEl}
-        {/* {postUrl && timestamp }{' • '} */}
         <View mt={mobile ? 1 : 0} c={c}>
           {domainEl}
         </View>
@@ -145,7 +126,6 @@ export default function PostTitle(props) {
             c={c}
             mt={mobile ? 1 : 0.5}
             numberOfLines={mobile ? 1 : null}
-            // wrap={'nowrap'}
           >
             {commentEl}
             {tagEl}

@@ -92,10 +92,7 @@ function createListener(io) {
   return data => {
     if (data._id) {
       const sockets = clients[data._id];
-      if (!sockets) {
-        console.log("couldn't find any web socket clients");
-        return;
-      }
+      if (!sockets) return;
       Object.keys(sockets).forEach(id => {
         const socket = sockets[id];
         console.log('emit to ', data._id, ' ', data.type);

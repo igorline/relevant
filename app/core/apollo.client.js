@@ -23,7 +23,10 @@ const wsUri = uri.replace('http', 'ws');
 const wsLink = new WebSocketLink({
   uri: `${wsUri}/graphql`,
   options: {
-    reconnect: true
+    reconnect: true,
+    reconnectionAttempts: 50,
+    lazy: true,
+    timeout: 20000
   }
 });
 

@@ -373,6 +373,8 @@ exports.readable = async (req, res, next) => {
 
 exports.index = async req => {
   const { community } = req.query;
+
+  if (!community) throw new Error('missing the community query parameter');
   const { id: postId } = req.params;
   const { user } = req;
 
