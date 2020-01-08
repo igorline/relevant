@@ -47,8 +47,6 @@ class Post extends PureComponent {
       <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
     );
 
-    if (!auth.user) return null;
-
     const blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
 
     if (!post || !post._id) {

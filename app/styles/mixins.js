@@ -111,6 +111,14 @@ export const link = css`
   ${p => (p.td ? `text-decoration: ${p.td}; }` : '')};
 `;
 
+export const position = css`
+  ${p => (p.absolute ? `position: absolute;` : '')};
+  ${p => (p.top ? `top: ${size(p.top)}; }` : '')};
+  ${p => (p.left ? `left: ${size(p.left)}; }` : '')};
+  ${p => (p.bottom ? `bottom: ${size(p.bottom)}; }` : '')};
+  ${p => (p.right ? `right: ${size(p.right)}; }` : '')};
+`;
+
 export const cursor = css`
   ${p => (p.cursor && !p.mobile ? `cursor: ${p.cursor}; }` : '')};
 `;

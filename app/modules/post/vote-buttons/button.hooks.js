@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { browserAlerts } from 'app/utils/alert';
-import { showModal } from 'modules/navigation/navigation.actions';
+import { Alert } from 'app/utils/alert';
+import { showModal, showAuth } from 'modules/navigation/navigation.actions';
 import launchAnimation from './launchAnimation';
 import { vote as voteAction, updatePostVote } from '../invest.actions';
+
+const { alert } = Alert();
 
 let Analytics;
 let ReactGA;
@@ -32,9 +34,12 @@ export function useCastVote({
         e.stopPropagation();
         if (processingVote) return;
 
+        if (!auth.isAuthenticated) {
+          dispatch(showAuth());
+          return;
+        }
+
         const type = amount > 0 ? 'upvote' : 'downvote';
-        if (!auth.isAuthenticated)
-          throw new Error(`You must be logged in to ${type} posts`);
 
         if (vote && vote.isManualBet && type === 'upvote' && canBet) {
           showBetModal({ dispatch, postId: post._id });
@@ -52,7 +57,7 @@ export function useCastVote({
         runAnalytics(type);
       } catch (err) {
         setProcessingVote(false);
-        browserAlerts.alert(err.message);
+        alert(err.message);
       }
     },
     [processingVote, auth.isAuthenticated, dispatch, post, user, displayBetPrompt, canBet]

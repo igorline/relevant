@@ -76,7 +76,6 @@ class DiscoverUser extends Component {
               user={{ ...user, relevance }}
               setSelected={this.setSelected}
               showRelevance={showRelevance}
-              // topic={{ topic: this.props.topic, relevance }}
             />
             <View
               style={{

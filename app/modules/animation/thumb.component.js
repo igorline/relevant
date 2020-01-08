@@ -13,11 +13,10 @@ const thumbStyles = {
 Thumb.propTypes = {
   parent: PropTypes.object,
   id: PropTypes.string,
-  destroy: PropTypes.func,
-  key: PropTypes.number
+  destroy: PropTypes.func
 };
 
-export default function Thumb({ parent, id, destroy, key }) {
+export default function Thumb({ parent, id, destroy }) {
   const [opacity] = useState(new Animated.Value(1));
   const [scale] = useState(new Animated.Value(0));
 
@@ -49,7 +48,7 @@ export default function Thumb({ parent, id, destroy, key }) {
   return (
     <Animated.Text
       pointerEvents={'none'}
-      key={key}
+      key={id}
       style={[
         { ...thumbStyles },
         {

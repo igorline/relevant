@@ -30,7 +30,7 @@ import Tooltip from 'modules/tooltip/mobile/tooltip.container';
 import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
-import { PriceProvider } from 'modules/wallet/price.context';
+import PriceProvider from 'modules/wallet/price.context';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
 import * as modals from 'modules/ui/modals/mobile.lookup';
@@ -71,13 +71,6 @@ class Application extends Component {
     };
     this.backgroundTime = 0;
   }
-
-  // static navigationOptions = props => {
-  //   console.log('drawer props', props);
-  //   return {
-  //     drawerLockMode: 'locked-closed'
-  //   };
-  // };
 
   componentWillMount() {
     // hard-code community for now
@@ -158,7 +151,10 @@ class Application extends Component {
     const { actions, navigation, auth } = this.props;
 
     // TWitter callback
-    if (url.url.match('://callback')) return;
+    if (url.url.match('://callback')) {
+      if (!auth.community) actions.setCommunity('relevant');
+      return;
+    }
 
     const params = url.url.split(/\/\//)[1].split(/\/|\?/);
     let newCommunity = params[1];

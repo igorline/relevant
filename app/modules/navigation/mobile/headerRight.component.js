@@ -147,11 +147,12 @@ class HeaderRight extends Component {
       key: null,
       actions: [
         NavigationActions.navigate({
-          routeName: 'auth'
+          routeName: 'main'
         })
       ]
     });
     this.props.navigation.dispatch(resetAction);
+    this.props.navigation.navigate('auth');
   }
 
   renderElement() {

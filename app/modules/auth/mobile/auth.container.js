@@ -7,7 +7,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as authActions from 'modules/auth/auth.actions';
-import { goToUrl, push, reloadTab } from 'modules/navigation/navigation.actions';
+import {
+  goToUrl,
+  push,
+  reloadTab,
+  refreshTab
+} from 'modules/navigation/navigation.actions';
 // import {
 //   StackActions,
 //   NavigationActions,
@@ -63,6 +68,7 @@ class AuthContainer extends Component {
 
   componentWillUnmount() {
     codePush.allowRestart();
+    this.props.actions.refreshTab('discover');
   }
 
   render() {
@@ -86,6 +92,7 @@ const mapDispatchToProps = dispatch => ({
       ...adminActions,
       goToUrl,
       push,
+      refreshTab,
       reloadTab
     },
     dispatch

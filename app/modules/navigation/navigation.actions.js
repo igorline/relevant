@@ -26,6 +26,8 @@ let DrawerActions;
 let Linking;
 let native;
 
+const isNative = process.env.WEB !== 'true';
+
 if (process.env.WEB !== 'true') {
   Orientation = require('react-native-orientation');
   dismissKeyboard = require('react-native-dismiss-keyboard');
@@ -35,6 +37,13 @@ if (process.env.WEB !== 'true') {
   DrawerActions = require('react-navigation-drawer').DrawerActions;
   Linking = require('react-native').Linking;
   native = true;
+}
+
+export function showAuth() {
+  return dispatch =>
+    isNative
+      ? dispatchNavigatorAction(NavigationActions.navigate({ routeName: 'auth' }))
+      : dispatch(showModal('login'));
 }
 
 export function lockDrawer(lock) {

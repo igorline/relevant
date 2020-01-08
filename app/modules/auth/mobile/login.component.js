@@ -86,7 +86,9 @@ class Login extends Component {
 
     const twitterConnect = (
       <View style={[{ justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={styles.signInText}>Sign with your Relevant account to finish</Text>
+        <Text style={styles.signInText}>
+          Sign in with your Relevant account to finish
+        </Text>
       </View>
     );
 

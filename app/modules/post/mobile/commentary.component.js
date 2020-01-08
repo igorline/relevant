@@ -138,7 +138,6 @@ class Commentary extends Component {
                 post={post}
                 editing={false}
                 actions={actions}
-                auth={auth}
                 singlePost={singlePost}
                 avatarText={this.props.avatarText}
                 preview={preview}

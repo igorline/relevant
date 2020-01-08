@@ -32,7 +32,8 @@ export default class TwitterSignup extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      username: ''
+      username: '',
+      processing: false
     };
     this.renderUserName = this.renderUserName.bind(this);
     this.signUp = this.signUp.bind(this);
@@ -51,15 +52,18 @@ export default class TwitterSignup extends Component {
     }
   }
 
-  signUp() {
+  async signUp() {
     if (this.usernameExists) {
       return Alert.alert('This handle is already taken');
     }
     const twitterProfile = this.props.auth.twitter;
     const { preUser } = this.props.auth;
+    if (!preUser) return null;
     preUser.handle = this.state.username;
 
-    this.props.actions.updateHandle(preUser, twitterProfile.token);
+    this.setState({ inProgress: true });
+    await this.props.actions.updateHandle(preUser, twitterProfile.token);
+    this.setState({ inProgress: false });
     return null;
   }
 
@@ -131,7 +135,6 @@ export default class TwitterSignup extends Component {
         />
         <Text style={styles.signInText}>or</Text>
         <TouchableOpacity
-          // style={[styles.largeButton, {flex: 1}]}
           onPress={() => {
             this.props.navigation.navigate({ routeName: 'signup' });
           }}
@@ -143,8 +146,14 @@ export default class TwitterSignup extends Component {
   }
 
   render() {
+    const { auth } = this.props;
+    const { inProgress } = this.state;
     const button = (
-      <TouchableOpacity style={[styles.largeButton]} onPress={this.signUp}>
+      <TouchableOpacity
+        style={[styles.largeButton]}
+        disabled={inProgress || auth.loading}
+        onPress={this.signUp}
+      >
         <Text style={styles.largeButtonText}>Finish</Text>
       </TouchableOpacity>
     );

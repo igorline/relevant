@@ -20,6 +20,10 @@ export const View = styled.View`
   ${mixins.borderRadius}
 `;
 
+export const AbsoluteView = styled.View`
+  ${mixins.position}
+`;
+
 export const Text = styled.Text`
   ${mixins.margin}
   ${mixins.padding}

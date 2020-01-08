@@ -62,7 +62,7 @@ class PostInfo extends Component {
   componentDidMount() {
     const { auth, user } = this.props;
     if (!user) return;
-    if (auth && user._id === auth.user._id) {
+    if (auth && auth.user && user._id === auth.user._id) {
       this.menu = this.ownerMenu;
       this.myPost = true;
     }

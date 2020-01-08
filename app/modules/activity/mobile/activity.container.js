@@ -86,9 +86,6 @@ class Activity extends Component {
       case 0:
         this.props.actions.getActivity(length);
         break;
-      case 1:
-        this.props.actions.getUsers(length, null, 'online');
-        break;
       default:
     }
   }

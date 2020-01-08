@@ -61,7 +61,6 @@ class DiscoverTabs extends Component {
     };
     this.renderHeader = this.renderHeader.bind(this);
     this.renderScene = this.renderScene.bind(this);
-    this.renderBadge = this.renderBadge.bind(this);
 
     const { params } = this.props.navigation.state;
     if (params && params.topic) {
@@ -125,19 +124,6 @@ class DiscoverTabs extends Component {
     const currentRoute = this.state.routes[index] || {};
     if (!this.loaded) return <View key={route.key} />;
     switch (route.key) {
-      case 'feed':
-        return (
-          <Discover
-            active={currentRoute.key === route.key}
-            type={'twitterFeed'}
-            key={'twitterFeed'}
-            navigation={navigation}
-            onScroll={this.onScroll}
-            offsetY={headerHeight}
-            tabLabel={route.title}
-          />
-        );
-
       case 'new':
         return (
           <Discover
@@ -162,46 +148,9 @@ class DiscoverTabs extends Component {
             tabLabel={route.title}
           />
         );
-      case 'people':
-        return (
-          <Discover
-            active={currentRoute.key === route.key}
-            type={'people'}
-            key={'people'}
-            navigation={navigation}
-            onScroll={this.onScroll}
-            offsetY={headerHeight}
-            tabLabel={route.title}
-          />
-        );
       default:
         return null;
     }
-  }
-
-  renderBadge() {
-    // if (title !== SUB_TITLE) return null;
-    // const count = this.props.feedUnread;
-    // if (typeof count === 'number') {
-    //   this.totalBadge += count;
-    // }
-    // if (!count) return null;
-    // return (
-    //   <Text
-    //     style={{
-    //       backgroundColor: 'transparent',
-    //       fontSize: 14,
-    //       fontWeight: 'bold',
-    //       position: 'absolute',
-    //       color: 'red',
-    //       // color: blue,
-    //       top: -1,
-    //       right: -10
-    //     }}
-    //   >
-    //     {'•'}
-    //   </Text>
-    // );
   }
 
   renderHeader(props) {
@@ -243,29 +192,6 @@ class DiscoverTabs extends Component {
     );
   }
 }
-
-// function PositionListener({ position, tabView, drawer }) {
-//   const dispatch = useDispatch();
-//   const g = useSelector(state => state.navigation.gestures);
-//   const tabViewGesture = useSelector(state => state.navigation.gestures.tabView);
-//   const active = tabViewGesture && tabViewGesture.active;
-//   return (
-//     <React.Fragment>
-//       <Animated.Code
-//         exec={Animated.onChange(
-//           position,
-//           Animated.call([position], ([value]) => {
-//             const isActive = value > 0.0001;
-//             // drawer.current.props.enabled = isActive;
-//             dispatch(
-//               registerGesture({ name: 'tabView', active: isActive, gesture: tabView })
-//             );
-//           })
-//         )}
-//       />
-//     </React.Fragment>
-//   );
-// }
 
 const localStyles = StyleSheet.create({
   container: {
