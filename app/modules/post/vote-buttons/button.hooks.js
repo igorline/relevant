@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert } from 'app/utils/alert';
-import { showModal, showAuth } from 'modules/navigation/navigation.actions';
+import { showModal } from 'modules/navigation/navigation.actions';
+import { useAuth } from 'modules/auth/hooks';
 import launchAnimation from './launchAnimation';
 import { vote as voteAction, updatePostVote } from '../invest.actions';
 
@@ -16,7 +17,6 @@ if (process.env.WEB !== 'true') {
 }
 
 export function useCastVote({
-  auth,
   post,
   user,
   canBet
@@ -26,6 +26,7 @@ export function useCastVote({
   const [processingVote, setProcessingVote] = useState(false);
   // const displayBetPrompt = showBetPrompt({ post, community, user });
   const displayBetPrompt = false;
+  const hasAuth = useAuth();
 
   return useCallback(
     async (e, vote, amount) => {
@@ -34,10 +35,7 @@ export function useCastVote({
         e.stopPropagation();
         if (processingVote) return;
 
-        if (!auth.isAuthenticated) {
-          dispatch(showAuth());
-          return;
-        }
+        if (!hasAuth()) return;
 
         const type = amount > 0 ? 'upvote' : 'downvote';
 
@@ -60,7 +58,7 @@ export function useCastVote({
         alert(err.message);
       }
     },
-    [processingVote, auth.isAuthenticated, dispatch, post, user, displayBetPrompt, canBet]
+    [processingVote, hasAuth, dispatch, post, user, displayBetPrompt, canBet]
   );
 }
 

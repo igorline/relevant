@@ -33,6 +33,7 @@ export default function PostTitle(props) {
       external={singlePost}
       target={singlePost ? '_blank' : null}
       noLink={noLink}
+      // onPress={() => actions.goToUrl(post.url)}
       onPress={() => (singlePost ? actions.goToUrl(post.url) : actions.goToPost(post))}
     >
       <Title

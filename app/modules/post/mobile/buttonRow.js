@@ -9,6 +9,7 @@ import { push, goToPost } from 'modules/navigation/navigation.actions';
 import { setCreatePostState } from 'modules/createPost/createPost.actions';
 import { CTALink, View } from 'modules/styled/uni';
 import { colors } from 'app/styles';
+import { useAuth } from 'modules/auth/hooks';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -51,9 +52,11 @@ export default function ButtonRow({
   const dispatch = useDispatch();
 
   const menu = link ? linkMenu : defaultMenu;
+  const hasAuth = useAuth();
 
   const onShare = () => {
     const { community } = auth;
+    if (!hasAuth()) return;
     const postUrl = getPostUrl(community, post);
     const title = getTitle(post);
     Share.open({
@@ -64,6 +67,7 @@ export default function ButtonRow({
   };
 
   function showActionSheet() {
+    if (!hasAuth()) return;
     ActionSheet.showActionSheetWithOptions(
       {
         options: menu.buttons,
@@ -94,6 +98,7 @@ export default function ButtonRow({
   }
 
   function repostUrl() {
+    if (!hasAuth()) return;
     if (!link) return;
     dispatch(
       setCreatePostState({
@@ -114,6 +119,8 @@ export default function ButtonRow({
   }
 
   function NavigateToPost(openComment) {
+    if (openComment && !hasAuth()) return;
+
     const _parentPost = parentPost || post;
     const parentPostId = _parentPost._id || _parentPost;
 

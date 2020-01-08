@@ -79,7 +79,7 @@ class Application extends Component {
   }
 
   componentDidMount() {
-    const { navigation, actions } = this.props;
+    const { actions } = this.props;
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     const { width } = Dimensions.get('window');
     this.props.actions.setWidth(width);
@@ -94,21 +94,8 @@ class Application extends Component {
     //   }
     actions.getUser().then(async user => {
       if (!user) {
-        // TODO - should reset data if logged out
-        return navigation.navigate('auth');
-        // navigation.replace('auth');
-
-        // const resetAction = StackActions.reset({
-        //   index: 0,
-        //   key: null,
-        //   actions: [
-        //     NavigationActions.navigate({
-        //       routeName: 'container',
-        //       action: NavigationActions.navigate({ routeName: 'auth' })
-        //     })
-        //   ],
-        // });
-        // return this.props.navigation.dispatch(resetAction);
+        return this.props.actions.setScrollTab('discover', { tab: 1 });
+        // return navigation.navigate('auth');
       }
       Analytics.setUserId(user._id);
       const { community } = user;
