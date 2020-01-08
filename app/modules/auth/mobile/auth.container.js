@@ -13,10 +13,6 @@ import {
   reloadTab,
   refreshTab
 } from 'modules/navigation/navigation.actions';
-// import {
-//   StackActions,
-//   NavigationActions,
-// } from 'react-navigation';
 
 import { AuthNavigator, AuthStack } from 'modules/_app/mobile/authRouter';
 
@@ -34,17 +30,6 @@ class AuthContainer extends Component {
       if (!user) return null;
       codePush.allowRestart();
       return this.props.navigation.navigate('main');
-      // const resetAction = StackActions.reset({
-      //   index: 0,
-      //   key: null,
-      //   actions: [
-      //     NavigationActions.navigate({
-      //       routeName: 'container',
-      //       action: NavigationActions.navigate({ routeName: 'main' })
-      //     })
-      //   ],
-      // });
-      // return this.props.navigation.dispatch(resetAction);
     });
   }
 
@@ -52,17 +37,6 @@ class AuthContainer extends Component {
     if (this.props.auth.user) {
       codePush.allowRestart();
       this.props.navigation.navigate('main');
-      // const resetAction = StackActions.reset({
-      //   index: 0,
-      //   key: null,
-      //   actions: [
-      //     NavigationActions.navigate({
-      //       routeName: 'container',
-      //       action: NavigationActions.navigate({ routeName: 'main' })
-      //     })
-      //   ],
-      // });
-      // this.props.navigation.dispatch(resetAction);
     }
   }
 

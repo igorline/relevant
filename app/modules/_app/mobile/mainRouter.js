@@ -18,6 +18,7 @@ import {
   CreatePostStack
 } from 'modules/_app/mobile/createPostRouter';
 import { TabContainer } from 'modules/_app/mobile/tabRouter';
+import { fullWidth } from 'app/styles/global';
 
 class CreatePostWrapper extends Component {
   static propTypes = {
@@ -76,18 +77,23 @@ export const RootStack = createStackNavigator(
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
 
+    defaultNavigationOptions: () => ({
+      gesturesEnabled: true,
+      gestureResponseDistance: {
+        horizontal: fullWidth
+      }
+    }),
+
     transitionConfig: () => ({
       ...StackViewTransitionConfigs.SlideFromRightIOS,
 
       screenInterpolator: props => {
-        // Transitioning to search screen (navigate)
         if (props.scene.route.routeName === 'createPost') {
           return StackViewStyleInterpolator.forVertical(props);
         }
 
         const last = props.scenes[props.scenes.length - 1];
 
-        // Transitioning from search screen (goBack)
         if (last.route.routeName === 'createPost') {
           return StackViewStyleInterpolator.forVertical(props);
         }
