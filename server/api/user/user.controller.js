@@ -773,7 +773,7 @@ exports.cashOut = async (req, res, next) => {
     // Temp - let global admins cash out more
     const maxClaim = user.role === 'admin' ? 1000 * 1e6 : CASHOUT_MAX - user.cashedOut;
 
-    const canClaim = Math.min(maxClaim, user.balance - (user.airdroppedTokens || 0));
+    const canClaim = Math.min(maxClaim, user.balance - (user.airdropTokens || 0));
     const amount = customAmount;
 
     if (amount > maxClaim)

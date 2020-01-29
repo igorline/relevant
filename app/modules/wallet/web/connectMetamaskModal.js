@@ -19,7 +19,7 @@ export default function AddEthAddress({ close }) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
 
-  const canClaim = user.balance - (user.airdroppedTokens || 0);
+  const canClaim = user.balance - (user.airdropTokens || 0);
   const account = accounts && accounts[0];
 
   useMetamask();
