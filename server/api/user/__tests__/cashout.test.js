@@ -29,6 +29,12 @@ describe('Cashout', () => {
     expect(next).toHaveBeenCalled();
   });
 
+  test('should not be able to cash out airdrop tokens', async () => {
+    const req = { user: alice, body: { customAmount: alice.airdropTokens } };
+    await cashOut(req, res, next);
+    expect(next).toHaveBeenCalled();
+  });
+
   test('over the max cash out limit', async () => {
     bob.balance = CASHOUT_MAX + 1 + bob.airdropTokens;
     await bob.save();
@@ -70,6 +76,8 @@ describe('Cashout', () => {
   }, 10000);
 
   test('cashout success', async () => {
+    alice.balance = alice.airdropTokens + 20;
+    await alice.save();
     const amnt = 10;
     const req = {
       user: alice,
