@@ -67,3 +67,17 @@ export const signupAsyncValidation = async values => {
     throw errors;
   }
 };
+
+export const passwordsShouldMatch = values => {
+  const errors = {};
+  if (!values.password || !values.confirmPassword) {
+    return null;
+  }
+  if (values.password !== values.confirmPassword) {
+    errors.confirmPassword = 'Passwords must match';
+  }
+  return errors;
+};
+
+export const compose = (...validators) => value =>
+  validators.reduce((error, validator) => error || validator(value), undefined);

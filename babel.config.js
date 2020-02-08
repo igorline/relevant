@@ -14,7 +14,18 @@ const plugins = [
 
 const prodPlugins = ['transform-remove-console'];
 const nativePresets = ['module:metro-react-native-babel-preset'];
-const presetsWeb = ['@babel/preset-env', '@babel/preset-react'];
+const presetsWeb = [
+  [
+    '@babel/preset-env',
+    {
+      targets: {
+        browsers: '>0.5%',
+        node: 'current'
+      }
+    }
+  ],
+  '@babel/preset-react'
+];
 
 const moduleResolverWeb = [
   'module-resolver',

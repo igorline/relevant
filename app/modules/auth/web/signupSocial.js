@@ -10,13 +10,17 @@ import { connect } from 'react-redux';
 import { showModal } from 'modules/navigation/navigation.actions';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
-const redditIcon = require('app/public/img/icons/reddit.png');
+const boxIcon = require('app/public/img/icons/3box.png');
 
+// const redditIcon = require('app/public/img/icons/reddit.png');
+// const redditIconComponent = (
+//   <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
+// );
 const twitterIconComponent = (
   <Image resizeMode={'contain'} source={twitterIcon} w={3} h={3} mr={1.5} />
 );
-const redditIconComponent = (
-  <Image resizeMode={'contain'} source={redditIcon} w={3} h={3} mr={1.5} />
+const boxIconComponent = (
+  <Image resizeMode={'contain'} source={boxIcon} w={3} h={3} mr={1.5} />
 );
 
 class SignupSocial extends Component {
@@ -54,7 +58,25 @@ class SignupSocial extends Component {
               text="Sign up with Twitter"
             />
           </ULink>
+
           <ULink
+            to={'#'}
+            mr={[4, 0]}
+            onClick={e => {
+              e.preventDefault();
+              this.props.actions.showModal('signup3Box');
+            }}
+          >
+            <LinkFont c={colors.blue}>
+              <ButtonWithIcon
+                bg={'rgb(248,49,255)'}
+                image={boxIconComponent}
+                text="Sign up with 3Box"
+              />
+            </LinkFont>
+          </ULink>
+
+          {/*          <ULink
             to={`/auth/reddit?invitecode=${invitecode}&redirect=${redirect}`}
             external
             mr={[4, 0]}
@@ -65,7 +87,7 @@ class SignupSocial extends Component {
               image={redditIconComponent}
               text="Sign up with Reddit"
             />
-          </ULink>
+          </ULink> */}
           <ULink
             to={'#'}
             mt={[0, 3]}
@@ -78,6 +100,7 @@ class SignupSocial extends Component {
             <LinkFont c={colors.blue}>Sign up with Email</LinkFont>
           </ULink>
         </View>
+
         <LinkFont mt={4}>
           Already registered?{' '}
           <a onClick={() => this.props.actions.showModal('login')}>Sign In</a>

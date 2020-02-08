@@ -11,7 +11,7 @@ import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
-const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit'];
+const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit', '3box'];
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -131,6 +131,9 @@ const UserSchema = new Schema(
     referralTokens: { type: Number, default: 0 },
     legacyTokens: { type: Number, default: 0 },
     legacyAirdrop: { type: Number, default: 0 },
+
+    boxDID: { type: String, unique: true, sparse: true },
+    boxAddress: { type: String, unique: true, sparse: true },
 
     version: String,
     community: String,

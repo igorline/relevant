@@ -8,6 +8,7 @@ import { signToken } from 'server/auth/auth.service';
 import Invite from 'server/api/invites/invite.model';
 import { sendEmail, addUserToEmailList, removeFromEmailList } from 'server/utils/mail';
 import { BANNED_USER_HANDLES, CASHOUT_MAX } from 'server/config/globalConstants';
+import { idUtils } from '3box';
 import User from './user.model';
 import Post from '../post/post.model';
 import CommunityMember from '../community/community.member.model';
@@ -365,6 +366,14 @@ exports.create = async (req, res, next) => {
     }
     if (!user.email) throw new Error('missing email');
 
+    const using3Box = !!user.boxAddress;
+    const additionalFields = using3Box ? await processBoxFields(user) : {};
+
+    if (additionalFields.user) {
+      const token = signToken(additionalFields.user._id, 'user');
+      return res.status(200).json({ token, user: additionalFields.user });
+    }
+
     const userObj = {
       handle: user.name,
       name: user.name,
@@ -372,21 +381,20 @@ exports.create = async (req, res, next) => {
       email: user.email,
       password: user.password,
       image: user.image,
-      provider: 'local',
+      provider: using3Box ? '3box' : 'local',
       role: 'user',
       relevance: 0,
-      confirmCode
+      confirmCode,
+      ...additionalFields
     };
+
+    if (using3Box) delete userObj.password;
 
     user = new User(userObj);
     user = await user.save();
 
-    if (invitecode) {
-      user = await Invite.processInvite({ invitecode, user });
-    }
-    // const confirmed = invite && invite.email === user.email;
+    if (invitecode) user = await Invite.processInvite({ invitecode, user });
     user = await user.initialCoins();
-    // if (invite) user = await invite.referral(user);
 
     const token = signToken(user._id, 'user');
     if (!user.confirmed) sendConfirmation(user, true);
@@ -401,6 +409,21 @@ exports.create = async (req, res, next) => {
     return next(err);
   }
 };
+
+async function processBoxFields(user) {
+  const { signature, boxAddress, DID } = user;
+  if (!signature || !boxAddress || !DID) throw new Error('Missing 3box parametrs');
+  const claim = await idUtils.verifyClaim(signature, { auth: true });
+  const { payload } = claim;
+  const { exp, DID: claimDID, address } = payload;
+  const claimExp = new Date(exp * 1000);
+  if (claimExp < new Date()) throw new Error('Expired 3box signature');
+  if (DID !== claimDID) throw new Error('Invalid 3box DID in signature');
+  if (boxAddress !== address) throw new Error('Invalid Ethereum address in signature');
+  const userExists = await User.findOne({ boxDID: DID });
+  if (userExists) return { user: userExists };
+  return { boxDID: DID, boxAddress, confirmed: !!user.email };
+}
 
 /**
  * Get a single user

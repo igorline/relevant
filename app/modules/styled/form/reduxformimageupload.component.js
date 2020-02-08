@@ -7,7 +7,7 @@ import { colors } from 'app/styles';
 const ReduxFormField = props => {
   const { label, meta, name, placeholder, imageComponent } = props;
   const {
-    input: { onChange }
+    input: { onChange, value }
   } = props;
   const { touched, error, warning } = meta;
   return (
@@ -18,7 +18,7 @@ const ReduxFormField = props => {
         </label>
       ) : null}
       <ImageUpload
-        placeholder={placeholder}
+        placeholder={value || placeholder}
         imageComponent={imageComponent}
         onChange={vals => {
           onChange(vals);

@@ -63,9 +63,7 @@ export const ImageWrapper = styled.View`
   ${mixins.flex}
 `;
 
-export const FormImage = props => (
-  <Image {...props} bg={colors.blue} {...layout.formImageProps} />
-);
+export const FormImage = props => <Image {...props} {...layout.formImageProps} />;
 
 export const Divider = styled.View`
   ${mixins.margin}
@@ -215,7 +213,7 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
 export const Button = HoverButton;
 
 ButtonWithIcon.propTypes = {
-  text: PropTypes.text,
+  text: PropTypes.string,
   image: PropTypes.node
 };
 
@@ -344,3 +342,7 @@ export function Badge({ color, textColor, h, children, number, ...styles }) {
     </View>
   );
 }
+
+export const Err = styled(Text)`
+  color: ${colors.red};
+`;

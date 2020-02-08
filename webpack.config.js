@@ -51,6 +51,7 @@ module.exports = {
   ],
   resolve: {
     symlinks: false,
+    // mainFields: ['main', 'module'],
     alias: {
       react: path.resolve('./node_modules/react'),
       'react-native$': 'react-native-web',
@@ -60,7 +61,6 @@ module.exports = {
       'react-dom': '@hot-loader/react-dom'
     }
   },
-
   module: {
     exprContextRegExp: /$^/,
     exprContextCritical: false,
@@ -75,7 +75,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(js|svg)$/,
+        test: /\.(js|svg|'json')$/,
         include: [
           path.resolve(__dirname, 'index.web.js'),
           path.resolve(__dirname, 'app')
