@@ -34,7 +34,9 @@ const CommunitySchema = new Schema(
     inactive: Boolean,
     private: { type: Boolean, default: false },
     hidden: { type: Boolean, default: false },
-    betEnabled: { type: Boolean, default: true }
+    betEnabled: { type: Boolean, default: true },
+
+    customParams: {}
   },
   {
     timestamps: true,
@@ -141,6 +143,11 @@ CommunitySchema.methods.join = async function join(userId, role, dontUpdateCount
   socketEvent.emit('socketEvent', memberEvent);
 
   return member;
+};
+
+CommunitySchema.methods.setCustomParams = async function setCustomParams(params) {
+  this.customParams = params;
+  return this.save();
 };
 
 export default mongoose.model('Community', CommunitySchema);

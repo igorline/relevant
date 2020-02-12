@@ -132,8 +132,8 @@ const UserSchema = new Schema(
     legacyTokens: { type: Number, default: 0 },
     legacyAirdrop: { type: Number, default: 0 },
 
-    boxDID: { type: String, unique: true, sparse: true },
-    boxAddress: { type: String, unique: true, sparse: true },
+    boxDID: { type: String },
+    boxAddress: { type: String },
 
     version: String,
     community: String,
@@ -144,6 +144,15 @@ const UserSchema = new Schema(
     toObject: { virtuals: true },
     timestamps: true
   }
+);
+
+UserSchema.index(
+  { boxAddress: 1 },
+  { unique: true, partialFilterExpression: { boxAddress: { $exists: true } } }
+);
+UserSchema.index(
+  { boxDID: 1 },
+  { unique: true, partialFilterExpression: { boxDID: { $exists: true } } }
 );
 
 // UserSchema.index({ name: 'text' });

@@ -744,6 +744,33 @@ export function redeemInvite(invitecode) {
   };
 }
 
+export function loginWithBox({ address, signature, msg }) {
+  return async dispatch => {
+    try {
+      const res = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: '/auth',
+          path: '/web3',
+          body: JSON.stringify({ address, signature, msg })
+        })
+      );
+      if (res.token) {
+        await storage.setToken(res.token);
+        dispatch(loginUserSuccess(res.token));
+        dispatch(getUser());
+        return true;
+      }
+      dispatch(loginUserFailure(res.message));
+      Alert.alert(res.message);
+      return false;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
+  };
+}
+
 export function updateUserTokenBalance() {
   return async dispatch => {
     try {

@@ -20,7 +20,10 @@ export default function initMatrix(nodes, params) {
     degreeStore[nodeId] = degree;
 
     if (params.personalization[nodeId]) {
-      const adminWeight = 1 / (1 + Math.E ** (6 - (degree * 10) / ADMIN_MAX_POWER_VOTES));
+      // this is usually 1 but can be adjusted via custom params
+      const customWeight = params.personalization[nodeId];
+      const adminWeight =
+        customWeight / (1 + Math.E ** (6 - (degree * 10) / ADMIN_MAX_POWER_VOTES));
       personalization[nodeId] = adminWeight;
     }
 

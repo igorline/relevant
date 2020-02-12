@@ -42,7 +42,7 @@ export function submitPost(post) {
       );
       return true;
     } catch (err) {
-      Alert.alert('Error creating post', err.message);
+      Alert.alert(`Error creating post: ${err.message}`);
       return false;
     }
   };

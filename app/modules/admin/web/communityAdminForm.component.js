@@ -128,9 +128,7 @@ class CommunityAdminForm extends Component {
       {
         name: 'image',
         component: ReduxFormImageUpload,
-        placeholder: (
-          <Image mt={1} source={initialValues.image} {...imageProps} bg={colors.grey} />
-        ),
+        placeholder: '/img/blueR.png',
         imageComponent: <Image mt={1} bg={colors.blue} {...imageProps} />,
         type: 'file-upload',
         label: 'Community Image',

@@ -5,6 +5,7 @@ import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
 import { sendEmail } from 'server/utils/mail';
 import { sendNotification } from 'server/notifications';
+import { checkCommunityAuth } from 'server/api/community/community.auth';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -15,11 +16,6 @@ import Tag from '../tag/tag.model';
 import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
-
-PostData.updateOne(
-  { post: '5cf6b7775c11c20017dec3f4', community: 'culture' },
-  { isInFeed: false }
-).exec();
 
 const { promisify } = require('util');
 
@@ -605,8 +601,11 @@ async function processSubscriptions(newPost, communityId) {
  */
 exports.create = async (req, res, next) => {
   try {
-    const { user } = req;
-    const { community, communityId } = req.communityMember;
+    const { user, communityMember } = req;
+    const { community, communityId } = communityMember;
+
+    if (community === 'foam')
+      await checkCommunityAuth({ user, communityId, communityMember });
 
     if (user.banned) {
       throw new Error(

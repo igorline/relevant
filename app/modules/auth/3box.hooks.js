@@ -1,6 +1,10 @@
 import { useEffect, useCallback } from 'react';
+import { useWeb3, useMetamask } from 'modules/contract/contract.hooks';
+import { useDispatch } from 'react-redux';
 import Box from '3box';
 import { alert } from 'utils';
+import { ethers, utils } from 'ethers';
+import { loginWithBox } from './auth.actions';
 
 const Alert = alert.Alert();
 export function use3BoxProfile({ address, metamask, setProfile }) {
@@ -57,4 +61,27 @@ export function useUpdateProfile(address, metamask) {
     },
     [address, metamask]
   );
+}
+
+export function useLoginWithBox(close) {
+  const [accounts] = useWeb3();
+  const metamask = useMetamask();
+  const address = accounts && utils.getAddress(accounts[0]);
+  const dispatch = useDispatch();
+  return useCallback(async () => {
+    if (!metamask) return Alert.alert('Pleas enable Metamask to log in.');
+
+    const provider = new ethers.providers.Web3Provider(metamask);
+    const signer = provider.getSigner();
+
+    const now = new Date();
+    const exp = Math.floor(now.setMinutes(now.getMinutes() + 5) / 1000);
+    const msg = {
+      address,
+      exp
+    };
+    const signature = await signer.signMessage(JSON.stringify(msg));
+    const success = await dispatch(loginWithBox({ signature, address, msg }));
+    return success && close && close();
+  }, [address, metamask, dispatch, close]);
 }

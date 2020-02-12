@@ -21,7 +21,7 @@ export default async function computePageRank(params) {
 
   const admins = await CommunityMember.find(
     { role: 'admin', communityId },
-    'handle'
+    'handle customAdminWeight'
   ).populate({
     path: 'user',
     select: 'handle',
@@ -43,7 +43,7 @@ export default async function computePageRank(params) {
   admins.forEach(a => {
     if (!a.user) return;
     const userId = a.user._id;
-    personalization[userId] = 1;
+    personalization[userId] = a.user.customAdminWeight || 1;
   });
 
   const { nodes, postNodes } = new Graph(votes, admins.map(a => a.user), comObj);

