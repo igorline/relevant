@@ -8,13 +8,14 @@ import {
   BodyText,
   Divider,
   LinkFont,
-  SecondaryText
+  SecondaryText,
+  ViewButton
 } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import {
   TWITTER_REWARD,
-  EMAIL_REWARD,
-  REDDIT_REWARD
+  EMAIL_REWARD
+  // REDDIT_REWARD
 } from 'server/config/globalConstants';
 import ULink from 'modules/navigation/ULink.component';
 import { colors } from 'app/styles';
@@ -25,16 +26,16 @@ GetTokensModal.propTypes = {
   actions: PropTypes.object,
   auth: PropTypes.object,
   mobile: PropTypes.bool,
-  twitterButton: PropTypes.node,
-  redditButton: PropTypes.node
+  twitterButton: PropTypes.node
+  // redditButton: PropTypes.node
 };
 
 function GetTokensModal({
   auth: { user },
   actions: { sendConfirmation, showModal, push },
   mobile,
-  twitterButton,
-  redditButton
+  twitterButton
+  // redditButton
 }) {
   return (
     <View display="flex" fdirection="column">
@@ -90,7 +91,7 @@ function GetTokensModal({
           <Divider mt={4} />
         </View>
       )}
-
+      {/*
       {!user.redditId && redditButton && (
         <View>
           <View mt={4} fdirection="row" align="center">
@@ -104,6 +105,7 @@ function GetTokensModal({
           <Divider mt={4} />
         </View>
       )}
+      */}
       <View mt={4}>
         <ULink
           to="#"
