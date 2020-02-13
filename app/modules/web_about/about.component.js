@@ -14,6 +14,7 @@ import { getCommunities } from 'modules/community/community.actions';
 import Marquee from './post.marquee';
 import CountUp from './countUp/countUp.component';
 import CountUpCoin from './countUp/countUp.coin.component';
+import AppStoreButtons from './appStoreButtons';
 
 const SHOW_FIXED_JOIN_HEIGHT = 250;
 const SHOW_FIXED_LOGO = 500;
@@ -293,20 +294,8 @@ class Splash extends Component {
                 mt={'auto'}
               />
             </View>
-            <View mt={[8, 4]} mb={[0, 1]}>
-              <a
-                href="https://itunes.apple.com/us/app/relevant-communities/id1173025051?mt=8"
-                target="_blank"
-              >
-                <Image h={[6, 6, 5]} mr={[2, 1]} src={'/img/appstore.png'} />
-              </a>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.relevantnative&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
-                target="_blank"
-              >
-                <Image h={[6, 6, 5]} src={'/img/googleplaystore.png'} />
-              </a>
-            </View>
+
+            <AppStoreButtons mt={[8, 4]} mb={[0, 1]} />
 
             <Social>
               <SocialIcons />

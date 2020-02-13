@@ -189,8 +189,9 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
   const [active, setActive] = useState(0);
   const isString = typeof children === 'string';
   const isArray = typeof children === 'object' && children.length;
-  const isTextArray = isArray && children.find(el => typeof el !== 'string');
-  const renderString = !children || !children.$$typeof || isTextArray || isString;
+  const isTextArray = isArray && children.find(el => typeof el === 'string');
+  const renderString =
+    !children || (!isArray && !children.$$typeof) || isTextArray || isString;
   return (
     <TouchableOpacity onClick={onClick} onPress={onPress}>
       <StaticButton

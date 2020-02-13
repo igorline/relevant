@@ -22,7 +22,7 @@ const Downvotes = loadable(() => import('modules/admin/web/downvotes.container')
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
 const Contract = loadable(() => import('modules/admin/web/contractParams.container'));
-const About = loadable(() => import('modules/web_splash/about.component'));
+const About = loadable(() => import('modules/web_about/about.component'));
 const TopNav = loadable(() => import('modules/navigation/web/topnav.component'));
 
 const CommunityAdminForm = loadable(() =>
@@ -36,7 +36,6 @@ const Styles = loadable(() => import('modules/ui/styles.component'));
 const CommunityList = loadable(() => import('modules/community/communityList.container'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
-// const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
 const WithSideNav = loadable(() =>
   import('modules/navigation/web/withSideNav.component')
 );
