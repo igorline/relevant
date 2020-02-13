@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import SplashComponent from 'modules/web_splash/splash.component';
+import SplashComponent from 'modules/navigation/banner';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -10,11 +10,11 @@ const props = {
 
 test('Snapshot SplashComponent', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <SplashComponent {...props} overRideDismiss />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <SplashComponent {...props} overRideDismiss />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

@@ -7,7 +7,7 @@ import { colors } from 'styles';
 import { SIDE_NAV_PADDING } from 'styles/layout';
 
 const SideNavFooter = ({ actions }) => (
-  <View m={[SIDE_NAV_PADDING, 2]} mb={4}>
+  <View m={[SIDE_NAV_PADDING, 2]} mb={8}>
     <SocialIcons actions={actions} />
     <View fdirection={'row'} mt={3}>
       <ULink inline={1} to="/info/faq">

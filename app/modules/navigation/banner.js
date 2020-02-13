@@ -1,32 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { InlineText, Text, View, Touchable, Button, CloseX } from 'modules/styled/uni';
+import { InlineText, Text, View, Touchable, CloseX } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { colors, fonts } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
-import InviteCta from 'modules/web_splash/inviteCta.component';
 import { withRouter } from 'react-router-dom';
 import { storage } from 'utils';
-
-const SignUpCta = ({ location }) => (
-  <View display="flex" fdirection="row" justify={['flex-start']}>
-    <ULink to={`/user/login?redirect=${location.pathname}`}>
-      <Button mr={4}>Login</Button>
-    </ULink>
-    <ULink to={`/user/signup?redirect=${location.pathname}`}>
-      <Button mr={0}>Sign Up</Button>
-    </ULink>
-  </View>
-);
-
-SignUpCta.propTypes = {
-  location: PropTypes.object
-};
-
-const CTA = {
-  INVITE: InviteCta,
-  SIGN_UP: SignUpCta
-};
+import BannerButtons from './bannerButtons';
 
 const mobilePhone = `
   position: absolute;
@@ -41,6 +21,7 @@ const Phone = styled(View)`
   align-self: flex-end;
   transform-origin: bottom;
   z-index: -1;
+  max-height: 400px;
   ${p => (p.screenSize ? mobilePhone : '')}
 `;
 
@@ -55,12 +36,6 @@ const SplashText = styled(InlineText)`
   color: ${colors.black};
 `;
 
-// const OutlineText = styled(SplashText)`
-//   font-family: 'Outline';
-//   color: black;
-//   line-height: 0.8;
-// `;
-
 const SubHeader = styled(Text)`
   font-family: ${fonts.GEORGIA};
   display: inline;
@@ -68,9 +43,9 @@ const SubHeader = styled(Text)`
 
 class Splash extends Component {
   static propTypes = {
-    cta: PropTypes.oneOf(Object.keys(CTA)),
     hideCloseButton: PropTypes.bool,
     location: PropTypes.object,
+    history: PropTypes.object,
     screenSize: PropTypes.number,
     overRideDismiss: PropTypes.bool
   };
@@ -101,7 +76,7 @@ class Splash extends Component {
   onScroll() {
     if (!this.phone) return;
     this.phone.style.transform = '';
-    const top = this.phone.getBoundingClientRect().top - 169;
+    const top = this.phone.getBoundingClientRect().top - 100;
     const y = Math.max(-top / 3, 0);
     this.phone.style.transform = `translateX(0) translateY(${y}px)`;
   }
@@ -113,7 +88,13 @@ class Splash extends Component {
   };
 
   render() {
-    const { cta, hideCloseButton, location, screenSize, overRideDismiss } = this.props;
+    const {
+      hideCloseButton,
+      location,
+      history,
+      screenSize,
+      overRideDismiss
+    } = this.props;
 
     if (this.state.isDismissed && !overRideDismiss) {
       return null;
@@ -122,7 +103,7 @@ class Splash extends Component {
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
-    const CtaComponent = CTA[cta];
+
     return (
       <Wrapper
         ref={c => (this.container = c)}
@@ -146,7 +127,7 @@ class Splash extends Component {
           </Touchable>
         )}
         <View
-          m={['12 12 0 12', '3 8 0 2']}
+          m={['6 0 6 12', '3 4 2 2']}
           flex={1}
           justify="center"
           align={['flex-start', 'stretch']}
@@ -154,13 +135,10 @@ class Splash extends Component {
         >
           <View>
             <SplashText fs={[6, 3]} lh={[9, 4.2]}>
-              {/* <OutlineText inheritfont={1} m={0} p={0}>
-                Relevant.
-              </OutlineText>{' '} */}
-              <Text>A new kind of social network built on trust.</Text>
+              <Text>Information curated by humans, not algorithms.</Text>
             </SplashText>
-            <View mt={[5, 2]} mb={[8, 2]}>
-              <SubHeader fs={[2.5, 1.5]} lh={[4, 3]}>
+            <View mt={[5, 2]} mb={[6, 0]}>
+              <SubHeader fs={[2.5, 1.75]} lh={[4, 3]}>
                 Join a <ULink to="/communities">community</ULink>, curate content and earn
                 rewards.{' '}
                 <ULink
@@ -175,11 +153,7 @@ class Splash extends Component {
               </SubHeader>
             </View>
           </View>
-          {CtaComponent ? (
-            <View pb={[8, 3]}>
-              <CtaComponent location={location} />
-            </View>
-          ) : null}
+          <BannerButtons location={location} history={history} />
         </View>
         <Phone screenSize={screenSize} flexshrink={[1, 0]}>
           <img
