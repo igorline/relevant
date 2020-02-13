@@ -24,7 +24,7 @@ class Profile extends Component {
     user: PropTypes.object,
     location: PropTypes.object,
     history: PropTypes.object,
-    bio: PropTypes.string
+    bio: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
   };
 
   componentDidMount() {
