@@ -47,7 +47,7 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
 
   if (!verifiedPOIs || verifiedPOIs < points) {
     throw new Error(
-      `You can only post in this forum after you have added ${points} points.`
+      `You can only post in this forum after you have added ${points} verified points of interest to the FOAM map.`
     );
   }
   const balanceWei = await getTokenBalance({
