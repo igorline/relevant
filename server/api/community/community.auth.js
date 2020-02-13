@@ -13,21 +13,19 @@ const getAssetsUrl = address =>
 const foamToken = '0x4946fcea7c692606e8908002e55a582af44ac121';
 
 // const dummyAddress = '0x222861f16354020F62bBfa0A878B2F047a385576';
-
-const foamParams = {
-  auth: {
-    tokens: 100,
-    points: 5
-  }
-};
-
+// const foamParams = {
+//   auth: {
+//     tokens: 100,
+//     points: 5
+//   }
+// };
 // TODO make these updatable
-async function initFoamParams() {
-  const foam = await Community.findOne({ slug: 'foam' });
-  if (!foam) return;
-  await foam.setCustomParams(foamParams);
-}
-initFoamParams();
+// async function initFoamParams() {
+//   const foam = await Community.findOne({ slug: 'foam' });
+//   if (!foam || foam.customParams) return;
+//   await foam.setCustomParams(foamParams);
+// }
+// initFoamParams();
 
 export async function checkCommunityAuth({ user, communityId, communityMember }) {
   const community = await Community.findOne({ _id: communityId });
@@ -43,11 +41,12 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
       'You need to connect your 3Box profile to your account in order to post in this community.'
     );
   const res = await requestAsync({ url: getAssetsUrl(boxAddress) });
-  const { verifiedPOIs } = JSON.parse(res.body);
+  const { verifiedPOIs, pendingPOIs } = JSON.parse(res.body);
+  const totalPoints = verifiedPOIs + pendingPOIs || 0;
 
-  if (!verifiedPOIs || verifiedPOIs < points) {
+  if (!totalPoints || totalPoints < points) {
     throw new Error(
-      `You can only post in this forum after you have added ${points} verified points of interest to the FOAM map.`
+      `You can only post in this forum after you have added ${points} points of interest to the FOAM map.`
     );
   }
   const balanceWei = await getTokenBalance({
@@ -70,7 +69,7 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
     });
   }
 
-  communityMember.customAdminWeight = verifiedPOIs + Math.log(tokens + 1);
+  communityMember.customAdminWeight = totalPoints + Math.log(tokens + 1);
   await communityMember.save();
   return true;
 }

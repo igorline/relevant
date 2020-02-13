@@ -33,6 +33,7 @@ class Profile extends Component {
 
   checkRouteForModal(firstRun) {
     const { user, actions, location, history } = this.props;
+    if (location.search.match('modal=settings')) return;
     const settingsUrl = `/user/profile/${user.handle}/settings`;
     const profileUrl = `/user/profile/${user.handle}`;
     if (settingsUrl === location.pathname) {

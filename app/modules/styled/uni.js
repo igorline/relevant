@@ -4,6 +4,7 @@ import styled from 'styled-components/primitives';
 import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
 import { abbreviateNumber } from 'utils/numbers';
 import { TouchableOpacity } from 'react-native';
+import ULink from 'modules/navigation/ULink.component';
 
 export const Touchable = TouchableOpacity;
 
@@ -219,12 +220,10 @@ ButtonWithIcon.propTypes = {
 
 export function ButtonWithIcon({ text, image, ...rest }) {
   return (
-    <Button {...rest}>
-      <View fdirection="row" align="center">
-        {image}
-        <ButtonText>{text}</ButtonText>
-      </View>
-    </Button>
+    <ViewButton fdirection={'row'} {...rest}>
+      {image}
+      <ButtonText>{text}</ButtonText>
+    </ViewButton>
   );
 }
 
@@ -346,3 +345,16 @@ export function Badge({ color, textColor, h, children, number, ...styles }) {
 export const Err = styled(Text)`
   color: ${colors.red};
 `;
+
+EthAddress.propTypes = {
+  address: PropTypes.object
+};
+
+export function EthAddress({ address }) {
+  if (!address) return null;
+  return (
+    <ULink to={`https://etherscan.io/address/${address}`} target="_blank" external>
+      {address.slice(0, 6) + '...' + address.slice(address.length - 4, address.length)}
+    </ULink>
+  );
+}

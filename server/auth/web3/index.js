@@ -5,7 +5,7 @@ require('./passport');
 
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
+router.post('/', auth.currentUser(), (req, res, next) => {
   passport.authenticate('web3', async (err, user, info) => {
     const error = err || info;
     if (error) return next(error);

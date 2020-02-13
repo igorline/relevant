@@ -1,38 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ButtonWithIcon, LinkFont, Image } from 'modules/styled/uni';
-import ULink from 'modules/navigation/ULink.component';
 import { useLoginWithBox } from 'modules/auth/3box.hooks';
-import { colors } from 'app/styles';
-
-const boxIcon = require('app/public/img/icons/3box.png');
-
-const boxIconComponent = (
-  <Image resizeMode={'contain'} source={boxIcon} w={3} h={3} mr={1.5} />
-);
+import { BoxButton } from './socialButtons';
 
 BoxLogin.propTypes = {
-  close: PropTypes.func
+  close: PropTypes.func,
+  text: PropTypes.string
 };
 
-export default function BoxLogin({ close }) {
+export default function BoxLogin({ close, text }) {
   const logIn = useLoginWithBox(close);
   return (
-    <ULink
-      to={'#'}
+    <BoxButton
       mr={[4, 0]}
-      onClick={e => {
+      mt={[0, 2]}
+      flex={1}
+      onPress={e => {
         e.preventDefault();
         logIn();
       }}
-    >
-      <LinkFont c={colors.blue}>
-        <ButtonWithIcon
-          bg={'rgb(248,49,255)'}
-          image={boxIconComponent}
-          text="Sign In with 3Box"
-        />
-      </LinkFont>
-    </ULink>
+      text={text || 'Sign In with 3Box'}
+    ></BoxButton>
   );
 }

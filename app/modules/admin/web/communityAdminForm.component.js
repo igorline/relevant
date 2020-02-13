@@ -82,7 +82,7 @@ class CommunityAdminForm extends Component {
       ? [
           {
             name: 'customParams.auth.points',
-            label: 'REQUIRED FOR POSTING: Verified Points of Interest',
+            label: 'REQUIRED FOR POSTING: Added Points of Interest',
             component: ReduxFormField,
             type: 'number'
           },

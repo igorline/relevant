@@ -9,7 +9,6 @@ import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import { required } from 'modules/form/validators';
 import ULink from 'modules/navigation/ULink.component';
-import ToggleContainer from 'modules/profile/settings/toggle.container';
 import { withRouter } from 'react-router-dom';
 
 const Form = styled.form`
@@ -21,7 +20,6 @@ SettingsModal.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
   initialValues: PropTypes.object,
-  actions: PropTypes.object,
   history: PropTypes.object,
   location: PropTypes.object
 };
@@ -69,7 +67,6 @@ function SettingsModal({ handleSubmit, location }) {
           </Button>
         </View>
       </Form>
-      <ToggleContainer />
     </View>
   );
 }
