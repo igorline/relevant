@@ -15,6 +15,7 @@ import {
   confirmPassword
 } from 'modules/auth/form.fields';
 import { passwordsShouldMatch } from 'modules/form/validators';
+import { useUpdateProfile } from '../3box.hooks';
 
 const Alert = alert.Alert();
 
@@ -24,7 +25,11 @@ ProfileForm.propTypes = {
   close: PropTypes.func
 };
 
-export default function ProfileForm({ initialValues, additionalFields, close }) {
+export default function ProfileForm({
+  initialValues = {},
+  additionalFields = {},
+  close
+}) {
   const signup = useSignUp(additionalFields, close);
   const onSubmit = useOnSubmit(signup);
 
@@ -94,6 +99,7 @@ function useSignUp(additionalFields, close) {
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const { invitecode } = auth;
+  const upateProfile = useUpdateProfile();
 
   return useCallback(
     async data => {
@@ -106,11 +112,14 @@ function useSignUp(additionalFields, close) {
           ...additionalFields
         };
         await dispatch(createUser(user, invitecode));
+        if (additionalFields && additionalFields.boxAddress) {
+          upateProfile(user);
+        }
         close();
       } catch (err) {
         Alert.alert(err.message, 'error');
       }
     },
-    [invitecode, dispatch, additionalFields, close]
+    [additionalFields, dispatch, invitecode, close, upateProfile]
   );
 }

@@ -14,21 +14,22 @@ export function use3BoxProfile({ address, metamask, setProfile }) {
       try {
         const box = await Box.openBox(address, metamask);
 
-        const relevantProfile = await box.openSpace('relevant');
-        await Promise.all([box.syncDone]);
-
+        const relevantProfile = await Box.getSpace(address, 'relevant');
         if (relevantProfile.defaultProfile === 'relevant')
           return setProfile([null, relevantProfile]);
 
+        const relevantSpace = await box.openSpace('relevant');
+        await Promise.all([box.syncDone]);
+
         const boxProfile = await Box.getProfile(address);
-        relevantProfile.public.set('defaultProfile', '3box');
+        relevantSpace.public.set('defaultProfile', '3box');
 
         const emailObj = await box.verified.email();
         const email = emailObj && emailObj.email_address;
 
-        const { DID } = relevantProfile.user;
+        const { DID } = relevantSpace.user;
         const expiresIn = 10 * 60;
-        const signature = await relevantProfile.user.signClaim(
+        const signature = await relevantSpace.user.signClaim(
           { DID, address },
           { expiresIn }
         );
@@ -42,22 +43,28 @@ export function use3BoxProfile({ address, metamask, setProfile }) {
   }, [address]); // eslint-disable-line
 }
 
-export function useUpdateProfile(address, metamask) {
+export function useUpdateProfile() {
+  const [accounts] = useWeb3();
+  const metamask = useMetamask();
+  const address = accounts && utils.getAddress(accounts[0]);
   return useCallback(
-    () => async profile => {
+    async profile => {
       const box = await Box.openBox(address, metamask);
       await box.syncDone;
-      const relevantProfile = await box.openSpace('relevant');
-      await relevantProfile.syncDone;
+      const relevantSpace = await box.openSpace('relevant');
+      await relevantSpace.syncDone;
       const imageObject = [
         {
           '@type': 'ImageObject',
           contentUrl: profile.image
         }
       ];
-      relevantProfile.public.set('image', imageObject);
-      relevantProfile.public.set('username', profile.username);
-      relevantProfile.private.set('email', profile.email);
+
+      // for some reason this doesn't work?
+      relevantSpace.public.set('defaultProfile', 'relevant');
+      relevantSpace.public.set('image', imageObject);
+      relevantSpace.public.set('username', profile.name);
+      relevantSpace.private.set('email', profile.email);
     },
     [address, metamask]
   );

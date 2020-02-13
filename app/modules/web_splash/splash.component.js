@@ -1,31 +1,45 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { InlineText, Text, View, Touchable, Button, CloseX } from 'modules/styled/uni';
 import styled from 'styled-components/primitives';
 import { colors, fonts } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
-import InviteCta from 'modules/web_splash/inviteCta.component';
 import { withRouter } from 'react-router-dom';
 import { storage } from 'utils';
+import { showModal } from 'modules/navigation/navigation.actions';
 
-const SignUpCta = ({ location }) => (
-  <View display="flex" fdirection="row" justify={['flex-start']}>
-    <ULink to={`/user/login?redirect=${location.pathname}`}>
-      <Button mr={4}>Login</Button>
-    </ULink>
-    <ULink to={`/user/signup?redirect=${location.pathname}`}>
-      <Button mr={0}>Sign Up</Button>
-    </ULink>
-  </View>
-);
+const SignUpCta = ({ location, history }) => {
+  const dispatch = useDispatch();
+  const setRedirect = () => history.replace({ search: `?redirect=${location.pathname}` });
 
-SignUpCta.propTypes = {
-  location: PropTypes.object
+  return (
+    <View display="flex" fdirection="row" justify={['flex-start']}>
+      <Button
+        onPress={() => {
+          setRedirect();
+          dispatch(showModal('login'));
+        }}
+        mr={4}
+      >
+        Login
+      </Button>
+      <Button
+        onPress={() => {
+          setRedirect();
+          dispatch(showModal('signupSocial'));
+        }}
+        mr={0}
+      >
+        Sign Up
+      </Button>
+    </View>
+  );
 };
 
-const CTA = {
-  INVITE: InviteCta,
-  SIGN_UP: SignUpCta
+SignUpCta.propTypes = {
+  location: PropTypes.object,
+  history: PropTypes.object
 };
 
 const mobilePhone = `
@@ -55,12 +69,6 @@ const SplashText = styled(InlineText)`
   color: ${colors.black};
 `;
 
-// const OutlineText = styled(SplashText)`
-//   font-family: 'Outline';
-//   color: black;
-//   line-height: 0.8;
-// `;
-
 const SubHeader = styled(Text)`
   font-family: ${fonts.GEORGIA};
   display: inline;
@@ -68,9 +76,9 @@ const SubHeader = styled(Text)`
 
 class Splash extends Component {
   static propTypes = {
-    cta: PropTypes.oneOf(Object.keys(CTA)),
     hideCloseButton: PropTypes.bool,
     location: PropTypes.object,
+    history: PropTypes.object,
     screenSize: PropTypes.number,
     overRideDismiss: PropTypes.bool
   };
@@ -113,7 +121,13 @@ class Splash extends Component {
   };
 
   render() {
-    const { cta, hideCloseButton, location, screenSize, overRideDismiss } = this.props;
+    const {
+      hideCloseButton,
+      location,
+      history,
+      screenSize,
+      overRideDismiss
+    } = this.props;
 
     if (this.state.isDismissed && !overRideDismiss) {
       return null;
@@ -122,7 +136,7 @@ class Splash extends Component {
     const img = '/img/hand-transparent.png';
     const learnMoreUrl =
       'https://blog.relevant.community/relevant-curated-by-communities-not-clicks-ba8d346c47da';
-    const CtaComponent = CTA[cta];
+
     return (
       <Wrapper
         ref={c => (this.container = c)}
@@ -175,9 +189,9 @@ class Splash extends Component {
               </SubHeader>
             </View>
           </View>
-          {CtaComponent ? (
+          {SignUpCta ? (
             <View pb={[8, 3]}>
-              <CtaComponent location={location} />
+              <SignUpCta location={location} history={history} />
             </View>
           ) : null}
         </View>

@@ -12,7 +12,7 @@ const boxIconComponent = (
 
 BoxButton.propTypes = {
   onPress: PropTypes.func,
-  text: PropTypes.text
+  text: PropTypes.string
 };
 
 export function BoxButton({ text, onPress, ...styleProps }) {
