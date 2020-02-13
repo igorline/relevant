@@ -247,8 +247,10 @@ export async function update(req, res, next) {
       channels: updatedCommunity.channels,
       private: updatedCommunity.private,
       hidden: updatedCommunity.hidden,
-      betEnabled: updatedCommunity.betEnabled
+      betEnabled: updatedCommunity.betEnabled,
+      customParams: updatedCommunity.customParams
     });
+
     community = await community.save();
 
     community = await community.updateMemeberCount();

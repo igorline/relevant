@@ -77,6 +77,24 @@ class CommunityAdminForm extends Component {
       bg: colors.blue,
       bradius: '50%'
     };
+
+    const customFields = initialValues.customParams
+      ? [
+          {
+            name: 'customParams.auth.points',
+            label: 'REQUIRED FOR POSTING: Verified Points of Interest',
+            component: ReduxFormField,
+            type: 'number'
+          },
+          {
+            name: 'customParams.auth.tokens',
+            label: 'REQUIRED FOR POSTING: FOAM token balance',
+            component: ReduxFormField,
+            type: 'number'
+          }
+        ]
+      : [];
+
     const FORM_FIELDS = [
       {
         name: 'name',
@@ -91,6 +109,7 @@ class CommunityAdminForm extends Component {
         component: Checkbox,
         type: 'checkbox'
       },
+      ...customFields,
       {
         name: 'betEnabled',
         label: 'Enable Betting',
@@ -103,6 +122,7 @@ class CommunityAdminForm extends Component {
         component: Checkbox,
         type: 'checkbox'
       },
+
       {
         name: 'slug',
         label: (
