@@ -74,7 +74,6 @@
     "composable-middleware": "^0.3.0",
     "compression": "^1.7.4",
     "connect-mongo": "^3.1.1",
-    "connext": "^3.1.14",
     "cookie-parser": "^1.4.4",
     "crypto-promise": "^2.0.0",
     "data-uri-to-buffer": "^3.0.0",
