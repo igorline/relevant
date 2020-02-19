@@ -421,7 +421,7 @@ async function getEthFields({ signature, msg, ...profile }) {
     await user.save();
     return { user };
   }
-  return { ethLogin, confirmed: !!profile.email, ethAddress: [ethLogin] };
+  return { ethLogin, ethAddress: [ethLogin] };
 }
 
 // async function processBoxFields(user) {
