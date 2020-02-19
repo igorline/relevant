@@ -7,7 +7,7 @@ const Alert = alert.Alert();
 
 export default class ImageUpload extends Component {
   static propTypes = {
-    placeholder: PropTypes.node,
+    placeholder: PropTypes.string,
     imageComponent: PropTypes.node,
     onChange: PropTypes.func
   };

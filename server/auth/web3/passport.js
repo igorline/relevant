@@ -7,28 +7,34 @@ passport.use(
   'web3',
   new Strategy(async (req, callback) => {
     try {
-      const { signature, msg } = req.body;
-      const sigAddress = utils.verifyMessage(JSON.stringify(msg), signature);
-
-      if (sigAddress !== msg.address)
-        return callback(new Error("Signature doesn't match"));
-
-      const { exp } = msg;
-      const claimExp = new Date(exp * 1000);
-      if (claimExp < new Date()) return callback(new Error('This signature is expired'));
-
-      if (req.user) {
-        req.user.boxAddress = sigAddress;
-        await req.user.save();
-        return callback(null, req.user);
-      }
-
-      const user = await User.findOne({ boxAddress: sigAddress });
-      if (!user) return callback(new Error('User not found'));
-
+      const user = await authorizeUser(req);
+      if (!user) throw new Error('User not found');
       return callback(null, user);
     } catch (err) {
       return callback(err);
     }
   })
 );
+
+export async function authorizeUser(req) {
+  const sigAddress = verifyEthSignature(req.body);
+  // user is already logged in
+  if (req.user) {
+    req.user.ethLogin = sigAddress;
+    await req.user.save();
+    return req.user;
+  }
+  return User.findOne({ ethLogin: sigAddress });
+}
+
+export function verifyEthSignature({ signature, msg }) {
+  if (!signature || !msg) throw Error('Missing signature parameters');
+  const sigAddress = utils.verifyMessage(JSON.stringify(msg), signature);
+
+  if (sigAddress !== msg.address) throw new Error("Signature doesn't match");
+
+  const { exp } = msg;
+  const claimExp = new Date(exp * 1000);
+  if (claimExp < new Date()) throw new Error('This signature is expired');
+  return sigAddress;
+}

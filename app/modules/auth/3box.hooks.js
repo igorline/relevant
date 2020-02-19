@@ -1,10 +1,12 @@
 import { useEffect, useCallback } from 'react';
+import { alert } from 'utils';
+import { providers, utils } from 'ethers';
+import { getProfile } from '3box/lib/api';
+import { signMessage } from 'utils/eth';
 import { useWeb3, useMetamask } from 'modules/contract/contract.hooks';
 import { useDispatch } from 'react-redux';
-import Box from '3box';
-import { alert } from 'utils';
-import { ethers, utils } from 'ethers';
-import { loginWithBox } from './auth.actions';
+import { loginWithBox } from 'modules/auth/auth.actions';
+// import { local } from 'utils/storage';
 
 const Alert = alert.Alert();
 export function use3BoxProfile({ address, metamask, setProfile }) {
@@ -12,28 +14,14 @@ export function use3BoxProfile({ address, metamask, setProfile }) {
     if (!address || !metamask) return;
     const init3Box = async () => {
       try {
-        const box = await Box.openBox(address, metamask);
+        const boxProfile = await getProfile(address);
 
-        const relevantProfile = await Box.getSpace(address, 'relevant');
-        if (relevantProfile.defaultProfile === 'relevant')
-          return setProfile([null, relevantProfile]);
+        setProfile([null, { ...boxProfile }]);
 
-        const relevantSpace = await box.openSpace('relevant');
-        await Promise.all([box.syncDone]);
+        const provider = new providers.Web3Provider(metamask);
+        const { msg, signature } = await signMessage(provider, address);
 
-        const boxProfile = await Box.getProfile(address);
-        relevantSpace.public.set('defaultProfile', '3box');
-
-        const emailObj = await box.verified.email();
-        const email = emailObj && emailObj.email_address;
-
-        const { DID } = relevantSpace.user;
-        const expiresIn = 10 * 60;
-        const signature = await relevantSpace.user.signClaim(
-          { DID, address },
-          { expiresIn }
-        );
-        return setProfile([null, { ...boxProfile, email, signature, DID }]);
+        return setProfile([null, { ...boxProfile, signature, msg }]);
       } catch (err) {
         Alert.alert(err.message);
         return setProfile([err.message]);
@@ -41,33 +29,6 @@ export function use3BoxProfile({ address, metamask, setProfile }) {
     };
     init3Box();
   }, [address]); // eslint-disable-line
-}
-
-export function useUpdateProfile() {
-  const [accounts] = useWeb3();
-  const metamask = useMetamask();
-  const address = accounts && utils.getAddress(accounts[0]);
-  return useCallback(
-    async profile => {
-      const box = await Box.openBox(address, metamask);
-      await box.syncDone;
-      const relevantSpace = await box.openSpace('relevant');
-      await relevantSpace.syncDone;
-      const imageObject = [
-        {
-          '@type': 'ImageObject',
-          contentUrl: profile.image
-        }
-      ];
-
-      // for some reason this doesn't work?
-      relevantSpace.public.set('defaultProfile', 'relevant');
-      relevantSpace.public.set('image', imageObject);
-      relevantSpace.public.set('username', profile.name);
-      relevantSpace.private.set('email', profile.email);
-    },
-    [address, metamask]
-  );
 }
 
 export function useLoginWithBox(close) {
@@ -78,17 +39,18 @@ export function useLoginWithBox(close) {
   return useCallback(async () => {
     if (!metamask) return Alert.alert('Pleas enable Metamask to log in.');
 
-    const provider = new ethers.providers.Web3Provider(metamask);
-    const signer = provider.getSigner();
-
-    const now = new Date();
-    const exp = Math.floor(now.setMinutes(now.getMinutes() + 5) / 1000);
-    const msg = {
-      address,
-      exp
-    };
-    const signature = await signer.signMessage(JSON.stringify(msg));
+    const provider = new providers.Web3Provider(metamask);
+    const { signature, msg } = await signMessage(provider, address);
     const success = await dispatch(loginWithBox({ signature, address, msg }));
     return success && close && close();
   }, [address, metamask, dispatch, close]);
 }
+
+// We are going to use this for a desktop-mobile sync
+// function getMnemonic() {
+//   const mnemonic = local.getItem('3box_mnemonic');
+//   if (mnemonic) return mnemonic;
+//   const wallet = Wallet.createRandom();
+//   local.setItem('3box_mnemonic', wallet.mnemonic);
+//   return wallet.mnemonic;
+// }

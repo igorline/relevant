@@ -359,3 +359,25 @@ export function EthAddress({ address }) {
     </ULink>
   );
 }
+
+export const ErrorBox = ({ children, styleProps }) => (
+  <View mt={2} p={2} bg={colors.errorA} border bc={colors.error} {...styleProps}>
+    {children}
+  </View>
+);
+
+export const WarningBox = ({ children, styleProps }) => (
+  <View mt={2} p={2} bg={colors.warningA} border bc={colors.warning} {...styleProps}>
+    {children}
+  </View>
+);
+
+ErrorBox.propTypes = {
+  children: PropTypes.node,
+  styleProps: PropTypes.object
+};
+
+WarningBox.propTypes = {
+  children: PropTypes.node,
+  styleProps: PropTypes.object
+};

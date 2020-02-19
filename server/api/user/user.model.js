@@ -11,7 +11,7 @@ import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
-const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit', '3box'];
+const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit', 'web3'];
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -132,8 +132,8 @@ const UserSchema = new Schema(
     legacyTokens: { type: Number, default: 0 },
     legacyAirdrop: { type: Number, default: 0 },
 
-    boxDID: { type: String },
-    boxAddress: { type: String },
+    // boxDID: { type: String },
+    ethLogin: { type: String },
 
     version: String,
     community: String,
@@ -147,13 +147,18 @@ const UserSchema = new Schema(
 );
 
 UserSchema.index(
-  { boxAddress: 1 },
-  { unique: true, partialFilterExpression: { boxAddress: { $exists: true } } }
+  { ethLogin: 1 },
+  { unique: true, partialFilterExpression: { ethLogin: { $exists: true } } }
 );
-UserSchema.index(
-  { boxDID: 1 },
-  { unique: true, partialFilterExpression: { boxDID: { $exists: true } } }
-);
+
+// UserSchema.index(
+//   { boxAddress: 1 },
+//   { unique: true, partialFilterExpression: { boxAddress: { $exists: true } } }
+// );
+// UserSchema.index(
+//   { boxDID: 1 },
+//   { unique: true, partialFilterExpression: { boxDID: { $exists: true } } }
+// );
 
 // UserSchema.index({ name: 'text' });
 UserSchema.index({ handle: 1 });

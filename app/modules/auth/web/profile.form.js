@@ -15,7 +15,6 @@ import {
   confirmPassword
 } from 'modules/auth/form.fields';
 import { passwordsShouldMatch } from 'modules/form/validators';
-import { useUpdateProfile } from '../3box.hooks';
 
 const Alert = alert.Alert();
 
@@ -30,12 +29,12 @@ export default function ProfileForm({
   additionalFields = {},
   close
 }) {
-  const signup = useSignUp(additionalFields, close);
+  const { ethLogin, signupCallback } = additionalFields;
+  const signup = useSignUp(additionalFields, close, signupCallback);
   const onSubmit = useOnSubmit(signup);
 
-  const { boxAddress } = additionalFields;
   const showEmailField = initialValues.email ? null : email;
-  const showPass = boxAddress ? null : password;
+  const showPass = ethLogin ? null : password;
   const showConfirmPass = showPass ? confirmPassword : null;
 
   const FORM_FIELDS = [image, username, showEmailField, showPass, showConfirmPass].filter(
@@ -95,11 +94,10 @@ function useOnSubmit(signup) {
   );
 }
 
-function useSignUp(additionalFields, close) {
+function useSignUp(additionalFields, close, signupCallback) {
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const { invitecode } = auth;
-  const upateProfile = useUpdateProfile();
 
   return useCallback(
     async data => {
@@ -112,14 +110,12 @@ function useSignUp(additionalFields, close) {
           ...additionalFields
         };
         await dispatch(createUser(user, invitecode));
-        if (additionalFields && additionalFields.boxAddress) {
-          upateProfile(user);
-        }
+        signupCallback && signupCallback(user);
         close();
       } catch (err) {
         Alert.alert(err.message, 'error');
       }
     },
-    [additionalFields, dispatch, invitecode, close, upateProfile]
+    [additionalFields, dispatch, invitecode, close, signupCallback]
   );
 }

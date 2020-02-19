@@ -1,5 +1,6 @@
-import { getProvider, generateSalt, formatBalanceRead } from 'app/utils/eth';
-import { alert, api } from 'app/utils';
+import { generateSalt, formatBalanceRead } from 'utils/eth';
+import { getProvider } from 'utils/web3.provider';
+import { alert, api } from 'utils';
 import { updateAuthUser } from 'modules/auth/auth.actions';
 import { addEarning } from 'modules/wallet/earnings.actions';
 

@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { getProvider, getMetamask, formatBN } from 'app/utils/eth';
+import { formatBN } from 'utils/eth';
+import { getProvider, getMetamask } from 'utils/web3.provider';
 import { bindActionCreators } from 'redux';
 import { actions as _web3Actions } from 'redux-saga-web3';
 import { alert } from 'app/utils';
