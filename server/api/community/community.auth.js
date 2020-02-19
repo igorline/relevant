@@ -32,15 +32,13 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
   if (community.slug !== 'foam') return true;
   const { tokens, points } = community.customParams.auth;
 
-  // mock for now
-  const { boxAddress } = user;
-  // const boxAddress = dummyAddress;
+  const { ethLogin } = user;
 
-  if (!boxAddress)
+  if (!ethLogin)
     throw new Error(
       'You need to connect your 3Box profile to your account in order to post in this community.'
     );
-  const res = await requestAsync({ url: getAssetsUrl(boxAddress) });
+  const res = await requestAsync({ url: getAssetsUrl(ethLogin) });
   const { verifiedPOIs, pendingPOIs } = JSON.parse(res.body);
   const totalPoints = verifiedPOIs + pendingPOIs || 0;
 
@@ -50,7 +48,7 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
     );
   }
   const balanceWei = await getTokenBalance({
-    address: boxAddress,
+    address: ethLogin,
     tokenAddress: foamToken
   });
 
