@@ -197,6 +197,7 @@ exports[`Snapshot Comment Form Web 1`] = `
           Object {
             "display": "flex",
             "flex": "auto",
+            "flexDirection": "column",
           }
         }
       >
