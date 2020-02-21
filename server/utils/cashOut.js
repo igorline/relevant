@@ -16,12 +16,13 @@ export async function logCashOut(user, cashOutAmt, next) {
       endBalance: user.balance - cashOutAmt,
       totalPreviousPaidout,
       legacyAirdrop: user.legacyAirdrop,
-      legacyTokens: user.legacyTokens,
       referralTokens: user.referralTokens,
-      airdropTokens: user.airdropTokens
+      airdropTokens: user.airdropTokens,
+      status: 'in progress',
+      source: 'wallet'
     });
     await cashOutLog.save();
-    return true;
+    return cashOutLog;
   } catch (err) {
     return next(new Error('Error logging cashOut', err));
   }

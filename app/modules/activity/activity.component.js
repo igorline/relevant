@@ -57,8 +57,9 @@ export default class SingleActivity extends Component {
       let s = '';
       if (activity.totalUsers - 1 > 1) s = 's';
       return (
-        <InlineText>
+        <View fdirection={'row'}>
           <ULink
+            inline={1}
             onPress={() => actions.goToProfile(user)}
             to={'/user/profile/' + user.handle}
           >
@@ -67,23 +68,23 @@ export default class SingleActivity extends Component {
             </BodyText>
           </ULink>
           {/* <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '} */}
-          {activity.totalUsers - 1} other{s}
-        </InlineText>
+          <BodyText>
+            {activity.totalUsers - 1} other{s}
+          </BodyText>
+        </View>
       );
     }
     if (user.handle) {
       return (
-        <InlineText>
-          <ULink
-            onPress={() => actions.goToProfile(user)}
-            to={'/user/profile/' + user.handle}
-          >
-            <BodyText c={colors.blue} inline={1}>
-              @{user.handle}
-            </BodyText>
-          </ULink>{' '}
-          {/* <RStat inline={1} user={user} size={1.9} ml={0} mr={0} align="baseline" />{' '} */}
-        </InlineText>
+        <ULink
+          inline={1}
+          onPress={() => actions.goToProfile(user)}
+          to={'/user/profile/' + user.handle}
+        >
+          <BodyText mr={0.75} c={colors.blue} inline={1}>
+            @{user.handle}
+          </BodyText>
+        </ULink>
       );
     }
     return user.name;
@@ -145,10 +146,10 @@ export default class SingleActivity extends Component {
           {byUser && <UAvatar goToProfile={actions.goToProfile} user={byUser} size={4} />}
         </View>
         <View flex={1} fdirection={'column'} align="baseline">
-          <InlineText>
+          <View fdirection={'row'} wrap={'wrap'} justify={'flex-end'}>
             {this.renderName(activity, byUser)}
             <ActivityText activity={activity} amount={amount} />
-          </InlineText>
+          </View>
           <View>{screenSize ? this.renderDate(activity) : null}</View>
         </View>
       </View>
@@ -157,10 +158,7 @@ export default class SingleActivity extends Component {
 
   renderDate(activity) {
     const fromNow = numbers.getTimestamp(activity.createdAt);
-    if (activity.type) {
-      return <SecondaryText lh={2}>{fromNow}</SecondaryText>;
-    }
-    return null;
+    return activity.type ? <SecondaryText lh={2}>{fromNow}</SecondaryText> : null;
   }
 
   renderComment(activity) {
@@ -190,9 +188,7 @@ export default class SingleActivity extends Component {
     const activity = this.props.singleActivity;
     if (!activity) return null;
 
-    if (activity.type === 'comment') {
-      return this.renderComment(activity);
-    }
+    if (activity.type === 'comment') return this.renderComment(activity);
 
     return (
       <View maxWidth={MAX_POST_WIDTH}>

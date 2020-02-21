@@ -102,9 +102,7 @@ export const TOGGLE_TOPICS = 'TOGGLE_TOPICS';
 export const SCROLL = 'SCROLL';
 export const SET_ONBOARDING_STEP = 'SET_ONBOARDING_STEP';
 export const SET_BUTTON_TOOLTIP = 'SET_BUTTON_TOOLTIP';
-
-export const SET_VIEW = 'SET_VIEW';
-export const SET_WEB_VIEW = 'SET_WEB_VIEW';
+export const REGISTER_GESTURE = 'REGISTER_GESTURE';
 
 export const SET_INVITE_COUNT = 'SET_INVITE_COUNT';
 export const SET_INVITES = 'SET_INVITES';
@@ -140,8 +138,10 @@ export const HIDE_MODAL = 'HIDE_MODAL';
 export const SHOW_BANNER_PROMPT = 'SHOW_BANNER_PROMPT';
 export const HIDE_BANNER_PROMPT = 'HIDE_BANNER_PROMPT';
 
+export const SET_SCROLL_TAB = 'SET_SCROLL_TAB';
 export const OPEN_WEB_SIDE_NAV = 'OPEN_WEB_SIDE_NAV';
 export const CLOSE_WEB_SIDE_NAV = 'CLOSE_WEB_SIDE_NAV';
+export const LOCK_DRAWER = 'LOCK_DRAWER';
 export const SET_WIDTH = 'SET_WIDTH';
 
 export const ADD_PENDING_COMMENT = 'ADD_PENDING_COMMENT';

@@ -1,7 +1,14 @@
 /* eslint-disable no-console, no-use-before-define */
+import 'dotenv/config';
+import 'sqreen';
 import Express from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
+import { ApolloServer } from 'apollo-server-express';
+import schema from 'server/graphql/schema';
+
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { execute, subscribe } from 'graphql';
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -16,7 +23,7 @@ const expressStaticGzip = require('express-static-gzip');
 const app = new Express();
 mongoose.Promise = global.Promise;
 
-require('dotenv').config({ silent: true });
+const { validateTokenLenient, verify } = require('server/auth/auth.service');
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 
@@ -48,7 +55,6 @@ if (isDevelopment) {
   app.use(webpackHotMiddleware(compiler));
 }
 
-app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -94,33 +100,70 @@ if (process.env.NO_SSL !== 'true') {
 
 // public folder
 app.use('/', expressStaticGzip(path.join(__dirname, '/../app/public'), { index: false }));
-// app.use(Express.static(path.join(__dirname, '/../app/public')));
 app.use(cookiesMiddleware());
+app.use(morgan('tiny'));
 
 const port = process.env.PORT || 3000;
 
 console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
-let server;
+
+let server = new ApolloServer({
+  schema,
+  playground: process.env.NODE_ENV !== 'production',
+  context: ({ req, connection }) =>
+    connection ? connection.context : { user: req.user || {} }
+});
+
+app.use('/graphql', validateTokenLenient);
+server.applyMiddleware({ app });
+
 const socketServer = require('./socket').default;
 
-if (process.env.NODE_ENV !== 'test') {
-  server = app.listen(port, error => {
-    if (error) {
-      console.error(error);
-    } else {
-      console.info(
-        `==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`
-      );
-      const now = new Date();
-      require('./routes')(app);
-      const time = new Date().getTime() - now.getTime();
-      console.log('done loading routes', time / 1000, 's');
-    }
-    socketServer(server, { pingTimeout: 30000 });
-  });
-} else {
-  require('./routes')(app);
-}
+server = app.listen({ port }, error => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.info(
+      `==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`
+    );
+    const now = new Date();
+    require('./routes')(app);
+    const time = new Date().getTime() - now.getTime();
+    console.log('done loading routes', time / 1000, 's');
+  }
+});
+socketServer(server, { pingTimeout: 30000 });
+
+SubscriptionServer.create(
+  {
+    onOperation: async (message, params) => {
+      const { token } = message.payload;
+      let user;
+      try {
+        user = await verify(token);
+      } catch (err) {
+        // console.log(err);
+      }
+      return {
+        ...params,
+        context: {
+          ...params.context,
+          user
+        }
+      };
+    },
+    execute,
+    subscribe,
+    schema,
+    keepAlive: 10000
+  },
+  {
+    server,
+    path: '/graphql'
+  }
+);
+
+socketServer(server, { pingTimeout: 30000 });
 
 // in production this is a worker
 if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'native') {
@@ -129,6 +172,7 @@ if (relevantEnv === 'staging' || isDevelopment || process.env.NODE_ENV === 'nati
 
 require('./utils/tokenAudit');
 require('./utils/ethereum').init();
+// require('./utils/dbMigrate-v1.1.1');
 
 exports.app = app;
 exports.server = server;

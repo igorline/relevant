@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
-import { InlineText } from 'modules/styled/uni';
+import { SmallText } from 'modules/styled/uni';
 
 class Tag extends Component {
   static propTypes = {
@@ -22,12 +22,12 @@ class Tag extends Component {
         onClick={e => e.stopPropagation()}
         onPress={() => actions.goToTopic(name)}
         noLink={noLink}
-        {...rest}
+        inline={1}
       >
-        <InlineText>
+        <SmallText inline={1} {...rest}>
           {'#'}
           {this.props.name}{' '}
-        </InlineText>
+        </SmallText>
       </ULink>
     );
   }

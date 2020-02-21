@@ -1,3 +1,5 @@
+import web3 from './web3';
+
 const express = require('express');
 const config = require('../config/config');
 const User = require('../api/user/user.model');
@@ -10,6 +12,7 @@ require('./reddit/passport');
 
 const router = express.Router();
 
+router.use('/web3', web3);
 router.use('/local', require('./local'));
 router.use('/facebook', require('./facebook'));
 router.use('/twitter', require('./twitter'));

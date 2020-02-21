@@ -16,7 +16,8 @@ import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, IphoneX } from 'app/styles/global';
 import { NAME_PATTERN } from 'app/utils/text';
-import { get } from 'lodash';
+import get from 'lodash/get';
+import { colors } from 'styles';
 
 let localStyles;
 let styles;
@@ -212,6 +213,7 @@ class SignUp extends Component {
                 autoCorrect={false}
                 keyboardType={'default'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="username"
                 onChangeText={name => {
                   this.setState({ name: name.trim() });
@@ -231,6 +233,7 @@ class SignUp extends Component {
                 autoCorrect={false}
                 keyboardType={'email-address'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="email"
                 onBlur={() => this.checkEmail()}
                 onChangeText={email =>
@@ -252,6 +255,7 @@ class SignUp extends Component {
                 autoCapitalize={'none'}
                 secureTextEntry
                 keyboardType={'default'}
+                placeholderTextColor={colors.grey}
                 placeholder="password"
                 onChangeText={password => this.setState({ password })}
                 value={this.state.password}
@@ -266,6 +270,7 @@ class SignUp extends Component {
                 secureTextEntry
                 keyboardType={'default'}
                 clearTextOnFocus={false}
+                placeholderTextColor={colors.grey}
                 placeholder="confirm password"
                 onChangeText={cPassword => this.setState({ cPassword })}
                 value={this.state.cPassword}

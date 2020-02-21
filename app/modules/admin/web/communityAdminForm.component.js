@@ -10,14 +10,14 @@ import {
   createCommunity,
   deleteCommunity
 } from 'modules/community/community.actions';
-import SelectField from 'modules/form/selectField.component';
 import CreatableMulti from 'modules/form/createSelectField.component';
 import AsyncAdminField from 'modules/form/asyncAdminField.component';
 import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
+import Checkbox from 'modules/styled/form/checkbox';
 import { Field, reduxForm } from 'redux-form';
 import { Form, View, Button } from 'modules/styled/web';
-import { Image } from 'modules/styled/uni';
+import { Image, LinkFont, SecondaryText } from 'modules/styled/uni';
 import { required } from 'modules/form/validators';
 import { colors } from 'app/styles';
 
@@ -26,37 +26,42 @@ class CommunityAdminForm extends Component {
     actions: PropTypes.object,
     handleSubmit: PropTypes.func,
     isUpdate: PropTypes.bool,
-    initialValues: PropTypes.object
+    initialValues: PropTypes.object,
+    close: PropTypes.func,
+    history: PropTypes.object
   };
 
   deleteCommunity = async e => {
     e.preventDefault();
-    const { initialValues } = this.props;
+    const { initialValues, close } = this.props;
     if (
       // eslint-disable-next-line
       window.confirm(
         `Are you sure you want to delete this community: ${initialValues.name}?`
       )
     ) {
-      this.props.actions.deleteCommunity(initialValues);
+      const success = await this.props.actions.deleteCommunity(initialValues);
+      if (success && close) close();
     }
   };
 
   submit = async values => {
+    const { history } = this.props;
     try {
-      const allVals = Object.assign({}, values);
-      if (allVals.image && allVals.image.preview && allVals.image.fileName) {
+      const community = { ...values };
+      if (community.image && community.image.preview && community.image.fileName) {
         const image = await s3.toS3Advanced(
-          allVals.image.preview,
-          allVals.image.fileName
+          community.image.preview,
+          community.image.fileName
         );
-        allVals.image = image.url;
+        community.image = image.url;
       }
       const { isUpdate } = this.props;
       if (isUpdate) {
-        this.props.actions.updateCommunity(allVals);
+        this.props.actions.updateCommunity(community);
       } else {
-        this.props.actions.createCommunity(allVals);
+        await this.props.actions.createCommunity(community);
+        history.push(`/${community.slug}/new`);
       }
     } catch (err) {
       // TODO error handling
@@ -72,6 +77,24 @@ class CommunityAdminForm extends Component {
       bg: colors.blue,
       bradius: '50%'
     };
+
+    const customFields = initialValues.customParams
+      ? [
+          {
+            name: 'customParams.auth.points',
+            label: 'REQUIRED FOR POSTING: Added Points of Interest',
+            component: ReduxFormField,
+            type: 'number'
+          },
+          {
+            name: 'customParams.auth.tokens',
+            label: 'REQUIRED FOR POSTING: FOAM token balance',
+            component: ReduxFormField,
+            type: 'number'
+          }
+        ]
+      : [];
+
     const FORM_FIELDS = [
       {
         name: 'name',
@@ -83,24 +106,34 @@ class CommunityAdminForm extends Component {
       {
         name: 'private',
         label: 'Private',
-        component: ReduxFormField,
+        component: Checkbox,
         type: 'checkbox'
       },
+      ...customFields,
       {
         name: 'betEnabled',
         label: 'Enable Betting',
-        component: ReduxFormField,
+        component: Checkbox,
         type: 'checkbox'
       },
       {
         name: 'hidden',
         label: 'Unlisted (anyone with link can still see and join the community)',
-        component: ReduxFormField,
+        component: Checkbox,
         type: 'checkbox'
       },
+
       {
         name: 'slug',
-        label: 'Slug',
+        label: (
+          <View fdirection={'column'}>
+            <LinkFont c={colors.black}>Slug (cannot be changed in the future)</LinkFont>
+            <SecondaryText>
+              Determines the url of the community, ex: relevant.community/{'<slug>'}
+            </SecondaryText>
+          </View>
+        ),
+        placeholder: 'slug',
         component: ReduxFormField,
         type: 'text',
         validate: [required]
@@ -115,10 +148,8 @@ class CommunityAdminForm extends Component {
       {
         name: 'image',
         component: ReduxFormImageUpload,
-        placeholder: (
-          <Image source={initialValues.image} {...imageProps} bg={colors.grey} />
-        ),
-        imageComponent: <Image bg={colors.blue} {...imageProps} />,
+        placeholder: '/img/blueR.png',
+        imageComponent: <Image mt={1} bg={colors.blue} {...imageProps} />,
         type: 'file-upload',
         label: 'Community Image',
         validate: []
@@ -132,24 +163,39 @@ class CommunityAdminForm extends Component {
       },
       {
         name: 'superAdmins',
-        component: SelectField,
-        options: initialValues.admins,
+        component: AsyncAdminField,
         type: 'text',
-        label: 'Admins',
+        label: (
+          <View fdirection={'column'}>
+            <LinkFont c={colors.black}>Admins</LinkFont>
+            <SecondaryText>
+              Users with admin priveleges (ability to edit community parameters and add or
+              remove moderators)
+            </SecondaryText>
+          </View>
+        ),
         validate: []
       },
       {
         name: 'admins',
         component: AsyncAdminField,
         type: 'text',
-        label: 'Moderators (Trusted Members)',
+        label: (
+          <View fdirection={'column'}>
+            <LinkFont c={colors.black}>Moderators</LinkFont>
+            <SecondaryText>
+              Users that will have high reputation by default (but not necessarily admin
+              priveleges)',
+            </SecondaryText>
+          </View>
+        ),
         validate: []
       }
     ];
     return (
-      <View display="flex" fdirection="column" m={4}>
+      <View display="flex" fdirection="column" m={4} mb={16}>
         <Form
-          onSubmit={handleSubmit(this.submit.bind(this))}
+          onSubmit={handleSubmit(this.submit)}
           fdirection="column"
           key="community-admin-form"
         >
@@ -178,15 +224,14 @@ class CommunityAdminForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const { close, history } = ownProps;
   let slug = get(ownProps, 'match.params.slug') || state.auth.community;
   if (get(ownProps, 'match.path') === '/admin/community/new') slug = null;
-  const community = get(state.community, `communities.${slug}`) || {};
+  if (get(ownProps, 'match.path') === '/communities/new') slug = null;
+  const community = get(state.community, `communities.${slug}`, {});
   const isUpdate = !!Object.keys(community).length;
-  const adminMembers = get(community, 'admins', []);
-  const admins = adminMembers.map(m => (m.embeddedUser ? m.embeddedUser.handle : m._id));
-  const superAdmins = adminMembers
-    .filter(m => m.superAdmin)
-    .map(m => m.embeddedUser.handle);
+  const admins = get(community, 'admins', []).map(m => m.embeddedUser.handle);
+  const superAdmins = get(community, 'superAdmins', []).map(m => m.embeddedUser.handle);
 
   const initialValues = { ...community, admins, superAdmins };
   return {
@@ -194,7 +239,9 @@ const mapStateToProps = (state, ownProps) => {
     community: state.community,
     isUpdate,
     initialValues,
-    enableReinitialize: true
+    enableReinitialize: true,
+    close,
+    history
   };
 };
 

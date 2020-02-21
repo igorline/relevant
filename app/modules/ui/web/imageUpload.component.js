@@ -7,7 +7,7 @@ const Alert = alert.Alert();
 
 export default class ImageUpload extends Component {
   static propTypes = {
-    placeholder: PropTypes.node,
+    placeholder: PropTypes.string,
     imageComponent: PropTypes.node,
     onChange: PropTypes.func
   };
@@ -20,20 +20,19 @@ export default class ImageUpload extends Component {
   processImage() {
     const file = this.fileInput.files[0];
     img
-    .loadImage(file)
-    .then(dataURL => {
-      const extension = dataURL
-      .split(',')[0]
-      .split('/')[1]
-      .split(';')[0];
-      const name = file.name.substr(0, extension.lastIndexOf('.')) + '.' + extension;
-      this.setState({ preview: dataURL, fileName: name });
-      this.props.onChange({ preview: dataURL, fileName: name });
-    })
-    .catch(e => {
-      // console.log(e);
-      Alert.alert('Error uploading image ' + e);
-    });
+      .loadImage(file)
+      .then(dataURL => {
+        const extension = dataURL
+          .split(',')[0]
+          .split('/')[1]
+          .split(';')[0];
+        const name = file.name.substr(0, extension.lastIndexOf('.')) + '.' + extension;
+        this.setState({ preview: dataURL, fileName: name });
+        this.props.onChange({ preview: dataURL, fileName: name });
+      })
+      .catch(e => {
+        Alert.alert('Error uploading image ' + e);
+      });
   }
 
   async uploadImage() {
@@ -51,13 +50,10 @@ export default class ImageUpload extends Component {
     const { placeholder, imageComponent } = this.props;
     const { preview } = this.state;
     if (!preview && placeholder) {
-      return placeholder;
+      return React.cloneElement(imageComponent, { source: { uri: placeholder } });
     }
     if (preview && imageComponent) {
-      const imageComponentWithProps = React.cloneElement(imageComponent, {
-        source: { uri: preview }
-      });
-      return imageComponentWithProps;
+      return React.cloneElement(imageComponent, { source: { uri: preview } });
     }
     if (preview) {
       return <img src={preview} style={{ maxWidth: '300px' }} />;

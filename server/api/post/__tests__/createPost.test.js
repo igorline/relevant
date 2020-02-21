@@ -1,21 +1,21 @@
-import TwitterFeed from 'server/api/twitterFeed/twitterFeed.model'; // eslint-disable-line
 import Post from 'server/api/post/post.model';
 import PostData from 'server/api/post/postData.model';
 import Link from 'server/api/post/link.model';
+import CommunityMember from 'server/api/community/community.member.model';
 import { response } from 'jest-mock-express';
 import { create, remove } from 'server/api/post/post.controller';
 import { post, community } from 'app/mockdata';
 import { sanitize } from 'server/test/utils';
 import { getUsers } from 'server/test/seedData';
 
-jest.mock('request-promise-native');
+// jest.mock('request-promise-native');
 
 let alice;
 const { createPost } = post;
 const { relevant } = community;
 
 // this will define the database name where the tests are run
-process.env.TEST_SUITE = 'create-post';
+process.env.TEST_SUITE = 'createPost';
 
 describe('CreatePost', () => {
   let linkPostId;
@@ -73,6 +73,14 @@ describe('CreatePost', () => {
       expect(apiRes.data.isInFeed).toBe(true);
       apiRes = sanitize(apiRes, 'post');
       expect(apiRes).toMatchSnapshot();
+    });
+
+    test('community member unreads should update', async () => {
+      const member = await CommunityMember.findOne({
+        communityId: relevant._id,
+        user: alice._id
+      });
+      expect(member.unread).toBeGreaterThan(0);
     });
   });
 

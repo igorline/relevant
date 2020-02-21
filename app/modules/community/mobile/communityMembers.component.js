@@ -45,14 +45,14 @@ class CommunityMembers extends Component {
     this.setState({ loaded: false });
     const { community } = this.props;
     this.props.actions
-    .getCommunityMembers({
-      slug: community.active,
-      skip: length,
-      limit: this.pageSize
-    })
-    .then(() => {
-      this.setState({ loaded: true });
-    });
+      .getCommunityMembers({
+        slug: community.active,
+        skip: length,
+        limit: this.pageSize
+      })
+      .then(() => {
+        this.setState({ loaded: true });
+      });
   };
 
   renderRow(memberId) {
@@ -65,10 +65,10 @@ class CommunityMembers extends Component {
         user={{
           ...user.embeddedUser,
           relevance: {
-            pagerank: user.reputation
+            pagerank: user.pagerank
           }
         }}
-        relevance={user.reputation}
+        // relevance={user.pagerank}
         renderRight={() => null}
         showRelevance
         {...this.props}

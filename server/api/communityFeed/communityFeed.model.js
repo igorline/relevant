@@ -28,69 +28,49 @@ CommunityFeedSchema.index({ community: 1, metaPost: 1 });
 CommunityFeedSchema.index({ community: 1, latestPost: 1 });
 
 CommunityFeedSchema.statics.updateDate = async function updateDate(_id, community, date) {
-  try {
-    const feedItem = await this.findOneAndUpdate(
-      { post: _id, community },
-      { latestPost: date },
-      { new: true }
-    );
-    return feedItem;
-  } catch (err) {
-    throw err;
-  }
+  const feedItem = await this.findOneAndUpdate(
+    { post: _id, community },
+    { latestPost: date },
+    { new: true }
+  );
+  return feedItem;
 };
 
 CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community) {
-  try {
-    if (community === 'twitter') community = 'relevant';
-    if (!community) throw new Error('missing community');
-    await this.findOneAndUpdate(
-      { community, post: post._id },
-      {
-        latestPost: post.data.latestComment || post.data.postDate,
-        tags: post.tags,
-        // categories: post.categories,
-        rank: post.data.rank
-      },
-      { upsert: true, new: true }
-    );
-  } catch (err) {
-    throw err;
-  }
+  if (community === 'twitter') community = 'relevant';
+  if (!community) throw new Error('missing community');
+  await this.findOneAndUpdate(
+    { community, post: post._id },
+    {
+      latestPost: post.data.latestComment || post.data.postDate,
+      tags: post.tags,
+      // categories: post.categories,
+      rank: post.data.rank
+    },
+    { upsert: true, new: true }
+  );
 };
 
 CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
-  try {
-    if (!community) throw new Error('missing community');
-    const feedItem = await this.findOne({ post: post._id, community });
-    if (!feedItem) return null;
-    // TODO - post rank should be tracked in a separate table
-    // so that we are not grabbing stuff from a diff communities
-    feedItem.rank = post.data.rank;
-    feedItem.latestPost = post.data.latestComment || post.data.postDate;
-    return await feedItem.save();
-  } catch (err) {
-    throw err;
-  }
+  if (!community) throw new Error('missing community');
+  const feedItem = await this.findOne({ post: post._id, community });
+  if (!feedItem) return null;
+  // TODO - post rank should be tracked in a separate table
+  // so that we are not grabbing stuff from a diff communities
+  feedItem.rank = post.data.rank;
+  feedItem.latestPost = post.data.latestComment || post.data.postDate;
+  return feedItem.save();
 };
 
 CommunityFeedSchema.statics.removeFromCommunityFeed = async function removeFromCommunityFeed(
   _id,
   community
 ) {
-  try {
-    return await this.deleteMany({ post: _id, community }).exec();
-  } catch (err) {
-    throw err;
-  }
+  return this.deleteMany({ post: _id, community }).exec();
 };
 
 CommunityFeedSchema.statics.removeFromAllFeeds = async function removeFromFeed(_id) {
-  try {
-    return await this.deleteMany({ post: _id }).exec();
-  } catch (err) {
-    throw err;
-  }
+  return this.deleteMany({ post: _id }).exec();
 };
 
 module.exports = mongoose.model('CommunityFeed', CommunityFeedSchema);

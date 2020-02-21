@@ -1,4 +1,4 @@
-const Treasury = require('./treasury.model');
+import Treasury from './treasury.model';
 
 exports.index = (req, res, next) => {
   Treasury.find().exec((err, treasury) => {

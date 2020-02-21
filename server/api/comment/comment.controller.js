@@ -2,11 +2,11 @@ import Community from 'server/api/community/community.model';
 import { getMentions, getWords, getTags } from 'app/utils/text';
 import { sendNotification as sendPushNotification } from 'server/notifications';
 import socketEvent from 'server/socket/socketEvent';
-
-const Post = require('../post/post.model');
-const User = require('../user/user.model');
-const Notification = require('../notification/notification.model');
-const Invest = require('../invest/invest.model');
+import Post from 'server/api/post/post.model';
+import User from 'server/api/user/user.model';
+import Notification from 'server/api/notification/notification.model';
+import Invest from 'server/api/invest/invest.model';
+import { checkCommunityAuth } from 'server/api/community/community.auth';
 
 // COMMENTS ARE USING POST SCHEMA
 exports.index = async req => {
@@ -37,7 +37,7 @@ exports.index = async req => {
       {
         path: 'embeddedUser.relevance',
         select: 'pagerank',
-        match: { communityId, global: true }
+        match: { communityId }
       },
       {
         path: 'data',
@@ -50,40 +50,46 @@ exports.index = async req => {
 };
 
 exports.create = async (req, res, next) => {
-  let user = req.user._id;
-
-  const { community, communityId } = req.communityMember;
-
-  const { linkParent, text: body, metaPost } = req.body;
-  let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
-
-  const type =
-    req.body.type || !parentComment || parentComment === parentPost ? 'post' : 'comment';
-
-  const words = getWords(body);
-  const mentionsFromBody = getMentions(words);
-  const tagsFromBody = getTags(words);
-
-  tags = [...new Set([...tags, ...tagsFromBody])];
-  mentions = [...new Set([...mentions, ...mentionsFromBody])];
-
-  const commentObj = {
-    body,
-    mentions,
-    tags,
-    parentPost,
-    linkParent,
-    parentComment,
-    user,
-    type,
-    eligibleForRewards: true,
-    postDate: new Date(),
-    community,
-    communityId,
-    metaPost
-  };
-
   try {
+    let user = req.user._id;
+    const { communityMember } = req;
+
+    const { community, communityId } = communityMember;
+
+    if (community === 'foam')
+      await checkCommunityAuth({ user: req.user, communityId, communityMember });
+
+    const { linkParent, text: body, metaPost } = req.body;
+    let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
+
+    const type =
+      req.body.type || !parentComment || parentComment === parentPost
+        ? 'post'
+        : 'comment';
+
+    const words = getWords(body);
+    const mentionsFromBody = getMentions(words);
+    const tagsFromBody = getTags(words);
+
+    tags = [...new Set([...tags, ...tagsFromBody])];
+    mentions = [...new Set([...mentions, ...mentionsFromBody])];
+
+    const commentObj = {
+      body,
+      mentions,
+      tags,
+      parentPost,
+      linkParent,
+      parentComment,
+      user,
+      type,
+      eligibleForRewards: true,
+      postDate: new Date(),
+      community,
+      communityId,
+      metaPost
+    };
+
     let comment = new Post(commentObj);
     user = await User.findOne({ _id: user });
 
@@ -107,17 +113,6 @@ exports.create = async (req, res, next) => {
       comment = await comment.save();
       return await processChat({ res, parentComment, comment, user, type });
     }
-
-    // if (type !== 'chat') {
-    // Do we need this?
-    // await Invest.createVote({
-    //   post: comment,
-    //   user,
-    //   amount: 0,
-    //   relevanceToAdd: 0,
-    //   community,
-    //   communityId,
-    // });
 
     const updateTime = type === 'post' || false;
     await parentPost.updateRank({ communityId, updateTime });
@@ -241,54 +236,46 @@ async function sendNotifications({
   comment,
   type
 }) {
-  try {
-    if (user._id.equals(commentor._id)) return;
+  if (user._id.equals(commentor._id)) return;
 
-    const ownPost = postAuthor && commentor._id.equals(postAuthor._id);
-    const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
+  const ownPost = postAuthor && commentor._id.equals(postAuthor._id);
+  const ownComment = commentAuthor && commentor._id.equals(commentAuthor._id);
 
-    const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
+  const noteType = !ownPost && !ownComment ? 'commentAlso' : 'comment';
 
-    let note = {
-      post: comment._id,
-      forUser: commentor._id,
-      byUser: user._id,
-      amount: null,
-      type: noteType,
-      source: type,
-      personal: true,
-      read: false
-    };
+  let note = {
+    post: comment._id,
+    forUser: commentor._id,
+    byUser: user._id,
+    amount: null,
+    type: noteType,
+    source: type,
+    personal: true,
+    read: false
+  };
 
-    note = new Notification(note);
-    note = await note.save();
+  note = new Notification(note);
+  note = await note.save();
 
-    const noteAction = {
-      _id: commentor._id,
-      type: 'ADD_ACTIVITY',
-      payload: note
-    };
-    socketEvent.emit('socketEvent', noteAction);
+  const noteAction = {
+    _id: commentor._id,
+    type: 'ADD_ACTIVITY',
+    payload: note
+  };
+  socketEvent.emit('socketEvent', noteAction);
 
-    const action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
+  let action = ` replied to ${ownPost || ownComment ? 'your' : 'a'} ${type}`;
+  if (type === 'repost' && ownPost) action = ` reposted your ${type}`;
 
-    // if (ownComment || ownPost) {
-    //   sendCommentEmail({ commentor: user, comment, user: commentor, action });
-    // }
-    // const noteType = ownComment || ownPost ? 'personal' : 'general';
-
-    const alert = user.name + action;
-    const payload = {
-      fromUser: user,
-      toUser: commentor,
-      post: comment,
-      action,
-      noteType: ownPost || ownComment ? 'reply' : 'general'
-    };
-    sendPushNotification(commentor, alert, payload);
-  } catch (err) {
-    throw err;
-  }
+  const alert = user.name + action;
+  const payload = {
+    fromUser: user,
+    toUser: commentor,
+    post: comment,
+    action,
+    noteType: ownPost || ownComment ? 'reply' : 'general'
+  };
+  sendPushNotification(commentor, alert, payload);
 }
 
 exports.update = async (req, res, next) => {

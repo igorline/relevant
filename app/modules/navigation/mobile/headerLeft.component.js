@@ -5,13 +5,19 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { toggleTopics } from 'modules/navigation/navigation.actions';
-
+import { useTotalUnread } from 'modules/community/hooks';
+import { Badge } from 'modules/styled/uni';
 import { darkGrey, mainPadding, colors } from 'app/styles/global';
 
 let styles;
 
-const HeaderLeft = props => {
-  const { navigation, screenProps } = props;
+HeaderLeft.propTypes = {
+  navigation: PropTypes.object,
+  screenProps: PropTypes.object
+};
+
+function HeaderLeft({ navigation, screenProps }) {
+  // console.log(screenProps, navigation.state);
   const parent = navigation.dangerouslyGetParent() || navigation;
 
   const { index } = parent.state;
@@ -52,24 +58,24 @@ const HeaderLeft = props => {
     );
   }
 
+  const unread = useTotalUnread();
+
   const options = (
     <TouchableOpacity
       onPress={() => navigation.openDrawer()}
       style={{ padding: 0, paddingHorizontal: 10 }}
     >
-      <Icon name="ios-options" size={23} style={{ height: 26 }} color={darkGrey} />
+      <View>
+        <Icon name="ios-options" size={23} style={{ height: 26 }} color={darkGrey} />
+        <Badge style={{ position: 'absolute', bottom: 0, right: -8 }} number={unread} />
+      </View>
     </TouchableOpacity>
   );
 
   return (
     <View style={[styles.leftButton, { flexDirection: 'row' }]}>{backEl || options}</View>
   );
-};
-
-HeaderLeft.propTypes = {
-  navigation: PropTypes.object,
-  screenProps: PropTypes.object
-};
+}
 
 const localStyles = {
   leftButton: {

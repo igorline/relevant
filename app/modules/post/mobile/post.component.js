@@ -21,10 +21,8 @@ class Post extends PureComponent {
     auth: PropTypes.object,
     post: PropTypes.object,
     commentary: PropTypes.array,
-    posts: PropTypes.object,
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
-    navigation: PropTypes.object.isRequired, // eslint-disable-line
     hideDivider: PropTypes.bool,
     preview: PropTypes.bool,
     noLink: PropTypes.bool
@@ -43,13 +41,11 @@ class Post extends PureComponent {
     } = this.props;
 
     const { community } = auth;
-    let { post } = this.props;
+    const { post } = this.props;
 
     const separator = (
       <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
     );
-
-    if (!auth.user) return null;
 
     const blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
 
@@ -70,11 +66,11 @@ class Post extends PureComponent {
       />
     ) : null;
 
-    if (post && post.repost) {
-      let repost = this.props.posts.posts[post.repost.post];
-      if (!repost) repost = { body: '[deleted]' };
-      post = { ...repost };
-    }
+    // if (post && post.repost) {
+    //   let repost = this.props.posts.posts[post.repost.post];
+    //   if (!repost) repost = { body: '[deleted]' };
+    //   post = { ...repost };
+    // }
 
     const title = getTitle({ post, link });
     const postUrl = getPostUrl(community, post);
@@ -98,6 +94,7 @@ class Post extends PureComponent {
             <ButtonContainer
               horizontal
               post={post}
+              singlePost={singlePost}
               actions={actions}
               auth={auth}
               link={link}

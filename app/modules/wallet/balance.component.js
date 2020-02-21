@@ -1,45 +1,27 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { colors } from 'app/styles';
+import { useSelector } from 'react-redux';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { truncateAddress } from 'app/utils/eth';
 import { usePrice } from 'modules/wallet/price.context';
-
-import {
-  View,
-  BodyText,
-  Header,
-  SecondaryText,
-  Touchable,
-  LinkFont
-} from 'modules/styled/uni';
+import { View, BodyText, Header, SecondaryText } from 'modules/styled/uni';
 import CoinStat from 'modules/stats/coinStat.component';
 import { CASHOUT_MAX } from 'server/config/globalConstants';
-// import { parseBN } from 'app/utils/eth';
 import Tooltip from 'modules/tooltip/tooltip.component';
-import { showModal } from 'modules/navigation/navigation.actions';
-// import { useTokenContract } from 'modules/contract/contract.hooks';
+// import { updateNotificationSettings } from 'modules/auth/auth.actions';
+// import { TEXT } from 'modules/bannerPrompt/betBanner';
+// import { NotificationToggle } from 'modules/profile/settings/settings.toggle';
+import WalletLinks from './walletLinks';
 
-Balance.propTypes = {
-  isWeb: PropTypes.bool
-};
-
-export function Balance({ isWeb }) {
-  // Temporarily disable - don't want to trigger metamask popup here
-  // useTokenContract();
-  const dispatch = useDispatch();
+export function Balance() {
   const user = useSelector(state => state.auth.user);
   const screenSize = useSelector(state => state.navigation.screenSize);
+  // const dispatch = useDispatch();
 
-  // const userBalance = useBalance();
   const maxUSD = usePrice(CASHOUT_MAX);
 
   if (!user) return null;
   const metaMaskTokens = user.tokenBalance;
-  // userBalance && userBalance.phase === 'SUCCESS'
-  // ? parseBN(userBalance.value)
-  // : user.tokenBalance;
+
   const { airdropTokens, lockedTokens } = user;
   const stakingPower = user.balance
     ? Math.round(100 * (1 - lockedTokens / user.balance))
@@ -55,13 +37,17 @@ export function Balance({ isWeb }) {
     stakingPower
   });
 
+  // const enableManualBet = () => {
+  //   dispatch(updateNotificationSettings({ bet: { manual: true } }));
+  // };
+
   return (
-    <View m={['4 4 2 4', '2 2 0 2']}>
+    <View m={['0 4 2 4', '2 2 0 2']}>
       {!screenSize ? (
         <View>
           <BodyText mt={2}>
             These are coins you earned as rewards. You can transfer up to {CASHOUT_MAX}
-            {maxUSD} coins to your Ethereum account (this limit will be increased as the
+            {maxUSD} coins to your Ethereum wallet (this limit will be increased as the
             network grows).
           </BodyText>
         </View>
@@ -94,22 +80,29 @@ export function Balance({ isWeb }) {
             )
         )}
       </View>
+      <WalletLinks />
 
-      {isWeb ? (
-        <View fdirection="row" mt={2} align="center">
-          <Touchable onClick={() => dispatch(showModal('cashOut'))} td={'underline'}>
-            <LinkFont c={colors.blue} mr={0.5}>
-              Claim Tokens
-            </LinkFont>
-          </Touchable>
-          <Tooltip
-            info
-            data={{
-              text: `You can transfer up to ${CASHOUT_MAX} coins to your your Metamask wallet.\n(You cannot transfer coins you got for refferrals and verifying social accounts.)`
-            }}
-          />
-        </View>
-      ) : null}
+      {/*      <BodyText inline={1}>
+        {TEXT.messageText}
+        <ULink to="#">
+          <Text inline={1} onClick={enableManualBet}>
+            {TEXT.actionText}
+          </Text>
+        </ULink>
+      </BodyText> */}
+      {/*      <View maxWidth={40}>
+        <NotificationToggle
+          notification={user.notificationSettings.bet.manual}
+          parent={'bet'}
+          label={'manual'}
+          togglePosition={'right'}
+          DescriptionComponent={BodyText}
+          text={{
+            description: 'Enable manual betting:'
+          }}
+        />
+      </View> */}
+
       <Header mt={[9, 4]}>Recent Activity</Header>
       {!screenSize ? (
         <BodyText mt={2}>

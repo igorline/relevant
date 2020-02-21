@@ -7,11 +7,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as authActions from 'modules/auth/auth.actions';
-import { goToUrl, push, reloadTab } from 'modules/navigation/navigation.actions';
-// import {
-//   StackActions,
-//   NavigationActions,
-// } from 'react-navigation';
+import {
+  goToUrl,
+  push,
+  reloadTab,
+  refreshTab
+} from 'modules/navigation/navigation.actions';
 
 import { AuthNavigator, AuthStack } from 'modules/_app/mobile/authRouter';
 
@@ -27,40 +28,21 @@ class AuthContainer extends Component {
   componentDidMount() {
     this.props.actions.getUser().then(async user => {
       if (!user) return null;
+      codePush.allowRestart();
       return this.props.navigation.navigate('main');
-      // const resetAction = StackActions.reset({
-      //   index: 0,
-      //   key: null,
-      //   actions: [
-      //     NavigationActions.navigate({
-      //       routeName: 'container',
-      //       action: NavigationActions.navigate({ routeName: 'main' })
-      //     })
-      //   ],
-      // });
-      // return this.props.navigation.dispatch(resetAction);
     });
   }
 
   componentDidUpdate() {
     if (this.props.auth.user) {
+      codePush.allowRestart();
       this.props.navigation.navigate('main');
-      // const resetAction = StackActions.reset({
-      //   index: 0,
-      //   key: null,
-      //   actions: [
-      //     NavigationActions.navigate({
-      //       routeName: 'container',
-      //       action: NavigationActions.navigate({ routeName: 'main' })
-      //     })
-      //   ],
-      // });
-      // this.props.navigation.dispatch(resetAction);
     }
   }
 
   componentWillUnmount() {
     codePush.allowRestart();
+    this.props.actions.refreshTab('discover');
   }
 
   render() {
@@ -84,6 +66,7 @@ const mapDispatchToProps = dispatch => ({
       ...adminActions,
       goToUrl,
       push,
+      refreshTab,
       reloadTab
     },
     dispatch

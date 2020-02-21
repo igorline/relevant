@@ -23,9 +23,9 @@ exports.sign = (req, res) => {
 
   // sign the base64 encoded policy
   const signature = crypto
-  .createHmac('sha1', AWS_SECRET_KEY)
-  .update(Buffer.from(base64Policy, 'utf-8'))
-  .digest('base64');
+    .createHmac('sha1', AWS_SECRET_KEY)
+    .update(Buffer.from(base64Policy, 'utf-8'))
+    .digest('base64');
 
   // build the results object
   const s3Credentials = {
@@ -36,7 +36,8 @@ exports.sign = (req, res) => {
   const returnData = {
     signature: s3Credentials,
     url: 'https://' + S3_BUCKET + '.s3.amazonaws.com/',
-    publicUrl: 'https://' + S3_BUCKET + '.s3.amazonaws.com/' + req.query.s3_object_name
+    publicUrl: 'https://' + S3_BUCKET + '.s3.amazonaws.com/' + req.query.s3_object_name,
+    AWS_ACCESS_KEY
   };
   res.write(JSON.stringify(returnData));
   res.end();

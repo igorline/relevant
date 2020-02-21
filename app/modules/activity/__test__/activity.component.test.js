@@ -7,6 +7,7 @@ import { auth, activity } from 'app/mockdata';
 import { Text } from 'modules/styled/uni';
 
 jest.mock('modules/post/web/post.component', () => 'PostComponent');
+jest.mock('react-redux', () => ({ useDispatch: () => () => {}, connect: el => el }));
 
 const props = {
   singleActivity: activity.activity,

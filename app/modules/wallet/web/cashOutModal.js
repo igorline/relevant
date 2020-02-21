@@ -15,7 +15,6 @@ import Web3Warning from 'modules/wallet/web/web3Warning/web3Warning.component';
 import {
   useWeb3,
   useMetamask,
-  useBalance,
   useRelevantActions,
   useTxState
 } from 'modules/contract/contract.hooks';
@@ -23,6 +22,7 @@ import { useRelevantState } from 'modules/contract/contract.selectors';
 import { useCurrentWarning } from 'modules/wallet/web/web3Warning/web3Warning.hooks';
 import { parseBN } from 'app/utils/eth';
 import { cashOutCall, connectAddress } from 'modules/wallet/wallet.actions';
+import { updateCashoutLog } from 'modules/wallet/earnings.actions';
 import { hideModal } from 'modules/navigation/navigation.actions'; // eslint-disable-line
 import styled from 'styled-components/primitives';
 import { colors, sizing } from 'styles';
@@ -31,6 +31,7 @@ import { CASHOUT_MAX } from 'server/config/globalConstants';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { usePrice } from 'modules/wallet/price.context';
 import { CashoutFooter } from './cashoutFooter';
+// import ULink from 'modules/navigation/ULink.component';
 
 const TxProgress = styled(View)`
   position: absolute;
@@ -41,15 +42,18 @@ const TxProgress = styled(View)`
   background-color: ${colors.modalBackground};
 `;
 
-export default function AddEthAddress() {
+AddEthAddress.propTypes = {
+  close: PropTypes.func
+};
+
+export default function AddEthAddress({ close }) {
   const [accounts, , networkId] = useWeb3();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
 
-  const canClaim = user.balance - (user.airdroppedTokens || 0);
+  const canClaim = user.balance - (user.airdropTokens || 0);
   const account = accounts && accounts[0];
 
-  useBalance();
   useMetamask();
 
   const unclaimedSig = useUnclaimedSig(user, account);
@@ -75,6 +79,7 @@ export default function AddEthAddress() {
         />
       ) : (
         <CashOutHandler
+          close={close}
           canClaim={canClaim}
           account={account}
           unclaimedSig={unclaimedSig}
@@ -87,11 +92,13 @@ export default function AddEthAddress() {
 CashOutHandler.propTypes = {
   canClaim: PropTypes.number,
   account: PropTypes.string,
-  unclaimedSig: PropTypes.oneOfType([PropTypes.object, PropTypes.bool])
+  unclaimedSig: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  close: PropTypes.func
 };
 
-function CashOutHandler({ canClaim, account, unclaimedSig }) {
+function CashOutHandler({ canClaim, account, unclaimedSig, close }) {
   const [currentTx, setCurrentTx] = useState();
+  const { send } = useRelevantActions();
   const user = useSelector(state => state.auth.user);
   const maxClaim =
     user.role === 'admin'
@@ -111,17 +118,24 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
   }, [unclaimedSig]);
 
   const cashOut = async customAmount => {
-    const tx = await dispatch(cashOutCall(customAmount, account));
+    const sendCashoutAction = (amnt, sig) =>
+      send('claimTokens', { from: account }, amnt, sig);
+    const tx = await dispatch(cashOutCall(customAmount, sendCashoutAction));
     setCurrentTx(tx);
   };
 
   const txState = useTxState({
     tx: currentTx,
     method: 'claimTokens',
-    clearTx: () => setCurrentTx(null)
+    callback: () => {
+      dispatch(updateCashoutLog(user.cashOut.earningId));
+      setCurrentTx(null);
+    }
   });
 
-  if (txState === 'success') dispatch(hideModal());
+  if (txState === 'success') {
+    close();
+  }
 
   const validateAmount = value => (value < 0 ? 0 : value > maxClaim ? maxClaim : value);
 
@@ -152,7 +166,6 @@ function CashOutHandler({ canClaim, account, unclaimedSig }) {
             h={6}
             style={{ right: sizing(1), bottom: sizing(0) }}
             position="absolute"
-            // fw={'bold'}
             fs={4}
           >
             {'$' + usdAmount}
@@ -199,11 +212,11 @@ function useUnclaimedSig(user, account) {
   const unclaimedSig =
     user && user.cashOut && user.cashOut.nonce === nonce && user.cashOut;
 
-  const { cacheMethod } = useRelevantActions();
+  const { call } = useRelevantActions();
 
   useEffect(() => {
-    account && cacheMethod('nonceOf', account);
-  }, [account, cacheMethod]);
+    account && call && call('nonceOf', account);
+  }, [account, call]);
 
   return unclaimedSig;
 }

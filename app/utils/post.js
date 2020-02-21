@@ -27,7 +27,7 @@ export const getPostUrl = (community, post) => {
   if (!post) return null;
   const { parentPost } = post;
   const postId = parentPost ? parentPost._id || parentPost : post._id || post;
-  const commentId = parentPost ? '/' + post._id || post : '';
+  const commentId = parentPost ? '/' + (post._id || post) : '';
   return `/${community}/post/${postId}${commentId}`;
 };
 

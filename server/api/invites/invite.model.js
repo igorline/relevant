@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { computeApproxPageRank } from 'server/utils/pagerankCompute';
+import computeApproxPageRank from 'server/pagerank/computeApproxPageRank';
 
 const { Schema } = mongoose;
 
@@ -56,66 +56,61 @@ async function publicReward({ user, inviter }) {
 
 async function referralRewards({ invite, user, Invite }) {
   // InviteSchema.methods.referral = async function referral(user) {
-  try {
-    const { communityId, community } = invite;
-    invite.status = 'registered';
-    invite.number -= 1;
-    if (invite.number === 0) invite.redeemed = true;
-    invite.registeredAs = user._id;
-    await invite.save();
+  const { communityId, community } = invite;
+  invite.status = 'registered';
+  invite.number -= 1;
+  if (invite.number === 0) invite.redeemed = true;
+  invite.registeredAs = user._id;
+  await invite.save();
 
-    let inviter = await Invite.model('User')
-      .findOne({ _id: invite.invitedBy })
-      .populate({
-        path: 'relevance',
-        match: { communityId, global: true }
-      });
-
-    const communityInstance = await Invite.model('Community').findOne({
-      _id: communityId
-    });
-    const role = invite.type === 'admin' ? 'admin' : null;
-    await communityInstance.join(user._id, role);
-
-    if (role === 'admin') {
-      const relevance = await Invite.model('Relevance').findOne({
-        user: user._id,
-        communityId,
-        global: true
-      });
-      relevance.pagerank = 70;
-      await relevance.save();
-      user.relevance = relevance;
-      return user;
-    }
-
-    user = await user.addReward({ type: 'referredBy', user: inviter });
-    inviter = await inviter.addReward({ type: 'referral', user });
-
-    // console.log('updated relevance', updatedUser);
-    if (user.email === invite.email) user.confirmed = true;
-
-    const vote = new (Invite.model('Invest'))({
-      investor: inviter._id,
-      author: user._id,
-      amount: Math.min(1, (100 - inviter.relevance.pagerank + 50) / 100),
-      ownPost: false,
-      communityId,
-      community
-    });
-    await vote.save();
-
-    const { author: updatedUser } = await computeApproxPageRank({
-      communityId,
-      author: user,
-      vote,
-      user: inviter
+  let inviter = await Invite.model('User')
+    .findOne({ _id: invite.invitedBy })
+    .populate({
+      path: 'relevance',
+      match: { communityId }
     });
 
-    return updatedUser;
-  } catch (err) {
-    throw err;
+  const communityInstance = await Invite.model('Community').findOne({
+    _id: communityId
+  });
+  const role = invite.type === 'admin' ? 'admin' : null;
+  await communityInstance.join(user._id, role);
+
+  if (role === 'admin') {
+    const relevance = await Invite.model('CommunityMember').findOne({
+      user: user._id,
+      communityId
+    });
+    relevance.pagerank = 70;
+    await relevance.save();
+    user.relevance = relevance;
+    return user;
   }
+
+  user = await user.addReward({ type: 'referredBy', user: inviter });
+  inviter = await inviter.addReward({ type: 'referral', user });
+
+  // console.log('updated relevance', updatedUser);
+  if (user.email === invite.email) user.confirmed = true;
+
+  const vote = new (Invite.model('Invest'))({
+    investor: inviter._id,
+    author: user._id,
+    amount: Math.min(1, (100 - inviter.relevance.pagerank + 50) / 100),
+    ownPost: false,
+    communityId,
+    community
+  });
+  await vote.save();
+
+  const { author: updatedUser } = await computeApproxPageRank({
+    communityId,
+    author: user,
+    vote,
+    user: inviter
+  });
+
+  return updatedUser;
 }
 
 module.exports = mongoose.model('Invite', InviteSchema);

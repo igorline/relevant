@@ -33,7 +33,7 @@ class Breadcrumbs extends Component {
         onClick={() => actions.refreshTab('discover')}
         ml={1}
         c={colors.blue}
-        hu
+        hu={1}
         lh={1.5}
         fs={1.5}
       >

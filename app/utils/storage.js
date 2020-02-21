@@ -1,29 +1,36 @@
 let userDefaults;
 let cookie;
+let localStorage;
 
 if (process.env.WEB !== 'true') {
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
-  const Cookies = require('universal-cookie');
+  const Cookies =
+    process.env.BROWSER && process.env.NODE_ENV !== 'test'
+      ? require('universal-cookie').default
+      : require('universal-cookie');
   cookie = new Cookies();
+  if (process.env.BROWSER) localStorage = window.localStorage;
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 
 let token;
 
+export const local = localStorage;
+
 export function get(key) {
   return new Promise((resolve, reject) => {
     if (userDefaults) {
       return userDefaults
-      .get(key, APP_GROUP_ID)
-      .then(val => {
-        if (val) {
-          return resolve(val);
-        }
-        return resolve(null);
-      })
-      .catch(err => reject(err));
+        .get(key, APP_GROUP_ID)
+        .then(val => {
+          if (val) {
+            return resolve(val);
+          }
+          return resolve(null);
+        })
+        .catch(err => reject(err));
     }
     // WEB
     const val = cookie.get(key, { path: '/' });
@@ -66,15 +73,15 @@ export function getToken() {
 
     if (userDefaults) {
       return userDefaults
-      .get('token', APP_GROUP_ID)
-      .then(newToken => {
-        if (newToken) {
-          token = newToken;
-          return resolve(token);
-        }
-        return resolve(null);
-      })
-      .catch(err => reject(err));
+        .get('token', APP_GROUP_ID)
+        .then(newToken => {
+          if (newToken) {
+            token = newToken;
+            return resolve(token);
+          }
+          return resolve(null);
+        })
+        .catch(err => reject(err));
     }
     // WEB
     const newToken = cookie.get('token', { path: '/' });

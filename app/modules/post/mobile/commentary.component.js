@@ -1,41 +1,62 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, mainPadding, borderGrey } from 'app/styles/global';
 import Pills from 'modules/ui/mobile/pills.component';
 import { Image, Divider, View } from 'modules/styled/uni';
+import {
+  PanGestureHandler,
+  NativeViewGestureHandler
+} from 'react-native-gesture-handler';
+import { registerGesture } from 'modules/navigation/navigation.actions';
 import ButtonContainer from 'modules/post/mobile/postButtons.container';
+import { DrawerGestureContext } from 'react-navigation-drawer';
+import { TabViewContext } from 'modules/discover/mobile/discoverTabContext';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 
 let styles;
 
-export default class Commentary extends Component {
+class Commentary extends Component {
   static propTypes = {
     actions: PropTypes.object,
     post: PropTypes.object,
     link: PropTypes.object,
     users: PropTypes.object,
     auth: PropTypes.object,
-    // myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
     tooltip: PropTypes.bool,
     focusInput: PropTypes.func,
     commentary: PropTypes.array,
-    navigation: PropTypes.object,
     preview: PropTypes.bool,
     avatarText: PropTypes.func,
-    isReply: PropTypes.bool
+    isReply: PropTypes.bool,
+    connectedActions: PropTypes.object,
+    gesture: PropTypes.object
   };
+
+  scrollView = React.createRef();
+
+  panRef = React.createRef();
+
+  listRef = React.createRef();
+
+  tapRef = React.createRef();
 
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: 0
+      currentIndex: 0,
+      scrollEnabled: true
     };
     this.renderItem = this.renderItem.bind(this);
     this.onScrollEnd = this.onScrollEnd.bind(this);
     this.scrollToPage = this.scrollToPage.bind(this);
+    this.x = 0;
+    this.scrollOffset = 0;
+    this.maxOffset = 10000;
   }
 
   onScrollEnd(e) {
@@ -54,7 +75,7 @@ export default class Commentary extends Component {
   }
 
   scrollToPage(p) {
-    this.scrollView.scrollToIndex({ index: p });
+    this.scrollView.current.scrollToIndex({ index: p });
   }
 
   renderItem({ item, index }) {
@@ -66,7 +87,6 @@ export default class Commentary extends Component {
       singlePost,
       focusInput,
       tooltip,
-      // myPostInv,
       preview,
       isReply
     } = this.props;
@@ -110,7 +130,6 @@ export default class Commentary extends Component {
                 auth={auth}
                 singlePost={singlePost}
                 user={user}
-                navigation={this.props.navigation}
                 avatarText={this.props.avatarText}
                 preview
               />
@@ -119,9 +138,7 @@ export default class Commentary extends Component {
                 post={post}
                 editing={false}
                 actions={actions}
-                auth={auth}
                 singlePost={singlePost}
-                navigation={this.props.navigation}
                 avatarText={this.props.avatarText}
                 preview={preview}
               />
@@ -137,9 +154,8 @@ export default class Commentary extends Component {
                     comments={post.comments || null}
                     actions={actions}
                     auth={auth}
-                    // myPostInv={myPostInv[post._id]}
                     focusInput={focusInput}
-                    navigation={this.props.navigation}
+                    singlePost={singlePost}
                   />
                 </View>
               )}
@@ -150,8 +166,30 @@ export default class Commentary extends Component {
     );
   }
 
+  handleGesture = e => {
+    const { gesture, connectedActions } = this.props;
+    const { scrollEnabled } = this.state;
+    const { translationX, state } = e.nativeEvent;
+    if (gesture !== this.listRef && state === 2) {
+      connectedActions.registerGesture(this.listRef);
+    }
+
+    if (state === 2) return;
+    const offset = translationX;
+
+    const leftEnd = this.scrollOffset - offset <= 0 && offset > 0;
+    const rightEnd = this.scrollOffset - offset >= this.maxOffset;
+
+    const shouldDisableScroll = leftEnd || rightEnd;
+    const shouldEnableScroll = !shouldDisableScroll || state === 5;
+
+    shouldDisableScroll && scrollEnabled && this.setState({ scrollEnabled: false });
+    shouldEnableScroll && !scrollEnabled && this.setState({ scrollEnabled: true });
+  };
+
   render() {
     const { commentary, preview, isReply } = this.props;
+    const { scrollEnabled } = this.state;
     const pills = (
       <View style={{ marginVertical: 16 }}>
         <Pills
@@ -162,27 +200,85 @@ export default class Commentary extends Component {
         />
       </View>
     );
+
     return (
       <View style={{ marginBottom: !preview ? 16 : 0 }}>
         {isReply && !preview ? <Divider m={'0 2'} /> : null}
-        <FlatList
-          style={{ marginTop: !preview ? 16 : 0 }}
-          ref={c => (this.scrollView = c)}
-          scrollEnabled={commentary.length > 1}
-          keyExtractor={(item, index) => index.toString()}
-          horizontal={!preview}
-          data={commentary}
-          renderItem={this.renderItem}
-          pagingEnabled
-          contentContainerStyle={[!preview ? styles.postScroll : null]}
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={this.onScrollEnd}
-        />
+        <TabViewContext.Consumer>
+          {tabView => (
+            <DrawerGestureContext.Consumer>
+              {drawer => (
+                <PanGestureHandler
+                  enabled={commentary.length > 1}
+                  ref={this.panRef}
+                  activeOffsetX={[-5, 5]}
+                  onHandlerStateChange={this.handleGesture}
+                  onGestureEvent={this.handleGesture}
+                  simultaneousHandlers={[drawer, tabView, this.listRef]}
+                >
+                  <NativeViewGestureHandler
+                    enabled={commentary.length > 1 && scrollEnabled}
+                    ref={this.listRef}
+                    simultaneousHandlers={[drawer, tabView, this.panRef]}
+                    // waitFor={this.state.scrollEnabled ? [] : [drawer, tabView]}
+                  >
+                    <FlatList
+                      style={{ marginTop: !preview ? 16 : 0 }}
+                      ref={this.scrollView}
+                      shouldActivateOnStart={false}
+                      scrollEnabled={commentary.length > 1 && scrollEnabled}
+                      scrollEventThrottle={30}
+                      scrollToOverflowEnabled={false}
+                      alwaysBounceHorizontal={false}
+                      bounces={false}
+                      onScroll={e => {
+                        const { x } = e.nativeEvent.contentOffset;
+                        const length = e.nativeEvent.layoutMeasurement.width;
+                        this.scrollOffset = x;
+                        this.maxOffset = length * (commentary.length - 1);
+                      }}
+                      keyExtractor={(item, index) => index.toString()}
+                      horizontal={!preview}
+                      data={commentary}
+                      renderItem={this.renderItem}
+                      pagingEnabled
+                      contentContainerStyle={[!preview ? styles.postScroll : null]}
+                      showsHorizontalScrollIndicator={false}
+                      onMomentumScrollEnd={this.onScrollEnd}
+                    />
+                  </NativeViewGestureHandler>
+                </PanGestureHandler>
+              )}
+            </DrawerGestureContext.Consumer>
+          )}
+        </TabViewContext.Consumer>
         {commentary.length > 1 ? pills : null}
       </View>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    gesture: state.navigation.gesture
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    connectedActions: bindActionCreators(
+      {
+        registerGesture
+      },
+      dispatch
+    )
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Commentary);
 
 const localStyles = StyleSheet.create({
   commentaryContainer: {

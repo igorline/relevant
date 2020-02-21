@@ -8,13 +8,17 @@ import {
   HIDE_MODAL,
   OPEN_WEB_SIDE_NAV,
   CLOSE_WEB_SIDE_NAV,
-  SET_WIDTH
+  SET_WIDTH,
+  LOCK_DRAWER,
+  SET_SCROLL_TAB,
+  REGISTER_GESTURE
 } from 'core/actionTypes';
 
-const initialState = {
+export const initialState = {
   showTopics: false,
   reload: 0,
   scroll: false,
+  gesture: null,
   discover: {},
   stats: {},
   wallet: {},
@@ -26,7 +30,8 @@ const initialState = {
   sideNavIsOpen: false,
   width: null,
   screenSize: 0,
-  modalData: null
+  modalData: null,
+  lockDrawer: false
 };
 
 function navigationState(state = initialState, action) {
@@ -57,6 +62,21 @@ function navigationState(state = initialState, action) {
       };
     }
 
+    case SET_SCROLL_TAB: {
+      switch (action.payload.type) {
+        case 'discover':
+          return {
+            ...state,
+            discover: {
+              ...state.discover,
+              ...action.payload.view
+            }
+          };
+        default:
+          return state;
+      }
+    }
+
     case HIDE_MODAL: {
       return {
         ...state,
@@ -69,6 +89,13 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         scroll: action.payload
+      };
+    }
+
+    case LOCK_DRAWER: {
+      return {
+        ...state,
+        lockDrawer: action.payload
       };
     }
 
@@ -105,6 +132,13 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         reload: new Date().getTime()
+      };
+    }
+
+    case REGISTER_GESTURE: {
+      return {
+        ...state,
+        gesture: action.payload
       };
     }
 

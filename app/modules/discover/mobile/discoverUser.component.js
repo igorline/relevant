@@ -68,7 +68,7 @@ class DiscoverUser extends Component {
         <View style={styles.discoverUserContainer}>
           <View style={[styles.discoverUser]}>
             <AvatarBox
-              bio
+              bio={this.props.bio}
               big
               inline={1}
               type={this.props.type}
@@ -76,11 +76,9 @@ class DiscoverUser extends Component {
               user={{ ...user, relevance }}
               setSelected={this.setSelected}
               showRelevance={showRelevance}
-              // topic={{ topic: this.props.topic, relevance }}
             />
             <View
               style={{
-                flex: 1,
                 alignItems: 'flex-end',
                 justifyContent: 'center'
               }}

@@ -217,10 +217,13 @@ class CreatePostContainer extends Component {
 
       newPost = await actions.submitPost(newPost);
 
-      if (close) close();
-      if (newPost) {
-        this.clearPost();
+      if (!newPost) {
+        this.setState({ submitting: false });
+        return;
       }
+
+      close && close();
+      this.clearPost();
 
       history.push(`/${auth.community}/new/`);
       actions.refreshTab('discover');
@@ -358,6 +361,9 @@ class CreatePostContainer extends Component {
 
     const submitDisabled =
       submitting || !this.state.selectedTags.length || !body || !body.trim().length;
+
+    const chatEnabled = false;
+
     return (
       <View>
         <View display="flex" fdirection="row" align="center">
@@ -437,7 +443,7 @@ class CreatePostContainer extends Component {
         ) : null}
 
         <View mt={2} fdirection="row" justify="space-between">
-          {isAdmin && (
+          {isAdmin && chatEnabled && (
             <View fdirection="row" align={'center'} alignself={'center'}>
               <input
                 checked={channel}

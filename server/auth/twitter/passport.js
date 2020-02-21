@@ -1,4 +1,5 @@
 import { handleAdminInvite } from 'server/api/invites/invite.controller';
+import { addUserToEmailList } from 'server/utils/mail';
 
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
@@ -66,7 +67,8 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
   if (!user) user = await User.findOne({ twitterId: profile.id });
 
   // check if we have someone with a matching email
-  if (!user) {
+  // SECURITY RISK (could potentially add email account to another person's email?)
+  if (!user && profile._json.email && profile._json.email.length) {
     user = await User.findOne({
       email: profile._json.email,
       confirmed: true
@@ -79,6 +81,7 @@ export async function handleTwitterAuth({ req, twitterAuth, profile, invitecode 
   if (isNewUser) {
     user = await addNewTwitterUser({ handle, invitecode });
     user = await addTwitterProfile({ profile, user, twitterAuth });
+    await addUserToEmailList(user);
     user = await user.initialCoins();
     if (invitecode && invitecode !== 'undefined') {
       user = await Invite.processInvite({ invitecode, user });
@@ -150,7 +153,11 @@ export async function addTwitterProfile({ profile, twitterAuth, user }) {
 
   if (!user.name) user.name = profile.displayName;
 
-  if (!user.email) user.email = twitterEmail;
+  if (!user.email && twitterEmail && twitterEmail.length) {
+    user.email = twitterEmail;
+    user.confirmed;
+  }
+
   user.twitter = profile._json;
   user.twitterHandle = twitterHandle;
   user.twitterImage = twitterImage;
@@ -179,7 +186,6 @@ export async function addNewTwitterUser({ handle }) {
   const user = new User({
     role: 'temp',
     handle,
-    confirmed: true,
     provider: 'twitter'
   });
   return user.save();

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tag from 'modules/tag/tag.component';
 import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
-import { View, Title, SecondaryText, InlineText } from 'modules/styled/uni';
+import { View, Title, SecondaryText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 
 export default function PostTitle(props) {
@@ -33,6 +33,7 @@ export default function PostTitle(props) {
       external={singlePost}
       target={singlePost ? '_blank' : null}
       noLink={noLink}
+      // onPress={() => actions.goToUrl(post.url)}
       onPress={() => (singlePost ? actions.goToUrl(post.url) : actions.goToPost(post))}
     >
       <Title
@@ -53,25 +54,22 @@ export default function PostTitle(props) {
 
   const commentEl =
     post.commentCount && postUrl ? (
-      <InlineText>
-        <ULink
-          type="text"
-          to={postUrl}
-          hu
-          noLink={noLink}
-          onPress={() => actions.goToPost(post)}
-        >
-          <SecondaryText inline={1} c={c || colors.blue}>
-            {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
-          </SecondaryText>
-        </ULink>
-        <InlineText>&nbsp;&nbsp;&nbsp; </InlineText>
-      </InlineText>
+      <ULink
+        type="text"
+        to={postUrl}
+        hu
+        noLink={noLink}
+        onPress={() => actions.goToPost(post)}
+        inline={1}
+      >
+        <SecondaryText mr={1} c={c || colors.blue}>
+          {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
+        </SecondaryText>
+      </ULink>
     ) : null;
 
-  const tagEl = tags.length ? (
-    <InlineText c={c || colors.blue}>
-      {tags.map(tag => (
+  const tagEl = tags.length
+    ? tags.map(tag => (
         <Tag
           actions={actions}
           name={tag}
@@ -80,23 +78,19 @@ export default function PostTitle(props) {
           noLink={noLink}
           c={c || colors.blue}
         />
-      ))}
-    </InlineText>
-  ) : null;
+      ))
+    : null;
 
   const hasAuthor = link && link.articleAuthor && link.articleAuthor.length;
   const authorEl = hasAuthor ? (
-    <InlineText numberOfLines={1}>
-      {link.articleAuthor.join(', ')}
-      {' • '}
-    </InlineText>
+    <SecondaryText c={c} numberOfLines={1} mr={0.5}>
+      {link.articleAuthor.join(', ')} •
+    </SecondaryText>
   ) : null;
 
   const domainEl = get(link, 'domain') && (
-    <InlineText numberOfLines={1}>
-      <SecondaryText c={c} inline={1}>
-        {authorEl}
-      </SecondaryText>
+    <View fdirection={'row'} numberOfLines={1} align={'flex-end'}>
+      {authorEl}
       <ULink
         type="text"
         external
@@ -112,45 +106,32 @@ export default function PostTitle(props) {
           {link.domain && `${link.domain}\u00A0\u2197\uFE0E`}
         </SecondaryText>
       </ULink>
-    </InlineText>
+    </View>
   );
-
-  // const userSet = new Set();
-  // (get(post, 'commentary', []) || []).forEach(user => userSet.add(user.id));
-
-  // const timestamp = getTimestamp(post.postDate);
-  // const uniqueUsers = userSet.size - 1;
-  // let postUser;
-  // if (get(post, 'embeddedUser.handle')) {
-  //   postUser = post.embeddedUser;
-  // } else if (get(firstPost, 'embeddedUser.handle')) {
-  //   postUser = firstPost.embeddedUser;
-  // }
-
-  // const userEl = get(postUser, 'handle') &&
-  //   <TextView>
-  //     <Text>Posted by: </Text>
-  //     <ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>
-  //       {`@${get(postUser, 'handle')}`}
-  //     </ULink>
-  //   </TextView>;
 
   return (
     <View fdirection={'column'} flex={1} justify={mobile ? 'center' : 'flex-start'}>
       <View>
         {titleEl}
-        {/* {postUrl && timestamp }{' • '} */}
-        <SecondaryText mt={mobile ? 1 : 0} c={c}>
+        <View mt={mobile ? 1 : 0} c={c}>
           {domainEl}
-        </SecondaryText>
+        </View>
       </View>
       {commentEl || tagEl ? (
-        <SecondaryText c={c} mt={mobile ? 0 : 0.5} numberOfLines={mobile ? 1 : null}>
-          <InlineText>
+        <View>
+          <View
+            fdirection={'row'}
+            align={'flex-end'}
+            h={2}
+            style={{ overflow: 'hidden' }}
+            c={c}
+            mt={mobile ? 1 : 0.5}
+            numberOfLines={mobile ? 1 : null}
+          >
             {commentEl}
             {tagEl}
-          </InlineText>
-        </SecondaryText>
+          </View>
+        </View>
       ) : null}
       {children}
     </View>

@@ -28,18 +28,17 @@ export default function DownvoteAnimation() {
     });
   }
 
-  function runAnimation() {
-    if (!parent) return;
-    const key = numbers.guid();
-    const newEl = {
-      [key]: <Thumb destroy={destroy} parent={parent} key={key} id={key} />
-    };
-    setAnimEls(els => ({ ...els, ...newEl }));
-  }
-
   useEffect(() => {
+    function runAnimation() {
+      if (!parent) return;
+      const key = numbers.guid();
+      const newEl = {
+        [key]: <Thumb destroy={destroy} parent={parent} key={key} id={key} />
+      };
+      setAnimEls(els => ({ ...els, ...newEl }));
+    }
     runAnimation();
-  }, [index, runAnimation]);
+  }, [index, parent]);
 
   return <Container pointerEvents={'none'}>{Object.values(animEls)}</Container>;
 }

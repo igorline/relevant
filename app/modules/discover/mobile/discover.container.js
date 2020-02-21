@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useMemo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Post from 'modules/post/mobile/post.component';
-import { get } from 'lodash';
-import * as userActions from 'modules/user/user.actions';
+import get from 'lodash/get';
 import * as statsActions from 'modules/stats/stats.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import * as postActions from 'modules/post/post.actions';
@@ -17,7 +16,6 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import { globalStyles, mainPadding } from 'app/styles/global';
 import CustomListView from 'modules/listview/mobile/customList.component';
 import TwitterButton from 'modules/auth/mobile/TwitterButton.component';
-import DiscoverUser from 'modules/discover/mobile/discoverUser.component';
 
 let styles;
 const POST_PAGE_SIZE = 15;
@@ -61,7 +59,7 @@ class Discover extends Component {
     this.state.view = this.myTabs.find(tab => tab.type === this.type).id;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.navigation.state.params) {
       this.topic = this.props.navigation.state.params.topic;
       this.topic = this.topic && this.topic._id ? this.topic._id : this.topic;
@@ -76,11 +74,7 @@ class Discover extends Component {
       this.needsReload = new Date().getTime();
     }
     if (this.props.refresh !== next.refresh && this.props.active) {
-      if (this.scrollOffset === -50) {
-        // this.setState({ view: 0 });
-      } else {
-        this.scrollToTop();
-      }
+      if (this.scrollOffset !== -50) this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
       this.needsReload = new Date().getTime();
@@ -89,16 +83,9 @@ class Discover extends Component {
     if (this.props.auth.community !== next.auth.community) {
       this.needsReload = new Date().getTime();
     }
-    // if (this.props.community !== next.props.community) {
-    //   this.needsReload = new Date()
-    //   .getTime();
-    // }
   }
 
-  shouldComponentUpdate(next) {
-    if (!next.active) return false;
-    return true;
-  }
+  shouldComponentUpdate = next => next.active && next.navigation.isFocused();
 
   getViewData(props, view) {
     switch (view) {
@@ -128,23 +115,6 @@ class Discover extends Component {
           data: props.posts.new,
           loaded: props.posts.loaded.new
         };
-      case 2:
-        return {
-          data: props.userList[this.topic || 'all'],
-          loaded: null
-        };
-      case 3:
-        // if (this.topic) {
-        //   return {
-        //     data: props.posts.topics.top[this.topic._id],
-        //     loaded: props.posts.loaded.topics[this.topic._id] ?
-        //       props.posts.loaded.topics[this.topic._id].top : false,
-        //   };
-        // }
-        return {
-          data: props.posts.twitterFeed,
-          loaded: props.posts.loaded.twitterFeed
-        };
       default:
         return null;
     }
@@ -167,14 +137,6 @@ class Discover extends Component {
         break;
       case 1:
         this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
-        break;
-      case 2:
-        if (this.props.auth.user) {
-          this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
-        }
-        break;
-      case 3:
-        this.props.actions.getTwitterFeed(length, tags);
         break;
       default:
     }
@@ -199,39 +161,7 @@ class Discover extends Component {
   renderRow(rowData, view, i) {
     const { posts } = this.props;
     const { type } = this.myTabs[view];
-    if (view !== 2) {
-      const post = posts.posts[rowData];
-      if (!post) return null;
-      const link = posts.links[post.metaPost];
-      const commentary = post[type].map(c => posts.posts[c]);
-
-      let showReposts = false;
-      if (type === 'new') showReposts = true;
-
-      return (
-        <Post
-          tooltip={parseInt(i, 10) === 0 || false}
-          post={post}
-          commentary={commentary}
-          link={link}
-          showReposts={showReposts}
-          actions={this.props.actions}
-          styles={styles}
-          posts={posts}
-          navigation={this.props.navigation}
-        />
-      );
-    }
-    const { topic } = this.topic;
-    return (
-      <DiscoverUser
-        bio
-        relevance={this.topic || false}
-        topic={topic}
-        user={rowData}
-        {...this.props}
-      />
-    );
+    return <PostEl type={type} rowData={rowData} posts={posts} index={i} />;
   }
 
   render() {
@@ -242,7 +172,7 @@ class Discover extends Component {
       dataEl = (
         <CustomListView
           ref={c => (this.listview = c)}
-          key={this.state.view}
+          key={this.state.view + this.topic}
           data={tabData.data || []}
           loaded={tabData.loaded}
           renderRow={this.renderRow}
@@ -263,6 +193,36 @@ class Discover extends Component {
 
     return <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>{dataEl}</View>;
   }
+}
+
+PostEl.propTypes = {
+  posts: PropTypes.object,
+  rowData: PropTypes.string,
+  type: PropTypes.string,
+  index: PropTypes.number
+};
+
+function PostEl({ posts, rowData, type, index }) {
+  const post = posts.posts[rowData];
+
+  const commentary = useMemo(() => {
+    if (!post) return null;
+    return post[type].map(c => posts.posts[c]);
+  }, [posts.posts, post, type]);
+
+  if (!post) return null;
+  const link = posts.links[post.metaPost];
+
+  return (
+    <Post
+      tooltip={parseInt(index, 10) === 0 || false}
+      post={post}
+      commentary={commentary}
+      link={link}
+      styles={styles}
+      posts={posts}
+    />
+  );
 }
 
 const localStyles = StyleSheet.create({
@@ -289,7 +249,6 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     animation: state.animation,
-    view: state.view,
     stats: state.stats,
     userList: state.user.list,
     tags: state.tags,
@@ -308,7 +267,6 @@ function mapDispatchToProps(dispatch) {
         ...animationActions,
         ...tagActions,
         ...investActions,
-        ...userActions,
         ...statsActions,
         ...authActions,
         ...navigationActions,

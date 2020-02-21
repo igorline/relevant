@@ -23,8 +23,10 @@ import ReactGA from 'react-ga';
 import { TwitterCT } from 'app/utils/social';
 import { TextTooltip } from 'modules/tooltip/web/tooltip.component';
 import { ToastContainer } from 'react-toastify';
-import { PriceProvider } from 'modules/wallet/price.context';
+import { ContractProvider } from 'modules/contract/contract.provider';
 import styled from 'styled-components';
+
+const PriceProvider = loadable(() => import('modules/wallet/price.context'));
 
 const UpvoteAnimation = loadable(() =>
   import('modules/animation/upvoteAnimation.component')
@@ -40,7 +42,6 @@ const AnimationContainer = styled.div`
   zIndex: '10000'
 `;
 
-let ReactPixel;
 // const DEV_MODE = process.env.NODE_ENV === 'development';
 
 if (process.env.BROWSER === true) {
@@ -124,23 +125,15 @@ class App extends Component {
   }
 
   initAnalytics = ({ location, history }) => {
-    ReactPixel = require('react-facebook-pixel').default;
-
-    ReactPixel.init('286620198458049');
     TwitterCT.init('o1p7u');
     ReactGA.initialize('UA-51795165-6');
 
-    ReactPixel.pageView();
     TwitterCT.pageView();
     ReactGA.pageview(location.pathname + location.search);
 
     history.listen(loc => {
       TwitterCT.pageView();
       ReactGA.pageview(loc.pathname + loc.search);
-      ReactPixel.pageView();
-
-      // eslint-disable-next-line
-      // Intercom('update');
     });
   };
 
@@ -187,14 +180,6 @@ class App extends Component {
     }
 
     if (screenSize) return null;
-    // eslint-disable-next-line
-    // Intercom('boot', {
-    //   alignment: screenSize ? 'left' : 'right',
-    //   app_id: DEV_MODE ? 'qgy5jx90' : 'uxuj5f7o',
-    //   name: `${auth.user.name} @${auth.user.handle}`, // Full name
-    //   email: auth.user.email, // Email address
-    //   created_at: new Date(auth.user.createdAt).getTime() // Signup date as a Unix timestamp
-    // });
     return null;
   };
 
@@ -229,7 +214,6 @@ class App extends Component {
   render() {
     const { globalModal, navigation } = this.props;
     const { screenSize } = navigation;
-
     return (
       <div>
         <GlobalStyle />
@@ -254,15 +238,17 @@ class App extends Component {
           <DownvoteAnimation />
         </AnimationContainer>
 
-        <PriceProvider>
-          <Fragment>
-            <ModalContainer />
-            <ToastContainer />
-            <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
-              {renderRoutes(this.props.route.routes)}
-            </div>
-          </Fragment>
-        </PriceProvider>
+        <ContractProvider>
+          <PriceProvider>
+            <Fragment>
+              <ModalContainer />
+              <ToastContainer />
+              <div style={globalModal && !screenSize ? { filter: 'blur(2px)' } : {}}>
+                {renderRoutes(this.props.route.routes)}
+              </div>
+            </Fragment>
+          </PriceProvider>
+        </ContractProvider>
       </div>
     );
   }

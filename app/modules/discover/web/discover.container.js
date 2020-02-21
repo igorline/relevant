@@ -11,7 +11,6 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import { sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import DiscoverPosts from './discoverPosts.component';
-import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
 
 const Wrapper = styled.View`
@@ -39,8 +38,6 @@ export class Discover extends Component {
     const tags = tag ? [tag] : [];
 
     switch (sort) {
-      case 'feed':
-        return dispatch(postActions.getFeed(length, tags));
       case 'new':
         return dispatch(
           postActions.getPosts(length, tags, null, POST_PAGE_SIZE, community)
@@ -66,7 +63,6 @@ export class Discover extends Component {
       this.state.tabIndex = this.state.routes.findIndex(tab => tab.key === sort);
     }
     this.load = this.load.bind(this);
-    this.renderFeed = this.renderFeed.bind(this);
     this.lastRefresh = 0;
   }
 
@@ -75,17 +71,17 @@ export class Discover extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.setWebView('discover', this.props.match.params);
+    this.props.actions.setScrollTab('discover', this.props.match.params);
   }
 
   componentDidUpdate(prevProps) {
     let alreadyLoading;
     const { tag, sort, community } = this.props.match.params;
-    const prevTag = get(prevProps, 'match.params.tag', null);
-    const prevSort = get(prevProps, 'match.params.sort', null);
-    const prevCommunity = get(prevProps, 'match.params.community', null);
+    const prevTag = get(prevProps, 'match.params.tag', undefined);
+    const prevSort = get(prevProps, 'match.params.sort', undefined);
+    const prevCommunity = get(prevProps, 'match.params.community', undefined);
     if (tag !== prevTag || sort !== prevSort || community !== prevCommunity) {
-      this.props.actions.setWebView('discover', this.props.match.params);
+      this.props.actions.setScrollTab('discover', this.props.match.params);
     }
 
     if (this.props.refresh && this.props.refresh > this.lastRefresh) {
@@ -117,7 +113,7 @@ export class Discover extends Component {
   }
 
   componentWillUnmount() {
-    this.props.actions.setWebView('discover', {});
+    this.props.actions.setScrollTab('discover', {});
   }
 
   getLoadedState() {
@@ -126,57 +122,36 @@ export class Discover extends Component {
     const loadLookup = tag
       ? this.props.posts.loaded.topics[tag]
       : this.props.posts.loaded;
-    switch (sort) {
-      case 'people':
-        return !this.props.user.loading;
-      default:
-        return loadLookup && loadLookup[sort];
-    }
+    return loadLookup && loadLookup[sort];
   }
 
   load(sort, props, _length) {
     const { actions, auth } = this.props;
     if (!this.state.routes[this.state.tabIndex]) return;
-    const { community } = this.props.auth;
+    const { community } = auth;
     sort = sort || this.state.routes[this.state.tabIndex].key;
     props = props || this.props;
     const tags = props.match.params.tag ? [props.match.params.tag] : [];
     const length = _length || 0;
     switch (sort) {
-      case 'feed':
-        actions.getFeed(length, tags);
-        break;
       case 'new':
         actions.getPosts(length, tags, null, POST_PAGE_SIZE, community);
         break;
       case 'top':
         actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE, community);
         break;
-      case 'people':
-        if (auth.user) {
-          actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
-        }
-        break;
       default:
         break;
     }
   }
 
-  renderFeed() {
+  render() {
+    if (!this.state.routes[this.state.tabIndex]) return null;
     const sort = this.state.routes[this.state.tabIndex].key;
     const { tag } = this.props.match.params;
-    switch (sort) {
-      case 'people':
-        return (
-          <DiscoverUsers
-            key={'users' + tag}
-            tag={tag}
-            pageSize={POST_PAGE_SIZE}
-            {...this.props}
-          />
-        );
-      default:
-        return (
+    return (
+      <Wrapper>
+        <div>
           <DiscoverPosts
             key={'posts' + sort + tag}
             sort={sort}
@@ -185,18 +160,6 @@ export class Discover extends Component {
             pageSize={POST_PAGE_SIZE}
             {...this.props}
           />
-        );
-    }
-  }
-
-  render() {
-    if (!this.state.routes[this.state.tabIndex]) return null;
-
-    return (
-      <Wrapper>
-        <div>
-          {/* <CreatePost {...this.props} /> */}
-          {this.renderFeed()}
         </div>
       </Wrapper>
     );
@@ -211,7 +174,7 @@ function mapStateToProps(state) {
     tags: state.tags,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
-    refresh: state.view.refresh.discover,
+    refresh: state.navigation.discover.refresh,
     reload: state.navigation.reload
   };
 }

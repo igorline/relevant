@@ -42,8 +42,8 @@ export const SETTING_DETAILS = {
   },
   bet: {
     manual: {
-      label: 'Manual Betting',
-      description: 'Allows you to choose a custom amount for each bet.'
+      label: 'Betting Mode',
+      description: 'Betting mode allows you to choose a custom amount for each bet.'
     }
   }
 };

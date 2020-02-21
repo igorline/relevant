@@ -7,21 +7,21 @@ import { colors } from 'styles';
 import { SIDE_NAV_PADDING } from 'styles/layout';
 
 const SideNavFooter = ({ actions }) => (
-  <View m={[SIDE_NAV_PADDING, 2]} mb={4}>
+  <View m={[SIDE_NAV_PADDING, 2]} mb={8}>
     <SocialIcons actions={actions} />
-    <BodyText inline={1} mt={3}>
-      <ULink to="/info/faq">
-        <InlineText c={colors.blue}>FAQ</InlineText>
+    <View fdirection={'row'} mt={3}>
+      <ULink inline={1} to="/info/faq">
+        <BodyText c={colors.blue}>FAQ</BodyText>
       </ULink>
       <InlineText> | </InlineText>
-      <ULink to="/eula.html" external target="_blank">
-        <InlineText c={colors.blue}>Content Policy</InlineText>
+      <ULink inline={1} to="/eula.html" external target="_blank">
+        <BodyText c={colors.blue}>Content Policy</BodyText>
       </ULink>
       <InlineText> | </InlineText>
-      <ULink external to="/privacy.html" target="_blank">
-        <InlineText c={colors.blue}>Privacy Policy</InlineText>
+      <ULink inline={1} external to="/privacy.html" target="_blank">
+        <BodyText c={colors.blue}>Privacy Policy</BodyText>
       </ULink>
-    </BodyText>
+    </View>
     <BodyText mt={2}>© 2019 Relevant Protocols Inc.</BodyText>
   </View>
 );

@@ -67,6 +67,7 @@ export function createComment(commentObj) {
       );
       return comment;
     } catch (err) {
+      Alert.alert(err.message);
       return false;
     }
   };

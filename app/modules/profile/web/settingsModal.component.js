@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
+import { FormImage } from 'modules/styled/uni';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { View, Button } from 'modules/styled/web';
-import { FormImage } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { Field, reduxForm } from 'redux-form';
 import styled from 'styled-components';
 import { required } from 'modules/form/validators';
 import ULink from 'modules/navigation/ULink.component';
-import ToggleContainer from 'modules/profile/settings/toggle.container';
-import AvatarFieldPlaceholder from 'modules/form/avatarFieldPlaceholder.component';
 import { withRouter } from 'react-router-dom';
 
 const Form = styled.form`
@@ -22,17 +20,16 @@ SettingsModal.propTypes = {
   close: PropTypes.func,
   handleSubmit: PropTypes.func,
   initialValues: PropTypes.object,
-  actions: PropTypes.object,
   history: PropTypes.object,
   location: PropTypes.object
 };
 
-function SettingsModal({ handleSubmit, initialValues, location }) {
+function SettingsModal({ handleSubmit, location }) {
   const FORM_FIELDS = [
     {
       name: 'image',
       component: ReduxFormImageUpload,
-      placeholder: <AvatarFieldPlaceholder user={initialValues} />,
+      placeholder: '/img/blueR.png',
       imageComponent: <FormImage />,
       type: 'file-upload',
       label: 'User Image',
@@ -70,7 +67,6 @@ function SettingsModal({ handleSubmit, initialValues, location }) {
           </Button>
         </View>
       </Form>
-      <ToggleContainer />
     </View>
   );
 }

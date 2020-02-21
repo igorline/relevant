@@ -1,77 +1,72 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as navigationActions from 'modules/navigation/navigation.actions';
-import * as userActions from 'modules/user/user.actions';
+import { reloadTab, refreshTab } from 'modules/navigation/navigation.actions';
+import PushNotification from 'react-native-push-notification';
 import TabBar from './tabBar.component';
 
-class TabBarContainer extends Component {
+class TabBarContainer extends PureComponent {
   static propTypes = {
     navigation: PropTypes.object,
     actions: PropTypes.object,
     notif: PropTypes.object,
-    reducerNav: PropTypes.object
+    reducerNav: PropTypes.object,
+    isAuthenticated: PropTypes.bool
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.changeTab = this.changeTab.bind(this);
-    this.tabs = {};
-  }
+  changeTab = key => {
+    const { actions, navigation, reducerNav, notif, isAuthenticated } = this.props;
+    const tab = navigation.state.routes[this.props.navigation.state.index];
 
-  changeTab(key) {
-    const tab = this.props.navigation.state.routes[this.props.navigation.state.index];
-    this.props.actions.toggleTopics(false);
+    if (key !== 'discover' && !isAuthenticated) {
+      return navigation.navigate('auth');
+    }
 
     // Triggers route in the main router
     if (key === 'createPostTab') {
-      return this.props.navigation.navigate({
+      return navigation.navigate({
         routeName: 'createPost',
         params: { left: 'Cancel', title: 'New Post', next: 'Next' }
       });
     }
 
-    if (this.props.reducerNav.reload > this.props.reducerNav[key].reload) {
-      this.props.actions.reloadTab(key);
-    }
+    // Global reload of tabs
+    if (reducerNav.reload > reducerNav[key].reload) actions.reloadTab(key);
+    if (key === 'activity' && notif.count) actions.reloadTab(key);
 
     if (tab.key === key) {
-      if (tab.routes.length === 1) {
-        return this.props.actions.refreshTab(key);
-      }
+      if (tab.routes.length === 1) return actions.refreshTab(key);
 
       if (key === 'discover') {
-        const { index } = tab;
-        const route = tab.routes[index];
-        if (route.params.key === 'discoverTag') {
-          this.props.actions.refreshTab(key);
-        } else {
-          this.props.navigation.popToTop();
-        }
-      } else {
-        this.props.navigation.popToTop();
+        const route = tab.routes[tab.index];
+        if (route.params.key === 'discoverTag') return actions.refreshTab(key);
       }
+      navigation.popToTop();
     }
 
-    if (key === 'activity' && this.props.notif.count) {
-      this.props.actions.reloadTab(key);
-    }
-
-    return this.props.navigation.navigate(key);
-  }
+    return navigation.navigate(key);
+  };
 
   render() {
-    return <TabBar {...this.props} changeTab={this.changeTab} />;
+    const { navigation, notif } = this.props;
+    const currentTab = navigation.state
+      ? navigation.state.routes[navigation.state.index]
+      : null;
+    const tabs = navigation.state.routes;
+
+    // TODO - add new posts to this?
+    PushNotification.setApplicationIconBadgeNumber(notif.count);
+
+    return <TabBar tabs={tabs} currentTab={currentTab} changeTab={this.changeTab} />;
   }
 }
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
+    isAuthenticated: state.auth.isAuthenticated,
     notif: state.notif,
-    reducerNav: state.navigation,
-    feedUnread: state.posts.feedUnread
+    reducerNav: state.navigation
   };
 }
 
@@ -79,8 +74,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...navigationActions,
-        ...userActions
+        reloadTab,
+        refreshTab
       },
       dispatch
     )

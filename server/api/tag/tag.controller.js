@@ -1,5 +1,4 @@
 import Post from '../post/post.model';
-import Relevance from '../relevance/relevance.model';
 import Tag from './tag.model';
 
 exports.update = async (req, res, next) => {
@@ -44,20 +43,6 @@ exports.update = async (req, res, next) => {
       { $addToSet: { 'parents.$': newId }, $pull: { 'parents.$': oldId } },
       { multi: true }
     ).exec();
-
-    await Relevance.update(
-      { category: oldId },
-      { $set: { category: newId } },
-      { multi: true }
-    ).exec();
-
-    await Relevance.update(
-      { tag: oldId },
-      { $set: { tag: newId } },
-      { multi: true }
-    ).exec();
-
-    await Relevance.mergeDuplicates();
   } catch (err) {
     return next(err);
   }
@@ -79,11 +64,11 @@ exports.index = (req, res, next) => {
   if (sort === 'count') sortObj = { count: -1 };
 
   Tag.find()
-  .sort(sortObj)
-  .exec((err, tags) => {
-    if (err) return next(err);
-    return res.json(200, tags);
-  });
+    .sort(sortObj)
+    .exec((err, tags) => {
+      if (err) return next(err);
+      return res.json(200, tags);
+    });
 };
 
 exports.categories = (req, res, next) => {
@@ -92,9 +77,9 @@ exports.categories = (req, res, next) => {
   if (active !== undefined) query = { category: true, active: true };
 
   Tag.find(query)
-  .sort({ count: -1 })
-  .then(categories => res.status(200).json(categories))
-  .catch(next);
+    .sort({ count: -1 })
+    .then(categories => res.status(200).json(categories))
+    .catch(next);
 };
 
 exports.search = (req, res, next) => {
@@ -105,6 +90,6 @@ exports.search = (req, res, next) => {
       $options: 'i'
     }
   })
-  .then(foundTags => res.json(200, foundTags))
-  .catch(next);
+    .then(foundTags => res.json(200, foundTags))
+    .catch(next);
 };

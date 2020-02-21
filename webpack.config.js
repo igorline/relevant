@@ -21,42 +21,7 @@ module.exports = {
   mode: 'development',
   optimization: {
     splitChunks: {
-      chunks: 'all',
-      // maxInitialRequests: Infinity,
-      // minSize: 0,
-      cacheGroups: {
-        default: false,
-        vendors: false,
-        // vendor chunk
-        vendor: {
-          // sync + async chunks
-          chunks: 'all',
-          // import file path containing node_modules
-          test: /node_modules/,
-          name(module) {
-            // get the name. E.g. node_modules/packageName/not/this/part.js
-            // or node_modules/packageName
-            const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-            )[1];
-
-            // npm package names are URL-safe, but some servers don't like @ symbols
-            return `npm.${packageName.replace('@', '')}`;
-          },
-          reuseExistingChunk: true,
-          // priority
-          priority: 20
-        },
-        // common chunk
-        common: {
-          chunks: 'all',
-          name: 'common',
-          minChunks: 2,
-          priority: 10,
-          reuseExistingChunk: true,
-          enforce: true
-        }
-      }
+      chunks: 'all'
     }
   },
   plugins: [
@@ -68,14 +33,14 @@ module.exports = {
         DEVTOOLS: JSON.stringify(true), // <-------- DISABLE redux-devtools HERE
         NODE_ENV: JSON.stringify('development'),
         WEB: JSON.stringify('true'),
-        API_SERVER: JSON.stringify(''),
         BABEL_ENV: JSON.stringify('development_web'),
         VAPID_PUBLIC_KEY: JSON.stringify(process.env.VAPID_PUBLIC_KEY),
         INFURA_PROTOCOL: JSON.stringify(process.env.INFURA_PROTOCOL),
         INFURA_NETWORK: JSON.stringify(process.env.INFURA_NETWORK),
         INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
         NETWORK_NUMBER: JSON.stringify(process.env.NETWORK_NUMBER),
-        TOKEN_ADDRESS: JSON.stringify(process.env.TOKEN_ADDRESS)
+        TOKEN_ADDRESS: JSON.stringify(process.env.TOKEN_ADDRESS),
+        API_SERVER: JSON.stringify(process.env.API_SERVER)
       }
     }),
     new CompressionPlugin(),
@@ -86,20 +51,21 @@ module.exports = {
   ],
   resolve: {
     symlinks: false,
+    // mainFields: ['main', 'module'],
     alias: {
       react: path.resolve('./node_modules/react'),
       'react-native$': 'react-native-web',
       'react-native-linear-gradient$': 'react-native-web-linear-gradient',
-      lodash: path.resolve(__dirname, 'node_modules/lodash'),
+      // lodash: path.resolve(__dirname, 'node_modules/lodash'),
       'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
       'react-dom': '@hot-loader/react-dom'
     }
   },
-
   module: {
     exprContextRegExp: /$^/,
     exprContextCritical: false,
     rules: [
+      { test: /\.tsx?$/, loader: 'ts-loader' },
       {
         test: /\.(png|woff|woff2|eot|ttf|jpg|jpeg|gif)$/,
         loader: 'url-loader?limit=100000', // or directly file-loader
@@ -109,7 +75,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(js|svg)$/,
+        test: /\.(js|svg|'json')$/,
         include: [
           path.resolve(__dirname, 'index.web.js'),
           path.resolve(__dirname, 'app')

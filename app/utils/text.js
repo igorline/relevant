@@ -61,3 +61,11 @@ export function copyToClipBoard(url) {
   document.body.removeChild(el);
   Alert().alert('Link copied to clip board ^_^', 'success');
 }
+
+export function childIsString(children) {
+  const isString = typeof children === 'string';
+  const isArray = typeof children === 'object' && children.length;
+  const isTextArray = isArray && children.find(el => typeof el !== 'string');
+  const renderString = !children || !children.$$typeof || isTextArray || isString;
+  return renderString;
+}

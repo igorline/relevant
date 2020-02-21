@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 import { LinkFont, Image, ViewButton } from 'modules/styled/uni';
 import { Form, View, Button } from 'modules/styled/web';
 import { bindActionCreators } from 'redux';
@@ -12,11 +11,12 @@ import { loginUser } from 'modules/auth/auth.actions';
 import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { required } from 'modules/form/validators';
+import BoxLogin from 'modules/auth/web/login.3box';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
-const redditIcon = require('app/public/img/icons/reddit.png');
+// const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
@@ -129,24 +129,7 @@ class LoginForm extends Component {
                   <LinkFont c={colors.white}>Sign In with Twitter</LinkFont>
                 </ViewButton>
               </ULink>
-              <ULink
-                flex={1}
-                to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
-                external
-                mr={[2, 0]}
-                mt={[0, 2]}
-              >
-                <ViewButton flex={1} bg={colors.redditColor} fdirection="row">
-                  <Image
-                    resizeMode={'contain'}
-                    source={redditIcon}
-                    w={3}
-                    h={3}
-                    mr={1.5}
-                  />
-                  <LinkFont c={colors.white}>Sign In with Reddit </LinkFont>
-                </ViewButton>
-              </ULink>
+              <BoxLogin close={this.props.close} />
               {socialSignup}
             </View>
           ) : null}
@@ -156,13 +139,12 @@ class LoginForm extends Component {
   }
 }
 
+const selector = formValueSelector('login');
+
 const mapStateToProps = state => ({
   user: state.auth.user,
   auth: state.auth,
-  // TODO:
-  // See if there's a better way to do this, perhaps using formValueSelector?
-  password: get(state.form, 'login.values.password'),
-  username: get(state.form, 'login.values.username'),
+  ...selector(state, 'username', 'password'),
   initialValues: {},
   enableReinitialize: true
 });

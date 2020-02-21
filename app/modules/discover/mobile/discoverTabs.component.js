@@ -1,16 +1,28 @@
+/* eslint-disable */
 import React, { Component } from 'react';
-import { StyleSheet, View, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View, Platform, StatusBar, Dimensions } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import Animated from 'react-native-reanimated';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { globalStyles, fullWidth, fullHeight, blue } from 'app/styles/global';
 import { getParentTags } from 'modules/tag/tag.actions';
-import { goToTopic } from 'modules/navigation/navigation.actions';
+import {
+  goToTopic,
+  lockDrawer,
+  setScrollTab,
+  goToPage
+} from 'modules/navigation/navigation.actions';
 import Topics from 'modules/createPost/mobile/topics.component';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import get from 'lodash/get';
-import DefaultTabBar from './discoverTabBar.component';
+import { TabView, SceneMap } from 'react-native-tab-view';
+import { DrawerGestureContext } from 'react-navigation-drawer';
+import { TabViewContext } from './discoverTabContext';
+import TabBar from './TabBar';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
 
@@ -19,47 +31,48 @@ let styles;
 class DiscoverTabs extends Component {
   static propTypes = {
     navigation: PropTypes.object,
-    view: PropTypes.object,
+    tabId: PropTypes.number,
     actions: PropTypes.object,
     topics: PropTypes.bool,
     tags: PropTypes.object
   };
 
+  static navigationOptions = ({ navigation }) => {
+    const { routeName } = navigation.state;
+    const tab = get(navigation, 'state.params.tab', null);
+    const disabled = routeName === 'discoverTag' && tab > 0;
+    const isLocked = tab > 0;
+    return {
+      gesturesEnabled: !disabled,
+      drawerLockMode: isLocked ? 'locked-closed' : 'unlocked'
+    };
+  };
+
+  tabView = React.createRef();
+  header = React.createRef();
+  position = new Animated.Value(0);
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       index: 0,
-      routes: [
-        // { key: 'feed', title: SUB_TITLE },
-        { key: 'new', title: 'New' },
-        { key: 'top', title: 'Top' }
-      ],
+      routes: [{ key: 'new', title: 'New' }, { key: 'top', title: 'Top' }],
       headerHeight: 50
     };
     this.renderHeader = this.renderHeader.bind(this);
-    this.handleChangeTab = this.handleChangeTab.bind(this);
-    this.setPostTop = this.setPostTop.bind(this);
-    this.onScroll = this.onScroll.bind(this);
     this.renderScene = this.renderScene.bind(this);
-    this.renderBadge = this.renderBadge.bind(this);
-    this.scrollOffset = {};
-    this.initialTab = 0;
 
     const { params } = this.props.navigation.state;
     if (params && params.topic) {
-      this.mainDiscover = false;
-      this.topicView = true;
       this.topicId = params.id;
-      this.state.routes = [
-        { key: 'new', title: 'New' },
-        { key: 'top', title: 'Top' }
-        // { key: 'people', title: 'People' }
-      ];
+      this.state.routes = [{ key: 'new', title: 'New' }, { key: 'top', title: 'Top' }];
     }
     this.loaded = false;
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    const { navigation } = this.props;
+    const { index } = this.state;
     if (this.topicId) {
       this.needsReload = new Date().getTime();
       requestAnimationFrame(() => {
@@ -69,66 +82,57 @@ class DiscoverTabs extends Component {
     } else {
       this.loaded = true;
     }
+    navigation.setParams({ tab: index });
   }
 
-  componentWillReceiveProps(next) {
-    const newSortUrlParam = get(next.navigation, 'state.params.sort');
-    const oldSortUrlParam = get(this.props.navigation, 'state.params.sort');
+  componentDidUpdate(prev, prevState) {
+    const { navigation, tabId, actions } = this.props;
+    const newSortUrlParam = get(navigation, 'state.params.sort');
+    const oldSortUrlParam = get(prev.navigation, 'state.params.sort');
 
-    let tabId = next.view.discover.tab;
     if (newSortUrlParam && newSortUrlParam !== oldSortUrlParam) {
-      tabId = this.state.routes.findIndex(r => r.key === newSortUrlParam);
+      console.log('change sort', navigation.state.params);
+      // tabId = this.state.routes.findIndex(r => r.key === newSortUrlParam);
     }
-    if (
-      tabId > -1 &&
-      tabId !== this.props.view.discover.tab &&
-      tabId !== this.state.index
-    ) {
-      this.tabView.goToPage(tabId);
+    if (tabId > -1 && tabId !== prev.tabId && tabId !== this.state.index) {
+      this.setState({ index: tabId });
     }
-  }
 
-  onScroll(event) {
-    this.header.onScroll(event);
-  }
-
-  setPostTop(height) {
-    this.setState({ headerHeight: height });
-  }
-
-  handleChangeTab(index) {
-    this.header.showHeader();
-    this.setState({ index });
-    this.props.actions.setView('discover', index);
-  }
-
-  renderScene(route) {
     const { index } = this.state;
+    const prevIndex = prevState.index;
+
+    if (index !== prevIndex) {
+      const isActive = index !== 0;
+      this.header.current.showHeader();
+    }
+  }
+
+  onScroll = event => this.header.current.onScroll(event);
+
+  setPostTop = height => this.setState({ headerHeight: height });
+
+  handleChangeTab = index => {
+    const { actions, navigation } = this.props;
+    this.setState({ index });
+    actions.setScrollTab('discover', { tab: index });
+    navigation.setParams({ tab: index });
+  };
+
+  renderScene({ route }) {
+    const { index, headerHeight } = this.state;
+    const { navigation } = this.props;
     const currentRoute = this.state.routes[index] || {};
     if (!this.loaded) return <View key={route.key} />;
     switch (route.key) {
-      case 'feed':
-        return (
-          <Discover
-            active={currentRoute.key === route.key}
-            type={'twitterFeed'}
-            key={'twitterFeed'}
-            navigation={this.props.navigation}
-            onScroll={this.onScroll}
-            offsetY={this.state.headerHeight}
-            tabLabel={route.title}
-          />
-        );
-
       case 'new':
         return (
           <Discover
             active={currentRoute.key === route.key}
             type={'new'}
             key={'new'}
-            navigation={this.props.navigation}
+            navigation={navigation}
             onScroll={this.onScroll}
-            offsetY={this.state.headerHeight}
+            offsetY={headerHeight}
             tabLabel={route.title}
           />
         );
@@ -138,22 +142,10 @@ class DiscoverTabs extends Component {
             active={currentRoute.key === route.key}
             type={'top'}
             key={'top'}
+            navigation={navigation}
             onScroll={this.onScroll}
-            offsetY={this.state.headerHeight}
+            offsetY={headerHeight}
             tabLabel={route.title}
-            navigation={this.props.navigation}
-          />
-        );
-      case 'people':
-        return (
-          <Discover
-            active={currentRoute.key === route.key}
-            type={'people'}
-            key={'people'}
-            onScroll={this.onScroll}
-            offsetY={this.state.headerHeight}
-            tabLabel={route.title}
-            navigation={this.props.navigation}
           />
         );
       default:
@@ -161,118 +153,41 @@ class DiscoverTabs extends Component {
     }
   }
 
-  renderBadge() {
-    // if (title !== SUB_TITLE) return null;
-    // const count = this.props.feedUnread;
-    // if (typeof count === 'number') {
-    //   this.totalBadge += count;
-    // }
-    // if (!count) return null;
-    // return (
-    //   <Text
-    //     style={{
-    //       backgroundColor: 'transparent',
-    //       fontSize: 14,
-    //       fontWeight: 'bold',
-    //       position: 'absolute',
-    //       color: 'red',
-    //       // color: blue,
-    //       top: -1,
-    //       right: -10
-    //     }}
-    //   >
-    //     {'•'}
-    //   </Text>
-    // );
-  }
-
   renderHeader(props) {
-    if (!this.loaded) return <View {...props} />;
     return (
-      <DiscoverHeader ref={c => (this.header = c)} setPostTop={this.setPostTop}>
-        <DefaultTabBar
-          tabStyle={{ paddingBottom: 0 }}
-          style={{
-            height: 50,
-            paddingBottom: 0,
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderColor: 'black'
-          }}
-          textStyle={{}}
-          initialTab={this.initialTab}
-          renderBadge={this.renderBadge}
-          topic={this.topicId || 'default'}
-          {...props}
-        />
+      <DiscoverHeader ref={this.header} setPostTop={this.setPostTop}>
+        <TabBar setTab={index => this.setState({ index })} {...props} />
       </DiscoverHeader>
     );
   }
 
   render() {
-    const tabs = this.state.routes.map(route => this.renderScene(route));
-
-    let topics = null;
-    if (this.props.topics) {
-      topics = (
-        <View
-          style={{
-            position: 'absolute',
-            backgroundColor: 'white',
-            width: fullWidth,
-            height:
-              fullHeight -
-              108 -
-              (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0)
-          }}
-        >
-          <Topics
-            topics={this.props.tags.parentTags}
-            action={topic => {
-              this.props.actions.goToTopic(topic);
-            }}
-            actions={this.props.actions}
-          />
-        </View>
-      );
-    }
-
-    // if (!this.loaded) {
-    //   return <CustomSpinner />;
-    // }
+    const { index } = this.state;
+    const { actions, gesture } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
-        <ScrollableTabView
-          ref={c => (this.tabView = c)}
-          tabBarTextStyle={styles.tabFont}
-          tabBarActiveTextColor={blue}
-          initialPage={this.initialTab}
-          // initialPage={this.initialTab}
-          tabBarUnderlineStyle={{ backgroundColor: blue }}
-          onChangeTab={tab => {
-            this.setState({ index: tab.i });
-            if (this.header) {
-              this.header.showHeader();
-            }
-          }}
-          prerenderingSiblingsNumber={Infinity}
-          contentProps={{
-            bounces: false,
-            forceSetResponder: () => {
-              this.props.actions.scrolling(true);
-              clearTimeout(this.scrollTimeout);
-              this.scrollTimeout = setTimeout(
-                () => this.props.actions.scrolling(false),
-                80
-              );
-            }
-          }}
-          renderTabBar={props => this.renderHeader(props)}
-        >
-          {tabs}
-        </ScrollableTabView>
-        {topics}
-        <CustomSpinner visible={!this.loaded} />
+        <TabViewContext.Provider value={this.tabView}>
+          <DrawerGestureContext.Consumer>
+            {ref => (
+              <View style={{ flex: 1 }}>
+                <TabView
+                  gestureHandlerProps={{
+                    ref: this.tabView,
+                    simultaneousHandlers: [ref, gesture || {}],
+                    waitFor: [gesture || {}]
+                  }}
+                  renderTabBar={props => this.renderHeader(props)}
+                  position={this.position}
+                  navigationState={this.state}
+                  renderScene={this.renderScene}
+                  onIndexChange={this.handleChangeTab}
+                  initialLayout={{ width: Dimensions.get('window').width }}
+                />
+              </View>
+            )}
+          </DrawerGestureContext.Consumer>
+        </TabViewContext.Provider>
       </View>
     );
   }
@@ -289,9 +204,10 @@ styles = { ...globalStyles, ...localStyles };
 function mapStateToProps(state) {
   return {
     tags: state.tags,
-    view: state.view,
+    tabId: state.navigation.discover.tab,
     topics: state.navigation.showTopics,
-    feedUnread: state.posts.feedUnread
+    feedUnread: state.posts.feedUnread,
+    gesture: state.navigation.gesture
   };
 }
 
@@ -300,7 +216,10 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         getParentTags,
-        goToTopic
+        goToTopic,
+        setScrollTab,
+        goToPage,
+        lockDrawer
       },
       dispatch
     )

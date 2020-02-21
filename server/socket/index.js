@@ -8,6 +8,7 @@ const clients = {};
 
 export default function(server) {
   const io = socketIo();
+  io.origins(['*:*']);
   io.attach(server);
 
   registerEvents(io);
@@ -66,8 +67,8 @@ function removeClient(socket, currentUser) {
     delete clients[currentUser];
 
     User.findOneAndUpdate({ _id: currentUser }, { online: false })
-    .exec()
-    .catch(err => console.log(err));
+      .exec()
+      .catch(err => console.log(err));
   }
   console.log('socket disconnected');
 }
@@ -82,8 +83,8 @@ function addClient(socket, currentUser) {
   // update online status and send socket
   if (Object.keys(userSockets).length === 1) {
     User.findOneAndUpdate({ _id: currentUser }, { online: true })
-    .exec()
-    .catch(err => console.log(err));
+      .exec()
+      .catch(err => console.log(err));
   }
 }
 
@@ -91,10 +92,7 @@ function createListener(io) {
   return data => {
     if (data._id) {
       const sockets = clients[data._id];
-      if (!sockets) {
-        console.log("couldn't find any web socket clients");
-        return;
-      }
+      if (!sockets) return;
       Object.keys(sockets).forEach(id => {
         const socket = sockets[id];
         console.log('emit to ', data._id, ' ', data.type);

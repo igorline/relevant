@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
 import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
+import { abbreviateNumber } from 'utils/numbers';
+import { TouchableOpacity } from 'react-native';
+import ULink from 'modules/navigation/ULink.component';
+
+export const Touchable = TouchableOpacity;
 
 export const View = styled.View`
   ${mixins.margin}
@@ -14,6 +19,10 @@ export const View = styled.View`
   ${mixins.height}
   ${mixins.zIndex}
   ${mixins.borderRadius}
+`;
+
+export const AbsoluteView = styled.View`
+  ${mixins.position}
 `;
 
 export const Text = styled.Text`
@@ -55,9 +64,7 @@ export const ImageWrapper = styled.View`
   ${mixins.flex}
 `;
 
-export const FormImage = props => (
-  <Image {...props} bg={colors.blue} {...layout.formImageProps} />
-);
+export const FormImage = props => <Image {...props} {...layout.formImageProps} />;
 
 export const Divider = styled.View`
   ${mixins.margin}
@@ -144,15 +151,15 @@ export const BodyText = styled(Text)`
   ${mixins.font}
 `;
 
-export const Touchable = styled.Touchable``;
-
 export const StaticButton = styled(View)`
   ${layout.button}
   ${p =>
     p.disabled
       ? `
-    color: ${colors.white};
-    background: ${colors.grey};
+      background: ${colors.grey};
+    & > div {
+      color: ${colors.white};
+    }
     `
       : ''};
   ${mixins.width}
@@ -180,9 +187,13 @@ HoverButton.propTypes = {
 export function HoverButton({ children, onPress, onClick, ...rest }) {
   const [hover, setHover] = useState(0);
   const [active, setActive] = useState(0);
-  const renderString = !children || !children.$$typeof;
+  const isString = typeof children === 'string';
+  const isArray = typeof children === 'object' && children.length;
+  const isTextArray = isArray && children.find(el => typeof el === 'string');
+  const renderString =
+    !children || (!isArray && !children.$$typeof) || isTextArray || isString;
   return (
-    <Touchable onClick={onClick} onPress={onPress}>
+    <TouchableOpacity onClick={onClick} onPress={onPress}>
       <StaticButton
         hover={hover}
         active={active}
@@ -197,25 +208,23 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
       >
         {renderString ? <ButtonText {...rest}>{children}</ButtonText> : children}
       </StaticButton>
-    </Touchable>
+    </TouchableOpacity>
   );
 }
 
 export const Button = HoverButton;
 
 ButtonWithIcon.propTypes = {
-  text: PropTypes.text,
+  text: PropTypes.string,
   image: PropTypes.node
 };
 
 export function ButtonWithIcon({ text, image, ...rest }) {
   return (
-    <Button {...rest}>
-      <View fdirection="row" align="center">
-        {image}
-        <ButtonText>{text}</ButtonText>
-      </View>
-    </Button>
+    <ViewButton fdirection={'row'} {...rest}>
+      {image}
+      <ButtonText>{text}</ButtonText>
+    </ViewButton>
   );
 }
 
@@ -298,3 +307,77 @@ export const Overlay = styled(View)`
   bottom: 0;
   background-color: ${colors.modalBackground};
 `;
+
+// export const Badge = styled(View)`
+//   border-radius: 100%;
+//   align-items: center;
+//   justify-content: center;
+//   display: flex;
+//   flex-direction: row;
+// `;
+Badge.propTypes = {
+  color: PropTypes.string,
+  textColor: PropTypes.string,
+  h: PropTypes.number,
+  children: PropTypes.node,
+  number: PropTypes.number
+};
+
+export function Badge({ color, textColor, h, children, number, ...styles }) {
+  if (!number) return null;
+  return (
+    <View
+      minwidth={h || 1.75}
+      p={'0 0.5'}
+      h={h || 1.75}
+      bradius={(h || 1.75) / 2}
+      align={'center'}
+      justify={'center'}
+      bg={color || colors.blue}
+      {...styles}
+    >
+      <NumericalValue fs={1.25} lh={h || 1.75} c={textColor || colors.white}>
+        {abbreviateNumber(number)}
+      </NumericalValue>
+    </View>
+  );
+}
+
+export const Err = styled(Text)`
+  color: ${colors.red};
+`;
+
+EthAddress.propTypes = {
+  address: PropTypes.object
+};
+
+export function EthAddress({ address }) {
+  if (!address) return null;
+  return (
+    <ULink to={`https://etherscan.io/address/${address}`} target="_blank" external>
+      {address.slice(0, 6) + '...' + address.slice(address.length - 4, address.length)}
+    </ULink>
+  );
+}
+
+export const ErrorBox = ({ children, styleProps }) => (
+  <View mt={2} p={2} bg={colors.errorA} border bc={colors.error} {...styleProps}>
+    {children}
+  </View>
+);
+
+export const WarningBox = ({ children, styleProps }) => (
+  <View mt={2} p={2} bg={colors.warningA} border bc={colors.warning} {...styleProps}>
+    {children}
+  </View>
+);
+
+ErrorBox.propTypes = {
+  children: PropTypes.node,
+  styleProps: PropTypes.object
+};
+
+WarningBox.propTypes = {
+  children: PropTypes.node,
+  styleProps: PropTypes.object
+};

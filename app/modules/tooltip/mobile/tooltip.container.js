@@ -233,11 +233,11 @@ class Tooltip extends Component {
     );
 
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         style={styles.overlay}
         onPress={dismiss ? this.nextOnboarding : null}
         underlayColor={colors.blue}
-        // pointerEvents={dismiss ? 'all' : 'none'}
+        activeOpacity={1}
       >
         <Animated.View
           style={{
@@ -269,7 +269,7 @@ class Tooltip extends Component {
             </TouchableHighlight>
           </Animated.View>
         </Animated.View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 }

@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { getTokenReserves } from '@uniswap/sdk';
 import { abbreviateNumber } from 'utils/numbers';
 
+if (process.env.WEB !== 'true') {
+  require('../../publicenv');
+}
+
 const { TOKEN_ADDRESS } = process.env;
 const UPDATE_INTERVAL = 1 * 60 * 1000;
 
@@ -27,7 +31,7 @@ PriceProvider.propTypes = {
   children: PropTypes.node
 };
 
-export function PriceProvider({ children }) {
+export default function PriceProvider({ children }) {
   const [state, dispatch] = useReducer(priceReducer, {
     loading: false,
     error: false,
@@ -42,13 +46,13 @@ export function PriceProvider({ children }) {
       if (!TOKEN_ADDRESS) return;
       try {
         const tokenPrice = await getTokenReserves(TOKEN_ADDRESS);
-        const res = await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/');
+        const res = await fetch('https://api.infura.io/v1/ticker/ethusd');
         const ethPrice = await res.json();
 
         if (!didCancel) {
           dispatch({
             type: 'FETCH_PRICE_SUCCESS',
-            payload: { ...tokenPrice, ethPrice: ethPrice[0] }
+            payload: { ...tokenPrice, ethPrice: ethPrice.bid }
           });
         }
       } catch (err) {
@@ -114,6 +118,6 @@ function computePrice(data) {
   const { ethReserve, tokenReserve, ethPrice } = data;
   if (!ethReserve || !tokenReserve) return null;
   const priceInEth = ethReserve.amount.div(tokenReserve.amount);
-  const usdPrice = priceInEth.times(ethPrice.price_usd);
+  const usdPrice = priceInEth.times(ethPrice);
   return parseFloat(usdPrice.toString());
 }

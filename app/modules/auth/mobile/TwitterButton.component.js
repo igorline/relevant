@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, NativeModules, TouchableOpacity } from 'react-native';
+import { NativeModules } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { globalStyles } from 'app/styles/global';
+import { ButtonText, HoverButton, View, BodyText } from 'modules/styled/uni';
+import { colors } from 'styles';
 
 require('app/publicenv');
 
 const { RNTwitterSignIn } = NativeModules;
-let styles;
 
 const Constants = {
   TWITTER_COMSUMER_KEY: process.env.TWITTER_COMSUMER_KEY,
@@ -65,9 +65,7 @@ export default class TwitterButton extends Component {
     let connected;
     if (isLoggedIn && !this.props.type === 'signup') {
       connected = (
-        <Text style={[{ alignSelf: 'center' }, styles.signInText]}>
-          Twitter connected! Log in to complete.
-        </Text>
+        <BodyText alignSelf="center">Twitter connected! Log in to complete.</BodyText>
       );
     }
 
@@ -76,50 +74,22 @@ export default class TwitterButton extends Component {
         {isLoggedIn ? (
           connected
         ) : (
-          <TouchableOpacity
-            style={[styles.twitterButton, { flexDirection: 'row' }]}
-            onPress={() => this._twitterSignIn()}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Icon
-                borderRadius={0}
-                name={'logo-twitter'}
-                size={30}
-                color={'white'}
-                style={styles.icon}
-              />
-              <Text style={styles.twitterText}>{text}</Text>
-            </View>
-          </TouchableOpacity>
+          <View flex={1}>
+            <HoverButton bg={colors.twitterBlue} onPress={() => this._twitterSignIn()}>
+              <View fdirection="row" align={'center'}>
+                <Icon
+                  borderRadius={0}
+                  name={'logo-twitter'}
+                  size={24}
+                  color={'white'}
+                  style={{ color: 'white', marginRight: 10 }}
+                />
+                <ButtonText>{text}</ButtonText>
+              </View>
+            </HoverButton>
+          </View>
         )}
       </View>
     );
   }
 }
-
-const local = StyleSheet.create({
-  twitterText: {
-    color: 'white',
-    fontFamily: 'Arial',
-    alignSelf: 'center',
-    textAlign: 'center',
-    flex: 1,
-    backgroundColor: 'transparent'
-  },
-  twitterButton: {
-    backgroundColor: '#00aced',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 15
-  },
-  icon: {
-    position: 'absolute',
-    left: 5,
-    color: 'white',
-    alignSelf: 'center',
-    marginRight: 20,
-    backgroundColor: 'transparent'
-  }
-});
-
-styles = { ...globalStyles, ...local };

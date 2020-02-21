@@ -188,7 +188,8 @@ export function bet({ postId, stakedTokens }) {
       );
       return dispatch(updatePostVote(res));
     } catch (err) {
-      return Alert.alert(err.message);
+      Alert.alert(err.message);
+      throw err;
     }
   };
 }

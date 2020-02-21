@@ -50,8 +50,7 @@ exports.show = (req, res, next) => {
       populate: {
         path: 'relevance',
         match: {
-          community: req.query.community,
-          global: true
+          community: req.query.community
         }
       }
     })

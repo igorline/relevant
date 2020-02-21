@@ -12,7 +12,6 @@ export default function CircleButton({ children, onPress }) {
   return (
     <HoverButton
       border={1}
-      bc={colors.blue}
       w={8}
       h={8}
       minwidth={'auto'}

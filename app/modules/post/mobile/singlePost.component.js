@@ -17,14 +17,13 @@ import { View, MobileDivider, Divider } from 'modules/styled/uni';
 import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import Post from './post.component';
 
-const inputOffset = IphoneX ? 59 + 33 : 59;
+const INPUT_OFFSET = IphoneX ? 33 + 55 : 55;
 
 class SinglePostComponent extends Component {
   static propTypes = {
     postId: PropTypes.string,
     postComments: PropTypes.array,
     posts: PropTypes.object,
-    navigation: PropTypes.object,
     post: PropTypes.object,
     error: PropTypes.bool,
     actions: PropTypes.object,
@@ -32,7 +31,7 @@ class SinglePostComponent extends Component {
     link: PropTypes.object,
     users: PropTypes.object,
     comments: PropTypes.object,
-    // myPostInv: PropTypes.object,
+    navigation: PropTypes.object,
     auth: PropTypes.object,
     admin: PropTypes.object,
     comment: PropTypes.object
@@ -212,7 +211,7 @@ class SinglePostComponent extends Component {
   // };
 
   renderHeader() {
-    const { post, link, actions, navigation } = this.props;
+    const { post, link, actions } = this.props;
     return (
       <View
         onLayout={e => {
@@ -222,7 +221,6 @@ class SinglePostComponent extends Component {
         <Post
           singlePost
           key={0}
-          navigation={navigation}
           post={post}
           link={link}
           actions={actions}
@@ -252,7 +250,7 @@ class SinglePostComponent extends Component {
     const comment = item;
     if (!comment) return null;
 
-    const { post, auth, actions, navigation, users } = this.props;
+    const { post, auth, actions, users } = this.props;
 
     const setupReply = _comment =>
       this.setState({ activeComment: _comment, activeIndex: index });
@@ -288,8 +286,7 @@ class SinglePostComponent extends Component {
                 post={comment}
                 actions={actions}
                 auth={auth}
-                navigation={navigation}
-                // myPostInv={myPostInv[comment._id]}
+                singlePost
                 setupReply={setupReply}
                 focusInput={focusInput}
               />
@@ -322,7 +319,7 @@ class SinglePostComponent extends Component {
             }}
           >
             <UserSearchComponent
-              style={{ paddingTop: inputOffset }}
+              style={{ paddingTop: INPUT_OFFSET }}
               setSelected={this.input.setMention}
               users={this.props.users.search}
             />
@@ -356,7 +353,7 @@ class SinglePostComponent extends Component {
         behavior={'padding'}
         style={{ flex: 1, backgroundColor: 'white' }}
         keyboardVerticalOffset={
-          inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
+          INPUT_OFFSET + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
         }
       >
         <FlatList

@@ -3,7 +3,7 @@ import { sanitize, toObject } from 'server/test/utils';
 import Invest from 'server/api/invest/invest.model';
 import Post from 'server/api/post/post.model';
 import { getUsers, getPosts, getCommunities } from 'server/test/seedData';
-import computePageRank from 'server/utils/pagerankCompute';
+import computePageRank from 'server/pagerank/pagerankCompute';
 import { create, bet } from 'server/api/invest/invest.controller';
 import { response } from 'jest-mock-express';
 
@@ -13,14 +13,14 @@ process.env.TEST_SUITE = 'invest';
 jest.mock('server/utils/ethereum');
 
 describe('ethRewards', () => {
-  let { alice, relevant, link1, req, res, communityId, communityMember } = {};
+  let { alice, bob, relevant, link1, req, res, communityId, communityMember } = {};
 
-  const next = console.log; // eslint-disable-line
+  const next = jest.fn(console.log); // eslint-disable-line
   let voteId;
 
   beforeAll(async () => {
     ({ relevant } = getCommunities());
-    ({ alice } = getUsers());
+    ({ alice, bob } = getUsers());
     ({ link1 } = getPosts());
     communityId = relevant._id;
     communityMember = await CommunityMember.findOne({ user: alice._id, communityId });
@@ -38,7 +38,7 @@ describe('ethRewards', () => {
 
   beforeEach(() => {
     res = response();
-    global.console = { log: jest.fn() }; // hides logs
+    global.console.log = jest.fn(); // hides logs
   });
 
   describe('Invest', () => {
@@ -77,7 +77,25 @@ describe('ethRewards', () => {
   // Todo test all cases of non-invest
 
   describe('Undo', () => {
-    test('should undo invest', async () => {
+    test('should not be able to undo vote after bet', async () => {
+      await create(req, res, next);
+      expect(next).toBeCalled();
+    });
+  });
+
+  describe('AutoBet', () => {
+    test('should create invest with bet', async () => {
+      bob.notificationSettings.bet.manual = false;
+      await bob.save();
+      req.user = bob;
+      await create(req, res, next);
+      const apiRes = toObject(res.json.mock.calls[0][0]);
+      voteId = apiRes.investment._id;
+      expect(apiRes.investment.shares).not.toBe(0);
+      expect(apiRes.investment.stakedTokens).not.toBe(0);
+    });
+
+    test('should undo auto-bet', async () => {
       await create(req, res, next);
       let apiRes = toObject(res.json.mock.calls[0][0]);
       apiRes = sanitize(apiRes, 'rankChange');
@@ -85,18 +103,6 @@ describe('ethRewards', () => {
 
       const removedVote = await Invest.findOne({ _id: voteId });
       expect(removedVote).toBe(null);
-    });
-  });
-
-  describe('AutoBet', () => {
-    test('should create invest with bet', async () => {
-      alice.notificationSettings.bet.manual = false;
-      await alice.save();
-      req.user = alice;
-      await create(req, res, next);
-      const apiRes = toObject(res.json.mock.calls[0][0]);
-      expect(apiRes.investment.shares).not.toBe(0);
-      expect(apiRes.investment.stakedTokens).not.toBe(0);
     });
   });
 });

@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { colors, layout } from 'app/styles';
 import { View } from 'modules/styled/uni';
 import BannerPrompt from 'modules/bannerPrompt/banner.container';
-import SplashComponent from 'modules/web_splash/splash.component';
+import SplashComponent from 'modules/navigation/banner';
 import { slide as Menu } from 'react-burger-menu';
 import {
   openWebSideNav,
@@ -50,6 +50,7 @@ class WithSideNav extends Component {
     const { sideNavIsOpen, screenSize } = navigation;
     const { promptType } = notif;
     const isDesktop = screenSize === 0;
+
     return (
       <View bg={colors.white} display="flex" flex={1}>
         {!isAuthenticated ? (

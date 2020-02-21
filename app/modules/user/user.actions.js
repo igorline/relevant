@@ -4,11 +4,6 @@ import * as types from 'core/actionTypes';
 
 const Alert = alert.Alert();
 
-const queryParams = params =>
-  Object.keys(params)
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-    .join('&');
-
 export function updateLocalUser(user) {
   return {
     type: types.UPDATE_USER,
@@ -104,46 +99,6 @@ export function getSelectedUser(userName) {
       dispatch(errorActions.setError('profile', true, err.message));
       return false;
     }
-  };
-}
-
-export function getOnlineUser(userId) {
-  return async () =>
-    fetch(process.env.API_SERVER + '/api/user/user/' + userId, {
-      method: 'GET',
-      ...(await api.reqOptions())
-    })
-      .then(response => response.json())
-      .then(responseJSON => ({ status: true, data: responseJSON }))
-      .catch(error => ({ status: false, data: error }));
-}
-
-export function getUsers(skip, limit, tags) {
-  if (!skip) skip = 0;
-  if (!limit) limit = 10;
-  let topic = null;
-  if (tags.length === 1) {
-    topic = tags[0]._id || tags[0];
-  }
-  const url =
-    process.env.API_SERVER +
-    '/api/user/general/list?' +
-    queryParams({ skip, limit, topic });
-
-  return async dispatch => {
-    dispatch(getUsersLoading());
-    fetch(url, {
-      method: 'GET',
-      ...(await api.reqOptions())
-    })
-      .then(response => response.json())
-      .then(responseJSON => {
-        dispatch(errorActions.setError('activity', false));
-        dispatch(setUserList(responseJSON, skip, topic));
-      })
-      .catch(error => {
-        dispatch(errorActions.setError('activity', true, error.message));
-      });
   };
 }
 

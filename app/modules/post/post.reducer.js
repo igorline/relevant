@@ -271,9 +271,7 @@ export default function post(state = initialState, action) {
 
     case types.CLEAR_POSTS: {
       const { type } = action.payload;
-      return Object.assign({}, state, {
-        [type]: []
-      });
+      return { ...state, [type]: [] };
     }
 
     case 'SET_NEW_POSTS_STATUS': {
@@ -288,21 +286,15 @@ export default function post(state = initialState, action) {
     }
 
     case types.POST_ERROR: {
-      return Object.assign({}, state, {
-        postError: action.payload
-      });
+      return { ...state, postError: action.payload };
     }
 
     case types.SET_DISCOVER_TAGS: {
-      return Object.assign({}, state, {
-        discoverTags: action.payload
-      });
+      return { ...state, discoverTags: action.payload };
     }
 
     case 'SET_SELECTED_POST': {
-      return Object.assign({}, state, {
-        selectedPostId: action.payload
-      });
+      return { ...state, selectedPostId: action.payload };
     }
 
     case 'SET_SELECTED_POST_DATA': {
@@ -323,22 +315,18 @@ export default function post(state = initialState, action) {
     }
 
     case 'CLEAR_SELECTED_POST': {
-      return Object.assign({}, state, {
-        // selectedPostData: null,
+      return {
+        ...state, // selectedPostData: null,
         selectedPostId: null
-      });
+      };
     }
 
     case 'SET_NEW_FEED_STATUS': {
-      return Object.assign({}, state, {
-        newFeedAvailable: action.payload
-      });
+      return { ...state, newFeedAvailable: action.payload };
     }
 
     case 'CLEAR_USER_POSTS': {
-      return Object.assign({}, state, {
-        userPosts: {}
-      });
+      return { ...state, userPosts: {} };
     }
 
     // we store comments in post state
@@ -377,6 +365,7 @@ export default function post(state = initialState, action) {
     }
 
     case types.UPDATE_POST_INVESTMENTS: {
+      if (!action.payload) return state;
       const postId = action.payload.post;
       return {
         ...state,

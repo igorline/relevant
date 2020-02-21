@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   StyleSheet,
   Text,
@@ -7,10 +8,14 @@ import {
   TouchableHighlight,
   Platform
 } from 'react-native';
-import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, blue, greyText, IphoneX } from 'app/styles/global';
+import { globalStyles, fullWidth, IphoneX } from 'app/styles/global';
 import Percent from 'modules/stats/mobile/percent.component';
+import { Beacon } from 'react-native-help-scout';
+import { Button, AbsoluteView, SmallText } from 'modules/styled/uni';
+import { colors } from 'styles';
+
+Beacon.init('40ed799c-8c6c-4226-9215-5adfd59e35eb');
 
 let styles;
 
@@ -19,108 +24,101 @@ if (Platform.OS === 'android') {
   Emoji = require('react-native-emoji-compat-text').default;
 }
 
-export default class TabBar extends Component {
-  static propTypes = {
-    auth: PropTypes.object,
-    navigation: PropTypes.object,
-    notif: PropTypes.object,
-    changeTab: PropTypes.func
-  };
+TabBar.propTypes = {
+  currentTab: PropTypes.object,
+  changeTab: PropTypes.func,
+  tabs: PropTypes.array
+};
 
-  constructor(props, context) {
-    super(props, context);
-    this.totalBadge = 0;
-  }
+export default function TabBar({ tabs, currentTab, changeTab }) {
+  return (
+    <View style={styles.footer}>
+      {tabs.map(t => (
+        <Tab key={t.key} tab={t} currentTab={currentTab} changeTab={changeTab} />
+      ))}
+      <AbsoluteView absolute top={-5} right={2}>
+        <Button onPress={() => Beacon.open()} bradius={2} h={4} minwidth={'0'}>
+          Help
+        </Button>
+      </AbsoluteView>
+    </View>
+  );
+}
 
-  renderBadge(count) {
-    if (typeof count === 'number') {
-      this.totalBadge += count;
-    }
-    PushNotification.setApplicationIconBadgeNumber(this.totalBadge);
+Tab.propTypes = {
+  tab: PropTypes.object,
+  currentTab: PropTypes.object,
+  changeTab: PropTypes.func
+};
 
-    if (!count) return null;
+function Tab({ tab, currentTab, changeTab }) {
+  const notif = useSelector(state => state.notif);
+  const user = useSelector(state => state.auth.user);
+  const active = tab.key === currentTab.key;
+  const badge = tab.params.title === 'Activity' && notif.count && notif.count;
 
-    return (
-      <View pointerEvents={'none'} style={styles.notifCount}>
-        <Text style={styles.notifText}>{count}</Text>
-      </View>
+  const fontAdjust = tab.params.title === 'Wallet' &&
+    Platform.OS === 'ios' && { fontSize: 23 };
+
+  const defaultIcon = (
+    <Emoji
+      style={[
+        styles.icon,
+        styles.textCenter,
+        fontAdjust,
+        active ? styles.footerTextActive : null
+      ]}
+    >
+      {tab.params.icon}
+    </Emoji>
+  );
+
+  const defaultTitle = (
+    <SmallText fs={1.25} c={active ? colors.blue : colors.grey}>
+      {tab.params.title}
+    </SmallText>
+  );
+
+  const profileTab = tab.key === 'myProfile';
+
+  const icon =
+    profileTab && user && user.image ? (
+      <Image source={{ uri: user.image }} style={[styles.footerImg]} />
+    ) : (
+      defaultIcon
     );
-  }
 
-  renderTab(tab) {
-    const { notif, auth, navigation, changeTab } = this.props;
-    const { user } = auth;
-    const currentTab = navigation.state
-      ? navigation.state.routes[navigation.state.index]
-      : null;
-    let badge;
-    const active = tab.key === currentTab.key;
-    let activeText;
-    if (tab.params.title === 'Activity' && notif.count) badge = notif.count;
+  const title =
+    profileTab && user ? (
+      <View>
+        <Percent fontSize={10} fontFamily={'Arial'} user={user} />
+      </View>
+    ) : (
+      defaultTitle
+    );
 
-    let fontAdjust;
-    if (tab.params.title === 'Wallet' && Platform.OS === 'ios') {
-      fontAdjust = { fontSize: 23 };
-    }
-
-    let icon = (
-      <Emoji
+  return (
+    <View style={{ flex: 1 }} key={tab.key}>
+      <TouchableHighlight
+        onPress={() => requestAnimationFrame(() => changeTab(tab.key))}
+        underlayColor={'transparent'}
         style={[
-          styles.icon,
-          styles.textCenter,
-          fontAdjust,
-          active ? styles.footerTextActive : null
+          styles.footerItem,
+          { borderBottomColor: active ? colors.blue : 'transparent' }
         ]}
       >
-        {tab.params.icon}
-      </Emoji>
-    );
-    let title = (
-      <Text
-        style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}
-      >
-        {tab.params.title}
-      </Text>
-    );
-    if (tab.key === 'myProfile') {
-      if (user && user.image) {
-        icon = <Image source={{ uri: user.image }} style={[styles.footerImg]} />;
-      }
-      title = (
-        <View>
-          <Percent fontSize={10} fontFamily={'Arial'} user={user} />
+        <View style={styles.footerItemView}>
+          <View style={styles.footerItemInner}>{icon}</View>
+          {title}
         </View>
-      );
-      activeText = true;
-    }
-
-    return (
-      <View style={{ flex: 1 }} key={tab.key}>
-        <TouchableHighlight
-          onPress={() => changeTab(tab.key)}
-          underlayColor={'transparent'}
-          style={[
-            styles.footerItem,
-            { borderBottomColor: active ? blue : 'transparent' }
-          ]}
-        >
-          <View style={styles.footerItemView}>
-            <View style={styles.footerItemInner}>{icon}</View>
-            {title}
-          </View>
-        </TouchableHighlight>
-        {this.renderBadge(badge)}
-      </View>
-    );
-  }
-
-  render() {
-    const { navigation } = this.props;
-    const tabs = [...navigation.state.routes];
-    this.totalBadge = 0;
-
-    return <View style={styles.footer}>{tabs.map(t => this.renderTab(t))}</View>;
-  }
+      </TouchableHighlight>
+      {badge ? (
+        <View pointerEvents={'none'} style={styles.notifCount}>
+          <Text style={styles.notifText}>{badge}</Text>
+        </View>
+      ) : null}
+    </View>
+  );
 }
 
 const localStyles = StyleSheet.create({
@@ -161,20 +159,6 @@ const localStyles = StyleSheet.create({
     opacity: 1,
     color: 'black',
     width: 25
-  },
-  activeIcon: {},
-  activityRow: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  footerText: {
-    paddingTop: 0,
-    fontSize: 10,
-    color: greyText
-  },
-  footerTextActive: {
-    color: blue,
-    opacity: 1
   }
 });
 

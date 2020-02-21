@@ -24,7 +24,7 @@ class Profile extends Component {
     user: PropTypes.object,
     location: PropTypes.object,
     history: PropTypes.object,
-    bio: PropTypes.object
+    bio: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
   };
 
   componentDidMount() {
@@ -33,6 +33,7 @@ class Profile extends Component {
 
   checkRouteForModal(firstRun) {
     const { user, actions, location, history } = this.props;
+    if (location.search.match('modal=settings')) return;
     const settingsUrl = `/user/profile/${user.handle}/settings`;
     const profileUrl = `/user/profile/${user.handle}`;
     if (settingsUrl === location.pathname) {

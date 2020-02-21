@@ -21,3 +21,20 @@ exports.index = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updateCashoutLog = async (req, res, next) => {
+  try {
+    const { user } = req;
+    const _id = req.params.id;
+    const earning = await Earnings.findOneAndUpdate(
+      { _id, cashOutAttempt: true },
+      { status: 'completed' },
+      { new: true }
+    );
+    await user.updateBalance();
+    await user.save();
+    res.status(200).json({ earning, user });
+  } catch (err) {
+    next(err);
+  }
+};

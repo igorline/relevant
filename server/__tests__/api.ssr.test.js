@@ -1,4 +1,4 @@
-const { _request } = require('utils/api');
+import { _request } from 'utils/api';
 
 jest.mock('../../server/api/user/user.controller', () => {
   return {
@@ -7,6 +7,8 @@ jest.mock('../../server/api/user/user.controller', () => {
 });
 
 const { test } = require('../../server/api/user/user.controller');
+
+process.env.TEST_SUITE = 'serverapi';
 
 const getStore = () => ({
   community: {
@@ -23,7 +25,7 @@ const options = {
   body: { data: 'some data' }
 };
 
-describe('server-side request', () => {
+describe('server-side api request', () => {
   it('generate correct fetch request', async () => {
     await _request(options, getStore);
     expect(test).toMatchSnapshot();
