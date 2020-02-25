@@ -122,7 +122,6 @@ exports[`Snapshot NavProfile 1`] = `
         styles=""
       >
         <div
-          c="#0000ff"
           className="css-text-901oao"
           dir="auto"
           style={
@@ -335,7 +334,6 @@ exports[`Snapshot NavProfile 1`] = `
               <div
                 className="css-text-901oao"
                 dir="auto"
-                inline={0}
                 style={
                   Object {
                     "color": "rgba(0,0,0,1.00)",
@@ -428,8 +426,6 @@ exports[`Snapshot NavProfile 1`] = `
               <div
                 className="css-text-901oao"
                 dir="auto"
-                inline={0}
-                ml={0.75}
                 style={
                   Object {
                     "color": "rgba(0,0,0,1.00)",
@@ -471,7 +467,6 @@ exports[`Snapshot NavProfile 1`] = `
           <div
             className="css-text-901oao"
             dir="auto"
-            fs={1.5}
             style={
               Object {
                 "color": "rgba(128,128,128,1.00)",
@@ -550,12 +545,8 @@ exports[`Snapshot NavProfile 1`] = `
               />
             </div>
             <div
-              c="hsl(0, 0%, 0%)"
               className="css-text-901oao"
               dir="auto"
-              fs={1.5}
-              inline={0}
-              ml={0.375}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
@@ -605,7 +596,6 @@ exports[`Snapshot NavProfile 1`] = `
         styles=""
       >
         <div
-          c="#0000ff"
           className="css-text-901oao"
           dir="auto"
           style={
@@ -645,7 +635,6 @@ exports[`Snapshot NavProfile 1`] = `
         styles=""
       >
         <div
-          c="#0000ff"
           className="css-text-901oao"
           dir="auto"
           style={

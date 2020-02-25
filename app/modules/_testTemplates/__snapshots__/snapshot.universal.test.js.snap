@@ -115,8 +115,6 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          inline={1}
-          mt={0}
           style={
             Object {
               "position": "relative",
@@ -124,10 +122,8 @@ exports[`Snapshot AvatarBox Styled 1`] = `
           }
         >
           <span
-            c="hsl(0, 0%, 0%)"
             className="css-text-901oao css-textHasAncestor-16my406 css-textOneLine-bfa6kz"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
@@ -149,7 +145,6 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          mt={0.25}
           style={
             Object {
               "color": "rgba(128,128,128,1.00)",

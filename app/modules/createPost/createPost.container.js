@@ -15,7 +15,15 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text } from 'app/utils';
 
-import { View, Button, Divider, BodyText, LinkFont, SmallText } from 'modules/styled/uni';
+import {
+  View,
+  Button,
+  Divider,
+  BodyText,
+  LinkFont,
+  SmallText,
+  Box
+} from 'modules/styled/uni';
 import { Input } from 'modules/styled/web';
 
 import AvatarBox from 'modules/user/avatarbox.component';
@@ -323,7 +331,7 @@ class CreatePostContainer extends Component {
     if (!this.state.urlPreview) return null;
     const { auth, screenSize } = this.props;
     return (
-      <div style={{ position: 'relative' }}>
+      <Box>
         <PostInfo
           small
           preview={!!screenSize}
@@ -333,12 +341,12 @@ class CreatePostContainer extends Component {
           post={this.state.urlPreview}
           link={this.state.linkPreview}
         />
-        <SmallText display="flex" justify="flex-end" fdirection="row">
+        <SmallText style={{ textAlign: 'right' }}>
           <a onClick={this.clearUrl.bind(this)} className="removeUrl">
             remove url
           </a>
         </SmallText>
-      </div>
+      </Box>
     );
   }
 

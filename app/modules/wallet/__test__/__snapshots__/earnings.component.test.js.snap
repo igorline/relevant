@@ -108,12 +108,6 @@ exports[`Snapshot Paidout Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={
-          Array [
-            4,
-            2,
-          ]
-        }
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
@@ -127,7 +121,6 @@ exports[`Snapshot Paidout Web 1`] = `
         Jan 31, 2019
       </div>
       <div
-        c="hsl(0, 0%, 50%)"
         className="css-text-901oao"
         dir="auto"
         style={
@@ -145,7 +138,6 @@ exports[`Snapshot Paidout Web 1`] = `
       </div>
     </div>
     <div
-      c="#7ED321"
       className="css-text-901oao"
       dir="auto"
       style={
@@ -298,12 +290,6 @@ exports[`Snapshot Pending Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={
-          Array [
-            4,
-            2,
-          ]
-        }
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
@@ -315,7 +301,6 @@ exports[`Snapshot Pending Web 1`] = `
         }
       />
       <div
-        c="hsl(0, 0%, 50%)"
         className="css-text-901oao"
         dir="auto"
         style={
@@ -333,7 +318,6 @@ exports[`Snapshot Pending Web 1`] = `
       </div>
     </div>
     <div
-      c="#7ED321"
       className="css-text-901oao"
       dir="auto"
       style={

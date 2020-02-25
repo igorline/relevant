@@ -38,7 +38,7 @@ function CommentInfo({ comment, user }) {
           mt={0.5}
           numberOfLines={1}
         >
-          <CommentEl post={comment} />
+          <CommentEl post={comment} postUrl />
           <TagEl post={comment} />
         </View>
       </View>

@@ -217,10 +217,8 @@ exports[`Snapshot Activity Web 1`] = `
               styles=""
             >
               <div
-                c="#0000ff"
                 className="css-text-901oao"
                 dir="auto"
-                inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
@@ -240,7 +238,6 @@ exports[`Snapshot Activity Web 1`] = `
           <div
             className="css-text-901oao"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
@@ -255,7 +252,6 @@ exports[`Snapshot Activity Web 1`] = `
           <div
             className="css-text-901oao"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
@@ -270,7 +266,6 @@ exports[`Snapshot Activity Web 1`] = `
           <div
             className="css-text-901oao"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
@@ -283,7 +278,6 @@ exports[`Snapshot Activity Web 1`] = `
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              inline={1}
               style={
                 Object {
                   "color": "rgba(0,0,0,1.00)",
@@ -295,10 +289,8 @@ exports[`Snapshot Activity Web 1`] = `
             >
               your reputation increased by 
               <span
-                c="#7ED321"
                 className="css-text-901oao css-textHasAncestor-16my406"
                 dir="auto"
-                inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
@@ -329,7 +321,6 @@ exports[`Snapshot Activity Web 1`] = `
     <div
       className="css-text-901oao"
       dir="auto"
-      lh={2}
       style={
         Object {
           "color": "rgba(128,128,128,1.00)",
@@ -376,66 +367,6 @@ exports[`Snapshot Activity Web 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          hideDivider={true}
-          hidePostButtons={true}
-          link="000000000000000000000003"
-          noLink={true}
-          post={
-            Object {
-              "_id": "000000000000000000000002",
-              "body": "awesome post #2!",
-              "community": "relevant",
-              "communityId": "c00000000000000000000001",
-              "data": Object {
-                "pagerank": 45,
-                "payout": 18000000000000000000,
-              },
-              "domain": "link.domain2",
-              "embeddedUser": Object {
-                "_id": "c00000000000000000000000",
-                "airdropTokens": 333,
-                "balance": 333,
-                "bio": "admin of a few communities",
-                "email": "carol@carol.com",
-                "ethAddress": Array [
-                  "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef",
-                ],
-                "handle": "carol",
-                "image": "https://ichef.bbci.co.uk/news/640/cpsprodpb/A369/production/_87133814_87135704.jpg",
-                "lockedTokens": 0,
-                "name": "Carol",
-                "notificationSettings": Object {
-                  "bet": Object {
-                    "manual": true,
-                  },
-                },
-                "password": "test",
-                "relevance": Object {
-                  "pagerank": 33,
-                },
-              },
-              "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
-              "link": Object {
-                "domain": "link.domain2",
-                "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
-                "title": "postTitle2",
-                "url": "https://example.com/testPost2",
-              },
-              "parentComment": "000000000000000000000001",
-              "parentPost": "000000000000000000000003",
-              "payoutTime": 2019-02-03T09:02:02.000Z,
-              "postDate": 2019-01-31T09:02:02.000Z,
-              "tags": Array [
-                "tag21",
-                "tag22",
-              ],
-              "title": "postTitle2",
-              "type": "comment",
-              "url": "https://example.com/testPost2",
-              "user": "c00000000000000000000000",
-            }
-          }
-          preview={true}
           style={
             Object {
               "display": "flex",

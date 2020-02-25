@@ -124,14 +124,20 @@ function PostTitle({ children, post, link, title, noLink, mobile, singlePost, pr
 
 CommentEl.propTypes = {
   post: PropTypes.object,
-  postUrl: PropTypes.string,
   noLink: PropTypes.bool,
   c: PropTypes.string
 };
 
-export function CommentEl({ post, postUrl, noLink, c }) {
+export function CommentEl({ post, noLink, c }) {
   const dispatch = useDispatch();
+  const parentPost = post.parentPost || post;
+
+  const currentCommunity = useSelector(state => state.auth.community);
+  const postCommunity = post && post.data && post.data.community;
+  const community = postCommunity || currentCommunity;
+  const postUrl = getPostUrl(community, parentPost);
   if (!post.commentCount) return null;
+
   return (
     <ULink
       type="text"
@@ -150,18 +156,22 @@ export function CommentEl({ post, postUrl, noLink, c }) {
 
 TagEl.propTypes = {
   post: PropTypes.object,
-  community: PropTypes.string,
   noLink: PropTypes.bool,
   c: PropTypes.string
 };
 
-export function TagEl({ community, noLink, c, post }) {
+export function TagEl({ noLink, c, post }) {
   const tags = get(post, 'tags', []);
+  const currentCommunity = useSelector(state => state.auth.community);
+  const postCommunity = post && post.data && post.data.community;
+  const community = postCommunity || currentCommunity;
+
   if (!tags.length) return null;
+
   return tags.map(tag => (
     <Tag
       name={tag}
-      community={community}
+      community={community || (post.data && post.data.community)}
       key={tag}
       noLink={noLink}
       c={c || colors.blue}

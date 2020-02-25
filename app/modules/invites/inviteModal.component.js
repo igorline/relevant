@@ -8,7 +8,8 @@ import {
   Divider,
   BodyText,
   Header,
-  CTALink
+  CTALink,
+  Box
 } from 'modules/styled/uni';
 import { colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
@@ -113,28 +114,30 @@ class InviteModal extends Component {
         <View mt={2} fdirection="column" key={_id}>
           <View fdirection="row" justify="space-between">
             <View fdirection="row" flex={1} mr={1}>
-              <CTALink numberOfLines={1} flex={1}>
-                <Animated.Text
-                  onClick={() => copyToClipBoard(url)}
-                  onPress={() =>
-                    onShare({
-                      title: 'Join Relevant',
-                      message: 'Join Relevant',
-                      url,
-                      subject: 'Join Relevant'
-                    })
-                  }
-                  style={{
-                    color,
-                    cursor: 'pointer'
-                  }}
-                >
-                  {url}
-                </Animated.Text>
-              </CTALink>
-              <View ml={0.5} w={6}>
+              <View flex={1}>
+                <CTALink numberOfLines={1}>
+                  <Animated.Text
+                    onClick={() => copyToClipBoard(url)}
+                    onPress={() =>
+                      onShare({
+                        title: 'Join Relevant',
+                        message: 'Join Relevant',
+                        url,
+                        subject: 'Join Relevant'
+                      })
+                    }
+                    style={{
+                      color,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {url}
+                  </Animated.Text>
+                </CTALink>
+              </View>
+              <View ml={0.5} alignSelf="flex-end">
                 <CTALink c={colors.grey}>
-                  {invite.type === 'admin' ? '(moderator)' : null}
+                  {invite.type === 'admin' ? 'mod' : null}
                 </CTALink>
               </View>
             </View>
@@ -180,7 +183,8 @@ class InviteModal extends Component {
             Private Invite: Your have {count[community.active]} referral invite
             {count[community.active] > 1 ? 's' : ''} left.
           </SecondaryText>
-          <BodyText inline={1} mt={1}>
+          <Box mt={1} />
+          <BodyText inline={1}>
             Share your Reputation with trustworthy friends with your private invite codes.
             Earn <CoinStat size={2} amount={REFERRAL_REWARD} inline={1} /> coin
             {REFERRAL_REWARD === 1 ? '' : 's'} per signup.
@@ -192,9 +196,8 @@ class InviteModal extends Component {
           onClick={() => this.generateInvite()}
           c={colors.blue}
         >
-          <LinkFont mt={1} c={colors.blue}>
-            Click here to generate a new private link
-          </LinkFont>
+          <Box mt={1}></Box>
+          <LinkFont c={colors.blue}>Click here to generate a new private link</LinkFont>
         </ULink>
         {showAdminInvite ? (
           <ULink
@@ -203,6 +206,7 @@ class InviteModal extends Component {
             onClick={() => this.generateInvite('admin')}
             c={colors.blue}
           >
+            <Box mt={1} />
             <LinkFont mt={1} c={colors.blue}>
               Click here to generate moderator invite link
             </LinkFont>

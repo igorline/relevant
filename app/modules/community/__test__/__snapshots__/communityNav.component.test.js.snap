@@ -229,10 +229,8 @@ exports[`Snapshot NavProfile 1`] = `
               />
             </div>
             <div
-              c="hsl(0, 0%, 0%)"
               className="css-text-901oao"
               dir="auto"
-              lh={1.75}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
@@ -277,11 +275,8 @@ exports[`Snapshot NavProfile 1`] = `
             }
           >
             <div
-              c="hsl(0, 0%, 100%)"
               className="css-text-901oao"
               dir="auto"
-              fs={1.25}
-              lh={1.75}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(255,255,255,1.00)",
@@ -571,7 +566,6 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <div
-            c="hsl(0, 0%, 0%)"
             className="css-text-901oao"
             dir="auto"
             style={
@@ -596,7 +590,6 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
-              c="#0000ff"
               className="css-text-901oao"
               dir="auto"
               style={
@@ -633,11 +626,8 @@ exports[`Snapshot NavProfile 1`] = `
           }
         />
         <div
-          c="#0000ff"
           className="css-text-901oao"
           dir="auto"
-          mt={2}
-          p="0.5 0"
           style={
             Object {
               "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
@@ -787,10 +777,8 @@ exports[`Snapshot NavProfile 1`] = `
               />
             </div>
             <div
-              c="hsl(0, 0%, 0%)"
               className="css-text-901oao"
               dir="auto"
-              lh={1.75}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
@@ -835,11 +823,8 @@ exports[`Snapshot NavProfile 1`] = `
             }
           >
             <div
-              c="hsl(0, 0%, 100%)"
               className="css-text-901oao"
               dir="auto"
-              fs={1.25}
-              lh={1.75}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(255,255,255,1.00)",
@@ -863,12 +848,6 @@ exports[`Snapshot NavProfile 1`] = `
   <div
     className="css-text-901oao"
     dir="auto"
-    m={
-      Array [
-        3,
-        2,
-      ]
-    }
     style={
       Object {
         "color": "rgba(0,0,0,1.00)",
