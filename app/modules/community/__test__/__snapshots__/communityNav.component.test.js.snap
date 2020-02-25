@@ -237,11 +237,9 @@ exports[`Snapshot NavProfile 1`] = `
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
                   "color": "rgba(0,0,0,1.00)",
-                  "display": "flex",
                   "fontFamily": "HelveticaNeue",
                   "fontSize": "0.875rem",
                   "lineHeight": "0.875rem",
-                  "position": "relative",
                   "textDecorationColor": "rgba(0,0,0,1.00)",
                 }
               }
@@ -347,26 +345,29 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
-              className="css-text-901oao"
-              dir="auto"
-              p="0.5 0"
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "color": "rgba(128,128,128,1.00)",
-                  "display": "flex",
-                  "fontFamily": "HelveticaNeue",
-                  "fontSize": "0.875rem",
-                  "lineHeight": "1.2249999999999999rem",
-                  "paddingBottom": "0.25rem",
-                  "paddingLeft": "0rem",
-                  "paddingRight": "0rem",
-                  "paddingTop": "0.25rem",
-                  "position": "relative",
+                  "marginBottom": "0.25rem",
+                  "marginTop": "0.25rem",
                 }
               }
             >
-              #
-              technology
+              <div
+                className="css-text-901oao"
+                dir="auto"
+                style={
+                  Object {
+                    "color": "rgba(128,128,128,1.00)",
+                    "fontFamily": "HelveticaNeue",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                  }
+                }
+              >
+                #
+                technology
+              </div>
             </div>
           </a>
           <a
@@ -382,26 +383,29 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
-              className="css-text-901oao"
-              dir="auto"
-              p="0.5 0"
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "color": "rgba(128,128,128,1.00)",
-                  "display": "flex",
-                  "fontFamily": "HelveticaNeue",
-                  "fontSize": "0.875rem",
-                  "lineHeight": "1.2249999999999999rem",
-                  "paddingBottom": "0.25rem",
-                  "paddingLeft": "0rem",
-                  "paddingRight": "0rem",
-                  "paddingTop": "0.25rem",
-                  "position": "relative",
+                  "marginBottom": "0.25rem",
+                  "marginTop": "0.25rem",
                 }
               }
             >
-              #
-              society
+              <div
+                className="css-text-901oao"
+                dir="auto"
+                style={
+                  Object {
+                    "color": "rgba(128,128,128,1.00)",
+                    "fontFamily": "HelveticaNeue",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                  }
+                }
+              >
+                #
+                society
+              </div>
             </div>
           </a>
           <a
@@ -417,26 +421,29 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
-              className="css-text-901oao"
-              dir="auto"
-              p="0.5 0"
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "color": "rgba(128,128,128,1.00)",
-                  "display": "flex",
-                  "fontFamily": "HelveticaNeue",
-                  "fontSize": "0.875rem",
-                  "lineHeight": "1.2249999999999999rem",
-                  "paddingBottom": "0.25rem",
-                  "paddingLeft": "0rem",
-                  "paddingRight": "0rem",
-                  "paddingTop": "0.25rem",
-                  "position": "relative",
+                  "marginBottom": "0.25rem",
+                  "marginTop": "0.25rem",
                 }
               }
             >
-              #
-              culture
+              <div
+                className="css-text-901oao"
+                dir="auto"
+                style={
+                  Object {
+                    "color": "rgba(128,128,128,1.00)",
+                    "fontFamily": "HelveticaNeue",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                  }
+                }
+              >
+                #
+                culture
+              </div>
             </div>
           </a>
           <a
@@ -452,26 +459,29 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
-              className="css-text-901oao"
-              dir="auto"
-              p="0.5 0"
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "color": "rgba(128,128,128,1.00)",
-                  "display": "flex",
-                  "fontFamily": "HelveticaNeue",
-                  "fontSize": "0.875rem",
-                  "lineHeight": "1.2249999999999999rem",
-                  "paddingBottom": "0.25rem",
-                  "paddingLeft": "0rem",
-                  "paddingRight": "0rem",
-                  "paddingTop": "0.25rem",
-                  "position": "relative",
+                  "marginBottom": "0.25rem",
+                  "marginTop": "0.25rem",
                 }
               }
             >
-              #
-              politics
+              <div
+                className="css-text-901oao"
+                dir="auto"
+                style={
+                  Object {
+                    "color": "rgba(128,128,128,1.00)",
+                    "fontFamily": "HelveticaNeue",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                  }
+                }
+              >
+                #
+                politics
+              </div>
             </div>
           </a>
           <a
@@ -487,26 +497,29 @@ exports[`Snapshot NavProfile 1`] = `
             styles=""
           >
             <div
-              className="css-text-901oao"
-              dir="auto"
-              p="0.5 0"
+              className="css-view-1dbjc4n"
               style={
                 Object {
-                  "color": "rgba(128,128,128,1.00)",
-                  "display": "flex",
-                  "fontFamily": "HelveticaNeue",
-                  "fontSize": "0.875rem",
-                  "lineHeight": "1.2249999999999999rem",
-                  "paddingBottom": "0.25rem",
-                  "paddingLeft": "0rem",
-                  "paddingRight": "0rem",
-                  "paddingTop": "0.25rem",
-                  "position": "relative",
+                  "marginBottom": "0.25rem",
+                  "marginTop": "0.25rem",
                 }
               }
             >
-              #
-              altwoke
+              <div
+                className="css-text-901oao"
+                dir="auto"
+                style={
+                  Object {
+                    "color": "rgba(128,128,128,1.00)",
+                    "fontFamily": "HelveticaNeue",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                  }
+                }
+              >
+                #
+                altwoke
+              </div>
             </div>
           </a>
         </div>
@@ -526,11 +539,9 @@ exports[`Snapshot NavProfile 1`] = `
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
               }
             }
           >
@@ -567,11 +578,9 @@ exports[`Snapshot NavProfile 1`] = `
               Object {
                 "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
                 "color": "rgba(0,0,0,1.00)",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
                 "textDecorationColor": "rgba(0,0,0,1.00)",
               }
             }
@@ -594,11 +603,9 @@ exports[`Snapshot NavProfile 1`] = `
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
                   "color": "rgba(0,0,255,1.00)",
-                  "display": "flex",
                   "fontFamily": "HelveticaNeue",
                   "fontSize": "0.875rem",
                   "lineHeight": "1.2249999999999999rem",
-                  "position": "relative",
                   "textDecorationColor": "rgba(0,0,255,1.00)",
                 }
               }
@@ -635,16 +642,10 @@ exports[`Snapshot NavProfile 1`] = `
             Object {
               "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "color": "rgba(0,0,255,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
               "marginTop": "1rem",
-              "paddingBottom": "0.25rem",
-              "paddingLeft": "0rem",
-              "paddingRight": "0rem",
-              "paddingTop": "0.25rem",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
           }
@@ -794,11 +795,9 @@ exports[`Snapshot NavProfile 1`] = `
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
                   "color": "rgba(0,0,0,1.00)",
-                  "display": "flex",
                   "fontFamily": "HelveticaNeue",
                   "fontSize": "0.875rem",
                   "lineHeight": "0.875rem",
-                  "position": "relative",
                   "textDecorationColor": "rgba(0,0,0,1.00)",
                 }
               }
@@ -873,7 +872,6 @@ exports[`Snapshot NavProfile 1`] = `
     style={
       Object {
         "color": "rgba(0,0,0,1.00)",
-        "display": "flex",
         "fontFamily": "HelveticaNeue",
         "fontSize": "0.875rem",
         "lineHeight": "1.2249999999999999rem",
@@ -881,7 +879,6 @@ exports[`Snapshot NavProfile 1`] = `
         "marginLeft": "1.5rem",
         "marginRight": "1.5rem",
         "marginTop": "1.5rem",
-        "position": "relative",
       }
     }
   >

@@ -177,12 +177,10 @@ exports[`Snapshot other users Profile 1`] = `
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Bold",
               "fontSize": "1.5rem",
               "lineHeight": "2.0999999999999996rem",
               "marginRight": "1rem",
-              "position": "relative",
             }
           }
         >
@@ -459,11 +457,9 @@ exports[`Snapshot other users Profile 1`] = `
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
-            "position": "relative",
           }
         }
       >
@@ -686,12 +682,10 @@ exports[`Snapshot own Profile 1`] = `
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Bold",
               "fontSize": "1.5rem",
               "lineHeight": "2.0999999999999996rem",
               "marginRight": "1rem",
-              "position": "relative",
             }
           }
         >
@@ -970,11 +964,9 @@ exports[`Snapshot own Profile 1`] = `
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
-            "position": "relative",
           }
         }
       >
@@ -1011,12 +1003,10 @@ exports[`Snapshot own Profile 1`] = `
             "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "WebkitTextDecorationStyle": "solid",
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "0.25rem",
-            "position": "relative",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
             "textDecorationStyle": "solid",
@@ -1110,13 +1100,11 @@ exports[`Snapshot own Profile 1`] = `
             "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "WebkitTextDecorationStyle": "solid",
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginLeft": "0.25rem",
             "marginRight": "0.25rem",
-            "position": "relative",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
             "textDecorationStyle": "solid",

@@ -34,12 +34,10 @@ exports[`Snapshot Balance Web 1`] = `
       style={
         Object {
           "color": "rgba(0,0,0,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.875rem",
           "lineHeight": "1.2249999999999999rem",
           "marginTop": "1rem",
-          "position": "relative",
         }
       }
     >
@@ -102,12 +100,10 @@ exports[`Snapshot Balance Web 1`] = `
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
             "marginBottom": "0.25rem",
-            "position": "relative",
           }
         }
       >
@@ -116,16 +112,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mb={0.5}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
-            "marginBottom": "0.25rem",
-            "position": "relative",
           }
         }
       >
@@ -310,12 +302,10 @@ exports[`Snapshot Balance Web 1`] = `
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -359,12 +349,10 @@ exports[`Snapshot Balance Web 1`] = `
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -407,12 +395,10 @@ exports[`Snapshot Balance Web 1`] = `
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -456,12 +442,10 @@ exports[`Snapshot Balance Web 1`] = `
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -505,12 +489,10 @@ exports[`Snapshot Balance Web 1`] = `
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -600,13 +582,11 @@ exports[`Snapshot Balance Web 1`] = `
               "WebkitUserSelect": "none",
               "color": "rgba(0,0,255,1.00)",
               "cursor": "pointer",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
               "marginRight": "0.25rem",
               "msUserSelect": "none",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
               "userSelect": "none",
             }
@@ -749,12 +729,10 @@ exports[`Snapshot Balance Web 1`] = `
                 "WebkitUserSelect": "none",
                 "color": "rgba(0,0,255,1.00)",
                 "cursor": "pointer",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue-Medium",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
                 "msUserSelect": "none",
-                "position": "relative",
                 "textDecorationColor": "rgba(0,0,255,1.00)",
                 "userSelect": "none",
               }
@@ -805,12 +783,10 @@ exports[`Snapshot Balance Web 1`] = `
               "WebkitUserSelect": "none",
               "color": "rgba(0,0,255,1.00)",
               "cursor": "pointer",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
               "msUserSelect": "none",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
               "userSelect": "none",
             }
@@ -893,12 +869,10 @@ exports[`Snapshot Balance Web 1`] = `
                 "WebkitUserSelect": "none",
                 "color": "rgba(0,0,255,1.00)",
                 "cursor": "pointer",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue-Medium",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
                 "msUserSelect": "none",
-                "position": "relative",
                 "textDecorationColor": "rgba(0,0,255,1.00)",
                 "userSelect": "none",
               }
@@ -923,12 +897,10 @@ exports[`Snapshot Balance Web 1`] = `
     style={
       Object {
         "color": "rgba(0,0,0,1.00)",
-        "display": "flex",
         "fontFamily": "HelveticaNeue-Bold",
         "fontSize": "1.5rem",
         "lineHeight": "2.0999999999999996rem",
         "marginTop": "4.5rem",
-        "position": "relative",
       }
     }
   >
@@ -941,12 +913,10 @@ exports[`Snapshot Balance Web 1`] = `
     style={
       Object {
         "color": "rgba(0,0,0,1.00)",
-        "display": "flex",
         "fontFamily": "HelveticaNeue",
         "fontSize": "0.875rem",
         "lineHeight": "1.2249999999999999rem",
         "marginTop": "1rem",
-        "position": "relative",
       }
     }
   >

@@ -105,11 +105,9 @@ exports[`Snapshot NavProfile 1`] = `
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue-Bold",
             "fontSize": "1.5rem",
             "lineHeight": "2.0999999999999996rem",
-            "position": "relative",
           }
         }
       >
@@ -131,11 +129,9 @@ exports[`Snapshot NavProfile 1`] = `
             Object {
               "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "color": "rgba(0,0,255,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
           }
@@ -479,11 +475,9 @@ exports[`Snapshot NavProfile 1`] = `
             style={
               Object {
                 "color": "rgba(128,128,128,1.00)",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
-                "position": "relative",
               }
             }
           >
@@ -566,12 +560,10 @@ exports[`Snapshot NavProfile 1`] = `
                 Object {
                   "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
                   "color": "rgba(0,0,0,1.00)",
-                  "display": "flex",
                   "fontFamily": "HelveticaNeue",
                   "fontSize": "0.75rem",
                   "lineHeight": "1.0499999999999998rem",
                   "marginLeft": "0.1875rem",
-                  "position": "relative",
                   "textDecorationColor": "rgba(0,0,0,1.00)",
                 }
               }
@@ -620,11 +612,9 @@ exports[`Snapshot NavProfile 1`] = `
             Object {
               "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "color": "rgba(0,0,255,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
           }
@@ -662,11 +652,9 @@ exports[`Snapshot NavProfile 1`] = `
             Object {
               "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
               "color": "rgba(0,0,255,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
             }
           }

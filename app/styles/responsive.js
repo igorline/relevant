@@ -49,7 +49,7 @@ export const responsiveHandler = val => {
 //   return widthCache.value;
 // }
 
-function getWidth() {
+export function getWidth() {
   try {
     if (isNative) return NATIVE_WIDTH;
     if (isServer) return Dimensions.get('window').width;
