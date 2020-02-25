@@ -10,8 +10,8 @@ import {
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AvatarBox from 'modules/user/avatarbox.component';
 import { globalStyles, greyText } from 'app/styles/global';
+import CommentAuthor from 'modules/comment/comment.author';
 
 let ActionSheet = ActionSheetIOS;
 if (Platform.OS === 'android') {
@@ -28,7 +28,6 @@ class PostInfo extends Component {
     actions: PropTypes.object,
     edit: PropTypes.func,
     delete: PropTypes.func,
-    big: PropTypes.bool,
     preview: PropTypes.bool,
     repost: PropTypes.bool,
     user: PropTypes.object,
@@ -160,7 +159,7 @@ class PostInfo extends Component {
   }
 
   render() {
-    const { post, big, preview, repost, user, avatarText } = this.props;
+    const { post, preview, repost, user, avatarText } = this.props;
     if (!user) return null;
 
     const postActions = (
@@ -172,89 +171,25 @@ class PostInfo extends Component {
       </TouchableOpacity>
     );
 
-    const userEl = (
-      <AvatarBox
-        user={user}
-        setSelected={this.setSelected}
-        postTime={post.postDate}
-        twitter={post.twitter}
-        showRelevance
+    const popup = <View style={[styles.infoRight]}>{repost ? null : postActions}</View>;
+
+    return (
+      <CommentAuthor
         avatarText={avatarText}
+        comment={post}
+        user={user}
+        popup={!preview && popup}
+        preview={preview}
       />
     );
-
-    let info = (
-      <View style={[styles.postHeader, preview ? { paddingTop: 0 } : null]}>
-        <View style={styles.postInfo}>
-          {userEl}
-          <View style={[styles.infoRight]}>{repost ? null : postActions}</View>
-        </View>
-      </View>
-    );
-
-    if (repost) {
-      info = (
-        <View style={styles.repost}>
-          <View style={styles.postInfo}>
-            <UserName
-              repost
-              big={big}
-              user={user}
-              setSelected={this.setSelected}
-              postTime={post.postDate}
-            />
-            <View style={[styles.infoRight]}>
-              {this.props.repost ? null : postActions}
-            </View>
-          </View>
-        </View>
-      );
-    }
-
-    return info;
   }
 }
 
 export default PostInfo;
 
 const localStyles = StyleSheet.create({
-  countdown: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  postInfo: {
-    flexDirection: 'row',
-    overflow: 'visible',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  repost: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'visible',
-    paddingTop: 5,
-    paddingBottom: 0
-  },
-  postHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'visible',
-    paddingTop: 20
-  },
-  progressCirc: {
-    marginTop: -1,
-    marginRight: 5
-  },
-  infoLeft: {
-    justifyContent: 'flex-start'
-  },
   infoRight: {
     justifyContent: 'flex-end',
-    overflow: 'visible'
-  },
-  innerInfo: {
-    flex: 1,
     overflow: 'visible'
   }
 });

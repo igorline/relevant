@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import { colors, mixins } from 'app/styles';
@@ -57,7 +57,7 @@ if (process.env.WEB !== 'true') {
   `;
 }
 
-export class ULinkComponent extends Component {
+export class ULinkComponent extends PureComponent {
   checkAuth = (e, callback) => {
     const {
       auth,

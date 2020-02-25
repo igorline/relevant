@@ -91,14 +91,14 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
-    const { screenSize } = this.props;
+    const { screenSize, actions } = this.props;
     if (this.state.view === 0) {
       return (
         <SingleActivity
           screenSize={screenSize}
           PostComponent={PostComponent}
           singleActivity={rowData}
-          {...this.props}
+          actions={actions}
         />
       );
     }

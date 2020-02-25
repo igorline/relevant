@@ -1,3 +1,4 @@
+import memoize from 'memoizee';
 import { responsiveHandler, getWidth } from './responsive';
 
 let isNative = true;
@@ -7,18 +8,23 @@ if (process.env.WEB === 'true') {
 
 const cache = {};
 
-export default function sizing(unit, type) {
-  if (!isNative) {
-    if (type) return `${unit}${type}`;
-    return `${unit / 2}rem`;
-  }
-  if (type) {
-    if (unit < 0) return unit;
-    return `${unit}${type}`;
-  }
-  if (unit < 0) return unit * 8;
-  return `${unit * 8}px`;
-}
+const sizing = memoize(
+  (unit, type) => {
+    if (type === 'mobileNumber' && isNative) return unit * 8;
+
+    if (!isNative) {
+      if (type) return `${unit}${type}`;
+      return `${unit / 2}rem`;
+    }
+    if (type) {
+      if (unit < 0) return unit;
+      return `${unit}${type}`;
+    }
+    if (unit < 0) return unit * 8;
+    return `${unit * 8}px`;
+  },
+  { primitive: true }
+);
 
 export const size = value => {
   const w = getWidth();
@@ -34,3 +40,5 @@ export const size = value => {
   cache[w][value] = result;
   return result;
 };
+
+export default sizing;

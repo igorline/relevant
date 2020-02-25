@@ -21,10 +21,11 @@ class WithSideNav extends Component {
   static propTypes = {
     route: PropTypes.object,
     isAuthenticated: PropTypes.bool,
-    navigation: PropTypes.object,
     notif: PropTypes.object,
     actions: PropTypes.object,
-    communities: PropTypes.array
+    communities: PropTypes.array,
+    sideNavIsOpen: PropTypes.bool,
+    screenSize: PropTypes.number
   };
 
   isMenuOpen = state => {
@@ -46,8 +47,7 @@ class WithSideNav extends Component {
   }
 
   render() {
-    const { isAuthenticated, navigation, notif, route } = this.props;
-    const { sideNavIsOpen, screenSize } = navigation;
+    const { isAuthenticated, sideNavIsOpen, screenSize, notif, route } = this.props;
     const { promptType } = notif;
     const isDesktop = screenSize === 0;
 
@@ -82,12 +82,12 @@ class WithSideNav extends Component {
                 display="flex"
                 style={{ top: promptType ? layout.BANNER_PROMPT_HEIGHT : 0 }}
               >
-                <SideNav {...this.props} />
+                <SideNav />
               </View>
             </Menu>
           ) : (
             <View fdirection="column" display="flex">
-              <SideNav {...this.props} />
+              <SideNav />
             </View>
           )}
           <View display="flex" flex={1}>
@@ -103,6 +103,8 @@ const mapStateToProps = state => ({
   communities: state.community.list,
   isAuthenticated: state.auth.isAuthenticated,
   navigation: state.navigation,
+  sideNavIsOpen: state.navigation.sideNavIsOpen,
+  screenSize: state.navigation.screenSize,
   notif: state.notif
 });
 

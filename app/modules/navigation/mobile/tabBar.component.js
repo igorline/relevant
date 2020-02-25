@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   StyleSheet,
@@ -30,7 +30,9 @@ TabBar.propTypes = {
   tabs: PropTypes.array
 };
 
-export default function TabBar({ tabs, currentTab, changeTab }) {
+export default memo(TabBar);
+
+function TabBar({ tabs, currentTab, changeTab }) {
   return (
     <View style={styles.footer}>
       {tabs.map(t => (

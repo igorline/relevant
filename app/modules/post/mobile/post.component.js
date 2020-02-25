@@ -12,7 +12,7 @@ import * as investActions from 'modules/post/invest.actions';
 import PostInfo from 'modules/post/postinfo.mobile.component';
 import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import { getTitle, getPostUrl } from 'app/utils/post';
-import { View } from 'modules/styled/uni';
+import { Box } from 'modules/styled/uni';
 import Commentary from './commentary.component';
 
 class Post extends PureComponent {
@@ -44,14 +44,12 @@ class Post extends PureComponent {
     const { post } = this.props;
 
     const separator = (
-      <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
+      <Box style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
     );
 
-    const blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
+    const blocked = <Box style={{ height: StyleSheet.hairlineWidth }} />;
 
-    if (!post || !post._id) {
-      return blocked;
-    }
+    if (!post || !post._id) return blocked;
 
     const isLinkPost = link && (link.url || link.image);
 
@@ -66,17 +64,11 @@ class Post extends PureComponent {
       />
     ) : null;
 
-    // if (post && post.repost) {
-    //   let repost = this.props.posts.posts[post.repost.post];
-    //   if (!repost) repost = { body: '[deleted]' };
-    //   post = { ...repost };
-    // }
-
     const title = getTitle({ post, link });
     const postUrl = getPostUrl(community, post);
 
     const postEl = isLinkPost ? (
-      <View m={preview ? '4 0 0 0' : 0}>
+      <Box m={preview ? '4 0 0 0' : 0}>
         <PostInfo
           key={link._id}
           auth={auth}
@@ -90,7 +82,7 @@ class Post extends PureComponent {
           noLink={noLink}
         />
         {!preview && (
-          <View m={2}>
+          <Box m={2}>
             <ButtonContainer
               horizontal
               post={post}
@@ -99,21 +91,21 @@ class Post extends PureComponent {
               auth={auth}
               link={link}
             />
-          </View>
+          </Box>
         )}
-      </View>
+      </Box>
     ) : (
       <Commentary {...this.props} commentary={[post]} />
     );
 
     return (
-      <View style={{ overflow: 'hidden' }}>
-        <View>
+      <Box style={{ overflow: 'hidden' }}>
+        <Box>
           {postEl}
-          {commentaryEl || (preview && isLinkPost ? <View mt={2} /> : null)}
-        </View>
+          {commentaryEl || (preview && isLinkPost ? <Box mt={2} /> : null)}
+        </Box>
         {!singlePost && !hideDivider ? separator : null}
-      </View>
+      </Box>
     );
   }
 }

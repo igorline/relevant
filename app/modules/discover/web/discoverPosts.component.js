@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
 import get from 'lodash/get';
-// import { LinkFont } from 'modules/styled/uni';
-// import { colors } from 'styles';
 
 class DiscoverPosts extends Component {
   static propTypes = {
@@ -57,21 +55,6 @@ class DiscoverPosts extends Component {
       const post = posts[id];
       if (!post) return null;
 
-      // TODO test this
-      // if (post.twitterCommentary && post.twitterCommentary[0]) {
-      //   post = post.twitterCommentary[0];
-      //   if (!post) return null;
-      // }
-      // if (post[sort] && post[sort].length) {
-      //   if (!post) return null;
-      // }
-
-      let firstPost;
-      if (post.new && post.new.length) {
-        const firstPostId = post.new[post.new.length - 1];
-        firstPost = posts[firstPostId];
-      }
-
       const link = this.props.posts.links[post.metaPost];
       const commentId = get(post, `${sort}.0`);
       const comment = posts[commentId];
@@ -84,9 +67,7 @@ class DiscoverPosts extends Component {
           post={post}
           link={link}
           repost={repost}
-          firstPost={firstPost}
           comment={comment}
-          sort={sort}
         />
       );
     });

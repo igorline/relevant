@@ -37,7 +37,7 @@ export function useLoginWithBox(close) {
   const address = accounts && utils.getAddress(accounts[0]);
   const dispatch = useDispatch();
   return useCallback(async () => {
-    if (!metamask) return Alert.alert('Pleas enable Metamask to log in.');
+    if (!metamask || !address) return Alert.alert('Pleas enable Metamask to log in.');
 
     const provider = new providers.Web3Provider(metamask);
     const { signature, msg } = await signMessage(provider, address);

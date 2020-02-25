@@ -1,3 +1,7 @@
 import { createBrowserHistory } from 'history';
+import { isNative } from 'app/styles';
 
-export default createBrowserHistory();
+const isNode = !process.env.BROWSER;
+const history = !isNative && !isNode && createBrowserHistory();
+
+export default history;

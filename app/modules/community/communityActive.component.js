@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
-import { View, CommunityLink, SecondaryText, BodyText } from 'modules/styled/uni';
+import { View, CommunityLink, SecondaryText, BodyText, Box } from 'modules/styled/uni';
 import { Linkify } from 'app/utils/text';
 import { SIDE_NAV_PADDING } from 'styles/layout';
 import { goToTopic } from 'modules/navigation/navigation.actions';
@@ -25,7 +25,9 @@ CommunityActive.propTypes = {
   userMemberships: PropTypes.array
 };
 
-export default function CommunityActive({
+export default memo(CommunityActive);
+
+function CommunityActive({
   community,
   children,
   members,
@@ -76,9 +78,9 @@ export default function CommunityActive({
               onPress={() => dispatch(goToTopic(topic))}
               to={`/${community.slug}/${sort}/${topic}`}
             >
-              <CommunityLink key={topic} p={'0.5 0'}>
-                #{topic}
-              </CommunityLink>
+              <Box mt={0.5} mb={0.5}>
+                <CommunityLink key={topic}>#{topic}</CommunityLink>
+              </Box>
             </ULink>
           ))}
         </View>

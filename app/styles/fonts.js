@@ -30,6 +30,14 @@ export const header = {
   color: colors.black
 };
 
+export const highlight = {
+  fontSize: sizing(2.5),
+  lineHeight: sizing(2.5 * lh),
+  fontFamily: GEORGIA,
+  fontStyle: 'italic',
+  color: colors.black
+};
+
 export const title = {
   // display: 'flex',
   fontSize: sizing(2.5),

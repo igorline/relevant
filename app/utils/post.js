@@ -6,14 +6,22 @@ export const URL_REGEX = new RegExp(
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+~#?&//=]*)/g
 );
 
-export function getTitle({ post, link, firstPost, maxLength }) {
-  let title =
-    (link && get(link, 'title')) ||
-    get(post, 'title') ||
-    get(post, 'body') ||
-    (firstPost && get(firstPost, 'body'));
-  maxLength = maxLength || 160;
-  if (title && title.length > maxLength) title = title.substring(0, maxLength) + '...';
+export function getTitle({ post, link, maxLength }) {
+  let title = (link && get(link, 'title')) || get(post, 'title');
+  const fromBody = !title || title === '';
+  title = title || get(post, 'body');
+
+  const limit = maxLength || 160;
+  if (fromBody) {
+    const lines = title.split(/\n/);
+    title = lines.slice(0, 1).join('\n');
+    if (title.length <= limit) return title;
+    return title.substr(0, title.lastIndexOf(' ', limit)) + '...';
+  }
+
+  if (title && title.length > limit) {
+    title = title.substr(0, title.lastIndexOf(' ', limit)) + '...';
+  }
   title = title && title.trim();
   return title;
 }

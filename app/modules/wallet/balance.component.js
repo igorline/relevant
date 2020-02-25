@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { truncateAddress } from 'app/utils/eth';
@@ -55,7 +55,7 @@ export function Balance() {
       <View br bl bt p="2" mt={2}>
         <View fdirection="row" justify="space-between" wrap>
           <BodyText mb={0.5}>Account Balance</BodyText>
-          <SecondaryText mb={0.5}>{truncateAddress(user.ethAddress[0])}</SecondaryText>
+          <SecondaryText>{truncateAddress(user.ethAddress[0])}</SecondaryText>
         </View>
         <View fdirection="row" align="center" display="flex" mt={2}>
           <CoinStat fs={4.5} lh={5} size={5} user={user} align="center" showPrice />
@@ -155,4 +155,4 @@ function getAccountDetail({
   ];
 }
 
-export default Balance;
+export default memo(Balance);

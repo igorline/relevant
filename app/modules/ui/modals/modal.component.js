@@ -97,7 +97,7 @@ function ModalComponent(props) {
           {hideX ? null : (
             <Touchable
               onPress={closeModal}
-              style={{ zIndex: 1, position: 'absolute', top: 0, right: 0 }}
+              style={{ zIndex: 10, position: 'absolute', top: 0, right: 0 }}
             >
               <CloseX
                 w={2.5}

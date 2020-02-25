@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { Fragment, memo } from 'react';
 import PropTypes from 'prop-types';
-import { colors } from 'app/styles';
+import { colors, isNative } from 'app/styles';
 import RStat from 'modules/stats/rStat.component';
 import ULink from 'modules/navigation/ULink.component';
 import Avatar from 'modules/user/UAvatar.component';
 import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
-import { Text, View, SecondaryText, Image, BodyText } from 'modules/styled/uni';
+import { Text, View, SecondaryText, Image, BodyText, Box } from 'modules/styled/uni';
+import sizing from 'styles/sizing';
 
 export const Name = styled(BodyText)``;
 
-export default function AvatarBox(props) {
+export default memo(AvatarBox);
+
+AvatarBox.propTypes = {
+  noLink: PropTypes.bool,
+  avatarText: PropTypes.func,
+  twitter: PropTypes.bool,
+  type: PropTypes.string,
+  user: PropTypes.object,
+  size: PropTypes.number,
+  showRelevance: PropTypes.bool,
+  repost: PropTypes.bool,
+  postTime: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  setSelected: PropTypes.func,
+  navigationCallback: PropTypes.func,
+  vertical: PropTypes.bool
+};
+
+function AvatarBox(props) {
   const {
     user,
     showRelevance,
@@ -19,11 +37,11 @@ export default function AvatarBox(props) {
     size,
     postTime,
     repost,
-    condensedView,
     twitter,
     avatarText,
     noLink,
-    navigationCallback
+    navigationCallback,
+    vertical
   } = props;
 
   if (!user) return null;
@@ -36,9 +54,9 @@ export default function AvatarBox(props) {
     timestamp = ' • ' + getTimestamp(postTime);
   }
 
-  const handleEl = handle && (
+  const handleEl = handle && !vertical && (
     <SecondaryText mt={0.25}>
-      <SecondaryText>{handle}</SecondaryText> {timestamp}
+      {handle} {timestamp}
     </SecondaryText>
   );
 
@@ -65,67 +83,86 @@ export default function AvatarBox(props) {
     />
   );
 
+  const showRel = user.relevance && showRelevance && !avatarText;
+
   return (
-    <ULink
-      noLink={noLink}
-      to={`/user/profile/${user.handle}`}
-      onPress={() => {
-        setSelected(user);
-        if (navigationCallback) {
-          navigationCallback();
-        }
-      }}
-      onClick={() => {
-        if (navigationCallback) {
-          navigationCallback();
-        }
-      }}
-    >
-      <View flex={1} fdirection={'row'}>
-        <Avatar size={size} user={user} noLink />
-        {repostIcon}
-        <View
-          ml={avatarText ? 1.5 : 1}
-          justify={condensedView ? 'flex-start' : 'center'}
-          flex={1}
-        >
-          <Text inline={1}>
-            <Name inline={1} c={colors.black}>
-              {user.name}
-              {twitterIcon}
-            </Name>
-            {user.relevance && showRelevance && !avatarText && (
-              <Text inline={1}>
-                {' '}
-                <RStat inline={1} align={'baseline'} lh={1.75} size={1.75} user={user} />
-              </Text>
-            )}
-            {avatarText ? (
-              <Text c={colors.black} inline={1}>
-                {' '}
-                {avatarText()}
-              </Text>
-            ) : null}
-            {condensedView && handleEl}
-          </Text>
-          {!condensedView && handleEl}
+    <Box>
+      <ULink
+        noLink={noLink}
+        to={`/user/profile/${user.handle}`}
+        onPress={() => {
+          setSelected(user);
+          if (navigationCallback) {
+            navigationCallback();
+          }
+        }}
+        onClick={() => {
+          if (navigationCallback) {
+            navigationCallback();
+          }
+        }}
+      >
+        <View flex={1} fdirection={vertical ? 'column' : 'row'}>
+          <Avatar size={size} user={user} noLink />
+          {repostIcon}
+          <View
+            ml={vertical ? 0 : avatarText ? 1.5 : 1}
+            align={vertical ? 'center' : 'flex-start'}
+            justify={'center'}
+          >
+            <Text mt={vertical ? 1 : 0} inline={1}>
+              <UserName user={user} showRel={showRel} twitterIcon={twitterIcon} />
+              {avatarText ? (
+                <Text c={colors.black} inline={1}>
+                  {' '}
+                  {avatarText()}
+                </Text>
+              ) : null}
+            </Text>
+            {handleEl}
+          </View>
         </View>
-      </View>
-    </ULink>
+      </ULink>
+    </Box>
   );
 }
 
-AvatarBox.propTypes = {
-  noLink: PropTypes.bool,
-  avatarText: PropTypes.func,
-  twitter: PropTypes.bool,
-  condensedView: PropTypes.bool,
-  type: PropTypes.string,
+UserName.propTypes = {
   user: PropTypes.object,
-  size: PropTypes.number,
-  showRelevance: PropTypes.bool,
-  repost: PropTypes.bool,
-  postTime: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  setSelected: PropTypes.func,
-  navigationCallback: PropTypes.func
+  twitterIcon: PropTypes.node,
+  showRel: PropTypes.bool
 };
+
+export function UserName({ user, showRel, twitterIcon }) {
+  const elipses = isNative
+    ? {}
+    : {
+        // overflowText: 'elipses',
+        // display: 'inline-block',
+        // verticalAlign: 'bottom',
+        maxWidth: sizing(12),
+        whiteSpace: 'nowrap'
+      };
+  return (
+    <Fragment>
+      <Name
+        numberOfLines={1}
+        style={{
+          overflow: 'hidden',
+          ...elipses
+        }}
+        inline={1}
+        c={colors.black}
+      >
+        {user.name}
+        {twitterIcon}
+      </Name>
+      {showRel && (
+        <Text inline={1}>
+          {' '}
+          <RStat inline={1} align={'baseline'} lh={1.75} size={1.75} user={user} />
+        </Text>
+      )}
+    </Fragment>
+  );
+}

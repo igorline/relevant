@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
@@ -7,6 +8,7 @@ import styled from 'styled-components/primitives';
 import { View, Image } from 'modules/styled/uni';
 import { getFavIcon, getTitle } from 'app/utils/post';
 import UrlPreview from 'modules/createPost/mobile/urlPreview.component';
+import { goToUrl } from 'modules/navigation/navigation.actions';
 import PostTitle from './postTitle.component';
 
 const GradientContainer = styled(View)`
@@ -27,8 +29,20 @@ const TitleContainer = styled(View)`
 const IMAGE_HEIGHT = 30;
 const PREVIEW_HEIGHT = 16;
 
-export default function ImagePost(props) {
-  const { post, link, goToPost, actions, preview, noLink } = props;
+ImagePost.propTypes = {
+  noLink: PropTypes.bool,
+  link: PropTypes.object,
+  post: PropTypes.object,
+  singlePost: PropTypes.bool,
+  preview: PropTypes.bool,
+  goToPost: PropTypes.func
+};
+
+export default memo(ImagePost);
+
+function ImagePost(props) {
+  const dispatch = useDispatch();
+  const { post, link, goToPost, preview, noLink } = props;
 
   if (!post) return null;
   const imageUrl = get(link, 'image');
@@ -53,7 +67,7 @@ export default function ImagePost(props) {
       fdirection={'row'}
     >
       <ULink
-        onPress={goToPost || (() => actions.goToUrl(post.url))}
+        onPress={goToPost || (() => dispatch(goToUrl(post.url)))}
         external
         to={post.url}
         target="_blank"
@@ -84,12 +98,3 @@ export default function ImagePost(props) {
   if (post.url) return <View>{postContent}</View>;
   return postContent;
 }
-
-ImagePost.propTypes = {
-  noLink: PropTypes.bool,
-  link: PropTypes.object,
-  post: PropTypes.object,
-  community: PropTypes.string,
-  postUrl: PropTypes.string,
-  firstPost: PropTypes.object
-};

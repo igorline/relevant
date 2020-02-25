@@ -28,21 +28,6 @@ $navShadow: 0 3.5px 4px -5px $darkGrey;
 $postShadow: 0 0 8px -4px $grey;
 $postShadowHover: 0 0 12px -4px $grey;
 
-
-
-%bebasFont {
-  font-family: Bebas;
-  margin-bottom: -3px;
-}
-
-%number {
-  font-family: Bebas;
-  font-size: 23px;
-  letter-spacing: .5px;
-}
-
-/*$postOffset:  200px;
-$postOffsetPadding: 230px;*/
 $postOffset: 0;
 $postOffsetPadding: 0;
 

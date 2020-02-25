@@ -11,13 +11,7 @@ import {
   ActionSheetIOS
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {
-  globalStyles,
-  mainPadding,
-  fullWidth,
-  greyText,
-  borderGrey
-} from 'app/styles/global';
+import { globalStyles, mainPadding, greyText, borderGrey } from 'app/styles/global';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
@@ -27,9 +21,7 @@ import * as userActions from 'modules/user/user.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 
 import * as utils from 'app/utils';
-import UserName from 'modules/user/avatarbox.component';
-import PostBody from 'modules/post/mobile/postBody.component';
-import PostInfo from 'modules/post/mobile/postInfo.component';
+import Avatar from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
 
@@ -228,17 +220,6 @@ class UrlComponent extends Component {
   }
 
   render() {
-    let repostBody;
-
-    if (this.props.repost) {
-      repostBody = (
-        <View style={{ flex: 0, width: fullWidth - 20, paddingBottom: 20 }}>
-          <PostInfo preview post={this.props.repost} users={this.props.users} />
-          <PostBody preview post={this.props.repost} />
-        </View>
-      );
-    }
-
     let urlPlaceholder = 'Article URL.';
 
     if (this.props.postUrl) {
@@ -254,7 +235,7 @@ class UrlComponent extends Component {
       userHeader = (
         <View style={styles.createPostUser}>
           <View style={[styles.innerBorder, { paddingVertical: 10 }]}>
-            <UserName
+            <Avatar
               style={styles.innerBorder}
               user={this.props.user}
               setSelected={() => null}
@@ -381,7 +362,6 @@ class UrlComponent extends Component {
           {tipCTA}
         </View>
         {userSearch}
-        {repostBody}
         {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
           <View style={{ marginVertical: 8 }}>
             <UrlPreview {...this.props} size={'small'} urlMenu={this.previewMenu} />

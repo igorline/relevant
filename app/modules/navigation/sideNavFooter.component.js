@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { View, BodyText, InlineText } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
@@ -30,4 +30,4 @@ SideNavFooter.propTypes = {
   actions: PropTypes.object
 };
 
-export default SideNavFooter;
+export default memo(SideNavFooter);
