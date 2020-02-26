@@ -124,7 +124,7 @@ export const styles = {
   },
   list_item: {
     marginBottom: -10,
-    marginTop: 0,
-    lineHeight: 18
+    marginTop: -10,
+    lineHeight: 36
   }
 };

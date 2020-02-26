@@ -2,7 +2,7 @@ import * as types from 'core/actionTypes';
 
 const initialState = {
   personal: [],
-  count: false,
+  count: 0,
   loaded: false,
   general: [],
   promptType: null,
