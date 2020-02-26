@@ -117,19 +117,19 @@ class Application extends Component {
     }
   }
 
-  componentWillReceiveProps(next) {
+  componentDidUpdate(prev) {
     const { auth, actions } = this.props;
-    if (!auth.user && next.auth.user) {
-      Analytics.setUserId(next.auth.user._id);
+    if (!prev.auth.user && auth.user) {
+      Analytics.setUserId(auth.user._id);
 
-      actions.userToSocket(next.auth.user._id);
+      actions.userToSocket(auth.user._id);
       actions.getNotificationCount();
 
-      const { community } = next.auth.user;
-      if (community) next.actions.setCommunity(community);
+      const { community } = auth.user;
+      if (community) actions.setCommunity(community);
 
-      if (next.auth.invitecode) {
-        actions.redeemInvite(next.auth.invitecode);
+      if (auth.invitecode) {
+        actions.redeemInvite(auth.invitecode);
       }
     }
   }

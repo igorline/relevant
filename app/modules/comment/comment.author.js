@@ -7,7 +7,7 @@ import CommentInfo from 'modules/comment/comment.info';
 CommentAuthor.propTypes = {
   comment: PropTypes.object,
   hideAvatar: PropTypes.bool,
-  avatarText: PropTypes.node,
+  avatarText: PropTypes.func,
   noLink: PropTypes.bool,
   user: PropTypes.object,
   popup: PropTypes.node,

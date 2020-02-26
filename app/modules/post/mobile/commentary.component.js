@@ -215,49 +215,50 @@ class Commentary extends PureComponent {
         <TabViewContext.Consumer>
           {tabView => (
             <DrawerGestureContext.Consumer>
-              {drawer => (
-                <PanGestureHandler
-                  enabled={commentary.length > 1}
-                  ref={this.panRef}
-                  activeOffsetX={[-5, 5]}
-                  onHandlerStateChange={this.handleGesture}
-                  onGestureEvent={this.handleGesture}
-                  simultaneousHandlers={[drawer, tabView, this.listRef]}
-                >
-                  <NativeViewGestureHandler
-                    enabled={commentary.length > 1 && scrollEnabled}
-                    ref={this.listRef}
-                    shouldRecognizeSimultaneously
-                    // simultaneousHandlers={[drawer, tabView, this.panRef]}
-                    // waitFor={this.state.scrollEnabled ? [] : [drawer, tabView]}
+              {drawer => {
+                return (
+                  <PanGestureHandler
+                    enabled={commentary.length > 1}
+                    ref={this.panRef}
+                    activeOffsetX={[-5, 5]}
+                    onHandlerStateChange={this.handleGesture}
+                    onGestureEvent={this.handleGesture}
+                    simultaneousHandlers={[drawer, tabView, this.listRef].filter(h => h)}
                   >
-                    <FlatList
-                      style={{ marginTop: !preview ? 16 : 0 }}
-                      ref={this.scrollView}
-                      shouldActivateOnStart={false}
-                      scrollEnabled={commentary.length > 1 && scrollEnabled}
-                      scrollEventThrottle={30}
-                      scrollToOverflowEnabled={false}
-                      alwaysBounceHorizontal={false}
-                      bounces={false}
-                      onScroll={e => {
-                        const { x } = e.nativeEvent.contentOffset;
-                        const length = e.nativeEvent.layoutMeasurement.width;
-                        this.scrollOffset = x;
-                        this.maxOffset = length * (commentary.length - 1);
-                      }}
-                      keyExtractor={(item, index) => index.toString()}
-                      horizontal={!preview}
-                      data={commentary}
-                      renderItem={this.renderItem}
-                      pagingEnabled
-                      contentContainerStyle={[!preview ? styles.postScroll : null]}
-                      showsHorizontalScrollIndicator={false}
-                      onMomentumScrollEnd={this.onScrollEnd}
-                    />
-                  </NativeViewGestureHandler>
-                </PanGestureHandler>
-              )}
+                    <NativeViewGestureHandler
+                      enabled={commentary.length > 1 && scrollEnabled}
+                      ref={this.listRef}
+                      // shouldRecognizeSimultaneously
+                      simultaneousHandlers={[drawer, tabView, this.panRef].filter(h => h)}
+                    >
+                      <FlatList
+                        style={{ marginTop: !preview ? 16 : 0 }}
+                        ref={this.scrollView}
+                        shouldActivateOnStart={false}
+                        scrollEnabled={commentary.length > 1 && scrollEnabled}
+                        scrollEventThrottle={30}
+                        scrollToOverflowEnabled={false}
+                        alwaysBounceHorizontal={false}
+                        bounces={false}
+                        onScroll={e => {
+                          const { x } = e.nativeEvent.contentOffset;
+                          const length = e.nativeEvent.layoutMeasurement.width;
+                          this.scrollOffset = x;
+                          this.maxOffset = length * (commentary.length - 1);
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal={!preview}
+                        data={commentary}
+                        renderItem={this.renderItem}
+                        pagingEnabled
+                        contentContainerStyle={[!preview ? styles.postScroll : null]}
+                        showsHorizontalScrollIndicator={false}
+                        onMomentumScrollEnd={this.onScrollEnd}
+                      />
+                    </NativeViewGestureHandler>
+                  </PanGestureHandler>
+                );
+              }}
             </DrawerGestureContext.Consumer>
           )}
         </TabViewContext.Consumer>
