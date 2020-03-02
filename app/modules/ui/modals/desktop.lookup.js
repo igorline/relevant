@@ -28,6 +28,7 @@ const ConfirmEmail = loadable(() => import('modules/auth/web/confirmEmail.compon
 const BetBody = loadable(() => import('modules/post/bet/bet'));
 const CashOutModal = loadable(() => import('modules/wallet/web/cashOutModal'));
 const Signup3Box = loadable(() => import('modules/auth/web/signup3Box'));
+const LinkMobile = loadable(() => import('modules/profile/web/linkMobile'));
 
 const ConnectMetamaskModal = loadable(() =>
   import('modules/wallet/web/connectMetamaskModal')
@@ -40,6 +41,11 @@ const CreatePost = loadable(() => import('modules/createPost/createPost.containe
 const ModalHeader = loadable(() =>
   import('modules/createPost/web/createPostModal.header')
 );
+
+export const linkMobile = {
+  Body: LinkMobile,
+  maxWidth: [52, 40]
+};
 
 export const signup3Box = {
   Body: Signup3Box

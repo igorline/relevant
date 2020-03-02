@@ -11,7 +11,8 @@ import {
   goToUrl,
   push,
   reloadTab,
-  refreshTab
+  refreshTab,
+  showModal
 } from 'modules/navigation/navigation.actions';
 
 import { AuthNavigator, AuthStack } from 'modules/_app/mobile/authRouter';
@@ -67,7 +68,8 @@ const mapDispatchToProps = dispatch => ({
       goToUrl,
       push,
       refreshTab,
-      reloadTab
+      reloadTab,
+      showModal
     },
     dispatch
   )

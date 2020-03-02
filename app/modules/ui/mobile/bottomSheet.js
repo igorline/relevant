@@ -29,7 +29,7 @@ export function BottomSheet({ children, close }) {
   const [showBg, setShowBg] = useState(true);
 
   const SnapPointsFromTop =
-    height < windowHeight
+    height <= windowHeight
       ? [windowHeight - height, windowHeight]
       : [50, windowHeight * 0.4, windowHeight];
 

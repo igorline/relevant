@@ -51,7 +51,12 @@ export default function CommentBody({
   text = linkifyText(text, community, comment.url);
 
   const body = (
-    <Markdown noLink className={'markdown-body'} renderers={RENDERERS} markdown={text} />
+    <Markdown
+      noLink={noLink}
+      className={'markdown-body'}
+      renderers={RENDERERS}
+      markdown={text}
+    />
   );
 
   const postLink = comment.parentPost || comment;
@@ -103,6 +108,10 @@ function trimText(text, limit) {
 
 function handleCodeblock(excerpt) {
   const hasCodeblock = excerpt.match('```');
+  if (!hasCodeblock) return excerpt;
+  const lastIndex = hasCodeblock.index;
+  if (excerpt.length === lastIndex + 3) return excerpt.substr(0, lastIndex);
+
   const hasUnclosedCodeblock = hasCodeblock && hasCodeblock.length % 2 !== 0;
   return hasUnclosedCodeblock ? excerpt + '\n```\n' : excerpt;
 }

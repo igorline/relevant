@@ -97,21 +97,21 @@ export const styles = {
     backgroundColor: 'rgba(27,31,35,.05)',
     borderWidth: 0,
     borderRadius: 3,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
   },
   code_inline: {
     backgroundColor: 'rgba(27,31,35,.05)',
     borderRadius: 3,
     borderWidth: 0,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
   },
   fence: {
     borderWidth: 0,
     backgroundColor: 'rgba(27,31,35,.05)',
     borderRadius: 3,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace',
     marginBottom: 10
   },

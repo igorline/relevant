@@ -17,9 +17,10 @@ import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, IphoneX } from 'app/styles/global';
 import { colors } from 'styles';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import { Button } from 'modules/styled/uni';
 import TwitterButton from './TwitterButton.component';
+// import ConnectDesktop from './connectDesktop';
 
-let localStyles;
 let styles;
 
 class Login extends Component {
@@ -69,7 +70,7 @@ class Login extends Component {
   }
 
   render() {
-    styles = { ...localStyles, ...globalStyles };
+    const { actions } = this.props;
 
     let KBView = KeyboardAvoidingView;
     if (this.props.share) {
@@ -89,13 +90,6 @@ class Login extends Component {
         <Text style={styles.signInText}>
           Sign in with your Relevant account to finish
         </Text>
-      </View>
-    );
-
-    const twitter = (
-      <View style={{ flex: 1 }}>
-        <Text style={styles.signInText}>or</Text>
-        <TwitterButton auth={this.props.auth} actions={this.props.actions} />
       </View>
     );
 
@@ -154,7 +148,20 @@ class Login extends Component {
                 style={styles.fieldsInput}
               />
             </View>
-            {local ? null : twitter}
+            {local ? null : (
+              <View>
+                <Text style={styles.signInText}>or</Text>
+                <TwitterButton auth={this.props.auth} actions={this.props.actions} />
+              </View>
+            )}
+            {!local && (
+              <View style={{ marginTop: 18 }}>
+                <Button onPress={() => actions.showModal('connectDesktop')}>
+                  Sign in with Desktop Browser
+                </Button>
+              </View>
+            )}
+            <View style={{ flex: 1 }} />
             {this.props.auth.twitter ? twitterConnect : null}
           </View>
 
@@ -183,11 +190,12 @@ Login.propTypes = {
   share: PropTypes.bool // flag for share extension
 };
 
-localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   forgot: {
     textAlign: 'center',
     marginTop: 5
   }
 });
+styles = { ...localStyles, ...globalStyles };
 
 export default Login;
