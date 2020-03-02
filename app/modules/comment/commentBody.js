@@ -48,24 +48,36 @@ export default function CommentBody({
   let text = isPreview ? trimText(fullText, textTrim) : fullText;
   const readMore = text.length < fullText.length;
   text += readMore ? ' _...Read More_' : '';
-  text = linkifyText(text, community);
+  text = linkifyText(text, community, comment.url);
 
   const body = (
-    <Markdown className={'markdown-body'} renderers={RENDERERS} markdown={text} />
+    <Markdown noLink className={'markdown-body'} renderers={RENDERERS} markdown={text} />
   );
 
   const postLink = comment.parentPost || comment;
   const postLinkObj = postLink._id ? postLink : { _id: postLink };
 
   // link to full post
-  if (isPreview) {
+  if (isPreview || noLink) {
     return (
-      <View m={'0 3 1 0'} pl={avatarText ? 5 : 0}>
+      <View shrink={1} m={'0 3 1 0'} pl={avatarText ? 5 : 0}>
         <Touchable
           style={{ zIndex: 0 }}
           to={postUrl}
-          onPress={() => dispatch(goToPost({ ...postLinkObj, comment }))}
-          onClick={() => (noLink ? null : history.push(postUrl))}
+          onPress={e => {
+            if (noLink) {
+              e.preventDefault();
+              return e.stopPropagation();
+            }
+            return dispatch(goToPost({ ...postLinkObj, comment }));
+          }}
+          onClick={e => {
+            if (noLink) {
+              e.preventDefault();
+              return e.stopPropagation();
+            }
+            return history.push(postUrl);
+          }}
         >
           {body}
         </Touchable>
@@ -74,7 +86,7 @@ export default function CommentBody({
   }
 
   return (
-    <View mb={1} pl={avatarText ? 5 : 0}>
+    <View shrink={1} mb={1} pl={avatarText ? 5 : 0}>
       {body}
     </View>
   );
@@ -84,8 +96,15 @@ function trimText(text, limit) {
   if (!text || !text.length) return text;
   const lines = text.split(/\n/);
   text = lines.slice(0, 3).join('\n');
-  if (text.length <= limit) return text;
-  return text.substr(0, text.lastIndexOf(' ', limit));
+  if (text.length <= limit) return handleCodeblock(text);
+  const excerpt = text.substr(0, text.lastIndexOf(' ', limit));
+  return handleCodeblock(excerpt);
+}
+
+function handleCodeblock(excerpt) {
+  const hasCodeblock = excerpt.match('```');
+  const hasUnclosedCodeblock = hasCodeblock && hasCodeblock.length % 2 !== 0;
+  return hasUnclosedCodeblock ? excerpt + '\n```\n' : excerpt;
 }
 
 MarkdownLink.propTypes = {

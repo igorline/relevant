@@ -13,7 +13,8 @@ export function getMentions(words) {
   return words
     .map(word => {
       if (word.match(/^@\S+/g)) {
-        return word.replace('@', '');
+        const mention = word.replace(/@/g, '');
+        return mention !== '' ? mention : null;
       }
       return null;
     })
@@ -24,7 +25,7 @@ export function getTags(words) {
   return words
     .map(word => {
       if (word.match(/^#\S+/g)) {
-        const tag = word.replace('#', '').trim();
+        const tag = word.replace(/#/g, '').trim();
         return tag !== '' ? tag : null;
       }
       return null;
@@ -34,9 +35,8 @@ export function getTags(words) {
 
 export function getWords(text) {
   const res = text
-    // .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
-    .replace(/[,.!?](?!\b)|[\s+]/g, a => '`' + a + '`')
-    .split(/`/);
+    .replace(/[,.!?](?!\b)|[\s+]/g, a => '__WRD_SPLT__' + a + '__WRD_SPLT__')
+    .split(/__WRD_SPLT__/);
   return res;
 }
 

@@ -15,16 +15,18 @@ if (process.env.WEB === 'true') {
 }
 
 MD.propTypes = {
-  markdown: PropTypes.string
+  markdown: PropTypes.string,
+  noLink: PropTypes.bool
 };
 
-export default function MD({ markdown, ...props }) {
+export default function MD({ markdown, noLink, ...props }) {
   const dispatch = useDispatch();
   if (isNative)
     return (
       <MarkdownNative
         mergeStyle={true}
         onLinkPress={url => {
+          if (noLink) return null;
           switch (true) {
             case url === '':
               return true;
@@ -110,7 +112,8 @@ export const styles = {
     backgroundColor: 'rgba(27,31,35,.05)',
     borderRadius: 3,
     fontSize: 16,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace',
+    marginBottom: 10
   },
   paragraph: {
     marginTop: 0,

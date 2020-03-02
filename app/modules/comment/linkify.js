@@ -3,7 +3,9 @@ import { isNative } from 'styles';
 
 const linkify = Linkify();
 
-export default function linkifyText(text, community) {
+export const linkifyMatch = text => linkify.match(text);
+
+export default function linkifyText(text, community, omitUrl) {
   const matches = linkify.match(text);
   if (!matches) return text;
   let offset = 0;
@@ -12,7 +14,8 @@ export default function linkifyText(text, community) {
     const prependToUrl = schema === '#' && !isNative ? `/${community}` : '';
     // Already a link
     if (text[index - 1] === '(' && text[lastIndex] === ')') return;
-    const link = `[${txt}](${prependToUrl}${url}) `;
+    // Omit link if we have preview
+    const link = omitUrl && omitUrl === url ? '' : `[${txt}](${prependToUrl}${url}) `;
     text = text.slice(0, index + offset) + link + text.slice(lastIndex + offset);
     offset += link.length - (lastIndex - index);
   });

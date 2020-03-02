@@ -27,7 +27,7 @@ import { getCommunities } from 'modules/community/community.actions';
 
 import BannerPrompt from 'modules/bannerPrompt/banner.container';
 import Tooltip from 'modules/tooltip/mobile/tooltip.container';
-import { fullHeight, IphoneX } from 'app/styles/global';
+import { fullHeight } from 'app/styles/global';
 import queryString from 'query-string';
 import { BANNED_COMMUNITY_SLUGS } from 'server/config/globalConstants';
 import PriceProvider from 'modules/wallet/price.context';
@@ -36,10 +36,6 @@ import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
 import * as modals from 'modules/ui/modals/mobile.lookup';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Beacon } from 'react-native-help-scout';
-import { Button, AbsoluteView } from 'modules/styled/uni';
-
-Beacon.init('40ed799c-8c6c-4226-9215-5adfd59e35eb');
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
 
@@ -266,16 +262,6 @@ class Application extends Component {
           <HeartAnimation />
           <DownvoteAnimation />
           <UpvoteAnimation />
-          <AbsoluteView
-            absolute
-            bottom={IphoneX ? 12 : 8}
-            right={2}
-            styles={{ zIndex: 1000 }}
-          >
-            <Button onPress={() => Beacon.open()} bradius={2} h={4} minwidth={'0'}>
-              Help
-            </Button>
-          </AbsoluteView>
         </PriceProvider>
       </View>
     );

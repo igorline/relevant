@@ -27,6 +27,7 @@ export const View = styled.View`
 `;
 
 export const AbsoluteView = styled.View`
+  position: absolute;
   ${mixins.position}
 `;
 

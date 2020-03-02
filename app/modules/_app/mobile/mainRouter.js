@@ -17,7 +17,7 @@ import {
   CreatePostNavigator,
   CreatePostStack
 } from 'modules/_app/mobile/createPostRouter';
-import { TabContainer } from 'modules/_app/mobile/tabRouter';
+import TabContainerWithHelp from 'modules/_app/mobile/tabRouterWithHelp';
 import { fullWidth } from 'app/styles/global';
 
 class CreatePostWrapper extends Component {
@@ -48,7 +48,7 @@ export const RootStack = createStackNavigator(
       path: ''
     },
     main: {
-      screen: TabContainer,
+      screen: TabContainerWithHelp,
       path: ''
     },
     stall: {

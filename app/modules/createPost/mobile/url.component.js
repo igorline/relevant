@@ -24,6 +24,7 @@ import * as utils from 'app/utils';
 import Avatar from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
+import { colors } from 'styles';
 
 import UserSearchComponent from './userSearch.component';
 import UrlPreview from './urlPreview.component';
@@ -52,7 +53,8 @@ class UrlComponent extends Component {
     edit: PropTypes.bool,
     users: PropTypes.object,
     user: PropTypes.object,
-    tags: PropTypes.array
+    tags: PropTypes.array,
+    disableUrl: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -85,7 +87,17 @@ class UrlComponent extends Component {
   }
 
   removeUrlPreview = () => {
-    this.props.actions.setCreatePostState({ urlPreview: null, postUrl: null });
+    this.props.actions.setCreatePostState({
+      urlPreview: null,
+      postUrl: null,
+      disableUrl: true
+    });
+  };
+
+  enableUrlPreview = () => {
+    const { postBody } = this.props;
+    this.props.actions.setCreatePostState({ disableUrl: false });
+    setTimeout(() => this.processInput(postBody), 1);
   };
 
   previewMenu = () => {
@@ -135,6 +147,7 @@ class UrlComponent extends Component {
   }
 
   processInput(postBody, doneTyping) {
+    const { disableUrl } = this.props;
     const length = postBody ? postBody.length : 0;
 
     if (doneTyping) postBody = this.props.postBody;
@@ -151,7 +164,7 @@ class UrlComponent extends Component {
     // eslint-disable-next-line
     if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
-    if (!this.props.postUrl && shouldParseUrl) {
+    if (!disableUrl && !this.props.postUrl && shouldParseUrl) {
       let postUrl;
       const possibleUrls = words.filter(word => URL_REGEX.test(word));
       postUrl = possibleUrls[0];
@@ -195,12 +208,12 @@ class UrlComponent extends Component {
   createPreview(postUrl) {
     this.props.actions.generatePreviewServer(postUrl).then(results => {
       if (results) {
-        const newBody = this.props.postBody
-          ? this.props.postBody.replace(`${postUrl}`, '').trim()
-          : '';
+        // const newBody = this.props.postBody
+        //   ? this.props.postBody.replace(`${postUrl}`, '').trim()
+        //   : '';
 
         this.props.actions.setCreatePostState({
-          postBody: newBody,
+          // postBody: newBody,
           domain: results.domain,
           postUrl: results.url,
           keywords: results.keywords,
@@ -220,6 +233,7 @@ class UrlComponent extends Component {
   }
 
   render() {
+    const { disableUrl } = this.props;
     let urlPlaceholder = 'Article URL.';
 
     if (this.props.postUrl) {
@@ -362,6 +376,14 @@ class UrlComponent extends Component {
           {tipCTA}
         </View>
         {userSearch}
+        {disableUrl && (
+          <Text
+            onPress={this.enableUrlPreview}
+            style={{ color: colors.blue, position: 'absolute', bottom: 16, right: 0 }}
+          >
+            Enable Link Preview
+          </Text>
+        )}
         {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
           <View style={{ marginVertical: 8 }}>
             <UrlPreview {...this.props} size={'small'} urlMenu={this.previewMenu} />
@@ -431,7 +453,8 @@ function mapStateToProps(state) {
     postBody: state.createPost.postBody,
     urlPreview: state.createPost.urlPreview,
     repost: state.createPost.repost,
-    tags: state.tags.parentTags
+    tags: state.tags.parentTags,
+    disableUrl: state.createPost.disableUrl
   };
 }
 

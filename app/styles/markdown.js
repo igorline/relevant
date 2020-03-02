@@ -1,4 +1,7 @@
 const codes = `
+  .markdow-body {
+    flex: 1;
+  }
   .markdown-body code {
     padding: .2em .4em;
     margin: 0;
