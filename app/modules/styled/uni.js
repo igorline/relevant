@@ -308,9 +308,10 @@ export const Spacer = styled(View)`
 
 export const CloseX = styled(Image)`
   position: absolute;
+  ${p => (p.position ? `position: ${p.position};` : null)}
   ${p => (p.top ? `top: ${size(p.top)};` : null)}
   ${p => (p.right ? `right: ${size(p.right)};` : null)}
-  cursor: pointer;
+  ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
   z-index: 10;
 `;
 
