@@ -6,15 +6,17 @@ import {
 } from 'server/config/globalConstants';
 
 const IS_TEST = process.env.NODE_ENV === 'test';
+const DEFAULT_WEIGHT_FROM_ADMIN = 0.15;
 
 export default class Graph {
   userNodes = {};
 
   postNodes = {};
 
-  constructor(votes, admins, community) {
+  constructor({ votes, admins, community, usersWithDefault }) {
     this.community = community;
     this.admins = admins;
+    usersWithDefault && usersWithDefault.forEach(user => this.initUserNode(user));
     admins.forEach(user => this.initUserNode(user));
     this.now = new Date();
     return this.run(votes);
@@ -32,6 +34,7 @@ export default class Graph {
     // };
 
     this.processNegatives();
+    this.addDefaultWeights();
     this.pruneNoInput();
     return { nodes: this.userNodes, postNodes: this.postNodes };
   };
@@ -69,12 +72,39 @@ export default class Graph {
     return null;
   };
 
+  addDefaultWeights = () => {
+    const DWNode = {
+      type: 'hypothetical',
+      _id: 'defaultWeight',
+      inputs: {},
+      degree: 0,
+      start: this.community.danglingConsumer
+    };
+
+    Object.values(this.userNodes).forEach(node => {
+      if (node.defaultWeight) {
+        DWNode.degree += node.defaultWeight || 0;
+        node.inputs[DWNode._id] = node.defaultWeight;
+      }
+    });
+
+    if (DWNode.degree === 0) return;
+
+    this.admins.forEach(admin => {
+      const a = this.userNodes[admin._id];
+      const defaultWeight = a.degree ? a.degree * DEFAULT_WEIGHT_FROM_ADMIN : 1;
+      a.degree += defaultWeight;
+      DWNode.inputs[a._id] = defaultWeight;
+    });
+
+    this.userNodes.defaultWeight = DWNode;
+  };
+
   processNegatives = () => {
     this.userNodes.negConsumer = {
       type: 'hypothetical',
       _id: 'negConsumer',
       inputs: {},
-      // inputs: { negConsumer: 1 },
       degree: 0,
       start: this.community.negConsumer
     };
@@ -185,6 +215,7 @@ export default class Graph {
       postDegree: 0,
       negativeNode: !!downvote,
       type: 'user',
+      defaultWeight: user.relevance.defaultWeight,
       prevPos: user.relevance ? user.relevance.pagerankRaw : 0,
       prevNeg: user.relevance ? user.relevance.pagerankRawNeg : 0
     };
