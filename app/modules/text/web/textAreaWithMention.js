@@ -28,7 +28,7 @@ TextAreaWithMention.propTypes = {
   withPreview: PropTypes.bool,
   children: PropTypes.node,
   placeholder: PropTypes.string,
-  minheight: PropTypes.number
+  minheight: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 export default function TextAreaWithMention({
