@@ -151,7 +151,7 @@ class Commentary extends PureComponent {
                 />
               </Box>
               {!hideButtons && (
-                <Box m={'2 0'}>
+                <Box m={'1 0'}>
                   <ButtonContainer
                     horizontal
                     post={post}

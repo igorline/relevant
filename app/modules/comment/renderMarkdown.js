@@ -89,45 +89,50 @@ export const styles = {
   blockquote: {
     borderLeftColor: '#DDDDDD',
     backgroundColor: 'transparent',
-    paddingVertical: 4,
-    borderLeftWidth: 6,
-    opacity: 1
+    paddingTop: 0,
+    borderLeftWidth: 3,
+    opacity: 1,
+    paddingBottom: -10,
+    marginVertical: mb / 2
   },
   code_block: {
     backgroundColor: 'rgba(27,31,35,.05)',
     borderWidth: 0,
     borderRadius: 3,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
   },
   code_inline: {
     backgroundColor: 'rgba(27,31,35,.05)',
     borderRadius: 3,
     borderWidth: 0,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
   },
   fence: {
     borderWidth: 0,
     backgroundColor: 'rgba(27,31,35,.05)',
     borderRadius: 3,
-    fontSize: 16,
+    paddingLeft: 4,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace',
-    marginBottom: 10
+    marginVertical: mb / 2
   },
   paragraph: {
-    marginTop: 0,
-    marginBottom: mb
+    marginVertical: mb / 2
+  },
+  inline: {
+    marginBottom: 0
   },
   bullet_list: {
-    marginBottom: mb
+    marginVertical: mb / 2
   },
   ordered_list: {
-    marginBottom: mb
+    marginVertical: mb / 2
   },
   list_item: {
-    marginBottom: -10,
-    marginTop: -10,
-    lineHeight: 36
+    marginBottom: -10 / 2,
+    marginTop: -10 / 2,
+    lineHeight: 36 / 2
   }
 };

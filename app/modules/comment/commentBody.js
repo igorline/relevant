@@ -51,7 +51,12 @@ export default function CommentBody({
   text = linkifyText(text, community, comment.url);
 
   const body = (
-    <Markdown noLink className={'markdown-body'} renderers={RENDERERS} markdown={text} />
+    <Markdown
+      noLink={noLink}
+      className={'markdown-body'}
+      renderers={RENDERERS}
+      markdown={text}
+    />
   );
 
   const postLink = comment.parentPost || comment;
@@ -60,7 +65,7 @@ export default function CommentBody({
   // link to full post
   if (isPreview || noLink) {
     return (
-      <View shrink={1} m={'0 3 1 0'} pl={avatarText ? 5 : 0}>
+      <View shrink={1} pl={avatarText ? 5 : 0}>
         <Touchable
           style={{ zIndex: 0 }}
           to={postUrl}
@@ -86,7 +91,7 @@ export default function CommentBody({
   }
 
   return (
-    <View shrink={1} mb={1} pl={avatarText ? 5 : 0}>
+    <View shrink={1} pl={avatarText ? 5 : 0}>
       {body}
     </View>
   );
@@ -103,6 +108,10 @@ function trimText(text, limit) {
 
 function handleCodeblock(excerpt) {
   const hasCodeblock = excerpt.match('```');
+  if (!hasCodeblock) return excerpt;
+  const lastIndex = hasCodeblock.index;
+  if (excerpt.length === lastIndex + 3) return excerpt.substr(0, lastIndex);
+
   const hasUnclosedCodeblock = hasCodeblock && hasCodeblock.length % 2 !== 0;
   return hasUnclosedCodeblock ? excerpt + '\n```\n' : excerpt;
 }

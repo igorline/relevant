@@ -185,7 +185,7 @@ function Comment(props) {
                 body
               )}
               {editing || hideReplyButtons || (hidePostButtons && preview) ? null : (
-                <Box mb={[4, 2]}>
+                <Box mt={1} mb={[4, 2]}>
                   <ButtonRow {...props} post={comment} />
                 </Box>
               )}
