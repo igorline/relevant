@@ -12,14 +12,15 @@ const getAssetsUrl = address =>
 
 const foamToken = '0x4946fcea7c692606e8908002e55a582af44ac121';
 
-const dummyAddress = '0x222861f16354020F62bBfa0A878B2F047a385576';
+// const dummyAddress = '0x222861f16354020F62bBfa0A878B2F047a385576';
+
 const foamParams = {
   auth: {
     tokens: 100,
     points: 5
   }
 };
-// TODO make these updatable
+
 async function initFoamParams() {
   const foam = await Community.findOne({ slug: 'foam' });
   if (!foam || foam.customParams) return;
@@ -34,8 +35,9 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
   }
   const { tokens, points } = community.customParams.auth;
 
-  // const { ethLogin } = user;
-  const ethLogin = dummyAddress;
+  const { ethLogin } = user;
+  // FOR TESTING ONLY
+  // const ethLogin = dummyAddress;
 
   if (!ethLogin)
     throw new Error(
@@ -68,7 +70,6 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
   }
 
   if (communityMember.pagerank === 0) {
-    // do this async
     computePageRank({
       communityId: community._id,
       community: community.slug

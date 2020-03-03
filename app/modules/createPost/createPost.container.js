@@ -147,7 +147,7 @@ export default function CreatePostContainer({ close }) {
           placeholder={placeholder}
           withPreview
           textArea={textArea}
-          minHeight={22}
+          minheight={22}
         />
         {showPasteButton && <PasteTextButton addTextFromLink={addTextFromLink} />}
       </View>

@@ -28,7 +28,7 @@ TextAreaWithMention.propTypes = {
   withPreview: PropTypes.bool,
   children: PropTypes.node,
   placeholder: PropTypes.string,
-  minHeight: PropTypes.number
+  minheight: PropTypes.number
 };
 
 export default function TextAreaWithMention({
@@ -41,7 +41,7 @@ export default function TextAreaWithMention({
   children,
   withPreview,
   placeholder,
-  minHeight
+  minheight
 }) {
   const dispatch = useDispatch();
   const innerTextAreaRef = useRef();
@@ -113,7 +113,7 @@ export default function TextAreaWithMention({
             flex={1}
             autoFocus={!!autoFocus}
             pl={leftPadding}
-            minHeight={minHeight}
+            minheight={minheight}
             onFocus={() => {
               setFocused && setFocused(true);
               setTimeout(() => {
@@ -145,7 +145,7 @@ export default function TextAreaWithMention({
       )}
       {showPreview && (
         <View
-          minHeight={minHeight || sizing(8)}
+          minheight={minheight || sizing(8)}
           p={'1 2 0 2'}
           mb={2}
           fjustify={'center'}

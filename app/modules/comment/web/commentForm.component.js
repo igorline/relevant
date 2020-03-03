@@ -156,7 +156,7 @@ export function CommentFormComponent({
           setFocused={setFocused}
           // withPreview
           placeholder={'Enter comment...'}
-          minHeight={focused ? sizing(8) : null}
+          minheight={focused ? sizing(8) : null}
         >
           {focused ? null : (
             <AvatarContainer p={2}>

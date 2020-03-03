@@ -91,7 +91,7 @@ function ModalComponent(props) {
           justify={['space-between', 'center']}
           fdirection="column"
           m={['6 0', '0']}
-          minHeight={['auto', maxWidth ? 'auto' : '100vh']}
+          minheight={['auto', maxWidth ? 'auto' : '100vh']}
           onClick={e => e.stopPropagation()}
         >
           {hideX ? null : (
