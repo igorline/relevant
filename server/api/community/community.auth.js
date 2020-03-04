@@ -88,8 +88,10 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
     });
   }
 
-  communityMember.defaultWeight = totalPoints + Math.log(tokens + 1);
-  // communityMember.customAdminWeight = totalPoints + Math.log(tokens + 1);
-  await communityMember.save();
+  if (!communityMember.defaultWeight) {
+    communityMember.defaultWeight = totalPoints + Math.log(tokens + 1);
+    // communityMember.customAdminWeight = totalPoints + Math.log(tokens + 1);
+    await communityMember.save();
+  }
   return true;
 }

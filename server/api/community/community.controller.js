@@ -4,12 +4,6 @@ import Community from './community.model';
 import CommunityMember from './community.member.model';
 import User from '../user/user.model';
 
-async function updateC() {
-  const c = await Community.findOne({ slug: 'foam' });
-  c.updateMemeberCount();
-}
-updateC();
-
 const RESERVED = [
   'user',
   'admin',

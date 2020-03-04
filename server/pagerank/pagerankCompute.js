@@ -21,7 +21,7 @@ export default async function computePageRank(params) {
 
   const admins = await CommunityMember.find(
     { role: 'admin', communityId },
-    'embeddedUser customAdminWeight pagerank pagerankRaw pagerankRawNeg'
+    'embeddedUser defaultWeight customAdminWeight pagerank pagerankRaw pagerankRawNeg'
   );
 
   const usersWithDefaultWeight = await CommunityMember.find(
