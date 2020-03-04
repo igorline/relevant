@@ -87,7 +87,6 @@ export default connect(
     posts: state.posts,
     user: state.user,
     investments: state.investments,
-    // myPostInv: state.investments.myPostInv,
     isAuthenticated: state.auth.isAuthenticated
   }),
   dispatch => ({

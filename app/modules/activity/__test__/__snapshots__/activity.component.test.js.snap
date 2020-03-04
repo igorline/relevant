@@ -200,48 +200,50 @@ exports[`Snapshot Activity Web 1`] = `
             }
           }
         >
-          <a
-            className="c0 ulink-mock"
-            href="/user/profile/bob"
-            hu={0}
-            inline={1}
-            onClick={[Function]}
-            styles=""
-          >
-            <div
-              c="#0000ff"
-              className="css-text-901oao"
-              dir="auto"
-              inline={1}
-              mr={0.75}
-              style={
-                Object {
-                  "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
-                  "color": "rgba(0,0,255,1.00)",
-                  "fontFamily": "HelveticaNeue",
-                  "fontSize": "0.875rem",
-                  "lineHeight": "1.2249999999999999rem",
-                  "marginRight": "0.375rem",
-                  "position": "relative",
-                  "textDecorationColor": "rgba(0,0,255,1.00)",
-                }
+          <div
+            className="css-view-1dbjc4n"
+            style={
+              Object {
+                "marginRight": "0.375rem",
               }
+            }
+          >
+            <a
+              className="c0 ulink-mock"
+              href="/user/profile/bob"
+              hu={0}
+              inline={1}
+              onClick={[Function]}
+              styles=""
             >
-              @
-              bob
-            </div>
-          </a>
+              <div
+                className="css-text-901oao"
+                dir="auto"
+                style={
+                  Object {
+                    "WebkitTextDecorationColor": "rgba(0,0,255,1.00)",
+                    "color": "rgba(0,0,255,1.00)",
+                    "fontFamily": "HelveticaNeue",
+                    "fontSize": "0.875rem",
+                    "lineHeight": "1.2249999999999999rem",
+                    "textDecorationColor": "rgba(0,0,255,1.00)",
+                  }
+                }
+              >
+                @
+                bob
+              </div>
+            </a>
+          </div>
           <div
             className="css-text-901oao"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
                 "fontFamily": "HelveticaNeue",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
               }
             }
           >
@@ -250,14 +252,12 @@ exports[`Snapshot Activity Web 1`] = `
           <div
             className="css-text-901oao"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
                 "fontFamily": "HelveticaNeue",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
               }
             }
           >
@@ -266,37 +266,31 @@ exports[`Snapshot Activity Web 1`] = `
           <div
             className="css-text-901oao"
             dir="auto"
-            inline={1}
             style={
               Object {
                 "color": "rgba(0,0,0,1.00)",
                 "fontFamily": "HelveticaNeue",
                 "fontSize": "0.875rem",
                 "lineHeight": "1.2249999999999999rem",
-                "position": "relative",
               }
             }
           >
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              inline={1}
               style={
                 Object {
                   "color": "rgba(0,0,0,1.00)",
                   "fontFamily": "HelveticaNeue",
                   "fontSize": "0.875rem",
                   "lineHeight": "1.2249999999999999rem",
-                  "position": "relative",
                 }
               }
             >
               your reputation increased by 
               <span
-                c="#7ED321"
                 className="css-text-901oao css-textHasAncestor-16my406"
                 dir="auto"
-                inline={1}
                 style={
                   Object {
                     "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
@@ -327,15 +321,12 @@ exports[`Snapshot Activity Web 1`] = `
     <div
       className="css-text-901oao"
       dir="auto"
-      lh={2}
       style={
         Object {
           "color": "rgba(128,128,128,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.75rem",
           "lineHeight": "1rem",
-          "position": "relative",
         }
       }
     >
@@ -376,66 +367,6 @@ exports[`Snapshot Activity Web 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          hideDivider={true}
-          hidePostButtons={true}
-          link="000000000000000000000003"
-          noLink={true}
-          post={
-            Object {
-              "_id": "000000000000000000000002",
-              "body": "awesome post #2!",
-              "community": "relevant",
-              "communityId": "c00000000000000000000001",
-              "data": Object {
-                "pagerank": 45,
-                "payout": 18000000000000000000,
-              },
-              "domain": "link.domain2",
-              "embeddedUser": Object {
-                "_id": "c00000000000000000000000",
-                "airdropTokens": 333,
-                "balance": 333,
-                "bio": "admin of a few communities",
-                "email": "carol@carol.com",
-                "ethAddress": Array [
-                  "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef",
-                ],
-                "handle": "carol",
-                "image": "https://ichef.bbci.co.uk/news/640/cpsprodpb/A369/production/_87133814_87135704.jpg",
-                "lockedTokens": 0,
-                "name": "Carol",
-                "notificationSettings": Object {
-                  "bet": Object {
-                    "manual": true,
-                  },
-                },
-                "password": "test",
-                "relevance": Object {
-                  "pagerank": 33,
-                },
-              },
-              "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
-              "link": Object {
-                "domain": "link.domain2",
-                "image": "https://i.pinimg.com/originals/5e/b4/49/5eb449b181999dabed59a857503031ad.jpg",
-                "title": "postTitle2",
-                "url": "https://example.com/testPost2",
-              },
-              "parentComment": "000000000000000000000001",
-              "parentPost": "000000000000000000000003",
-              "payoutTime": 2019-02-03T09:02:02.000Z,
-              "postDate": 2019-01-31T09:02:02.000Z,
-              "tags": Array [
-                "tag21",
-                "tag22",
-              ],
-              "title": "postTitle2",
-              "type": "comment",
-              "url": "https://example.com/testPost2",
-              "user": "c00000000000000000000000",
-            }
-          }
-          preview={true}
           style={
             Object {
               "display": "flex",

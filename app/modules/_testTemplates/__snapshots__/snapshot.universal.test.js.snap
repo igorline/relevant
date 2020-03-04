@@ -1,43 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Snapshot AvatarBox Styled 1`] = `
-<a
-  className="sc-AykKC kQKgSe ulink-mock"
-  href="/user/profile/handle"
-  hu={0}
-  inline={0}
-  onClick={[Function]}
-  styles=""
+<div
+  className="css-view-1dbjc4n"
 >
-  <div
-    className="css-view-1dbjc4n"
-    style={
-      Object {
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxFlex": 1,
-        "WebkitBoxOrient": "horizontal",
-        "WebkitFlexBasis": "0px",
-        "WebkitFlexDirection": "row",
-        "WebkitFlexGrow": 1,
-        "WebkitFlexShrink": 1,
-        "display": "flex",
-        "flexBasis": "0px",
-        "flexDirection": "row",
-        "flexGrow": 1,
-        "flexShrink": 1,
-        "msFlexDirection": "row",
-        "msFlexNegative": 1,
-        "msFlexPositive": 1,
-        "msFlexPreferredSize": "0px",
-        "position": "relative",
-      }
-    }
+  <a
+    className="sc-AxjAm hBufrA ulink-mock"
+    href="/user/profile/handle"
+    hu={0}
+    inline={0}
+    onClick={[Function]}
+    styles=""
   >
     <div
       className="css-view-1dbjc4n"
       style={
         Object {
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxFlex": 1,
+          "WebkitBoxOrient": "horizontal",
+          "WebkitFlexBasis": "0px",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexGrow": 1,
+          "WebkitFlexShrink": 1,
           "display": "flex",
+          "flexBasis": "0px",
+          "flexDirection": "row",
+          "flexGrow": 1,
+          "flexShrink": 1,
+          "msFlexDirection": "row",
+          "msFlexNegative": 1,
+          "msFlexPositive": 1,
+          "msFlexPreferredSize": "0px",
           "position": "relative",
         }
       }
@@ -46,20 +40,8 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         className="css-view-1dbjc4n"
         style={
           Object {
-            "WebkitFlexBasis": "auto",
-            "borderBottomLeftRadius": "1rem",
-            "borderBottomRightRadius": "1rem",
-            "borderTopLeftRadius": "1rem",
-            "borderTopRightRadius": "1rem",
             "display": "flex",
-            "flexBasis": "auto",
-            "height": "2rem",
-            "msFlexPreferredSize": "auto",
-            "overflowX": "hidden",
-            "overflowY": "hidden",
             "position": "relative",
-            "width": "2rem",
-            "zIndex": 0,
           }
         }
       >
@@ -67,120 +49,118 @@ exports[`Snapshot AvatarBox Styled 1`] = `
           className="css-view-1dbjc4n"
           style={
             Object {
-              "backgroundColor": "rgba(0,0,0,0.00)",
-              "backgroundImage": "url(\\"default_user.jpg\\")",
-              "backgroundPosition": "center",
-              "backgroundRepeat": "no-repeat",
-              "backgroundSize": "cover",
-              "bottom": "0px",
-              "height": "100%",
-              "left": "0px",
-              "position": "absolute",
-              "right": "0px",
-              "top": "0px",
-              "width": "100%",
-              "zIndex": -1,
-            }
-          }
-        />
-        <img
-          alt=""
-          className="css-accessibilityImage-9pa8cd"
-          draggable={false}
-          src="default_user.jpg"
-        />
-      </div>
-    </div>
-    <div
-      className="css-view-1dbjc4n"
-      style={
-        Object {
-          "WebkitBoxFlex": 1,
-          "WebkitBoxPack": "center",
-          "WebkitFlexBasis": "0px",
-          "WebkitFlexGrow": 1,
-          "WebkitFlexShrink": 1,
-          "WebkitJustifyContent": "center",
-          "display": "flex",
-          "flexBasis": "0px",
-          "flexGrow": 1,
-          "flexShrink": 1,
-          "justifyContent": "center",
-          "marginLeft": "0.5rem",
-          "msFlexNegative": 1,
-          "msFlexPack": "center",
-          "msFlexPositive": 1,
-          "msFlexPreferredSize": "0px",
-          "position": "relative",
-        }
-      }
-    >
-      <div
-        className="css-text-901oao"
-        dir="auto"
-        inline={1}
-        style={
-          Object {
-            "position": "relative",
-          }
-        }
-      >
-        <span
-          c="hsl(0, 0%, 0%)"
-          className="css-text-901oao css-textHasAncestor-16my406"
-          dir="auto"
-          inline={1}
-          style={
-            Object {
-              "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
-              "color": "rgba(0,0,0,1.00)",
-              "fontFamily": "HelveticaNeue",
-              "fontSize": "0.875rem",
-              "lineHeight": "1.2249999999999999rem",
+              "WebkitFlexBasis": "auto",
+              "borderBottomLeftRadius": "1rem",
+              "borderBottomRightRadius": "1rem",
+              "borderTopLeftRadius": "1rem",
+              "borderTopRightRadius": "1rem",
+              "display": "flex",
+              "flexBasis": "auto",
+              "height": "2rem",
+              "msFlexPreferredSize": "auto",
+              "overflowX": "hidden",
+              "overflowY": "hidden",
               "position": "relative",
-              "textDecorationColor": "rgba(0,0,0,1.00)",
+              "width": "2rem",
+              "zIndex": 0,
             }
           }
         >
-          Name
-        </span>
+          <div
+            className="css-view-1dbjc4n"
+            style={
+              Object {
+                "backgroundColor": "rgba(0,0,0,0.00)",
+                "backgroundImage": "url(\\"default_user.jpg\\")",
+                "backgroundPosition": "center",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "cover",
+                "bottom": "0px",
+                "height": "100%",
+                "left": "0px",
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "width": "100%",
+                "zIndex": -1,
+              }
+            }
+          />
+          <img
+            alt=""
+            className="css-accessibilityImage-9pa8cd"
+            draggable={false}
+            src="default_user.jpg"
+          />
+        </div>
       </div>
       <div
-        className="css-text-901oao"
-        dir="auto"
-        mt={0.25}
+        className="css-view-1dbjc4n"
         style={
           Object {
-            "color": "rgba(128,128,128,1.00)",
+            "WebkitAlignItems": "flex-start",
+            "WebkitBoxAlign": "start",
+            "WebkitBoxPack": "center",
+            "WebkitJustifyContent": "center",
+            "alignItems": "flex-start",
             "display": "flex",
-            "fontFamily": "HelveticaNeue",
-            "fontSize": "0.75rem",
-            "lineHeight": "1.0499999999999998rem",
-            "marginTop": "0.125rem",
+            "justifyContent": "center",
+            "marginLeft": "0.5rem",
+            "msFlexAlign": "start",
+            "msFlexPack": "center",
             "position": "relative",
           }
         }
       >
-        <span
-          className="css-text-901oao css-textHasAncestor-16my406"
+        <div
+          className="css-text-901oao"
+          dir="auto"
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <span
+            className="css-text-901oao css-textHasAncestor-16my406 css-textOneLine-bfa6kz"
+            dir="auto"
+            style={
+              Object {
+                "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+                "color": "rgba(0,0,0,1.00)",
+                "fontFamily": "HelveticaNeue",
+                "fontSize": "0.875rem",
+                "lineHeight": "1.2249999999999999rem",
+                "maxWidth": "6rem",
+                "overflowX": "hidden",
+                "overflowY": "hidden",
+                "textDecorationColor": "rgba(0,0,0,1.00)",
+                "whiteSpace": "nowrap",
+              }
+            }
+          >
+            Name
+          </span>
+        </div>
+        <div
+          className="css-text-901oao"
           dir="auto"
           style={
             Object {
               "color": "rgba(128,128,128,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
-              "position": "relative",
+              "marginTop": "0.125rem",
             }
           }
         >
           @handle
-        </span>
-         
-         • A Few Seconds Ago
+           
+           • A Few Seconds Ago
+        </div>
       </div>
     </div>
-  </div>
-</a>
+  </a>
+</div>
 `;

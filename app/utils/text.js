@@ -13,7 +13,8 @@ export function getMentions(words) {
   return words
     .map(word => {
       if (word.match(/^@\S+/g)) {
-        return word.replace('@', '');
+        const mention = word.replace(/@/g, '');
+        return mention !== '' ? mention : null;
       }
       return null;
     })
@@ -24,7 +25,8 @@ export function getTags(words) {
   return words
     .map(word => {
       if (word.match(/^#\S+/g)) {
-        return word.replace('#', '');
+        const tag = word.replace(/#/g, '').trim();
+        return tag !== '' ? tag : null;
       }
       return null;
     })
@@ -33,9 +35,8 @@ export function getTags(words) {
 
 export function getWords(text) {
   const res = text
-    // .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
-    .replace(/[,.!?](?!\b)|[\s+]/g, a => '`' + a + '`')
-    .split(/`/);
+    .replace(/[,.!?](?!\b)|[\s+]/g, a => '__WRD_SPLT__' + a + '__WRD_SPLT__')
+    .split(/__WRD_SPLT__/);
   return res;
 }
 
@@ -69,3 +70,20 @@ export function childIsString(children) {
   const renderString = !children || !children.$$typeof || isTextArray || isString;
   return renderString;
 }
+
+export const getTitle = text => {
+  const headerMatch = /^#+(.*)$/;
+  const lines = text.split('\n');
+  const noEmptyLines = lines.filter(line => line.length > 0);
+  if (noEmptyLines.length === 0) return {};
+  const firstLine = noEmptyLines[0];
+  const match = firstLine.match(headerMatch);
+  if (match == null) {
+    const limit = 60;
+    if (firstLine.length <= limit) return { titleText: firstLine, isHeading: false };
+    const titleText = firstLine.substr(0, firstLine.lastIndexOf(' ', limit)) + '...';
+    return { titleText, isHeading: false };
+  }
+  const title = match && match[1];
+  return { titleText: title.trim(), isHeading: true };
+};

@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, memo } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { getPostType } from 'app/utils/post';
 import { View, Image } from 'modules/styled/uni';
 import { useCommunity } from 'modules/community/community.selectors';
 import { sizing } from 'styles';
-// import { CenterButton } from './center-button';
 import PostButton from './postbutton';
 import PostRank from './postrank';
 import { useVoteAnimation, useCastVote } from './button.hooks';
@@ -12,7 +12,6 @@ import { useVoteAnimation, useCastVote } from './button.hooks';
 const coinImage = require('app/public/img/relevantcoin.png');
 
 PostButtons.propTypes = {
-  auth: PropTypes.object,
   post: PropTypes.shape({
     _id: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     id: PropTypes.string,
@@ -27,19 +26,20 @@ PostButtons.propTypes = {
   horizontal: PropTypes.bool
 };
 
-export default function PostButtons({ post, auth, color, horizontal }) {
+export default memo(PostButtons);
+
+function PostButtons({ post, color, horizontal }) {
   const investButton = useRef();
   const community = useCommunity();
-  const { user } = auth;
+  const user = useSelector(state => state.auth.user);
   const canBet = getCanBet({ post, community, user });
 
   useVoteAnimation({ post, investButton, horizontal });
-  const castVote = useCastVote({ auth, post, user, community, canBet });
-
-  if (!post || post === 'notFound') return null;
+  const castVote = useCastVote({ post, user, community, canBet });
 
   const tooltipData = getTooltipData(post);
   const voteStatus = getVoteStatus(user, post);
+  if (!post || post === 'notFound') return null;
 
   return (
     <View
@@ -82,7 +82,6 @@ export default function PostButtons({ post, auth, color, horizontal }) {
       />
     </View>
   );
-  // <CenterButton post={post} horizontal={horizontal} votedUp={voteStatus.up} />
 }
 
 function getVoteStatus(user, post) {

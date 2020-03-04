@@ -1,31 +1,41 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import Tag from 'modules/tag/tag.component';
 import get from 'lodash/get';
 import ULink from 'modules/navigation/ULink.component';
 import { View, Title, SecondaryText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
+import { getPostUrl } from 'app/utils/post';
+import { goToUrl, goToPost } from 'modules/navigation/navigation.actions';
 
-export default function PostTitle(props) {
-  const {
-    children,
-    postUrl,
-    post,
-    link,
-    community,
-    title,
-    noLink,
-    mobile,
-    actions,
-    singlePost,
-    preview
-  } = props;
+PostTitle.propTypes = {
+  mobile: PropTypes.bool,
+  preview: PropTypes.bool,
+  singlePost: PropTypes.bool,
+  children: PropTypes.node,
+  noLink: PropTypes.bool,
+  link: PropTypes.object,
+  post: PropTypes.object,
+  title: PropTypes.string
+};
+
+export default memo(PostTitle);
+
+function PostTitle({ children, post, link, title, noLink, mobile, singlePost, preview }) {
+  const dispatch = useDispatch();
+
+  const currentCommunity = useSelector(state => state.auth.community);
+  const postCommunity = post && post.data && post.data.community;
+  const community = postCommunity || currentCommunity;
 
   const c = mobile ? colors.white : null;
 
   if (!post) return null;
-  const tags = get(post, 'tags', []);
   const titleLines = preview && mobile ? 2 : 3;
+
+  const parentPost = post.parentPost || post;
+  const postUrl = getPostUrl(community, parentPost);
 
   const titleEl = link ? (
     <ULink
@@ -33,8 +43,9 @@ export default function PostTitle(props) {
       external={singlePost}
       target={singlePost ? '_blank' : null}
       noLink={noLink}
-      // onPress={() => actions.goToUrl(post.url)}
-      onPress={() => (singlePost ? actions.goToUrl(post.url) : actions.goToPost(post))}
+      onPress={() =>
+        singlePost ? dispatch(goToUrl(post.url)) : dispatch(goToPost(post))
+      }
     >
       <Title
         inline={1}
@@ -51,35 +62,6 @@ export default function PostTitle(props) {
       {title}
     </Title>
   );
-
-  const commentEl =
-    post.commentCount && postUrl ? (
-      <ULink
-        type="text"
-        to={postUrl}
-        hu
-        noLink={noLink}
-        onPress={() => actions.goToPost(post)}
-        inline={1}
-      >
-        <SecondaryText mr={1} c={c || colors.blue}>
-          {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
-        </SecondaryText>
-      </ULink>
-    ) : null;
-
-  const tagEl = tags.length
-    ? tags.map(tag => (
-        <Tag
-          actions={actions}
-          name={tag}
-          community={community}
-          key={tag}
-          noLink={noLink}
-          c={c || colors.blue}
-        />
-      ))
-    : null;
 
   const hasAuthor = link && link.articleAuthor && link.articleAuthor.length;
   const authorEl = hasAuthor ? (
@@ -100,7 +82,7 @@ export default function PostTitle(props) {
         target="_blank"
         disabled={!postUrl}
         noLink={noLink}
-        onPress={() => actions.goToUrl(post.url)}
+        onPress={() => dispatch(goToUrl(post.url))}
       >
         <SecondaryText c={c || null} inline={1}>
           {link.domain && `${link.domain}\u00A0\u2197\uFE0E`}
@@ -108,6 +90,9 @@ export default function PostTitle(props) {
       </ULink>
     </View>
   );
+
+  const renderCommentLink = post.commentCount && postUrl;
+  const tags = get(post, 'tags', []);
 
   return (
     <View fdirection={'column'} flex={1} justify={mobile ? 'center' : 'flex-start'}>
@@ -117,20 +102,19 @@ export default function PostTitle(props) {
           {domainEl}
         </View>
       </View>
-      {commentEl || tagEl ? (
-        <View>
-          <View
-            fdirection={'row'}
-            align={'flex-end'}
-            h={2}
-            style={{ overflow: 'hidden' }}
-            c={c}
-            mt={mobile ? 1 : 0.5}
-            numberOfLines={mobile ? 1 : null}
-          >
-            {commentEl}
-            {tagEl}
-          </View>
+      {renderCommentLink || tags.length ? (
+        <View
+          fdirection={'row'}
+          wrap={'wrap'}
+          align={'flex-end'}
+          h={2}
+          style={{ overflow: 'hidden' }}
+          c={c}
+          mt={mobile ? 1 : 0.5}
+          numberOfLines={mobile ? 1 : null}
+        >
+          <CommentEl post={post} c={c} postUrl={postUrl} noLink={noLink} />
+          <TagEl post={post} c={c} noLink={noLink} community={community} />
         </View>
       ) : null}
       {children}
@@ -138,16 +122,59 @@ export default function PostTitle(props) {
   );
 }
 
-PostTitle.propTypes = {
-  preview: PropTypes.bool,
-  singlePost: PropTypes.bool,
-  mobile: PropTypes.bool,
-  noLink: PropTypes.bool,
-  children: PropTypes.node,
-  link: PropTypes.object,
+CommentEl.propTypes = {
   post: PropTypes.object,
-  community: PropTypes.string,
-  postUrl: PropTypes.string,
-  title: PropTypes.string,
-  actions: PropTypes.object
+  noLink: PropTypes.bool,
+  c: PropTypes.string
 };
+
+export function CommentEl({ post, noLink, c }) {
+  const dispatch = useDispatch();
+  const parentPost = post.parentPost || post;
+
+  const currentCommunity = useSelector(state => state.auth.community);
+  const postCommunity = post && post.data && post.data.community;
+  const community = postCommunity || currentCommunity;
+  const postUrl = getPostUrl(community, parentPost);
+  if (!post.commentCount) return null;
+
+  return (
+    <ULink
+      type="text"
+      to={postUrl}
+      hu
+      noLink={noLink}
+      onPress={() => dispatch(goToPost(post))}
+      inline={1}
+    >
+      <SecondaryText mr={1} c={c || colors.blue}>
+        {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
+      </SecondaryText>
+    </ULink>
+  );
+}
+
+TagEl.propTypes = {
+  post: PropTypes.object,
+  noLink: PropTypes.bool,
+  c: PropTypes.string
+};
+
+export function TagEl({ noLink, c, post }) {
+  const tags = get(post, 'tags', []);
+  const currentCommunity = useSelector(state => state.auth.community);
+  const postCommunity = post && post.data && post.data.community;
+  const community = postCommunity || currentCommunity;
+
+  if (!tags.length) return null;
+
+  return tags.map(tag => (
+    <Tag
+      name={tag}
+      community={community || (post.data && post.data.community)}
+      key={tag}
+      noLink={noLink}
+      c={c || colors.blue}
+    />
+  ));
+}

@@ -37,6 +37,18 @@ export const responsiveHandler = val => {
   return null;
 };
 
+// const widthCache = {
+//   time: 0,
+//   value: 0
+// };
+// export function getWidth() {
+//   const now = Date.now();
+//   if (now - widthCache.time < 3000) return widthCache.value;
+//   widthCache.value = width();
+//   widthCache.time = now;
+//   return widthCache.value;
+// }
+
 export function getWidth() {
   try {
     if (isNative) return NATIVE_WIDTH;

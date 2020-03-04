@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { Post } from 'modules/post/web/post.component';
+import Post from 'modules/post/web/post.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { auth, post, user } from 'app/mockdata';
@@ -20,13 +20,25 @@ const props = {
   }
 };
 
+jest.mock('react-redux', () => {
+  const state = {
+    navigation: { screenSize: 0 }
+  };
+
+  return {
+    useDispatch: () => {},
+    useSelector: fn => fn(state),
+    connect: el => el
+  };
+});
+
 test('Snapshot Post Web', () => {
   const tree = renderer
-  .create(
-    <MemoryRouter>
-      <Post {...props} />
-    </MemoryRouter>
-  )
-  .toJSON();
+    .create(
+      <MemoryRouter>
+        <Post {...props} />
+      </MemoryRouter>
+    )
+    .toJSON();
   expect(tree).toMatchSnapshot();
 });

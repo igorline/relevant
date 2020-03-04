@@ -30,16 +30,13 @@ exports[`Snapshot Balance Web 1`] = `
     <div
       className="css-text-901oao"
       dir="auto"
-      mt={2}
       style={
         Object {
           "color": "rgba(0,0,0,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.875rem",
           "lineHeight": "1.2249999999999999rem",
           "marginTop": "1rem",
-          "position": "relative",
         }
       }
     >
@@ -98,16 +95,13 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mb={0.5}
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
             "marginBottom": "0.25rem",
-            "position": "relative",
           }
         }
       >
@@ -116,16 +110,12 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mb={0.5}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
-            "marginBottom": "0.25rem",
-            "position": "relative",
           }
         }
       >
@@ -218,10 +208,6 @@ exports[`Snapshot Balance Web 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          fs={4.5}
-          inline={0}
-          lh={5}
-          ml={1.25}
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
@@ -306,16 +292,13 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={2}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -355,16 +338,13 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={2}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -403,16 +383,13 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={2}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -452,16 +429,13 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={2}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -501,16 +475,13 @@ exports[`Snapshot Balance Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={2}
         style={
           Object {
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "1rem",
-            "position": "relative",
           }
         }
       >
@@ -580,6 +551,7 @@ exports[`Snapshot Balance Web 1`] = `
             "cursor": "pointer",
             "msTouchAction": "manipulation",
             "msUserSelect": "none",
+            "opacity": 1,
             "touchAction": "manipulation",
             "transitionDuration": "0.15s",
             "transitionProperty": "opacity",
@@ -589,10 +561,8 @@ exports[`Snapshot Balance Web 1`] = `
         tabIndex="0"
       >
         <div
-          c="#0000ff"
           className="css-text-901oao"
           dir="auto"
-          mr={0.5}
           style={
             Object {
               "MozUserSelect": "none",
@@ -600,13 +570,11 @@ exports[`Snapshot Balance Web 1`] = `
               "WebkitUserSelect": "none",
               "color": "rgba(0,0,255,1.00)",
               "cursor": "pointer",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
               "marginRight": "0.25rem",
               "msUserSelect": "none",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
               "userSelect": "none",
             }
@@ -627,9 +595,6 @@ exports[`Snapshot Balance Web 1`] = `
       >
         <div
           className="css-view-1dbjc4n"
-          data-event-off="click"
-          data-for="mainTooltip"
-          data-tip="{\\"type\\":\\"TEXT\\",\\"props\\":{\\"text\\":\\"You can transfer up to 1000 coins to your your Metamask wallet.\\\\n(You cannot transfer coins you got for refferrals and verifying social accounts.)\\"}}"
           style={
             Object {
               "WebkitFlexBasis": "auto",
@@ -729,6 +694,7 @@ exports[`Snapshot Balance Web 1`] = `
               "cursor": "pointer",
               "msTouchAction": "manipulation",
               "msUserSelect": "none",
+              "opacity": 1,
               "touchAction": "manipulation",
               "transitionDuration": "0.15s",
               "transitionProperty": "opacity",
@@ -739,7 +705,6 @@ exports[`Snapshot Balance Web 1`] = `
           tabIndex="0"
         >
           <div
-            c="#0000ff"
             className="css-text-901oao"
             dir="auto"
             style={
@@ -749,12 +714,10 @@ exports[`Snapshot Balance Web 1`] = `
                 "WebkitUserSelect": "none",
                 "color": "rgba(0,0,255,1.00)",
                 "cursor": "pointer",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue-Medium",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
                 "msUserSelect": "none",
-                "position": "relative",
                 "textDecorationColor": "rgba(0,0,255,1.00)",
                 "userSelect": "none",
               }
@@ -792,7 +755,6 @@ exports[`Snapshot Balance Web 1`] = `
         target="_blank"
       >
         <div
-          c="#0000ff"
           className="css-text-901oao"
           data-focusable={true}
           dir="auto"
@@ -805,12 +767,10 @@ exports[`Snapshot Balance Web 1`] = `
               "WebkitUserSelect": "none",
               "color": "rgba(0,0,255,1.00)",
               "cursor": "pointer",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "0.75rem",
               "lineHeight": "1.0499999999999998rem",
               "msUserSelect": "none",
-              "position": "relative",
               "textDecorationColor": "rgba(0,0,255,1.00)",
               "userSelect": "none",
             }
@@ -873,6 +833,7 @@ exports[`Snapshot Balance Web 1`] = `
               "cursor": "pointer",
               "msTouchAction": "manipulation",
               "msUserSelect": "none",
+              "opacity": 1,
               "touchAction": "manipulation",
               "transitionDuration": "0.15s",
               "transitionProperty": "opacity",
@@ -883,7 +844,6 @@ exports[`Snapshot Balance Web 1`] = `
           tabIndex="0"
         >
           <div
-            c="#0000ff"
             className="css-text-901oao"
             dir="auto"
             style={
@@ -893,12 +853,10 @@ exports[`Snapshot Balance Web 1`] = `
                 "WebkitUserSelect": "none",
                 "color": "rgba(0,0,255,1.00)",
                 "cursor": "pointer",
-                "display": "flex",
                 "fontFamily": "HelveticaNeue-Medium",
                 "fontSize": "0.75rem",
                 "lineHeight": "1.0499999999999998rem",
                 "msUserSelect": "none",
-                "position": "relative",
                 "textDecorationColor": "rgba(0,0,255,1.00)",
                 "userSelect": "none",
               }
@@ -914,21 +872,13 @@ exports[`Snapshot Balance Web 1`] = `
   <div
     className="css-text-901oao"
     dir="auto"
-    mt={
-      Array [
-        9,
-        4,
-      ]
-    }
     style={
       Object {
         "color": "rgba(0,0,0,1.00)",
-        "display": "flex",
         "fontFamily": "HelveticaNeue-Bold",
         "fontSize": "1.5rem",
         "lineHeight": "2.0999999999999996rem",
         "marginTop": "4.5rem",
-        "position": "relative",
       }
     }
   >
@@ -937,16 +887,13 @@ exports[`Snapshot Balance Web 1`] = `
   <div
     className="css-text-901oao"
     dir="auto"
-    mt={2}
     style={
       Object {
         "color": "rgba(0,0,0,1.00)",
-        "display": "flex",
         "fontFamily": "HelveticaNeue",
         "fontSize": "0.875rem",
         "lineHeight": "1.2249999999999999rem",
         "marginTop": "1rem",
-        "position": "relative",
       }
     }
   >

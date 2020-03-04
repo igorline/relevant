@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
@@ -6,7 +6,7 @@ import { View, BodyText } from 'modules/styled/uni';
 import { elementTypePropTypeChecker } from 'utils/propValidation';
 import { getTimestamp } from 'utils/numbers';
 
-export default class Earning extends Component {
+export default class Earning extends PureComponent {
   static propTypes = {
     earning: PropTypes.object,
     month: PropTypes.string,

@@ -92,7 +92,7 @@ class ProfileComponent extends Component {
   render() {
     const { user, isOwner } = this.props;
 
-    const userImage = user ? { uri: user.image } : defaultImg;
+    const userImage = user && user.image ? { uri: user.image } : defaultImg;
 
     const optionsEl = !isOwner && (
       <TouchableOpacity

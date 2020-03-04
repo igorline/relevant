@@ -1,6 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 import * as colors from 'app/styles/colors';
 import sizing from './sizing';
+import { title, header, commentText } from './fonts';
+import markdown from './markdown';
 
 // eslint-disable-next-line
 export const GlobalStyle = createGlobalStyle`
@@ -30,9 +32,38 @@ export const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  ${markdown}
+  .markdown-body h1 {${header}}
+  .markdown-body h2 {${title}}
+  .markdown-body, .markdown-body p, .markdown-body li {${commentText}}
+
+  #app, main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  /* pre {
+    font-family: inherit;
+    font-size: inherit;
+    white-space: pre-wrap;
+    margin: 0;
+    display: inline-block;
+    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+  */
+
   a {
     color: ${colors.blue};
     overflow-wrap: anywhere;
+    text-decoration: none;
+    cursor: pointer;
   }
 
   .smartbanner-top.smartbanner-android {

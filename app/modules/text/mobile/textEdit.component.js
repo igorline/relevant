@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableHighlight,
-  Platform
-} from 'react-native';
+import { StyleSheet, View, TextInput, Platform } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, blue, greyText } from 'app/styles/global';
+import { globalStyles, greyText } from 'app/styles/global';
 import TextBody from 'modules/text/mobile/textBody.component';
+import { Button } from 'modules/styled/uni';
+import { colors } from 'styles';
 
 let styles;
 
@@ -96,25 +91,26 @@ class TextEdit extends Component {
         </TextInput>
 
         <View style={[styles.editingCommentButtons, { marginTop: -1 * buttonAdjust }]}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
+          <Button
+            mr={1}
+            h={5}
+            p={['0 2']}
+            bg={colors.lightGrey}
+            c={colors.black}
             onPress={() => {
               this.props.toggleFunction();
             }}
-            style={styles.editingCommentButton}
           >
-            <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>
-          </TouchableHighlight>
+            Cancel
+          </Button>
 
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={styles.editingCommentButton}
+          <Button
+            h={5}
+            p={['0 2']}
             onPress={() => this.props.saveEditFunction(this.state.text)}
           >
-            <Text style={[styles.font10, styles.editingCommentButtonText]}>
-              Save changes
-            </Text>
-          </TouchableHighlight>
+            Save changes
+          </Button>
         </View>
       </View>
     );
@@ -124,24 +120,10 @@ class TextEdit extends Component {
 const localStyles = StyleSheet.create({
   editingCommentButtons: {
     flexDirection: 'row',
-    paddingTop: 20,
+    paddingVertical: 30,
     justifyContent: 'flex-end',
     alignItems: 'center',
     flexWrap: 'wrap'
-  },
-  editingCommentButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginLeft: 10,
-    height: 30,
-    flexDirection: 'row',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: blue,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  editingCommentButtonText: {
-    color: blue
   }
 });
 

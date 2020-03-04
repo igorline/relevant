@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
@@ -66,7 +66,7 @@ export function Community({ viewCommunityMembers, showSettings }) {
             view={view}
             auth={auth}
           >
-            <CommunityLink community={activeCommunity} active />
+            <MemoCommunityLink community={activeCommunity} active />
           </CommunityActive>
         )}
         <View m={'2 0'}>
@@ -81,18 +81,20 @@ export function Community({ viewCommunityMembers, showSettings }) {
   );
 }
 
-function OtherCommunities() {
+const OtherCommunities = memo(() => {
   const { communities, list, active } = useSelector(state => state.community);
   return list
     .map(id => communities[id])
     .filter(community => community && active !== community.slug)
-    .map(community => <CommunityLink key={community._id} community={community} />);
-}
+    .map(community => <MemoCommunityLink key={community._id} community={community} />);
+});
 
 CommunityLink.propTypes = {
   community: PropTypes.object,
   active: PropTypes.bool
 };
+
+const MemoCommunityLink = memo(CommunityLink);
 
 function CommunityLink({ community, active }) {
   const dispatch = useDispatch();
@@ -120,4 +122,4 @@ function CommunityLink({ community, active }) {
   );
 }
 
-export default Community;
+export default memo(Community);

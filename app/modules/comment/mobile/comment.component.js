@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  ActionSheetIOS,
-  TouchableHighlight,
-  Platform,
-  Alert
-} from 'react-native';
+import { ActionSheetIOS, Platform, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles } from 'app/styles/global';
 import TextEdit from 'modules/text/mobile/textEdit.component';
 import { text as textUtil } from 'app/utils';
-import TextBody from 'modules/text/mobile/textBody.component';
-import PostInfo from 'modules/post/mobile/postInfo.component';
-import { View, Image } from 'modules/styled/uni';
+import CommentBody from 'modules/comment/commentBody';
 import { colors } from 'styles';
+
+import PostInfo from 'modules/post/mobile/postInfo.component';
+import { View, Image, Box } from 'modules/styled/uni';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -23,7 +16,6 @@ if (Platform.OS === 'android') {
   ActionSheet = RNBottomSheet;
   ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 }
-let styles;
 
 class Comment extends Component {
   static propTypes = {
@@ -129,15 +121,16 @@ class Comment extends Component {
       renderButtons,
       user,
       actions,
-      singlePost
+      singlePost,
+      preview
     } = this.props;
+
     if (!comment) return null;
     const { editing } = this.state;
-    const owner = auth.user && auth.user._id === user._id;
 
     const editingEl = editing && (
       <TextEdit
-        style={[styles.darkGrey, styles.editingInput]}
+        style={{ color: colors.black, fontSize: 16, lineHeight: 22 }}
         text={this.state.editedText || comment.body}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
@@ -150,24 +143,7 @@ class Comment extends Component {
       />
     );
 
-    const optionsEl = owner && (
-      <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
-        <TouchableHighlight underlayColor={'transparent'} onPress={this.showActionSheet}>
-          <Text style={styles.dots}>...</Text>
-        </TouchableHighlight>
-      </View>
-    );
-
-    const textBody = (
-      <View mt={2} mb={1}>
-        <TextBody
-          {...this.props}
-          style={styles.commentaryText}
-          post={comment}
-          body={comment.body}
-        />
-      </View>
-    );
+    const textBody = <CommentBody preview={preview} comment={comment} />;
 
     return (
       <View
@@ -191,21 +167,18 @@ class Comment extends Component {
           />
         ) : null}
         <View flex={1}>
-          <View mt={2} fdirection={'row'} align={'center'} justify={'space-between'}>
-            <PostInfo
-              post={comment}
-              actions={actions}
-              auth={auth}
-              singlePost={singlePost}
-              delete={this.deleteComment}
-              edit={this.editComment}
-              user={user}
-            />
-            {optionsEl}
-          </View>
+          <Box mt={2} />
+          <PostInfo
+            post={comment}
+            actions={actions}
+            auth={auth}
+            singlePost={singlePost}
+            delete={this.deleteComment}
+            edit={this.editComment}
+            user={user}
+          />
 
-          <View mt={1}>{this.state.editing ? editingEl : textBody}</View>
-
+          <Box mt={2}>{this.state.editing ? editingEl : textBody}</Box>
           {renderButtons()}
         </View>
       </View>
@@ -214,14 +187,3 @@ class Comment extends Component {
 }
 
 export default Comment;
-
-const localStyles = StyleSheet.create({
-  commentaryText: {
-    fontFamily: 'Georgia',
-    fontSize: 36 / 2,
-    lineHeight: 54 / 2,
-    color: colors.black
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };

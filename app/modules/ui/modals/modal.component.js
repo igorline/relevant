@@ -91,13 +91,13 @@ function ModalComponent(props) {
           justify={['space-between', 'center']}
           fdirection="column"
           m={['6 0', '0']}
-          minHeight={['auto', maxWidth ? 'auto' : '100vh']}
+          minheight={['auto', maxWidth ? 'auto' : '100vh']}
           onClick={e => e.stopPropagation()}
         >
           {hideX ? null : (
             <Touchable
               onPress={closeModal}
-              style={{ zIndex: 1, position: 'absolute', top: 0, right: 0 }}
+              style={{ zIndex: 10, position: 'absolute', top: 0, right: 0 }}
             >
               <CloseX
                 w={2.5}

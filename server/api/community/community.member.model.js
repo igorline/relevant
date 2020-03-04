@@ -26,6 +26,7 @@ const CommunityMemberSchema = new Schema(
     unread: { type: Number, default: 0 },
     deletedCommunity: { type: Boolean, default: false },
     customAdminWeight: { type: Number },
+    defaultWeight: { type: Number },
 
     totalUsers: Number,
     level: Number,

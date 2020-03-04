@@ -142,13 +142,19 @@ class Invites extends Component {
           value={this.state.number}
           onChange={this.handleChange}
         />
-        <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.createInvite}>
+        <ShadowButton
+          backgroundColor={'white'}
+          color={'#3E3EFF'}
+          onClick={this.createInvite}
+        >
           {this.state.email ? 'Send Invite Email' : 'Create Invite Code'}
         </ShadowButton>
       </div>
     );
 
-    const invites = this.props.admin.inviteList.map(id => this.renderInvite(id));
+    const invites = this.props.admin.inviteList
+      ? this.props.admin.inviteList.map(id => this.renderInvite(id))
+      : null;
 
     return (
       <div className="adminContainer">
@@ -159,7 +165,9 @@ class Invites extends Component {
           <span onClick={() => this.setState({ filter: null })}>all</span>
           <span onClick={() => this.setState({ filter: 'original' })}>original</span>
           <span onClick={() => this.setState({ filter: 'registered' })}>registered</span>
-          <span onClick={() => this.setState({ filter: 'notregistered' })}>notregistered</span>
+          <span onClick={() => this.setState({ filter: 'notregistered' })}>
+            notregistered
+          </span>
         </div>
 
         <div key={'inviteId'} className={'titleRow'}>

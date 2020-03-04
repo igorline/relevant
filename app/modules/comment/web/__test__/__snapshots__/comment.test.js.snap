@@ -16,11 +16,23 @@ exports[`Snapshot Comment Form Web 1`] = `
 }
 
 .c1 {
+  position: relative;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
   margin: 0rem 0rem 1.25rem 0rem;
   position: relative;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  position: relative;
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
@@ -34,7 +46,7 @@ exports[`Snapshot Comment Form Web 1`] = `
   display: flex;
 }
 
-.c3 {
+.c4 {
   position: relative;
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
@@ -49,7 +61,7 @@ exports[`Snapshot Comment Form Web 1`] = `
   display: flex;
 }
 
-.c4 {
+.c5 {
   background: #0000ff;
   display: -webkit-box;
   display: -webkit-flex;
@@ -90,11 +102,11 @@ exports[`Snapshot Comment Form Web 1`] = `
   cursor: pointer;
 }
 
-.c4:hover {
+.c5:hover {
   box-shadow: 0 2px 6px hsl(240,0%,70%);
 }
 
-.c5 {
+.c6 {
   background: #0000ff;
   display: -webkit-box;
   display: -webkit-flex;
@@ -130,11 +142,11 @@ exports[`Snapshot Comment Form Web 1`] = `
   cursor: pointer;
 }
 
-.c5:hover {
+.c6:hover {
   box-shadow: 0 2px 6px hsl(240,0%,70%);
 }
 
-.c2 {
+.c3 {
   font-size: 0.875rem;
   line-height: 1.2249999999999999rem;
   font-family: HelveticaNeue;
@@ -151,12 +163,12 @@ exports[`Snapshot Comment Form Web 1`] = `
   border-width: 1px;
   border-style: solid;
   padding: 1rem 1rem;
-  padding-left: 1rem;
   min-width: 0;
+  padding-left: 1rem;
+  min-height: 4rem;
 }
 
-.c2:focus {
-  min-height: 4rem;
+.c3:focus {
   outline: 1px solid #0000ff;
 }
 
@@ -192,44 +204,49 @@ exports[`Snapshot Comment Form Web 1`] = `
       className="c1"
     >
       <div
-        className="rta  "
-        style={
-          Object {
-            "display": "flex",
-            "flex": "auto",
-            "flexDirection": "column",
-          }
-        }
+        className="c2"
       >
-        <textarea
-          autoFocus={false}
-          className="rta__textarea c2"
-          flex={1}
-          m={0}
-          onBlur={[Function]}
-          onChange={[Function]}
-          onClick={[Function]}
-          onFocus={[Function]}
-          onScroll={[Function]}
-          onSelect={[Function]}
-          pl={2}
-          placeholder="Enter comment..."
-          rows={2}
+        <div
+          className="rta  "
           style={
             Object {
+              "display": "flex",
               "flex": "auto",
-              "height": 0,
+              "flexDirection": "column",
             }
           }
-          value="test input"
-        />
+        >
+          <textarea
+            autoFocus={false}
+            className="rta__textarea c3"
+            flex={1}
+            m={0}
+            minheight="4rem"
+            onBlur={[Function]}
+            onChange={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onScroll={[Function]}
+            onSelect={[Function]}
+            pl={2}
+            placeholder="Enter comment..."
+            rows={2}
+            style={
+              Object {
+                "flex": "auto",
+                "height": 0,
+              }
+            }
+            value="test input"
+          />
+        </div>
       </div>
     </div>
     <div
-      className="c3"
+      className="c4"
     >
       <button
-        className="c4"
+        className="c5"
         disabled={false}
         onMouseDown={[Function]}
         onTouchStart={[Function]}
@@ -237,7 +254,7 @@ exports[`Snapshot Comment Form Web 1`] = `
         Cancel
       </button>
       <button
-        className="c5"
+        className="c6"
         disabled={false}
         onMouseDown={[Function]}
         onTouchStart={[Function]}

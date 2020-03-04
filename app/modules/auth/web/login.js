@@ -88,15 +88,19 @@ class LoginForm extends Component {
         {FORM_FIELDS.map(field => (
           <Field {...field} key={field.name} />
         ))}
-        <View display="flex" fdirection="column" align="flex-start" justify="flex-start">
+        <View
+          mt={2}
+          display="flex"
+          fdirection="column"
+          align="flex-start"
+          justify="flex-start"
+        >
           <a
             onClick={() => {
               this.props.actions.showModal('forgot');
             }}
           >
-            <LinkFont c={colors.blue} mt={2}>
-              Forgot Your Password?
-            </LinkFont>
+            <LinkFont c={colors.blue}>Forgot Your Password?</LinkFont>
           </a>
           {local ? (
             <View fdirection="row" mt={[4, 2]} align="center">

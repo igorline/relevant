@@ -45,7 +45,6 @@ const AnimationContainer = styled.div`
 // const DEV_MODE = process.env.NODE_ENV === 'development';
 
 if (process.env.BROWSER === true) {
-  require('app/styles/index.css');
   require('app/styles/fonts.css');
   require('react-toastify/dist/ReactToastify.css');
   require('react-smartbanner/dist/main.css');

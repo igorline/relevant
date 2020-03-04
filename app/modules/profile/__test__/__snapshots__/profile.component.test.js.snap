@@ -173,16 +173,13 @@ exports[`Snapshot other users Profile 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          mr="1rem"
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Bold",
               "fontSize": "1.5rem",
               "lineHeight": "2.0999999999999996rem",
               "marginRight": "1rem",
-              "position": "relative",
             }
           }
         >
@@ -199,11 +196,8 @@ exports[`Snapshot other users Profile 1`] = `
           }
         >
           <span
-            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            inline={1}
-            pr={1.5}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -265,7 +259,6 @@ exports[`Snapshot other users Profile 1`] = `
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              inline={1}
               style={
                 Object {
                   "color": "rgba(0,0,0,1.00)",
@@ -281,10 +274,8 @@ exports[`Snapshot other users Profile 1`] = `
           </span>
             
           <span
-            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            mr={2}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -300,38 +291,10 @@ exports[`Snapshot other users Profile 1`] = `
                 "position": "relative",
               }
             }
-            user={
-              Object {
-                "_id": "a00000000000000000000000",
-                "airdropTokens": 111,
-                "balance": 111,
-                "bio": "hi i'm alice!",
-                "email": "alice@alice.com",
-                "ethAddress": Array [
-                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-                ],
-                "handle": "alice",
-                "image": "https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg",
-                "lockedTokens": 0,
-                "name": "Alice",
-                "notificationSettings": Object {
-                  "bet": Object {
-                    "manual": true,
-                  },
-                },
-                "password": "test",
-                "relevance": Object {
-                  "pagerank": 11,
-                },
-                "role": "admin",
-              }
-            }
           >
             <span
-              c="#7ED321"
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              fs={1.75}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
@@ -350,11 +313,8 @@ exports[`Snapshot other users Profile 1`] = `
           </span>
              
           <span
-            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            inline={1}
-            mr={0}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -414,8 +374,6 @@ exports[`Snapshot other users Profile 1`] = `
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              inline={1}
-              ml={0}
               style={
                 Object {
                   "color": "rgba(0,0,0,1.00)",
@@ -459,11 +417,9 @@ exports[`Snapshot other users Profile 1`] = `
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
-            "position": "relative",
           }
         }
       >
@@ -682,16 +638,13 @@ exports[`Snapshot own Profile 1`] = `
         <div
           className="css-text-901oao"
           dir="auto"
-          mr="1rem"
           style={
             Object {
               "color": "rgba(0,0,0,1.00)",
-              "display": "flex",
               "fontFamily": "HelveticaNeue-Bold",
               "fontSize": "1.5rem",
               "lineHeight": "2.0999999999999996rem",
               "marginRight": "1rem",
-              "position": "relative",
             }
           }
         >
@@ -708,11 +661,8 @@ exports[`Snapshot own Profile 1`] = `
           }
         >
           <span
-            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            inline={1}
-            pr={1.5}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -774,7 +724,6 @@ exports[`Snapshot own Profile 1`] = `
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              inline={1}
               style={
                 Object {
                   "color": "rgba(0,0,0,1.00)",
@@ -790,10 +739,8 @@ exports[`Snapshot own Profile 1`] = `
           </span>
             
           <span
-            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            mr={2}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -809,38 +756,10 @@ exports[`Snapshot own Profile 1`] = `
                 "position": "relative",
               }
             }
-            user={
-              Object {
-                "_id": "a00000000000000000000000",
-                "airdropTokens": 111,
-                "balance": 111,
-                "bio": "hi i'm alice!",
-                "email": "alice@alice.com",
-                "ethAddress": Array [
-                  "0x627306090abaB3A6e1400e9345bC60c78a8BEf57",
-                ],
-                "handle": "alice",
-                "image": "https://hips.hearstapps.com/elleuk.cdnds.net/15/37/2048x2730/2048x2730-e6-8278-458c32fb7c74-assets-elleuk-com-gallery-17063-taylor-swift-hairstyle-bob-getty-gallery-01-jpg.jpg",
-                "lockedTokens": 0,
-                "name": "Alice",
-                "notificationSettings": Object {
-                  "bet": Object {
-                    "manual": true,
-                  },
-                },
-                "password": "test",
-                "relevance": Object {
-                  "pagerank": 11,
-                },
-                "role": "admin",
-              }
-            }
           >
             <span
-              c="#7ED321"
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              fs={1.75}
               style={
                 Object {
                   "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
@@ -859,11 +778,8 @@ exports[`Snapshot own Profile 1`] = `
           </span>
              
           <span
-            align="baseline"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            inline={1}
-            mr={0}
             style={
               Object {
                 "WebkitAlignItems": "baseline",
@@ -923,8 +839,6 @@ exports[`Snapshot own Profile 1`] = `
             <span
               className="css-text-901oao css-textHasAncestor-16my406"
               dir="auto"
-              inline={1}
-              ml={0}
               style={
                 Object {
                   "color": "rgba(0,0,0,1.00)",
@@ -970,11 +884,9 @@ exports[`Snapshot own Profile 1`] = `
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
-            "position": "relative",
           }
         }
       >
@@ -1005,18 +917,15 @@ exports[`Snapshot own Profile 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr="0.25rem"
         style={
           Object {
             "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "WebkitTextDecorationStyle": "solid",
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginRight": "0.25rem",
-            "position": "relative",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
             "textDecorationStyle": "solid",
@@ -1047,10 +956,8 @@ exports[`Snapshot own Profile 1`] = `
           }
         >
           <span
-            align="center"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            fdirection="row"
             style={
               Object {
                 "WebkitAlignItems": "center",
@@ -1103,20 +1010,16 @@ exports[`Snapshot own Profile 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        ml="0.25rem"
-        mr="0.25rem"
         style={
           Object {
             "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
             "WebkitTextDecorationStyle": "solid",
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
             "marginLeft": "0.25rem",
             "marginRight": "0.25rem",
-            "position": "relative",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
             "textDecorationStyle": "solid",
@@ -1147,11 +1050,8 @@ exports[`Snapshot own Profile 1`] = `
           }
         >
           <span
-            align="center"
             className="css-text-901oao css-textHasAncestor-16my406"
             dir="auto"
-            fdirection="row"
-            ml="0.5rem"
             style={
               Object {
                 "WebkitAlignItems": "center",

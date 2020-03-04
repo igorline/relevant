@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   StyleSheet,
@@ -11,11 +11,8 @@ import {
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, IphoneX } from 'app/styles/global';
 import Percent from 'modules/stats/mobile/percent.component';
-import { Beacon } from 'react-native-help-scout';
-import { Button, AbsoluteView, SmallText } from 'modules/styled/uni';
+import { SmallText } from 'modules/styled/uni';
 import { colors } from 'styles';
-
-Beacon.init('40ed799c-8c6c-4226-9215-5adfd59e35eb');
 
 let styles;
 
@@ -30,17 +27,14 @@ TabBar.propTypes = {
   tabs: PropTypes.array
 };
 
-export default function TabBar({ tabs, currentTab, changeTab }) {
+export default memo(TabBar);
+
+function TabBar({ tabs, currentTab, changeTab }) {
   return (
     <View style={styles.footer}>
       {tabs.map(t => (
         <Tab key={t.key} tab={t} currentTab={currentTab} changeTab={changeTab} />
       ))}
-      <AbsoluteView absolute top={-5} right={2}>
-        <Button onPress={() => Beacon.open()} bradius={2} h={4} minwidth={'0'}>
-          Help
-        </Button>
-      </AbsoluteView>
     </View>
   );
 }

@@ -13,26 +13,31 @@ const getAssetsUrl = address =>
 const foamToken = '0x4946fcea7c692606e8908002e55a582af44ac121';
 
 // const dummyAddress = '0x222861f16354020F62bBfa0A878B2F047a385576';
-// const foamParams = {
-//   auth: {
-//     tokens: 100,
-//     points: 5
-//   }
-// };
-// TODO make these updatable
-// async function initFoamParams() {
-//   const foam = await Community.findOne({ slug: 'foam' });
-//   if (!foam || foam.customParams) return;
-//   await foam.setCustomParams(foamParams);
-// }
-// initFoamParams();
+
+const foamParams = {
+  auth: {
+    tokens: 100,
+    points: 5
+  }
+};
+
+async function initFoamParams() {
+  const foam = await Community.findOne({ slug: 'foam' });
+  if (!foam || foam.customParams) return;
+  await foam.setCustomParams(foamParams);
+}
 
 export async function checkCommunityAuth({ user, communityId, communityMember }) {
-  const community = await Community.findOne({ _id: communityId });
+  let community = await Community.findOne({ _id: communityId });
   if (community.slug !== 'foam') return true;
+  if (!community.customParams) {
+    community = await initFoamParams();
+  }
   const { tokens, points } = community.customParams.auth;
 
   const { ethLogin } = user;
+  // FOR TESTING ONLY
+  // const ethLogin = dummyAddress;
 
   if (!ethLogin)
     throw new Error(
@@ -58,16 +63,21 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
       `You need to have at least ${tokens} FOAM tokens to post in this forum.`
     );
 
-  if (!communityMember || !communityMember.role !== 'admin') {
-    await community.join(user._id, 'admin');
-    // do this async
+  // if (!communityMember || !communityMember.role !== 'admin') {
+  // await community.join(user._id, 'admin');
+  if (!communityMember) {
+    await community.join(user._id);
+  }
+
+  if (communityMember.pagerank === 0) {
     computePageRank({
       communityId: community._id,
       community: community.slug
     });
   }
 
-  communityMember.customAdminWeight = totalPoints + Math.log(tokens + 1);
+  communityMember.defaultWeight = totalPoints + Math.log(tokens + 1);
+  // communityMember.customAdminWeight = totalPoints + Math.log(tokens + 1);
   await communityMember.save();
   return true;
 }

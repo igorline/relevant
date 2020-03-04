@@ -76,9 +76,10 @@ export const useWeb3 = () => {
   const web3 = useWeb3State();
   const { init } = useWeb3Actions();
   useEffect(() => {
+    // TODO this init function opens a connect popup which prevents
+    // the display of a custom popup (like connect/signature)
     if (!web3.isInitialized) init(_web3);
   }, [web3.status, web3.isInitialized, init]);
-
   return [web3.accounts, web3.isInitialized, web3.networkId];
 };
 

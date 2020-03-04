@@ -310,7 +310,7 @@ function setupUser(user, dispatch) {
 }
 
 export function getUser(callback) {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
       const token = await storage.getToken();
       if (!token) return null;
@@ -323,6 +323,11 @@ export function getUser(callback) {
         })
       );
       setupUser(user, dispatch);
+      const state = getState();
+      const { community } = state.auth;
+      if (!community && user.community) {
+        dispatch(setCommunity(user.community));
+      }
       const checkIfEnabled = true;
       dispatch(enableMobileNotifications(user, checkIfEnabled));
       if (user.memberships) {

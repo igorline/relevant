@@ -8,16 +8,11 @@ import {
   Platform,
   ScrollView,
   InteractionManager,
-  ActionSheetIOS
+  ActionSheetIOS,
+  Alert
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {
-  globalStyles,
-  mainPadding,
-  fullWidth,
-  greyText,
-  borderGrey
-} from 'app/styles/global';
+import { globalStyles, mainPadding, greyText, borderGrey } from 'app/styles/global';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
@@ -27,11 +22,10 @@ import * as userActions from 'modules/user/user.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 
 import * as utils from 'app/utils';
-import UserName from 'modules/user/avatarbox.component';
-import PostBody from 'modules/post/mobile/postBody.component';
-import PostInfo from 'modules/post/mobile/postInfo.component';
+import Avatar from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
+import { colors } from 'styles';
 
 import UserSearchComponent from './userSearch.component';
 import UrlPreview from './urlPreview.component';
@@ -60,7 +54,8 @@ class UrlComponent extends Component {
     edit: PropTypes.bool,
     users: PropTypes.object,
     user: PropTypes.object,
-    tags: PropTypes.array
+    tags: PropTypes.array,
+    disableUrl: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -93,7 +88,17 @@ class UrlComponent extends Component {
   }
 
   removeUrlPreview = () => {
-    this.props.actions.setCreatePostState({ urlPreview: null, postUrl: null });
+    this.props.actions.setCreatePostState({
+      urlPreview: null,
+      postUrl: null,
+      disableUrl: true
+    });
+  };
+
+  enableUrlPreview = () => {
+    const { postBody } = this.props;
+    this.props.actions.setCreatePostState({ disableUrl: false });
+    setTimeout(() => this.processInput(postBody), 1);
   };
 
   previewMenu = () => {
@@ -143,6 +148,7 @@ class UrlComponent extends Component {
   }
 
   processInput(postBody, doneTyping) {
+    const { disableUrl } = this.props;
     const length = postBody ? postBody.length : 0;
 
     if (doneTyping) postBody = this.props.postBody;
@@ -159,7 +165,7 @@ class UrlComponent extends Component {
     // eslint-disable-next-line
     if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
-    if (!this.props.postUrl && shouldParseUrl) {
+    if (!disableUrl && !this.props.postUrl && shouldParseUrl) {
       let postUrl;
       const possibleUrls = words.filter(word => URL_REGEX.test(word));
       postUrl = possibleUrls[0];
@@ -200,48 +206,34 @@ class UrlComponent extends Component {
     this.props.actions.setCreatePostState({ postBody, bodyTags, bodyMentions });
   }
 
-  createPreview(postUrl) {
-    this.props.actions.generatePreviewServer(postUrl).then(results => {
-      if (results) {
-        const newBody = this.props.postBody
-          ? this.props.postBody.replace(`${postUrl}`, '').trim()
-          : '';
+  createPreview = async postUrl => {
+    try {
+      const results = await this.props.actions.generatePreviewServer(postUrl);
+      if (!results) throw new Error('Unable to generate preview for url');
 
-        this.props.actions.setCreatePostState({
-          postBody: newBody,
-          domain: results.domain,
-          postUrl: results.url,
-          keywords: results.keywords,
-          postTags: results.tags,
-          articleAuthor: results.articleAuthor,
-          shortText: results.shortText,
-          urlPreview: {
-            image: results.image,
-            title: results.title ? results.title : 'Untitled',
-            description: results.description
-          }
-        });
-      } else {
-        this.props.actions.setCreatePostState({ postUrl: null });
-      }
-    });
-  }
+      this.props.actions.setCreatePostState({
+        domain: results.domain,
+        postUrl: results.url,
+        keywords: results.keywords,
+        postTags: results.tags,
+        articleAuthor: results.articleAuthor,
+        shortText: results.shortText,
+        urlPreview: {
+          image: results.image,
+          title: results.title ? results.title : 'Untitled',
+          description: results.description
+        }
+      });
+    } catch (err) {
+      this.props.actions.setCreatePostState({ postUrl: null });
+      Alert.alert(err.message);
+    }
+  };
 
   render() {
-    let repostBody;
-
-    if (this.props.repost) {
-      repostBody = (
-        <View style={{ flex: 0, width: fullWidth - 20, paddingBottom: 20 }}>
-          <PostInfo preview post={this.props.repost} users={this.props.users} />
-          <PostBody preview post={this.props.repost} />
-        </View>
-      );
-    }
-
+    const { disableUrl, postUrl, postBody } = this.props;
     let urlPlaceholder = 'Article URL.';
-
-    if (this.props.postUrl) {
+    if (postUrl) {
       urlPlaceholder = 'Add your own commentary';
     }
     if (this.props.repost) {
@@ -254,7 +246,7 @@ class UrlComponent extends Component {
       userHeader = (
         <View style={styles.createPostUser}>
           <View style={[styles.innerBorder, { paddingVertical: 10 }]}>
-            <UserName
+            <Avatar
               style={styles.innerBorder}
               user={this.props.user}
               setSelected={() => null}
@@ -282,7 +274,7 @@ class UrlComponent extends Component {
     if (
       this.props.urlPreview &&
       this.props.urlPreview.description &&
-      this.props.postBody === '' &&
+      postBody === '' &&
       !this.props.repost
     ) {
       addP = (
@@ -304,7 +296,7 @@ class UrlComponent extends Component {
     if (
       Platform.OS === 'ios' &&
       !this.props.urlPreview &&
-      this.props.postBody === '' &&
+      postBody === '' &&
       !this.props.share
     ) {
       tipCTA = (
@@ -354,8 +346,8 @@ class UrlComponent extends Component {
             placeholderTextColor={greyText}
             multiline
             clearButtonMode={'while-editing'}
-            onChangeText={postBody => {
-              this.processInput(postBody, false);
+            onChangeText={_postBody => {
+              this.processInput(_postBody, false);
             }}
             onBlur={() => this.processInput(null, true)}
             returnKeyType={'default'}
@@ -367,24 +359,34 @@ class UrlComponent extends Component {
             blurOnSubmit={false}
             onSubmitEditing={() => {
               if (this.okToSubmit) {
-                let { postBody } = this.props;
-                postBody += '\n';
-                this.processInput(postBody, false);
+                this.processInput(postBody + '\n', false);
                 return (this.okToSubmit = false);
               }
               return (this.okToSubmit = true);
             }}
           >
-            <TextBody showAllMentions>{this.props.postBody}</TextBody>
+            <TextBody showAllMentions>{postBody}</TextBody>
           </TextInput>
           {addP}
           {tipCTA}
         </View>
         {userSearch}
-        {repostBody}
-        {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
+        {disableUrl && postBody !== '' && (
+          <Text
+            onPress={this.enableUrlPreview}
+            style={{ color: colors.blue, position: 'absolute', bottom: 16, right: 0 }}
+          >
+            Enable Link Preview
+          </Text>
+        )}
+        {postUrl && !this.props.users.search.length && !this.props.repost ? (
           <View style={{ marginVertical: 8 }}>
-            <UrlPreview {...this.props} size={'small'} urlMenu={this.previewMenu} />
+            <UrlPreview
+              remove
+              {...this.props}
+              size={'small'}
+              urlMenu={this.previewMenu}
+            />
           </View>
         ) : null}
       </ScrollView>
@@ -451,7 +453,8 @@ function mapStateToProps(state) {
     postBody: state.createPost.postBody,
     urlPreview: state.createPost.urlPreview,
     repost: state.createPost.repost,
-    tags: state.tags.parentTags
+    tags: state.tags.parentTags,
+    disableUrl: state.createPost.disableUrl
   };
 }
 

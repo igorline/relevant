@@ -48,7 +48,9 @@ function ModalHeader({ history }) {
         isSearchable={false}
         styles={customStyles}
         value={value}
-        onChange={e => history.push(`/${e.value}/new`)}
+        onChange={e =>
+          history.push({ pathname: `/${e.value}/new`, search: history.location.search })
+        }
         options={options}
       />
     </View>
@@ -69,7 +71,7 @@ const customStyles = {
     borderBottom: `1px solid ${colors.lightBorder}`,
     ...fonts.body,
     color: state.isSelected ? colors.blue : colors.black,
-    padding: sizing(3),
+    padding: sizing(2),
     cursor: 'pointer'
   }),
   indicatorSeparator: () => {},
@@ -90,6 +92,7 @@ const customStyles = {
     display: 'flex',
     padding: 0
   }),
+  menuList: () => ({ fontSize: sizing(2) }),
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
     const transition = 'opacity 300ms';

@@ -72,14 +72,15 @@ class SignUp extends Component {
     codePush.disallowRestart();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.auth.preUser && this.props.auth.preUser !== nextProps.auth.preUser) {
+  componentDidUpdate(prev) {
+    const { auth } = this.props;
+    if (auth.preUser && prev.auth.preUser !== auth.preUser) {
       this.setState({
-        name: nextProps.auth.preUser.name || null,
-        phone: nextProps.auth.preUser.phone || null,
-        email: nextProps.auth.preUser.email || null,
-        password: nextProps.auth.preUser.password || null,
-        cPassword: nextProps.auth.preUser.password || null
+        name: auth.preUser.name || null,
+        phone: auth.preUser.phone || null,
+        email: auth.preUser.email || null,
+        password: auth.preUser.password || null,
+        cPassword: auth.preUser.password || null
       });
     }
   }
