@@ -783,6 +783,9 @@ exports.ethAddress = async (req, res, next) => {
 
     user = await User.findOne({ handle: user.handle }, 'ethAddress');
     user.ethAddress = [acc];
+    if (!user.ethLogin) {
+      user.ethLogin = acc;
+    }
 
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
     user.tokenBalance = userBalance;

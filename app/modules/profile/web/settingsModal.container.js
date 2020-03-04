@@ -45,10 +45,10 @@ export default function SettingsModalContainer({ close }) {
       />
       <Header>Connect Accounts</Header>
       <View m={'3 0'} fdirection={'row'} align="center">
-        <BoxLogin text={'Connect to 3box'} />
-        {user.boxAddress ? (
+        <BoxLogin type="metamask" text={'Connect Ethereum Address'} />
+        {user.ethLogin ? (
           <Text>
-            Current address: <EthAddress address={user.boxAddress} />
+            Connected address: <EthAddress address={user.ethLogin} />
           </Text>
         ) : (
           <Text>Not connected</Text>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
 import { SmallText } from 'modules/styled/uni';
@@ -12,7 +12,8 @@ Tag.propTypes = {
 };
 
 export default function Tag({ community, name, noLink, ...rest }) {
-  const link = encodeURI(`/${community}/top/${name}`);
+  const filter = useSelector(state => state.navigation.discover.sort);
+  const link = encodeURI(`/${community}/${filter || 'new'}/${name}`);
   const dispatch = useDispatch();
   return (
     <ULink

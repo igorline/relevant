@@ -27,6 +27,17 @@ async function initFoamParams() {
   await foam.setCustomParams(foamParams);
 }
 
+export async function checkAuthRoute(req, res, next) {
+  try {
+    const { user, communityMember } = req;
+    const { communityId } = communityMember;
+    await checkCommunityAuth({ user, communityId, communityMember });
+    res.status(200).json({ OK: true });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function checkCommunityAuth({ user, communityId, communityMember }) {
   let community = await Community.findOne({ _id: communityId });
   if (community.slug !== 'foam') return true;
@@ -39,17 +50,18 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
   // FOR TESTING ONLY
   // const ethLogin = dummyAddress;
 
-  if (!ethLogin)
+  if (!ethLogin) {
     throw new Error(
-      'You need to connect your 3Box profile to your account in order to post in this community.'
+      'You need to connect the Ethereum address you use with FOAM in order to post in this forum.\nYou can connect your address with Metamask via Wallet -> Connect Wallet.'
     );
+  }
   const res = await requestAsync({ url: getAssetsUrl(ethLogin) });
   const { verifiedPOIs, pendingPOIs } = JSON.parse(res.body);
   const totalPoints = verifiedPOIs + pendingPOIs || 0;
 
   if (!totalPoints || totalPoints < points) {
     throw new Error(
-      `You can only post in this forum after you have added ${points} points of interest to the FOAM map.`
+      `You can only post in this forum only after you have:\n - added ${points} points of interest to the FOAM map\n - have a balance of at least ${tokens} FOAM tokens.`
     );
   }
   const balanceWei = await getTokenBalance({
@@ -60,7 +72,7 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
   const balance = utils.formatEther(balanceWei);
   if (balance < tokens)
     throw new Error(
-      `You need to have at least ${tokens} FOAM tokens to post in this forum.`
+      `You can only post in this forum only after you have:\n - added ${points} points of interest to the FOAM map\n - have a balance of at least ${tokens} FOAM tokens.`
     );
 
   // if (!communityMember || !communityMember.role !== 'admin') {

@@ -3,19 +3,21 @@ import PropTypes from 'prop-types';
 import { useLoginWithBox } from 'modules/auth/3box.hooks';
 import { useWeb3, useMetamask } from 'modules/contract/contract.hooks';
 import { utils } from 'ethers';
-import { BoxButton } from './socialButtons';
+import { BoxButton, MetamaskButton } from './socialButtons';
 
 BoxLogin.propTypes = {
   close: PropTypes.func,
-  text: PropTypes.string
+  text: PropTypes.string,
+  type: PropTypes.string
 };
 
-export default function BoxLogin({ close, text }) {
+export default function BoxLogin({ close, text, type }) {
   const [doLogin, logIn] = useState(false);
+  const Button = type === 'metamask' ? MetamaskButton : BoxButton;
   return (
     <Fragment>
       {doLogin && <Web3Login close={close} resetLogin={() => logIn(false)} />}
-      <BoxButton
+      <Button
         mr={[4, 0]}
         mt={[0, 2]}
         flex={1}
@@ -25,7 +27,7 @@ export default function BoxLogin({ close, text }) {
           setTimeout(() => logIn(true));
         }}
         text={text || 'Sign In with 3Box'}
-      ></BoxButton>
+      ></Button>
     </Fragment>
   );
 }

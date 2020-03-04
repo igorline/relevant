@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { withRouter } from 'react-router';
@@ -10,13 +10,14 @@ import {
   createCommunity,
   deleteCommunity
 } from 'modules/community/community.actions';
+import SelectField from 'modules/form/selectField.component';
 import CreatableMulti from 'modules/form/createSelectField.component';
 import AsyncAdminField from 'modules/form/asyncAdminField.component';
 import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import Checkbox from 'modules/styled/form/checkbox';
 import { Field, reduxForm } from 'redux-form';
-import { Form, View, Button } from 'modules/styled/web';
+import { Form, View, Button, Title } from 'modules/styled/web';
 import { Image, LinkFont, SecondaryText } from 'modules/styled/uni';
 import { required } from 'modules/form/validators';
 import { colors } from 'app/styles';
@@ -97,32 +98,27 @@ class CommunityAdminForm extends Component {
 
     const FORM_FIELDS = [
       {
+        name: 'image',
+        component: ReduxFormImageUpload,
+        placeholder: '/img/blueR.png',
+        imageComponent: <Image mt={1} bg={colors.blue} {...imageProps} />,
+        type: 'file-upload',
+        label: 'Community Image',
+        validate: []
+      },
+      {
         name: 'name',
         label: 'Name',
         component: ReduxFormField,
         type: 'text',
         validate: [required]
       },
-      {
-        name: 'private',
-        label: 'Private',
-        component: Checkbox,
-        type: 'checkbox'
-      },
-      ...customFields,
-      {
-        name: 'betEnabled',
-        label: 'Enable Betting',
-        component: Checkbox,
-        type: 'checkbox'
-      },
-      {
-        name: 'hidden',
-        label: 'Unlisted (anyone with link can still see and join the community)',
-        component: Checkbox,
-        type: 'checkbox'
-      },
-
+      // {
+      //   name: 'private',
+      //   label: 'Private',
+      //   component: Checkbox,
+      //   type: 'checkbox'
+      // },
       {
         name: 'slug',
         label: (
@@ -146,20 +142,15 @@ class CommunityAdminForm extends Component {
         validate: [required]
       },
       {
-        name: 'image',
-        component: ReduxFormImageUpload,
-        placeholder: '/img/blueR.png',
-        imageComponent: <Image mt={1} bg={colors.blue} {...imageProps} />,
-        type: 'file-upload',
-        label: 'Community Image',
-        validate: []
-      },
-      {
         name: 'topics',
         component: CreatableMulti,
         type: 'text',
         label: 'Tags',
         validate: []
+      },
+      {
+        name: 'sectionTitle',
+        text: 'Admins & Moderators'
       },
       {
         name: 'superAdmins',
@@ -190,18 +181,49 @@ class CommunityAdminForm extends Component {
           </View>
         ),
         validate: []
+      },
+      {
+        name: 'sectionTitle',
+        text: 'Community Settings'
+      },
+      {
+        name: 'defaultPost',
+        label: 'Default Post Type',
+        component: SelectField,
+        // input: { value: [] },
+        // value: 'link',
+        options: ['link', 'text']
+      },
+      ...customFields,
+      {
+        name: 'betEnabled',
+        label: 'Enable Betting',
+        component: Checkbox,
+        type: 'checkbox'
+      },
+      {
+        name: 'hidden',
+        label: 'Unlisted (anyone with link can still see and join the community)',
+        component: Checkbox,
+        type: 'checkbox'
       }
     ];
     return (
-      <View display="flex" fdirection="column" m={4} mb={16}>
+      <View display="flex" fdirection="column" m={'0 4'} mb={16}>
         <Form
           onSubmit={handleSubmit(this.submit)}
           fdirection="column"
           key="community-admin-form"
         >
-          {FORM_FIELDS.map((field, index) => (
-            <Field {...field} key={index} />
-          ))}
+          {FORM_FIELDS.map((field, index) => {
+            if (field.name === 'sectionTitle')
+              return (
+                <Fragment key={field.text + index}>
+                  <Title mt={4}>{field.text}</Title>
+                </Fragment>
+              );
+            return <Field {...field} key={index} />;
+          })}
           <View justify="flex-end" mt={3} fdirection="row">
             {initialValues._id ? (
               <Button
@@ -234,6 +256,7 @@ const mapStateToProps = (state, ownProps) => {
   const superAdmins = get(community, 'superAdmins', []).map(m => m.embeddedUser.handle);
 
   const initialValues = { ...community, admins, superAdmins };
+
   return {
     routing: state.routing,
     community: state.community,
