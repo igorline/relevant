@@ -88,7 +88,7 @@ export async function checkCommunityAuth({ user, communityId, communityMember })
     });
   }
 
-  if (!communityMember.defaultWeight) {
+  if (communityMember.defaultWeight !== totalPoints + Math.log(tokens + 1)) {
     communityMember.defaultWeight = totalPoints + Math.log(tokens + 1);
     // communityMember.customAdminWeight = totalPoints + Math.log(tokens + 1);
     await communityMember.save();
