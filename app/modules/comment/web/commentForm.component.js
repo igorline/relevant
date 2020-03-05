@@ -10,6 +10,7 @@ import { Spacer } from 'modules/styled/uni';
 import { createComment, updateComment } from 'modules/comment/comment.actions';
 import history from 'modules/navigation/history';
 import TextAreaWithMention from 'modules/text/web/textAreaWithMention';
+import { useCommunityAuth } from 'modules/createPost/hooks';
 
 const AvatarContainer = styled(View)`
   position: absolute;
@@ -55,6 +56,8 @@ export function CommentFormComponent({
   const textArea = useRef();
 
   const handleChange = e => setCommentText(e.target.value);
+
+  const authError = useCommunityAuth();
 
   // TODO - non-shift enter?
   // handleKeydown(e) {
@@ -146,50 +149,54 @@ export function CommentFormComponent({
       additionalNesting={screenSize ? 0 : additionalNesting}
       screenSize={screenSize}
     >
-      <View fdirection="column" flex={1} style={{ position: 'relative' }}>
-        <TextAreaWithMention
-          textArea={textArea}
-          value={commentText}
-          autoFocus={autoFocus}
-          leftPadding={focused ? 2 : 6}
-          onChange={handleChange}
-          setFocused={setFocused}
-          // withPreview
-          placeholder={'Enter comment...'}
-          minHeight={focused ? sizing(8) : null}
-        >
-          {focused ? null : (
-            <AvatarContainer p={2}>
-              <UAvatar user={auth.user} size={3} noLink />
-            </AvatarContainer>
-          )}
-        </TextAreaWithMention>
-        {focused || commentText ? (
-          <View justify="flex-end" fdirection="row">
-            <Button
-              onMouseDown={_cancel}
-              onTouchStart={_cancel}
-              bg="transparent"
-              c={colors.secondaryText}
-              disabled={!auth.isAuthenticated}
-              p={[null, '0 4']}
-              minwidth={1}
-              mr={1}
-            >
-              Cancel
-            </Button>
-            <Button
-              onMouseDown={handleSubmit}
-              onTouchStart={handleSubmit}
-              disabled={!auth.isAuthenticated}
-              p={[null, '0 4']}
-              minwidth={1}
-            >
-              {buttonText}
-            </Button>
-          </View>
-        ) : null}
-      </View>
+      {authError && focused ? (
+        authError.component
+      ) : (
+        <View fdirection="column" flex={1} style={{ position: 'relative' }}>
+          <TextAreaWithMention
+            textArea={textArea}
+            value={commentText}
+            autoFocus={autoFocus}
+            leftPadding={focused ? 2 : 6}
+            onChange={handleChange}
+            setFocused={setFocused}
+            // withPreview
+            placeholder={'Enter comment...'}
+            minheight={focused ? sizing(8) : null}
+          >
+            {focused ? null : (
+              <AvatarContainer p={2}>
+                <UAvatar user={auth.user} size={3} noLink />
+              </AvatarContainer>
+            )}
+          </TextAreaWithMention>
+          {focused || commentText ? (
+            <View justify="flex-end" fdirection="row">
+              <Button
+                onMouseDown={_cancel}
+                onTouchStart={_cancel}
+                bg="transparent"
+                c={colors.secondaryText}
+                disabled={!auth.isAuthenticated}
+                p={[null, '0 4']}
+                minwidth={1}
+                mr={1}
+              >
+                Cancel
+              </Button>
+              <Button
+                onMouseDown={handleSubmit}
+                onTouchStart={handleSubmit}
+                disabled={!auth.isAuthenticated}
+                p={[null, '0 4']}
+                minwidth={1}
+              >
+                {buttonText}
+              </Button>
+            </View>
+          ) : null}
+        </View>
+      )}
     </Spacer>
   );
 }

@@ -148,7 +148,7 @@ class Splash extends Component {
       <View bg={colors.white} flex={1} fdirection="column" style={{ overflow: 'hidden' }}>
         <Marquee />
 
-        <Section minHeight={'100vh'}>
+        <Section minheight={'100vh'}>
           <ULink to={'/relevant/top'}>
             <Image
               mt={[0, 6]}

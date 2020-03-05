@@ -1,3 +1,5 @@
+import { checkAuthRoute } from './community.auth';
+
 const express = require('express');
 const controller = require('./community.controller');
 const auth = require('../../auth/auth.service');
@@ -11,6 +13,12 @@ router.get('/:slug/members/search', auth.blocked(), controller.memberSearch);
 router.get('/membership/:user', auth.isAuthenticated(), controller.membership);
 router.get('/', auth.currentUser(), asyncMiddleware(controller.index));
 router.get('/:slug', auth.isAuthenticated(), controller.findOne);
+router.get(
+  '/:slug/checkAuth',
+  auth.isAuthenticated(),
+  auth.communityMember(),
+  checkAuthRoute
+);
 
 router.post('/', auth.isAuthenticated(), controller.create);
 

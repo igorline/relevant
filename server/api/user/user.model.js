@@ -151,16 +151,6 @@ UserSchema.index(
   { unique: true, partialFilterExpression: { ethLogin: { $exists: true } } }
 );
 
-// UserSchema.index(
-//   { boxAddress: 1 },
-//   { unique: true, partialFilterExpression: { boxAddress: { $exists: true } } }
-// );
-// UserSchema.index(
-//   { boxDID: 1 },
-//   { unique: true, partialFilterExpression: { boxDID: { $exists: true } } }
-// );
-
-// UserSchema.index({ name: 'text' });
 UserSchema.index({ handle: 1 });
 
 /**

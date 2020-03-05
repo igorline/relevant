@@ -239,6 +239,7 @@ export async function update(req, res, next) {
     if (!canEdit) throw new Error("You don't have permission to edit a community");
 
     let community = await Community.findOne({ _id: updatedCommunity._id });
+
     community.set({
       image: updatedCommunity.image,
       name: updatedCommunity.name,
@@ -248,7 +249,8 @@ export async function update(req, res, next) {
       private: updatedCommunity.private,
       hidden: updatedCommunity.hidden,
       betEnabled: updatedCommunity.betEnabled,
-      customParams: updatedCommunity.customParams
+      customParams: updatedCommunity.customParams,
+      defaultPost: updatedCommunity.defaultPost
     });
 
     community = await community.save();

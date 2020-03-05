@@ -65,7 +65,7 @@ export default function CommentBody({
   // link to full post
   if (isPreview || noLink) {
     return (
-      <View shrink={1} m={'0 3 1 0'} pl={avatarText ? 5 : 0}>
+      <View shrink={1} pl={avatarText ? 5 : 0}>
         <Touchable
           style={{ zIndex: 0 }}
           to={postUrl}
@@ -91,7 +91,7 @@ export default function CommentBody({
   }
 
   return (
-    <View shrink={1} mb={1} pl={avatarText ? 5 : 0}>
+    <View shrink={1} pl={avatarText ? 5 : 0}>
       {body}
     </View>
   );

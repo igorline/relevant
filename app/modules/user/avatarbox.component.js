@@ -1,5 +1,6 @@
 import React, { Fragment, memo } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { colors, isNative } from 'app/styles';
 import RStat from 'modules/stats/rStat.component';
 import ULink from 'modules/navigation/ULink.component';
@@ -8,6 +9,7 @@ import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
 import { Text, View, SecondaryText, Image, BodyText, Box } from 'modules/styled/uni';
 import sizing from 'styles/sizing';
+import { goToProfile } from 'modules/navigation/navigation.actions';
 
 export const Name = styled(BodyText)``;
 
@@ -43,6 +45,7 @@ function AvatarBox(props) {
     navigationCallback,
     vertical
   } = props;
+  const dispatch = useDispatch();
 
   if (!user) return null;
 
@@ -83,7 +86,8 @@ function AvatarBox(props) {
     />
   );
 
-  const showRel = user.relevance && showRelevance && !avatarText;
+  const showRel =
+    user.relevance && !!user.relevance.pagerank && showRelevance && !avatarText;
 
   return (
     <Box>
@@ -91,30 +95,22 @@ function AvatarBox(props) {
         noLink={noLink}
         to={`/user/profile/${user.handle}`}
         onPress={() => {
-          setSelected(user);
-          if (navigationCallback) {
-            navigationCallback();
-          }
+          setSelected ? setSelected(user) : dispatch(goToProfile(user));
+          navigationCallback && navigationCallback();
         }}
-        onClick={() => {
-          if (navigationCallback) {
-            navigationCallback();
-          }
-        }}
+        onClick={() => navigationCallback && navigationCallback()}
       >
-        <View flex={1} fdirection={vertical ? 'column' : 'row'}>
+        <View fdirection={vertical ? 'column' : 'row'}>
           <Avatar size={size} user={user} noLink />
           {repostIcon}
           <View
             ml={vertical ? 0 : avatarText ? 1.5 : 1}
             align={vertical ? 'center' : 'flex-start'}
-            justify={'center'}
           >
-            <Text mt={vertical ? 1 : 0} inline={1}>
+            <Text inline={1}>
               <UserName user={user} showRel={showRel} twitterIcon={twitterIcon} />
               {avatarText ? (
                 <Text c={colors.black} inline={1}>
-                  {' '}
                   {avatarText()}
                 </Text>
               ) : null}

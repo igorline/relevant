@@ -8,7 +8,7 @@ import { standardRoutes } from './discoverHelper';
 
 const DiscoverTab = props => {
   const { linkData, community, tag } = props;
-  let url = `/${community}/${linkData.key}`;
+  let url = community ? `/${community}/${linkData.key}` : '/communities';
   if (tag) url += `/${tag}`;
 
   return (
@@ -50,7 +50,7 @@ DiscoverTabs.propTypes = {
 function mapStateToProps(state) {
   return {
     view: state.view,
-    community: state.community.active
+    community: state.auth.community
   };
 }
 

@@ -141,6 +141,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 17
         versionName "1.1.1"
+        missingDimensionStrategy 'react-native-camera', 'general'
+
     }
     // productFlavors {
     //     // Includes settings you want to keep only while developing your app.

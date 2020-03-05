@@ -76,17 +76,21 @@ exports[`Snapshot SplashComponent 1`] = `
       className="css-view-1dbjc4n"
       style={
         Object {
+          "MozUserSelect": "none",
           "WebkitFlexBasis": "auto",
+          "WebkitUserSelect": "none",
           "cursor": "pointer",
           "display": "flex",
           "flexBasis": "auto",
           "height": "1.5rem",
           "msFlexPreferredSize": "auto",
+          "msUserSelect": "none",
           "overflowX": "hidden",
           "overflowY": "hidden",
           "position": "absolute",
           "right": "3rem",
           "top": "3rem",
+          "userSelect": "none",
           "width": "1.5rem",
           "zIndex": 10,
         }

@@ -1,12 +1,44 @@
-import { useCallback } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import { BodyText, ErrorBox, Box } from 'modules/styled/uni';
 import { useSelector, useDispatch } from 'react-redux';
 import { refreshTab } from 'modules/navigation/navigation.actions';
 import { editPost } from 'modules/post/post.actions';
 import { submitPost, generatePreviewServer } from 'modules/createPost/createPost.actions';
-
+import { checkAuth } from 'modules/community/community.actions';
+import BoxLogin from 'modules/auth/web/login.3box';
 import ReactGA from 'react-ga';
 import { alert } from 'app/utils';
 import history from 'modules/navigation/history';
+
+export function useCommunityAuth() {
+  const dispatch = useDispatch();
+  const [authError, setAuthError] = useState();
+  const user = useSelector(state => state.auth.user);
+  const ethAddress = user && user.ethLogin;
+  useEffect(() => {
+    const sendAuthRequtest = async () => {
+      const err = await dispatch(checkAuth());
+      err &&
+        setAuthError({
+          component: (
+            <Fragment>
+              <ErrorBox align={'flex-start'}>
+                <BodyText>{err.message}</BodyText>
+                {!ethAddress && (
+                  <Fragment>
+                    <Box mt={3} />
+                    <BoxLogin type={'metamask'} text={'Connect your Ethereum Address'} />
+                  </Fragment>
+                )}
+              </ErrorBox>
+            </Fragment>
+          )
+        });
+    };
+    sendAuthRequtest();
+  }, [dispatch, ethAddress]);
+  return authError;
+}
 
 export function useCreatePost({ close, clearPost, setStatus }) {
   const community = useSelector(state => state.auth.community);

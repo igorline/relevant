@@ -308,9 +308,10 @@ export const Spacer = styled(View)`
 
 export const CloseX = styled(Image)`
   position: absolute;
+  ${p => (p.position ? `position: ${p.position};` : null)}
   ${p => (p.top ? `top: ${size(p.top)};` : null)}
   ${p => (p.right ? `right: ${size(p.right)};` : null)}
-  cursor: pointer;
+  ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
   z-index: 10;
 `;
 
@@ -379,21 +380,20 @@ export function EthAddress({ address }) {
   );
 }
 
-export const ErrorBox = ({ children, styleProps }) => (
+export const ErrorBox = ({ children, ...styleProps }) => (
   <View mt={2} p={2} bg={colors.errorA} border bc={colors.error} {...styleProps}>
     {children}
   </View>
 );
 
-export const WarningBox = ({ children, styleProps }) => (
+export const WarningBox = ({ children, ...styleProps }) => (
   <View mt={2} p={2} bg={colors.warningA} border bc={colors.warning} {...styleProps}>
     {children}
   </View>
 );
 
 ErrorBox.propTypes = {
-  children: PropTypes.node,
-  styleProps: PropTypes.object
+  children: PropTypes.node
 };
 
 WarningBox.propTypes = {

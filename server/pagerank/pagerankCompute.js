@@ -21,16 +21,13 @@ export default async function computePageRank(params) {
 
   const admins = await CommunityMember.find(
     { role: 'admin', communityId },
-    'handle customAdminWeight'
-  ).populate({
-    path: 'user',
-    select: 'handle',
-    populate: {
-      path: 'relevance',
-      match: { communityId },
-      select: 'pagerank pagerankRaw pagerankRawNeg'
-    }
-  });
+    'embeddedUser defaultWeight customAdminWeight pagerank pagerankRaw pagerankRawNeg'
+  );
+
+  const usersWithDefaultWeight = await CommunityMember.find(
+    { role: 'user', communityId, defaultWeight: { $gt: 0 } },
+    'embeddedUser customAdminWeight defaultWeight pagerank pagerankRaw pagerankRawNeg'
+  );
 
   const comObj = await Community.findOne(
     { _id: communityId },
@@ -40,28 +37,40 @@ export default async function computePageRank(params) {
   const votes = await getVotes(communityId);
 
   const personalization = {};
-  admins.forEach(a => {
-    if (!a.user) return;
-    const userId = a.user._id;
-    personalization[userId] = a.user.customAdminWeight || 1;
+
+  const tranformedAdmins = admins.map(a => {
+    const userId = a.embeddedUser._id;
+    personalization[userId] = a.customAdminWeight || 1;
+    return { ...a.embeddedUser, relevance: a };
   });
 
-  const { nodes, postNodes } = new Graph(votes, admins.map(a => a.user), comObj);
+  const { nodes, postNodes } = new Graph({
+    votes,
+    admins: tranformedAdmins,
+    community: comObj,
+    usersWithDefault: usersWithDefaultWeight.map(u => ({
+      ...u.embeddedUser,
+      relevance: u
+    }))
+  });
 
-  heapUsed = process.memoryUsage().heapUsed;
-  mb = Math.round((100 * heapUsed) / 1048576) / 100;
-  debug && console.log('Before PR - using ' + mb + 'MB of Heap.');
-  debug && console.log('user query time ', (new Date().getTime() - now) / 1000 + 's');
+  if (debug) {
+    heapUsed = process.memoryUsage().heapUsed;
+    mb = Math.round((100 * heapUsed) / 1048576) / 100;
+    console.log('Before PR - using ' + mb + 'MB of Heap.');
+    console.log('user query time ', (new Date().getTime() - now) / 1000 + 's');
+  }
 
   const scores = pagerank(nodes, {
     personalization,
     debug
   });
 
-  heapUsed = process.memoryUsage().heapUsed;
-  mb = Math.round((100 * heapUsed) / 1048576) / 100;
-  debug && console.log('After PR is using ' + mb + 'MB of Heap.');
-
+  if (debug) {
+    heapUsed = process.memoryUsage().heapUsed;
+    mb = Math.round((100 * heapUsed) / 1048576) / 100;
+    debug && console.log('After PR is using ' + mb + 'MB of Heap.');
+  }
   await handleResults({ scores, nodes, communityId, debug, postNodes });
 }
 

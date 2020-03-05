@@ -79,7 +79,7 @@ class PostInfo extends Component {
     actions.setCreatePostState({
       postBody: post.body,
       nativeImage: true,
-      postUrl: post.link,
+      postUrl: post.url,
       postImage: post.image,
       allTags: post.tags,
       urlPreview: {
@@ -190,7 +190,8 @@ export default PostInfo;
 const localStyles = StyleSheet.create({
   infoRight: {
     justifyContent: 'flex-end',
-    overflow: 'visible'
+    overflow: 'visible',
+    alignSelf: 'center'
   }
 });
 

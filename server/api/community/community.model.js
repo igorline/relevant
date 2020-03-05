@@ -35,6 +35,7 @@ const CommunitySchema = new Schema(
     private: { type: Boolean, default: false },
     hidden: { type: Boolean, default: false },
     betEnabled: { type: Boolean, default: true },
+    defaultPost: { type: String, default: 'link' },
 
     customParams: {}
   },

@@ -290,7 +290,7 @@ export function goToPost(post, openComment) {
   });
 }
 
-export function goToProfile(user, key, animation) {
+export function goToProfile(user, key) {
   const handle = user.handle || user.replace('@', '');
   return push(
     {
@@ -299,8 +299,7 @@ export function goToProfile(user, key, animation) {
       back: true,
       id: handle
     },
-    key,
-    animation
+    key
   );
 }
 

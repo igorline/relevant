@@ -184,3 +184,22 @@ export function searchMembers(val, community) {
     }
   };
 }
+
+export function checkAuth() {
+  return async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const { community } = state.auth;
+      await dispatch(
+        api.request({
+          method: 'GET',
+          endpoint: 'community',
+          path: `/${community}/checkAuth`
+        })
+      );
+      return null;
+    } catch (err) {
+      return err;
+    }
+  };
+}

@@ -34,16 +34,18 @@ export function use3BoxProfile({ address, metamask, setProfile }) {
 export function useLoginWithBox(close) {
   const [accounts] = useWeb3();
   const metamask = useMetamask();
-  const address = accounts && utils.getAddress(accounts[0]);
+  const address = accounts && accounts[0] && utils.getAddress(accounts[0]);
   const dispatch = useDispatch();
-  return useCallback(async () => {
+  const logIn = useCallback(async () => {
     if (!metamask || !address) return Alert.alert('Pleas enable Metamask to log in.');
 
     const provider = new providers.Web3Provider(metamask);
     const { signature, msg } = await signMessage(provider, address);
     const success = await dispatch(loginWithBox({ signature, address, msg }));
-    return success && close && close();
+    success && close && close();
+    return success;
   }, [address, metamask, dispatch, close]);
+  return logIn;
 }
 
 // We are going to use this for a desktop-mobile sync

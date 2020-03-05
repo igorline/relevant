@@ -24,10 +24,9 @@ export default function TagsInput({ selectedTags, setState, allTags }) {
         <TagInput
           selectedTags={selectedTags}
           selectTag={selectTags}
-          deselectTag={tag => {
-            const newTags = selectedTags.filter(t => t !== tag);
-            setState({ selectedTags: newTags });
-          }}
+          deselectTag={tag =>
+            setState({ selectedTags: selectedTags.filter(t => t !== tag) })
+          }
           placeholderText={!selectedTags.length ? 'Please add at least one tag' : ''}
         />
         <View mt={[4, 2]}>
@@ -36,10 +35,9 @@ export default function TagsInput({ selectedTags, setState, allTags }) {
             tags={allTags}
             selectedTags={selectedTags}
             selectTag={selectTags}
-            deselectTag={tag => {
-              selectedTags = selectedTags.filter(t => t !== tag);
-              setState({ selectedTags });
-            }}
+            deselectTag={tag =>
+              setState({ selectedTags: selectedTags.filter(t => t !== tag) })
+            }
           />
         </View>
         <Divider mt={[4, 2]} />

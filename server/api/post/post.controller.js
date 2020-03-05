@@ -431,7 +431,7 @@ exports.update = async (req, res, next) => {
     let newPost;
     let linkObject;
 
-    newPost = await Post.findOne({ _id: req.body._id });
+    newPost = await Post.findOne({ _id: req.body._id }).populate('parentPost');
 
     if (!communityId.equals(newPost.communityId)) {
       throw new Error("Community doesn't match");
@@ -465,6 +465,13 @@ exports.update = async (req, res, next) => {
 
       const oldLinkParent = await Post.findOne({ _id: newPost.linkParent });
       await oldLinkParent.pruneFeed({ communityId });
+    }
+
+    if (newPost.parentPost && tags && tags.length) {
+      const { parentPost } = newPost;
+      const originalTags = parentPost.tags || [];
+      parentPost.tags = [...new Set([...originalTags, ...tags])];
+      await newPost.parentPost.save();
     }
 
     await newPost.save();

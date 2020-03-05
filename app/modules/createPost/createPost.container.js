@@ -14,11 +14,14 @@ import { usePrevious } from 'utils/hooks';
 import TextAreaWithMention from 'modules/text/web/textAreaWithMention';
 import TagsInput from './tags.input';
 import Footer from './footer';
-import { usePreview } from './hooks';
+import { usePreview, useCommunityAuth } from './hooks';
 
 const PLACEHOLDER_URL = "What's relevant?  Paste article URL.";
 const PLACEHOLDER_TEXT =
   'Add your commentary, opinion, summary or a relevant quote from the article';
+
+const MD_PLACEHOLDER =
+  'Add text or paste a url here.\n\nYou can use Markdown:\n# Title\n**bold**\n`inline code`\n```code block```';
 
 CreatePostContainer.propTypes = {
   close: PropTypes.func
@@ -30,6 +33,8 @@ export default function CreatePostContainer({ close }) {
   const postData = useSelector(state => state.createPost);
   const community = useCommunity();
   const textArea = useRef();
+
+  const authError = useCommunityAuth();
 
   const {
     title,
@@ -57,25 +62,26 @@ export default function CreatePostContainer({ close }) {
   // set our suggested topic from the community
   useEffect(() => {
     setState({ allTags: community.topics });
-  }, [community.topics, allTags]); // eslint-disable-line
+  }, [community.topics]); // eslint-disable-line
 
   // create url preview
   const prevUrl = usePrevious(postUrl);
   const createPreview = usePreview(setState);
 
-  const clearUrl = () => {
+  const clearUrl = (shouldDisableUrl = true) => {
     setState({
       url: null,
       postUrl: null,
       urlPreview: null,
       loadingPreview: false,
       postTags: [],
-      disableUrl: true
+      disableUrl: shouldDisableUrl && true
     });
   };
 
   useEffect(() => {
-    if (!postUrl && urlPreview) clearUrl();
+    const shouldDisableUrl = false;
+    if (!postUrl && urlPreview) clearUrl(shouldDisableUrl);
     else if (postUrl && prevUrl !== postUrl && !loadingPreview && !disableUrl) {
       createPreview({ postUrl, postBody });
     }
@@ -83,9 +89,11 @@ export default function CreatePostContainer({ close }) {
 
   const enableUrl = () => setState({ disableUrl: false });
 
+  const prevDisableUrl = usePrevious(disableUrl);
   // process body on next tick once we enable url
   useEffect(() => {
-    !disableUrl &&
+    prevDisableUrl &&
+      !disableUrl &&
       handleBodyChange({ target: { value: postBody } }) &&
       textArea.current.focus();
   }, [disableUrl]); // eslint-disable-line
@@ -99,7 +107,7 @@ export default function CreatePostContainer({ close }) {
     // don't process url until we see a blank space or user pastes it
     const isPaste = newBody.length > postBody + 4;
     const doneTypingUrl = url && url.lastIndex !== newBody.length;
-    const shouldUpdateUrl = !newUrl || doneTypingUrl || isPaste;
+    const shouldUpdateUrl = (!newUrl && postUrl) || doneTypingUrl || isPaste;
 
     const addUrlToState = !disableUrl && shouldUpdateUrl && { postUrl: newUrl };
 
@@ -124,6 +132,8 @@ export default function CreatePostContainer({ close }) {
 
   const suggestedTags = [...new Set([...allTags, ...postTags])];
 
+  if (authError) return authError.component;
+
   return (
     <View>
       <View display="flex" fdirection="row" align="center">
@@ -144,10 +154,10 @@ export default function CreatePostContainer({ close }) {
         <TextAreaWithMention
           value={postBody}
           onChange={handleBodyChange}
-          placeholder={placeholder}
+          placeholder={community.defaultPost === 'text' ? MD_PLACEHOLDER : placeholder}
           withPreview
           textArea={textArea}
-          minHeight={22}
+          minheight={22}
         />
         {showPasteButton && <PasteTextButton addTextFromLink={addTextFromLink} />}
       </View>
@@ -159,6 +169,7 @@ export default function CreatePostContainer({ close }) {
         linkPreview={linkPreview}
         PostPreview={PostPreview}
         enableUrl={enableUrl}
+        disableUrl={disableUrl}
       />
 
       {renderTags && (

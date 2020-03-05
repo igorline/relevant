@@ -8,6 +8,7 @@ import { View, Title, SecondaryText } from 'modules/styled/uni';
 import { colors } from 'app/styles';
 import { getPostUrl } from 'app/utils/post';
 import { goToUrl, goToPost } from 'modules/navigation/navigation.actions';
+import history from 'modules/navigation/history';
 
 PostTitle.propTypes = {
   mobile: PropTypes.bool,
@@ -39,13 +40,19 @@ function PostTitle({ children, post, link, title, noLink, mobile, singlePost, pr
 
   const titleEl = link ? (
     <ULink
-      to={singlePost ? post.url : postUrl || '#'}
-      external={singlePost}
-      target={singlePost ? '_blank' : null}
+      // to={singlePost ? post.url : postUrl || '#'}
+      // external={singlePost}
+      // target={singlePost ? '_blank' : null}
+      to={post.url}
+      external
+      target={'_blank'}
       noLink={noLink}
-      onPress={() =>
-        singlePost ? dispatch(goToUrl(post.url)) : dispatch(goToPost(post))
-      }
+      onClick={() => history.push(postUrl)}
+      onPress={() => {
+        singlePost
+          ? dispatch(goToUrl(post.url)) && dispatch(goToPost(post))
+          : dispatch(goToPost(post));
+      }}
     >
       <Title
         inline={1}

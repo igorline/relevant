@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
-import { View, Text, Image } from 'modules/styled/uni';
+import { View, Text, Image, CloseX } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 
 export default class UrlPreviewComponent extends Component {
@@ -13,11 +13,21 @@ export default class UrlPreviewComponent extends Component {
     urlPreview: PropTypes.object,
     domain: PropTypes.string,
     noLink: PropTypes.bool,
-    urlMenu: PropTypes.func
+    urlMenu: PropTypes.func,
+    remove: PropTypes.bool
   };
 
   render() {
-    const { noLink, urlPreview, image, domain, size, title, urlMenu } = this.props;
+    const {
+      remove,
+      noLink,
+      urlPreview,
+      image,
+      domain,
+      size,
+      title,
+      urlMenu
+    } = this.props;
     const isSmall = size === 'small';
     const height = isSmall ? 7 : 10;
     const imageFlex = isSmall ? 0.35 : 0.4;
@@ -70,6 +80,17 @@ export default class UrlPreviewComponent extends Component {
               </Text>
               {domainEl}
             </View>
+            {remove && (
+              <CloseX
+                w={1.5}
+                h={1.5}
+                m={0.5}
+                opacity={0.5}
+                position={'relative'}
+                resizeMode={'contain'}
+                source={require('app/public/img/x.png')}
+              />
+            )}
           </View>
         </ULink>
       </View>
