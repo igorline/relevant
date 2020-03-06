@@ -18,7 +18,7 @@ PostButtons.propTypes = {
     data: PropTypes.object,
     user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     myVote: PropTypes.object,
-    parentPost: PropTypes.string,
+    parentPost: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     type: PropTypes.string,
     url: PropTypes.string
   }),

@@ -50,8 +50,8 @@ function PostTitle({ children, post, link, title, noLink, mobile, singlePost, pr
       onClick={() => history.push(postUrl)}
       onPress={() => {
         singlePost
-          ? dispatch(goToUrl(post.url)) && dispatch(goToPost(post))
-          : dispatch(goToPost(post));
+          ? dispatch(goToPost(post))
+          : dispatch(goToUrl(post.url)) && dispatch(goToPost(post));
       }}
     >
       <Title

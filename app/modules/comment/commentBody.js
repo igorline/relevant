@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Touchable, View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
-import ULink from 'modules/navigation/ULink.component';
 import { getTitle } from 'utils/text';
 import Markdown from 'modules/comment/renderMarkdown';
 import history from 'modules/navigation/history';
@@ -10,11 +9,9 @@ import { goToPost } from 'modules/navigation/navigation.actions';
 import { getPostUrl } from 'app/utils/post';
 import linkifyText from './linkify';
 
-const MAX_LINES = 5;
-
-const RENDERERS = {
-  link: MarkdownLink
-};
+const MAX_LINES = 4;
+const LONG_EXCERPT = 240;
+const SHORT_EXCERPT = 140;
 
 CommentBody.propTypes = {
   noLink: PropTypes.bool,
@@ -46,21 +43,14 @@ export default function CommentBody({
     ? comment.body.replace(`# ${titleText}`, '').trim()
     : comment.body.replace(`${titleText}`, '').trim();
 
-  const textTrim = preview ? 250 : 400;
+  const textTrim = preview ? SHORT_EXCERPT : LONG_EXCERPT;
   let text = isPreview ? trimText(fullText, textTrim) : fullText;
   const readMore = text.length < fullText.length;
   text += readMore ? ' _...Read More_' : '';
   const inputUrl = comment.inputUrl || comment.url;
   text = linkifyText(text, community, inputUrl);
 
-  const body = (
-    <Markdown
-      noLink={noLink}
-      className={'markdown-body'}
-      renderers={RENDERERS}
-      markdown={text}
-    />
-  );
+  const body = <Markdown noLink={noLink} className={'markdown-body'} markdown={text} />;
 
   const postLink = comment.parentPost || comment;
   const postLinkObj = postLink._id ? postLink : { _id: postLink };
@@ -116,22 +106,4 @@ function handleCodeblock(excerpt) {
   const lastIndex = excerpt.substr(excerpt.length - 3, excerpt.length) === '```';
   if (lastIndex) return excerpt.substr(0, excerpt.length - 3);
   return excerpt + '\n```\n';
-}
-
-MarkdownLink.propTypes = {
-  href: PropTypes.string
-};
-
-function MarkdownLink({ href, ...rest }) {
-  const regex = /^(https?|file|ftps?|mailto|javascript|data:image\/[^;]{2,9};):/i;
-  const isAbsolute = regex.test(href);
-  return (
-    <ULink
-      to={href}
-      {...rest}
-      onClick={e => e.stopPropagation()}
-      external={isAbsolute}
-      target={isAbsolute ? '_blank' : null}
-    />
-  );
 }

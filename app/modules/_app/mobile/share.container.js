@@ -4,7 +4,6 @@ import {
   View,
   KeyboardAvoidingView,
   AppState,
-  Platform,
   Dimensions
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -33,7 +32,7 @@ import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import { setTopLevelNavigator, withProps } from 'app/utils/nav';
 
 import { text, storage, post } from 'app/utils';
-import { darkGrey, IphoneX } from 'app/styles/global';
+import { darkGrey } from 'app/styles/global';
 
 // Nasty hack because for some reason Dimensions.get('window') returns 0,0
 const fullWidth = Dimensions.get('screen').width;
@@ -86,8 +85,7 @@ export const ShareStack = createStackNavigator(
         shadowOpacity: 0,
         borderBottomColor: darkGrey,
         borderBottomWidth: StyleSheet.hairlineWidth,
-        height: 45,
-        marginTop: Platform.OS === 'ios' ? (IphoneX ? -40 : -20) : 0
+        height: 45
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <CreatePostHeaderRight {...props} />,
