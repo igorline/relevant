@@ -78,7 +78,7 @@ class UrlComponent extends Component {
   componentDidUpdate(prev) {
     const { createPreview, postUrl, navigation } = this.props;
 
-    if (!navigation.isFocused()) {
+    if (Platform.OS === 'android' && !navigation.isFocused()) {
       this.input.blur();
       Keyboard.dismiss();
     }

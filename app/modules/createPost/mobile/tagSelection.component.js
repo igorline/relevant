@@ -50,14 +50,12 @@ class TagSelection extends Component {
   }
 
   componentDidMount() {
-    this.updateTags();
     this.setState({
       communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
     });
   }
 
   componentDidUpdate(prevProps) {
-    this.updateTags();
     if (prevProps.communityTags !== this.props.communityTags) {
       this.setState({
         communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
@@ -154,6 +152,7 @@ class TagSelection extends Component {
 
   render() {
     const { selectedTopic } = this;
+    this.updateTags();
     const selectedTags = [...this.selectedTags, ...this.inputTags];
     let tags = [
       ...new Set([
