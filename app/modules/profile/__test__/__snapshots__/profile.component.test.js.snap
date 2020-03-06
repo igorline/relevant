@@ -925,7 +925,6 @@ exports[`Snapshot own Profile 1`] = `
             "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
-            "marginRight": "0.25rem",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
             "textDecorationStyle": "solid",
@@ -986,10 +985,10 @@ exports[`Snapshot own Profile 1`] = `
             >
               <svg
                 bg="hsl(0, 0%, 50%)"
-                h="1rem"
+                h={2}
                 height="12"
                 viewBox="0 0 12 12"
-                w="1rem"
+                w={2}
                 width="12"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -1018,8 +1017,7 @@ exports[`Snapshot own Profile 1`] = `
             "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "0.75rem",
             "lineHeight": "1.0499999999999998rem",
-            "marginLeft": "0.25rem",
-            "marginRight": "0.25rem",
+            "marginLeft": "0.5rem",
             "textDecoration": "underline",
             "textDecorationColor": "rgba(0,0,0,1.00)",
             "textDecorationStyle": "solid",
@@ -1081,10 +1079,10 @@ exports[`Snapshot own Profile 1`] = `
             >
               <svg
                 bg="hsl(0, 0%, 50%)"
-                h="1rem"
+                h={2}
                 height="13"
                 viewBox="0 0 15 13"
-                w="1rem"
+                w={2}
                 width="15"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -1102,6 +1100,99 @@ exports[`Snapshot own Profile 1`] = `
               </svg>
             </div>
             Invite Friend
+          </span>
+        </a>
+      </div>
+      <div
+        className="css-text-901oao"
+        dir="auto"
+        style={
+          Object {
+            "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+            "WebkitTextDecorationStyle": "solid",
+            "color": "rgba(128,128,128,1.00)",
+            "fontFamily": "HelveticaNeue-Medium",
+            "fontSize": "0.75rem",
+            "lineHeight": "1.0499999999999998rem",
+            "marginLeft": "0.5rem",
+            "textDecoration": "underline",
+            "textDecorationColor": "rgba(0,0,0,1.00)",
+            "textDecorationStyle": "solid",
+          }
+        }
+      >
+        <a
+          c="hsl(0, 0%, 0%)"
+          className="c2 ulink-mock"
+          hc="hsl(0, 0%, 50%)"
+          href="/"
+          hu={0}
+          inline={0}
+          onClick={[Function]}
+          styles={
+            Array [
+              "font-size: 0.75rem;",
+              "line-height: 1.0499999999999998rem;",
+              "font-family: HelveticaNeue-Medium;",
+              "color: hsl(0, 0%, 50%);",
+              "text-decoration: underline;",
+              " ",
+              [Function],
+              ";",
+              [Function],
+              ";",
+            ]
+          }
+        >
+          <span
+            className="css-text-901oao css-textHasAncestor-16my406"
+            dir="auto"
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexDirection": "row",
+                "alignItems": "center",
+                "display": "flex",
+                "flexDirection": "row",
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "position": "relative",
+              }
+            }
+          >
+            <div
+              className="css-view-1dbjc4n"
+              style={
+                Object {
+                  "display": "flex",
+                  "marginRight": "0.25rem",
+                  "position": "relative",
+                }
+              }
+            >
+              <svg
+                bg="hsl(0, 0%, 50%)"
+                h={2}
+                height="12"
+                viewBox="0 0 12 12"
+                w={2}
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>
+                  Shape
+                </title>
+                <path
+                  d="M4.625.131l2.903.037-.018 1.41A4.79 4.79 0 0 1 9.265 2.61l1.243-.69 1.42 2.505-1.244.69c.14.674.127 1.363-.027 2.018l1.227.722-1.484 2.468-1.226-.721a4.805 4.805 0 0 1-1.78.987L7.373 12l-2.902-.036.018-1.411A4.788 4.788 0 0 1 2.735 9.52l-1.244.689-1.42-2.505 1.244-.689a4.676 4.676 0 0 1 .027-2.02l-1.225-.72L1.6 1.808l1.225.72a4.806 4.806 0 0 1 1.782-.988L4.625.131zm3.339 4.846a2.214 2.214 0 0 1-.864 3.03 2.265 2.265 0 0 1-3.064-.853 2.214 2.214 0 0 1 .863-3.031 2.265 2.265 0 0 1 3.065.854z"
+                  fill="#000"
+                  fillRule="evenodd"
+                />
+              </svg>
+            </div>
+            Connect Mobile Device
           </span>
         </a>
       </div>

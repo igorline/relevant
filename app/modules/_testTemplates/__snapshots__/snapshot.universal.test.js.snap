@@ -17,21 +17,11 @@ exports[`Snapshot AvatarBox Styled 1`] = `
       style={
         Object {
           "WebkitBoxDirection": "normal",
-          "WebkitBoxFlex": 1,
           "WebkitBoxOrient": "horizontal",
-          "WebkitFlexBasis": "0px",
           "WebkitFlexDirection": "row",
-          "WebkitFlexGrow": 1,
-          "WebkitFlexShrink": 1,
           "display": "flex",
-          "flexBasis": "0px",
           "flexDirection": "row",
-          "flexGrow": 1,
-          "flexShrink": 1,
           "msFlexDirection": "row",
-          "msFlexNegative": 1,
-          "msFlexPositive": 1,
-          "msFlexPreferredSize": "0px",
           "position": "relative",
         }
       }
@@ -100,14 +90,10 @@ exports[`Snapshot AvatarBox Styled 1`] = `
           Object {
             "WebkitAlignItems": "flex-start",
             "WebkitBoxAlign": "start",
-            "WebkitBoxPack": "center",
-            "WebkitJustifyContent": "center",
             "alignItems": "flex-start",
             "display": "flex",
-            "justifyContent": "center",
             "marginLeft": "0.5rem",
             "msFlexAlign": "start",
-            "msFlexPack": "center",
             "position": "relative",
           }
         }
