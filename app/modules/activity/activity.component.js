@@ -130,7 +130,7 @@ export default class SingleActivity extends PureComponent {
           {byUser && <UAvatar goToProfile={actions.goToProfile} user={byUser} size={4} />}
         </View>
         <View flex={1} fdirection={'column'} align="baseline">
-          <View fdirection={'row'} wrap={'wrap'} justify={'flex-end'}>
+          <View fdirection={'row'} wrap={'wrap'} justify={'flex-start'}>
             {this.renderName(activity, byUser)}
             <ActivityText activity={activity} amount={amount} />
           </View>
