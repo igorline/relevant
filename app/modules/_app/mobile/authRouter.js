@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withProps } from 'app/utils/nav';
 import { createAppContainer } from 'react-navigation';
-import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
+import { TransitionPresets, createStackNavigator } from 'react-navigation-stack';
 
 import TwitterSignup from 'modules/auth/mobile/twitterSignup.component';
 import ImageUpload from 'modules/auth/mobile/imageUpload.component';
@@ -15,7 +15,7 @@ import SignUp from 'modules/auth/mobile/signup.component';
 import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
 import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
-
+import { colors } from 'styles';
 import { darkGrey, fullWidth } from 'app/styles/global';
 
 export const AuthStack = createStackNavigator(
@@ -68,9 +68,11 @@ export const AuthStack = createStackNavigator(
     initialRouteName: 'mainAuth',
     headerLayoutPreset: 'center',
     mode: 'card',
-    transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
     defaultNavigationOptions: props => ({
+      cardStyle: {
+        backgroundColor: colors.white
+      },
       gesturesEnabled: true,
       gestureResponseDistance: {
         horizontal: fullWidth
@@ -83,7 +85,8 @@ export const AuthStack = createStackNavigator(
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <HeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />
+      headerLeft: <HeaderLeft {...props} />,
+      ...TransitionPresets.SlideFromRightIOS
     })
   }
 );

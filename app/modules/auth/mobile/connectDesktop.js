@@ -1,6 +1,7 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { BodyText, AbsoluteView, Box, Header, Title } from 'modules/styled/uni';
+import { BodyText, AbsoluteView, Box, Title } from 'modules/styled/uni';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera as Camera } from 'react-native-camera';
 import { storage } from 'app/utils';
@@ -20,15 +21,22 @@ export default function ConnectDesktop() {
   };
 
   return (
-    <Box style={{ height: fullHeight - 48 * 3 - (IphoneX ? 33 : 0) }}>
-      <AbsoluteView left={'-32px'} top={'-48px'}>
+    <Box
+      style={{
+        minHeight: fullHeight - 2 * 48 - (IphoneX ? 33 : 0)
+      }}
+    >
+      <AbsoluteView left={'-32px'} top={Platform.OS === 'android' ? '-48px' : '0'}>
         <QRCodeScanner
-          topViewStyle={{ flex: 0.5, alignItems: 'flex-start' }}
+          topViewStyle={{ flex: 1, alignItems: 'flex-start' }}
           topContent={
             <Box p={2}>
-              <Header>Log in with Desktop Browser</Header>
+              <Title>Log in with Desktop Browser</Title>
             </Box>
           }
+          cameraStyle={{
+            overflow: 'hidden'
+          }}
           cameraProps={{ flashMode: Camera.Constants.FlashMode.auto }}
           onRead={onRead}
           bottomViewStyle={{ flex: 1, alignItems: 'flex-start' }}

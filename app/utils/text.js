@@ -1,4 +1,5 @@
 import { Alert } from 'app/utils/alert';
+import { linkifyMatch } from 'modules/comment/linkify';
 
 let LinkifyContainer;
 if (process.env.WEB !== 'true') {
@@ -9,6 +10,21 @@ if (process.env.WEB !== 'true') {
 
 export const Linkify = LinkifyContainer;
 
+export function getTextData(postBody) {
+  const matches = linkifyMatch(postBody) || [];
+
+  const tags = matches.filter(m => m.schema === '#').map(m => m.text.replace('#', ''));
+
+  const mentions = matches
+    .filter(m => m.schema === '@')
+    .map(m => m.text.replace('@', ''));
+
+  const urls = matches.filter(m => m.schema !== '#' && m.schema !== '@');
+  const url = urls[0];
+  return { url, mentions, tags };
+}
+
+// TODO Deprecate
 export function getMentions(words) {
   return words
     .map(word => {
@@ -21,6 +37,7 @@ export function getMentions(words) {
     .filter(el => el !== null);
 }
 
+// TODO Deprecate
 export function getTags(words) {
   return words
     .map(word => {
@@ -33,6 +50,7 @@ export function getTags(words) {
     .filter(el => el !== null);
 }
 
+// TODO Deprecate - use desktop create post and regular text input
 export function getWords(text) {
   const res = text
     .replace(/[,.!?](?!\b)|[\s+]/g, a => '__WRD_SPLT__' + a + '__WRD_SPLT__')

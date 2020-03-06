@@ -620,7 +620,7 @@ exports.create = async (req, res, next) => {
       );
     }
 
-    const { channel, body } = req.body;
+    const { channel, body, postUrl: inputUrl } = req.body;
     // TODO rate limiting?
     // current rate limiting is 5s via invest
     const hasChildComment = body && body.length;
@@ -663,6 +663,7 @@ exports.create = async (req, res, next) => {
 
     const postObject = {
       url: postUrl,
+      inputUrl,
       image: req.body.image ? req.body.image : null,
       title: req.body.title ? req.body.title : '',
       body: hasChildComment ? body : null,

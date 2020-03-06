@@ -17,9 +17,8 @@ import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, IphoneX } from 'app/styles/global';
 import { colors } from 'styles';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
-import { Button } from 'modules/styled/uni';
 import TwitterButton from './TwitterButton.component';
-// import ConnectDesktop from './connectDesktop';
+import { ConnectDesktopButton } from '../socialButtons';
 
 let styles;
 
@@ -156,9 +155,10 @@ class Login extends Component {
             )}
             {!local && (
               <View style={{ marginTop: 18 }}>
-                <Button onPress={() => actions.showModal('connectDesktop')}>
-                  Sign in with Desktop Browser
-                </Button>
+                <ConnectDesktopButton
+                  text={'Sign in with Desktop Browser'}
+                  onPress={() => actions.showModal('connectDesktop')}
+                />
               </View>
             )}
             <View style={{ flex: 1 }} />

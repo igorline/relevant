@@ -6,7 +6,6 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import { View } from 'modules/styled/uni';
 import Comment from 'modules/comment/web/comment.component';
 
 class SingleComment extends Component {
@@ -62,27 +61,25 @@ class SingleComment extends Component {
     if (!comment) return null;
 
     return (
-      <View>
-        <Comment
-          activeComment={this.state.activeComment}
-          setActiveComment={this.setActiveComment}
-          nestingLevel={nestingLevel || 0}
-          screenSize={screenSize}
-          inMainFeed={inMainFeed}
-          avatarText={avatarText}
-          noLink={noLink}
-          hideBorder={hideBorder}
-          hideAvatar={hideAvatar}
-          preview={preview}
-          parentPost={parentPost}
-          hidePostButtons={hidePostButtons}
-          comment={comment}
-          user={user}
-          auth={actions}
-          actions={actions}
-          additionalNesting={additionalNesting}
-        />
-      </View>
+      <Comment
+        activeComment={this.state.activeComment}
+        setActiveComment={this.setActiveComment}
+        nestingLevel={nestingLevel || 0}
+        screenSize={screenSize}
+        inMainFeed={inMainFeed}
+        avatarText={avatarText}
+        noLink={noLink}
+        hideBorder={hideBorder}
+        hideAvatar={hideAvatar}
+        preview={preview}
+        parentPost={parentPost}
+        hidePostButtons={hidePostButtons}
+        comment={comment}
+        user={user}
+        auth={actions}
+        actions={actions}
+        additionalNesting={additionalNesting}
+      />
     );
   }
 }

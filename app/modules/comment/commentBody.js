@@ -10,6 +10,8 @@ import { goToPost } from 'modules/navigation/navigation.actions';
 import { getPostUrl } from 'app/utils/post';
 import linkifyText from './linkify';
 
+const MAX_LINES = 5;
+
 const RENDERERS = {
   link: MarkdownLink
 };
@@ -48,7 +50,8 @@ export default function CommentBody({
   let text = isPreview ? trimText(fullText, textTrim) : fullText;
   const readMore = text.length < fullText.length;
   text += readMore ? ' _...Read More_' : '';
-  text = linkifyText(text, community, comment.url);
+  const inputUrl = comment.inputUrl || comment.url;
+  text = linkifyText(text, community, inputUrl);
 
   const body = (
     <Markdown
@@ -100,7 +103,7 @@ export default function CommentBody({
 function trimText(text, limit) {
   if (!text || !text.length) return text;
   const lines = text.split(/\n/);
-  text = lines.slice(0, 3).join('\n');
+  text = lines.slice(0, MAX_LINES).join('\n');
   if (text.length <= limit) return handleCodeblock(text);
   const excerpt = text.substr(0, text.lastIndexOf(' ', limit));
   return handleCodeblock(excerpt);

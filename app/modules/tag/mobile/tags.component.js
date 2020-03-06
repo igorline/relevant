@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableHighlight } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
@@ -32,7 +32,7 @@ export default class Tags extends Component {
     const selected = this.selectedLookup[tag._id || tag] || false;
     const name = `#${tag._id || tag}`;
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         style={[
           styles.tagBox,
           {
@@ -47,7 +47,7 @@ export default class Tags extends Component {
             {name}
           </Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 

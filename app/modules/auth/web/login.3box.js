@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useLoginWithBox } from 'modules/auth/3box.hooks';
 import { useWeb3, useMetamask } from 'modules/contract/contract.hooks';
 import { utils } from 'ethers';
-import { BoxButton, MetamaskButton } from './socialButtons';
+import { BoxButton, MetamaskButton } from '../socialButtons';
 
 BoxLogin.propTypes = {
   close: PropTypes.func,

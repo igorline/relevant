@@ -16,6 +16,12 @@ const MetamaskIconComponent = (
   <Image resizeMode={'contain'} source={MetamaskIcon} w={3} h={3} mr={1.5} />
 );
 
+const DesktopIcon = require('app/public/img/desktop.png');
+
+const DesktopIconComponent = (
+  <Image resizeMode={'contain'} source={DesktopIcon} w={3} h={3} mr={1.5} />
+);
+
 BoxButton.propTypes = {
   onPress: PropTypes.func,
   text: PropTypes.string
@@ -54,6 +60,29 @@ export function MetamaskButton({ text, onPress, ...styleProps }) {
           text={text}
         />
       </LinkFont>
+    </ULink>
+  );
+}
+
+MetamaskButton.propTypes = {
+  onPress: PropTypes.func,
+  text: PropTypes.string
+};
+
+ConnectDesktopButton.propTypes = {
+  onPress: PropTypes.func,
+  text: PropTypes.string
+};
+
+export function ConnectDesktopButton({ text, onPress, ...styleProps }) {
+  return (
+    <ULink to={'#'} onClick={onPress} onPress={onPress}>
+      <ButtonWithIcon
+        {...styleProps}
+        fdirection={'row'}
+        image={DesktopIconComponent}
+        text={text}
+      />
     </ULink>
   );
 }

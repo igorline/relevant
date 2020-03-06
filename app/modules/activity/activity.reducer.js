@@ -30,7 +30,7 @@ export default function notifications(state = initialState, action) {
     case 'CLEAR_COUNT': {
       return {
         ...state,
-        count: null
+        count: 0
       };
     }
 

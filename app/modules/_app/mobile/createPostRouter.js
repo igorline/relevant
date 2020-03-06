@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withProps } from 'app/utils/nav';
 import { createAppContainer } from 'react-navigation';
-import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
+import { TransitionPresets, createStackNavigator } from 'react-navigation-stack';
 import UrlComponent from 'modules/createPost/mobile/url.component';
 import Categories from 'modules/createPost/mobile/categories.component';
 
@@ -34,8 +34,6 @@ export const CreatePostStack = createStackNavigator(
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
 
-    transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
-
     defaultNavigationOptions: props => ({
       gesturesEnabled: true,
       gestureResponseDistance: {
@@ -49,7 +47,8 @@ export const CreatePostStack = createStackNavigator(
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <CreatePostHeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />
+      headerLeft: <HeaderLeft {...props} />,
+      ...TransitionPresets.SlideFromRightIOS
     })
   }
 );

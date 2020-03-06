@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, Alert, StyleSheet } from 'react-native';
+import { TextInput, Alert, StyleSheet, Keyboard } from 'react-native';
 import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
@@ -49,7 +49,7 @@ class TagSelection extends Component {
     this.setState({ inputFocused: false });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const props = this.props.createPost;
     if (props) {
       this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
@@ -175,6 +175,7 @@ class TagSelection extends Component {
           placeholderTextColor={colors.grey}
           style={{ color: colors.black }}
           placeholder={'Select additional topics or create your own'}
+          onSubmitEditing={Keyboard.dismiss}
         />
         <View style={styles.break} />
         <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />

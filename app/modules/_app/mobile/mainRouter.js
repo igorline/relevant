@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
-import {
-  createStackNavigator,
-  StackViewStyleInterpolator,
-  StackViewTransitionConfigs
-} from 'react-navigation-stack';
+import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 import { KeyboardAvoidingView, StatusBar, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -19,6 +15,7 @@ import {
 } from 'modules/_app/mobile/createPostRouter';
 import TabContainerWithHelp from 'modules/_app/mobile/tabRouterWithHelp';
 import { fullWidth } from 'app/styles/global';
+import { colors } from 'styles';
 
 class CreatePostWrapper extends Component {
   static propTypes = {
@@ -63,7 +60,10 @@ export const RootStack = createStackNavigator(
     },
     createPost: {
       screen: CreatePostWrapper,
-      header: false
+      header: false,
+      navigationOptions: {
+        ...TransitionPresets.ModalSlideFromBottomIOS
+      }
     }
     // this will be community drawer
     // categories: {
@@ -81,25 +81,11 @@ export const RootStack = createStackNavigator(
       gesturesEnabled: true,
       gestureResponseDistance: {
         horizontal: fullWidth
-      }
-    }),
-
-    transitionConfig: () => ({
-      ...StackViewTransitionConfigs.SlideFromRightIOS,
-
-      screenInterpolator: props => {
-        if (props.scene.route.routeName === 'createPost') {
-          return StackViewStyleInterpolator.forVertical(props);
-        }
-
-        const last = props.scenes[props.scenes.length - 1];
-
-        if (last.route.routeName === 'createPost') {
-          return StackViewStyleInterpolator.forVertical(props);
-        }
-
-        return StackViewStyleInterpolator.forHorizontal(props);
-      }
+      },
+      cardStyle: {
+        backgroundColor: colors.white
+      },
+      ...TransitionPresets.SlideFromRightIOS
     })
   }
 );

@@ -9,7 +9,8 @@ import {
   ScrollView,
   InteractionManager,
   ActionSheetIOS,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, mainPadding, greyText, borderGrey } from 'app/styles/global';
@@ -21,7 +22,7 @@ import * as tagActions from 'modules/tag/tag.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
 
-import * as utils from 'app/utils';
+import { getTextData, getWords } from 'app/utils/text';
 import Avatar from 'modules/user/avatarbox.component';
 import TextBody from 'modules/text/mobile/textBody.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
@@ -38,9 +39,6 @@ if (Platform.OS === 'android') {
 }
 
 let styles;
-const URL_REGEX = new RegExp(
-  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/
-);
 
 class UrlComponent extends Component {
   static propTypes = {
@@ -55,7 +53,8 @@ class UrlComponent extends Component {
     users: PropTypes.object,
     user: PropTypes.object,
     tags: PropTypes.array,
-    disableUrl: PropTypes.bool
+    disableUrl: PropTypes.bool,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -76,9 +75,15 @@ class UrlComponent extends Component {
     });
   }
 
-  componentWillReceiveProps(next) {
-    if (this.props.createPreview !== next.createPreview && next.postUrl) {
-      this.createPreview(next.postUrl);
+  componentDidUpdate(prev) {
+    const { createPreview, postUrl, navigation } = this.props;
+
+    if (!navigation.isFocused()) {
+      this.input.blur();
+      Keyboard.dismiss();
+    }
+    if (createPreview !== prev.createPreview && postUrl) {
+      this.createPreview(postUrl);
       this.input.focus();
     }
   }
@@ -148,16 +153,12 @@ class UrlComponent extends Component {
   }
 
   processInput(postBody, doneTyping) {
-    const { disableUrl } = this.props;
+    const { disableUrl, postUrl } = this.props;
     const length = postBody ? postBody.length : 0;
 
     if (doneTyping) postBody = this.props.postBody;
-    const words = utils.text.getWords(postBody);
-
     let shouldParseUrl = false;
-
     const prevLength = this.props.postBody.length || 0;
-
     if (length - prevLength > 1) shouldParseUrl = true;
 
     // eslint-disable-next-line
@@ -165,43 +166,25 @@ class UrlComponent extends Component {
     // eslint-disable-next-line
     if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
-    if (!disableUrl && !this.props.postUrl && shouldParseUrl) {
-      let postUrl;
-      const possibleUrls = words.filter(word => URL_REGEX.test(word));
-      postUrl = possibleUrls[0];
+    const { tags, mentions, url } = getTextData(postBody);
 
-      // pick the 'best' url (ex: when copying and pasting website domain)
-      possibleUrls.forEach(u => {
-        if (!u) return null;
-        if ((u.match('http://') || u.match('https://')) && !postUrl.match('http')) {
-          return (postUrl = u);
-        }
-        if (u.length > postUrl.length) postUrl = u;
-        return null;
-      });
-      if (postUrl) {
-        this.props.actions.setCreatePostState({ postUrl });
-        this.createPreview(postUrl);
+    if (!disableUrl && !postUrl && shouldParseUrl) {
+      const newUrl = url && url.url;
+      if (newUrl) {
+        this.props.actions.setCreatePostState({ postUrl: newUrl });
+        this.createPreview(newUrl);
       }
     }
 
+    const bodyTags = tags;
+    const bodyMentions = mentions;
+
+    const words = getWords(postBody);
     const lastWord = words[words.length - 1];
     if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
     } else this.props.actions.setUserSearch([]);
-
-    const bodyTags = utils.text.getTags(words);
-
-    const bodyMentions = utils.text.getMentions(words);
-
-    if (
-      this.props.urlPreview &&
-      this.props.postUrl &&
-      postBody.match(this.props.postUrl)
-    ) {
-      postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
-    }
 
     this.props.actions.setCreatePostState({ postBody, bodyTags, bodyMentions });
   }
@@ -214,6 +197,7 @@ class UrlComponent extends Component {
       this.props.actions.setCreatePostState({
         domain: results.domain,
         postUrl: results.url,
+        inputUrl: postUrl,
         keywords: results.keywords,
         postTags: results.tags,
         articleAuthor: results.articleAuthor,
@@ -231,7 +215,7 @@ class UrlComponent extends Component {
   };
 
   render() {
-    const { disableUrl, postUrl, postBody } = this.props;
+    const { disableUrl, postUrl, postBody, navigation } = this.props;
     let urlPlaceholder = 'Article URL.';
     if (postUrl) {
       urlPlaceholder = 'Add your own commentary';
@@ -245,18 +229,9 @@ class UrlComponent extends Component {
     if (this.props.user && !this.props.share && !this.props.repost) {
       userHeader = (
         <View style={styles.createPostUser}>
-          <View
-            style={[
-              styles.innerBorder,
-              {
-                // justifyContent: 'center',
-                paddingVertical: 10
-                // flex: 1
-              }
-            ]}
-          >
+          <View style={[styles.innerBorder, { paddingVertical: 10 }]}>
             <Avatar
-              // style={styles.innerBorder}
+              style={styles.innerBorder}
               user={this.props.user}
               setSelected={() => null}
             />
@@ -283,7 +258,6 @@ class UrlComponent extends Component {
     if (
       this.props.urlPreview &&
       this.props.urlPreview.description &&
-      postBody === '' &&
       !this.props.repost
     ) {
       addP = (
@@ -292,7 +266,7 @@ class UrlComponent extends Component {
           style={styles.postButton}
           onPress={() =>
             this.props.actions.setCreatePostState({
-              postBody: '"' + this.props.urlPreview.description + '"'
+              postBody: postBody + '\n>"' + this.props.urlPreview.description + '"'
             })
           }
         >
@@ -328,13 +302,19 @@ class UrlComponent extends Component {
         ref={c => (this.scrollView = c)}
         style={{
           flex: 1,
-          paddingHorizontal: mainPadding
+          paddingHorizontal: mainPadding,
+          backgroundColor: colors.white
         }}
         contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 260 }}
       >
         <NavigationEvents
+          onDidBlur={() => {
+            this.input && this.input.blur();
+            Keyboard.dismiss();
+          }}
           onWillBlur={() => {
-            this.input.blur();
+            this.input && this.input.blur();
+            Keyboard.dismiss();
           }}
         />
         {userHeader}
@@ -349,7 +329,7 @@ class UrlComponent extends Component {
               styles.createPostInput,
               { maxHeight: 280 }
             ]}
-            autoFocus
+            autoFocus={navigation.isFocused()}
             underlineColorAndroid={'transparent'}
             placeholder={urlPlaceholder}
             placeholderTextColor={greyText}
@@ -364,8 +344,6 @@ class UrlComponent extends Component {
             keyboardShouldPersistTaps={'never'}
             disableFullscreenUI
             textAlignVertical={'top'}
-            // fix for android enter bug!
-            blurOnSubmit={false}
             onSubmitEditing={() => {
               if (this.okToSubmit) {
                 this.processInput(postBody + '\n', false);

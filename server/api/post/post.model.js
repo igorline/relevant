@@ -40,6 +40,7 @@ const PostSchema = new Schema(
     // store link info here
     metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
     url: { type: String, unique: false },
+    inputUrl: { type: String, unique: false },
     image: { type: String },
 
     // TEMP Deprecate remove after migrate 0.20

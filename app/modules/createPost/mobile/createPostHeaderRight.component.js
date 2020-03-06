@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Alert, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { analytics } from 'react-native-firebase';
 import { bindActionCreators } from 'redux';
@@ -77,6 +77,7 @@ class CreatePostHeaderRight extends Component {
     }
 
     if (this.enableNext) {
+      Keyboard.dismiss();
       props.navigation.navigate({
         routeName: 'createPostTags',
         params: {
@@ -280,7 +281,8 @@ const localStyles = StyleSheet.create({
   rightButton: {
     flex: 1,
     marginRight: mainPadding - 10,
-    paddingVertical: 10
+    paddingVertical: 10,
+    justifyContent: 'center'
   },
   rightButtonText: {
     textAlign: 'right',

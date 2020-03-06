@@ -14,7 +14,6 @@ import {
   refreshTab,
   showModal
 } from 'modules/navigation/navigation.actions';
-
 import { AuthNavigator, AuthStack } from 'modules/_app/mobile/authRouter';
 
 class AuthContainer extends Component {
@@ -48,7 +47,10 @@ class AuthContainer extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'never' }}>
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: 'colors.white' }}
+        forceInset={{ top: 'never' }}
+      >
         <AuthNavigator navigation={this.props.navigation} screenProps={this.props} />
       </SafeAreaView>
     );

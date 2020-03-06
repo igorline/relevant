@@ -8,7 +8,7 @@ import { Input } from 'modules/styled/web';
 import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/postinfo.component';
 import { colors, sizing } from 'styles';
-import { linkifyMatch } from 'modules/comment/linkify';
+import { getTextData } from 'utils/text';
 import { useCommunity } from 'modules/community/community.selectors';
 import { usePrevious } from 'utils/hooks';
 import TextAreaWithMention from 'modules/text/web/textAreaWithMention';
@@ -101,7 +101,7 @@ export default function CreatePostContainer({ close }) {
   const handleBodyChange = e => {
     const newBody = e.target.value;
     // TODO this may be expensive to do on every render we can skip some of it...
-    const { tags, mentions, url } = getUrlData(newBody);
+    const { tags, mentions, url } = getTextData(newBody);
     const newUrl = url && url.url;
 
     // don't process url until we see a blank space or user pastes it
@@ -239,19 +239,4 @@ function PasteTextButton({ addTextFromLink }) {
       </SmallText>
     </AbsoluteView>
   );
-}
-
-function getUrlData(postBody) {
-  const matches = linkifyMatch(postBody) || [];
-
-  const tags = matches.filter(m => m.schema === '#').map(m => m.text.replace('#', ''));
-
-  const mentions = matches
-    .filter(m => m.schema === '@')
-    .map(m => m.text.replace('@', ''));
-
-  const urls = matches.filter(m => m.schema !== '#' && m.schema !== '@');
-  const url = urls[0];
-
-  return { url, mentions, tags };
 }

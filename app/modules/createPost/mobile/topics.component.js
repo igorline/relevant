@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  TouchableHighlight,
+  TouchableOpacity,
   InteractionManager,
   FlatList,
   StyleSheet,
@@ -30,7 +30,7 @@ export default class topics extends Component {
     this.renderItem = this.renderItem.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       if (!this.props.topics.length) this.props.actions.getParentTags();
       if (this.props.selectedTopic) {
@@ -39,11 +39,11 @@ export default class topics extends Component {
     });
   }
 
-  componentWillReceiveProps(next) {
+  componentDidUpdate(prev) {
+    const { selectedTopic } = this.props;
     if (
-      next.selectedTopic &&
-      (!this.props.selectedTopic ||
-        this.props.selectedTopic._id !== next.selectedTopic._id)
+      selectedTopic &&
+      (!prev.selectedTopic || prev.selectedTopic._id !== selectedTopic._id)
     ) {
       this.goToElement = true;
     } else this.goToElement = false;
@@ -91,9 +91,8 @@ export default class topics extends Component {
 
     return (
       <View key={i}>
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={() => this.props.action(topic)}
-          underlayColor={'transparent'}
           style={[styles.categoryItem, { backgroundColor: active ? '#4d4eff' : 'white' }]}
         >
           <View
@@ -106,7 +105,7 @@ export default class topics extends Component {
               {topic.categoryName}
             </Text>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
         {innerView}
       </View>
     );

@@ -100,14 +100,14 @@ export const styles = {
     borderWidth: 0,
     borderRadius: 3,
     fontSize: 15,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace'
   },
   code_inline: {
     backgroundColor: 'rgba(27,31,35,.05)',
     borderRadius: 3,
     borderWidth: 0,
     fontSize: 15,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace'
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace'
   },
   fence: {
     borderWidth: 0,
@@ -115,7 +115,7 @@ export const styles = {
     borderRadius: 3,
     paddingLeft: 4,
     fontSize: 15,
-    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'Monospace',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     marginVertical: mb / 2
   },
   paragraph: {

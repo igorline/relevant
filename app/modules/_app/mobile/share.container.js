@@ -22,7 +22,7 @@ import * as communityActions from 'modules/community/community.actions';
 import Auth from 'modules/auth/mobile/auth.component';
 
 import { createAppContainer } from 'react-navigation';
-import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
+import { TransitionPresets, createStackNavigator } from 'react-navigation-stack';
 
 import UrlComponent from 'modules/createPost/mobile/url.component';
 import Categories from 'modules/createPost/mobile/categories.component';
@@ -75,7 +75,6 @@ export const ShareStack = createStackNavigator(
     headerLayoutPreset: 'center',
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
-    transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
     defaultNavigationOptions: props => ({
       gesturesEnabled: true,
@@ -92,7 +91,8 @@ export const ShareStack = createStackNavigator(
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <CreatePostHeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />
+      headerLeft: <HeaderLeft {...props} />,
+      ...TransitionPresets.SlideFromRightIOS
     })
   }
 );

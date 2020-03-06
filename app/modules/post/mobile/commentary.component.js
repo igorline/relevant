@@ -136,7 +136,7 @@ class Commentary extends PureComponent {
               <Box
                 style={[
                   {
-                    marginTop: preview && !post.link && !post.parentPost ? 0 : 16,
+                    marginTop: preview && !post.link && !post.parentPost ? 0 : 8,
                     flex: 1,
                     justifyContent: 'center',
                     marginLeft: avatarText ? 6 * 8 : 0
@@ -151,7 +151,7 @@ class Commentary extends PureComponent {
                 />
               </Box>
               {!hideButtons && (
-                <Box m={'1 0'}>
+                <Box m={'2 0'}>
                   <ButtonContainer
                     horizontal
                     post={post}

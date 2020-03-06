@@ -34,7 +34,7 @@ import PriceProvider from 'modules/wallet/price.context';
 
 import { BottomSheet } from 'modules/ui/mobile/bottomSheet';
 import * as modals from 'modules/ui/modals/mobile.lookup';
-
+import { colors } from 'styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 global.Buffer = global.Buffer || require('buffer').Buffer;
@@ -52,6 +52,7 @@ const customTextProps = {
 setCustomText(customTextProps);
 
 StatusBar.setBarStyle('dark-content');
+StatusBar.setBackgroundColor(colors.white);
 
 class Application extends Component {
   static propTypes = {
@@ -232,9 +233,8 @@ class Application extends Component {
     const { Body } = modalProps;
 
     const bodyProps = modalProps.bodyProps ? modalProps.bodyProps : {};
-    const close = () => {
-      this.props.actions.hideModal();
-    };
+    const close = () => this.props.actions.hideModal();
+
     return (
       <BottomSheet {...modalProps} close={close} visible>
         <Body {...bodyProps} close={close} />

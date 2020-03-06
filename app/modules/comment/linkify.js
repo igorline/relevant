@@ -15,6 +15,8 @@ export default function linkifyText(text, community, omitUrl) {
     // Already a link
     if (text[index - 1] === '(' && text[lastIndex] === ')') return;
     // Omit link if we have preview
+    if (omitUrl && omitUrl[omitUrl.length - 1] === '/')
+      omitUrl = omitUrl.substring(0, omitUrl.length - 1);
     const link = omitUrl && omitUrl === url ? '' : `[${txt}](${prependToUrl}${url}) `;
     text = text.slice(0, index + offset) + link + text.slice(lastIndex + offset);
     offset += link.length - (lastIndex - index);
