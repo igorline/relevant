@@ -25,7 +25,8 @@ const codes = `
   }
 
   .markdown-body .highlight {
-    margin-bottom: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
   }
 
   .markdown-body .highlight pre {
@@ -115,7 +116,7 @@ export default `
   .markdown-body table,
   .markdown-body div,
   .markdown-body ul {
-    margin-top: 0;
-    margin-bottom: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
   }
 `;

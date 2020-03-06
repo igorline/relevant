@@ -167,7 +167,7 @@ function Comment(props) {
                 popup={!preview && popup}
                 preview={preview}
               />
-              <Box mt={[2, 2]} />
+              <Box mt={1} />
               {editing ? (
                 <Box mt={2}>
                   <CommentForm

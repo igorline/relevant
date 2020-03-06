@@ -110,13 +110,12 @@ function trimText(text, limit) {
 }
 
 function handleCodeblock(excerpt) {
-  const hasCodeblock = excerpt.match('```');
-  if (!hasCodeblock) return excerpt;
-  const lastIndex = hasCodeblock.index;
-  if (excerpt.length === lastIndex + 3) return excerpt.substr(0, lastIndex);
-
-  const hasUnclosedCodeblock = hasCodeblock && hasCodeblock.length % 2 !== 0;
-  return hasUnclosedCodeblock ? excerpt + '\n```\n' : excerpt;
+  const hasCodeblock = excerpt.match(/```/g);
+  if (!hasCodeblock || !hasCodeblock.length || hasCodeblock.length % 2 === 0)
+    return excerpt;
+  const lastIndex = excerpt.substr(excerpt.length - 3, excerpt.length) === '```';
+  if (lastIndex) return excerpt.substr(0, excerpt.length - 3);
+  return excerpt + '\n```\n';
 }
 
 MarkdownLink.propTypes = {
