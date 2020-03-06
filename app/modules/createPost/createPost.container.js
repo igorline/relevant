@@ -123,7 +123,7 @@ export default function CreatePostContainer({ close }) {
 
   const addTextFromLink = () =>
     handleBodyChange({
-      target: { value: `${postBody}\n>${text.stripHTML(urlPreview.description)}` }
+      target: { value: `${postBody}\n>"${text.stripHTML(urlPreview.description)}"` }
     });
 
   const showPasteButton = urlPreview && urlPreview.description;
