@@ -14,12 +14,13 @@ const LONG_EXCERPT = 240;
 const SHORT_EXCERPT = 140;
 
 CommentBody.propTypes = {
-  noLink: PropTypes.bool,
+  noLink: PropTypes.bool, // inner links inside post body
   avatarText: PropTypes.func,
   comment: PropTypes.object,
   inMainFeed: PropTypes.bool,
   preview: PropTypes.bool,
-  omitTitle: PropTypes.bool
+  omitTitle: PropTypes.bool,
+  noPostLink: PropTypes.bool // outer link to post
 };
 
 export default function CommentBody({
@@ -28,10 +29,14 @@ export default function CommentBody({
   comment,
   noLink,
   preview,
-  omitTitle
+  omitTitle,
+  noPostLink
 }) {
   const dispatch = useDispatch();
-  const community = useSelector(state => state.auth.community);
+  const currentCommunity = useSelector(state => state.auth.community);
+  const commentCommunity =
+    comment && comment.data ? comment.data.community : comment.community;
+  const community = commentCommunity || currentCommunity;
   const postUrl = getPostUrl(community, comment);
 
   if (!comment || !comment.body) return null;
@@ -56,7 +61,7 @@ export default function CommentBody({
   const postLinkObj = postLink._id ? postLink : { _id: postLink };
 
   // link to full post
-  if (isPreview || noLink) {
+  if (!noPostLink && (isPreview || noLink)) {
     return (
       <View shrink={1} pl={avatarText ? 5 : 0}>
         <Touchable
@@ -65,14 +70,14 @@ export default function CommentBody({
           onPress={e => {
             if (noLink) {
               e.preventDefault();
-              return e.stopPropagation();
+              e.stopPropagation();
             }
-            return dispatch(goToPost({ ...postLinkObj, comment }));
+            return dispatch(goToPost({ ...postLinkObj, comment, community }));
           }}
           onClick={e => {
             if (noLink) {
               e.preventDefault();
-              return e.stopPropagation();
+              e.stopPropagation();
             }
             return history.push(postUrl);
           }}

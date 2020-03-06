@@ -178,7 +178,6 @@ class CreatePostHeaderRight extends Component {
 
   uploadPost() {
     const props = this.props.createPost;
-
     let postBody = {
       link: props.postUrl,
       tags: [...new Set([...props.allTags.map(tag => tag._id), ...props.bodyTags])],

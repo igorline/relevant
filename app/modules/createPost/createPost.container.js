@@ -98,10 +98,19 @@ export default function CreatePostContainer({ close }) {
       textArea.current.focus();
   }, [disableUrl]); // eslint-disable-line
 
+  const handleBlur = () => {
+    const { tags, mentions } = getTextData(postBody);
+    const mergedTags = [...new Set([...selectedTags, ...tags])];
+    setState({
+      mentions,
+      selectedTags: mergedTags
+    });
+  };
+
   const handleBodyChange = e => {
     const newBody = e.target.value;
     // TODO this may be expensive to do on every render we can skip some of it...
-    const { tags, mentions, url } = getTextData(newBody);
+    const { url } = getTextData(newBody);
     const newUrl = url && url.url;
 
     // don't process url until we see a blank space or user pastes it
@@ -111,12 +120,8 @@ export default function CreatePostContainer({ close }) {
 
     const addUrlToState = !disableUrl && shouldUpdateUrl && { postUrl: newUrl };
 
-    const mergedTags = [...new Set([...selectedTags, ...tags])];
-
     setState({
       postBody: newBody,
-      mentions,
-      selectedTags: mergedTags,
       ...addUrlToState
     });
   };
@@ -158,6 +163,8 @@ export default function CreatePostContainer({ close }) {
           withPreview
           textArea={textArea}
           minheight={22}
+          onBlur={handleBlur}
+          onSubmit={handleBlur}
         />
         {showPasteButton && <PasteTextButton addTextFromLink={addTextFromLink} />}
       </View>

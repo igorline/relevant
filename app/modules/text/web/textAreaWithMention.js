@@ -24,6 +24,7 @@ TextAreaWithMention.propTypes = {
   autoFocus: PropTypes.bool,
   leftPadding: PropTypes.number,
   onChange: PropTypes.func,
+  onBlur: PropTypes.func,
   setFocused: PropTypes.func,
   withPreview: PropTypes.bool,
   children: PropTypes.node,
@@ -37,6 +38,7 @@ export default function TextAreaWithMention({
   autoFocus,
   leftPadding,
   onChange,
+  onBlur,
   setFocused,
   children,
   withPreview,
@@ -123,7 +125,10 @@ export default function TextAreaWithMention({
             }}
             // bug with autocomplete
             // https://github.com/webscopeio/react-textarea-autocomplete/issues/178
-            onBlur={e => e.type === 'blur' && setFocused && setFocused(false)}
+            onBlur={e => {
+              e.type === 'blur' && onBlur && onBlur(e);
+              e.type === 'blur' && setFocused && setFocused(false);
+            }}
             textAreaComponent={{ component: TextareaAutosize, ref: 'inputRef' }}
             loadingComponent={() => <span>Loading</span>}
             trigger={{
@@ -151,7 +156,7 @@ export default function TextAreaWithMention({
           fjustify={'center'}
           border={colors.lightBorder}
         >
-          <CommentBody noLink comment={{ body: value }} />
+          <CommentBody noLink comment={{ body: value }} noPostLink />
         </View>
       )}
     </View>

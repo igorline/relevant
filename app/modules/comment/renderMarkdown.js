@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isNative } from 'app/styles';
@@ -8,11 +8,6 @@ import nativeStyles from 'styles/markdown.native';
 
 let MarkdownNative;
 let ReactMarkdown;
-
-const RENDERERS = {
-  link: MarkdownLink,
-  linkReference: MarkdownLink
-};
 
 if (process.env.WEB === 'true') {
   ReactMarkdown = require('react-markdown');
@@ -28,6 +23,12 @@ MD.propTypes = {
 
 export default function MD({ markdown, noLink, className }) {
   const processNativeLink = useNativeLink(noLink);
+  const MarkdownLink = getMDLink(noLink);
+  const RENDERERS = {
+    link: MarkdownLink,
+    linkReference: MarkdownLink
+  };
+
   return isNative ? (
     <MarkdownNative
       mergeStyle={true}
@@ -61,22 +62,27 @@ function useNativeLink(noLink) {
   );
 }
 
-MarkdownLink.propTypes = {
-  href: PropTypes.string,
-  children: PropTypes.node
-};
-
-function MarkdownLink({ href, children, ...rest }) {
-  if (href === '') return children;
-  const regex = /^(https?|file|ftps?|mailto|javascript|data:image\/[^;]{2,9};):/i;
-  const isAbsolute = regex.test(href);
-  return (
-    <ULink
-      to={href}
-      {...rest}
-      onClick={e => e.stopPropagation()}
-      external={isAbsolute}
-      target={isAbsolute ? '_blank' : null}
-    />
-  );
+function getMDLink(noLink) {
+  MarkdownLink.propTypes = {
+    href: PropTypes.string,
+    children: PropTypes.node,
+    onPress: PropTypes.func
+  };
+  function MarkdownLink({ href, children, onPress, ...rest }) {
+    if (href === '') return children;
+    const regex = /^(https?|file|ftps?|mailto|javascript|data:image\/[^;]{2,9};):/i;
+    const isAbsolute = regex.test(href);
+    return (
+      <ULink
+        to={href}
+        {...rest}
+        children={children}
+        onClick={e => (noLink ? e.preventDefault() : e.stopPropagation())}
+        onPress={e => (noLink ? e.preventDefault() : onPress(e))}
+        external={isAbsolute}
+        target={isAbsolute ? '_blank' : null}
+      />
+    );
+  }
+  return memo(MarkdownLink);
 }

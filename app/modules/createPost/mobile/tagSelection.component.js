@@ -50,26 +50,29 @@ class TagSelection extends Component {
   }
 
   componentDidMount() {
-    const props = this.props.createPost;
-    if (props) {
-      this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
-      this.tags = props.keywords.map(tag => ({ _id: tag }));
-      // this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
-      this.setState({
-        communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
-      });
-      if (props.postCategory) this.setTopicTags(props.postCategory, true);
-      else this.selectedTags = [...new Set(this.bodyTags)];
-    }
+    this.updateTags();
+    this.setState({
+      communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
+    });
   }
 
   componentDidUpdate(prevProps) {
+    this.updateTags();
     if (prevProps.communityTags !== this.props.communityTags) {
       this.setState({
         communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
       });
     }
   }
+
+  updateTags = () => {
+    const props = this.props.createPost;
+    if (props) {
+      this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
+      this.tags = props.keywords.map(tag => ({ _id: tag }));
+      this.selectedTags = [...new Set([...this.bodyTags, ...this.selectedTags])];
+    }
+  };
 
   setTopicTags(selectedTopic, updateSelected) {
     this.selectedTopic = selectedTopic;
@@ -131,6 +134,9 @@ class TagSelection extends Component {
     }
     if (index > -1) {
       this.selectedTags.splice(index, 1);
+      const bodyTags = this.bodyTags.filter(t => tag !== t._id);
+      this.bodyTags = bodyTags;
+      this.props.actions.setCreatePostState({ bodyTags: bodyTags.map(t => t._id) });
     } else if (indexInput === -1) {
       if (this.selectedTags.length + this.inputTags.length >= 7) {
         return Alert.alert('👋 too many topics!');
@@ -149,7 +155,14 @@ class TagSelection extends Component {
   render() {
     const { selectedTopic } = this;
     const selectedTags = [...this.selectedTags, ...this.inputTags];
-    let tags = [...this.inputTags, ...this.state.communityTags, ...this.tags];
+    let tags = [
+      ...new Set([
+        ...this.inputTags,
+        ...this.state.communityTags,
+        ...this.tags,
+        ...this.bodyTags
+      ])
+    ];
 
     tags = [...new Set(tags.map(t => t._id))];
     // hide current category

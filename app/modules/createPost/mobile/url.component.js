@@ -186,7 +186,9 @@ class UrlComponent extends Component {
       this.props.actions.searchUser(lastWord.replace('@', ''));
     } else this.props.actions.setUserSearch([]);
 
-    this.props.actions.setCreatePostState({ postBody, bodyTags, bodyMentions });
+    const addTagsAndMentions = doneTyping ? { bodyTags, bodyMentions } : {};
+
+    this.props.actions.setCreatePostState({ postBody, ...addTagsAndMentions });
   }
 
   createPreview = async postUrl => {
@@ -346,7 +348,7 @@ class UrlComponent extends Component {
             textAlignVertical={'top'}
             onSubmitEditing={() => {
               if (this.okToSubmit) {
-                this.processInput(postBody + '\n', false);
+                this.processInput(postBody + '\n', true);
                 return (this.okToSubmit = false);
               }
               return (this.okToSubmit = true);
