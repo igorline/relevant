@@ -132,9 +132,9 @@ const UserSchema = new Schema(
     legacyTokens: { type: Number, default: 0 },
     legacyAirdrop: { type: Number, default: 0 },
 
-    // boxDID: { type: String },
     ethLogin: { type: String },
-    boxAddress: { type: String },
+    // boxDID: { type: String },
+    // boxAddress: { type: String },
 
     version: String,
     community: String,
