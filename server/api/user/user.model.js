@@ -134,6 +134,7 @@ const UserSchema = new Schema(
 
     // boxDID: { type: String },
     ethLogin: { type: String },
+    boxAddress: { type: String },
 
     version: String,
     community: String,
