@@ -69,11 +69,11 @@ class TextBody extends Component {
     textArr.forEach(section => {
       const word = {};
       word.text = section;
-      if (section.match(/^#/)) {
+      if (section.match(/^#/) && section.replace(/#/g, '') !== '') {
         word.type = 'hashtag';
         const ind = extraTags.indexOf(word.text.replace('#', '').trim());
         if (ind > -1) extraTags.splice(ind, 1);
-      } else if (section.match(/^@/)) {
+      } else if (section.match(/^@/) && section.replace(/@/g, '') !== '') {
         const m = section.replace('@', '');
         if (post.mentions && post.mentions.find(mention => mention === m)) {
           word.type = 'mention';

@@ -30,11 +30,9 @@ exports[`Snapshot Paidout Web 1`] = `
       style={
         Object {
           "color": "rgba(0,0,0,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.875rem",
           "lineHeight": "1.2249999999999999rem",
-          "position": "relative",
         }
       }
     >
@@ -110,39 +108,28 @@ exports[`Snapshot Paidout Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={
-          Array [
-            4,
-            2,
-          ]
-        }
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
             "marginRight": "2rem",
-            "position": "relative",
           }
         }
       >
         Jan 31, 2019
       </div>
       <div
-        c="hsl(0, 0%, 50%)"
         className="css-text-901oao"
         dir="auto"
         style={
           Object {
             "WebkitTextDecorationColor": "rgba(128,128,128,1.00)",
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
-            "position": "relative",
             "textDecorationColor": "rgba(128,128,128,1.00)",
           }
         }
@@ -151,18 +138,15 @@ exports[`Snapshot Paidout Web 1`] = `
       </div>
     </div>
     <div
-      c="#7ED321"
       className="css-text-901oao"
       dir="auto"
       style={
         Object {
           "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
           "color": "rgba(126,211,33,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.875rem",
           "lineHeight": "1.2249999999999999rem",
-          "position": "relative",
           "textDecorationColor": "rgba(126,211,33,1.00)",
         }
       }
@@ -228,11 +212,9 @@ exports[`Snapshot Pending Web 1`] = `
       style={
         Object {
           "color": "rgba(0,0,0,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.875rem",
           "lineHeight": "1.2249999999999999rem",
-          "position": "relative",
         }
       }
     >
@@ -308,37 +290,26 @@ exports[`Snapshot Pending Web 1`] = `
       <div
         className="css-text-901oao"
         dir="auto"
-        mr={
-          Array [
-            4,
-            2,
-          ]
-        }
         style={
           Object {
             "color": "rgba(0,0,0,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
             "marginRight": "2rem",
-            "position": "relative",
           }
         }
       />
       <div
-        c="hsl(0, 0%, 50%)"
         className="css-text-901oao"
         dir="auto"
         style={
           Object {
             "WebkitTextDecorationColor": "rgba(128,128,128,1.00)",
             "color": "rgba(128,128,128,1.00)",
-            "display": "flex",
             "fontFamily": "HelveticaNeue",
             "fontSize": "0.875rem",
             "lineHeight": "1.2249999999999999rem",
-            "position": "relative",
             "textDecorationColor": "rgba(128,128,128,1.00)",
           }
         }
@@ -347,18 +318,15 @@ exports[`Snapshot Pending Web 1`] = `
       </div>
     </div>
     <div
-      c="#7ED321"
       className="css-text-901oao"
       dir="auto"
       style={
         Object {
           "WebkitTextDecorationColor": "rgba(126,211,33,1.00)",
           "color": "rgba(126,211,33,1.00)",
-          "display": "flex",
           "fontFamily": "HelveticaNeue",
           "fontSize": "0.875rem",
           "lineHeight": "1.2249999999999999rem",
-          "position": "relative",
           "textDecorationColor": "rgba(126,211,33,1.00)",
         }
       }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { ActionSheetIOS, TouchableOpacity, Platform, Linking } from 'react-native';
@@ -39,7 +39,9 @@ ButtonRow.propTypes = {
   auth: PropTypes.object
 };
 
-export default function ButtonRow({
+export default memo(ButtonRow);
+
+function ButtonRow({
   link,
   post,
   parentPost,

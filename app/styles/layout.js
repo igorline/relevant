@@ -97,6 +97,5 @@ export const formImageProps = {
   w: 9,
   h: 9,
   m: '1 0 0 0',
-  bg: colors.blue,
   bradius: '50%'
 };

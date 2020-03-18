@@ -59,14 +59,14 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
-    const { screenSize } = this.props;
+    const { screenSize, actions } = this.props;
     return (
       <SingleActivity
         PostComponent={PostComponent}
         key={rowData._id}
         singleActivity={rowData}
         screenSize={screenSize}
-        {...this.props}
+        actions={actions}
       />
     );
   }

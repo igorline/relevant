@@ -5,6 +5,7 @@ import socketEvent from 'server/socket/socketEvent';
 import Community from 'server/api/community/community.model';
 import { sendEmail } from 'server/utils/mail';
 import { sendNotification } from 'server/notifications';
+import { checkCommunityAuth } from 'server/api/community/community.auth';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -15,11 +16,6 @@ import Tag from '../tag/tag.model';
 import Notification from '../notification/notification.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
-
-PostData.updateOne(
-  { post: '5cf6b7775c11c20017dec3f4', community: 'culture' },
-  { isInFeed: false }
-).exec();
 
 const { promisify } = require('util');
 
@@ -435,7 +431,7 @@ exports.update = async (req, res, next) => {
     let newPost;
     let linkObject;
 
-    newPost = await Post.findOne({ _id: req.body._id });
+    newPost = await Post.findOne({ _id: req.body._id }).populate('parentPost');
 
     if (!communityId.equals(newPost.communityId)) {
       throw new Error("Community doesn't match");
@@ -469,6 +465,13 @@ exports.update = async (req, res, next) => {
 
       const oldLinkParent = await Post.findOne({ _id: newPost.linkParent });
       await oldLinkParent.pruneFeed({ communityId });
+    }
+
+    if (newPost.parentPost && tags && tags.length) {
+      const { parentPost } = newPost;
+      const originalTags = parentPost.tags || [];
+      parentPost.tags = [...new Set([...originalTags, ...tags])];
+      await newPost.parentPost.save();
     }
 
     await newPost.save();
@@ -605,8 +608,11 @@ async function processSubscriptions(newPost, communityId) {
  */
 exports.create = async (req, res, next) => {
   try {
-    const { user } = req;
-    const { community, communityId } = req.communityMember;
+    const { user, communityMember } = req;
+    const { community, communityId } = communityMember;
+
+    if (community === 'foam')
+      await checkCommunityAuth({ user, communityId, communityMember });
 
     if (user.banned) {
       throw new Error(
@@ -614,7 +620,7 @@ exports.create = async (req, res, next) => {
       );
     }
 
-    const { channel, body } = req.body;
+    const { channel, body, postUrl: inputUrl } = req.body;
     // TODO rate limiting?
     // current rate limiting is 5s via invest
     const hasChildComment = body && body.length;
@@ -657,6 +663,7 @@ exports.create = async (req, res, next) => {
 
     const postObject = {
       url: postUrl,
+      inputUrl,
       image: req.body.image ? req.body.image : null,
       title: req.body.title ? req.body.title : '',
       body: hasChildComment ? body : null,

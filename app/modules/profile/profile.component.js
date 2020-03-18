@@ -24,7 +24,7 @@ class Profile extends Component {
     user: PropTypes.object,
     location: PropTypes.object,
     history: PropTypes.object,
-    bio: PropTypes.object
+    bio: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
   };
 
   componentDidMount() {
@@ -33,6 +33,7 @@ class Profile extends Component {
 
   checkRouteForModal(firstRun) {
     const { user, actions, location, history } = this.props;
+    if (location.search.match('modal=settings')) return;
     const settingsUrl = `/user/profile/${user.handle}/settings`;
     const profileUrl = `/user/profile/${user.handle}`;
     if (settingsUrl === location.pathname) {
@@ -101,7 +102,7 @@ class Profile extends Component {
           ) : null}
           {isOwner ? (
             <View fdirection="row" align="center" mt={2}>
-              <AltLink mr={sizing(0.5)}>
+              <AltLink>
                 <ULink
                   c={colors.black}
                   to={`${location.pathname}/settings?redirect=${location.pathname}`}
@@ -109,15 +110,15 @@ class Profile extends Component {
                   styles={linkStyle}
                 >
                   <Text fdirection="row" align="center">
-                    <View mr={sizing(0.5)}>
-                      <SettingsImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
+                    <View mr={0.5}>
+                      <SettingsImage h={2} w={2} bg={colors.grey} />
                     </View>
                     Settings
                   </Text>
                 </ULink>
               </AltLink>
 
-              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+              <AltLink ml={1}>
                 <ULink
                   c={colors.black}
                   to="/invites"
@@ -132,11 +133,31 @@ class Profile extends Component {
                     actions.showModal('invite');
                   }}
                 >
-                  <Text fdirection="row" align="center" ml={sizing(1)}>
-                    <View mr={sizing(0.5)}>
-                      <InviteImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
+                  <Text fdirection="row" align="center" ml={1}>
+                    <View mr={0.5}>
+                      <InviteImage h={2} w={2} bg={colors.grey} />
                     </View>
                     Invite Friend
+                  </Text>
+                </ULink>
+              </AltLink>
+
+              <AltLink ml={1}>
+                <ULink
+                  to={'#'}
+                  c={colors.black}
+                  hc={colors.secondaryText}
+                  styles={linkStyle}
+                  onClick={e => {
+                    e.preventDefault();
+                    actions.showModal('linkMobile');
+                  }}
+                >
+                  <Text fdirection="row" align="center">
+                    <View mr={0.5}>
+                      <SettingsImage h={2} w={2} bg={colors.grey} />
+                    </View>
+                    Connect Mobile Device
                   </Text>
                 </ULink>
               </AltLink>

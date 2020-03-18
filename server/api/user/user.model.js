@@ -11,7 +11,7 @@ import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
-const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit'];
+const authTypes = ['github', 'twitter', 'facebook', 'google', 'reddit', 'web3'];
 const { Schema } = mongoose;
 
 const UserSchema = new Schema(
@@ -132,6 +132,10 @@ const UserSchema = new Schema(
     legacyTokens: { type: Number, default: 0 },
     legacyAirdrop: { type: Number, default: 0 },
 
+    ethLogin: { type: String },
+    // boxDID: { type: String },
+    // boxAddress: { type: String },
+
     version: String,
     community: String,
     banned: Boolean
@@ -143,7 +147,11 @@ const UserSchema = new Schema(
   }
 );
 
-// UserSchema.index({ name: 'text' });
+UserSchema.index(
+  { ethLogin: 1 },
+  { unique: true, partialFilterExpression: { ethLogin: { $exists: true } } }
+);
+
 UserSchema.index({ handle: 1 });
 
 /**

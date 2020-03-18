@@ -7,7 +7,7 @@ if (process.env.WEB !== 'true') {
   require('../../publicenv');
 }
 
-const { TOKEN_ADDRESS } = process.env;
+const { TOKEN_ADDRESS, DISABLE_PRICE } = process.env;
 const UPDATE_INTERVAL = 1 * 60 * 1000;
 
 export const PriceContext = React.createContext(0);
@@ -43,7 +43,7 @@ export default function PriceProvider({ children }) {
     let didCancel = false;
     const fetchData = async () => {
       dispatch({ type: 'FETCH_PRICE_INIT' });
-      if (!TOKEN_ADDRESS) return;
+      if (!TOKEN_ADDRESS || DISABLE_PRICE) return;
       try {
         const tokenPrice = await getTokenReserves(TOKEN_ADDRESS);
         const res = await fetch('https://api.infura.io/v1/ticker/ethusd');

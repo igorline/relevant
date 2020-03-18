@@ -27,9 +27,8 @@ BottomSheet.propTypes = {
 export function BottomSheet({ children, close }) {
   const [height, setHeight] = useState(0);
   const [showBg, setShowBg] = useState(true);
-
   const SnapPointsFromTop =
-    height < windowHeight
+    Math.round(height) <= Math.round(windowHeight)
       ? [windowHeight - height, windowHeight]
       : [50, windowHeight * 0.4, windowHeight];
 
@@ -164,7 +163,7 @@ export function BottomSheet({ children, close }) {
                     {
                       flex: 1,
                       backgroundColor: 'white',
-                      marginBottom: IphoneX ? 33 : 0
+                      paddingBottom: IphoneX ? 33 : 0
                     }
                   ]}
                   bounces={false}
@@ -173,7 +172,12 @@ export function BottomSheet({ children, close }) {
                 >
                   <TouchableWithoutFeedback>
                     <View
-                      style={[{ paddingVertical: 48, paddingHorizontal: 32 }]}
+                      style={[
+                        {
+                          paddingVertical: 48,
+                          paddingHorizontal: 32
+                        }
+                      ]}
                       onLayout={e =>
                         setHeight(e.nativeEvent.layout.height + (IphoneX ? 33 : 0))
                       }

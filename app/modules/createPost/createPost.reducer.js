@@ -9,6 +9,7 @@ const initialState = {
   bodyTags: [],
   bodyMentions: [],
   allTags: [],
+  postTags: [],
   postImage: null,
   nativeImage: false,
   repost: null,
@@ -18,7 +19,8 @@ const initialState = {
   editPost: null,
   keywords: [],
   createPreview: {},
-  selectedTags: []
+  selectedTags: [],
+  disableUrl: false
 };
 
 export default function createPost(state = initialState, action) {

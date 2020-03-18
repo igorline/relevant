@@ -4,7 +4,6 @@ import {
   View,
   KeyboardAvoidingView,
   AppState,
-  Platform,
   Dimensions
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -22,7 +21,7 @@ import * as communityActions from 'modules/community/community.actions';
 import Auth from 'modules/auth/mobile/auth.component';
 
 import { createAppContainer } from 'react-navigation';
-import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
+import { TransitionPresets, createStackNavigator } from 'react-navigation-stack';
 
 import UrlComponent from 'modules/createPost/mobile/url.component';
 import Categories from 'modules/createPost/mobile/categories.component';
@@ -33,7 +32,7 @@ import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import { setTopLevelNavigator, withProps } from 'app/utils/nav';
 
 import { text, storage, post } from 'app/utils';
-import { darkGrey, IphoneX } from 'app/styles/global';
+import { darkGrey } from 'app/styles/global';
 
 // Nasty hack because for some reason Dimensions.get('window') returns 0,0
 const fullWidth = Dimensions.get('screen').width;
@@ -75,7 +74,6 @@ export const ShareStack = createStackNavigator(
     headerLayoutPreset: 'center',
     cardOverlayEnabled: true,
     cardShadowEnabled: true,
-    transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
 
     defaultNavigationOptions: props => ({
       gesturesEnabled: true,
@@ -87,12 +85,12 @@ export const ShareStack = createStackNavigator(
         shadowOpacity: 0,
         borderBottomColor: darkGrey,
         borderBottomWidth: StyleSheet.hairlineWidth,
-        height: 45,
-        marginTop: Platform.OS === 'ios' ? (IphoneX ? -40 : -20) : 0
+        height: 45
       },
       headerTitle: <HeaderTitle {...props} />,
       headerRight: <CreatePostHeaderRight {...props} />,
-      headerLeft: <HeaderLeft {...props} />
+      headerLeft: <HeaderLeft {...props} />,
+      ...TransitionPresets.SlideFromRightIOS
     })
   }
 );

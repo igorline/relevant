@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
+import { colors } from 'styles';
 import TagSelection from './tagSelection.component';
 import CommunitySelection from './communitySelection.component';
 
@@ -23,7 +24,7 @@ class Categories extends Component {
     this.setTopic = this.setTopic.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     // TODO check this works
     InteractionManager.runAfterInteractions(() => {
       if (!this.props.tags.length) this.props.actions.getParentTags();
@@ -56,7 +57,7 @@ class Categories extends Component {
       return null;
     }
     return (
-      <ScrollView>
+      <ScrollView style={{ backgroundColor: colors.white }}>
         <CommunitySelection actions={actions} community={community} />
         <TagSelection
           topic={null}

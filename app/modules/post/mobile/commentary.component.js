@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { StyleSheet, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, mainPadding, borderGrey } from 'app/styles/global';
+import { globalStyles, fullWidth, mainPadding } from 'app/styles/global';
 import Pills from 'modules/ui/mobile/pills.component';
-import { Image, Divider, View } from 'modules/styled/uni';
+import { Image, Divider, View, Box } from 'modules/styled/uni';
 import {
   PanGestureHandler,
   NativeViewGestureHandler
@@ -14,12 +14,12 @@ import { registerGesture } from 'modules/navigation/navigation.actions';
 import ButtonContainer from 'modules/post/mobile/postButtons.container';
 import { DrawerGestureContext } from 'react-navigation-drawer';
 import { TabViewContext } from 'modules/discover/mobile/discoverTabContext';
-import PostBody from './postBody.component';
+import CommentBody from 'modules/comment/commentBody';
 import PostInfo from './postInfo.component';
 
 let styles;
 
-class Commentary extends Component {
+class Commentary extends PureComponent {
   static propTypes = {
     actions: PropTypes.object,
     post: PropTypes.object,
@@ -88,11 +88,11 @@ class Commentary extends Component {
       focusInput,
       tooltip,
       preview,
-      isReply
+      isReply,
+      avatarText
     } = this.props;
 
     const i = index;
-    let postStyle;
 
     const post = { ...item };
     if (!post) return null;
@@ -101,7 +101,7 @@ class Commentary extends Component {
     const hideButtons = preview;
 
     return (
-      <View
+      <Box
         key={post._id + i}
         style={[
           styles.commentaryContainer,
@@ -110,7 +110,7 @@ class Commentary extends Component {
         ]}
       >
         {isReply && !preview ? <Divider /> : null}
-        <View style={[styles.commentary]}>
+        <Box style={[styles.commentary]}>
           <View flex={1} fdirection={'row'} m={`2 0 ${preview ? 0 : 2} 0`}>
             {isReply && !preview ? (
               <Image
@@ -122,7 +122,7 @@ class Commentary extends Component {
                 source={require('app/public/img/reply.png')}
               />
             ) : null}
-            <View style={[postStyle, { flex: 1 }]}>
+            <Box style={{ flex: 1 }}>
               <PostInfo
                 big
                 post={post}
@@ -130,20 +130,28 @@ class Commentary extends Component {
                 auth={auth}
                 singlePost={singlePost}
                 user={user}
-                avatarText={this.props.avatarText}
-                preview
-              />
-              <PostBody
-                short
-                post={post}
-                editing={false}
-                actions={actions}
-                singlePost={singlePost}
-                avatarText={this.props.avatarText}
+                avatarText={avatarText}
                 preview={preview}
               />
+              <Box
+                style={[
+                  {
+                    marginTop: preview && !post.link && !post.parentPost ? 0 : 8,
+                    flex: 1,
+                    justifyContent: 'center',
+                    marginLeft: avatarText ? 6 * 8 : 0
+                  }
+                ]}
+              >
+                <CommentBody
+                  community={'relevant'}
+                  comment={post}
+                  preview={preview}
+                  inMainFeed={!singlePost && !preview}
+                />
+              </Box>
               {!hideButtons && (
-                <View m={'2 0'}>
+                <Box m={'2 0'}>
                   <ButtonContainer
                     horizontal
                     post={post}
@@ -157,12 +165,12 @@ class Commentary extends Component {
                     focusInput={focusInput}
                     singlePost={singlePost}
                   />
-                </View>
+                </Box>
               )}
-            </View>
+            </Box>
           </View>
-        </View>
-      </View>
+        </Box>
+      </Box>
     );
   }
 
@@ -191,69 +199,71 @@ class Commentary extends Component {
     const { commentary, preview, isReply } = this.props;
     const { scrollEnabled } = this.state;
     const pills = (
-      <View style={{ marginVertical: 16 }}>
+      <Box style={{ marginVertical: 16 }}>
         <Pills
           changed={this.state.changed}
           currentIndex={this.state.currentIndex}
           slides={commentary.map((c, i) => i + 1)}
           scrollToPage={this.scrollToPage}
         />
-      </View>
+      </Box>
     );
 
     return (
-      <View style={{ marginBottom: !preview ? 16 : 0 }}>
+      <Box style={{ marginBottom: !preview ? 16 : 0 }}>
         {isReply && !preview ? <Divider m={'0 2'} /> : null}
         <TabViewContext.Consumer>
           {tabView => (
             <DrawerGestureContext.Consumer>
-              {drawer => (
-                <PanGestureHandler
-                  enabled={commentary.length > 1}
-                  ref={this.panRef}
-                  activeOffsetX={[-5, 5]}
-                  onHandlerStateChange={this.handleGesture}
-                  onGestureEvent={this.handleGesture}
-                  simultaneousHandlers={[drawer, tabView, this.listRef]}
-                >
-                  <NativeViewGestureHandler
-                    enabled={commentary.length > 1 && scrollEnabled}
-                    ref={this.listRef}
-                    simultaneousHandlers={[drawer, tabView, this.panRef]}
-                    // waitFor={this.state.scrollEnabled ? [] : [drawer, tabView]}
+              {drawer => {
+                return (
+                  <PanGestureHandler
+                    enabled={commentary.length > 1}
+                    ref={this.panRef}
+                    activeOffsetX={[-5, 5]}
+                    onHandlerStateChange={this.handleGesture}
+                    onGestureEvent={this.handleGesture}
+                    simultaneousHandlers={[drawer, tabView, this.listRef].filter(h => h)}
                   >
-                    <FlatList
-                      style={{ marginTop: !preview ? 16 : 0 }}
-                      ref={this.scrollView}
-                      shouldActivateOnStart={false}
-                      scrollEnabled={commentary.length > 1 && scrollEnabled}
-                      scrollEventThrottle={30}
-                      scrollToOverflowEnabled={false}
-                      alwaysBounceHorizontal={false}
-                      bounces={false}
-                      onScroll={e => {
-                        const { x } = e.nativeEvent.contentOffset;
-                        const length = e.nativeEvent.layoutMeasurement.width;
-                        this.scrollOffset = x;
-                        this.maxOffset = length * (commentary.length - 1);
-                      }}
-                      keyExtractor={(item, index) => index.toString()}
-                      horizontal={!preview}
-                      data={commentary}
-                      renderItem={this.renderItem}
-                      pagingEnabled
-                      contentContainerStyle={[!preview ? styles.postScroll : null]}
-                      showsHorizontalScrollIndicator={false}
-                      onMomentumScrollEnd={this.onScrollEnd}
-                    />
-                  </NativeViewGestureHandler>
-                </PanGestureHandler>
-              )}
+                    <NativeViewGestureHandler
+                      enabled={commentary.length > 1 && scrollEnabled}
+                      ref={this.listRef}
+                      // shouldRecognizeSimultaneously
+                      simultaneousHandlers={[drawer, tabView, this.panRef].filter(h => h)}
+                    >
+                      <FlatList
+                        style={{ marginTop: !preview ? 16 : 0 }}
+                        ref={this.scrollView}
+                        shouldActivateOnStart={false}
+                        scrollEnabled={commentary.length > 1 && scrollEnabled}
+                        scrollEventThrottle={30}
+                        scrollToOverflowEnabled={false}
+                        alwaysBounceHorizontal={false}
+                        bounces={false}
+                        onScroll={e => {
+                          const { x } = e.nativeEvent.contentOffset;
+                          const length = e.nativeEvent.layoutMeasurement.width;
+                          this.scrollOffset = x;
+                          this.maxOffset = length * (commentary.length - 1);
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal={!preview}
+                        data={commentary}
+                        renderItem={this.renderItem}
+                        pagingEnabled
+                        contentContainerStyle={[!preview ? styles.postScroll : null]}
+                        showsHorizontalScrollIndicator={false}
+                        onMomentumScrollEnd={this.onScrollEnd}
+                      />
+                    </NativeViewGestureHandler>
+                  </PanGestureHandler>
+                );
+              }}
             </DrawerGestureContext.Consumer>
           )}
         </TabViewContext.Consumer>
         {commentary.length > 1 ? pills : null}
-      </View>
+      </Box>
     );
   }
 }
@@ -299,11 +309,6 @@ const localStyles = StyleSheet.create({
   commentary: {
     flexGrow: 1,
     flexDirection: 'column'
-  },
-  repost: {
-    borderLeftColor: borderGrey,
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    paddingLeft: 10
   }
 });
 

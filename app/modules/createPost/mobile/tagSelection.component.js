@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, Alert, StyleSheet } from 'react-native';
+import { TextInput, Alert, StyleSheet, Keyboard } from 'react-native';
 import { View } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
@@ -49,18 +49,10 @@ class TagSelection extends Component {
     this.setState({ inputFocused: false });
   }
 
-  componentWillMount() {
-    const props = this.props.createPost;
-    if (props) {
-      this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
-      this.tags = props.keywords.map(tag => ({ _id: tag }));
-      // this.communityTags = this.props.communityTags.map(tag => ({ _id: tag }));
-      this.setState({
-        communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
-      });
-      if (props.postCategory) this.setTopicTags(props.postCategory, true);
-      else this.selectedTags = [...new Set(this.bodyTags)];
-    }
+  componentDidMount() {
+    this.setState({
+      communityTags: this.props.communityTags.map(tag => ({ _id: tag }))
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -70,6 +62,15 @@ class TagSelection extends Component {
       });
     }
   }
+
+  updateTags = () => {
+    const props = this.props.createPost;
+    if (props) {
+      this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
+      this.tags = props.keywords.map(tag => ({ _id: tag }));
+      this.selectedTags = [...new Set([...this.bodyTags, ...this.selectedTags])];
+    }
+  };
 
   setTopicTags(selectedTopic, updateSelected) {
     this.selectedTopic = selectedTopic;
@@ -131,6 +132,9 @@ class TagSelection extends Component {
     }
     if (index > -1) {
       this.selectedTags.splice(index, 1);
+      const bodyTags = this.bodyTags.filter(t => tag !== t._id);
+      this.bodyTags = bodyTags;
+      this.props.actions.setCreatePostState({ bodyTags: bodyTags.map(t => t._id) });
     } else if (indexInput === -1) {
       if (this.selectedTags.length + this.inputTags.length >= 7) {
         return Alert.alert('👋 too many topics!');
@@ -148,8 +152,16 @@ class TagSelection extends Component {
 
   render() {
     const { selectedTopic } = this;
+    this.updateTags();
     const selectedTags = [...this.selectedTags, ...this.inputTags];
-    let tags = [...this.inputTags, ...this.state.communityTags, ...this.tags];
+    let tags = [
+      ...new Set([
+        ...this.inputTags,
+        ...this.state.communityTags,
+        ...this.tags,
+        ...this.bodyTags
+      ])
+    ];
 
     tags = [...new Set(tags.map(t => t._id))];
     // hide current category
@@ -175,6 +187,7 @@ class TagSelection extends Component {
           placeholderTextColor={colors.grey}
           style={{ color: colors.black }}
           placeholder={'Select additional topics or create your own'}
+          onSubmitEditing={Keyboard.dismiss}
         />
         <View style={styles.break} />
         <Tags toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />

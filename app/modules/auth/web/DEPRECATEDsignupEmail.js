@@ -11,7 +11,6 @@ import { withRouter } from 'react-router-dom';
 import { showModal } from 'modules/navigation/navigation.actions';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import ReduxFormImageUpload from 'modules/styled/form/reduxformimageupload.component';
-import AvatarFieldPlaceholder from 'modules/form/avatarFieldPlaceholder.component';
 import { Field, reduxForm } from 'redux-form';
 import { Form, View, Button } from 'modules/styled/web';
 import {
@@ -80,7 +79,7 @@ class SignupEmail extends Component {
       {
         name: 'image',
         component: ReduxFormImageUpload,
-        placeholder: <AvatarFieldPlaceholder user={{}} />,
+        // placeholder: <AvatarFieldPlaceholder user={{}} />,
         imageComponent: <FormImage />,
         type: 'file-upload',
         label: 'User Image',

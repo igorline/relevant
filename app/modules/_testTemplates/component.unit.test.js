@@ -1,12 +1,20 @@
 import React from 'react';
-import Enzyme, { shallow } from 'enzyme';
+import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import AvatarBox, { Name } from 'modules/user/avatarbox.component';
+import { MemoryRouter } from 'react-router-dom';
 
 Enzyme.configure({ adapter: new Adapter() });
 
 const user = { _id: 123, handle: 'handle', name: 'Name', relevance: { pagerank: 10 } };
 const postTime = new Date().toISOString();
+
+jest.mock('react-redux', () => {
+  return {
+    useDispatch: () => {},
+    connect: el => el
+  };
+});
 
 function setup() {
   const props = {
@@ -16,7 +24,11 @@ function setup() {
     setSelected: jest.fn()
   };
 
-  const enzymeWrapper = shallow(<AvatarBox {...props} />);
+  const enzymeWrapper = mount(
+    <MemoryRouter>
+      <AvatarBox {...props} />
+    </MemoryRouter>
+  );
 
   return {
     props,
@@ -28,12 +40,11 @@ describe('components', () => {
   describe('AvatarBox', () => {
     it('should render self and subcomponents', () => {
       const { enzymeWrapper } = setup();
-
       expect(
         enzymeWrapper
-        .find(Name.displayName)
-        .first()
-        .text()
+          .find(Name.displayName)
+          .first()
+          .text()
       ).toBe(`${user.name}`);
       // expect(enzymeWrapper
       // .find(HandleText.displayName).text()).toBe(`@${user.handle} ${postTime}`);

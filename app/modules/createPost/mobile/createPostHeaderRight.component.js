@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Alert, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { analytics } from 'react-native-firebase';
 import { bindActionCreators } from 'redux';
@@ -43,11 +43,10 @@ class CreatePostHeaderRight extends Component {
     this.createPost = this.createPost.bind(this);
   }
 
-  componentWillReceiveProps(next) {
-    if (
-      this.props.createPost.edit &&
-      this.props.createPost.postUrl !== next.createPost.postUrl
-    ) {
+  componentDidUpdate(prev) {
+    const { createPost } = this.props;
+    const { edit, postUrl } = createPost;
+    if (edit && postUrl !== prev.createPost.postUrl) {
       this.newUrl = true;
     }
   }
@@ -78,6 +77,7 @@ class CreatePostHeaderRight extends Component {
     }
 
     if (this.enableNext) {
+      Keyboard.dismiss();
       props.navigation.navigate({
         routeName: 'createPostTags',
         params: {
@@ -89,22 +89,26 @@ class CreatePostHeaderRight extends Component {
     return null;
   }
 
-  editPost() {
-    const props = this.props.createPost;
-    const postBody = {
-      ...props.editPost,
-      tags: [...new Set(props.allTags.map(tag => tag._id))],
-      body: props.postBody,
-      mentions: props.bodyMentions
-    };
-    this.props.actions.editPost(postBody).then(res => {
-      if (!res) return;
+  editPost = async () => {
+    try {
+      const props = this.props.createPost;
+      const { allTags = [], bodyTags = [] } = props;
+      const postBody = {
+        ...props.editPost,
+        tags: [...new Set([...allTags, ...bodyTags])],
+        body: props.postBody,
+        mentions: props.bodyMentions
+      };
+      const res = await this.props.actions.editPost(postBody);
+      if (!res) throw new Error('Something went wrong... please try again');
       Alert.alert('Success!');
       this.props.actions.clearCreatePost();
       this.props.navigation.navigate('main');
       this.props.actions.setUserSearch([]);
-    });
-  }
+    } catch (err) {
+      Alert.alert(err.message);
+    }
+  };
 
   createRepost() {
     if (this.state.creatingPost) return;
@@ -116,7 +120,6 @@ class CreatePostHeaderRight extends Component {
       text: props.postBody,
       repost: true
     };
-
     this.setState({ creatingPost: true });
     this.props.actions.createComment(commentObj).then(() => {
       this.props.actions.clearCreatePost();
@@ -175,7 +178,6 @@ class CreatePostHeaderRight extends Component {
 
   uploadPost() {
     const props = this.props.createPost;
-
     let postBody = {
       link: props.postUrl,
       tags: [...new Set([...props.allTags.map(tag => tag._id), ...props.bodyTags])],
@@ -278,7 +280,8 @@ const localStyles = StyleSheet.create({
   rightButton: {
     flex: 1,
     marginRight: mainPadding - 10,
-    paddingVertical: 10
+    paddingVertical: 10,
+    justifyContent: 'center'
   },
   rightButtonText: {
     textAlign: 'right',

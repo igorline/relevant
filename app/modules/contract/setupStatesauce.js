@@ -1,5 +1,5 @@
 import Statesauce from 'redux-saga-web3-eth-contract';
-import { getProvider, getRpcUrl, getMetamask } from 'app/utils/eth';
+import { getProvider, getRpcUrl, getMetamask } from 'utils/web3.provider';
 import get from 'lodash/get';
 import { combineReducers } from 'redux';
 import { reducers, sagas } from 'redux-saga-web3';

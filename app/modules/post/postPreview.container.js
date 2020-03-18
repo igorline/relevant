@@ -9,7 +9,7 @@ import { View } from 'modules/styled/uni';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 
 const PostPreview = props => {
-  const { posts, postId, community, actions, navigation, auth, screenSize } = props;
+  const { posts, postId, community, actions, auth, screenSize } = props;
   const post = posts.posts[postId];
   if (!post) return null;
 
@@ -24,25 +24,9 @@ const PostPreview = props => {
       >
         <View>
           {screenSize ? (
-            <PostInfoMobile
-              preview
-              link={link}
-              post={post}
-              community={community}
-              noLink
-              navigation={navigation}
-              auth={auth}
-            />
+            <PostInfoMobile preview link={link} post={post} noLink />
           ) : (
-            <PostInfo
-              preview
-              link={link}
-              post={post}
-              community={community}
-              noLink
-              navigation={navigation}
-              auth={auth}
-            />
+            <PostInfo preview link={link} post={post} noLink auth={auth} />
           )}
         </View>
       </ULink>
@@ -56,14 +40,12 @@ PostPreview.propTypes = {
   postId: PropTypes.string,
   community: PropTypes.string,
   actions: PropTypes.object,
-  navigation: PropTypes.object,
   auth: PropTypes.object
 };
 
 function mapStateToProps(state) {
   return {
     posts: state.posts,
-    navigation: state.navigation,
     auth: state.auth
   };
 }

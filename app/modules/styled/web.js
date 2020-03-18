@@ -190,13 +190,13 @@ export const StyledTextareaAutocomplete = styled(ReactTextareaAutocomplete)`
   ${mixins.flex}
   ${layout.universalBorder()}
   padding: ${sizing(2)} ${sizing(2)};
-  ${mixins.padding}
-  ${mixins.margin}
   min-width: 0;
   &: focus {
-    min-height: ${sizing(8)};
     outline: 1px solid ${colors.blue};
   }
+  ${mixins.padding}
+  ${mixins.margin}
+  ${mixins.height}
 `;
 
 export const StyledTextarea = styled(TextareaAutosize)`
@@ -205,13 +205,13 @@ export const StyledTextarea = styled(TextareaAutosize)`
   ${mixins.flex}
   ${layout.universalBorder()}
   padding: ${sizing(2)} ${sizing(2)};
-  ${mixins.padding}
-  ${mixins.margin}
   min-width: 0;
   &: focus {
-    min-height: ${sizing(8)};
     outline: 1px solid ${colors.blue};
   }
+  ${mixins.padding}
+  ${mixins.margin}
+  ${mixins.height}
 `;
 
 export const Form = styled.form`

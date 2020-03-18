@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import SplashComponent from 'modules/navigation/banner';
+import Banner from 'modules/navigation/banner';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ test('Snapshot SplashComponent', () => {
   const tree = renderer
     .create(
       <MemoryRouter>
-        <SplashComponent {...props} overRideDismiss />
+        <Banner {...props} overRideDismiss />
       </MemoryRouter>
     )
     .toJSON();

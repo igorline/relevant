@@ -14,14 +14,13 @@ export default class SelectField extends Component {
 
   state = { inputValue: '' };
 
-  handleChange = vals => {
-    const formattedVals = vals.map(v => v.value);
-    this.props.input.onChange(formattedVals);
+  handleChange = value => {
+    this.props.input.onChange(value.value);
   };
 
   render() {
     const { label, error, options, input } = this.props;
-    const vals = input.value.map(u => ({ label: u, value: u }));
+    const defaultValue = { value: input.value, label: input.value };
     const opts = options.map(o => ({ label: o, value: o }));
     return (
       <View mt={2} zIndex={0}>
@@ -31,11 +30,12 @@ export default class SelectField extends Component {
           </LinkFont>
         ) : null}
         <Select
-          styles={{ menu: styles => ({ ...styles, position: 'relative', top: 0 }) }}
-          isMulti
-          cacheOptions
-          defaultOptions
-          value={vals}
+          styles={{
+            menu: styles => ({ ...styles, position: 'relative', top: 0, zIndex: 10 })
+          }}
+          // isMulti
+          // cacheOptions
+          defaultValue={defaultValue}
           onChange={this.handleChange}
           options={opts}
         />

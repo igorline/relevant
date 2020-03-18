@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Eth from 'modules/web_ethTools/eth.context';
 import { abbreviateNumber } from 'app/utils/numbers';
@@ -106,6 +106,6 @@ CoinStat.propTypes = {
   showPrice: PropTypes.bool
 };
 
-export default props => (
+export default memo(props => (
   <Eth.Consumer>{wallet => <CoinStat wallet={wallet} {...props} />}</Eth.Consumer>
-);
+));

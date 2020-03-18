@@ -7,7 +7,7 @@ import { globalStyles } from 'app/styles/global';
 import * as userActions from 'modules/user/user.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as postActions from 'modules/post/post.actions';
-import UserList from 'modules/user/mobile/userList.component';
+import UserList from 'modules/profile/mobile/userList.component';
 import DiscoverUser from 'modules/discover/mobile/discoverUser.component';
 
 let styles;

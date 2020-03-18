@@ -24,7 +24,7 @@ const POST_PAGE_SIZE = 15;
 export class Discover extends Component {
   static propTypes = {
     match: PropTypes.object,
-    refresh: PropTypes.object,
+    refresh: PropTypes.number,
     auth: PropTypes.object,
     posts: PropTypes.object,
     user: PropTypes.object,

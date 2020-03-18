@@ -2,8 +2,7 @@ import { setupTestData } from 'server/test/seedData';
 import computePageRank from 'server/pagerank/pagerankCompute';
 import Community from 'server/api/community/community.model';
 
-const SEED_DB = process.env.SEED_DB === 'true' && process.env.NODE_ENV === 'development';
-
+const SEED_DB = process.env.SEED_DB === 'true' && process.env.NODE_ENV !== 'production';
 /* eslint no-console: 0 */
 const mongoose = require('mongoose');
 
@@ -54,9 +53,10 @@ async function seedDb() {
     throw new Error('should not seed db');
   }
   console.log('SEEDING DB');
-  const clear = Object.keys(mongoose.connection.collections).map(i =>
-    mongoose.connection.collections[i].remove()
-  );
+  const clear = Object.keys(mongoose.connection.collections).map(async i => {
+    // await mongoose.connection.collections[i].dropIndexes();
+    return mongoose.connection.collections[i].deleteMany();
+  });
   await Promise.all(clear);
   await setupTestData();
   const communities = await Community.find({});

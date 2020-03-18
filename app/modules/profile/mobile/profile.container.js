@@ -160,11 +160,13 @@ class Profile extends Component {
   }
 
   scrollToTop() {
+    if (!this.tabs[this.state.view].component) return;
     const view = this.tabs[this.state.view].component.listview;
     if (view) view.scrollToLocation({ sectionIndex: 0, itemIndex: 0 });
   }
 
   scrollTo(y) {
+    if (!this.tabs[this.state.view].component) return;
     const view = this.tabs[this.state.view].component.listview;
     if (view) view.scrollToLocation({ sectionIndex: 0, itemIndex: 0, viewOffset: -y });
   }

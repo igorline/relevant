@@ -8,11 +8,11 @@ import NavProfileComponent from 'modules/profile/navProfile.component';
 import CommunityNav from 'modules/community/communityNav.component';
 import SideNavFooter from 'modules/navigation/sideNavFooter.component';
 import { colors, layout, mixins } from 'app/styles';
-import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
 import { Image, View } from 'modules/styled/web';
 import MenuIcon from 'modules/ui/web/menuIcon.component';
 import { SIDE_NAV_PADDING } from 'styles/layout';
+import history from 'modules/navigation/history';
 
 const Container = styled.div`
   position: sticky;
@@ -52,7 +52,7 @@ const LogoContainer = styled(View)`
 
 class SideNav extends Component {
   componentDidMount() {
-    this.props.history.listen(() => {
+    history.listen(() => {
       this.props.actions.closeWebSideNav();
     });
   }
@@ -113,7 +113,6 @@ SideNav.propTypes = {
   actions: PropTypes.object,
   community: PropTypes.string,
   navigation: PropTypes.object,
-  history: PropTypes.object,
   notif: PropTypes.object
 };
 
@@ -124,17 +123,15 @@ const mapStateToProps = state => ({
   notif: state.notif
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    dispatch => ({
-      actions: bindActionCreators(
-        {
-          showModal,
-          closeWebSideNav
-        },
-        dispatch
-      )
-    })
-  )(SideNav)
-);
+export default connect(
+  mapStateToProps,
+  dispatch => ({
+    actions: bindActionCreators(
+      {
+        showModal,
+        closeWebSideNav
+      },
+      dispatch
+    )
+  })
+)(SideNav);

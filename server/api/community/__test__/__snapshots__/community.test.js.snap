@@ -41,6 +41,7 @@ Object {
   "currentPosts": 0,
   "currentShares": 0,
   "danglingConsumer": 0,
+  "defaultPost": "link",
   "description": "Discussion of blockchain tech and ecosystem",
   "hidden": false,
   "id": "[SANITIZED]",

@@ -1,23 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import { colors } from 'app/styles';
 import * as activityHelper from 'modules/activity/activityHelper';
 import ActivityText from 'modules/activity/activityText.component';
 import UAvatar from 'modules/user/UAvatar.component';
-// import RStat from 'modules/stats/rStat.component';
-import {
-  View,
-  SecondaryText,
-  BodyText,
-  Image,
-  Divider,
-  InlineText
-} from 'modules/styled/uni';
+import { View, SecondaryText, BodyText, Image, Divider, Box } from 'modules/styled/uni';
 import ULink from 'modules/navigation/ULink.component';
 import { MAX_POST_WIDTH } from 'styles/layout';
 
-export default class SingleActivity extends Component {
+export default class SingleActivity extends PureComponent {
   static propTypes = {
     actions: PropTypes.object,
     singleActivity: PropTypes.shape({
@@ -29,13 +21,8 @@ export default class SingleActivity extends Component {
       text: PropTypes.string,
       createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
     }).isRequired,
-    auth: PropTypes.shape({
-      community: PropTypes.string,
-      user: PropTypes.object.isRequired
-    }).isRequired,
     screenSize: PropTypes.number,
-    PostComponent: PropTypes.object,
-    navigation: PropTypes.object
+    PostComponent: PropTypes.object
   };
 
   renderName(activity, user) {
@@ -44,20 +31,18 @@ export default class SingleActivity extends Component {
       let s = '';
       if (activity.totalUsers > 1) s = 's';
       return (
-        <InlineText>
+        <Box mr={0.75}>
           {activity.totalUsers} user{s}{' '}
-        </InlineText>
+        </Box>
       );
     }
-    if (!user) {
-      return null;
-    }
+    if (!user) return null;
 
     if (user && user.handle && activity.totalUsers - 1) {
       let s = '';
       if (activity.totalUsers - 1 > 1) s = 's';
       return (
-        <View fdirection={'row'}>
+        <Box mr={0.75}>
           <ULink
             inline={1}
             onPress={() => actions.goToProfile(user)}
@@ -67,27 +52,28 @@ export default class SingleActivity extends Component {
               @{user.handle}
             </BodyText>
           </ULink>
-          {/* <RStat inline={1} user={user} size={2} mr={0.5} align="baseline" />{' '} */}
           <BodyText>
             {activity.totalUsers - 1} other{s}
           </BodyText>
-        </View>
+        </Box>
       );
     }
     if (user.handle) {
       return (
-        <ULink
-          inline={1}
-          onPress={() => actions.goToProfile(user)}
-          to={'/user/profile/' + user.handle}
-        >
-          <BodyText mr={0.75} c={colors.blue} inline={1}>
-            @{user.handle}
-          </BodyText>
-        </ULink>
+        <Box mr={0.75}>
+          <ULink
+            inline={1}
+            onPress={() => actions.goToProfile(user)}
+            to={'/user/profile/' + user.handle}
+          >
+            <BodyText c={colors.blue} inline={1}>
+              @{user.handle}
+            </BodyText>
+          </ULink>
+        </Box>
       );
     }
-    return user.name;
+    return <Box mr={0.75}>user.name</Box>;
   }
 
   renderIcon(img) {
@@ -98,7 +84,7 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { PostComponent, actions, auth, navigation } = this.props;
+    const { PostComponent, actions } = this.props;
     const { post } = activity;
 
     const parentId = post.parentPost ? post.parentPost._id || post.parentPost : post._id;
@@ -106,11 +92,11 @@ export default class SingleActivity extends Component {
     const link = post.metaPost || post.parentPost;
     // TODO hack should normalize in reducer
     // if (post.parentPost) post.parentPost = post.parentPost._id;
+
     const community = post.community || post.data ? post.data.community : null;
     const linkToPost = `/${community}/post/${parentId}`;
 
-    const newCommunity = community !== auth.community ? community : null;
-    const onPress = () => actions.goToPost({ _id: parentId, community: newCommunity });
+    const onPress = () => actions.goToPost({ _id: parentId, community });
 
     return (
       <ULink to={linkToPost} onPress={onPress}>
@@ -121,9 +107,7 @@ export default class SingleActivity extends Component {
             hideDivider
             hidePostButtons
             preview
-            // community={newCommunity}
             noLink
-            navigation={navigation}
           />
         </View>
       </ULink>
@@ -146,7 +130,7 @@ export default class SingleActivity extends Component {
           {byUser && <UAvatar goToProfile={actions.goToProfile} user={byUser} size={4} />}
         </View>
         <View flex={1} fdirection={'column'} align="baseline">
-          <View fdirection={'row'} wrap={'wrap'} justify={'flex-end'}>
+          <View fdirection={'row'} wrap={'wrap'} justify={'flex-start'}>
             {this.renderName(activity, byUser)}
             <ActivityText activity={activity} amount={amount} />
           </View>
@@ -162,7 +146,7 @@ export default class SingleActivity extends Component {
   }
 
   renderComment(activity) {
-    const { PostComponent, navigation } = this.props;
+    const { PostComponent } = this.props;
     const { post, amount, byUser } = activity;
 
     post.embeddedUser = byUser;
@@ -174,7 +158,6 @@ export default class SingleActivity extends Component {
             hidePostButtons
             preview
             hideDivider
-            navigation={navigation}
             avatarText={() => <ActivityText activity={activity} amount={amount} />}
           />
         </View>

@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
 import { mixins, layout, fonts, colors, sizing, size, isNative } from 'app/styles';
 import { abbreviateNumber } from 'utils/numbers';
 import { TouchableOpacity } from 'react-native';
+import ULink from 'modules/navigation/ULink.component';
 
 export const Touchable = TouchableOpacity;
+
+export const Box = styled.View`
+  ${mixins.margin}
+  ${mixins.padding}
+`;
 
 export const View = styled.View`
   ${mixins.margin}
@@ -21,6 +27,7 @@ export const View = styled.View`
 `;
 
 export const AbsoluteView = styled.View`
+  position: absolute;
   ${mixins.position}
 `;
 
@@ -39,8 +46,6 @@ export const InlineText = styled.Text`
   ${mixins.margin}
   ${mixins.padding}
   ${mixins.font}
-  ${mixins.background}
-  ${mixins.border}
   ${mixins.color}
 `;
 
@@ -48,7 +53,6 @@ export const Image = styled.Image`
   ${mixins.margin}
   ${mixins.height}
   ${mixins.width}
-  ${mixins.link}
   ${mixins.padding}
   ${mixins.background}
   ${mixins.borderRadius}
@@ -63,9 +67,7 @@ export const ImageWrapper = styled.View`
   ${mixins.flex}
 `;
 
-export const FormImage = props => (
-  <Image {...props} bg={colors.blue} {...layout.formImageProps} />
-);
+export const FormImage = props => <Image {...props} {...layout.formImageProps} />;
 
 export const Divider = styled.View`
   ${mixins.margin}
@@ -86,70 +88,84 @@ export const MobileDivider = styled(View)`
   background-color: ${colors.dividerBg};
 `;
 
-export const Header = styled(Text)`
+export const Header = styled.Text`
   ${fonts.header}
   ${mixins.color}
-  ${mixins.font}
+  ${mixins.margin}
 `;
 
-export const Title = styled(Text)`
+export const Highlight = styled.Text`
+  ${fonts.highlight}
+  ${mixins.color}
+  ${mixins.margin}
+`;
+
+export const Title = styled.Text`
   ${fonts.title}
   ${mixins.color}
   ${mixins.font}
   ${mixins.flex}
+  ${mixins.margin}
 `;
 
-export const LinkFont = styled(Text)`
+export const LinkFont = styled.Text`
   ${fonts.link}
   ${mixins.link}
   ${mixins.font}
   ${mixins.color}
+ ${mixins.margin}
   ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
 `;
 
-export const CTALink = styled(Text)`
+export const CTALink = styled.Text`
   ${fonts.CTALink}
   ${mixins.link}
   ${mixins.color}
   ${mixins.font}
+  ${mixins.margin}
 `;
 
-export const SecondaryText = styled(Text)`
+export const SecondaryText = styled.Text`
   ${fonts.secondaryText}
   ${mixins.color}
   ${mixins.font}
+ ${mixins.margin}
 `;
 
-export const SmallText = styled(Text)`
+export const SmallText = styled.Text`
   ${fonts.secondaryText}
   color: ${colors.black};
   ${mixins.color}
   ${mixins.font}
+ ${mixins.margin}
 `;
 
-export const AltLink = styled(Text)`
+export const AltLink = styled.Text`
   ${fonts.altLink}
   ${mixins.color}
   ${mixins.font}
+  ${mixins.margin}
 `;
 
-export const CommunityLink = styled(Text)`
+export const CommunityLink = styled.Text`
   ${fonts.communityLink}
   ${mixins.color}
   ${mixins.font}
+  ${mixins.margin}
 `;
 
-export const CommentText = styled(Text)`
+export const CommentText = styled.Text`
   ${fonts.commentText}
   ${mixins.color}
   ${mixins.font}
   z-index: 1;
 `;
 
-export const BodyText = styled(Text)`
+export const BodyText = styled.Text`
   ${fonts.bodyStyle}
   ${mixins.color}
   ${mixins.font}
+  ${mixins.margin}
 `;
 
 export const StaticButton = styled(View)`
@@ -179,13 +195,15 @@ export const ButtonText = styled.Text`
   ${mixins.color}
 `;
 
-HoverButton.propTypes = {
+HB.propTypes = {
   children: PropTypes.node,
   onPress: PropTypes.func,
   onClick: PropTypes.func
 };
 
-export function HoverButton({ children, onPress, onClick, ...rest }) {
+export const HoverButton = memo(HB);
+
+function HB({ children, onPress, onClick, ...rest }) {
   const [hover, setHover] = useState(0);
   const [active, setActive] = useState(0);
   const isString = typeof children === 'string';
@@ -213,21 +231,19 @@ export function HoverButton({ children, onPress, onClick, ...rest }) {
   );
 }
 
-export const Button = HoverButton;
+export const Button = memo(HB);
 
 ButtonWithIcon.propTypes = {
-  text: PropTypes.text,
+  text: PropTypes.string,
   image: PropTypes.node
 };
 
 export function ButtonWithIcon({ text, image, ...rest }) {
   return (
-    <Button {...rest}>
-      <View fdirection="row" align="center">
-        {image}
-        <ButtonText>{text}</ButtonText>
-      </View>
-    </Button>
+    <ViewButton fdirection={'row'} {...rest}>
+      {image}
+      <ButtonText>{text}</ButtonText>
+    </ViewButton>
   );
 }
 
@@ -292,9 +308,10 @@ export const Spacer = styled(View)`
 
 export const CloseX = styled(Image)`
   position: absolute;
+  ${p => (p.position ? `position: ${p.position};` : null)}
   ${p => (p.top ? `top: ${size(p.top)};` : null)}
   ${p => (p.right ? `right: ${size(p.right)};` : null)}
-  cursor: pointer;
+  ${() => (!isNative ? 'user-select: none; cursor: pointer;' : '')}
   z-index: 10;
 `;
 
@@ -345,3 +362,41 @@ export function Badge({ color, textColor, h, children, number, ...styles }) {
     </View>
   );
 }
+
+export const Err = styled(Text)`
+  color: ${colors.red};
+`;
+
+EthAddress.propTypes = {
+  address: PropTypes.object
+};
+
+export function EthAddress({ address }) {
+  if (!address) return null;
+  return (
+    <ULink to={`https://etherscan.io/address/${address}`} target="_blank" external>
+      {address.slice(0, 6) + '...' + address.slice(address.length - 4, address.length)}
+    </ULink>
+  );
+}
+
+export const ErrorBox = ({ children, ...styleProps }) => (
+  <View mt={2} p={2} bg={colors.errorA} border bc={colors.error} {...styleProps}>
+    {children}
+  </View>
+);
+
+export const WarningBox = ({ children, ...styleProps }) => (
+  <View mt={2} p={2} bg={colors.warningA} border bc={colors.warning} {...styleProps}>
+    {children}
+  </View>
+);
+
+ErrorBox.propTypes = {
+  children: PropTypes.node
+};
+
+WarningBox.propTypes = {
+  children: PropTypes.node,
+  styleProps: PropTypes.object
+};

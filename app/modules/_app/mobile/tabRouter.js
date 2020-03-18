@@ -23,8 +23,9 @@ import HeaderLeft from 'modules/navigation/mobile/headerLeft.component';
 import HeaderRight from 'modules/navigation/mobile/headerRight.component';
 import HeaderTitle from 'modules/navigation/mobile/headerTitle.component';
 import CommunityMembers from 'modules/community/mobile/communityMembers.component';
+import { colors } from 'styles';
 
-import { StackViewTransitionConfigs, createStackNavigator } from 'react-navigation-stack';
+import { TransitionPresets, createStackNavigator } from 'react-navigation-stack';
 
 export const DefaultStack = {
   notifications: {
@@ -147,14 +148,10 @@ const defaultStackSettings = {
     elevation: 4
   },
 
-  transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
-
-  // navigationOptions: props => {
-  //   console.log('drawer props', props);
-  //   // return
-  // },
-
   defaultNavigationOptions: props => ({
+    cardStyle: {
+      backgroundColor: colors.white
+    },
     gesturesEnabled: true,
     gestureResponseDistance: {
       horizontal: fullWidth
@@ -167,7 +164,8 @@ const defaultStackSettings = {
     },
     headerTitle: <HeaderTitle {...props} />,
     headerRight: <HeaderRight {...props} />,
-    headerLeft: <HeaderLeft {...props} />
+    headerLeft: <HeaderLeft {...props} />,
+    ...TransitionPresets.SlideFromRightIOS
   })
 };
 

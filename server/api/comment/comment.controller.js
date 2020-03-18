@@ -6,6 +6,7 @@ import Post from 'server/api/post/post.model';
 import User from 'server/api/user/user.model';
 import Notification from 'server/api/notification/notification.model';
 import Invest from 'server/api/invest/invest.model';
+import { checkCommunityAuth } from 'server/api/community/community.auth';
 
 // COMMENTS ARE USING POST SCHEMA
 exports.index = async req => {
@@ -49,38 +50,43 @@ exports.index = async req => {
 };
 
 exports.create = async (req, res, next) => {
-  let user = req.user._id;
-
-  const { community, communityId } = req.communityMember;
-  const { linkParent, text: body, repost = false, metaPost } = req.body;
-  let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
-
-  const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
-
-  const words = getWords(body);
-  const mentionsFromBody = getMentions(words);
-  const tagsFromBody = getTags(words);
-
-  tags = [...new Set([...tags, ...tagsFromBody])];
-  mentions = [...new Set([...mentions, ...mentionsFromBody])];
-
-  const commentObj = {
-    body,
-    mentions,
-    tags,
-    parentPost,
-    linkParent,
-    parentComment,
-    user,
-    type,
-    eligibleForRewards: true,
-    postDate: new Date(),
-    community,
-    communityId,
-    metaPost
-  };
-
   try {
+    let user = req.user._id;
+    const { communityMember } = req;
+
+    const { community, communityId } = communityMember;
+
+    if (community === 'foam')
+      await checkCommunityAuth({ user: req.user, communityId, communityMember });
+
+    const { linkParent, text: body, repost = false, metaPost } = req.body;
+    let { parentPost, parentComment, mentions = [], tags = [] } = req.body;
+
+    const type = !parentComment || parentComment === parentPost ? 'post' : 'comment';
+
+    const words = getWords(body);
+    const mentionsFromBody = getMentions(words);
+    const tagsFromBody = getTags(words);
+
+    tags = [...new Set([...tags, ...tagsFromBody])];
+    mentions = [...new Set([...mentions, ...mentionsFromBody])];
+
+    const commentObj = {
+      body,
+      mentions,
+      tags,
+      parentPost,
+      linkParent,
+      parentComment,
+      user,
+      type,
+      eligibleForRewards: true,
+      postDate: new Date(),
+      community,
+      communityId,
+      metaPost
+    };
+
     let comment = new Post(commentObj);
     user = await User.findOne({ _id: user });
 

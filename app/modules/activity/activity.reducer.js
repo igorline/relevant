@@ -2,7 +2,7 @@ import * as types from 'core/actionTypes';
 
 const initialState = {
   personal: [],
-  count: false,
+  count: 0,
   loaded: false,
   general: [],
   promptType: null,
@@ -30,7 +30,7 @@ export default function notifications(state = initialState, action) {
     case 'CLEAR_COUNT': {
       return {
         ...state,
-        count: null
+        count: 0
       };
     }
 

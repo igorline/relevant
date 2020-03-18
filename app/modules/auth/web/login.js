@@ -13,9 +13,10 @@ import { showModal } from 'modules/navigation/navigation.actions';
 import ReduxFormField from 'modules/styled/form/reduxformfield.component';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { required } from 'modules/form/validators';
+import BoxLogin from 'modules/auth/web/login.3box';
 
 const twitterIcon = require('app/public/img/icons/twitter_white.png');
-const redditIcon = require('app/public/img/icons/reddit.png');
+// const redditIcon = require('app/public/img/icons/reddit.png');
 
 class LoginForm extends Component {
   static propTypes = {
@@ -87,15 +88,19 @@ class LoginForm extends Component {
         {FORM_FIELDS.map(field => (
           <Field {...field} key={field.name} />
         ))}
-        <View display="flex" fdirection="column" align="flex-start" justify="flex-start">
+        <View
+          mt={2}
+          display="flex"
+          fdirection="column"
+          align="flex-start"
+          justify="flex-start"
+        >
           <a
             onClick={() => {
               this.props.actions.showModal('forgot');
             }}
           >
-            <LinkFont c={colors.blue} mt={2}>
-              Forgot Your Password?
-            </LinkFont>
+            <LinkFont c={colors.blue}>Forgot Your Password?</LinkFont>
           </a>
           {local ? (
             <View fdirection="row" mt={[4, 2]} align="center">
@@ -128,24 +133,7 @@ class LoginForm extends Component {
                   <LinkFont c={colors.white}>Sign In with Twitter</LinkFont>
                 </ViewButton>
               </ULink>
-              <ULink
-                flex={1}
-                to={`/auth/reddit?redirect=${redirect}&invitecode=${invitecode}`}
-                external
-                mr={[2, 0]}
-                mt={[0, 2]}
-              >
-                <ViewButton flex={1} bg={colors.redditColor} fdirection="row">
-                  <Image
-                    resizeMode={'contain'}
-                    source={redditIcon}
-                    w={3}
-                    h={3}
-                    mr={1.5}
-                  />
-                  <LinkFont c={colors.white}>Sign In with Reddit </LinkFont>
-                </ViewButton>
-              </ULink>
+              <BoxLogin close={this.props.close} />
               {socialSignup}
             </View>
           ) : null}

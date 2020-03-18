@@ -25,6 +25,8 @@ const CommunityMemberSchema = new Schema(
     pagerankRawNeg: { type: Number, default: 0 },
     unread: { type: Number, default: 0 },
     deletedCommunity: { type: Boolean, default: false },
+    customAdminWeight: { type: Number },
+    defaultWeight: { type: Number },
 
     totalUsers: Number,
     level: Number,

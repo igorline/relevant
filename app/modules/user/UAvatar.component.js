@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
@@ -47,4 +47,4 @@ function UAvatar({ size, user, m, goToProfile: onPress, style, noLink }) {
   );
 }
 
-export default UAvatar;
+export default memo(UAvatar);

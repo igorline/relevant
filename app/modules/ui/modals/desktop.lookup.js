@@ -22,11 +22,13 @@ const ResetPassword = loadable(() => import('modules/auth/web/resetPassword.comp
 const LoginForm = loadable(() => import('modules/auth/web/login'));
 const Forgot = loadable(() => import('modules/auth/web/forgot.component'));
 const SignupSocial = loadable(() => import('modules/auth/web/signupSocial'));
-const SignupEmail = loadable(() => import('modules/auth/web/signupEmail'));
+const SignupEmail = loadable(() => import('modules/auth/web/profile.form'));
 const SetHandle = loadable(() => import('modules/auth/web/handle.component'));
 const ConfirmEmail = loadable(() => import('modules/auth/web/confirmEmail.component'));
 const BetBody = loadable(() => import('modules/post/bet/bet'));
 const CashOutModal = loadable(() => import('modules/wallet/web/cashOutModal'));
+const Signup3Box = loadable(() => import('modules/auth/web/signup3Box'));
+const LinkMobile = loadable(() => import('modules/profile/web/linkMobile'));
 
 const ConnectMetamaskModal = loadable(() =>
   import('modules/wallet/web/connectMetamaskModal')
@@ -39,6 +41,15 @@ const CreatePost = loadable(() => import('modules/createPost/createPost.containe
 const ModalHeader = loadable(() =>
   import('modules/createPost/web/createPostModal.header')
 );
+
+export const linkMobile = {
+  Body: LinkMobile,
+  maxWidth: [52, 40]
+};
+
+export const signup3Box = {
+  Body: Signup3Box
+};
 
 export const newpost = {
   header: <ModalHeader />,

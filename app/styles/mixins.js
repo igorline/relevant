@@ -62,7 +62,7 @@ export const width = css`
 
 export const height = css`
   ${p => (p.h ? `height: ${size(p.h)};` : '')};
-  ${p => (p.minHeight ? `min-height: ${size(p.minHeight)};` : '')};
+  ${p => (p.minheight ? `min-height: ${size(p.minheight)};` : '')};
   ${p => (p.maxheight ? `max-height: ${size(p.maxheight)};` : '')};
 `;
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AvatarBox from 'modules/user/web/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 
 class DiscoverUsers extends Component {
   static propTypes = {
@@ -27,34 +27,29 @@ class DiscoverUsers extends Component {
   }
 }
 
-class DiscoverUser extends Component {
-  static propTypes = {
-    user: PropTypes.object,
-    tag: PropTypes.object
-  };
+DiscoverUser.propTypes = {
+  user: PropTypes.object,
+  tag: PropTypes.object
+};
 
-  render() {
-    const { user } = this.props;
-    const relevance = this.props.tag
-      ? user[this.props.tag + '_relevance']
-      : user.relevance;
-    const { bio } = user;
+function DiscoverUser({ tag, user }) {
+  const relevance = tag ? user[tag + '_relevance'] : user.relevance;
+  const { bio } = user;
 
-    return (
-      <div className="discoverUserContainer">
-        <div className="discoverUser">
-          <div className="left">
-            <AvatarBox user={user} />
-          </div>
-          <div className="right">
-            <img src="/img/r-emoji.png" className="r" />
-            {Math.round(relevance)}
-          </div>
+  return (
+    <div className="discoverUserContainer">
+      <div className="discoverUser">
+        <div className="left">
+          <AvatarBox user={user} />
         </div>
-        {bio && <div className="bio">{bio}</div>}
+        <div className="right">
+          <img src="/img/r-emoji.png" className="r" />
+          {Math.round(relevance)}
+        </div>
       </div>
-    );
-  }
+      {bio && <div className="bio">{bio}</div>}
+    </div>
+  );
 }
 
 export default DiscoverUsers;

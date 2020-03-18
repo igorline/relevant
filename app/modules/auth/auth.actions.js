@@ -310,7 +310,7 @@ function setupUser(user, dispatch) {
 }
 
 export function getUser(callback) {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
       const token = await storage.getToken();
       if (!token) return null;
@@ -323,6 +323,11 @@ export function getUser(callback) {
         })
       );
       setupUser(user, dispatch);
+      const state = getState();
+      const { community } = state.auth;
+      if (!community && user.community) {
+        dispatch(setCommunity(user.community));
+      }
       const checkIfEnabled = true;
       dispatch(enableMobileNotifications(user, checkIfEnabled));
       if (user.memberships) {
@@ -740,6 +745,33 @@ export function redeemInvite(invitecode) {
     } catch (err) {
       dispatch(setInviteCode(null));
       // Alert.alert(err.message);
+    }
+  };
+}
+
+export function loginWithBox({ address, signature, msg }) {
+  return async dispatch => {
+    try {
+      const res = await dispatch(
+        api.request({
+          method: 'POST',
+          endpoint: '/auth',
+          path: '/web3',
+          body: JSON.stringify({ address, signature, msg })
+        })
+      );
+      if (res.token) {
+        await storage.setToken(res.token);
+        dispatch(loginUserSuccess(res.token));
+        dispatch(getUser());
+        return true;
+      }
+      dispatch(loginUserFailure(res.message));
+      Alert.alert(res.message);
+      return false;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
     }
   };
 }

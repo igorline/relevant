@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { useSelector } from 'react-redux';
 import { View, CTALink } from 'modules/styled/uni';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
@@ -7,9 +8,21 @@ import PostButtons from 'modules/post/vote-buttons/postbuttons.container';
 import { copyToClipBoard } from 'app/utils/text';
 import { getPostUrl } from 'app/utils/post';
 
-export default function PostButtonRow(props) {
-  const { post, hidePostButtons, screenSize, setActiveComment, parentPost, auth } = props;
-  const url = 'https://relevant.community' + getPostUrl(auth.community, post);
+PostButtonRow.propTypes = {
+  post: PropTypes.object,
+  hidePostButtons: PropTypes.bool,
+  setActiveComment: PropTypes.func,
+  parentPost: PropTypes.object
+};
+
+export default memo(PostButtonRow);
+
+function PostButtonRow(props) {
+  const { post, hidePostButtons, setActiveComment, parentPost } = props;
+  const screenSize = useSelector(state => state.navigation.screenSize);
+  const community = useSelector(state => state.auth.community);
+
+  const url = 'https://relevant.community' + getPostUrl(community, post);
 
   return (
     <View
@@ -64,12 +77,3 @@ export default function PostButtonRow(props) {
     </View>
   );
 }
-
-PostButtonRow.propTypes = {
-  post: PropTypes.object,
-  hidePostButtons: PropTypes.bool,
-  screenSize: PropTypes.number,
-  setActiveComment: PropTypes.func,
-  parentPost: PropTypes.object,
-  auth: PropTypes.object
-};

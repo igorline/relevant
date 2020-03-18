@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { getNetworkName, truncateAddress } from 'utils/eth';
+import { truncateAddress } from 'utils/eth';
+import { getNetworkName } from 'utils/web3.provider';
 import { useWeb3State } from 'modules/contract/contract.selectors';
 import { BodyText, View, Divider } from 'modules/styled/uni';
 

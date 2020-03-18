@@ -6,23 +6,24 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as animationActions from 'modules/animation/animation.actions';
-import { View } from 'modules/styled/uni';
 import Comment from 'modules/comment/web/comment.component';
 
 class SingleComment extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    match: PropTypes.object,
-    auth: PropTypes.object,
-    location: PropTypes.object,
-    myPostInv: PropTypes.object,
     user: PropTypes.object,
     comment: PropTypes.object,
-    parentPostId: PropTypes.string,
     hidePostButtons: PropTypes.bool,
-    hideBorderBottom: PropTypes.bool,
-    postUrl: PropTypes.string,
-    screenSize: PropTypes.number
+    screenSize: PropTypes.number,
+    nestingLevel: PropTypes.number,
+    parentPost: PropTypes.object,
+    preview: PropTypes.bool,
+    hideAvatar: PropTypes.bool,
+    hideBorder: PropTypes.bool,
+    noLink: PropTypes.bool,
+    avatarText: PropTypes.func,
+    inMainFeed: PropTypes.bool,
+    additionalNesting: PropTypes.number
   };
 
   state = {
@@ -41,31 +42,51 @@ class SingleComment extends Component {
   };
 
   render() {
-    const { comment, nestingLevel, screenSize } = this.props;
+    const {
+      comment,
+      nestingLevel,
+      screenSize,
+      parentPost,
+      preview,
+      hidePostButtons,
+      inMainFeed,
+      avatarText,
+      noLink,
+      hideBorder,
+      user,
+      hideAvatar,
+      actions,
+      additionalNesting
+    } = this.props;
     if (!comment) return null;
+
     return (
-      <View>
-        <Comment
-          {...this.props}
-          activeComment={this.state.activeComment}
-          setActiveComment={this.setActiveComment}
-          nestingLevel={nestingLevel || 0}
-          screenSize={screenSize}
-        />
-      </View>
+      <Comment
+        activeComment={this.state.activeComment}
+        setActiveComment={this.setActiveComment}
+        nestingLevel={nestingLevel || 0}
+        screenSize={screenSize}
+        inMainFeed={inMainFeed}
+        avatarText={avatarText}
+        noLink={noLink}
+        hideBorder={hideBorder}
+        hideAvatar={hideAvatar}
+        preview={preview}
+        parentPost={parentPost}
+        hidePostButtons={hidePostButtons}
+        comment={comment}
+        user={user}
+        auth={actions}
+        actions={actions}
+        additionalNesting={additionalNesting}
+      />
     );
   }
 }
 
-SingleComment.propTypes = {
-  nestingLevel: PropTypes.number,
-  comment: PropTypes.object
-};
-
 export default connect(
   state => ({
     auth: state.auth,
-    myPostInv: state.investments.myPostInv,
     user: state.user,
     screenSize: state.navigation.screenSize
   }),

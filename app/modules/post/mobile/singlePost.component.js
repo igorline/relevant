@@ -73,7 +73,6 @@ class SinglePostComponent extends Component {
     this.id = this.props.postId;
     this.getChildren(this.id);
 
-    // InteractionManager.runAfterInteractions(() => {
     requestAnimationFrame(() => {
       this.setState({ loaded: true });
     });
@@ -88,7 +87,7 @@ class SinglePostComponent extends Component {
       const { params } = this.props.navigation.state;
       if (params.comment && this.comments.length) {
         const id = params.comment._id || params.comment;
-        const index = this.comments.findIndex(c => id === c._id);
+        const index = this.comments.findIndex(c => c && id === c._id);
         this.scrollToComment(index);
       }
       if (params && params.openComment) {
@@ -110,13 +109,13 @@ class SinglePostComponent extends Component {
   };
 
   componentDidUpdate(prev) {
-    const { post, error } = this.props;
+    const { post } = this.props;
     if (this.comments.length && !this.state.gotData && this.scrollView) {
       this.onLoad();
       this.setState({ gotData: true });
     }
 
-    if (post !== prev.post || error) {
+    if (post !== prev.post) {
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() => this.setState({ reloading: false }), 1000);
     }
@@ -155,7 +154,7 @@ class SinglePostComponent extends Component {
         const offset = Math.max(0, this.headerHeight - this.scrollHeight);
         this.scrollView.scrollToOffset({ offset });
       }
-    }, 0);
+    }, 60);
   }
 
   reloadComments() {
@@ -185,30 +184,6 @@ class SinglePostComponent extends Component {
     });
     return relatedEl;
   }
-
-  // repostUrl = () => {
-  //   const { link = {}, actions } = this.props;
-  //   actions.setCreatePostState({
-  //     postBody: '',
-  //     component: 'createPost',
-  //     nativeImage: true,
-  //     postUrl: link.url,
-  //     postImage: link.image,
-  //     urlPreview: {
-  //       image: link.image,
-  //       title: link.title ? link.title : 'Untitled',
-  //       description: link.description
-  //     }
-  //   });
-  //   actions.push({
-  //     key: 'createPost',
-  //     back: true,
-  //     title: 'Add Commentary',
-  //     next: 'Next',
-  //     direction: 'vertical',
-  //     left: 'Cancel'
-  //   });
-  // };
 
   renderHeader() {
     const { post, link, actions } = this.props;
@@ -254,6 +229,7 @@ class SinglePostComponent extends Component {
 
     const setupReply = _comment =>
       this.setState({ activeComment: _comment, activeIndex: index });
+
     const focusInput = () => this.input.textInput.focus();
 
     const user = users.users[comment.user] || comment.embeddedUser;
@@ -338,8 +314,9 @@ class SinglePostComponent extends Component {
 
     // TODO this is hacky;
     this.getChildren();
+
     let commentIndex =
-      activeComment && this.comments.findIndex(c => c._id === activeComment._id);
+      activeComment && this.comments.findIndex(c => c && c._id === activeComment._id);
 
     if (activeComment && activeComment._id === post._id) {
       commentIndex = -1;
@@ -360,7 +337,9 @@ class SinglePostComponent extends Component {
           ref={c => (this.scrollView = c)}
           data={this.comments}
           renderItem={this.renderRow}
-          keyExtractor={item => item._id}
+          keyExtractor={(item, i) => {
+            return item ? item._id : 'x' + i;
+          }}
           removeClippedSubviews
           pageSize={1}
           initialListSize={4}
@@ -369,6 +348,7 @@ class SinglePostComponent extends Component {
           onScrollBeginDrag={Keyboard.dismiss}
           onEndReachedThreshold={100}
           overScrollMode={'always'}
+          scrollToOverflowEnabled={true}
           style={{ flex: 1 }}
           ListHeaderComponent={this.renderHeader}
           onScrollToIndexFailed={() => {}}

@@ -4,8 +4,9 @@ import { getPostType } from 'app/utils/post';
 import { colors } from 'app/styles';
 import Tooltip from 'modules/tooltip/tooltip.component';
 import { View, Image, SmallText } from 'modules/styled/uni';
+import { Platform } from 'react-native';
 
-const Platform = process.env.WEB !== 'true' ? require('react-native').Platform : null;
+// const Platform = process.env.WEB !== 'true' ? require('react-native').Platform : null;
 
 PostRank.propTypes = {
   horizontal: PropTypes.bool,
@@ -32,11 +33,28 @@ export default function PostRank({ horizontal, color, post }) {
       align={'center'}
     >
       <Tooltip name="vote" data={tooltipData} />
-      <View m={horizontal ? '0 1' : null} fdirection={'row'} align={'baseline'}>
+      <View m={horizontal ? '0 1' : null} fdirection={'row'} align={'center'}>
         <Image
           h={1.2}
           w={1.2}
-          style={{ opacity: 0.5, transform: [{ translateY: 0.5 }] }}
+          style={{
+            opacity: 0.5,
+            transform: [
+              {
+                ...Platform.select({
+                  ios: {
+                    translateY: 1.0
+                  },
+                  android: {
+                    translateY: 1.0
+                  },
+                  default: {
+                    translateY: 0.5
+                  }
+                })
+              }
+            ]
+          }}
           resizeMode={'contain'}
           resizeMethod={'resize'}
           mr={0.2}
