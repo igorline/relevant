@@ -215,7 +215,7 @@ export default class Graph {
       postDegree: 0,
       negativeNode: !!downvote,
       type: 'user',
-      defaultWeight: user.relevance.defaultWeight,
+      defaultWeight: user.relevance ? user.relevance.defaultWeight : 0,
       prevPos: user.relevance ? user.relevance.pagerankRaw : 0,
       prevNeg: user.relevance ? user.relevance.pagerankRawNeg : 0
     };

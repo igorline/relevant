@@ -108,6 +108,7 @@ exports.rewards = async () => {
   } catch (err) {
     console.log('rewards error', err);
     computingRewards = false;
+    await sendAdminAlert(err);
     // return null;
     throw err;
   }
