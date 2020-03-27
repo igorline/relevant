@@ -60,7 +60,7 @@ function ButtonRow({
     const { community } = auth;
     if (!hasAuth()) return;
     const postUrl = getPostUrl(community, post);
-    const title = getTitle(post);
+    const title = getTitle({ post });
     Share.open({
       title: title || '',
       url: 'https://relevant.community' + postUrl,
