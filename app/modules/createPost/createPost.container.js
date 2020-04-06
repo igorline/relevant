@@ -116,7 +116,7 @@ export default function CreatePostContainer({ close }) {
     // don't process url until we see a blank space or user pastes it
     const isPaste = newBody.length > postBody + 4;
     const doneTypingUrl = url && url.lastIndex !== newBody.length;
-    const shouldUpdateUrl = (!newUrl && postUrl) || doneTypingUrl || isPaste;
+    const shouldUpdateUrl = doneTypingUrl || isPaste;
 
     const addUrlToState = !disableUrl && shouldUpdateUrl && { postUrl: newUrl };
 
