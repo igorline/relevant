@@ -1,6 +1,6 @@
 # Relevant
 
-This is the monorepo for the [Relevant app](https://relevant.communit).
+This is the monorepo for the [Relevant app](https://relevant.community).
 The repo includes server code, website and react-native apps.
 
 ### Running the Web Version:
